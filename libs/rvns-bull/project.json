@@ -1,0 +1,23 @@
+{
+  "name": "rvns-bull",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rvns-bull/src",
+  "projectType": "library",
+  "tags": ["client", "api"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/rvns-bull/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/rvns-bull"],
+      "options": {
+        "jestConfig": "libs/rvns-bull/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

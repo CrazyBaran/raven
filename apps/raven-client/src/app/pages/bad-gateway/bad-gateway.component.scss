@@ -1,0 +1,35 @@
+.bad-gateway {
+  @apply w-full max-w-[30rem] rounded-md bg-white p-10 shadow-md;
+
+  i {
+    @apply mb-6 w-full text-center text-4xl;
+  }
+
+  &__title {
+    @apply mb-6 text-center text-base uppercase;
+  }
+
+  &__info {
+    @apply mb-6 text-sm;
+
+    ul {
+      @apply mb-6 ml-4 list-inside list-disc;
+    }
+
+    a {
+      @apply mt-6 inline-block underline duration-300;
+
+      &:hover {
+        @apply text-primary-500;
+      }
+    }
+  }
+
+  &__link {
+    @apply bg-primary-500 relative flex h-[2.5rem] items-center  justify-center overflow-hidden rounded-md px-4 text-base text-white transition duration-300;
+
+    &:hover {
+      @apply bg-primary-700;
+    }
+  }
+}

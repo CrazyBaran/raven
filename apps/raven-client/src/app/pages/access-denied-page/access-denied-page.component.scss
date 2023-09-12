@@ -1,0 +1,21 @@
+.access-denied {
+  @apply text-secondary-500 flex h-full w-full flex-col items-center justify-center;
+
+  &__icon {
+    @apply mb-8 text-6xl;
+  }
+
+  &__title {
+    @apply mb-8 text-6xl;
+  }
+
+  &__actions {
+    @apply mt-12;
+
+    a {
+      @apply bg-primary-500 hover:bg-primary-700 flex h-[2.5rem] items-center justify-center overflow-hidden rounded-md px-4 text-base text-white transition duration-300;
+    }
+  }
+
+  min-height: calc(100vh - 7rem);
+}

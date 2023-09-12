@@ -1,0 +1,27 @@
+{
+  "name": "rvns-web-sockets",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/rvns-web-sockets/src",
+  "prefix": "app",
+  "tags": ["client", "api"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/rvns-web-sockets"],
+      "options": {
+        "jestConfig": "libs/rvns-web-sockets/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/rvns-web-sockets/src/**/*.ts",
+          "libs/rvns-web-sockets/src/**/*.html"
+        ]
+      }
+    }
+  }
+}

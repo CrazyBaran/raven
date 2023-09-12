@@ -1,0 +1,17 @@
+{
+  "singleQuote": true,
+  "importOrder": [
+    "@angular",
+    "@ngrx",
+    "rxjs",
+    "@app",
+    "state",
+    "pages",
+    "components",
+    "toolbar",
+    "./"
+  ],
+  "importOrderSeparation": true,
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"]
+}

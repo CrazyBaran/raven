@@ -1,0 +1,23 @@
+{
+  "name": "rvns-acl",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rvns-acl/src",
+  "projectType": "library",
+  "tags": ["client", "api"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/rvns-acl/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/rvns-acl"],
+      "options": {
+        "jestConfig": "libs/rvns-acl/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

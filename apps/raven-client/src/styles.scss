@@ -1,0 +1,36 @@
+@import 'assets/styles/fonts';
+@import 'assets/styles/layout';
+@import 'assets/styles/data-table';
+@import 'assets/styles/dropdown';
+@import 'assets/styles/link';
+@import 'assets/styles/button-underline';
+
+@import 'assets/fontawesome/scss/fontawesome';
+@import 'assets/fontawesome/scss/brands';
+@import 'assets/fontawesome/scss/solid';
+@import 'assets/fontawesome/scss/regular';
+
+// UNCOMMENT THE FOLLOWING LINES TO INCLUDE ALL ICONS
+// @import 'assets/fontawesome/scss/light';
+// @import 'assets/fontawesome/scss/thin';
+// @import 'assets/fontawesome/scss/duotone';
+// @import 'assets/fontawesome/scss/sharp-solid';
+
+router-outlet.router-flex + * {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+body {
+  @apply text-text;
+
+  font-family: 'Avenir Next LT Pro', sans-serif;
+  min-height: 100vh;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* You can add global styles to this file, and also import other style files */

@@ -1,0 +1,24 @@
+{
+  "name": "rvns-roles",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rvns-roles/src",
+  "projectType": "library",
+  "generators": {},
+  "tags": ["client", "api"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/rvns-roles/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/rvns-roles/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "outputs": ["{workspaceRoot}/coverage/libs/rvns-roles"]
+    }
+  }
+}

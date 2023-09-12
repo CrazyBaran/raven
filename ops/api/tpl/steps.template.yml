@@ -1,0 +1,89 @@
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: 18.x
+    displayName: Install Node.js
+
+  - script: sudo apt-get install -y gcc g++ make
+    displayName: Install development tools to build native addons and libs
+
+  - script: npm install -g npm
+    displayName: Updated NPM to latest version
+
+  - script: npm install
+    displayName: Install NPM dependencies
+    env:
+      NPM_TASKFORCESH_TOKEN: $(NPM_TASKFORCESH_TOKEN__SECRET)
+
+  - script: npm run -- nx run raven-api:test --code-coverage
+    displayName: Run unit tests
+
+  - task: PublishTestResults@2
+    displayName: Publish unit tests results
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: $(Build.Repository.LocalPath)/test_reports/junit-*.xml
+      mergeTestResults: true
+
+  - task: PublishCodeCoverageResults@1
+    condition: and(succeeded(), eq(variables.SKIP_PUBLISH_CODE_COVERAGE, false))
+    displayName: Publish unit tests coverage results
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: $(Build.Repository.LocalPath)/coverage/apps/raven-api/cobertura-coverage.xml
+
+  - script: npm run -- nx build raven-api --prod
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Build NestJS API app
+
+  - task: Docker@2
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Build NestJS API Docker image
+    inputs:
+      command: build
+      repository: $(DOCKER_REPOSITORY)
+      containerRegistry: $(CONTAINER_REGISTRY_CONN)
+      Dockerfile: apps/raven-api/Dockerfile
+      buildContext: $(Build.Repository.LocalPath)
+      arguments: --build-arg NPM_TASKFORCESH_TOKEN=$(NPM_TASKFORCESH_TOKEN__SECRET)
+      tags: |
+        $(Build.BuildId)
+        latest
+
+  - task: Docker@2
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Push NestJS API Docker image
+    inputs:
+      command: push
+      repository: $(DOCKER_REPOSITORY)
+      containerRegistry: $(CONTAINER_REGISTRY_CONN)
+      tags: |
+        $(Build.BuildId)
+        latest
+
+  - script: npm run -- typeorm migration:run
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Run database migrations
+    env:
+      TYPEORM_PASSWORD: $(TYPEORM_PASSWORD__SECRET)
+
+  - task: AzureRmWebAppDeployment@4
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Deploy latest Docker image to the App Service
+    inputs:
+      ConnectionType: AzureRM
+      azureSubscription: $(RESOURCE_MANAGER_CONN)
+      appType: webAppContainer
+      WebAppName: $(APP_SERVICE_NAME)
+      DockerNamespace: $(CONTAINER_REGISTRY_SERVER)
+      DockerRepository: $(DOCKER_REPOSITORY)
+      DockerImageTag: latest
+      StartupCommand: $(APP_STARTUP_CMD)
+
+  - task: AzureAppServiceManage@0
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Restart app service to use latest Docker image
+    inputs:
+      azureSubscription: $(RESOURCE_MANAGER_CONN)
+      Action: 'Restart Azure App Service'
+      WebAppName: $(APP_SERVICE_NAME)

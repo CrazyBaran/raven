@@ -1,0 +1,33 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - stage
+  paths:
+    include:
+      - ops/client
+      - apps/raven-client
+
+pr:
+  branches:
+    include:
+      - stage
+  paths:
+    include:
+      - apps/raven-client
+
+pool:
+  vmImage: ubuntu-22.04
+
+variables:
+  RESOURCE_MANAGER_CONN: rm-mub-raven-stage
+  RESOURCE_GROUP: rg-mub-raven-stage
+  FRONT_CONFIGURATION: staging
+  FRONT_CDN_STORAGE_ACCOUNT_NAME: stmubravenstagecdn
+  FRONT_CDN_ENDPOINT_NAME: mub-raven-stage
+  FRONT_CDN_PROFILE_NAME: cdn-mub-raven-stage
+  PUBLICLY_AVAILABLE: true
+  SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/stage')]
+
+steps:
+  - template: tpl/steps.template.yml

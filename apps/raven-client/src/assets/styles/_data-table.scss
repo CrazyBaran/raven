@@ -1,0 +1,74 @@
+.data-table {
+  @apply w-full text-sm;
+
+  &--collapse {
+    tbody {
+      tr {
+        @apply cursor-pointer;
+
+        &:hover {
+          @apply bg-primary-100 transition duration-300;
+        }
+
+        &.nested {
+          @apply bg-primary-100 h-10 cursor-auto;
+
+          &--item {
+            &:hover {
+              @apply bg-primary-200 transition duration-300;
+            }
+          }
+
+          td {
+            @apply border-none;
+          }
+        }
+
+        td {
+          &.open {
+            @apply bg-primary-200 border-primary-200;
+          }
+        }
+      }
+    }
+  }
+
+  thead {
+    tr {
+      @apply h-8;
+      th {
+        @apply border-grey-300 border-b border-solid px-2 text-left;
+
+        &:first-of-type {
+          @apply pl-4;
+        }
+
+        &:last-of-type {
+          @apply pr-4;
+        }
+      }
+    }
+  }
+
+  tr {
+    @apply h-12;
+
+    td {
+      @apply border-grey-300 border-b border-solid px-2 transition duration-300;
+
+      &:first-of-type {
+        @apply pl-4;
+      }
+
+      &:last-of-type {
+        @apply pr-4;
+      }
+    }
+
+    &:last-child {
+      td {
+        @apply border-b-0;
+      }
+    }
+  }
+}

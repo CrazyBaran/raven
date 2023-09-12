@@ -1,0 +1,57 @@
+:host {
+  @apply grid h-full w-full;
+}
+
+.upload-file {
+  @apply relative grid h-full w-full place-items-center rounded-md transition duration-300;
+
+  &__title {
+    @apply text-secondary-500 mb-6 text-3xl;
+  }
+
+  &__content {
+    @apply grid justify-items-center;
+  }
+
+  &__error {
+    @apply text-error mb-6;
+  }
+
+  &__info {
+    @apply text-secondary-500 mb-6 text-center text-lg font-normal;
+  }
+
+  &__input {
+    @apply absolute left-0 top-0 h-full w-full cursor-pointer opacity-0;
+
+    &--hidden {
+      @apply invisible;
+    }
+
+    z-index: 2;
+  }
+
+  &__icon {
+    @apply text-secondary-500 mb-6 text-6xl;
+  }
+
+  .list {
+    @apply mt-12 grid gap-6;
+
+    &__item {
+      @apply text-secondary-500 grid items-center gap-4 text-sm;
+
+      grid-template-columns: 1.875rem 1fr;
+
+      i {
+        @apply text-4xl;
+      }
+
+      > div {
+        span {
+          @apply text-secondary-300 text-sm italic;
+        }
+      }
+    }
+  }
+}

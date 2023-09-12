@@ -1,0 +1,33 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - prod
+  paths:
+    include:
+      - ops/api
+      - apps/raven-api
+
+pr:
+  branches:
+    include:
+      - prod
+  paths:
+    include:
+      - apps/raven-api
+
+pool: Raven - Prod
+
+variables:
+  APP_SERVICE_NAME: as-wa-mub-raven-api-prod
+  APP_STARTUP_CMD: 'node /app/main.js'
+  RESOURCE_MANAGER_CONN: rm-mub-raven-prod
+  CONTAINER_REGISTRY_CONN: acr-mub-raven-prod
+  CONTAINER_REGISTRY_SERVER: acrmubravenprod.azurecr.io
+  DOCKER_REPOSITORY: wa/api
+  SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/prod')]
+  # workaround for Azure docker job warnings when new version of Docker is used in the self-hosted agent
+  DOCKER_BUILDKIT: 1
+
+steps:
+  - template: tpl/steps.template.yml

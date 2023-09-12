@@ -1,0 +1,110 @@
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: 18.x
+    displayName: Install Node.js
+
+  - script: sudo apt-get install -y gcc g++ make
+    displayName: Install development tools to build native addons and libs
+
+  - script: npm install -g npm
+    displayName: Updated NPM to latest version
+
+  - script: npm install
+    displayName: Install NPM dependencies
+    env:
+      NPM_TASKFORCESH_TOKEN: $(NPM_TASKFORCESH_TOKEN__SECRET)
+
+  - script: npm run -- nx run raven-client:test --code-coverage
+    displayName: Run unit tests
+
+  - task: PublishTestResults@2
+    displayName: Publish unit tests results
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: $(Build.Repository.LocalPath)/test_reports/junit-*.xml
+      mergeTestResults: true
+
+  - task: PublishCodeCoverageResults@1
+    condition: and(succeeded(), eq(variables.SKIP_PUBLISH_CODE_COVERAGE, false))
+    displayName: Publish unit tests coverage results
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: $(Build.Repository.LocalPath)/coverage/apps/raven-client/cobertura-coverage.xml
+
+  - script: npm run -- nx build raven-client --configuration $(FRONT_CONFIGURATION)
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Build Angular client app
+
+  # Blame start: https://github.com/MicrosoftDocs/azure-docs/issues/19456
+  - task: AzureCLI@1
+    condition: and(succeeded(), and(eq(variables.PUBLICLY_AVAILABLE, false), eq(variables.SHOULD_DEPLOY, true)))
+    displayName: Open storage account firewall for the deployment
+    inputs:
+      azureSubscription: $(RESOURCE_MANAGER_CONN)
+      scriptLocation: inlineScript
+      inlineScript: |
+        az storage account update \
+          --name $(FRONT_CDN_STORAGE_ACCOUNT_NAME) \
+          --resource-group $(RESOURCE_GROUP) \
+          --default-action Allow
+
+  - task: PowerShell@2
+    condition: and(succeeded(), and(eq(variables.PUBLICLY_AVAILABLE, false), eq(variables.SHOULD_DEPLOY, true)))
+    displayName: Rvnt for the storage account firewall being updated
+    inputs:
+      targetType: inline
+      script: Start-Sleep -Seconds 30
+
+  - task: AzureCLI@1
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Deploy static Angular client app to the CDN
+    inputs:
+      azureSubscription: $(RESOURCE_MANAGER_CONN)
+      scriptLocation: inlineScript
+      inlineScript: |
+        az storage blob upload-batch \
+          --destination \$web \
+          --account-name $(FRONT_CDN_STORAGE_ACCOUNT_NAME) \
+          --source "$(Build.Repository.LocalPath)/dist/apps/raven-client" \
+          --overwrite
+
+  - task: AzureCLI@1
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Remove old Angular client app from the CDN
+    inputs:
+      azureSubscription: $(RESOURCE_MANAGER_CONN)
+      scriptLocation: inlineScript
+      inlineScript: |
+        date=`date -d "30 days ago" '+%Y-%m-%dT%H:%MZ'` &&
+        az storage blob delete-batch \
+          --source \$web \
+          --account-name $(FRONT_CDN_STORAGE_ACCOUNT_NAME) \
+          --if-unmodified-since $date
+
+  - task: AzureCLI@1
+    condition: and(succeeded(), and(eq(variables.PUBLICLY_AVAILABLE, false), eq(variables.SHOULD_DEPLOY, true)))
+    displayName: Restore storage account firewall after deployment
+    inputs:
+      azureSubscription: $(RESOURCE_MANAGER_CONN)
+      scriptLocation: inlineScript
+      inlineScript: |
+        az storage account update \
+          --name $(FRONT_CDN_STORAGE_ACCOUNT_NAME) \
+          --resource-group $(RESOURCE_GROUP) \
+          --default-action Deny
+  # Blame end: https://github.com/MicrosoftDocs/azure-docs/issues/19456
+
+  - task: AzureCLI@1
+    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
+    displayName: Purge Angular client app CDN cache
+    inputs:
+      azureSubscription: $(RESOURCE_MANAGER_CONN)
+      scriptLocation: inlineScript
+      inlineScript: |
+        az cdn endpoint purge \
+          --name $(FRONT_CDN_ENDPOINT_NAME) \
+          --resource-group $(RESOURCE_GROUP) \
+          --profile-name $(FRONT_CDN_PROFILE_NAME) \
+          --content-paths "/*" \
+          --no-wait

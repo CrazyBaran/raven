@@ -1,0 +1,78 @@
+{
+  "name": "raven-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/raven-api/src",
+  "projectType": "application",
+  "prefix": "api",
+  "generators": {},
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/raven-api",
+        "main": "apps/raven-api/src/main.ts",
+        "tsConfig": "apps/raven-api/tsconfig.app.json",
+        "assets": ["apps/raven-api/src/assets"],
+        "webpackConfig": "apps/raven-api/webpack.config.js",
+        "isolatedConfig": true,
+        "babelUpwardRootMode": true
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "generatePackageJson": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/raven-api/src/environments/environment.ts",
+              "with": "apps/raven-api/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "options": {
+        "buildTarget": "raven-api:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "raven-api:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/raven-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/raven-api/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "compodoc": {
+      "executor": "@twittwer/compodoc:compodoc",
+      "options": {
+        "tsConfig": "apps/raven-api/tsconfig.app.json",
+        "outputPath": "dist/compodoc/raven-api"
+      },
+      "configurations": {
+        "json": {
+          "exportFormat": "json"
+        }
+      }
+    }
+  }
+}

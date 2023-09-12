@@ -1,0 +1,15 @@
+# Add files here to ignore them from prettier formatting
+
+/dist
+/coverage
+/node_modules
+/tmp
+/.vscode
+/.idea
+/.git
+
+# Ignore specified files
+/apps/raven-api/orm-data-source.cli.ts
+/apps/raven-api/src/main.ts
+
+.angular

@@ -1,0 +1,13 @@
+.button-underline {
+  @apply text-secondary-500 relative flex h-[2.5rem] items-center justify-center gap-2 overflow-hidden border-b-2 border-solid px-4 text-base transition duration-300;
+
+  border-color: transparent;
+
+  &:hover {
+    @apply text-primary-500 border-primary-500;
+  }
+
+  &--active {
+    @apply text-primary-500 border-primary-500;
+  }
+}

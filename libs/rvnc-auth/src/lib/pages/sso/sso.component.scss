@@ -1,0 +1,17 @@
+.email-validation {
+  &__title {
+    @apply mb-2 text-center text-xl;
+  }
+
+  &__info {
+    @apply mb-8 text-center text-sm;
+  }
+
+  &__error {
+    @apply bg-error mb-8 rounded-md px-6 py-3 text-sm text-white;
+  }
+
+  &__actions {
+    @apply flex justify-end;
+  }
+}
