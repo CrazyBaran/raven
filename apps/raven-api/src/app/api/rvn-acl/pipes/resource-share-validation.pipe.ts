@@ -8,7 +8,7 @@ import { ForbiddenException, Injectable, PipeTransform } from '@nestjs/common';
 
 @Injectable()
 export class ResourceShareValidationPipe<
-    T extends ObjectLiteral = ObjectLiteral
+    T extends ObjectLiteral = ObjectLiteral,
   >
   extends ShareValidationPipe
   implements PipeTransform<T | T[], Promise<T | T[]>>
@@ -33,7 +33,7 @@ export class ResourceShareValidationPipe<
   protected getResId(entity: T): number {
     if (!resourceConfig[entity.constructor.name]) {
       throw new ForbiddenException(
-        'Given resource is missing in the mapping, please update config'
+        'Given resource is missing in the mapping, please update config',
       );
     }
     return _.get(entity, resourceConfig[entity.constructor.name].idPath);

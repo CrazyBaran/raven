@@ -28,6 +28,7 @@ import { AppComponent } from './app.component';
 import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
 import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
+import { LoginComponent } from './pages/login/login.component';
 
 const protectedResourceMap = new Map<string, Array<string>>();
 
@@ -38,6 +39,7 @@ const protectedResourceMap = new Map<string, Array<string>>();
     MainContainerComponent,
     AccessDeniedPageComponent,
     BadGatewayComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

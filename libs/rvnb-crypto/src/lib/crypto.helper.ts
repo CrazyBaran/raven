@@ -9,14 +9,14 @@ export class CryptoHelper {
 
   public constructor(
     @Inject('CRYPTO_MODULE_OPTIONS')
-    private readonly options: CryptoModuleOptions
+    private readonly options: CryptoModuleOptions,
   ) {}
 
   public async encrypt(text: string): Promise<string> {
     const cipher = crypto.createCipheriv(
       this.algorithm,
       this.options.key,
-      this.options.initVector
+      this.options.initVector,
     );
     let enc = cipher.update(text, 'utf8', 'hex');
     enc += cipher.final('hex');
@@ -27,7 +27,7 @@ export class CryptoHelper {
     const decipher = crypto.createDecipheriv(
       this.algorithm,
       this.options.key,
-      this.options.initVector
+      this.options.initVector,
     );
     let dec = decipher.update(text, 'hex', 'utf8');
     dec += decipher.final('utf8');

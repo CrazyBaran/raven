@@ -21,13 +21,13 @@ export class UsersSessionsService {
   public constructor(
     @InjectRepository(UserSessionEntity)
     private readonly sessionsRepository: Repository<UserSessionEntity>,
-    private readonly cryptoHelper: CryptoHelper
+    private readonly cryptoHelper: CryptoHelper,
   ) {}
 
   public async lookup(
     req: ExpressRequest,
     user: UserData,
-    decrypt = false
+    decrypt = false,
   ): Promise<UserSessionEntity | null> {
     const session = await this.sessionsRepository.findOneBy({
       userId: user.id,
@@ -45,7 +45,7 @@ export class UsersSessionsService {
   public async register(
     req: ExpressRequest,
     user: UserData,
-    options: RegisterOptions
+    options: RegisterOptions,
   ): Promise<UserSessionEntity | null> {
     const session = new UserSessionEntity();
     session.user = { id: user.id } as UserEntity;
@@ -62,7 +62,7 @@ export class UsersSessionsService {
   public async registerUse(
     req: ExpressRequest,
     user: UserData,
-    refresh: string
+    refresh: string,
   ): Promise<void> {
     await this.sessionsRepository.update(
       { userId: user.id, refresh: await this.cryptoHelper.encrypt(refresh) },
@@ -70,12 +70,12 @@ export class UsersSessionsService {
         lastUseDate: new Date(),
         lastUseIp: requestIp.getClientIp(req) || '',
         lastUseAgent: req.headers['user-agent'] || '',
-      }
+      },
     );
   }
 
   public async getByRefresh(
-    refresh: string
+    refresh: string,
   ): Promise<UserSessionEntity | null> {
     return this.sessionsRepository.findOneBy({
       refresh: await this.cryptoHelper.encrypt(refresh),
@@ -85,7 +85,7 @@ export class UsersSessionsService {
   public async invalidateAllSessions(user: UserEntity): Promise<void> {
     await this.sessionsRepository.update(
       { userId: user.id },
-      { invalidated: true }
+      { invalidated: true },
     );
   }
 

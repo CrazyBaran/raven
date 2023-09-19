@@ -31,8 +31,8 @@ export abstract class AbstractSimpleQueueProcessor<JobData> extends WorkerHost {
   public async onCompleted(job: Job<JobData>, result: unknown): Promise<void> {
     this.logger.debug(
       `Queue [${job.name}][${job.id}] completed, result: "${JSON.stringify(
-        result
-      )}"`
+        result,
+      )}"`,
     );
     try {
       await job.updateProgress(100);
@@ -44,14 +44,14 @@ export abstract class AbstractSimpleQueueProcessor<JobData> extends WorkerHost {
   @OnWorkerEvent('failed')
   public onFailed(job: Job<JobData>, err: Error): void {
     this.logger.debug(
-      `Queue [${job.name}][${job.id}] failed, error: "${JSON.stringify(err)}"`
+      `Queue [${job.name}][${job.id}] failed, error: "${JSON.stringify(err)}"`,
     );
   }
 
   @OnWorkerEvent('error')
   public onError(err: Error): void {
     this.logger.error(
-      `Queue thrown unhandled exception, error: "${JSON.stringify(err)}"`
+      `Queue thrown unhandled exception, error: "${JSON.stringify(err)}"`,
     );
   }
 }

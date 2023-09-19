@@ -19,7 +19,7 @@ export class TransformInterceptor<T>
 {
   public intercept(
     context: ExecutionContext,
-    next: CallHandler
+    next: CallHandler,
   ): Observable<GenericResponse<T> | StreamableFile> {
     const response = context.switchToHttp().getResponse();
     const { statusCode } = response;
@@ -38,7 +38,7 @@ export class TransformInterceptor<T>
         }
 
         return returnData;
-      })
+      }),
     );
   }
 }

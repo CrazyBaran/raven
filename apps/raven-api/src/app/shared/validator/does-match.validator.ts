@@ -10,7 +10,7 @@ import {
 export const DoesMatch = <T>(
   type: ClassConstructor<T>,
   property: (o: T) => unknown,
-  validationOptions?: ValidationOptions
+  validationOptions?: ValidationOptions,
 ) => {
   return (object: unknown, propertyName: string): void => {
     registerDecorator({

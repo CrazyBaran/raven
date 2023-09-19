@@ -12,13 +12,13 @@ export class AuthorizationService {
   public async authorize(
     user: UserData | JwtPayload,
     action: ShareAction,
-    resourceId: string
+    resourceId: string,
   ): Promise<void> {
     const ability = await this.abilityFactory.createForUser(user);
     const authorized = ability.can(
       action,
       resourceId.charAt(0),
-      resourceId.substring(2)
+      resourceId.substring(2),
     );
 
     if (!authorized) {

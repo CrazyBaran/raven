@@ -28,7 +28,7 @@ describe('CommSendEmailProcessor', () => {
     }).compile();
 
     processor = await module.resolve<CommSendEmailProcessor>(
-      CommSendEmailProcessor
+      CommSendEmailProcessor,
     );
   });
 

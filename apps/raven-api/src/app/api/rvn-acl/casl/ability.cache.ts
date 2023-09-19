@@ -9,12 +9,12 @@ import { Inject, Injectable } from '@nestjs/common';
 @Injectable()
 export class AbilityCache {
   public constructor(
-    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   public async set(
     userId: string,
-    rules: SubjectRawRule<ShareAction, string, unknown>[]
+    rules: SubjectRawRule<ShareAction, string, unknown>[],
   ): Promise<void> {
     if (environment.security.acl.cache.enabled) {
       const cacheKey = environment.security.acl.cache.redis.cacheKey;
@@ -23,7 +23,7 @@ export class AbilityCache {
   }
 
   public async get(
-    userId: string
+    userId: string,
   ): Promise<SubjectRawRule<ShareAction, SubjectType & string, MongoQuery>[]> {
     if (environment.security.acl.cache.enabled) {
       const cacheKey = environment.security.acl.cache.redis.cacheKey;

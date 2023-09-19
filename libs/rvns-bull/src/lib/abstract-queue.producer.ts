@@ -13,7 +13,7 @@ export abstract class AbstractQueueProducer extends AbstractSimpleQueueProducer 
   protected async addInternal(
     name: string,
     data: unknown,
-    opts?: QueueProducerAddOptions
+    opts?: QueueProducerAddOptions,
   ): Promise<JobPro> {
     const job = await super.addInternal(name, data, opts);
     this.eventPublisher.emit(job, 'added');

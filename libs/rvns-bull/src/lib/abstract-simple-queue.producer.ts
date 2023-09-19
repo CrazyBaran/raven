@@ -15,7 +15,7 @@ export abstract class AbstractSimpleQueueProducer {
   public async add<T = unknown>(
     name: string,
     data: T,
-    opts?: QueueProducerAddOptions
+    opts?: QueueProducerAddOptions,
   ): Promise<JobPro | undefined> {
     if (this.optimize) {
       const jobs = await this.queue.getJobs(['waiting']);
@@ -31,7 +31,7 @@ export abstract class AbstractSimpleQueueProducer {
   protected async addInternal(
     name: string,
     data: unknown,
-    opts?: QueueProducerAddOptions
+    opts?: QueueProducerAddOptions,
   ): Promise<JobPro> {
     if (opts.forceAdd && opts.jobId) {
       await this.queue.remove(opts.jobId);

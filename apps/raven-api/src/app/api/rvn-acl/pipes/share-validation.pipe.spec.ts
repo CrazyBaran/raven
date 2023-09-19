@@ -53,7 +53,7 @@ describe('ShareValidationPipe', () => {
         1,
         user,
         ShareAction.View,
-        'p-1'
+        'p-1',
       );
     });
 
@@ -71,7 +71,7 @@ describe('ShareValidationPipe', () => {
         1,
         user,
         ShareAction.View,
-        'p-1'
+        'p-1',
       );
     });
   });

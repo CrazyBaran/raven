@@ -14,7 +14,7 @@ interface PolicyHandler {
 
 type PolicyHandlerCallback = (
   ability: ShareAbility,
-  context: PolicyRequestContext
+  context: PolicyRequestContext,
 ) => boolean;
 
 export type SharePolicyHandler = PolicyHandler | PolicyHandlerCallback;

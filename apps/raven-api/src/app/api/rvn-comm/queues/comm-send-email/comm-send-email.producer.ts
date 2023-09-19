@@ -16,14 +16,14 @@ export class CommSendEmailProducer extends AbstractSimpleQueueProducer {
   public constructor(
     @InjectQueue(COMM_SEND_EMAIL_QUEUE)
     protected readonly queue: Queue<CommSendEmailJobData>,
-    protected readonly cryptoHelper: CryptoHelper
+    protected readonly cryptoHelper: CryptoHelper,
   ) {
     super();
   }
 
   @OnEvent(`ms.bg.enqueue.${COMM_SEND_EMAIL_QUEUE__SEND}`)
   protected async process(
-    event: EnqueueJobEvent<CommSendEmailJobData>
+    event: EnqueueJobEvent<CommSendEmailJobData>,
   ): Promise<void> {
     await this.add<CommSendEmailJobData<string>>(
       COMM_SEND_EMAIL_QUEUE__SEND,
@@ -34,12 +34,12 @@ export class CommSendEmailProducer extends AbstractSimpleQueueProducer {
           // encrypt sensitive args
           encrypted: event.data.templateArgs.encrypted
             ? await this.cryptoHelper.encrypt(
-                JSON.stringify(event.data.templateArgs.encrypted)
+                JSON.stringify(event.data.templateArgs.encrypted),
               )
             : undefined,
         },
       },
-      event.options
+      event.options,
     );
   }
 }

@@ -9,7 +9,7 @@ export class ParseCompositePrimaryKeyPipe
   implements PipeTransform<string, Record<string, string>>
 {
   public constructor(
-    private readonly options: ParseCompositePrimaryKeyPipeOptions = {}
+    private readonly options: ParseCompositePrimaryKeyPipeOptions = {},
   ) {
     if (this.options.separator === undefined) {
       this.options.separator = '-';
@@ -31,7 +31,7 @@ export class ParseCompositePrimaryKeyPipe
     }
     return parts.reduce(
       (p, c, i) => ({ ...p, [this.options.mapping[i] ?? `${i}`]: c }),
-      {}
+      {},
     );
   }
 }

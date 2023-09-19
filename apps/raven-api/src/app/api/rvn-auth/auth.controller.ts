@@ -1,8 +1,9 @@
 import { AuthService } from './auth.service';
 import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
+@ApiOAuth2(['openid'])
 @Controller('auth')
 export class AuthController {
   public constructor(private readonly authService: AuthService) {}

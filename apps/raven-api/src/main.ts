@@ -22,9 +22,25 @@ async function bootstrap(): Promise<void> {
   });
   const globalPrefix = environment.app.apiPrefix;
   const bullBoardPath = "bg";
+  const swaggerPath = "swagger";
   app
     .setGlobalPrefix(globalPrefix)
-    .use(helmet({ frameguard: { action: "deny" } }))
+    .use(helmet({
+      frameguard: { action: "deny" },
+      crossOriginOpenerPolicy: {
+        policy: 'unsafe-none',
+      },
+      contentSecurityPolicy: {
+        directives: {
+          ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+          'script-src': [ '\'self\'', '\'sha256-4IiDsMH+GkJlxivIDNfi6qk0O5HPtzyvNwVT3Wt8TIw=\'' ],
+          'connect-src': [
+            '\'self\'',
+            `${environment.azureAd.authority}/oauth2/v2.0/token`,
+          ],
+        },
+      },
+    }))
     .use(bodyParser.json({ limit: "10mb" }))
     .use(cookieParser(environment.security.cookies.secret))
     .useGlobalPipes(
@@ -38,7 +54,7 @@ async function bootstrap(): Promise<void> {
 
   // enable services
   if (environment.app.enableSwagger) {
-    app.get<SwaggerService>(SwaggerService).enableSwagger(app, globalPrefix, version);
+    app.get<SwaggerService>(SwaggerService).enableSwagger(app, swaggerPath, version);
   }
   if (environment.bull.board.enable) {
     app.get<BullService>(BullService).enableBullBoard(app, bullBoardPath);
@@ -49,12 +65,12 @@ async function bootstrap(): Promise<void> {
   await app.listen(port, () => {
     Logger.log(
       [
-        `🚀 Raven API is running on: http://127.0.0.1:${port}`,
+        `🚀 Raven API is running on: http://localhost:${port}`,
         environment.app.enableSwagger
-          ? `, swagger: http://127.0.0.1:${port}/${globalPrefix}`
+          ? `, swagger: http://localhost:${port}/${swaggerPath}`
           : "",
         environment.bull.board.enable
-          ? `, bull: http://127.0.0.1:${port}/${bullBoardPath}`
+          ? `, bull: http://localhost:${port}/${bullBoardPath}`
           : ""
       ].join("")
     );

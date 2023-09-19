@@ -30,13 +30,13 @@ export class CommSendEmailProcessor extends AbstractSimpleQueueProcessor<CommSen
   public constructor(
     protected readonly commService: CommService,
     protected readonly cryptoHelper: CryptoHelper,
-    protected readonly logger: CommSendEmailProcessorLogger
+    protected readonly logger: CommSendEmailProcessorLogger,
   ) {
     super(logger);
   }
 
   public async process(
-    job: Job<CommSendEmailJobData<string>>
+    job: Job<CommSendEmailJobData<string>>,
   ): Promise<boolean> {
     // prepare template args
     const templateArgs = {
@@ -44,7 +44,7 @@ export class CommSendEmailProcessor extends AbstractSimpleQueueProcessor<CommSen
       // decrypt sensitive args
       ...(job.data.templateArgs.encrypted
         ? JSON.parse(
-            await this.cryptoHelper.decrypt(job.data.templateArgs.encrypted)
+            await this.cryptoHelper.decrypt(job.data.templateArgs.encrypted),
           )
         : {}),
     };

@@ -30,7 +30,7 @@ describe('AuthorizationService', () => {
     service = module.get<AuthorizationService>(AuthorizationService);
     abilityFactory = module.get<AbilityFactory>(AbilityFactory);
     userMock = jest.genMockFromModule<UserEntity>(
-      '../rvn-users/entities/user.entity'
+      '../rvn-users/entities/user.entity',
     );
     userMock.id = 'uuid-u';
   });
@@ -48,7 +48,7 @@ describe('AuthorizationService', () => {
       // Act
       // Assert
       await expect(
-        service.authorize(userMock as unknown as UserData, action, resource)
+        service.authorize(userMock as unknown as UserData, action, resource),
       ).resolves.not.toThrow();
     });
 
@@ -63,9 +63,9 @@ describe('AuthorizationService', () => {
       // Act
       // Assert
       await expect(() =>
-        service.authorize(userMock as unknown as UserData, action, resource)
+        service.authorize(userMock as unknown as UserData, action, resource),
       ).rejects.toThrow(
-        new ForbiddenException("You don't have sufficient permissions")
+        new ForbiddenException("You don't have sufficient permissions"),
       );
     });
   });

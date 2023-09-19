@@ -94,7 +94,6 @@ steps:
           --resource-group $(RESOURCE_GROUP) \
           --default-action Deny
   # Blame end: https://github.com/MicrosoftDocs/azure-docs/issues/19456
-
   - task: AzureCLI@1
     condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
     displayName: Purge Angular client app CDN cache

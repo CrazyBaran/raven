@@ -16,7 +16,7 @@ type Options = {
 export class HotKeysService {
   public hotkeys = new Map<string, string | unknown>();
   public hotkeys$ = new BehaviorSubject<{ key: string; description: string }[]>(
-    []
+    [],
   );
 
   public defaults: Partial<Options> = {
@@ -25,7 +25,7 @@ export class HotKeysService {
 
   public constructor(
     private eventManager: EventManager,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
   ) {}
 
   public addHotkey(options: Partial<Options>): Observable<unknown> {
@@ -46,7 +46,7 @@ export class HotKeysService {
       const dispose = this.eventManager.addEventListener(
         merged.element as HTMLElement,
         event,
-        handler
+        handler,
       );
 
       return () => {
@@ -62,7 +62,7 @@ export class HotKeysService {
       ([key, description]) => ({
         key: key,
         description: description as string,
-      })
+      }),
     );
 
     this.hotkeys$.next(hotkeysArr);

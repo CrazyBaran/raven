@@ -176,5 +176,7 @@ export const environment = {
     clientId: env.get('AD_CLIENT_ID').asString(),
     issuer: env.get('AD_ISSUER').asString(),
     audience: env.get('AD_AUDIENCE').asString(),
+    authority: env.get('AD_AUTHORITY').asString(),
+    redirectUri: env.get('AD_REDIRECT_URI').asString(),
   },
 };

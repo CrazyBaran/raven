@@ -39,7 +39,7 @@ describe('HttpCacheInterceptor', () => {
       expect(responseMock.set).toHaveBeenNthCalledWith(
         1,
         'Cache-Control',
-        'no-cache, no-store, must-revalidate'
+        'no-cache, no-store, must-revalidate',
       );
       expect(responseMock.set).toHaveBeenCalledTimes(1);
       expect(callHandleMock.handle).toHaveBeenCalledTimes(1);

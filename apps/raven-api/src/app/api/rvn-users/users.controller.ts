@@ -42,6 +42,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOAuth2,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -56,7 +57,7 @@ export class UsersController {
     private readonly authService: AuthorizationService,
   ) {}
 
-  @ApiBearerAuth()
+  @ApiOAuth2(['openid'])
   @ApiOperation({ description: 'List users' })
   @ApiResponse(GenericResponseSchema())
   @Get()
@@ -75,7 +76,7 @@ export class UsersController {
     );
   }
 
-  @ApiBearerAuth()
+  @ApiOAuth2(['openid'])
   @ApiOperation({ description: 'Create user' })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()

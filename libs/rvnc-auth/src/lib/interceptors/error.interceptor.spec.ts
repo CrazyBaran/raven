@@ -19,7 +19,7 @@ describe('ErrorInterceptor', () => {
         provideMockStore({}),
       ],
       imports: [RouterTestingModule, HttpClientModule],
-    })
+    }),
   );
 
   it('should be created', () => {

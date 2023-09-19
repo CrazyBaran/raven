@@ -37,14 +37,14 @@ import {
   Res,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
+  ApiOAuth2,
   ApiOperation,
   ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiBearerAuth()
+@ApiOAuth2(['openid'])
 @ApiTags('Acl')
 @Controller('acl')
 export class AclController {

@@ -11,7 +11,7 @@ import {
 export class HttpCacheInterceptor implements NestInterceptor {
   public intercept(
     context: ExecutionContext,
-    next: CallHandler
+    next: CallHandler,
   ): Observable<Response> {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();

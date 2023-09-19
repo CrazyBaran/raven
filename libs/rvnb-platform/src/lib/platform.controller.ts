@@ -6,9 +6,14 @@ import {
 
 import { PlatformService } from './platform.service';
 import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOAuth2,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
-@ApiBearerAuth()
+@ApiOAuth2(['openid'])
 @ApiTags('Platform')
 @Controller('platform')
 export class PlatformController {

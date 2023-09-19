@@ -22,7 +22,7 @@ describe('InvalidateSessionEventHandler', () => {
     }).compile();
 
     handler = module.get<InvalidateSessionEventHandler>(
-      InvalidateSessionEventHandler
+      InvalidateSessionEventHandler,
     );
   });
 

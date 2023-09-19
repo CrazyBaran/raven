@@ -13,12 +13,12 @@ export class ParseSharePipe
 
   public constructor(
     private readonly entityManager: EntityManager,
-    private readonly aclService: AclService
+    private readonly aclService: AclService,
   ) {}
 
   public async transform(
     shareId: string,
-    metadata: ArgumentMetadata
+    metadata: ArgumentMetadata,
   ): Promise<AbstractShareEntity> {
     if (shareId) {
       const parsedId = this.aclService.parseCompoundId(shareId);
@@ -27,17 +27,17 @@ export class ParseSharePipe
         {
           where: { id: parsedId.id },
           relations: this.relations,
-        }
+        },
       );
       if (share) {
         return share;
       }
       throw new NotFoundException(
-        `Unable to find "share" with id: "${shareId}"`
+        `Unable to find "share" with id: "${shareId}"`,
       );
     }
     throw new NotFoundException(
-      `"${metadata.data}" should not be null or undefined`
+      `"${metadata.data}" should not be null or undefined`,
     );
   }
 }

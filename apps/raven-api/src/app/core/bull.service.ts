@@ -22,25 +22,25 @@ export class BullService {
   protected static queues: EnhancedBullModuleOptions[] = [];
 
   public static registerQueue(
-    options: EnhancedBullModuleOptions[]
+    options: EnhancedBullModuleOptions[],
   ): DynamicModule {
     options.forEach((option) => this.queues.push(option));
     return BullModule.registerQueue(
       ...options.map((q) => ({
         ...q,
         connection: environment.bull.config.connection,
-      }))
+      })),
     );
   }
 
   public static registerFlowProducer(
-    options: RegisterFlowProducerOptions[]
+    options: RegisterFlowProducerOptions[],
   ): DynamicModule {
     return BullModule.registerFlowProducer(
       ...options.map((fp) => ({
         ...fp,
         connection: environment.bull.config.connection,
-      }))
+      })),
     );
   }
 
@@ -53,7 +53,7 @@ export class BullService {
           new BullMQAdapter(app.get<Queue>(`BullQueue_${queue.name}`), {
             description: queue.description,
             readOnlyMode: environment.bull.board.readOnly,
-          })
+          }),
       ),
       serverAdapter,
     });
@@ -66,7 +66,7 @@ export class BullService {
               environment.bull.board.basicAuthPassword,
           },
           challenge: true,
-        })
+        }),
       );
     }
     app.use(`/${path}`, ...middlewares);

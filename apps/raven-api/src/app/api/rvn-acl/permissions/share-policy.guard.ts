@@ -15,14 +15,14 @@ import { Reflector } from '@nestjs/core';
 export class SharePolicyGuard implements CanActivate {
   public constructor(
     private readonly reflector: Reflector,
-    private readonly abilityFactory: AbilityFactory
+    private readonly abilityFactory: AbilityFactory,
   ) {}
 
   public async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const policyHandlers =
       this.reflector.get<SharePolicyHandler[]>(
         CHECK_SHARE_KEY,
-        ctx.getHandler()
+        ctx.getHandler(),
       ) || [];
 
     if (policyHandlers.length > 0) {
@@ -36,7 +36,7 @@ export class SharePolicyGuard implements CanActivate {
       const ability = await this.abilityFactory.createForUser(user);
 
       return policyHandlers.every((handler) =>
-        this.execPolicyHandler(handler, ability, requestContext)
+        this.execPolicyHandler(handler, ability, requestContext),
       );
     }
     // allow if no policies found
@@ -46,7 +46,7 @@ export class SharePolicyGuard implements CanActivate {
   protected execPolicyHandler(
     handler: SharePolicyHandler,
     ability: ShareAbility,
-    context: PolicyRequestContext
+    context: PolicyRequestContext,
   ): boolean {
     if (typeof handler === 'function') {
       return handler(ability, context);

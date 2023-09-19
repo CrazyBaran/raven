@@ -17,7 +17,7 @@ export class ParseUsersPipe
 
   public async transform(
     ids: string | string[],
-    metadata: ArgumentMetadata
+    metadata: ArgumentMetadata,
   ): Promise<UserEntity[]> {
     if (typeof ids === 'string') {
       ids = Array.of(ids);
@@ -25,7 +25,7 @@ export class ParseUsersPipe
     const users = await this.service.list({ ids });
     if (ids.length !== users.length) {
       throw new BadRequestException(
-        `"${metadata.data}" contains not existing user ids`
+        `"${metadata.data}" contains not existing user ids`,
       );
     }
     return users;

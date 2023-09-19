@@ -8,7 +8,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 export class InvalidateSessionEventHandler {
   public constructor(
     private readonly service: UsersSessionsService,
-    private readonly logger: InvalidateSessionEventHandlerLogger
+    private readonly logger: InvalidateSessionEventHandlerLogger,
   ) {}
 
   @OnEvent('user.invalidate-session.all')
@@ -17,7 +17,7 @@ export class InvalidateSessionEventHandler {
       await this.service.invalidateAllSessions(user);
     } catch (err) {
       this.logger.error(
-        `Exception occurred while invalidating user session, message: "${err.message}"`
+        `Exception occurred while invalidating user session, message: "${err.message}"`,
       );
     }
   }

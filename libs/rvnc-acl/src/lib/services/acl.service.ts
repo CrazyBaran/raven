@@ -13,7 +13,7 @@ export class AclService {
   public constructor(private http: HttpClient) {}
 
   public getSharesList(
-    resourceId: string
+    resourceId: string,
   ): Observable<GenericResponse<ShareData[]>> {
     return this.http.get<GenericResponse<ShareData[]>>('/api/acl', {
       params: {
@@ -25,7 +25,7 @@ export class AclService {
   public shareResource(
     role: string,
     resourceId: string,
-    actors: string[]
+    actors: string[],
   ): Observable<GenericResponse<ShareData>> {
     return this.http.post<GenericResponse<ShareData>>('/api/acl', {
       role,
@@ -35,10 +35,10 @@ export class AclService {
   }
 
   public removeShare(
-    resourceId: string
+    resourceId: string,
   ): Observable<GenericResponse<ShareData>> {
     return this.http.delete<GenericResponse<ShareData>>(
-      `/api/acl/${resourceId}`
+      `/api/acl/${resourceId}`,
     );
   }
 

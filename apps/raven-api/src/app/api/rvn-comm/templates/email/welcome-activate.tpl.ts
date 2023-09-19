@@ -19,8 +19,8 @@ export const html = (args: Record<string, string>): string => `
     <p>To activate your account, please click the button below:</p>
     <p>
       <a href="${args['ACTIVATE_LINK']}&t=${
-  args['ACTIVATE_TOKEN']
-}" style="display: inline-block; padding: 12px 24px; margin: 20px; background-color: #69c4b8; color: #ffffff; text-decoration: none; border-radius: 4px;">
+        args['ACTIVATE_TOKEN']
+      }" style="display: inline-block; padding: 12px 24px; margin: 20px; background-color: #69c4b8; color: #ffffff; text-decoration: none; border-radius: 4px;">
       Activate Account
       </a>
     </p>
@@ -34,7 +34,7 @@ export const html = (args: Record<string, string>): string => `
       If you have any questions or require further assistance, our team is here to help.
       Please don't hesitate to reach out to Seb at
       <a href="mailto:GPTsupport@curvestone.io?subject=${encodeURIComponent(
-        'Re: Welcome to the Platform! Activate Your Account and Start Your Journey'
+        'Re: Welcome to the Platform! Activate Your Account and Start Your Journey',
       )}" style="color: #69c4b8; text-decoration: none;">Ravensupport@curvestone.io</a>
     </p>
     <p>Best regards,</p>

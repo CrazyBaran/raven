@@ -11,12 +11,12 @@ export class ParseShareResourcePipe
 {
   public constructor(
     private readonly entityManager: EntityManager,
-    private readonly aclService: AclService
+    private readonly aclService: AclService,
   ) {}
 
   public async transform(
     resourceId: string,
-    metadata: ArgumentMetadata
+    metadata: ArgumentMetadata,
   ): Promise<ShareResource> {
     if (resourceId) {
       const parsedId = this.aclService.parseCompoundId(resourceId);
@@ -24,17 +24,17 @@ export class ParseShareResourcePipe
         parsedId.shareResourceEntityClass,
         {
           where: { id: parsedId.id },
-        }
+        },
       );
       if (resource) {
         return resource;
       }
       throw new NotFoundException(
-        `Unable to find "resource" with id: "${resourceId}"`
+        `Unable to find "resource" with id: "${resourceId}"`,
       );
     }
     throw new NotFoundException(
-      `"${metadata.data}" should not be null or undefined`
+      `"${metadata.data}" should not be null or undefined`,
     );
   }
 }

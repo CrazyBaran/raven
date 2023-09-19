@@ -10,7 +10,7 @@ export class ShareValidationPipe {
 
   public constructor(
     @Inject(REQUEST) protected readonly request,
-    private readonly authService: AuthorizationService
+    private readonly authService: AuthorizationService,
   ) {}
 
   public async validate(resource: string, action?: ShareAction): Promise<void> {

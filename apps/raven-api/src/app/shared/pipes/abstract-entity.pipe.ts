@@ -35,11 +35,11 @@ export abstract class AbstractEntityPipe<E>
         return entity;
       }
       throw new NotFoundException(
-        `Unable to find "${this.resource}" with id: "${id}"`
+        `Unable to find "${this.resource}" with id: "${id}"`,
       );
     }
     throw new NotFoundException(
-      `"${metadata.data}" should not be null or undefined`
+      `"${metadata.data}" should not be null or undefined`,
     );
   }
 }

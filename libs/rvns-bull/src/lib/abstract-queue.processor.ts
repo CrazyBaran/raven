@@ -14,13 +14,13 @@ export interface MsOutput<DataType = unknown[]> {
 type JobLogLevel = 'debug' | 'info' | 'warn' | 'error' | 'critical';
 
 export abstract class AbstractQueueProcessor<
-  JobData
+  JobData,
 > extends AbstractSimpleQueueProcessor<JobData> {
   protected omitResult = false;
 
   protected constructor(
     protected readonly eventPublisher: EventPublisher,
-    protected readonly logger: ConsoleLogger
+    protected readonly logger: ConsoleLogger,
   ) {
     super(logger);
   }
@@ -46,12 +46,12 @@ export abstract class AbstractQueueProcessor<
   protected async logJob(
     job: Job<JobData>,
     error: Error | string,
-    level: JobLogLevel = 'debug'
+    level: JobLogLevel = 'debug',
   ): Promise<void> {
     await job.log(
       `[Attempt #${job.attemptsMade}][${level}] ${
         (error as Error).message ? (error as Error).message : error
-      }`
+      }`,
     );
   }
 }

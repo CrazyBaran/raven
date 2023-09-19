@@ -25,7 +25,7 @@ export const environment = {
       .replace(/\/$/, ''),
     apiUrl: env
       .get('URL_API')
-      .default('http://127.0.0.1:3333/api')
+      .default('http://127.0.0.1:3333')
       .asString()
       .replace(/\/$/, ''),
     apiPrefix: env.get('API_PREFIX').default('api').asString(),
@@ -202,5 +202,10 @@ export const environment = {
     clientId: env.get('AD_CLIENT_ID').asString(),
     issuer: env.get('AD_ISSUER').asString(),
     audience: env.get('AD_AUDIENCE').asString(),
+    authority: env.get('AD_AUTHORITY').asString(),
+    redirectUri: env.get('AD_REDIRECT_URI').asString(),
+  },
+  scopes: {
+    apiAccess: env.get('SCOPES_API_ACCESS').asString(),
   },
 };

@@ -11,7 +11,7 @@ export class PlatformService {
     private readonly platformOptions: PlatformModuleOptions,
     @Optional()
     private readonly entityManager: EntityManager,
-    private readonly redis: Redis
+    private readonly redis: Redis,
   ) {}
 
   public async testDb(): Promise<boolean> {

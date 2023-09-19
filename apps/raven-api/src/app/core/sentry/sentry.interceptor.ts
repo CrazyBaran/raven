@@ -16,7 +16,7 @@ export class SentryInterceptor implements NestInterceptor {
 
   public intercept(
     context: ExecutionContext,
-    next: CallHandler
+    next: CallHandler,
   ): Observable<unknown> {
     // start a child span for performance tracing
     const span = this.sentryService.startChild({
@@ -29,7 +29,7 @@ export class SentryInterceptor implements NestInterceptor {
         // capture the error
         Sentry.captureException(
           error,
-          this.sentryService.span.getTraceContext()
+          this.sentryService.span.getTraceContext(),
         );
 
         // throw the error again
@@ -38,7 +38,7 @@ export class SentryInterceptor implements NestInterceptor {
       finalize(() => {
         span.finish();
         this.sentryService.span.finish();
-      })
+      }),
     );
   }
 }

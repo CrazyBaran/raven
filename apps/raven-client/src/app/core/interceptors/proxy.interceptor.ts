@@ -16,13 +16,13 @@ export class ProxyInterceptor implements HttpInterceptor {
 
   public intercept(
     request: HttpRequest<unknown>,
-    next: HttpHandler
+    next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
     const { url } = request;
 
     if (url.startsWith(this.API_CALL_PATTERN)) {
       const urlWithRemovedApiPattern = url.substring(
-        this.API_CALL_PATTERN.length
+        this.API_CALL_PATTERN.length,
       );
 
       request = request.clone({

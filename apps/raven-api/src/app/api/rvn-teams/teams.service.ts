@@ -35,7 +35,7 @@ interface UpdateOptions {
 export class TeamsService {
   public constructor(
     private readonly entityManager: EntityManager,
-    private readonly aclService: AclService
+    private readonly aclService: AclService,
   ) {}
 
   public async list(user: UserData, options?: ListOptions): Promise<TeamsData> {
@@ -62,14 +62,14 @@ export class TeamsService {
     return {
       total: totalAmount,
       items: await Promise.all(
-        teams.map((team) => this.entityToResponseData(team))
+        teams.map((team) => this.entityToResponseData(team)),
       ),
     };
   }
 
   public async create(
     name: string,
-    options?: CreateOptions
+    options?: CreateOptions,
   ): Promise<TeamEntity> {
     if (
       (await this.entityManager.findOne(TeamEntity, {
@@ -95,7 +95,7 @@ export class TeamsService {
 
   public async update(
     teamEntity: TeamEntity,
-    options: UpdateOptions
+    options: UpdateOptions,
   ): Promise<TeamEntity> {
     teamEntity.name = options.name;
     return this.entityManager.save(teamEntity);
@@ -109,7 +109,7 @@ export class TeamsService {
   }
 
   public async getTeamAdmins(
-    teamEntity: TeamEntity
+    teamEntity: TeamEntity,
   ): Promise<ShareTeamEntity[]> {
     return this.entityManager.find(ShareTeamEntity, {
       where: { resourceId: teamEntity.id, role: ShareRole.Owner },
@@ -128,7 +128,7 @@ export class TeamsService {
 
   protected async countMembers(teamId: string): Promise<number> {
     const shares = await this.aclService.getByResource(
-      `${ShareResourceCode.Team}-${teamId}`
+      `${ShareResourceCode.Team}-${teamId}`,
     );
     return shares.length;
   }

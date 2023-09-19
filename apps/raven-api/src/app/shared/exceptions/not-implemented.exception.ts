@@ -3,7 +3,7 @@ export class NotImplementedException extends Error {
     super(
       `Requested piece of functionality is not implemented yet${
         extra ? `: "${extra}"` : ''
-      }`
+      }`,
     );
   }
 }

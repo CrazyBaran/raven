@@ -28,14 +28,16 @@ import {
   Query,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
+  ApiOAuth2,
   ApiOperation,
   ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiBearerAuth()
+import { Scopes } from '../rvn-auth/scopes';
+
+@ApiOAuth2([Scopes.apiAccess()])
 @ApiTags('Teams')
 @Controller('teams')
 export class TeamsController {
@@ -47,7 +49,7 @@ export class TeamsController {
   @Roles(RoleEnum.SuperAdmin, RoleEnum.TeamAdmin)
   public async list(
     @Query() dto: ListTeamsDto,
-    @Identity() user: UserData
+    @Identity() user: UserData,
   ): Promise<TeamsData> {
     return this.teamsService.list(user, {
       skip: dto.skip,
@@ -64,7 +66,7 @@ export class TeamsController {
   @Roles(RoleEnum.SuperAdmin)
   public async single(
     @Param('id', ParseUUIDPipe, ParseTeamPipe)
-    teamEntity: TeamEntity
+    teamEntity: TeamEntity,
   ): Promise<TeamData> {
     return this.teamsService.entityToResponseData(teamEntity);
   }
@@ -76,7 +78,7 @@ export class TeamsController {
   public async create(@Body() dto: CreateTeamDto): Promise<TeamData> {
     try {
       return this.teamsService.entityToResponseData(
-        await this.teamsService.create(dto.name)
+        await this.teamsService.create(dto.name),
       );
     } catch (e) {
       if (e.message) {
@@ -99,10 +101,10 @@ export class TeamsController {
   public async update(
     @Param('id', ParseUUIDPipe, ParseTeamPipe)
     teamEntity: TeamEntity,
-    @Body() dto: UpdateTeamDto
+    @Body() dto: UpdateTeamDto,
   ): Promise<TeamData> {
     return this.teamsService.entityToResponseData(
-      await this.teamsService.update(teamEntity, dto)
+      await this.teamsService.update(teamEntity, dto),
     );
   }
 
@@ -113,7 +115,7 @@ export class TeamsController {
   @Roles(RoleEnum.SuperAdmin)
   public async remove(
     @Param('id', ParseUUIDPipe, ParseTeamPipe)
-    teamEntity: TeamEntity
+    teamEntity: TeamEntity,
   ): Promise<EmptyResponseData> {
     await this.teamsService.remove(teamEntity);
   }

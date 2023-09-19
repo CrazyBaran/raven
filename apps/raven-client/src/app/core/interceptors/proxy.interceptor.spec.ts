@@ -6,7 +6,7 @@ describe('ProxyInterceptor', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [ProxyInterceptor],
-    })
+    }),
   );
 
   it('should be created', () => {

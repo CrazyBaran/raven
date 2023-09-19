@@ -69,7 +69,7 @@ describe('AbstractEntityPipe', () => {
 
       // Act and Assert
       await expect(() => pipe.transform(id, metadata)).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
 
@@ -80,7 +80,7 @@ describe('AbstractEntityPipe', () => {
 
       // Act and Assert
       await expect(() => pipe.transform(id, metadata)).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
   });

@@ -43,7 +43,7 @@ describe('ParseCompositePrimaryKeyPipe', () => {
 
       // Act and Assert
       expect(() => pipe.transform(null)).toThrow(
-        new BadRequestException('Input value should be a string')
+        new BadRequestException('Input value should be a string'),
       );
     });
     it('should throw an exception if input value have only one part', async () => {
@@ -52,7 +52,7 @@ describe('ParseCompositePrimaryKeyPipe', () => {
 
       // Act and Assert
       expect(() => pipe.transform('23-')).toThrow(
-        new BadRequestException('Invalid composite primary key')
+        new BadRequestException('Invalid composite primary key'),
       );
     });
   });
