@@ -1,16 +1,12 @@
 import { Component } from '@angular/core';
 
-import { Store } from '@ngrx/store';
-
-import { LoaderService } from '../../core/services/loader.service';
-
 @Component({
   selector: 'app-home',
   templateUrl: './home-page.component.html',
+  styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent {
-  public constructor(
-    private readonly loaderService: LoaderService,
-    private readonly store: Store,
-  ) {}
+  public handleOpenDocumentationPage(): void {
+    window.open('https://www.telerik.com/kendo-angular-ui', '_blank');
+  }
 }

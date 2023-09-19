@@ -19,7 +19,10 @@
           "apps/raven-client/src/favicon.ico",
           "apps/raven-client/src/assets"
         ],
-        "styles": ["apps/raven-client/src/styles.scss"],
+        "styles": [
+          "node_modules/@progress/kendo-theme-default/dist/all.css",
+          "apps/raven-client/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {

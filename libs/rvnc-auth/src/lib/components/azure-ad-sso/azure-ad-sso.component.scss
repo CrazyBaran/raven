@@ -1,0 +1,31 @@
+.azure-ad-sso {
+  @apply bg-secondary-600 flex h-screen w-screen flex-col items-center justify-center;
+
+  &__intro {
+    @apply text-center;
+
+    h1 {
+      @apply leading-none tracking-widest text-white;
+    }
+
+    h2 {
+      @apply text-primary-500 mb-10 tracking-widest;
+    }
+  }
+
+  &__actions {
+    @apply flex w-56 flex-col gap-3;
+
+    button {
+      @apply flex h-10 w-full items-center justify-center rounded-md duration-300;
+
+      &.primary {
+        @apply bg-primary-500 hover:bg-primary-700 text-white;
+      }
+
+      &.secondary {
+        @apply text-primary-500 hover:bg-grey-100 bg-white;
+      }
+    }
+  }
+}

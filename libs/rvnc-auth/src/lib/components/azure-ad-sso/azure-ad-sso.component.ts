@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import { filter, Subject, takeUntil } from 'rxjs';
 import { EventMessage, EventType } from '@azure/msal-browser';
+import { Subject, filter, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'auth-azure-ad-sso',
