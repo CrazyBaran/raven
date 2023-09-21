@@ -20,7 +20,7 @@ pool:
   vmImage: ubuntu-22.04
 
 variables:
-  APP_SERVICE_NAME: as-wa-mub-raven-dev
+  APP_SERVICE_NAME: as-wa-mc-raven-dev
   APP_STARTUP_CMD: 'node /app/main.js'
   RESOURCE_MANAGER_CONN: rm-mub-raven-dev
   CONTAINER_REGISTRY_CONN: cruksmcravendev
