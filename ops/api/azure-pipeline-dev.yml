@@ -23,8 +23,8 @@ variables:
   APP_SERVICE_NAME: as-wa-mub-raven-dev
   APP_STARTUP_CMD: 'node /app/main.js'
   RESOURCE_MANAGER_CONN: rm-mub-raven-dev
-  CONTAINER_REGISTRY_CONN: acr-mub-raven-dev
-  CONTAINER_REGISTRY_SERVER: acrmubravendev.azurecr.io
+  CONTAINER_REGISTRY_CONN: cruksmcravendev
+  CONTAINER_REGISTRY_SERVER: cruksmcravendev.azurecr.io
   DOCKER_REPOSITORY: wa/api
   SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   # workaround for Azure docker job warnings when new version of Docker is used in the self-hosted agent
