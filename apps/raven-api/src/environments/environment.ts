@@ -200,7 +200,6 @@ export const environment = {
   azureAd: {
     identityMetadata: env.get('AD_IDENTITY_METADATA').asString(),
     clientId: env.get('AD_CLIENT_ID').asString(),
-    swaggerClientId: env.get('AD_SWAGGER_CLIENT_ID').asString(),
     issuer: env.get('AD_ISSUER').asString(),
     audience: env.get('AD_AUDIENCE').asString(),
     authority: env.get('AD_AUTHORITY').asString(),

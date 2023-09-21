@@ -45,7 +45,7 @@ export class SwaggerService {
         tagsSorter: 'alpha',
         oauth2RedirectUrl: `${serverUrl}/${apiRoot}/oauth2-redirect.html`,
         initOAuth: {
-          clientId: environment.azureAd.swaggerClientId,
+          clientId: environment.azureAd.clientId,
           scopes: ['openid'],
           usePkceWithAuthorizationCodeGrant: true,
         },
