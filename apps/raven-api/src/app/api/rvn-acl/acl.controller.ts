@@ -6,8 +6,6 @@ import {
   GenericResponseSchema,
   UserData,
 } from '@app/rvns-api';
-import { RoleEnum } from '@app/rvns-roles';
-import { Roles } from '@app/rvns-roles-api';
 
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
@@ -56,7 +54,6 @@ export class AclController {
   @ApiOperation({ description: 'List shares' })
   @ApiResponse(GenericResponseSchema())
   @Get()
-  @Roles(RoleEnum.User)
   @CheckShare((ability: ShareAbility, context) =>
     ability.can(
       ShareAction.ViewShares,
@@ -82,7 +79,6 @@ export class AclController {
   @ApiOperation({ description: 'List profile shares' })
   @ApiResponse(GenericResponseSchema())
   @Get('profile')
-  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
   public async listProfile(
     @Identity() identity: UserData,
   ): Promise<ShareData[]> {
@@ -98,7 +94,6 @@ export class AclController {
   })
   @ApiResponse(GenericResponseSchema())
   @Post()
-  @Roles(RoleEnum.User)
   @CheckShare((ability: ShareAbility, context) =>
     ability.can(
       ShareAction.Share,
@@ -151,7 +146,6 @@ export class AclController {
   @ApiParam({ name: 'shareId', type: String })
   @ApiResponse(GenericResponseSchema())
   @Delete(':shareId')
-  @Roles(RoleEnum.User)
   public async revoke(
     @Param('shareId', ParseShareWithActorPipe)
     shareEntity: AbstractShareEntity,

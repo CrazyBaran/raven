@@ -179,4 +179,7 @@ export const environment = {
     authority: env.get('AD_AUTHORITY').asString(),
     redirectUri: env.get('AD_REDIRECT_URI').asString(),
   },
+  scopes: {
+    apiAccess: env.get('SCOPES_API_ACCESS').asString(),
+  },
 };
