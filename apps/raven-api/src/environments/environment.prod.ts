@@ -178,5 +178,11 @@ export const environment = {
     audience: env.get('AD_AUDIENCE').asString(),
     authority: env.get('AD_AUTHORITY').asString(),
     redirectUri: env.get('AD_REDIRECT_URI').asString(),
+    tokenKeys: {
+      azureId: env.get('AD_TOKEN_KEYS_AZURE_ID').default('oid').asString(),
+      name: env.get('AD_TOKEN_KEYS_NAME').default('name').asString(),
+      email: env.get('AD_TOKEN_KEYS_EMAIL').default('unique_name').asString(),
+      roles: env.get('AD_TOKEN_KEYS_ROLES').default('roles').asString(),
+    },
   },
 };
