@@ -12,6 +12,4 @@ export interface UserData {
   teamName: string;
   teamDomain: string | null;
   teamIdPManaged: boolean;
-  activated: boolean;
-  suspended: boolean;
 }

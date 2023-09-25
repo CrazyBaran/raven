@@ -33,6 +33,14 @@ export const environment = {
       logPrompts: env.get('APP_DI_LOG_PROMPTS').default('false').asBoolStrict(),
     },
   },
+  logs: {
+    audit: {
+      excludedEndpoints: ['platform/health'],
+    },
+    request: {
+      excludedEndpoints: ['platform/health'],
+    },
+  },
   communication: {
     email: {
       connectionString: env.get('COMM_EMAIL_CONN_STRING').required().asString(),
@@ -70,7 +78,6 @@ export const environment = {
       .default('40')
       .asIntPositive(),
   },
-  log: { request: { excludedEndpoints: ['platform/health'] } },
   cache: {
     store: {
       redis: {
@@ -178,6 +185,12 @@ export const environment = {
     audience: env.get('AD_AUDIENCE').asString(),
     authority: env.get('AD_AUTHORITY').asString(),
     redirectUri: env.get('AD_REDIRECT_URI').asString(),
+    tokenKeys: {
+      azureId: env.get('AD_TOKEN_KEYS_AZURE_ID').default('oid').asString(),
+      name: env.get('AD_TOKEN_KEYS_NAME').default('name').asString(),
+      email: env.get('AD_TOKEN_KEYS_EMAIL').default('unique_name').asString(),
+      roles: env.get('AD_TOKEN_KEYS_ROLES').default('roles').asString(),
+    },
   },
   scopes: {
     apiAccess: env.get('SCOPES_API_ACCESS').asString(),

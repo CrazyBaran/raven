@@ -10,6 +10,8 @@ import { UsersService } from './users.service';
 import { UsersServiceLogger } from './users.service.logger';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersCacheService } from './users-cache.service';
+import { RegisterUserEventHandler } from './event-handlers/register-user.event-handler';
 
 @Module({
   imports: [
@@ -21,7 +23,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TeamsModule,
     RolesNestModule,
   ],
-  providers: [UsersService, UsersServiceLogger],
+  providers: [
+    UsersService,
+    UsersServiceLogger,
+    UsersCacheService,
+    RegisterUserEventHandler,
+  ],
   exports: [UsersService],
   controllers: [UsersController],
 })

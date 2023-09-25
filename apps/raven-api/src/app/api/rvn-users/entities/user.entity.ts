@@ -14,10 +14,13 @@ import {
 import { RoleEntity } from './role.entity';
 
 @Entity({ name: 'users' })
-@Index(['id', 'activated', 'suspended', 'sessionInvalidated'], { unique: true })
+@Index(['id'], { unique: true })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
+
+  @Column()
+  public azureId: string;
 
   @Column()
   public name: string;
@@ -32,21 +35,6 @@ export class UserEntity {
     inverseJoinColumn: { name: 'role_id' },
   })
   public roles: RoleEntity[];
-
-  @Column({ default: false })
-  public activated: boolean;
-
-  @Column({ nullable: true })
-  public activationDate: Date | null;
-
-  @Column({ default: false })
-  public suspended: boolean;
-
-  @Column({ nullable: true })
-  public suspensionDate: Date | null;
-
-  @Column({ default: false })
-  public sessionInvalidated: boolean;
 
   @CreateDateColumn()
   public createdAt: Date;

@@ -32,6 +32,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Sentry from '@sentry/node';
 import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
+import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware';
+import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 
 @Module({
   imports: [
@@ -55,6 +57,7 @@ import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
     PlatformModule.register({
       redisOptions: environment.database.redis.options,
     }),
+    AuditLogsModule,
     // api
     AuthModule,
     AclModule,
@@ -85,7 +88,7 @@ import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+    consumer.apply(RequestLoggerMiddleware, AuditLogsMiddleware).forRoutes('*');
     consumer.apply(Sentry.Handlers.requestHandler()).forRoutes({
       path: '*',
       method: RequestMethod.ALL,
