@@ -102,7 +102,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         az afd endpoint purge \
-          --name $(FRONT_CDN_ENDPOINT_NAME) \
+          --endpoint-name $(FRONT_CDN_ENDPOINT_NAME) \
           --resource-group $(RESOURCE_GROUP) \
           --profile-name $(FRONT_CDN_PROFILE_NAME) \
           --content-paths "/*" \
