@@ -33,6 +33,14 @@ export const environment = {
       logPrompts: env.get('APP_DI_LOG_PROMPTS').default('false').asBoolStrict(),
     },
   },
+  logs: {
+    audit: {
+      excludedEndpoints: ['platform/health'],
+    },
+    request: {
+      excludedEndpoints: ['platform/health'],
+    },
+  },
   communication: {
     email: {
       connectionString: env.get('COMM_EMAIL_CONN_STRING').required().asString(),
@@ -70,7 +78,6 @@ export const environment = {
       .default('40')
       .asIntPositive(),
   },
-  log: { request: { excludedEndpoints: ['platform/health'] } },
   cache: {
     store: {
       redis: {
