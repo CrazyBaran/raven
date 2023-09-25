@@ -101,8 +101,8 @@ steps:
       azureSubscription: $(RESOURCE_MANAGER_CONN)
       scriptLocation: inlineScript
       inlineScript: |
-        az cdn endpoint purge \
-          --name $(FRONT_CDN_ENDPOINT_NAME) \
+        az afd endpoint purge \
+          --endpoint-name $(FRONT_CDN_ENDPOINT_NAME) \
           --resource-group $(RESOURCE_GROUP) \
           --profile-name $(FRONT_CDN_PROFILE_NAME) \
           --content-paths "/*" \
