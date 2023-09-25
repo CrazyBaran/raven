@@ -24,7 +24,7 @@ variables:
   RESOURCE_GROUP: Raven_DEV
   FRONT_CONFIGURATION: development
   FRONT_CDN_STORAGE_ACCOUNT_NAME: sauksmcravenwwwdev
-  FRONT_CDN_ENDPOINT_NAME: sauksmcravenwwwdev
+  FRONT_CDN_ENDPOINT_NAME: fd-ep-www-mc-raven-dev-dqgqdndjfuebgvee
   FRONT_CDN_PROFILE_NAME: fd-mc-raven-dev
   PUBLICLY_AVAILABLE: false
   SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
