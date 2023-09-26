@@ -28,6 +28,9 @@ export class RolesGuard implements CanActivate {
 
   protected prepareUserRoles(roles: RoleEnum[]): RoleEnum[] {
     const outRoles = [];
+    if (roles === undefined) {
+      return outRoles;
+    }
     for (const role of roles) {
       outRoles.push(role, ...ROLES_INHERITANCE[role]);
     }
