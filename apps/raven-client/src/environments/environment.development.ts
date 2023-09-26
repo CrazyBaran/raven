@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
   apiUrl: 'https://as-wa-mub-raven-dev.azurewebsites.net',
-  adClientId: 'f6672d92-00cb-4ee8-a2ac-36e9419fcef1',
+  adClientId: '088ddd98-fffa-44c7-bc4e-eac3c57e8227',
   adAuthority:
-    'https://login.microsoftonline.com/0c9b881a-694f-4878-8a39-2a297ccc8f81',
-  adRedirectUri: '???',
+    'https://login.microsoftonline.com/c22477b0-4838-4110-8b5c-72e85395fab5',
+  adRedirectUri: 'https://raven-static.test.mubadalacapital.ae',
 };
