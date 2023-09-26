@@ -29,7 +29,7 @@ export class UsersController {
     const entities = await this.usersService.list({
       search: dto.search,
       user: identity,
-      userSameTeamOnly: !identity.roles.includes(RoleEnum.SuperAdmin),
+      userSameTeamOnly: false,
     });
     return Promise.all(
       entities.map((user) => this.usersService.entityToResponseData(user)),
