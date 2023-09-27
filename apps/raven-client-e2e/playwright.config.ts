@@ -21,7 +21,6 @@ export default defineConfig({
     baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    video: 'on',
   },
   projects: [
     // Setup project
@@ -32,7 +31,7 @@ export default defineConfig({
     // Test project that requires authentication
     {
       name: 'authenticated',
-      testMatch: /(ui|api)/,
+      testMatch: /.^tests\/.*\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         // Use prepared auth state.
