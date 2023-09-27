@@ -23,4 +23,5 @@ export interface AzureAdPayload {
   readonly upn: string;
   readonly uti: string;
   readonly ver: string;
+  readonly roles: string[];
 }

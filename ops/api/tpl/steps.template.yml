@@ -61,12 +61,6 @@ steps:
         $(Build.BuildId)
         latest
 
-  - script: npm run -- typeorm migration:run
-    condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
-    displayName: Run database migrations
-    env:
-      TYPEORM_PASSWORD: $(TYPEORM_PASSWORD__SECRET)
-
   - task: AzureRmWebAppDeployment@4
     condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
     displayName: Deploy latest Docker image to the App Service

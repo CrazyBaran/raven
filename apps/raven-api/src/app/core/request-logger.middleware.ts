@@ -12,7 +12,7 @@ export class RequestLoggerMiddleware implements NestMiddleware {
 
   public use(req: Request, res: Response, next: NextFunction): void {
     if (
-      !environment.log.request.excludedEndpoints.some((ec) =>
+      !environment.logs.request.excludedEndpoints.some((ec) =>
         req.baseUrl.includes(ec),
       )
     ) {

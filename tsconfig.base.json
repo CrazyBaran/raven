@@ -27,6 +27,7 @@
       "@app/rvnc-users": ["libs/rvnc-users/src/index.ts"],
       "@app/rvns-acl": ["libs/rvns-acl/src/index.ts"],
       "@app/rvns-api": ["libs/rvns-api/src/index.ts"],
+      "@app/rvns-auth": ["libs/rvns-auth/src/index.ts"],
       "@app/rvns-bull": ["libs/rvns-bull/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],

@@ -21,11 +21,11 @@ pool:
 
 variables:
   RESOURCE_MANAGER_CONN: rm-mub-raven-dev
-  RESOURCE_GROUP: rg-mub-raven-dev
+  RESOURCE_GROUP: Raven_DEV
   FRONT_CONFIGURATION: development
-  FRONT_CDN_STORAGE_ACCOUNT_NAME: stmubravendevcdn
-  FRONT_CDN_ENDPOINT_NAME: mub-raven-dev
-  FRONT_CDN_PROFILE_NAME: cdn-mub-raven-dev
+  FRONT_CDN_STORAGE_ACCOUNT_NAME: sauksmcravenwwwdev
+  FRONT_CDN_ENDPOINT_NAME: fd-ep-www-mc-raven-dev
+  FRONT_CDN_PROFILE_NAME: fd-mc-raven-dev
   PUBLICLY_AVAILABLE: false
   SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
 

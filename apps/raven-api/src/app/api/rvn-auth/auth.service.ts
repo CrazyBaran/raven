@@ -66,21 +66,10 @@ export class AuthService {
         options.user,
         profile,
       );
-      await this.manageProfileState(options.user);
     }
     return {
       refreshToken,
       accessToken: this.jwtService.sign(profile, jwtOptions),
-    };
-  }
-
-  public getRefreshCookieOptions(): CookieOptions {
-    return {
-      httpOnly: true,
-      signed: true,
-      sameSite: environment.app.production ? 'none' : undefined,
-      secure: environment.app.production,
-      expires: DateTime.now().plus({ day: 30 }).toJSDate(),
     };
   }
 
@@ -117,18 +106,6 @@ export class AuthService {
       refreshExp: decodedToken['exp'],
     });
     return refreshToken;
-  }
-
-  protected async manageProfileState(user: UserData): Promise<void> {
-    await this.entityManager.update(
-      UserEntity,
-      { id: user.id },
-      { sessionInvalidated: false },
-    );
-    // invalidate profile cache
-    await this.entityManager.connection.queryResultCache.remove([
-      `${CACHE_USER_ORM_PROFILE}${user.id}`,
-    ]);
   }
 
   protected async getJwtPayloadFromUser(

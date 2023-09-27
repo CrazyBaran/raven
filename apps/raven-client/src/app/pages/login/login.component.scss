@@ -1,0 +1,11 @@
+:host {
+  @apply bg-secondary-700 grid h-full w-full items-center justify-center;
+}
+
+.home-page {
+  @apply text-center;
+
+  button {
+    @apply uppercase leading-none tracking-widest text-white;
+  }
+}

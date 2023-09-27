@@ -1,5 +1,5 @@
 export enum RoleEnum {
-  SuperAdmin = 'SuperAdmin',
-  TeamAdmin = 'TeamAdmin',
-  User = 'User',
+  SuperAdmin = 'Raven.Admin',
+  TeamAdmin = 'Raven.Read',
+  User = 'Raven.Read',
 }
