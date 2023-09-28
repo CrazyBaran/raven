@@ -3,7 +3,6 @@ import { RolesNestModule } from '@app/rvns-roles-api';
 
 import { environment } from '../../../environments/environment';
 import { TeamsModule } from '../rvn-teams/teams.module';
-import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -15,7 +14,7 @@ import { RegisterUserEventHandler } from './event-handlers/register-user.event-h
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, RoleEntity]),
+    TypeOrmModule.forFeature([UserEntity]),
     CryptoModule.register({
       key: environment.security.crypto.key,
       initVector: environment.security.crypto.initVector,

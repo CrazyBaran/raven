@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
 import { UserData } from '@app/rvns-api';
-import { RoleEnum } from '@app/rvns-roles';
 
 import { JwtPayload } from '../../rvn-auth/contracts/jwt-payload.interface';
 import { AclService } from '../acl.service';
@@ -40,29 +39,16 @@ export class AbilityFactory {
         PureAbility<[ShareAction, ShareSubjects]>
       >(PureAbility as AbilityClass<ShareAbility>);
 
-      if (user.roles.includes(RoleEnum.SuperAdmin)) {
-        // super admin have full access to the teams
-        for (const perm of [
-          ShareAction.Create,
-          ShareAction.View,
-          ShareAction.Share,
-          ShareAction.Edit,
-          ShareAction.Delete,
-        ]) {
-          can(perm, 't');
-        }
-      } else {
-        // build acl rules from shares
-        const shares = await this.lookupExtraShares(
-          user,
-          await this.aclService.getByActor(user.id),
-        );
-        for (const share of shares) {
-          const resType = share.resourceCode;
-          const resId = share.resourceId;
-          for (const perm of ShareRolePermissions[resType][share.role]) {
-            can(perm, resType, resId);
-          }
+      // build acl rules from shares
+      const shares = await this.lookupExtraShares(
+        user,
+        await this.aclService.getByActor(user.id),
+      );
+      for (const share of shares) {
+        const resType = share.resourceCode;
+        const resId = share.resourceId;
+        for (const perm of ShareRolePermissions[resType][share.role]) {
+          can(perm, resType, resId);
         }
       }
 
@@ -78,9 +64,6 @@ export class AbilityFactory {
     shares: Share[],
   ): Promise<Share[]> {
     const extraShares = [...shares];
-    if (user.roles.includes(RoleEnum.TeamAdmin)) {
-      // enable access to the team
-    }
 
     return _.uniqWith(
       extraShares,

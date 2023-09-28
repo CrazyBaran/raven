@@ -2,7 +2,6 @@ import { EntityManager } from 'typeorm';
 
 import { ShareRole } from '@app/rvns-acl';
 import { UserData } from '@app/rvns-api';
-import { RoleEnum } from '@app/rvns-roles';
 import { TeamData, TeamsData } from '@app/rvns-teams';
 
 import { SortOptions } from '../../shared/enum/sort-options.enum';
@@ -45,13 +44,6 @@ export class TeamsService {
     const preparedSortDir = options?.sortDir || SortOptions.desc;
 
     const qb = this.entityManager.createQueryBuilder(TeamEntity, 't');
-
-    // limit result set for TeamAdmin
-    if (user.roles.includes(RoleEnum.TeamAdmin)) {
-      qb.leftJoinAndSelect('t.shares', 's').andWhere('s.actorId = :actor', {
-        actor: user.id,
-      });
-    }
 
     const [teams, totalAmount] = await qb
       .skip(skip)

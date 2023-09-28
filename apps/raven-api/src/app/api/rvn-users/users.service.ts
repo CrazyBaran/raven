@@ -13,7 +13,6 @@ import {
 import { CommEmailTemplatesEnum } from '../rvn-comm/templates/comm-email-templates.enum';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { TeamsService } from '../rvn-teams/teams.service';
-import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
 import { UsersServiceLogger } from './users.service.logger';
 import { Injectable } from '@nestjs/common';
@@ -31,7 +30,6 @@ interface CreateOptions {
   readonly azureId: string;
   readonly name: string;
   readonly team: TeamEntity;
-  readonly roles: RoleEntity[];
 }
 
 export const CACHE_USER_ORM_PROFILE = 'cache.user-orm.profile:';
@@ -48,9 +46,7 @@ export class UsersService {
   ) {}
 
   public async list(options: ListOptions): Promise<UserEntity[]> {
-    const qb = this.usersRepository
-      .createQueryBuilder('u')
-      .leftJoinAndSelect('u.roles', 'r');
+    const qb = this.usersRepository.createQueryBuilder('u');
     if (options.userSameTeamOnly && options.user) {
       qb.innerJoin(ShareTeamEntity, 'st', 'u.id = st.actorId').where(
         'st.resourceId = :teamId',
@@ -101,7 +97,6 @@ export class UsersService {
       user.azureId = options.azureId;
       user.email = email;
       user.name = options.name;
-      user.roles = options.roles;
       user = await em.save(user);
       // await this.aclService.share(
       //   user,
@@ -127,7 +122,6 @@ export class UsersService {
       id: user.id,
       name: user.name,
       email: user.email,
-      roles: user.roles.map((r) => (r instanceof RoleEntity ? r.name : r)),
       teamId: team ? team.id : null,
       teamName: team
         ? team.deletedAt

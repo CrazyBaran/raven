@@ -5,7 +5,6 @@ import { Reflector } from '@nestjs/core';
 
 const ROLES_INHERITANCE: Record<RoleEnum, RoleEnum[]> = {
   [RoleEnum.SuperAdmin]: [],
-  [RoleEnum.TeamAdmin]: [RoleEnum.User],
   [RoleEnum.User]: [RoleEnum.User],
 };
 

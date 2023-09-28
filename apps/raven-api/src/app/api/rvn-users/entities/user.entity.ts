@@ -5,13 +5,9 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  JoinTable,
-  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import { RoleEntity } from './role.entity';
 
 @Entity({ name: 'users' })
 @Index(['id'], { unique: true })
@@ -27,14 +23,6 @@ export class UserEntity {
 
   @Column({ unique: true })
   public email: string;
-
-  @ManyToMany(() => RoleEntity, { eager: true })
-  @JoinTable({
-    name: 'users_roles',
-    joinColumn: { name: 'user_id' },
-    inverseJoinColumn: { name: 'role_id' },
-  })
-  public roles: RoleEntity[];
 
   @CreateDateColumn()
   public createdAt: Date;

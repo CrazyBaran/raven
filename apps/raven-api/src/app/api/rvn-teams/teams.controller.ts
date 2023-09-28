@@ -46,7 +46,7 @@ export class TeamsController {
   @ApiOperation({ description: 'List teams' })
   @ApiResponse(GenericResponseSchema())
   @Get()
-  @Roles(RoleEnum.SuperAdmin, RoleEnum.TeamAdmin)
+  @Roles(RoleEnum.SuperAdmin)
   public async list(
     @Query() dto: ListTeamsDto,
     @Identity() user: UserData,

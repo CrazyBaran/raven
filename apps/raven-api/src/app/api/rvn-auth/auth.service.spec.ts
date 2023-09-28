@@ -124,7 +124,6 @@ describe('AuthService', () => {
     const user = {
       id: 'uuid-u',
       email: 'fooman@curvestone.io',
-      roles: [],
     } as UserData;
     const result = await authService.getUserJwt(AuthModeEnum.Login, {
       user: user,
