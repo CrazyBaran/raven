@@ -31,7 +31,7 @@ export default defineConfig({
     // Test project that requires authentication
     {
       name: 'authenticated',
-      testMatch: /.^tests\/.*\.spec\.ts$/,
+      testMatch: /tests\/.*\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         // Use prepared auth state.
