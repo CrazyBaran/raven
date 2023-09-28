@@ -39,3 +39,6 @@ Thumbs.db
 
 # Angular cache
 .angular
+
+# e2e auth state
+.auth
