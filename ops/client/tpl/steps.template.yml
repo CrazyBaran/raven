@@ -36,26 +36,6 @@ steps:
     condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
     displayName: Build Angular client app
 
-  # Blame start: https://github.com/MicrosoftDocs/azure-docs/issues/19456
-  - task: AzureCLI@1
-    condition: and(succeeded(), and(eq(variables.PUBLICLY_AVAILABLE, false), eq(variables.SHOULD_DEPLOY, true)))
-    displayName: Open storage account firewall for the deployment
-    inputs:
-      azureSubscription: $(RESOURCE_MANAGER_CONN)
-      scriptLocation: inlineScript
-      inlineScript: |
-        az storage account update \
-          --name $(FRONT_CDN_STORAGE_ACCOUNT_NAME) \
-          --resource-group $(RESOURCE_GROUP) \
-          --default-action Allow
-
-  - task: PowerShell@2
-    condition: and(succeeded(), and(eq(variables.PUBLICLY_AVAILABLE, false), eq(variables.SHOULD_DEPLOY, true)))
-    displayName: Wait for the storage account firewall being updated
-    inputs:
-      targetType: inline
-      script: Start-Sleep -Seconds 30
-
   - task: AzureCLI@1
     condition: and(succeeded(), eq(variables.SHOULD_DEPLOY, true))
     displayName: Deploy static Angular client app to the CDN
