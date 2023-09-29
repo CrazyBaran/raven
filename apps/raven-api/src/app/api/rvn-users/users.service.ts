@@ -123,13 +123,6 @@ export class UsersService {
       name: user.name,
       email: user.email,
       teamId: team ? team.id : null,
-      teamName: team
-        ? team.deletedAt
-          ? team.name.replace(/#removed.+$/, ' (removed)')
-          : team.name
-        : null,
-      teamDomain: team ? team.domain || null : null,
-      teamIdPManaged: team ? team.idpManaged : null,
     };
   }
 

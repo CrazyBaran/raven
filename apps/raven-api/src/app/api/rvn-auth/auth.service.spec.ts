@@ -72,8 +72,6 @@ describe('AuthService', () => {
               const resource = new TeamEntity();
               resource.id = 'team-uuid';
               resource.name = 'team name';
-              resource.domain = 'example.com';
-              resource.idpManaged = true;
               return [{ resource }];
             }),
           },

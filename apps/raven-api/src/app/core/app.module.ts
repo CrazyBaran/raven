@@ -20,6 +20,7 @@ import { SwaggerService } from './swagger.service';
 import { ThrottlerGuard } from './throttler.guard';
 import { TransformInterceptor } from './transform.interceptor';
 import { CacheModule } from '@nestjs/cache-manager';
+import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import {
   MiddlewareConsumer,
   Module,
@@ -34,6 +35,7 @@ import * as Sentry from '@sentry/node';
 import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
 import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware';
 import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
+import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affinity-integration.module';
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
     UsersSessionsModule,
     CommModule,
     WebSocketsModule,
+    OpportunitiesModule,
+    AffinityIntegrationModule,
   ],
   providers: [
     // core

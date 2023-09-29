@@ -6,7 +6,4 @@ export interface UserData {
   name: string;
   email: string;
   teamId: string;
-  teamName: string;
-  teamDomain: string | null;
-  teamIdPManaged: boolean;
 }
