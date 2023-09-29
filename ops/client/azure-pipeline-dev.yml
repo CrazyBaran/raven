@@ -7,6 +7,8 @@ trigger:
     include:
       - ops/client
       - apps/raven-client
+      - libs/rvnc-*
+      - libs/rnvs-*
 
 pr:
   branches:
@@ -15,6 +17,8 @@ pr:
   paths:
     include:
       - apps/raven-client
+      - libs/rvnc-*
+      - libs/rnvs-*
 
 pool:
   vmImage: ubuntu-22.04

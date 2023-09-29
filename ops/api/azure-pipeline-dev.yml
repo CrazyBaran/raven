@@ -7,6 +7,8 @@ trigger:
     include:
       - ops/api
       - apps/raven-api
+      - libs/rvnb-*
+      - libs/rnvs-*
 
 pr:
   branches:
@@ -15,6 +17,8 @@ pr:
   paths:
     include:
       - apps/raven-api
+      - libs/rvnb-*
+      - libs/rnvs-*
 
 pool:
   vmImage: ubuntu-22.04
