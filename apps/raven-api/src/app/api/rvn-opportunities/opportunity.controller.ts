@@ -8,7 +8,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { OpportunityService } from './opportunity.service';
-import { Opportunity } from './entities/opportunity.entity';
+import { OpportunityEntity } from './entities/opportunity.entity';
 import { ApiTags, ApiOperation, ApiResponse, ApiOAuth2 } from '@nestjs/swagger';
 import { Roles } from '@app/rvns-roles-api';
 import { RoleEnum } from '@app/rvns-roles';
@@ -23,7 +23,7 @@ export class OpportunityController {
   @ApiResponse({ status: 200, description: 'List of opportunities' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public findAll(): Promise<Opportunity[]> {
+  public findAll(): Promise<OpportunityEntity[]> {
     return this.opportunityService.findAll();
   }
 
@@ -32,7 +32,7 @@ export class OpportunityController {
   @ApiResponse({ status: 200, description: 'The opportunity details' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public findOne(@Param('id') id: string): Promise<Opportunity> {
+  public findOne(@Param('id') id: string): Promise<OpportunityEntity> {
     return this.opportunityService.findOne(id);
   }
 
@@ -44,7 +44,9 @@ export class OpportunityController {
   })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public create(@Body() opportunity: Opportunity): Promise<Opportunity> {
+  public create(
+    @Body() opportunity: OpportunityEntity,
+  ): Promise<OpportunityEntity> {
     return this.opportunityService.create(opportunity);
   }
 
@@ -58,7 +60,7 @@ export class OpportunityController {
   @Roles(RoleEnum.User)
   public update(
     @Param('id') id: string,
-    @Body() opportunity: Opportunity,
+    @Body() opportunity: OpportunityEntity,
   ): Promise<void> {
     return this.opportunityService.update(id, opportunity);
   }
