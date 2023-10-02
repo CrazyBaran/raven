@@ -1,0 +1,6 @@
+export class DropdownOptionDto {
+  public id: number;
+  public text: string;
+  public rank: number;
+  public color: number;
+}
