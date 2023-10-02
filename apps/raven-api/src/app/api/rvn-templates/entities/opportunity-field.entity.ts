@@ -31,6 +31,7 @@ export class OpportunityFieldEntity implements AuditableEntity {
   public fieldContent: FieldContentEntity;
 
   @Column()
+  @RelationId((t: OpportunityFieldEntity) => t.fieldContent)
   public fieldContentId: string;
 
   @ManyToOne(() => FieldDefinitionEntity, { nullable: true })
@@ -38,6 +39,7 @@ export class OpportunityFieldEntity implements AuditableEntity {
   public fieldDefinition: FieldDefinitionEntity | null;
 
   @Column()
+  @RelationId((t: OpportunityFieldEntity) => t.fieldDefinition)
   public fieldDefinitionId: string | null;
 
   @ManyToOne(() => OpportunityEntity)
@@ -45,6 +47,7 @@ export class OpportunityFieldEntity implements AuditableEntity {
   public opportunity: OpportunityEntity;
 
   @Column()
+  @RelationId((t: OpportunityFieldEntity) => t.opportunity)
   public opportunityId: string;
 
   @Index()
