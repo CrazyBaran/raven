@@ -9,7 +9,7 @@ import {
 
 @Entity('organisations')
 @Index(['id'], { unique: true })
-export class Organisation {
+export class OrganisationEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 

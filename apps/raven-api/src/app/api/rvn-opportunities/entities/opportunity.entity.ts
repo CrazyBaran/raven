@@ -7,15 +7,15 @@ import {
   AfterInsert,
   AfterLoad,
 } from 'typeorm';
-import { Organisation } from './organisation.entity';
+import { OrganisationEntity } from './organisation.entity';
 
 @Entity({ name: 'opportunities' })
 @Index(['id'], { unique: true })
-export class Opportunity {
+export class OpportunityEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @ManyToOne(() => Organisation, (organisation) => organisation.id)
+  @ManyToOne(() => OrganisationEntity, (organisation) => organisation.id)
   @Column()
   public organisationId: number;
 

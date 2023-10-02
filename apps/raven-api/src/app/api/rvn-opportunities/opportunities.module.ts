@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Opportunity } from './entities/opportunity.entity';
-import { Organisation } from './entities/organisation.entity';
+import { OpportunityEntity } from './entities/opportunity.entity';
+import { OrganisationEntity } from './entities/organisation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Opportunity, Organisation])],
+  imports: [TypeOrmModule.forFeature([OpportunityEntity, OrganisationEntity])],
 })
 export class OpportunitiesModule {}
