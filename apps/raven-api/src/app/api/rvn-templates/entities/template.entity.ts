@@ -22,7 +22,7 @@ export class TemplateEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column()
+  @Column({ length: 50 })
   public name: string;
 
   @Column()
