@@ -1,30 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Opportunity } from './entities/opportunity.entity';
+import { OpportunityEntity } from './entities/opportunity.entity';
 
 @Injectable()
 export class OpportunityService {
   public constructor(
-    @InjectRepository(Opportunity)
-    private readonly opportunityRepository: Repository<Opportunity>,
+    @InjectRepository(OpportunityEntity)
+    private readonly opportunityRepository: Repository<OpportunityEntity>,
   ) {}
 
-  public async findAll(): Promise<Opportunity[]> {
+  public async findAll(): Promise<OpportunityEntity[]> {
     return this.opportunityRepository.find();
   }
 
-  public async findOne(id: string): Promise<Opportunity> {
+  public async findOne(id: string): Promise<OpportunityEntity> {
     return this.opportunityRepository.findOne({
       where: { id },
     });
   }
 
-  public async create(opportunity: Opportunity): Promise<Opportunity> {
+  public async create(
+    opportunity: OpportunityEntity,
+  ): Promise<OpportunityEntity> {
     return this.opportunityRepository.save(opportunity);
   }
 
-  public async update(id: string, opportunity: Opportunity): Promise<void> {
+  public async update(
+    id: string,
+    opportunity: OpportunityEntity,
+  ): Promise<void> {
     await this.opportunityRepository.update(id, opportunity);
   }
 

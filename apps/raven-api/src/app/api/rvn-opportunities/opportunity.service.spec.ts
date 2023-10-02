@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OpportunityService } from './opportunity.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Opportunity } from './entities/opportunity.entity';
+import { OpportunityEntity } from './entities/opportunity.entity';
 
 describe('OpportunityService', () => {
   let service: OpportunityService;
@@ -20,7 +20,7 @@ describe('OpportunityService', () => {
       providers: [
         OpportunityService,
         {
-          provide: getRepositoryToken(Opportunity),
+          provide: getRepositoryToken(OpportunityEntity),
           useValue: mockRepository,
         },
       ],
@@ -51,7 +51,7 @@ describe('OpportunityService', () => {
 
   describe('create', () => {
     it('should successfully insert an opportunity', async () => {
-      const opportunity = { id: 'testId' } as Opportunity;
+      const opportunity = { id: 'testId' } as OpportunityEntity;
       mockRepository.save.mockReturnValue(opportunity);
       expect(await service.create(opportunity)).toBe(opportunity);
     });
@@ -59,7 +59,7 @@ describe('OpportunityService', () => {
 
   describe('update', () => {
     it('should successfully update an opportunity', async () => {
-      const opportunity = { id: 'testId' } as Opportunity;
+      const opportunity = { id: 'testId' } as OpportunityEntity;
       mockRepository.update.mockReturnValue({});
       await service.update('testId', opportunity);
       expect(mockRepository.update).toHaveBeenCalledWith('testId', opportunity);

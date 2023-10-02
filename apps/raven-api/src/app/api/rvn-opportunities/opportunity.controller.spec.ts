@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
-import { Opportunity } from './entities/opportunity.entity';
+import { OpportunityEntity } from './entities/opportunity.entity';
 
 describe('OpportunityController', () => {
   let controller: OpportunityController;
@@ -51,7 +51,7 @@ describe('OpportunityController', () => {
 
   describe('create', () => {
     it('should create and return an opportunity', async () => {
-      const opportunity = { id: 'testId' } as Opportunity;
+      const opportunity = { id: 'testId' } as OpportunityEntity;
       mockService.create.mockReturnValue(opportunity);
       expect(await controller.create(opportunity)).toBe(opportunity);
     });
@@ -59,7 +59,7 @@ describe('OpportunityController', () => {
 
   describe('update', () => {
     it('should update and return the updated opportunity', async () => {
-      const opportunity = { id: 'testId' } as Opportunity;
+      const opportunity = { id: 'testId' } as OpportunityEntity;
       mockService.update.mockReturnValue({});
       await controller.update('testId', opportunity);
       expect(mockService.update).toHaveBeenCalledWith('testId', opportunity);
