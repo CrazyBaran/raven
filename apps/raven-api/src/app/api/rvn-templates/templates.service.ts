@@ -7,6 +7,7 @@ import {
   FieldDefinitionData,
   FieldGroupData,
   TemplateData,
+  TemplateWithRelationsData,
 } from '@app/rvns-templates';
 import { FieldGroupEntity } from './entities/field-group.entity';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
@@ -17,7 +18,7 @@ export interface CreateFieldGroupOptions {
   name: string;
   order: number;
   templateId: string;
-  createdById: string;
+  userEntity: UserEntity;
 }
 
 export interface UpdateFieldGroupOptions {
@@ -30,7 +31,7 @@ export interface CreateFieldDefinitionOptions {
   order: number;
   type: FieldDefinitionType;
   groupId: string;
-  createdById: string;
+  userEntity: UserEntity;
 }
 
 @Injectable()
@@ -50,11 +51,12 @@ export class TemplatesService {
 
   public async createTemplate(
     name: string,
-    authorId: string,
+    userEntity: UserEntity,
   ): Promise<TemplateEntity> {
     const templateEntity = new TemplateEntity();
     templateEntity.name = name;
-    templateEntity.createdBy = { id: authorId } as UserEntity;
+    templateEntity.version = 1; // TODO versioning on update will be handled later?
+    templateEntity.createdBy = userEntity;
     return this.templatesRepository.save(templateEntity);
   }
 
@@ -73,6 +75,7 @@ export class TemplatesService {
     fieldGroupEntity.name = options.name;
     fieldGroupEntity.order = options.order;
     fieldGroupEntity.template = { id: options.templateId } as TemplateEntity;
+    fieldGroupEntity.createdBy = options.userEntity;
     return this.fieldGroupsRepository.save(fieldGroupEntity);
   }
 
@@ -103,6 +106,7 @@ export class TemplatesService {
     fieldDefinitionEntity.order = options.order;
     fieldDefinitionEntity.type = options.type;
     fieldDefinitionEntity.group = { id: options.groupId } as FieldGroupEntity;
+    fieldDefinitionEntity.createdBy = options.userEntity;
     return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
   }
 
@@ -148,6 +152,37 @@ export class TemplatesService {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       createdById: entity.createdById,
+    };
+  }
+
+  public templateWithRelationsToTemplateWithRelationsData(
+    template: TemplateEntity,
+  ): TemplateWithRelationsData {
+    return {
+      id: template.id,
+      name: template.name,
+      createdAt: template.createdAt,
+      updatedAt: template.updatedAt,
+      createdById: template.createdById,
+      fieldGroups: template.fieldGroups.map((group) => ({
+        id: group.id,
+        name: group.name,
+        order: group.order,
+        templateId: group.templateId,
+        createdAt: group.createdAt,
+        updatedAt: group.updatedAt,
+        createdById: group.createdById,
+        fieldDefinitions: group.fieldDefinitions.map((fd) => ({
+          id: fd.id,
+          name: fd.name,
+          order: fd.order,
+          type: fd.type,
+          fieldGroupId: fd.groupId,
+          createdById: fd.createdById,
+          createdAt: fd.createdAt,
+          updatedAt: fd.updatedAt,
+        })),
+      })),
     };
   }
 }

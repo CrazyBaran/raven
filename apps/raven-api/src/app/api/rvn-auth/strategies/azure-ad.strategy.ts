@@ -1,11 +1,10 @@
 import { BearerStrategy } from 'passport-azure-ad';
 
 import { environment } from '../../../../environments/environment';
-import { AzureAdPayload } from '../contracts/azure-ad-payload.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { UserRegisterEvent } from '@app/rvns-auth';
+import { AzureAdPayload, UserRegisterEvent } from '@app/rvns-auth';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 

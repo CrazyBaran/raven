@@ -42,7 +42,7 @@ export class FieldDefinitionEntity implements AuditableEntity {
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
-  @JoinColumn({ name: 'created_by' })
+  @JoinColumn({ name: 'created_by_id' })
   public createdBy: UserEntity;
 
   @Column()
