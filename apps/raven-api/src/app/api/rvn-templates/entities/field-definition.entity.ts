@@ -27,7 +27,7 @@ export class FieldDefinitionEntity implements AuditableEntity {
   public name: string;
 
   @Column({ length: 50 })
-  public type: FieldDefinitionType;
+  public type: string;
 
   @Column()
   public order: number;

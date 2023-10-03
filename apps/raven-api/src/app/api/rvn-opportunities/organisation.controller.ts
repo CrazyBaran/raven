@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiOAuth2 } from '@nestjs/swagger';
 import { OrganisationService } from './organisation.service';
-import { Organisation } from './entities/organisation.entity';
+import { OrganisationEntity } from './entities/organisation.entity';
 import { Roles } from '@app/rvns-roles-api';
 import { RoleEnum } from '@app/rvns-roles';
 
-@ApiTags('organisations')
+@ApiTags('Organisations')
 @Controller('organisations')
 export class OrganisationController {
   public constructor(
@@ -25,7 +25,7 @@ export class OrganisationController {
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public findAll(): Promise<Organisation[]> {
+  public findAll(): Promise<OrganisationEntity[]> {
     return this.organisationService.findAll();
   }
 
@@ -34,7 +34,7 @@ export class OrganisationController {
   @ApiResponse({ status: 200, description: 'The organisation details' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public findOne(@Param('id') id: string): Promise<Organisation> {
+  public findOne(@Param('id') id: string): Promise<OrganisationEntity> {
     return this.organisationService.findOne(id);
   }
 
@@ -46,7 +46,9 @@ export class OrganisationController {
   })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public create(@Body() organisation: Organisation): Promise<Organisation> {
+  public create(
+    @Body() organisation: OrganisationEntity,
+  ): Promise<OrganisationEntity> {
     return this.organisationService.create(organisation);
   }
 
@@ -60,7 +62,7 @@ export class OrganisationController {
   @Roles(RoleEnum.User)
   public update(
     @Param('id') id: string,
-    @Body() organisation: Organisation,
+    @Body() organisation: OrganisationEntity,
   ): Promise<void> {
     return this.organisationService.update(id, organisation);
   }

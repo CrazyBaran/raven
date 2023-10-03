@@ -11,6 +11,7 @@ import {
 import { FieldGroupEntity } from './entities/field-group.entity';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldDefinitionType } from './enums/field-definition-type.enum';
+import { InjectRepository } from '@nestjs/typeorm';
 
 export interface CreateFieldGroupOptions {
   name: string;
@@ -35,8 +36,11 @@ export interface CreateFieldDefinitionOptions {
 @Injectable()
 export class TemplatesService {
   public constructor(
+    @InjectRepository(TemplateEntity)
     private readonly templatesRepository: Repository<TemplateEntity>,
+    @InjectRepository(FieldGroupEntity)
     private readonly fieldGroupsRepository: Repository<FieldGroupEntity>,
+    @InjectRepository(FieldDefinitionEntity)
     private readonly fieldDefinitionsRepository: Repository<FieldDefinitionEntity>,
   ) {}
 

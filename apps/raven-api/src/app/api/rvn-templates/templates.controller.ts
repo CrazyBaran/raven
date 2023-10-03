@@ -8,7 +8,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiOAuth2,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   GenericCreateResponseSchema,
   GenericResponseSchema,
@@ -31,14 +37,25 @@ import { UpdateFieldGroupDto } from './dto/update-field-group.dto';
 import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
 import { CreateFieldDefinitionDto } from './dto/create-field-definition.dto';
 
+@ApiTags('Templates')
 @Controller('templates')
+@ApiOAuth2(['openid'])
 export class TemplatesController {
   public constructor(private readonly service: TemplatesService) {}
 
   @ApiOperation({ description: 'List templates' })
   @ApiResponse(GenericResponseSchema())
   @Get()
-  public async list(): Promise<TemplateData[]> {
+  public async listTemplates(): Promise<TemplateData[]> {
+    return this.service.templateEntitiesToTemplateData(
+      await this.service.list(),
+    ) as TemplateData[];
+  }
+
+  @ApiOperation({ description: 'Get single template' })
+  @ApiResponse(GenericResponseSchema())
+  @Get()
+  public async getTemplate(): Promise<TemplateData[]> {
     return this.service.templateEntitiesToTemplateData(
       await this.service.list(),
     ) as TemplateData[];
@@ -47,7 +64,7 @@ export class TemplatesController {
   @ApiOperation({ description: 'Create template' })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()
-  public async create(
+  public async createTemplate(
     @Body() dto: CreateTemplateDto,
     @Identity() identity: UserData,
   ): Promise<TemplateData> {
@@ -60,7 +77,7 @@ export class TemplatesController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Patch(':id')
-  public async update(
+  public async updateTemplate(
     @Param('id', ParseUUIDPipe, ParseTemplatePipe)
     templateEntity: TemplateEntity,
     @Body() dto: UpdateTemplateDto,
