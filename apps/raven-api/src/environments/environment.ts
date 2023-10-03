@@ -205,11 +205,28 @@ export const environment = {
     },
   },
   azureAd: {
-    identityMetadata: env.get('AD_IDENTITY_METADATA').asString(),
+    identityMetadata: env
+      .get('AD_IDENTITY_METADATA')
+      .default(
+        `https://login.microsoftonline.com/${env
+          .get('AD_TENANT_ID')
+          .asString()}/v2.0/.well-known/openid-configuration`,
+      )
+      .asString(),
     clientId: env.get('AD_CLIENT_ID').asString(),
-    issuer: env.get('AD_ISSUER').asString(),
+    issuer: env
+      .get('AD_ISSUER')
+      .default(`https://sts.windows.net/${env.get('AD_TENANT_ID').asString()}/`)
+      .asString(),
     audience: env.get('AD_AUDIENCE').asString(),
-    authority: env.get('AD_AUTHORITY').asString(),
+    authority: env
+      .get('AD_AUTHORITY')
+      .default(
+        `https://login.microsoftonline.com/${env
+          .get('AD_TENANT_ID')
+          .asString()}`,
+      )
+      .asString(),
     redirectUri: env.get('AD_REDIRECT_URI').asString(),
     tokenKeys: {
       azureId: env.get('AD_TOKEN_KEYS_AZURE_ID').default('oid').asString(),
