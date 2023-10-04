@@ -7,6 +7,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   RelationId,
@@ -15,6 +16,7 @@ import {
 
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
+import { FieldGroupEntity } from './field-group.entity';
 
 @Entity({ name: 'templates' })
 @Index(['id'], { unique: true })
@@ -36,9 +38,12 @@ export class TemplateEntity implements AuditableEntity {
   @RelationId((t: TemplateEntity) => t.previousVersion)
   public previousVersionId: string | null;
 
+  @OneToMany(() => FieldGroupEntity, (fg) => fg.template, { eager: true })
+  public fieldGroups: FieldGroupEntity[];
+
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
-  @JoinColumn({ name: 'created_by' })
+  @JoinColumn({ name: 'created_by_id' })
   public createdBy: UserEntity;
 
   @Column()

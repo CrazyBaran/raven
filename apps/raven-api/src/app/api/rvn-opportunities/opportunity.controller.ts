@@ -13,7 +13,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiOAuth2 } from '@nestjs/swagger';
 import { Roles } from '@app/rvns-roles-api';
 import { RoleEnum } from '@app/rvns-roles';
 
-@ApiTags('opportunities')
+@ApiTags('Opportunities')
 @Controller('opportunities')
 export class OpportunityController {
   public constructor(private readonly opportunityService: OpportunityService) {}

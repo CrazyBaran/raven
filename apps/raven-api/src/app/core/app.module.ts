@@ -36,6 +36,7 @@ import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
 import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware';
 import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affinity-integration.module';
+import { TemplatesModule } from '../api/rvn-templates/templates.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affin
     WebSocketsModule,
     OpportunitiesModule,
     AffinityIntegrationModule,
+    TemplatesModule,
   ],
   providers: [
     // core

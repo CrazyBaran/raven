@@ -13,7 +13,7 @@ import { OrganisationEntity } from './entities/organisation.entity';
 import { Roles } from '@app/rvns-roles-api';
 import { RoleEnum } from '@app/rvns-roles';
 
-@ApiTags('organisations')
+@ApiTags('Organisations')
 @Controller('organisations')
 export class OrganisationController {
   public constructor(

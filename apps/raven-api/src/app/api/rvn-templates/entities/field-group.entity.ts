@@ -7,6 +7,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
   UpdateDateColumn,
@@ -15,6 +16,7 @@ import {
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
 import { TemplateEntity } from './template.entity';
+import { FieldDefinitionEntity } from './field-definition.entity';
 
 @Entity({ name: 'field_groups' })
 @Index(['id', 'template'], { unique: true })
@@ -28,6 +30,9 @@ export class FieldGroupEntity implements AuditableEntity {
   @Column()
   public order: number;
 
+  @OneToMany(() => FieldDefinitionEntity, (fd) => fd.group, { eager: true })
+  public fieldDefinitions: FieldDefinitionEntity[];
+
   @ManyToOne(() => TemplateEntity, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'template_id' })
   public template: TemplateEntity;
@@ -38,7 +43,7 @@ export class FieldGroupEntity implements AuditableEntity {
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
-  @JoinColumn({ name: 'created_by' })
+  @JoinColumn({ name: 'created_by_id' })
   public createdBy: UserEntity;
 
   @Column()
