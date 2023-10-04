@@ -2,21 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { map } from 'rxjs/operators';
-import { PaginatedListEntriesDto } from './dtos/paginated-list-entries.dto';
-import { DetailedListDto } from './dtos/detailed-list.dto';
-import { ListDto } from './dtos/list.dto';
-import { FieldValueDto } from './dtos/field-value.dto';
-import { CreateFieldValueDto } from './dtos/create-field-value.dto';
-import { UpdateFieldValueDto } from './dtos/update-field-value.dto';
-import { FieldValueChangeDto } from './dtos/field-value-change.dto';
-import { WhoAmIDto } from './dtos/whoami.dto';
-import { WebhookDeleteResponseDto } from './dtos/webhook-delete.dto';
-import { WebhookDto } from './dtos/webhook.dto';
-import { WebhookUpdateDto } from './dtos/webhook-update.dto';
-import { WebhookSubscribeDto } from './dtos/webhook-subscribe.dto';
+import { PaginatedListEntriesDto } from './dtos/api/paginated-list-entries.dto';
+import { DetailedListDto } from './dtos/api/detailed-list.dto';
+import { ListDto } from './dtos/api/list.dto';
+import { FieldValueDto } from './dtos/api/field-value.dto';
+import { CreateFieldValueDto } from './dtos/api/create-field-value.dto';
+import { UpdateFieldValueDto } from './dtos/api/update-field-value.dto';
+import { FieldValueChangeDto } from './dtos/api/field-value-change.dto';
+import { WhoAmIDto } from './dtos/api/whoami.dto';
+import { WebhookDeleteResponseDto } from './dtos/api/webhook-delete.dto';
+import { WebhookDto } from './dtos/api/webhook.dto';
+import { WebhookUpdateDto } from './dtos/api/webhook-update.dto';
+import { WebhookSubscribeDto } from './dtos/api/webhook-subscribe.dto';
 
 @Injectable()
-export class AffinityService {
+export class AffinityApiService {
   private readonly apiKey: string;
   private readonly baseURL: string = 'https://api.affinity.co';
 
