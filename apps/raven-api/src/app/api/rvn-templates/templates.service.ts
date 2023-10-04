@@ -14,24 +14,30 @@ import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldDefinitionType } from './enums/field-definition-type.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 
-export interface CreateFieldGroupOptions {
+interface CreateFieldGroupOptions {
   name: string;
   order: number;
   templateId: string;
   userEntity: UserEntity;
 }
 
-export interface UpdateFieldGroupOptions {
+interface UpdateFieldGroupOptions {
   name?: string;
   order?: number;
 }
 
-export interface CreateFieldDefinitionOptions {
+interface CreateFieldDefinitionOptions {
   name: string;
   order: number;
   type: FieldDefinitionType;
   groupId: string;
   userEntity: UserEntity;
+}
+
+interface UpdateFieldDefinitionOptions {
+  name: string;
+  order: number;
+  type: FieldDefinitionType;
 }
 
 @Injectable()
@@ -64,8 +70,13 @@ export class TemplatesService {
     templateEntity: TemplateEntity,
     dto: UpdateTemplateDto,
   ): Promise<TemplateEntity> {
+    delete templateEntity.fieldGroups;
     templateEntity.name = dto.name;
     return this.templatesRepository.save(templateEntity);
+  }
+
+  public async removeTemplate(templateEntity: TemplateEntity): Promise<void> {
+    await this.templatesRepository.remove(templateEntity);
   }
 
   public async createFieldGroup(
@@ -83,6 +94,7 @@ export class TemplatesService {
     fieldGroupEntity: FieldGroupEntity,
     options: UpdateFieldGroupOptions,
   ): Promise<FieldGroupEntity> {
+    delete fieldGroupEntity.fieldDefinitions;
     if (options.name) {
       fieldGroupEntity.name = options.name;
     }
@@ -108,6 +120,28 @@ export class TemplatesService {
     fieldDefinitionEntity.group = { id: options.groupId } as FieldGroupEntity;
     fieldDefinitionEntity.createdBy = options.userEntity;
     return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
+  }
+
+  public async updateFieldDefinition(
+    fieldDefinitionEntity: FieldDefinitionEntity,
+    options: UpdateFieldDefinitionOptions,
+  ): Promise<FieldDefinitionEntity> {
+    if (options.name) {
+      fieldDefinitionEntity.name = options.name;
+    }
+    if (options.order) {
+      fieldDefinitionEntity.order = options.order;
+    }
+    if (options.type) {
+      fieldDefinitionEntity.type = options.type;
+    }
+    return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
+  }
+
+  public async removeFieldDefinition(
+    fieldDefinitionEntity: FieldDefinitionEntity,
+  ): Promise<void> {
+    await this.fieldDefinitionsRepository.remove(fieldDefinitionEntity);
   }
 
   public templateEntityToTemplateData(entity: TemplateEntity): TemplateData {

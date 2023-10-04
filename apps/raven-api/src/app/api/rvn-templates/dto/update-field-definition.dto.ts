@@ -1,5 +1,6 @@
 import {
   IsDefined,
+  IsIn,
   IsNumber,
   IsOptional,
   IsString,
@@ -7,6 +8,7 @@ import {
 } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { FieldDefinitionType } from '../enums/field-definition-type.enum';
 
 export class UpdateFieldDefinitionDto {
   @ApiProperty()
@@ -18,8 +20,8 @@ export class UpdateFieldDefinitionDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  @Length(1, 50)
-  public readonly type?: string;
+  @IsIn(Object.values(FieldDefinitionType))
+  public readonly type?: FieldDefinitionType;
 
   @ApiProperty()
   @IsOptional()

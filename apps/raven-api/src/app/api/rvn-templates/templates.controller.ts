@@ -16,6 +16,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
+  EmptyResponseData,
   GenericCreateResponseSchema,
   GenericResponseSchema,
 } from '@app/rvns-api';
@@ -39,6 +40,9 @@ import { CreateFieldDefinitionDto } from './dto/create-field-definition.dto';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { ParseTemplateWithGroupsAndFieldsPipe } from './pipes/parse-template-with-groups-and-fields.pipe';
+import { UpdateFieldDefinitionDto } from './dto/update-field-definition.dto';
+import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
+import { FieldDefinitionEntity } from './entities/field-definition.entity';
 
 @ApiTags('Templates')
 @Controller('templates')
@@ -92,6 +96,17 @@ export class TemplatesController {
     return this.service.templateEntityToTemplateData(
       await this.service.updateTemplate(templateEntity, dto),
     ) as TemplateData;
+  }
+
+  @ApiOperation({ description: 'Remove template' })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse(GenericResponseSchema())
+  @Delete(':id')
+  public async removeTemplate(
+    @Param('id', ParseUUIDPipe, ParseTemplatePipe)
+    templateEntity: TemplateEntity,
+  ): Promise<EmptyResponseData> {
+    return this.service.removeTemplate(templateEntity);
   }
 
   @ApiOperation({ description: 'Create field group' })
@@ -167,5 +182,46 @@ export class TemplatesController {
         userEntity,
       }),
     ) as FieldDefinitionData;
+  }
+
+  @ApiOperation({ description: 'Update field definition' })
+  @ApiParam({ name: 'templateId', type: String })
+  @ApiParam({ name: 'groupId', type: String })
+  @ApiParam({ name: 'fieldId', type: String })
+  @ApiResponse(GenericResponseSchema())
+  @Patch(':templateId/field-groups/:groupId/field-definitions/:fieldId')
+  public async updateFieldDefinition(
+    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
+    template: TemplateEntity,
+    @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
+    group: FieldGroupEntity,
+    @Param('fieldId', ParseUUIDPipe, ParseFieldDefinitionPipe)
+    field: FieldDefinitionEntity,
+    @Body() dto: UpdateFieldDefinitionDto,
+  ): Promise<FieldDefinitionData> {
+    return this.service.fieldDefinitionEntityToFieldDefinitionData(
+      await this.service.updateFieldDefinition(field, {
+        name: dto.name,
+        type: dto.type,
+        order: dto.order,
+      }),
+    ) as FieldDefinitionData;
+  }
+
+  @ApiOperation({ description: 'Remove field definition' })
+  @ApiParam({ name: 'templateId', type: String })
+  @ApiParam({ name: 'groupId', type: String })
+  @ApiParam({ name: 'fieldId', type: String })
+  @ApiResponse(GenericResponseSchema())
+  @Delete(':templateId/field-groups/:groupId/field-definitions/:fieldId')
+  public async removeFieldDefinition(
+    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
+    template: TemplateEntity,
+    @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
+    group: FieldGroupEntity,
+    @Param('fieldId', ParseUUIDPipe, ParseFieldDefinitionPipe)
+    field: FieldDefinitionEntity,
+  ): Promise<EmptyResponseData> {
+    await this.service.removeFieldDefinition(field);
   }
 }
