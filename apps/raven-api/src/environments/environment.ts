@@ -238,4 +238,10 @@ export const environment = {
   scopes: {
     apiAccess: env.get('SCOPES_API_ACCESS').asString(),
   },
+  affinity: {
+    enabledOnInit: env
+      .get('AFFINITY_ENABLED_ON_INIT')
+      .default('true')
+      .asBoolStrict(),
+  },
 };

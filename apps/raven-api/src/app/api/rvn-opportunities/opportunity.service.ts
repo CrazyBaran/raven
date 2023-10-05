@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { OpportunityEntity } from './entities/opportunity.entity';
-import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OpportunityData } from '@app/rvns-opportunities';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
+import { OpportunityEntity } from './entities/opportunity.entity';
 
 @Injectable()
 export class OpportunityService {

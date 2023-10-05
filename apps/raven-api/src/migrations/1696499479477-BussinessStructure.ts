@@ -1,9 +1,15 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class BusinessStructure1696497348518 implements MigrationInterface {
-  public name = 'BusinessStructure1696497348518';
+export class BussinessStructure1696499479477 implements MigrationInterface {
+  public name = 'BussinessStructure1696499479477';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `CREATE TABLE "rvn_affinity_organisations" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_aef5ea4009042fc897576b01eed" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(255) NOT NULL, "internal_id" int NOT NULL, CONSTRAINT "PK_aef5ea4009042fc897576b01eed" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_aef5ea4009042fc897576b01ee" ON "rvn_affinity_organisations" ("id") `,
+    );
     await queryRunner.query(
       `CREATE TABLE "rvn_organisations" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_0752f17d26b95923198296b8ffb" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(255) NOT NULL, "domains" ntext NOT NULL, CONSTRAINT "PK_0752f17d26b95923198296b8ffb" PRIMARY KEY ("id"))`,
     );
@@ -17,7 +23,7 @@ export class BusinessStructure1696497348518 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_6194e07c23b849fdaef2763ea3" ON "rvn_opportunities" ("id") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "rvn_notes" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_9a4441f77e4a2b20f79fc553c08" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(50) NOT NULL, "version" int NOT NULL, "previous_version_id" uniqueidentifier, "opportunity_id" uniqueidentifier NOT NULL, "created_by_id" uniqueidentifier NOT NULL, "created_at" datetime2 NOT NULL CONSTRAINT "DF_1079096f6cd35dde8811d81ea9d" DEFAULT getdate(), "updated_at" datetime2 NOT NULL CONSTRAINT "DF_f7230566f406a4e64737163dc93" DEFAULT getdate(), CONSTRAINT "PK_9a4441f77e4a2b20f79fc553c08" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "rvn_notes" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_9a4441f77e4a2b20f79fc553c08" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(50) NOT NULL, "version" int NOT NULL, "previous_version_id" uniqueidentifier, "opportunity_id" uniqueidentifier, "created_by_id" uniqueidentifier NOT NULL, "created_at" datetime2 NOT NULL CONSTRAINT "DF_1079096f6cd35dde8811d81ea9d" DEFAULT getdate(), "updated_at" datetime2 NOT NULL CONSTRAINT "DF_f7230566f406a4e64737163dc93" DEFAULT getdate(), CONSTRAINT "PK_9a4441f77e4a2b20f79fc553c08" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_ab81999da30ba7e4a70660dad4" ON "rvn_notes" ("opportunity_id") `,
@@ -57,12 +63,6 @@ export class BusinessStructure1696497348518 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_fe3f88b0564d695b47d7fe13cc" ON "rvn_note_field_groups" ("id", "note_id") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "rvn_affinity_organisations" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_aef5ea4009042fc897576b01eed" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(255) NOT NULL, "internal_id" int NOT NULL, CONSTRAINT "PK_aef5ea4009042fc897576b01eed" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_aef5ea4009042fc897576b01ee" ON "rvn_affinity_organisations" ("id") `,
     );
     await queryRunner.query(
       `CREATE TABLE "rvn_templates" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_d568cefa3aa403438f2d44f5532" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(50) NOT NULL, "version" int NOT NULL, "previous_version_id" uniqueidentifier, "created_by_id" uniqueidentifier NOT NULL, "created_at" datetime2 NOT NULL CONSTRAINT "DF_f8752cfc2004d22eadf8db76de8" DEFAULT getdate(), "updated_at" datetime2 NOT NULL CONSTRAINT "DF_1f0162157d1ccb6b9954bbc060d" DEFAULT getdate(), CONSTRAINT "PK_d568cefa3aa403438f2d44f5532" PRIMARY KEY ("id"))`,
@@ -224,10 +224,6 @@ export class BusinessStructure1696497348518 implements MigrationInterface {
     );
     await queryRunner.query(`DROP TABLE "rvn_templates"`);
     await queryRunner.query(
-      `DROP INDEX "IDX_aef5ea4009042fc897576b01ee" ON "rvn_affinity_organisations"`,
-    );
-    await queryRunner.query(`DROP TABLE "rvn_affinity_organisations"`);
-    await queryRunner.query(
       `DROP INDEX "IDX_fe3f88b0564d695b47d7fe13cc" ON "rvn_note_field_groups"`,
     );
     await queryRunner.query(
@@ -271,5 +267,9 @@ export class BusinessStructure1696497348518 implements MigrationInterface {
       `DROP INDEX "IDX_0752f17d26b95923198296b8ff" ON "rvn_organisations"`,
     );
     await queryRunner.query(`DROP TABLE "rvn_organisations"`);
+    await queryRunner.query(
+      `DROP INDEX "IDX_aef5ea4009042fc897576b01ee" ON "rvn_affinity_organisations"`,
+    );
+    await queryRunner.query(`DROP TABLE "rvn_affinity_organisations"`);
   }
 }

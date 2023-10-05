@@ -6,7 +6,7 @@ import {
   NotFoundException,
   PipeTransform,
 } from '@nestjs/common';
-import { TemplateEntity } from '../entities/template.entity';
+import { TemplateEntity } from '../../api/rvn-templates/entities/template.entity';
 
 @Injectable()
 export class ParseTemplateWithGroupsAndFieldsPipe

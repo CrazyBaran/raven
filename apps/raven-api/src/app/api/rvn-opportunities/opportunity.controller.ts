@@ -1,18 +1,18 @@
+import { OpportunityData } from '@app/rvns-opportunities';
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Put,
-  Delete,
-  Param,
-  Body,
 } from '@nestjs/common';
-import { OpportunityService } from './opportunity.service';
+import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OpportunityEntity } from './entities/opportunity.entity';
-import { ApiTags, ApiOperation, ApiResponse, ApiOAuth2 } from '@nestjs/swagger';
-import { Roles } from '@app/rvns-roles-api';
-import { RoleEnum } from '@app/rvns-roles';
-import { OpportunityData } from '@app/rvns-opportunities';
+import { OpportunityService } from './opportunity.service';
 
 @ApiTags('Opportunities')
 @Controller('opportunities')

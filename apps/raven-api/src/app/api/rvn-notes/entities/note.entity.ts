@@ -47,7 +47,7 @@ export class NoteEntity implements AuditableEntity {
   @JoinColumn({ name: 'opportunity_id' })
   public opportunity: OpportunityEntity | null;
 
-  @Column()
+  @Column({ nullable: true })
   @RelationId((t: NoteEntity) => t.opportunity)
   public opportunityId: string;
 

@@ -1,14 +1,7 @@
-import {
-  IsDefined,
-  IsIn,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsIn, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
+import { FieldDefinitionType } from '@app/rvns-templates';
 import { ApiProperty } from '@nestjs/swagger';
-import { FieldDefinitionType } from '../enums/field-definition-type.enum';
 
 export class UpdateFieldDefinitionDto {
   @ApiProperty()

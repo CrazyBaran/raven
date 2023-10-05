@@ -1,6 +1,6 @@
+import { FieldDefinitionType } from '@app/rvns-templates';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsIn, IsNumber, IsString, Length } from 'class-validator';
-import { FieldDefinitionType } from '../enums/field-definition-type.enum';
 
 export class CreateFieldDefinitionDto {
   @ApiProperty()

@@ -4,4 +4,5 @@ export enum FieldDefinitionType {
   Date = 'date',
   Boolean = 'boolean',
   Select = 'select',
+  RichText = 'richText',
 }

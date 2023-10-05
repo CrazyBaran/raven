@@ -1,12 +1,12 @@
+import { FieldDefinitionType } from '@app/rvns-templates';
 import { Test, TestingModule } from '@nestjs/testing';
-import { TemplatesService } from './templates.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TemplateEntity } from './entities/template.entity';
-import { FieldGroupEntity } from './entities/field-group.entity';
-import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../rvn-users/entities/user.entity';
-import { FieldDefinitionType } from './enums/field-definition-type.enum';
+import { FieldDefinitionEntity } from './entities/field-definition.entity';
+import { FieldGroupEntity } from './entities/field-group.entity';
+import { TemplateEntity } from './entities/template.entity';
+import { TemplatesService } from './templates.service';
 
 describe('TemplatesService', () => {
   let service: TemplatesService;

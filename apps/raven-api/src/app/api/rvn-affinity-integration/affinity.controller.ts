@@ -1,8 +1,8 @@
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import { Controller, Get } from '@nestjs/common';
 import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ListDto } from './api/dtos/list.dto';
-import { Roles } from '@app/rvns-roles-api';
-import { RoleEnum } from '@app/rvns-roles';
 import { AffinityProducer } from './queues/affinity.producer';
 
 @ApiTags('Affinity')

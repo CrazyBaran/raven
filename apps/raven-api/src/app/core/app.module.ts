@@ -37,6 +37,7 @@ import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware
 import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affinity-integration.module';
 import { TemplatesModule } from '../api/rvn-templates/templates.module';
+import { NotesModule } from '../api/rvn-notes/notes.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { TemplatesModule } from '../api/rvn-templates/templates.module';
     OpportunitiesModule,
     AffinityIntegrationModule,
     TemplatesModule,
+    NotesModule,
   ],
   providers: [
     // core

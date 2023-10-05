@@ -48,7 +48,10 @@ async function bootstrap(): Promise<void> {
         transform: true,
         whitelist: true,
         // this is required to make entity pipes to work
-        forbidUnknownValues: false
+        forbidUnknownValues: false,
+        transformOptions: {
+          enableImplicitConversion: true
+        }
       })
     );
 

@@ -39,10 +39,10 @@ import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
 import { CreateFieldDefinitionDto } from './dto/create-field-definition.dto';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { UserEntity } from '../rvn-users/entities/user.entity';
-import { ParseTemplateWithGroupsAndFieldsPipe } from './pipes/parse-template-with-groups-and-fields.pipe';
 import { UpdateFieldDefinitionDto } from './dto/update-field-definition.dto';
 import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
+import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 
 @ApiTags('Templates')
 @Controller('templates')

@@ -1,6 +1,6 @@
-import { TenantDto } from './tenant.dto';
-import { PersonDto } from './person.dto';
 import { GrantDto } from './grant.dto';
+import { PersonDto } from './person.dto';
+import { TenantDto } from './tenant.dto';
 
 export class WhoAmIDto {
   public tenant: TenantDto;

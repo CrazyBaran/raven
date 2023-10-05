@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { TemplateEntity } from './entities/template.entity';
-import { UserEntity } from '../rvn-users/entities/user.entity';
-import { UpdateTemplateDto } from './dto/update-template.dto';
 import {
   FieldDefinitionData,
+  FieldDefinitionType,
   FieldGroupData,
   TemplateData,
   TemplateWithRelationsData,
 } from '@app/rvns-templates';
-import { FieldGroupEntity } from './entities/field-group.entity';
-import { FieldDefinitionEntity } from './entities/field-definition.entity';
-import { FieldDefinitionType } from './enums/field-definition-type.enum';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../rvn-users/entities/user.entity';
+import { UpdateTemplateDto } from './dto/update-template.dto';
+import { FieldDefinitionEntity } from './entities/field-definition.entity';
+import { FieldGroupEntity } from './entities/field-group.entity';
+import { TemplateEntity } from './entities/template.entity';
 
 interface CreateFieldGroupOptions {
   name: string;

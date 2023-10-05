@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { AffinitySettingsService } from './affinity-settings.service';
-import { AffinityApiService } from './api/affinity-api.service';
-import { ListEntryResponseDto } from './api/dtos/list-entry-response.dto';
-import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
-import { OrganizationStageDto } from './dtos/organisation-stage.dto';
-import { OrganizationDto } from './api/dtos/organization.dto';
 import { AffinityServiceLogger } from './affinity.service.logger';
-import { AffinityCacheService } from './cache/affinity-cache.service';
+import { AffinityApiService } from './api/affinity-api.service';
+import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
 import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
+import { ListEntryResponseDto } from './api/dtos/list-entry-response.dto';
+import { OrganizationDto } from './api/dtos/organization.dto';
+import { AffinityCacheService } from './cache/affinity-cache.service';
+import { OrganizationStageDto } from './dtos/organisation-stage.dto';
 
 @Injectable()
 export class AffinityService {

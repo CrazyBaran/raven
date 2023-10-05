@@ -1,10 +1,10 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  Index,
   AfterInsert,
   AfterLoad,
+  Column,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('organisations')

@@ -1,9 +1,9 @@
-import { Injectable, Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { RedisStore } from 'cache-manager-ioredis-yet';
-import { OrganizationStageDto } from '../dtos/organisation-stage.dto';
 import { AFFINITY_CACHE } from '../affinity.const';
+import { OrganizationStageDto } from '../dtos/organisation-stage.dto';
 
 @Injectable()
 export class AffinityCacheService {

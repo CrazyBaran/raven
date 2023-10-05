@@ -1,5 +1,5 @@
-import { EntityType } from './list-type.dto';
 import { ListEntryResponseDto } from './list-entry-response.dto';
+import { EntityType } from './list-type.dto';
 
 export class OpportunityDto {
   public id: number;

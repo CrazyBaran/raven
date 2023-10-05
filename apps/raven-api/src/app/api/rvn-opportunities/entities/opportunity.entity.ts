@@ -1,12 +1,12 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  Index,
   AfterInsert,
   AfterLoad,
+  Column,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
 import { OrganisationEntity } from './organisation.entity';

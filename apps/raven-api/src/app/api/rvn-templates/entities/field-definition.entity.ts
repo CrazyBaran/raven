@@ -12,10 +12,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
+import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { FieldGroupEntity } from './field-group.entity';
-import { FieldDefinitionType } from '../enums/field-definition-type.enum';
 
 @Entity({ name: 'field_definitions' })
 @Index(['id', 'group'], { unique: true })

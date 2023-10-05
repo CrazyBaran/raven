@@ -1,6 +1,6 @@
 import { ActionType } from './action-type.dto';
-import { PersonDto } from './person.dto';
 import { FieldValueEntityDto } from './field-value-entity.dto';
+import { PersonDto } from './person.dto';
 
 export class FieldValueChangeDto {
   public id: number;

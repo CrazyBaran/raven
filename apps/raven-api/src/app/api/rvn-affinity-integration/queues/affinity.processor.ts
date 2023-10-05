@@ -1,10 +1,10 @@
-import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
-import { AffinityService } from '../affinity.service';
-import { JobPro } from '@taskforcesh/bullmq-pro';
-import { AFFINITY_QUEUE, AFFINITY_QUEUE__REGENERATE } from '../affinity.const';
 import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
-import { CommEmailTemplatesEnum } from '../../rvn-comm/templates/comm-email-templates.enum';
 import { EmailRecipients } from '@azure/communication-email';
+import { JobPro } from '@taskforcesh/bullmq-pro';
+import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
+import { CommEmailTemplatesEnum } from '../../rvn-comm/templates/comm-email-templates.enum';
+import { AFFINITY_QUEUE, AFFINITY_QUEUE__REGENERATE } from '../affinity.const';
+import { AffinityService } from '../affinity.service';
 import { AffinityProcessorLogger } from './affinity.processor.logger';
 
 export interface AffinityJobData<EncryptedType = Record<string, string>> {
