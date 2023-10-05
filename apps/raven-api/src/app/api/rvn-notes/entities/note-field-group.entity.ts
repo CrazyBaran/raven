@@ -13,10 +13,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
-import { NoteEntity } from './note.entity';
+import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { NoteFieldEntity } from './note-field.entity';
+import { NoteEntity } from './note.entity';
 
 @Entity({ name: 'note_field_groups' })
 @Index(['id', 'note'], { unique: true })
@@ -59,11 +59,21 @@ export class NoteFieldGroupEntity implements AuditableEntity {
   @UpdateDateColumn()
   public updatedAt: Date;
 
+  @Index()
+  @ManyToOne(() => UserEntity, { nullable: false })
+  @JoinColumn({ name: 'updated_by_id' })
+  public updatedBy: UserEntity;
+
+  @Column()
+  @RelationId((t: NoteFieldGroupEntity) => t.updatedBy)
+  public updatedById: string;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.noteId = this.noteId.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
+    this.updatedById = this.updatedById.toLowerCase();
   }
 }
