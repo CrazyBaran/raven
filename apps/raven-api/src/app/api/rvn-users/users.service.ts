@@ -4,6 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserData } from '@app/rvns-api';
 import { EnqueueJobEvent } from '@app/rvns-bull';
 
+import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AclService } from '../rvn-acl/acl.service';
 import { ShareTeamEntity } from '../rvn-acl/entities/share-team.entity';
 import {
@@ -12,12 +15,7 @@ import {
 } from '../rvn-comm/queues/comm-send-email/comm-send-email.processor';
 import { CommEmailTemplatesEnum } from '../rvn-comm/templates/comm-email-templates.enum';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
-import { TeamsService } from '../rvn-teams/teams.service';
 import { UserEntity } from './entities/user.entity';
-import { UsersServiceLogger } from './users.service.logger';
-import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { InjectRepository } from '@nestjs/typeorm';
 
 interface ListOptions {
   readonly ids?: string[];
@@ -39,10 +37,8 @@ export class UsersService {
   public constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
-    private readonly teamsService: TeamsService,
     private readonly aclService: AclService,
     private readonly eventEmitter: EventEmitter2,
-    private readonly logger: UsersServiceLogger,
   ) {}
 
   public async list(options: ListOptions): Promise<UserEntity[]> {
@@ -98,16 +94,6 @@ export class UsersService {
       user.email = email;
       user.name = options.name;
       user = await em.save(user);
-      // await this.aclService.share(
-      //   user,
-      //   options.roles.map((r) => r.name).includes(RoleEnum.TeamAdmin)
-      //     ? ShareRole.Owner
-      //     : ShareRole.Viewer,
-      //   {
-      //     resource: options.team,
-      //     entityManager: em,
-      //   },
-      // );
       return user;
     });
     await this.enqueueWelcomeEmail(user);

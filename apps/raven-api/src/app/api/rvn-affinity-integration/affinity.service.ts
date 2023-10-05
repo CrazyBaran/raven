@@ -65,6 +65,10 @@ export class AffinityService {
       }`,
     );
 
+    this.logger.debug('Reset data in cache');
+    await this.affinityCacheService.reset();
+    this.logger.debug('Done resetting');
+
     this.logger.debug('Storing data in cache');
     await this.affinityCacheService.addOrReplaceMany(matchedData);
     this.logger.debug('Stored data in cache');

@@ -56,4 +56,10 @@ export class AffinityCacheService {
       JSON.stringify(data),
     );
   }
+
+  public async reset(): Promise<void> {
+    if (await this.store.client.exists(AFFINITY_CACHE)) {
+      await this.store.client.del(AFFINITY_CACHE);
+    }
+  }
 }

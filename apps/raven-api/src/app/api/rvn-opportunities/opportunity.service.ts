@@ -18,7 +18,6 @@ export class OpportunityService {
     const opportunities = await this.opportunityRepository.find({
       skip: skip,
       take: take,
-      relations: ['organisationId'], // Join with OrganisationEntity
     });
 
     // Map OpportunityEntity and its related OrganisationEntity to OpportunityData

@@ -1,16 +1,17 @@
 import { CryptoModule } from '@app/rvnb-crypto';
 
-import { environment } from '../../../environments/environment';
-import { UsersSessionsModule } from '../rvn-users-sessions/users-sessions.module';
-import { UsersModule } from '../rvn-users/users.module';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { AzureADStrategy } from './strategies/azure-ad.strategy';
+import { environment } from '../../../environments/environment';
+import { UsersSessionsModule } from '../rvn-users-sessions/users-sessions.module';
+import { UsersCacheService } from '../rvn-users/users-cache.service';
+import { UsersModule } from '../rvn-users/users.module';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { AzureAdGuard } from './guards/azure-ad.guard';
+import { AzureADStrategy } from './strategies/azure-ad.strategy';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AzureAdGuard } from './guards/azure-ad.guard';
       provide: APP_GUARD,
       useClass: AzureAdGuard,
     },
+    UsersCacheService,
   ],
   exports: [AuthService],
   controllers: [AuthController],

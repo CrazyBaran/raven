@@ -24,8 +24,11 @@ export class OpportunityController {
   @ApiResponse({ status: 200, description: 'List of opportunities' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public async findAll(): Promise<OpportunityData[]> {
-    return await this.opportunityService.findAll();
+  public async findAll(
+    @Param('skip') skip = 0,
+    @Param('take') take = 10,
+  ): Promise<OpportunityData[]> {
+    return await this.opportunityService.findAll(skip, take);
   }
 
   @Get(':id')
