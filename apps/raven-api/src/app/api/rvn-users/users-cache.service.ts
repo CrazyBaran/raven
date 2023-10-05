@@ -11,7 +11,6 @@ export class UsersCacheService implements OnModuleInit {
   ) {}
   public async onModuleInit(): Promise<void> {
     const users = await this.usersService.list({});
-    console.log({ users });
     await this.cacheManager.reset();
     await Promise.all(
       users.map((user) => this.cacheManager.set(`user:${user.azureId}`, true)),

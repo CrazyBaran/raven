@@ -1,10 +1,7 @@
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
-import { AffinityQueueService } from './affinity-queue.service';
+import { AffinityService } from '../affinity.service';
 import { JobPro } from '@taskforcesh/bullmq-pro';
-import {
-  AFFINITY_QUEUE,
-  AFFINITY_QUEUE__REGENERATE,
-} from './affinity-queue.const';
+import { AFFINITY_QUEUE, AFFINITY_QUEUE__REGENERATE } from '../affinity.const';
 import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
 import { CommEmailTemplatesEnum } from '../../rvn-comm/templates/comm-email-templates.enum';
 import { EmailRecipients } from '@azure/communication-email';
@@ -27,7 +24,7 @@ export interface AffinityJobData<EncryptedType = Record<string, string>> {
 })
 export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobData> {
   public constructor(
-    private readonly affinityQueueService: AffinityQueueService,
+    private readonly affinityService: AffinityService,
     public readonly logger: AffinityProcessorLogger,
   ) {
     super(logger);
@@ -39,7 +36,7 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
   ): Promise<boolean> {
     switch (job.name) {
       case AFFINITY_QUEUE__REGENERATE: {
-        await this.affinityQueueService.regenerateAffinityData();
+        await this.affinityService.regenerateAffinityData();
         return true;
       }
       default: {

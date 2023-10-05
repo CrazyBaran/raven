@@ -6,6 +6,8 @@ import {
   Index,
   AfterInsert,
   AfterLoad,
+  JoinColumn,
+  RelationId,
 } from 'typeorm';
 import { OrganisationEntity } from './organisation.entity';
 
@@ -15,9 +17,13 @@ export class OpportunityEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @ManyToOne(() => OrganisationEntity, (organisation) => organisation.id)
+  @ManyToOne(() => OrganisationEntity, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'id' })
+  public organisation: OrganisationEntity;
+
   @Column()
-  public organisationId: number;
+  @RelationId((opportunity: OpportunityEntity) => opportunity.organisation)
+  public organisationId: string;
 
   @AfterInsert()
   @AfterLoad()

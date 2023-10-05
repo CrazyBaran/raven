@@ -1,18 +1,20 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AffinityOrganisation } from './entities/affinity-organisation.entity';
-import { AffinityApiService } from './affinity-api.service';
-import { AffinityApiController } from './affinity-api.controller';
+import { AffinityApiService } from './api/affinity-api.service';
+import { AffinityApiController } from './api/affinity-api.controller';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { AffinityProcessor } from './queues/affinity.processor';
-import { AffinityQueueService } from './queues/affinity-queue.service';
+import { AffinityService } from './affinity.service';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { BullService } from '../../core/bull.service';
-import { AFFINITY_QUEUE } from './queues/affinity-queue.const';
+import { AFFINITY_QUEUE } from './affinity.const';
 import { AffinityProcessorLogger } from './queues/affinity.processor.logger';
 import { AffinityController } from './affinity.controller';
 import { AffinityProducer } from './queues/affinity.producer';
+import { AffinityServiceLogger } from './affinity.service.logger';
+import { AffinityCacheService } from './cache/affinity-cache.service';
 
 @Module({
   imports: [
@@ -35,10 +37,12 @@ import { AffinityProducer } from './queues/affinity.producer';
   providers: [
     AffinityApiService,
     AffinityProcessor,
-    AffinityQueueService,
+    AffinityService,
     AffinitySettingsService,
     AffinityProcessorLogger,
     AffinityProducer,
+    AffinityServiceLogger,
+    AffinityCacheService,
   ],
   controllers: [AffinityApiController, AffinityController],
 })

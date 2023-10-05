@@ -1,10 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import {
-  AFFINITY_QUEUE,
-  AFFINITY_QUEUE__REGENERATE,
-} from './affinity-queue.const';
+import { AFFINITY_QUEUE, AFFINITY_QUEUE__REGENERATE } from '../affinity.const';
 
 @Injectable()
 export class AffinityProducer implements OnModuleInit {

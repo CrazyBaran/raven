@@ -12,6 +12,7 @@ import { OpportunityEntity } from './entities/opportunity.entity';
 import { ApiTags, ApiOperation, ApiResponse, ApiOAuth2 } from '@nestjs/swagger';
 import { Roles } from '@app/rvns-roles-api';
 import { RoleEnum } from '@app/rvns-roles';
+import { OpportunityData } from '@app/rvns-opportunities';
 
 @ApiTags('Opportunities')
 @Controller('opportunities')
@@ -23,8 +24,8 @@ export class OpportunityController {
   @ApiResponse({ status: 200, description: 'List of opportunities' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public findAll(): Promise<OpportunityEntity[]> {
-    return this.opportunityService.findAll();
+  public async findAll(): Promise<OpportunityData[]> {
+    return await this.opportunityService.findAll();
   }
 
   @Get(':id')

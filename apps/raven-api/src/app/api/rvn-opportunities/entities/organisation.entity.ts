@@ -16,6 +16,9 @@ export class OrganisationEntity {
   @Column()
   public name: string;
 
+  @Column('simple-array')
+  public domains: string[];
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {

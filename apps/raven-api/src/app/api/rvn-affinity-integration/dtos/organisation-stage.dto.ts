@@ -1,7 +1,7 @@
-import { OrganizationDto } from './api/organization.dto';
-import { FieldValueEntityDto } from './api/field-value-entity.dto';
+import { OrganizationDto } from '../api/dtos/organization.dto';
+import { FieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-dropdown.dto';
 
 export class OrganizationStageDto {
   public organizationDto: OrganizationDto;
-  public stage?: FieldValueEntityDto;
+  public stage?: FieldValueRankedDropdownDto;
 }
