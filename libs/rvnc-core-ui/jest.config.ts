@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'raven-client',
+  displayName: 'rvnc-core-ui',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/apps/raven-client',
+  coverageDirectory: '../../coverage/libs/rvnc-core-ui',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

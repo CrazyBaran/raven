@@ -1,9 +1,10 @@
+@import 'assets/styles/variables';
+@import 'assets/styles/kendo-theme';
+
+// When you are finished with your customization, import the theme
+@import '@progress/kendo-theme-default/dist/all.scss';
+
 @import 'assets/styles/fonts';
-@import 'assets/styles/layout';
-@import 'assets/styles/data-table';
-@import 'assets/styles/dropdown';
-@import 'assets/styles/link';
-@import 'assets/styles/button-underline';
 
 @import 'assets/fontawesome/scss/fontawesome';
 @import 'assets/fontawesome/scss/brands';

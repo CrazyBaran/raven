@@ -17,12 +17,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ErrorInterceptor, RvncAuthModule } from '@app/rvnc-auth';
 import { ENVIRONMENT } from '@app/rvnc-environment';
 
-import { AccessDeniedPageComponent } from './pages/access-denied-page/access-denied-page.component';
-import { BadGatewayComponent } from './pages/bad-gateway/bad-gateway.component';
-import { HomePageComponent } from './pages/home-page/home-page.component';
-
-import { MainContainerComponent } from './components/main-container/main-container.component';
-
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -34,14 +28,7 @@ import { LoginComponent } from './pages/login/login.component';
 const protectedResourceMap = new Map<string, Array<string>>();
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomePageComponent,
-    MainContainerComponent,
-    AccessDeniedPageComponent,
-    BadGatewayComponent,
-    LoginComponent,
-  ],
+  declarations: [AppComponent, LoginComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

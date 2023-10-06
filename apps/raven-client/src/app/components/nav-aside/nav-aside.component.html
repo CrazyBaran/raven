@@ -1,0 +1,31 @@
+<aside class="nav-aside">
+  <div class="nav-aside__actions">
+    <kendo-button
+      *ngIf="enableToggle"
+      iconClass="fa-solid fa-grid"
+      themeColor="primary"
+      size="large"
+      (click)="handleToggleSidebar()"
+    />
+
+    <div class="nav-aside__routes">
+      <ul>
+        <li *ngFor="let route of routes">
+          <kendo-button
+            iconClass="{{ route.icon }} mr-3"
+            class="w-52"
+            size="large"
+            themeColor="secondary"
+            fillMode="outline"
+          >
+            {{ route.name || '' }}
+          </kendo-button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="nav-aside__content" [@collapse] *ngIf="enableToggle && isOpen()">
+    <ng-content />
+  </div>
+</aside>

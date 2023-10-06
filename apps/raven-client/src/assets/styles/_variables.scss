@@ -1,0 +1,24 @@
+$primary-color: #00ccbe;
+$secondary-color: #002c3c;
+$tertiary-color: #9bcbeb;
+
+$error-color: #f31700;
+$info-color: #0058e9;
+$success-color: #37b400;
+$warning-color: #ffc000;
+
+:root {
+  // APP MAIN COLORS
+  --rv-primary: #{$primary-color};
+  --rv-secondary: #{$secondary-color};
+  --rv-tertiary: #{$tertiary-color};
+
+  --rv-error: #{$error-color};
+  --rv-info: #{$info-color};
+  --rv-success: #{$success-color};
+  --rv-warning: #{$warning-color};
+
+  --rv-base-border-radius: 4px;
+  --rv-sm-border-radius: 2px;
+  --rv-bg-border-radius: 6px;
+}

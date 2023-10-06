@@ -1,0 +1,15 @@
+:host {
+  background-color: var(--rv-main-bg);
+
+  @apply grid h-full w-full overflow-hidden;
+}
+
+.home-page {
+  @apply grid h-full w-full;
+
+  grid-template-columns: auto 1fr;
+
+  &__content {
+    @apply p-6;
+  }
+}

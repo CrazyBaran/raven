@@ -9,8 +9,7 @@ describe('AccessDeniedPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AccessDeniedPageComponent],
-      imports: [RouterTestingModule],
+      imports: [AccessDeniedPageComponent, RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccessDeniedPageComponent);

@@ -1,0 +1,31 @@
+:host {
+  @apply grid h-full;
+}
+
+.nav-aside {
+  @apply grid grid-flow-col shadow-md;
+
+  background-color: #c0e9e6;
+
+  &__actions {
+    @apply grid items-start gap-10 p-4;
+
+    grid-template-rows: auto 1fr;
+  }
+
+  &__routes {
+    ul {
+      li {
+        &:not(:last-of-type) {
+          @apply mb-4;
+        }
+      }
+    }
+  }
+
+  &__content {
+    @apply overflow-x-hidden p-4;
+
+    background-color: #d6f1ef;
+  }
+}
