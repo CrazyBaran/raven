@@ -3,24 +3,7 @@ import Redis from 'ioredis';
 
 import { PlatformModule } from '@app/rvnb-platform';
 
-import { environment } from '../../environments/environment';
-import { AclModule } from '../api/rvn-acl/acl.module';
-import { AuthModule } from '../api/rvn-auth/auth.module';
-import { CommModule } from '../api/rvn-comm/comm.module';
-import { TeamsModule } from '../api/rvn-teams/teams.module';
-import { UsersSessionsModule } from '../api/rvn-users-sessions/users-sessions.module';
-import { UsersModule } from '../api/rvn-users/users.module';
-import { WebSocketsModule } from '../api/rvn-web-sockets/web-sockets.module';
-import { BullService } from './bull.service';
-import { HttpCacheInterceptor } from './http-cache.interceptor';
-import { RequestLoggerMiddleware } from './request-logger.middleware';
-import { RequestLogger } from './request.logger';
-import { SentryModule } from './sentry/sentry.module';
-import { SwaggerService } from './swagger.service';
-import { ThrottlerGuard } from './throttler.guard';
-import { TransformInterceptor } from './transform.interceptor';
 import { CacheModule } from '@nestjs/cache-manager';
-import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import {
   MiddlewareConsumer,
   Module,
@@ -33,11 +16,29 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Sentry from '@sentry/node';
 import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
+import { environment } from '../../environments/environment';
+import { AclModule } from '../api/rvn-acl/acl.module';
+import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affinity-integration.module';
 import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware';
 import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
-import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affinity-integration.module';
-import { TemplatesModule } from '../api/rvn-templates/templates.module';
+import { AuthModule } from '../api/rvn-auth/auth.module';
+import { CommModule } from '../api/rvn-comm/comm.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
+import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
+import { PipelineModule } from '../api/rvn-pipeline/pipeline.module';
+import { TeamsModule } from '../api/rvn-teams/teams.module';
+import { TemplatesModule } from '../api/rvn-templates/templates.module';
+import { UsersSessionsModule } from '../api/rvn-users-sessions/users-sessions.module';
+import { UsersModule } from '../api/rvn-users/users.module';
+import { WebSocketsModule } from '../api/rvn-web-sockets/web-sockets.module';
+import { BullService } from './bull.service';
+import { HttpCacheInterceptor } from './http-cache.interceptor';
+import { RequestLoggerMiddleware } from './request-logger.middleware';
+import { RequestLogger } from './request.logger';
+import { SentryModule } from './sentry/sentry.module';
+import { SwaggerService } from './swagger.service';
+import { ThrottlerGuard } from './throttler.guard';
+import { TransformInterceptor } from './transform.interceptor';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { NotesModule } from '../api/rvn-notes/notes.module';
     AffinityIntegrationModule,
     TemplatesModule,
     NotesModule,
+    PipelineModule,
   ],
   providers: [
     // core
