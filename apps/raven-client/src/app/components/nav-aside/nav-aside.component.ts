@@ -10,12 +10,13 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { LoginComponent } from '../../pages/login/login.component';
 import { UiNavAsideRoute } from './nav-aside.interface';
 
 @Component({
   selector: 'app-nav-aside',
   standalone: true,
-  imports: [CommonModule, ButtonsModule, RouterLink],
+  imports: [CommonModule, ButtonsModule, RouterLink, LoginComponent],
   templateUrl: './nav-aside.component.html',
   styleUrls: ['./nav-aside.component.scss'],
   animations: [

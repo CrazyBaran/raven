@@ -9,6 +9,7 @@ import {
   MsalInterceptor,
   MsalModule,
   MsalRedirectComponent,
+  ProtectedResourceScopes,
 } from '@azure/msal-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -23,12 +24,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
 import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
-import { LoginComponent } from './pages/login/login.component';
 
 const protectedResourceMap = new Map<string, Array<string>>();
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -57,7 +57,10 @@ const protectedResourceMap = new Map<string, Array<string>>();
       },
       {
         interactionType: InteractionType.Redirect,
-        protectedResourceMap,
+        protectedResourceMap: new Map<
+          string,
+          Array<string | ProtectedResourceScopes> | null
+        >([[`${environment.apiUrl}/*`, ['user.read']]]),
       },
     ),
     StoreModule.forRoot({}),
