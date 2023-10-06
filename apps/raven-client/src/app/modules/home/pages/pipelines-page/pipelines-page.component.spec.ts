@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { PipelinesPageComponent } from './pipelines-page.component';
 
 describe('PipelinesPageComponent', () => {
@@ -9,6 +10,7 @@ describe('PipelinesPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PipelinesPageComponent, HttpClientModule],
+      providers: [provideMockStore()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PipelinesPageComponent);
