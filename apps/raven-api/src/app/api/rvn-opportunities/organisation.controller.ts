@@ -1,17 +1,18 @@
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Put,
-  Delete,
-  Param,
-  Body,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiOAuth2 } from '@nestjs/swagger';
-import { OrganisationService } from './organisation.service';
+import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { OrganisationData } from '../../../../../../libs/rvns-opportunities/src/lib/data/organisation-data.interface';
 import { OrganisationEntity } from './entities/organisation.entity';
-import { Roles } from '@app/rvns-roles-api';
-import { RoleEnum } from '@app/rvns-roles';
+import { OrganisationService } from './organisation.service';
 
 @ApiTags('Organisations')
 @Controller('organisations')
@@ -25,7 +26,7 @@ export class OrganisationController {
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public findAll(): Promise<OrganisationEntity[]> {
+  public findAll(): Promise<OrganisationData[]> {
     return this.organisationService.findAll();
   }
 
