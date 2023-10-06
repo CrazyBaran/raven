@@ -9,6 +9,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OpportunityEntity } from './entities/opportunity.entity';
@@ -25,8 +26,8 @@ export class OpportunityController {
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public async findAll(
-    @Param('skip') skip = 0,
-    @Param('take') take = 10,
+    @Query('skip') skip: number,
+    @Query('take') take: number,
   ): Promise<OpportunityData[]> {
     return await this.opportunityService.findAll(skip, take);
   }

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
-import { OpportunityEntity } from './entities/opportunity.entity';
 
 describe('OpportunityController', () => {
   let controller: OpportunityController;
@@ -37,7 +37,7 @@ describe('OpportunityController', () => {
     it('should return an array of opportunities', async () => {
       const result = [];
       mockService.findAll.mockReturnValue(result);
-      expect(await controller.findAll()).toBe(result);
+      expect(await controller.findAll(0, 10)).toBe(result);
     });
   });
 
