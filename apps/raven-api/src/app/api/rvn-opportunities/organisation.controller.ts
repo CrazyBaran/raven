@@ -1,3 +1,4 @@
+import { OrganisationData } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import {
@@ -10,7 +11,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OrganisationData } from '../../../../../../libs/rvns-opportunities/src/lib/data/organisation-data.interface';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
 

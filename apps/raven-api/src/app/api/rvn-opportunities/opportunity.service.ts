@@ -5,13 +5,14 @@ import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
+import { OrganisationEntity } from './entities/organisation.entity';
 
 @Injectable()
 export class OpportunityService {
   public constructor(
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
-    private readonly affinityCacheService: AffinityCacheService,
+    private readonly affinityCacheService: AffinityCacheService, // private readonly pipelineService: PipelineService,
   ) {}
 
   public async findAll(skip = 0, take = 10): Promise<OpportunityData[]> {
@@ -174,5 +175,30 @@ export class OpportunityService {
         order: entity?.pipelineStage?.order,
       },
     };
+  }
+
+  public async createFromAffinity(
+    opportunityAffinityInternalId: number,
+  ): Promise<OpportunityData> {
+    const affinityData = await this.affinityCacheService.get(
+      opportunityAffinityInternalId.toString(),
+    );
+
+    const organisation = new OrganisationEntity();
+    organisation.name = affinityData.organizationDto.name;
+    organisation.domains = affinityData.organizationDto.domains;
+
+    const opportunity = new OpportunityEntity();
+    opportunity.organisation = organisation;
+
+    // TODO: assign pipeline stage
+    // const pipelineDefinition = await this.pipelineDefinitionService.getDefaultDefinition();
+    // const pipelineStage = await this.pipelineStageService.mapStage(pipelineDefinition, affinityData.stageDto.text);
+    // opportunity.pipelineDefinition = pipelineDefinition;
+    // opportunity.pipelineStage = pipelineStage;
+
+    const entity = await this.opportunityRepository.save(opportunity);
+
+    return this.entityToData(entity, affinityData);
   }
 }

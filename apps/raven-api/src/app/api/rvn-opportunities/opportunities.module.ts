@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AffinityIntegrationModule } from '../rvn-affinity-integration/affinity-integration.module';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OpportunityController } from './opportunity.controller';
@@ -15,6 +16,7 @@ import { OrganisationService } from './organisation.service';
   imports: [
     TypeOrmModule.forFeature([OpportunityEntity, OrganisationEntity]),
     AffinityIntegrationModule,
+    EventEmitterModule,
   ],
   providers: [OrganisationService, OpportunityService, AffinityCacheService],
   controllers: [OrganisationController, OpportunityController],
