@@ -1,4 +1,5 @@
 import { Module, ParseUUIDPipe } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
@@ -13,6 +14,7 @@ import { NotesService } from './notes.service';
       NoteEntity,
       NoteFieldGroupEntity,
       NoteFieldEntity,
+      EventEmitterModule,
     ]),
   ],
   controllers: [NotesController],

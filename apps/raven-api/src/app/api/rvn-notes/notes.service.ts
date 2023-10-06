@@ -1,8 +1,10 @@
 import { NoteFieldData, NoteWithRelationsData } from '@app/rvns-notes';
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { NoteAssignedToAffinityOpportunityEvent } from '../rvn-opportunities/events/note-assigned-to-affinity-opportunity.event';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
@@ -13,6 +15,11 @@ interface UpdateNoteFieldOptions {
   value: string;
 }
 
+interface UpdateNoteOptions {
+  opportunityId?: string;
+  opportunityAffinityInternalId?: number;
+}
+
 @Injectable()
 export class NotesService {
   public constructor(
@@ -20,6 +27,7 @@ export class NotesService {
     private readonly noteRepository: Repository<NoteEntity>,
     @InjectRepository(NoteFieldEntity)
     private readonly noteFieldRepository: Repository<NoteFieldEntity>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async getAllNotes(): Promise<NoteEntity[]> {
@@ -67,7 +75,31 @@ export class NotesService {
   ): Promise<NoteFieldEntity> {
     noteFieldEntity.value = options.value;
     noteFieldEntity.updatedBy = userEntity;
+    noteFieldEntity.updatedAt = new Date();
     return await this.noteFieldRepository.save(noteFieldEntity);
+  }
+
+  public async updateNote(
+    noteEntity: NoteEntity,
+    userEntity: UserEntity,
+    options: UpdateNoteOptions,
+  ): Promise<NoteEntity> {
+    if (options.opportunityId) {
+      noteEntity.opportunityId = options.opportunityId;
+      noteEntity.updatedBy = userEntity;
+      noteEntity.updatedAt = new Date();
+      return await this.noteRepository.save(noteEntity);
+    } else if (options.opportunityAffinityInternalId) {
+      this.eventEmitter.emit(
+        `note.assigned.affinity-opportunity`,
+        new NoteAssignedToAffinityOpportunityEvent(
+          noteEntity,
+          options.opportunityAffinityInternalId,
+          userEntity,
+        ),
+      );
+      return noteEntity;
+    }
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
