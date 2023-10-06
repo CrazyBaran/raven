@@ -6,7 +6,6 @@ import { LoginComponent } from './pages/login/login.component';
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
     loadChildren: () =>
       import('./modules/home/home-routes').then((m) => m.HOME_ROUTES),
   },
@@ -15,7 +14,7 @@ const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path: '',
+    path: 'auth',
     loadChildren: () => import('@app/rvnc-auth').then((m) => m.RvncAuthModule),
   },
 ];

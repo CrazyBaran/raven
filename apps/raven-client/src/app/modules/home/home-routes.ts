@@ -8,8 +8,8 @@ export const HOME_ROUTES: Routes = [
     children: [
       {
         path: '',
-        pathMatch: 'full',
         redirectTo: 'pipelines',
+        pathMatch: 'full',
       },
       {
         path: 'pipelines',

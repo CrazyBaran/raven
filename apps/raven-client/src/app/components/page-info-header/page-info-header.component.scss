@@ -1,0 +1,5 @@
+.page-info-header {
+  background-color: var(--rv-secondary);
+
+  @apply flex min-h-[4.75rem] items-center justify-center text-xl text-white;
+}

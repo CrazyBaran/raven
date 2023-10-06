@@ -45,8 +45,6 @@ export class NavAsideComponent {
   public isOpen = signal(true);
 
   public handleToggleSidebar(): void {
-    console.log('handleToggleSidebar');
-
     this.isOpen.update((isOpen) => !isOpen);
   }
 }

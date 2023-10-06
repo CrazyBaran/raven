@@ -7,6 +7,12 @@
 
   background-color: #c0e9e6;
 
+  &__logo {
+    color: var(--rv-secondary);
+
+    @apply flex h-[2.75rem] items-center justify-center text-4xl;
+  }
+
   &__actions {
     @apply grid items-start gap-10 p-4;
 
@@ -16,6 +22,8 @@
   &__routes {
     ul {
       li {
+        @apply grid grid-flow-row text-xs;
+
         &:not(:last-of-type) {
           @apply mb-4;
         }

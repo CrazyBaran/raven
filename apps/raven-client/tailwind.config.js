@@ -57,20 +57,24 @@ module.exports = {
     plugin(({ addBase }) => {
       addBase({
         h1: {
-          fontSize: '5rem',
-          fontWeight: 500,
+          fontSize: '1.75rem',
+          lineHeight: '2.125rem',
+          fontWeight: 400,
         },
         h2: {
-          fontSize: '3rem',
+          fontSize: '1.1875rem',
+          lineHeight: '1.5625rem',
           fontWeight: 500,
         },
         h3: {
-          fontSize: '2rem',
-          fontWeight: 500,
+          fontSize: '0.875rem',
+          lineHeight: '1.1875rem',
+          fontWeight: 600,
         },
         h4: {
-          fontSize: '1.625rem',
-          fontWeight: 500,
+          fontSize: '0.75rem',
+          lineHeight: '1rem',
+          fontWeight: 600,
         },
       });
     }),
