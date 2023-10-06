@@ -23,6 +23,7 @@ export class AzureADStrategy extends PassportStrategy(
       issuer: [environment.azureAd.issuer],
       audience: [environment.azureAd.audience],
       loggingLevel: 'info',
+      loggingNoPII: false,
     });
   }
 

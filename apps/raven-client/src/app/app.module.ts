@@ -60,7 +60,12 @@ const protectedResourceMap = new Map<string, Array<string>>();
         protectedResourceMap: new Map<
           string,
           Array<string | ProtectedResourceScopes> | null
-        >([[`${environment.apiUrl}/*`, ['user.read']]]),
+        >([
+          [
+            `${environment.apiUrl}/*`,
+            ['https://raven.test.mubadalacapital.ae/api'],
+          ],
+        ]),
       },
     ),
     StoreModule.forRoot({}),
