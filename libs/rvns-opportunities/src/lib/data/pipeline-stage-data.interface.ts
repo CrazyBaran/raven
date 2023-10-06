@@ -1,3 +1,4 @@
 export interface PipelineStageData {
-  readonly status: string;
+  readonly displayName: string;
+  readonly order: number;
 }

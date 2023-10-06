@@ -28,8 +28,6 @@ export class AffinityCacheService {
   }
 
   public async getAll(
-    skip = 0,
-    take = 10,
     filters?: (data: OrganizationStageDto) => boolean,
   ): Promise<OrganizationStageDto[]> {
     const rawData = await this.store.client.hgetall(AFFINITY_CACHE);
@@ -39,9 +37,7 @@ export class AffinityCacheService {
     if (filters) {
       data = data.filter(filters);
     }
-
-    // Apply paging using skip/take
-    return data.slice(skip, skip + take);
+    return data;
   }
 
   public async get(id: string): Promise<OrganizationStageDto | null> {
