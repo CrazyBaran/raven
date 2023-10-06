@@ -8,4 +8,5 @@ export interface NoteFieldData {
   readonly updatedAt: Date;
   readonly createdAt: Date;
   readonly createdById: string;
+  readonly updatedById: string;
 }

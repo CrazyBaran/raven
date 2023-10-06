@@ -1,10 +1,19 @@
+import { FieldDefinitionType } from '@app/rvns-templates';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../rvn-users/entities/user.entity';
+import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
+import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
 
 describe('NotesService', () => {
   let service: NotesService;
+  let mockNoteRepository: jest.Mocked<Partial<Repository<NoteEntity>>>;
+  let mockNoteFieldRepository: jest.Mocked<
+    Partial<Repository<NoteFieldEntity>>
+  >;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -12,15 +21,72 @@ describe('NotesService', () => {
         NotesService,
         {
           provide: getRepositoryToken(NoteEntity),
-          useValue: {},
+          useValue: {
+            find: jest.fn(),
+            save: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(NoteFieldEntity),
+          useValue: {
+            save: jest.fn(),
+          },
         },
       ],
     }).compile();
 
     service = module.get<NotesService>(NotesService);
+    mockNoteRepository = module.get(getRepositoryToken(NoteEntity));
+    mockNoteFieldRepository = module.get(getRepositoryToken(NoteFieldEntity));
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('getAllNotes', () => {
+    it('should return an array of notes', async () => {
+      const result = [new NoteEntity()];
+      jest
+        .spyOn(mockNoteRepository, 'find')
+        .mockImplementation(async () => result);
+      expect(await service.getAllNotes()).toBe(result);
+    });
+  });
+
+  describe('createNote', () => {
+    it('should create and return an empty note, when no template passed', async () => {
+      const userEntity = jest.genMockFromModule<UserEntity>(
+        '../rvn-users/entities/user.entity',
+      );
+
+      const noteField = new NoteFieldEntity();
+      noteField.name = 'Note';
+      noteField.order = 1;
+      noteField.createdBy = userEntity;
+      noteField.updatedBy = userEntity;
+      noteField.type = FieldDefinitionType.RichText;
+
+      const noteFieldGroup = new NoteFieldGroupEntity();
+      noteFieldGroup.name = 'New Note Group';
+      noteFieldGroup.order = 1;
+      noteFieldGroup.createdBy = userEntity;
+      noteFieldGroup.updatedBy = userEntity;
+      noteFieldGroup.noteFields = [noteField];
+
+      const note = new NoteEntity();
+      note.name = 'New Note';
+      note.version = 1;
+      note.createdBy = userEntity;
+      note.updatedBy = userEntity;
+      note.noteFieldGroups = [noteFieldGroup];
+
+      jest.spyOn(mockNoteRepository, 'save').mockResolvedValue(note);
+
+      const result = await service.createNote(userEntity, null);
+
+      expect(mockNoteRepository.save).toHaveBeenCalledWith(note);
+      expect(result).toBe(note);
+    });
   });
 });

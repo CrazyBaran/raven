@@ -6,4 +6,5 @@ export interface NoteFieldGroupDataInterface {
   readonly updatedAt: Date;
   readonly createdAt: Date;
   readonly createdById: string;
+  readonly updatedById: string;
 }

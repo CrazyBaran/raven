@@ -32,6 +32,7 @@ export class NoteFieldGroupEntity implements AuditableEntity {
 
   @OneToMany(() => NoteFieldEntity, (nfd) => nfd.noteGroup, {
     eager: true,
+    cascade: ['insert'],
   })
   public noteFields: NoteFieldEntity[];
 

@@ -7,6 +7,7 @@ export interface NoteData {
   readonly createdById: string;
   readonly updatedAt: Date;
   readonly createdAt: Date;
+  readonly updatedById: string;
 }
 
 interface NoteFieldGroupsWithFieldData extends NoteFieldGroupDataInterface {

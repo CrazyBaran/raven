@@ -17,14 +17,8 @@
       "options": {
         "jestConfig": "libs/rvns-notes/jest.config.ts",
         "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
       }
     }
   },
-  "tags": []
+  "tags": ["client", "api"]
 }

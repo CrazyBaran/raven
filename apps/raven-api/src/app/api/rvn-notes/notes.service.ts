@@ -1,4 +1,4 @@
-import { NoteWithRelationsData } from '@app/rvns-notes';
+import { NoteFieldData, NoteWithRelationsData } from '@app/rvns-notes';
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,12 +9,24 @@ import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 
+interface UpdateNoteFieldOptions {
+  value: string;
+}
+
 @Injectable()
 export class NotesService {
   public constructor(
     @InjectRepository(NoteEntity)
     private readonly noteRepository: Repository<NoteEntity>,
+    @InjectRepository(NoteFieldEntity)
+    private readonly noteFieldRepository: Repository<NoteFieldEntity>,
   ) {}
+
+  public async getAllNotes(): Promise<NoteEntity[]> {
+    return this.noteRepository.find({
+      relations: ['noteFieldGroups', 'noteFieldGroups.noteFields'],
+    });
+  }
 
   public async createNote(
     userEntity: UserEntity,
@@ -27,21 +39,35 @@ export class NotesService {
     const noteField = new NoteFieldEntity();
     noteField.name = 'Note';
     noteField.order = 1;
+    noteField.createdBy = userEntity;
+    noteField.updatedBy = userEntity;
     noteField.type = FieldDefinitionType.RichText;
 
     const noteFieldGroup = new NoteFieldGroupEntity();
-    noteFieldGroup.name = 'Note';
+    noteFieldGroup.name = 'New Note Group';
     noteFieldGroup.order = 1;
     noteFieldGroup.createdBy = userEntity;
+    noteFieldGroup.updatedBy = userEntity;
     noteFieldGroup.noteFields = [noteField];
 
     const note = new NoteEntity();
-    note.name = 'Empty Note';
+    note.name = 'New Note';
     note.version = 1;
     note.createdBy = userEntity;
+    note.updatedBy = userEntity;
     note.noteFieldGroups = [noteFieldGroup];
 
     return await this.noteRepository.save(note);
+  }
+
+  public async updateNoteField(
+    noteFieldEntity: NoteFieldEntity,
+    options: UpdateNoteFieldOptions,
+    userEntity: UserEntity,
+  ): Promise<NoteFieldEntity> {
+    noteFieldEntity.value = options.value;
+    noteFieldEntity.updatedBy = userEntity;
+    return await this.noteFieldRepository.save(noteFieldEntity);
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
@@ -49,6 +75,7 @@ export class NotesService {
       id: noteEntity.id,
       name: noteEntity.name,
       createdById: noteEntity.createdById,
+      updatedById: noteEntity.updatedById,
       updatedAt: noteEntity.updatedAt,
       createdAt: noteEntity.createdAt,
       noteFieldGroups: noteEntity.noteFieldGroups.map((noteFieldGroup) => {
@@ -58,23 +85,31 @@ export class NotesService {
           order: noteFieldGroup.order,
           noteId: noteFieldGroup.noteId,
           createdById: noteFieldGroup.createdById,
+          updatedById: noteFieldGroup.updatedById,
           updatedAt: noteFieldGroup.updatedAt,
           createdAt: noteFieldGroup.createdAt,
-          noteFields: noteFieldGroup.noteFields.map((noteField) => {
-            return {
-              id: noteField.id,
-              name: noteField.name,
-              type: noteField.type,
-              order: noteField.order,
-              value: noteField.value,
-              noteGroupId: noteField.noteGroupId,
-              createdById: noteField.createdById,
-              updatedAt: noteField.updatedAt,
-              createdAt: noteField.createdAt,
-            };
-          }),
+          noteFields: noteFieldGroup.noteFields.map((noteField) =>
+            this.noteFieldEntityToNoteFieldData(noteField),
+          ),
         };
       }),
+    };
+  }
+
+  public noteFieldEntityToNoteFieldData(
+    noteFieldEntity: NoteFieldEntity,
+  ): NoteFieldData {
+    return {
+      id: noteFieldEntity.id,
+      name: noteFieldEntity.name,
+      type: noteFieldEntity.type,
+      order: noteFieldEntity.order,
+      value: noteFieldEntity.value,
+      noteGroupId: noteFieldEntity.noteGroupId,
+      createdById: noteFieldEntity.createdById,
+      updatedById: noteFieldEntity.updatedById,
+      updatedAt: noteFieldEntity.updatedAt,
+      createdAt: noteFieldEntity.createdAt,
     };
   }
 
@@ -86,11 +121,13 @@ export class NotesService {
     note.name = templateEntity.name;
     note.version = 1;
     note.createdBy = userEntity;
+    note.updatedBy = userEntity;
     note.noteFieldGroups = templateEntity.fieldGroups.map((fieldGroup) => {
       const noteFieldGroup = new NoteFieldGroupEntity();
       noteFieldGroup.name = fieldGroup.name;
       noteFieldGroup.order = fieldGroup.order;
       noteFieldGroup.createdBy = userEntity;
+      noteFieldGroup.updatedBy = userEntity;
 
       noteFieldGroup.noteFields = fieldGroup.fieldDefinitions.map(
         (fieldDefinition) => {
@@ -99,6 +136,7 @@ export class NotesService {
           noteField.order = fieldDefinition.order;
           noteField.type = fieldDefinition.type;
           noteField.createdBy = userEntity;
+          noteField.updatedBy = userEntity;
           return noteField;
         },
       );

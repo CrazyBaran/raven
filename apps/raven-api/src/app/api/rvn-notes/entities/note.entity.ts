@@ -39,7 +39,10 @@ export class NoteEntity implements AuditableEntity {
   @RelationId((n: NoteEntity) => n.previousVersion)
   public previousVersionId: string | null;
 
-  @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.note, { eager: true })
+  @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.note, {
+    eager: true,
+    cascade: ['insert'],
+  })
   public noteFieldGroups: NoteFieldGroupEntity[];
 
   @Index()
