@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { PageInfoHeaderComponent } from '../../../../components/page-info-header/page-info-header.component';
+import { PageLayoutComponent } from '../../../../components/page-layout/page-layout.component';
+import { KanbanBoardComponent } from '../../components/kanban-board/kanban-board.component';
 
 @Component({
   selector: 'app-pipelines-page',
   standalone: true,
-  imports: [CommonModule, PageInfoHeaderComponent],
+  imports: [CommonModule, PageLayoutComponent, KanbanBoardComponent],
   templateUrl: './pipelines-page.component.html',
   styleUrls: ['./pipelines-page.component.scss'],
 })
