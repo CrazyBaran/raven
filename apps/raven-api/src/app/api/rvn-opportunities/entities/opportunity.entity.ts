@@ -10,6 +10,7 @@ import {
   RelationId,
 } from 'typeorm';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
+import { PipelineStageEntity } from '../../rvn-pipeline/entities/pipeline-stage.entity';
 import { OrganisationEntity } from './organisation.entity';
 
 @Entity({ name: 'opportunities' })
@@ -37,6 +38,16 @@ export class OpportunityEntity {
     (opportunity: OpportunityEntity) => opportunity.pipelineDefinition,
   )
   public pipelineDefinitionId: string;
+
+  @ManyToOne(() => PipelineStageEntity, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'pipeline_stage_id' })
+  public pipelineStage: PipelineStageEntity;
+
+  @Column()
+  @RelationId((opportunity: OpportunityEntity) => opportunity.pipelineStage)
+  public pipelineStageId: string;
 
   @AfterInsert()
   @AfterLoad()

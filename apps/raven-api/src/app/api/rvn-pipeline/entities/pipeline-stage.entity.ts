@@ -37,6 +37,9 @@ export class PipelineStageEntity {
   @Column()
   public mappedFrom: string;
 
+  @Column()
+  public order: number;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
