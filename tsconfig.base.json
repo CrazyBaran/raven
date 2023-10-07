@@ -32,6 +32,7 @@
       "@app/rvns-bull": ["libs/rvns-bull/src/index.ts"],
       "@app/rvns-notes": ["libs/rvns-notes/src/index.ts"],
       "@app/rvns-opportunities": ["libs/rvns-opportunities/src/index.ts"],
+      "@app/rvns-pipelines": ["libs/rvns-pipelines/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],
       "@app/rvns-teams": ["libs/rvns-teams/src/index.ts"],

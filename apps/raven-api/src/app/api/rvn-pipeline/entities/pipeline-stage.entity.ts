@@ -22,12 +22,11 @@ export class PipelineStageEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'pipeline_definition_id' })
-  public pipelineDefinitionEntity: PipelineDefinitionEntity;
+  public pipelineDefinition: PipelineDefinitionEntity;
 
   @Column()
   @RelationId(
-    (pipelineStage: PipelineStageEntity) =>
-      pipelineStage.pipelineDefinitionEntity,
+    (pipelineStage: PipelineStageEntity) => pipelineStage.pipelineDefinition,
   )
   public pipelineDefinitionId: string;
 

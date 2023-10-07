@@ -25,7 +25,7 @@ import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-id
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
-import { UpdateNoteFieldDto } from './dto/UpdateNoteFieldDto';
+import { UpdateNoteFieldDto } from './dto/update-note-field.dto';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';

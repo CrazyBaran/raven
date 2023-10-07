@@ -1,21 +1,21 @@
 {
-  "name": "rvns-opportunities",
+  "name": "rvns-pipelines",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/rvns-opportunities/src",
+  "sourceRoot": "libs/rvns-pipelines/src",
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/rvns-opportunities/**/*.ts"]
+        "lintFilePatterns": ["libs/rvns-pipelines/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/rvns-opportunities/jest.config.ts",
+        "jestConfig": "libs/rvns-pipelines/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -26,5 +26,5 @@
       }
     }
   },
-  "tags": ["api", "client"]
+  "tags": ["client", "api"]
 }
