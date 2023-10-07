@@ -4,15 +4,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
+import { PipelineService } from '../rvn-pipeline/pipeline.service';
 import { OpportunityEntity } from './entities/opportunity.entity';
-import { OrganisationEntity } from './entities/organisation.entity';
 
 @Injectable()
 export class OpportunityService {
   public constructor(
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
-    private readonly affinityCacheService: AffinityCacheService, // private readonly pipelineService: PipelineService,
+    private readonly affinityCacheService: AffinityCacheService,
+    private readonly pipelineService: PipelineService,
   ) {}
 
   public async findAll(skip = 0, take = 10): Promise<OpportunityData[]> {
@@ -43,8 +44,10 @@ export class OpportunityService {
             : opportunity.organisation.domains,
         },
         stage: {
+          id: opportunity.pipelineStage.id,
           displayName: opportunity.pipelineStage.displayName,
           order: opportunity.pipelineStage.order,
+          mappedFrom: opportunity.pipelineStage.mappedFrom,
         },
       };
 
@@ -67,10 +70,7 @@ export class OpportunityService {
             name: org.organizationDto.name,
             domains: org.organizationDto.domains,
           },
-          stage: {
-            displayName: undefined,
-            order: undefined,
-          },
+          stage: undefined,
         };
 
         combinedData.push(result);
@@ -128,10 +128,7 @@ export class OpportunityService {
             name: matchedOrganization.organizationDto.name,
             domains: matchedOrganization.organizationDto.domains,
           },
-          stage: {
-            displayName: undefined,
-            order: undefined,
-          },
+          stage: undefined,
         };
 
         return [result];
@@ -171,31 +168,45 @@ export class OpportunityService {
         domains: affinityDto?.organizationDto?.domains,
       },
       stage: {
+        id: entity?.pipelineStage?.id,
         displayName: entity?.pipelineStage?.displayName,
         order: entity?.pipelineStage?.order,
+        mappedFrom: entity?.pipelineStage?.mappedFrom,
       },
     };
   }
 
   public async createFromAffinity(
+    organisationId: string,
     opportunityAffinityInternalId: number,
   ): Promise<OpportunityData> {
     const affinityData = await this.affinityCacheService.get(
       opportunityAffinityInternalId.toString(),
     );
 
-    const organisation = new OrganisationEntity();
-    organisation.name = affinityData.organizationDto.name;
-    organisation.domains = affinityData.organizationDto.domains;
+    const existingOpportunity = await this.opportunityRepository.findOne({
+      where: {
+        organisation: {
+          domains: Like(`%${affinityData.organizationDto.domain}%`),
+        },
+      },
+    });
+
+    if (existingOpportunity) {
+      return this.entityToData(existingOpportunity, affinityData);
+    }
 
     const opportunity = new OpportunityEntity();
-    opportunity.organisation = organisation;
+    opportunity.organisationId = organisationId;
 
-    // TODO: assign pipeline stage
-    // const pipelineDefinition = await this.pipelineDefinitionService.getDefaultDefinition();
-    // const pipelineStage = await this.pipelineStageService.mapStage(pipelineDefinition, affinityData.stageDto.text);
-    // opportunity.pipelineDefinition = pipelineDefinition;
-    // opportunity.pipelineStage = pipelineStage;
+    const pipelineDefinition =
+      await this.pipelineService.getDefaultDefinition();
+    const pipelineStage = await this.pipelineService.mapStage(
+      pipelineDefinition,
+      affinityData.stage.text,
+    );
+    opportunity.pipelineDefinitionId = pipelineDefinition.id;
+    opportunity.pipelineStageId = pipelineStage.id;
 
     const entity = await this.opportunityRepository.save(opportunity);
 

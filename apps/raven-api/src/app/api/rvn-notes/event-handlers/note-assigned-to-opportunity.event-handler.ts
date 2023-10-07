@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { NoteAssignedToOpportunityEvent } from '../../rvn-opportunities/events/note-assigned-to-opportunity.event';
+import { NoteAssignedToOpportunityEvent } from '../events/note-assigned-to-opportunity.event';
 import { NotesService } from '../notes.service';
 
 @Injectable()

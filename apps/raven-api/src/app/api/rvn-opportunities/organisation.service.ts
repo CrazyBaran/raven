@@ -1,8 +1,9 @@
 import { OrganisationData } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
+import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
 
 @Injectable()
@@ -73,5 +74,41 @@ export class OrganisationService {
 
   public async remove(id: string): Promise<void> {
     await this.organisationRepository.delete(id);
+  }
+
+  public async createFromAffinity(
+    affinityInternalId: number,
+  ): Promise<OrganisationData> {
+    const affinityData = await this.affinityCacheService.get(
+      affinityInternalId.toString(),
+    );
+
+    const existingOrganisation = await this.organisationRepository.findOne({
+      where: { domains: Like(`%${affinityData.organizationDto.domain}%`) },
+    });
+
+    if (existingOrganisation) {
+      return this.entityToData(existingOrganisation, affinityData);
+    }
+
+    const organisation = new OrganisationEntity();
+    organisation.name = affinityData.organizationDto.name;
+    organisation.domains = affinityData.organizationDto.domains;
+
+    const entity = await this.organisationRepository.save(organisation);
+
+    return this.entityToData(entity, affinityData);
+  }
+
+  public entityToData(
+    entity?: OrganisationEntity,
+    affinityDto?: OrganizationStageDto,
+  ): OrganisationData {
+    return {
+      id: entity?.id,
+      affinityInternalId: affinityDto?.organizationDto?.id,
+      name: affinityDto?.organizationDto?.name,
+      domains: affinityDto?.organizationDto?.domains,
+    };
   }
 }

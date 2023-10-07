@@ -11,7 +11,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOAuth2,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityService } from './opportunity.service';
 
@@ -23,6 +29,9 @@ export class OpportunityController {
   @Get()
   @ApiOperation({ summary: 'Get all opportunities' })
   @ApiResponse({ status: 200, description: 'List of opportunities' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiQuery({ name: 'domain', type: String, required: false })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public async findAll(

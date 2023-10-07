@@ -1,5 +1,5 @@
-import { NoteEntity } from '../../rvn-notes/entities/note.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
+import { NoteEntity } from '../entities/note.entity';
 
 export class NoteAssignedToOpportunityEvent {
   public constructor(
