@@ -11,7 +11,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOAuth2,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityService } from './opportunity.service';
 
@@ -23,13 +29,21 @@ export class OpportunityController {
   @Get()
   @ApiOperation({ summary: 'Get all opportunities' })
   @ApiResponse({ status: 200, description: 'List of opportunities' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiQuery({ name: 'domain', type: String, required: false })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public async findAll(
-    @Query('skip') skip: number,
-    @Query('take') take: number,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+    @Query('domain') domain?: string,
   ): Promise<OpportunityData[]> {
-    return await this.opportunityService.findAll(skip, take);
+    if (skip || take) {
+      return await this.opportunityService.findAll(skip, take);
+    } else if (domain) {
+      return await this.opportunityService.findByDomain(domain);
+    }
   }
 
   @Get(':id')
@@ -37,7 +51,7 @@ export class OpportunityController {
   @ApiResponse({ status: 200, description: 'The opportunity details' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public findOne(@Param('id') id: string): Promise<OpportunityEntity> {
+  public findOne(@Param('id') id: string): Promise<OpportunityData> {
     return this.opportunityService.findOne(id);
   }
 

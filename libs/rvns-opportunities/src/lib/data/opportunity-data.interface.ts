@@ -1,11 +1,11 @@
+import { PipelineStageData } from '@app/rvns-pipelines';
 import { OrganisationData } from './organisation-data.interface';
-import { PipelineStageData } from './pipeline-stage-data.interface';
 
-export interface OpportunityData {
-  readonly id: string;
+export interface OpportunityData extends OpportunityDataWithoutOrganisation {
   readonly organisation: OrganisationData;
+}
+
+export interface OpportunityDataWithoutOrganisation {
+  readonly id: string;
   readonly stage: PipelineStageData;
-  readonly createdById: string;
-  readonly updatedAt: Date;
-  readonly createdAt: Date;
 }

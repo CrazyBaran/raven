@@ -1,4 +1,5 @@
 import { FieldDefinitionType } from '@app/rvns-templates';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -31,6 +32,10 @@ describe('NotesService', () => {
           useValue: {
             save: jest.fn(),
           },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {},
         },
       ],
     }).compile();

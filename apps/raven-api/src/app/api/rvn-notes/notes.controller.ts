@@ -9,8 +9,8 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import {
@@ -25,7 +25,8 @@ import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-id
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
-import { UpdateNoteFieldDto } from './dto/UpdateNoteFieldDto';
+import { UpdateNoteDto } from './dto/UpdateNoteDto';
+import { UpdateNoteFieldDto } from './dto/update-note-field.dto';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
@@ -74,7 +75,7 @@ export class NotesController {
   @ApiParam({ name: 'noteId', type: String })
   @ApiParam({ name: 'noteFieldGroupId', type: String })
   @ApiParam({ name: 'noteFieldId', type: String })
-  @Patch(':noteId/fields-groups/:noteFieldGroupId/fields/:noteFieldId')
+  @Put(':noteId/fields-groups/:noteFieldGroupId/fields/:noteFieldId')
   public async updateNoteField(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -90,6 +91,23 @@ export class NotesController {
         { value: dto.value },
         userEntity,
       ),
+    );
+  }
+
+  @ApiOperation({ description: 'Update note' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'noteId', type: String })
+  @Put(':noteId')
+  public async updateNote(
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
+    @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+    @Body() dto: UpdateNoteDto,
+  ): Promise<NoteData> {
+    return this.notesService.noteEntityToNoteData(
+      await this.notesService.updateNote(noteEntity, userEntity, {
+        opportunityAffinityInternalId: dto.opportunityAffinityInternalId,
+        opportunityId: dto.opportunityId,
+      }),
     );
   }
 }
