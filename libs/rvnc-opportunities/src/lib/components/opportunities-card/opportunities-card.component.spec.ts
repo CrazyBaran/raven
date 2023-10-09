@@ -12,6 +12,22 @@ describe('OpportunitiesCardComponent', () => {
 
     fixture = TestBed.createComponent(OpportunitiesCardComponent);
     component = fixture.componentInstance;
+
+    component.data = {
+      organisation: {
+        name: 'Foo',
+        domains: ['foo.com'],
+      },
+      stage: {
+        id: '',
+        displayName: '',
+        order: 0,
+        mappedFrom: '',
+      },
+      fields: [],
+      id: '',
+    };
+
     fixture.detectChanges();
   });
 

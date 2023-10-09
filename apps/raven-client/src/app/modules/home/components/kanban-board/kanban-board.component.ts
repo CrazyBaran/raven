@@ -26,7 +26,7 @@ export class KanbanBoardComponent implements OnChanges {
   public prepareKanbanData(): void {
     if (this.opportunities && this.pipelines) {
       // Take stages from first pipeline
-      const columns = this.pipelines[0].stages.map((item) => {
+      const columns = (this.pipelines[0]?.stages || []).map((item) => {
         return {
           name: item.displayName,
           id: item.id,

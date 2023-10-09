@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { OpportunityDetailsComponent } from './opportunity-details.component';
 
 describe('OpportunityDetailsComponent', () => {
@@ -7,7 +9,8 @@ describe('OpportunityDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OpportunityDetailsComponent],
+      imports: [OpportunityDetailsComponent, RouterTestingModule],
+      providers: [provideMockStore({})],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OpportunityDetailsComponent);
