@@ -1,0 +1,9 @@
+:host {
+  @apply grid h-full;
+}
+
+.templates-page {
+  &__content {
+    @apply flex h-full w-full items-center justify-center;
+  }
+}

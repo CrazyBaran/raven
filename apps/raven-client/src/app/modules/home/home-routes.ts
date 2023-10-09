@@ -32,6 +32,27 @@ export const HOME_ROUTES: Routes = [
           ),
       },
       {
+        path: 'notes',
+        loadComponent: () =>
+          import('./pages/notes-page/notes-page.component').then(
+            (c) => c.NotesPageComponent,
+          ),
+      },
+      {
+        path: 'templates',
+        loadComponent: () =>
+          import('./pages/templates-page/templates-page.component').then(
+            (c) => c.TemplatesPageComponent,
+          ),
+      },
+      {
+        path: 'contacts',
+        loadComponent: () =>
+          import('./pages/contacts-page/contacts-page.component').then(
+            (c) => c.ContactsPageComponent,
+          ),
+      },
+      {
         path: 'bad-gateway',
         loadComponent: () =>
           import(

@@ -9,6 +9,7 @@ export const environment = {
   adAuthority:
     'https://login.microsoftonline.com/9e89d976-bede-4fef-88b6-5d6b2aea2e02',
   adRedirectUri: 'http://localhost:4200',
+  adPostLogoutRedirectUri: 'http://localhost:4200/login',
 };
 /*
  * For easier debugging in development mode, you can import the following file

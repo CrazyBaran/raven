@@ -3,7 +3,7 @@
 }
 
 .page-layout {
-  @apply grid;
+  @apply grid max-h-screen;
 
   grid-template-rows: auto 1fr;
 

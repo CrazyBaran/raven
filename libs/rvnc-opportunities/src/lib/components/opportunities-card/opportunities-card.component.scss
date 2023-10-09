@@ -1,0 +1,35 @@
+.opportunity-card {
+  .header {
+    @apply mb-4 grid grid-flow-col gap-4;
+
+    grid-template-columns: auto 1fr;
+
+    &__icon {
+      @apply text-3xl;
+    }
+
+    &__info {
+      @apply flex flex-col;
+    }
+
+    &__name {
+      @apply font-bold;
+    }
+
+    &__page {
+      @apply text-sm italic;
+    }
+  }
+
+  .details {
+    @apply grid gap-2;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    .item {
+      p {
+        @apply text-sm italic;
+      }
+    }
+  }
+}

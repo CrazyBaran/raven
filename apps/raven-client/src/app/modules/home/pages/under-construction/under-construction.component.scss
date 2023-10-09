@@ -1,0 +1,27 @@
+.under-construction {
+  @apply flex h-full w-full flex-row items-center justify-center gap-8;
+
+  &__icon {
+    @apply text-[6rem];
+  }
+
+  &__note {
+    @apply uppercase;
+
+    span {
+      @apply font-bold;
+
+      &:nth-child(1) {
+        @apply text-2xl;
+      }
+
+      &:nth-child(3) {
+        @apply text-5xl;
+      }
+
+      &:nth-child(5) {
+        @apply text-3xl;
+      }
+    }
+  }
+}

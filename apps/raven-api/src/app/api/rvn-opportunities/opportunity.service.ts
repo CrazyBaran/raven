@@ -25,7 +25,7 @@ export class OpportunityService {
     for (const opportunity of opportunities) {
       const matchedOrganization = affinityData.find((org) =>
         org.organizationDto.domains.includes(
-          opportunity.organisation.domains[0],
+          opportunity.organisation?.domains[0],
         ),
       );
 

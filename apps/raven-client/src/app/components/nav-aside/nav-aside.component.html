@@ -15,19 +15,15 @@
     <div class="nav-aside__routes">
       <ul>
         <li *ngFor="let route of routes">
-          <kendo-button
-            iconClass="{{ route.icon }}"
-            size="large"
-            class="mb-2"
-            themeColor="secondary"
-            fillMode="outline"
-          />
-          {{ route.name }}
+          <a [routerLink]="route.path" routerLinkActive="active">
+            <i class="{{ route.icon }}"></i>
+            <span>
+              {{ route.name }}
+            </span>
+          </a>
         </li>
       </ul>
     </div>
-
-    <app-login></app-login>
   </div>
 
   <div class="nav-aside__content" [@collapse] *ngIf="enableToggle && isOpen()">

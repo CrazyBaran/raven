@@ -42,6 +42,7 @@ const protectedResourceMap = new Map<string, Array<string>>();
           clientId: environment.adClientId,
           authority: environment.adAuthority,
           redirectUri: environment.adRedirectUri,
+          postLogoutRedirectUri: environment.adPostLogoutRedirectUri,
           navigateToLoginRequestUrl: true,
         },
         cache: {

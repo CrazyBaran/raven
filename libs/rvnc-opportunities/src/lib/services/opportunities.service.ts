@@ -13,6 +13,7 @@ export class OpportunitiesService {
   public getOpportunities(): Observable<GenericResponse<OpportunityData[]>> {
     return this.http.get<GenericResponse<OpportunityData[]>>(
       '/api/opportunities',
+      { params: { take: 1000, skip: 0 } },
     );
   }
 }
