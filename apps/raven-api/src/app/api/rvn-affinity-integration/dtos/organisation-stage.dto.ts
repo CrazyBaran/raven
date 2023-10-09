@@ -2,6 +2,8 @@ import { FieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-drop
 import { OrganizationDto } from '../api/dtos/organization.dto';
 
 export class OrganizationStageDto {
+  public entryId: number;
   public organizationDto: OrganizationDto;
   public stage?: FieldValueRankedDropdownDto;
+  public fields: { displayName: string; value: string }[];
 }

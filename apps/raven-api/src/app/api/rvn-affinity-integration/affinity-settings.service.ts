@@ -3,14 +3,17 @@ import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AffinitySettingsService {
-  public getListSettings(): { list_id: number; field_id: number } {
-    const list_id = parseInt(environment.affinity.listId);
-    const field_id = parseInt(environment.affinity.fieldId);
+  public getListSettings(): {
+    defaultListId: number;
+    statusFieldId: number;
+  } {
+    const defaultListId = parseInt(environment.affinity.defaultListId);
+    const statusFieldId = parseInt(environment.affinity.statusFieldId);
 
-    if (!list_id || !field_id) {
+    if (!defaultListId || !statusFieldId) {
       throw new Error('Affinity settings not found');
     }
 
-    return { list_id, field_id };
+    return { defaultListId, statusFieldId };
   }
 }
