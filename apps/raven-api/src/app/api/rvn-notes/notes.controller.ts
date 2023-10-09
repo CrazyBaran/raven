@@ -70,6 +70,16 @@ export class NotesController {
     );
   }
 
+  @ApiOperation({ description: 'Get single notes' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'id', type: String })
+  @Get(':id')
+  public async getNote(
+    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity,
+  ): Promise<NoteData> {
+    return this.notesService.noteEntityToNoteData(noteEntity);
+  }
+
   @ApiOperation({ description: 'Update note field' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
