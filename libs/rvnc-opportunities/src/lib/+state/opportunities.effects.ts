@@ -10,9 +10,9 @@ export class OpportunitiesEffects {
   private loadOpportunities$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.getOpportunities),
-      concatMap(() =>
+      concatMap(({ take, skip }) =>
         /** An EMPTY observable only emits completion. Replace with your own observable API request */
-        this.opportunitiesService.getOpportunities().pipe(
+        this.opportunitiesService.getOpportunities(take, skip).pipe(
           map(({ data }) =>
             OpportunitiesActions.getOpportunitiesSuccess({ data: data || [] }),
           ),

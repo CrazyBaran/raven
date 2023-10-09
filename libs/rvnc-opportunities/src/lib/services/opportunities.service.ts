@@ -10,10 +10,13 @@ import { Observable } from 'rxjs';
 export class OpportunitiesService {
   public constructor(private http: HttpClient) {}
 
-  public getOpportunities(): Observable<GenericResponse<OpportunityData[]>> {
+  public getOpportunities(
+    take: number,
+    skip: number,
+  ): Observable<GenericResponse<OpportunityData[]>> {
     return this.http.get<GenericResponse<OpportunityData[]>>(
       '/api/opportunities',
-      { params: { take: 10, skip: 0 } },
+      { params: { take, skip } },
     );
   }
 }

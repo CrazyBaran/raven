@@ -5,7 +5,7 @@
     grid-template-columns: auto 1fr;
 
     &__icon {
-      @apply text-3xl;
+      @apply bg-grey-100 flex h-12 w-12 items-center justify-center rounded-md text-3xl;
     }
 
     &__info {
@@ -13,7 +13,7 @@
     }
 
     &__name {
-      @apply font-bold;
+      @apply flex justify-between font-bold;
     }
 
     &__page {

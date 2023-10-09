@@ -5,19 +5,20 @@ import { OpportunitiesActions } from './opportunities.actions';
 
 export const opportunitiesFeatureKey = 'opportunities';
 
-export interface State extends EntityState<OpportunityData> {
+export interface OpportunitiesState extends EntityState<OpportunityData> {
   isLoading: boolean;
   error: string | null;
 }
 
-export const adapter: EntityAdapter<OpportunityData> =
+export const opportunitiesAdapter: EntityAdapter<OpportunityData> =
   createEntityAdapter<OpportunityData>();
 
-export const initialState: State = adapter.getInitialState({
-  // additional entity state properties
-  isLoading: false,
-  error: null,
-});
+export const initialState: OpportunitiesState =
+  opportunitiesAdapter.getInitialState({
+    // additional entity state properties
+    isLoading: false,
+    error: null,
+  });
 
 export const opportunitiesReducer = createReducer(
   initialState,
@@ -26,7 +27,7 @@ export const opportunitiesReducer = createReducer(
     isLoading: true,
   })),
   on(OpportunitiesActions.getOpportunitiesSuccess, (state, { data }) =>
-    adapter.setAll(data, { ...state, isLoading: false }),
+    opportunitiesAdapter.setAll(data, { ...state, isLoading: false }),
   ),
   on(OpportunitiesActions.getOpportunitiesFailure, (state, { error }) => ({
     ...state,
@@ -39,9 +40,6 @@ export const opportunitiesFeature = createFeature({
   name: opportunitiesFeatureKey,
   reducer: opportunitiesReducer,
   extraSelectors: ({ selectOpportunitiesState }) => ({
-    ...adapter.getSelectors(selectOpportunitiesState),
+    ...opportunitiesAdapter.getSelectors(selectOpportunitiesState),
   }),
 });
-
-export const { selectIds, selectEntities, selectAll, selectTotal } =
-  opportunitiesFeature;

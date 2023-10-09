@@ -25,8 +25,6 @@ import { AppComponent } from './app.component';
 import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
 import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
 
-const protectedResourceMap = new Map<string, Array<string>>();
-
 @NgModule({
   declarations: [AppComponent],
   imports: [

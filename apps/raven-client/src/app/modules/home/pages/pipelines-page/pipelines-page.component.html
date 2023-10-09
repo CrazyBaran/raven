@@ -2,8 +2,17 @@
   <app-page-layout>
     <h1 header>Pipeline</h1>
 
-    <div content class="pipeline-page__content">
-      <app-kanban-board />
+    <div content class="pipeline-page__content content">
+      <ng-container *ngIf="isLoading$ | async; else kanbanView">
+        <div class="content__loader">
+          <kendo-loader type="infinite-spinner" themeColor="primary" />
+          Loading...
+        </div>
+      </ng-container>
+
+      <ng-template #kanbanView>
+        <app-kanban-board [data]="(pipelines$ | async) || []" />
+      </ng-template>
     </div>
   </app-page-layout>
 </div>

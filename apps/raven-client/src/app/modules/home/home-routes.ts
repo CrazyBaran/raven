@@ -32,6 +32,11 @@ export const HOME_ROUTES: Routes = [
           ),
       },
       {
+        path: 'opportunities',
+        loadChildren: () =>
+          import('@app/rvnc-opportunities').then((m) => m.OPPORTUNITIES_ROUTES),
+      },
+      {
         path: 'notes',
         loadComponent: () =>
           import('./pages/notes-page/notes-page.component').then(

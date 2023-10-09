@@ -27,9 +27,9 @@
             class="cards-group"
             [animation]="true"
           >
-            <ng-template let-item="item">
+            <ng-template let-opportunity="item">
               <div class="card">
-                <app-opportunities-card [data]="item" />
+                <app-opportunities-card [data]="opportunity" />
               </div>
             </ng-template>
           </kendo-sortable>
