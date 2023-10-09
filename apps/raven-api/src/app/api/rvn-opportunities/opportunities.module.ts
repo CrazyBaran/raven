@@ -9,7 +9,6 @@ import { AffinityIntegrationModule } from '../rvn-affinity-integration/affinity-
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineModule } from '../rvn-pipeline/pipeline.module';
-import { PipelineService } from '../rvn-pipeline/pipeline.service';
 import { NoteAssignedToAffinityOpportunityEventHandler } from './event-handlers/note-assigned-to-affinity-opportunity.event-handler';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
@@ -31,7 +30,6 @@ import { OrganisationService } from './organisation.service';
     OrganisationService,
     OpportunityService,
     AffinityCacheService,
-    PipelineService,
     NoteAssignedToAffinityOpportunityEventHandler,
   ],
   controllers: [OrganisationController, OpportunityController],
