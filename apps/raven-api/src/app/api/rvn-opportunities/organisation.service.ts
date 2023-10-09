@@ -1,7 +1,7 @@
 import { OrganisationData } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
@@ -89,12 +89,9 @@ export class OrganisationService {
     ) {
       return null;
     }
-    const existingOrganisation = await this.organisationRepository
-      .createQueryBuilder('organisation')
-      .where('organisation.domains && :domains', {
-        domains: affinityData.organizationDto.domains,
-      })
-      .getOne();
+    const existingOrganisation = await this.organisationRepository.findOne({
+      where: { domains: Like(`%${affinityData.organizationDto.domain}%`) },
+    });
 
     if (existingOrganisation) {
       return existingOrganisation;

@@ -257,9 +257,23 @@ export class OpportunityService {
 
   public async ensureAllAffinityEntriesAsOpportunities(): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll();
+
+    const existingOpportunities = await this.opportunityRepository.find({
+      relations: ['organisation'],
+    });
+
+    const nonexitstingAffinityData = affinityData.filter((affinity) => {
+      return !existingOpportunities.some((opportunity) => {
+        return opportunity.organisation.domains.some((domain) => {
+          if (affinity?.organizationDto?.domains?.length === 0) return true;
+          return affinity.organizationDto.domains.includes(domain);
+        });
+      });
+    });
+
     const defaultDefinition = await this.getDefaultDefinition();
 
-    for (const org of affinityData) {
+    for (const org of nonexitstingAffinityData) {
       const organisation =
         await this.organisationService.createFromAffinityOrGet(
           org.organizationDto.id,
