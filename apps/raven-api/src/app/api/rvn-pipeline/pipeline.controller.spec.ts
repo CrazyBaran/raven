@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EntityManager } from 'typeorm';
 import { PipelineController } from './pipeline.controller';
 import { PipelineService } from './pipeline.service';
 
@@ -11,6 +12,10 @@ describe('PipelineController', () => {
       providers: [
         {
           provide: PipelineService,
+          useValue: {},
+        },
+        {
+          provide: EntityManager,
           useValue: {},
         },
       ],
