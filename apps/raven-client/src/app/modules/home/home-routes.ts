@@ -36,6 +36,12 @@ export const HOME_ROUTES: Routes = [
       },
       {
         path: 'opportunities',
+        providers: [
+          importProvidersFrom(
+            StoreModule.forFeature('opportunities', opportunitiesReducer),
+            EffectsModule.forFeature([OpportunitiesEffects]),
+          ),
+        ],
         loadChildren: () =>
           import('@app/rvnc-opportunities').then((m) => m.OPPORTUNITIES_ROUTES),
       },

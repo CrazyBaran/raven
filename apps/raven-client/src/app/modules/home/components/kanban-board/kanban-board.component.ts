@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { OpportunitiesCardComponent } from '@app/rvnc-opportunities';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { PipelineDefinitionData } from '@app/rvns-pipelines';
@@ -19,24 +13,13 @@ import { ColumnData } from './kanban-board.interface';
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
 })
-export class KanbanBoardComponent implements OnInit, OnChanges {
+export class KanbanBoardComponent implements OnChanges {
   @Input({ required: true }) public opportunities: OpportunityData[] = [];
   @Input({ required: true }) public pipelines: PipelineDefinitionData[] = [];
 
-  public contactedData: number[] = [1, 2, 3, 4, 5, 6, 7];
-  public metData: number[] = [8, 9, 10, 11, 12, 13, 14, 15];
-  public ddData: number[] = [16, 17, 18];
-  public socialisedData: number[] = [19, 20, 21, 22];
-
   public kanbanColumns: ColumnData[] = [];
 
-  public ngOnInit(): void {
-    console.log('Ng_On_Init');
-    console.log(this.opportunities);
-  }
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+  public ngOnChanges(): void {
     this.prepareKanbanData();
   }
 

@@ -23,6 +23,24 @@ export class OpportunitiesEffects {
     );
   });
 
+  private loadOpportunityDetails$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OpportunitiesActions.getOpportunityDetails),
+      concatMap(({ id }) =>
+        this.opportunitiesService.getOpportunityDetails(id).pipe(
+          map(({ data }) =>
+            OpportunitiesActions.getOpportunityDetailsSuccess({
+              data: data || null,
+            }),
+          ),
+          catchError((error) =>
+            of(OpportunitiesActions.getOpportunityDetailsFailure({ error })),
+          ),
+        ),
+      ),
+    );
+  });
+
   public constructor(
     private readonly actions$: Actions,
     private readonly opportunitiesService: OpportunitiesService,

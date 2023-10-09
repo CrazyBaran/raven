@@ -115,8 +115,8 @@ export class OpportunityService {
       id: opportunity.id,
       organisation: {
         id: opportunity.organisationId,
-        name: opportunity.organisation.name,
-        domains: opportunity.organisation.domains,
+        name: opportunity.organisation?.name,
+        domains: opportunity.organisation?.domains,
       },
       stage: {
         displayName: opportunity.pipelineStage.displayName,

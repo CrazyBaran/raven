@@ -61,6 +61,5 @@ export class NavAsideComponent {
 
   public handleLogout(): void {
     this.msalService.logout();
-    console.log('Handle_Logout');
   }
 }

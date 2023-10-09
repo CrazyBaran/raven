@@ -9,6 +9,13 @@ export const OpportunitiesActions = createActionGroup({
     'Get Opportunities Success': props<{ data: OpportunityData[] }>(),
     'Get Opportunities Failure': props<{ error: string }>(),
 
+    'Get Opportunity Details': props<{ id: string }>(),
+    'Get Opportunity Details Success': props<{
+      data: OpportunityData | null;
+    }>(),
+    'Get Opportunity Details Failure': props<{ error: string }>(),
+
     'Clear Opportunities': emptyProps(),
+    'Clear Opportunity Details': emptyProps(),
   },
 });

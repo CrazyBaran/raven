@@ -19,4 +19,12 @@ export class OpportunitiesService {
       { params: { take, skip } },
     );
   }
+
+  public getOpportunityDetails(
+    id: string,
+  ): Observable<GenericResponse<OpportunityData>> {
+    return this.http.get<GenericResponse<OpportunityData>>(
+      `/api/opportunities/${id}`,
+    );
+  }
 }
