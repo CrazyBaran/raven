@@ -8,3 +8,12 @@ export class OrganizationDto {
   public domains: string[];
   public global: boolean;
 }
+
+export class OrganisationWithCrunchbaseDto {
+  public id: number;
+  public name: string;
+  public domain: string;
+  public domains: string[];
+  public global: boolean;
+  public crunchbase_uuid: string;
+}

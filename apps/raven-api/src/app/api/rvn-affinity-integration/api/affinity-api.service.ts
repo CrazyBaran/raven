@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 import { CreateFieldValueDto } from './dtos/create-field-value.dto';
 import { DetailedListDto } from './dtos/detailed-list.dto';
 import { FieldValueChangeDto } from './dtos/field-value-change.dto';
@@ -17,18 +17,14 @@ import { WhoAmIDto } from './dtos/whoami.dto';
 
 @Injectable()
 export class AffinityApiService {
-  private readonly apiKey: string;
   private readonly baseURL: string = 'https://api.affinity.co';
 
-  public constructor(
-    private readonly configService: ConfigService,
-    private readonly httpService: HttpService,
-  ) {
-    this.apiKey = this.configService.get<string>('AFFINITY_API_KEY');
-  }
+  public constructor(private readonly httpService: HttpService) {}
 
   private get headers(): Record<string, string> {
-    const base64Credentials = Buffer.from(`:${this.apiKey}`).toString('base64');
+    const base64Credentials = Buffer.from(
+      `:${environment.affinity.apiKey}`,
+    ).toString('base64');
     return {
       Authorization: `Basic ${base64Credentials}`,
       'Content-Type': 'application/json',

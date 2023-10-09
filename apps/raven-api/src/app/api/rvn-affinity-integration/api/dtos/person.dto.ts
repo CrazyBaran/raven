@@ -8,3 +8,7 @@ export class PersonDto {
   public primary_email: string;
   public emails: string[];
 }
+
+export class PersonWithOrganisationsDto extends PersonDto {
+  public organisation_ids: number[];
+}
