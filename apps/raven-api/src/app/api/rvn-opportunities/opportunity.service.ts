@@ -56,6 +56,12 @@ export class OpportunityService {
           order: opportunity.pipelineStage.order,
           mappedFrom: opportunity.pipelineStage.mappedFrom,
         },
+        fields: matchedOrganization.fields.map((field) => {
+          return {
+            displayName: field.displayName,
+            value: field.value,
+          };
+        }),
       };
 
       combinedData.push(result);
@@ -83,6 +89,12 @@ export class OpportunityService {
             domains: org.organizationDto.domains,
           },
           stage: pipelineStage,
+          fields: org.fields.map((field) => {
+            return {
+              displayName: field.displayName,
+              value: field.value,
+            };
+          }),
         };
 
         combinedData.push(result);
@@ -146,6 +158,12 @@ export class OpportunityService {
             domains: matchedOrganization.organizationDto.domains,
           },
           stage: pipelineStage,
+          fields: matchedOrganization.fields.map((field) => {
+            return {
+              displayName: field.displayName,
+              value: field.value,
+            };
+          }),
         };
 
         return [result];
@@ -190,6 +208,12 @@ export class OpportunityService {
         order: entity?.pipelineStage?.order,
         mappedFrom: entity?.pipelineStage?.mappedFrom,
       },
+      fields: affinityDto.fields.map((field) => {
+        return {
+          displayName: field.displayName,
+          value: field.value,
+        };
+      }),
     };
   }
 

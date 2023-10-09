@@ -6,6 +6,7 @@ import { CreateFieldValueDto } from './dtos/create-field-value.dto';
 import { DetailedListDto } from './dtos/detailed-list.dto';
 import { FieldValueChangeDto } from './dtos/field-value-change.dto';
 import { FieldValueDto } from './dtos/field-value.dto';
+import { FieldDto } from './dtos/field.dto';
 import { ListDto } from './dtos/list.dto';
 import { PaginatedListEntriesDto } from './dtos/paginated-list-entries.dto';
 import { UpdateFieldValueDto } from './dtos/update-field-value.dto';
@@ -100,6 +101,17 @@ export class AffinityApiService {
       .put<FieldValueDto>(`/field-values/${fieldValueId}`, dto, {
         baseURL: this.baseURL,
         headers: this.headers,
+      })
+      .pipe(map((response) => response.data))
+      .toPromise();
+  }
+
+  public async getFields(listId: number): Promise<FieldDto[]> {
+    return await this.httpService
+      .get<FieldDto[]>(`/fields`, {
+        baseURL: this.baseURL,
+        headers: this.headers,
+        params: { list_id: listId },
       })
       .pipe(map((response) => response.data))
       .toPromise();

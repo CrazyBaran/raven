@@ -27,19 +27,22 @@ export class AffinityService {
   ) {}
   public async regenerateAffinityData(): Promise<void> {
     this.logger.debug('Fetching for list and field from Affinity settings');
-    const { list_id, field_id } =
-      await this.affinitySettingsService.getListSettings();
-    this.logger.debug(`List id: ${list_id}, field id: ${field_id}`);
-    const listDetails = await this.affinityApiService.getListDetails(list_id);
+    const { defaultListId, statusFieldId } =
+      this.affinitySettingsService.getListSettings();
+    this.logger.debug(`List id: ${defaultListId}, field id: ${statusFieldId}`);
+    const listDetails =
+      await this.affinityApiService.getListDetails(defaultListId);
     if (!listDetails) {
-      this.logger.error(`List with ID ${list_id} not found`);
-      throw new Error(`List with ID ${list_id} not found`);
+      this.logger.error(`List with ID ${defaultListId} not found`);
+      throw new Error(`List with ID ${defaultListId} not found`);
     }
-    if (!listDetails.fields.some((field) => field.id === field_id)) {
+    if (!listDetails.fields.some((field) => field.id === statusFieldId)) {
       this.logger.error(
-        `Field with ID ${field_id} not found in list ${list_id}`,
+        `Field with ID ${statusFieldId} not found in list ${defaultListId}`,
       );
-      throw new Error(`Field with ID ${field_id} not found in list ${list_id}`);
+      throw new Error(
+        `Field with ID ${statusFieldId} not found in list ${defaultListId}`,
+      );
     }
 
     this.logger.debug('Fetching all entries from Affinity');
@@ -47,7 +50,7 @@ export class AffinityService {
     const allEntries: ListEntryDto[] = [];
     do {
       const entries = await this.affinityApiService.getListEntries(
-        list_id,
+        defaultListId,
         500,
         pageToken,
       );
@@ -56,9 +59,11 @@ export class AffinityService {
     } while (pageToken);
     this.logger.debug(`Fetched ${allEntries.length} entries from Affinity`);
 
-    this.logger.debug('Fetching field value changes from Affinity');
+    this.logger.debug(
+      'Fetching field value changes for status field from Affinity',
+    );
     const fieldChanges =
-      await this.affinityApiService.getFieldValueChanges(field_id);
+      await this.affinityApiService.getFieldValueChanges(statusFieldId);
     this.logger.debug(
       `Fetched ${fieldChanges.length} field value changes from Affinity`,
     );
@@ -73,6 +78,39 @@ export class AffinityService {
       }`,
     );
 
+    const requiredFields = [{ displayName: 'Deal Lead', mappedFrom: 'Owners' }];
+    const fields = await this.affinityApiService.getFields(defaultListId);
+
+    const mappedFields = requiredFields.map((requiredField) => {
+      return {
+        ...requiredField,
+        field: fields.find((field) => field.name === requiredField.mappedFrom),
+      };
+    });
+    for (const field of mappedFields) {
+      const fieldValueChanges =
+        await this.affinityApiService.getFieldValueChanges(field.field?.id);
+
+      const distinctFieldValues = fieldValueChanges
+        .sort((a, b) =>
+          new Date(a.changed_at) > new Date(b.changed_at) ? 1 : -1,
+        )
+        .filter((obj, index) => {
+          return (
+            fieldValueChanges.findIndex(
+              (item) => item.list_entry_id === obj.list_entry_id,
+            ) === index
+          );
+        });
+      for (const fieldValueChange of distinctFieldValues) {
+        matchedData
+          .find((data) => data.entryId === fieldValueChange.list_entry_id)
+          .fields.push({
+            displayName: field.displayName,
+            value: fieldValueChange.value as string,
+          });
+      }
+    }
     this.logger.debug('Reset data in cache');
     await this.affinityCacheService.reset();
     this.logger.debug('Done resetting');
@@ -140,8 +178,10 @@ export class AffinityService {
       );
 
       matchedData.push({
+        entryId: entry.id,
         organizationDto: entry.entity as OrganizationDto,
         stage: fieldChange?.value as FieldValueRankedDropdownDto,
+        fields: [],
       });
     }
 
