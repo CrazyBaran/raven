@@ -11,7 +11,6 @@ export class OpportunitiesEffects {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.getOpportunities),
       concatMap(({ take, skip }) =>
-        /** An EMPTY observable only emits completion. Replace with your own observable API request */
         this.opportunitiesService.getOpportunities(take, skip).pipe(
           map(({ data }) =>
             OpportunitiesActions.getOpportunitiesSuccess({ data: data || [] }),
@@ -25,7 +24,7 @@ export class OpportunitiesEffects {
   });
 
   public constructor(
-    private actions$: Actions,
-    private opportunitiesService: OpportunitiesService,
+    private readonly actions$: Actions,
+    private readonly opportunitiesService: OpportunitiesService,
   ) {}
 }

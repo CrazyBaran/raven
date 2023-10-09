@@ -1,8 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { OpportunitiesCardComponent } from '@app/rvnc-opportunities';
 import { OpportunityData } from '@app/rvns-opportunities';
+import { PipelineDefinitionData } from '@app/rvns-pipelines';
 import { SortableModule } from '@progress/kendo-angular-sortable';
+import { ColumnData } from './kanban-board.interface';
 
 @Component({
   selector: 'app-kanban-board',
@@ -11,35 +19,41 @@ import { SortableModule } from '@progress/kendo-angular-sortable';
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
 })
-export class KanbanBoardComponent implements OnInit {
-  @Input() public data: OpportunityData[] = [];
+export class KanbanBoardComponent implements OnInit, OnChanges {
+  @Input({ required: true }) public opportunities: OpportunityData[] = [];
+  @Input({ required: true }) public pipelines: PipelineDefinitionData[] = [];
 
   public contactedData: number[] = [1, 2, 3, 4, 5, 6, 7];
   public metData: number[] = [8, 9, 10, 11, 12, 13, 14, 15];
   public ddData: number[] = [16, 17, 18];
   public socialisedData: number[] = [19, 20, 21, 22];
 
-  public palettes = [
-    {
-      data: [],
-      name: 'Contacted',
-      fontColorClass: 'text-grey-500',
-    },
-    { data: [], name: 'Met', fontColorClass: 'text-info' },
-    { data: [], name: 'DD', fontColorClass: 'text-success' },
-    {
-      data: [],
-      name: 'Socialised',
-      fontColorClass: 'text-warning',
-    },
-  ];
+  public kanbanColumns: ColumnData[] = [];
 
   public ngOnInit(): void {
     console.log('Ng_On_Init');
-    console.log(this.data);
+    console.log(this.opportunities);
+  }
 
-    const pipelineStageMap = this.data.map((item) => item.stage.displayName);
+  public ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    this.prepareKanbanData();
+  }
 
-    console.log(pipelineStageMap);
+  public prepareKanbanData(): void {
+    if (this.opportunities && this.pipelines) {
+      // Take stages from first pipeline
+      const columns = this.pipelines[0].stages.map((item) => {
+        return {
+          name: item.displayName,
+          id: item.id,
+          data: this.opportunities.filter(
+            (opportunity) => opportunity.stage.id === item.id,
+          ),
+        };
+      });
+
+      this.kanbanColumns = columns;
+    }
   }
 }

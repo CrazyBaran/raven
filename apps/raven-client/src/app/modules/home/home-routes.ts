@@ -4,6 +4,7 @@ import {
   OpportunitiesEffects,
   opportunitiesReducer,
 } from '@app/rvnc-opportunities';
+import { PipelinesEffects, pipelinesReducer } from '@app/rvnc-pipelines';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { HomeComponent } from './home.component';
@@ -24,6 +25,8 @@ export const HOME_ROUTES: Routes = [
           importProvidersFrom(
             StoreModule.forFeature('opportunities', opportunitiesReducer),
             EffectsModule.forFeature([OpportunitiesEffects]),
+            StoreModule.forFeature('pipelines', pipelinesReducer),
+            EffectsModule.forFeature([PipelinesEffects]),
           ),
         ],
         loadComponent: () =>

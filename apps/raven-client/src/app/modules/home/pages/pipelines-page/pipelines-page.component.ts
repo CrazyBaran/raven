@@ -1,13 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   OpportunitiesActions,
   selectAllOpportunities,
-  selectIsLoading,
+  selectIsLoading as selectIsLoadingOpportunities,
 } from '@app/rvnc-opportunities';
+import {
+  PipelinesActions,
+  selectAllPipelines,
+  selectIsLoading as selectIsLoadingPipelines,
+} from '@app/rvnc-pipelines';
 import { Store } from '@ngrx/store';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { Subject, takeUntil } from 'rxjs';
 import { PageLayoutComponent } from '../../../../components/page-layout/page-layout.component';
 import { KanbanBoardComponent } from '../../components/kanban-board/kanban-board.component';
 
@@ -23,26 +27,26 @@ import { KanbanBoardComponent } from '../../components/kanban-board/kanban-board
   templateUrl: './pipelines-page.component.html',
   styleUrls: ['./pipelines-page.component.scss'],
 })
-export class PipelinesPageComponent implements OnInit, OnDestroy {
-  public readonly isLoading$ = this.store.select(selectIsLoading);
-  public readonly pipelines$ = this.store.select(selectAllOpportunities);
+export class PipelinesPageComponent implements OnInit {
+  // Opportunities
+  public readonly isLoadingOpportunities$ = this.store.select(
+    selectIsLoadingOpportunities,
+  );
+  public readonly opportunities$ = this.store.select(selectAllOpportunities);
 
-  public ngUnsubscribe$ = new Subject<void>();
+  // Pipelines
+  public readonly isLoadingPipelines$ = this.store.select(
+    selectIsLoadingPipelines,
+  );
+  public readonly pipelines$ = this.store.select(selectAllPipelines);
 
   public constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
-    this.pipelines$.pipe(takeUntil(this.ngUnsubscribe$)).subscribe((data) => {
-      console.log('Pipelines Data');
-      console.log(data);
-    });
     this.store.dispatch(
-      OpportunitiesActions.getOpportunities({ take: 100, skip: 0 }),
+      OpportunitiesActions.getOpportunities({ take: 5000, skip: 0 }),
     );
-  }
 
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe$.next();
-    this.ngUnsubscribe$.complete();
+    this.store.dispatch(PipelinesActions.getPipelines());
   }
 }

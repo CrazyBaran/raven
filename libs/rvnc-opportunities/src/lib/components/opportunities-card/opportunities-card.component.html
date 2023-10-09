@@ -6,24 +6,26 @@
 
     <div class="header__info">
       <div class="header__name">
-        {{ data.organisation?.name || 'No Name' }}
-        <button (click)="handleGoToDetails('1')">
+        {{ data.organisation.name }}
+        <button (click)="handleGoToDetails(data.id)">
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </button>
       </div>
-      <span class="header__page">grip.com</span>
+      <span class="header__page">{{
+        data.organisation.domains.join(', ')
+      }}</span>
     </div>
   </div>
 
   <div class="opportunity-card__details details">
     <div class="details__item item">
       <div class="item__title">Deal lead</div>
-      <p>Shaum Lee</p>
+      <p class="text-error">Missing info</p>
     </div>
 
     <div class="details__item item">
       <div class="item__title">Date added</div>
-      <p>March-22, 2023</p>
+      <p class="text-error">Missing info</p>
     </div>
   </div>
 </div>

@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './opportunities.component.html',
-  styleUrls: ['./opportunities.component.css'],
+  styleUrls: ['./opportunities.component.scss'],
 })
 export class OpportunitiesComponent {}

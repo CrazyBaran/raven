@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class OpportunitiesService {
-  public constructor(private http: HttpClient) {}
+  public constructor(private readonly http: HttpClient) {}
 
   public getOpportunities(
     take: number,

@@ -17,6 +17,10 @@
         @apply text-xs;
       }
     }
+
+    &__summary {
+      @apply whitespace-nowrap;
+    }
   }
 
   .cards-group {
