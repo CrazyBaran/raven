@@ -72,7 +72,7 @@ export class OpportunityService {
       if (!isAlreadyIncluded) {
         const pipelineStage = await this.mapStage(
           defaultDefinition,
-          org.stage.text,
+          org?.stage?.text,
         );
         const result: OpportunityData = {
           id: undefined,
@@ -135,7 +135,7 @@ export class OpportunityService {
       if (matchedOrganization) {
         const pipelineStage = await this.mapStage(
           defaultDefinition,
-          matchedOrganization.stage.text,
+          matchedOrganization?.stage?.text,
         );
         const result: OpportunityData = {
           id: undefined, // You might need to adjust this if there's a relevant ID
@@ -240,6 +240,11 @@ export class OpportunityService {
     pipelineDefinition: PipelineDefinitionEntity,
     text: string,
   ): Promise<PipelineStageEntity> {
+    if (!text) {
+      return pipelineDefinition.stages.find(
+        (s: { order: number }) => s.order === 1,
+      );
+    }
     return pipelineDefinition.stages.find((s: { mappedFrom: string }) =>
       text.toLowerCase().includes(s.mappedFrom.toLowerCase()),
     );
