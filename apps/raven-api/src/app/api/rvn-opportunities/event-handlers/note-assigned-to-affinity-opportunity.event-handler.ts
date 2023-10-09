@@ -17,7 +17,7 @@ export class NoteAssignedToAffinityOpportunityEventHandler {
   protected async process(
     event: NoteAssignedToAffinityOpportunityEvent,
   ): Promise<void> {
-    const organisation = await this.organisationService.createFromAffinity(
+    const organisation = await this.organisationService.createFromAffinityOrGet(
       event.opportunityAffinityInternalId,
     );
     const opportunity = await this.opportunityService.createFromAffinity(

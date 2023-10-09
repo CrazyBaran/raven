@@ -1,4 +1,5 @@
 import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
 import {
@@ -23,6 +24,7 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
   public constructor(
     private readonly affinityService: AffinityService,
     public readonly logger: AffinityProcessorLogger,
+    private readonly eventEmitter: EventEmitter2,
   ) {
     super(logger);
   }
@@ -34,6 +36,7 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
     switch (job.name) {
       case AFFINITY_QUEUE__REGENERATE: {
         await this.affinityService.regenerateAffinityData();
+        this.eventEmitter.emit(`affinity.regeneration.finished`, {});
         return true;
       }
       case AFFINITY_QUEUE__HANDLE_WEBHOOK: {
