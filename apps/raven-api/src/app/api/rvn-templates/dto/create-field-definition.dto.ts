@@ -9,7 +9,7 @@ export class CreateFieldDefinitionDto {
   @Length(1, 50)
   public readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: Object.values(FieldDefinitionType) })
   @IsDefined()
   @IsString()
   @IsIn(Object.values(FieldDefinitionType))

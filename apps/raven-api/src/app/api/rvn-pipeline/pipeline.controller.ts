@@ -1,6 +1,9 @@
-import { GenericCreateResponseSchema } from '@app/rvns-api';
+import {
+  GenericCreateResponseSchema,
+  GenericResponseSchema,
+} from '@app/rvns-api';
 import { PipelineDefinitionData } from '@app/rvns-pipelines';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBody,
   ApiOAuth2,
@@ -26,6 +29,15 @@ export class PipelineController {
   ): Promise<PipelineDefinitionData> {
     return this.pipelineService.pipelineEntityToData(
       await this.pipelineService.createPipeline({ stages: dto.stages }),
+    );
+  }
+
+  @ApiOperation({ description: 'Get all pipelines' })
+  @ApiResponse(GenericResponseSchema())
+  @Get()
+  public async getAllPipelines(): Promise<PipelineDefinitionData[]> {
+    return (await this.pipelineService.getAllPipelines()).map((pipeline) =>
+      this.pipelineService.pipelineEntityToData(pipeline),
     );
   }
 }

@@ -1,6 +1,7 @@
 import {
   AfterInsert,
   AfterLoad,
+  Column,
   Entity,
   Index,
   OneToMany,
@@ -9,10 +10,16 @@ import {
 import { PipelineStageEntity } from './pipeline-stage.entity';
 
 @Entity({ name: 'pipeline_definitions' })
-@Index(['id'], { unique: true })
+@Index(['id', 'name'], { unique: true })
 export class PipelineDefinitionEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
+
+  @Column()
+  public name: string;
+
+  @Column({ default: false })
+  public isDefault: boolean;
 
   @OneToMany(() => PipelineStageEntity, (ps) => ps.pipelineDefinition, {
     eager: true,
