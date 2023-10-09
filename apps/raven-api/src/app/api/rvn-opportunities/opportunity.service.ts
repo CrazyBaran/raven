@@ -7,6 +7,7 @@ import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisat
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
+import { OrganisationService } from './organisation.service';
 
 @Injectable()
 export class OpportunityService {
@@ -16,6 +17,7 @@ export class OpportunityService {
     @InjectRepository(PipelineDefinitionEntity)
     private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     private readonly affinityCacheService: AffinityCacheService,
+    private readonly organisationService: OrganisationService,
   ) {}
 
   public async findAll(skip = 0, take = 10): Promise<OpportunityData[]> {
@@ -251,6 +253,45 @@ export class OpportunityService {
     const entity = await this.opportunityRepository.save(opportunity);
 
     return this.entityToData(entity, affinityData);
+  }
+
+  public async ensureAllAffinityEntriesAsOpportunities(): Promise<void> {
+    const affinityData = await this.affinityCacheService.getAll();
+    const defaultDefinition = await this.getDefaultDefinition();
+
+    for (const org of affinityData) {
+      const organisation =
+        await this.organisationService.createFromAffinityOrGet(
+          org.organizationDto.id,
+        );
+
+      if (!organisation) {
+        continue;
+      }
+
+      const existingOpportunity = await this.opportunityRepository.findOne({
+        where: {
+          organisation: { id: organisation.id },
+        },
+      });
+
+      if (existingOpportunity) {
+        continue;
+      }
+
+      const pipelineStage = await this.mapStage(
+        defaultDefinition,
+        org?.stage?.text,
+      );
+
+      const opportunity = new OpportunityEntity();
+
+      opportunity.organisation = organisation;
+      opportunity.pipelineDefinition = defaultDefinition;
+      opportunity.pipelineStage = pipelineStage;
+
+      await this.opportunityRepository.save(opportunity);
+    }
   }
 
   private async getDefaultDefinition(): Promise<PipelineDefinitionEntity> {

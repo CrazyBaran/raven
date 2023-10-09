@@ -17,12 +17,6 @@
       "options": {
         "jestConfig": "libs/rvns-pipelines/jest.config.ts",
         "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
       }
     }
   },
