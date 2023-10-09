@@ -4,7 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
-import { PipelineService } from '../rvn-pipeline/pipeline.service';
+import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
+import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 
 @Injectable()
@@ -12,8 +13,9 @@ export class OpportunityService {
   public constructor(
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
+    @InjectRepository(PipelineDefinitionEntity)
+    private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     private readonly affinityCacheService: AffinityCacheService,
-    private readonly pipelineService: PipelineService,
   ) {}
 
   public async findAll(skip = 0, take = 10): Promise<OpportunityData[]> {
@@ -59,6 +61,7 @@ export class OpportunityService {
       combinedData.push(result);
     }
 
+    const defaultDefinition = await this.pipelineService.getDefaultDefinition();
     for (const org of affinityData) {
       const isAlreadyIncluded = combinedData.some((data) =>
         data.organisation.domains.some((domain) =>
@@ -67,6 +70,10 @@ export class OpportunityService {
       );
 
       if (!isAlreadyIncluded) {
+        const pipelineStage = await this.pipelineService.mapStage(
+          defaultDefinition,
+          org.stage.text,
+        );
         const result: OpportunityData = {
           id: undefined,
           organisation: {
@@ -75,7 +82,7 @@ export class OpportunityService {
             name: org.organizationDto.name,
             domains: org.organizationDto.domains,
           },
-          stage: undefined,
+          stage: pipelineStage,
         };
 
         combinedData.push(result);
@@ -110,6 +117,7 @@ export class OpportunityService {
     });
     const affinityData = await this.affinityCacheService.getAll();
 
+    const defaultDefinition = await this.pipelineService.getDefaultDefinition();
     if (opportunities.length > 0) {
       const matchedOrganization = affinityData.find((org) =>
         org.organizationDto.domains.includes(domain),
@@ -125,6 +133,10 @@ export class OpportunityService {
       );
 
       if (matchedOrganization) {
+        const pipelineStage = await this.pipelineService.mapStage(
+          defaultDefinition,
+          matchedOrganization.stage.text,
+        );
         const result: OpportunityData = {
           id: undefined, // You might need to adjust this if there's a relevant ID
           organisation: {
@@ -133,7 +145,7 @@ export class OpportunityService {
             name: matchedOrganization.organizationDto.name,
             domains: matchedOrganization.organizationDto.domains,
           },
-          stage: undefined,
+          stage: pipelineStage,
         };
 
         return [result];
@@ -204,9 +216,8 @@ export class OpportunityService {
     const opportunity = new OpportunityEntity();
     opportunity.organisationId = organisationId;
 
-    const pipelineDefinition =
-      await this.pipelineService.getDefaultDefinition();
-    const pipelineStage = await this.pipelineService.mapStage(
+    const pipelineDefinition = await this.getDefaultDefinition();
+    const pipelineStage = await this.mapStage(
       pipelineDefinition,
       affinityData.stage.text,
     );
@@ -216,5 +227,21 @@ export class OpportunityService {
     const entity = await this.opportunityRepository.save(opportunity);
 
     return this.entityToData(entity, affinityData);
+  }
+
+  private async getDefaultDefinition(): Promise<PipelineDefinitionEntity> {
+    const pipelineDefinitions = await this.pipelineRepository.find({
+      relations: ['stages'],
+    });
+    return pipelineDefinitions[0];
+  }
+
+  private async mapStage(
+    pipelineDefinition: PipelineDefinitionEntity,
+    text: string,
+  ): Promise<PipelineStageEntity> {
+    return pipelineDefinition.stages.find((s: { mappedFrom: string }) =>
+      text.toLowerCase().includes(s.mappedFrom.toLowerCase()),
+    );
   }
 }

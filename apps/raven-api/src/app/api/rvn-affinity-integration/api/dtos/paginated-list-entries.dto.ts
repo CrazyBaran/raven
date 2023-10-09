@@ -1,6 +1,6 @@
-import { ListEntryResponseDto } from './list-entry-response.dto';
+import { ListEntryDto } from './list-entry.dto';
 
 export class PaginatedListEntriesDto {
-  public list_entries: ListEntryResponseDto[];
+  public list_entries: ListEntryDto[];
   public next_page_token: string;
 }

@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { environment } from '../../../environments/environment';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityServiceLogger } from './affinity.service.logger';
 import { AffinityApiService } from './api/affinity-api.service';
 import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
 import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
-import { ListEntryResponseDto } from './api/dtos/list-entry-response.dto';
+import { ListEntryDto } from './api/dtos/list-entry.dto';
 import { OrganizationDto } from './api/dtos/organization.dto';
+import {
+  WebhookPayloadDto,
+  WebhookPayloadListEntryDto,
+  WebhookPayloadOrganisationDto,
+  WebhookPayloadPersonDto,
+} from './api/dtos/webhook-payload.dto';
+import { WebhookSubscriptions } from './api/dtos/webhook-subscriptions.dto';
 import { AffinityCacheService } from './cache/affinity-cache.service';
 import { OrganizationStageDto } from './dtos/organisation-stage.dto';
 
@@ -36,7 +44,7 @@ export class AffinityService {
 
     this.logger.debug('Fetching all entries from Affinity');
     let pageToken: string | undefined;
-    const allEntries: ListEntryResponseDto[] = [];
+    const allEntries: ListEntryDto[] = [];
     do {
       const entries = await this.affinityApiService.getListEntries(
         list_id,
@@ -74,8 +82,55 @@ export class AffinityService {
     this.logger.debug('Stored data in cache');
   }
 
+  public async handleWebhookPayload(body: WebhookPayloadDto): Promise<void> {
+    switch ((typeof body).toString()) {
+      case 'WebhookPayloadPersonDto': {
+        const person = body as WebhookPayloadPersonDto;
+        break;
+      }
+      case 'WebhookPayloadOrganizationDto': {
+        const organization = body as WebhookPayloadOrganisationDto;
+        break;
+      }
+      case 'WebhookPayloadListEntryDto': {
+        const listEntry = body as WebhookPayloadListEntryDto;
+        break;
+      }
+      default: {
+        throw new Error(`Unknown webhook payload type: ${typeof body}`);
+      }
+    }
+  }
+
+  public async setupWebhook(): Promise<void> {
+    const subscriptions = await this.affinityApiService.getWebhooks();
+    if (
+      subscriptions
+        .map((subscription) => {
+          return subscription.webhook_url;
+        })
+        .includes(
+          `${environment.app.apiUrl}/affinity/webhook?token=${environment.affinity.webhookToken}`,
+        )
+    ) {
+      this.logger.debug('Webhook already exists, skipping setup');
+      return;
+    }
+
+    const webhook = await this.affinityApiService.subscribeWebhook({
+      webhook_url: `${environment.app.apiUrl}/affinity/webhook?token=${environment.affinity.webhookToken}`,
+      subscriptions: [
+        WebhookSubscriptions.ORGANIZATION_CREATED,
+        WebhookSubscriptions.ORGANIZATION_UPDATED,
+        WebhookSubscriptions.PERSON_CREATED,
+        WebhookSubscriptions.PERSON_UPDATED,
+        WebhookSubscriptions.LIST_ENTRY_CREATED,
+      ],
+    });
+  }
+
   private matchFieldChangesWithEntries(
-    entries: ListEntryResponseDto[],
+    entries: ListEntryDto[],
     fieldChanges: FieldValueChangeDto[],
   ): OrganizationStageDto[] {
     const matchedData: OrganizationStageDto[] = [];

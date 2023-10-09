@@ -1,20 +1,17 @@
 import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
-import { EmailRecipients } from '@azure/communication-email';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
-import { CommEmailTemplatesEnum } from '../../rvn-comm/templates/comm-email-templates.enum';
-import { AFFINITY_QUEUE, AFFINITY_QUEUE__REGENERATE } from '../affinity.const';
+import {
+  AFFINITY_QUEUE,
+  AFFINITY_QUEUE__HANDLE_WEBHOOK,
+  AFFINITY_QUEUE__REGENERATE,
+  AFFINITY_QUEUE__SETUP_WEBHOOK,
+} from '../affinity.const';
 import { AffinityService } from '../affinity.service';
 import { AffinityProcessorLogger } from './affinity.processor.logger';
 
 export interface AffinityJobData<EncryptedType = Record<string, string>> {
-  readonly template: CommEmailTemplatesEnum;
-  readonly templateArgs: {
-    readonly raw?: Record<string, string>;
-    readonly encrypted?: EncryptedType;
-  };
-  readonly subject: string;
-  readonly recipients: EmailRecipients;
+  body: EncryptedType;
 }
 
 @Processor(AFFINITY_QUEUE, {
@@ -37,6 +34,14 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
     switch (job.name) {
       case AFFINITY_QUEUE__REGENERATE: {
         await this.affinityService.regenerateAffinityData();
+        return true;
+      }
+      case AFFINITY_QUEUE__HANDLE_WEBHOOK: {
+        await this.affinityService.handleWebhookPayload(job.data.body);
+        return true;
+      }
+      case AFFINITY_QUEUE__SETUP_WEBHOOK: {
+        await this.affinityService.setupWebhook();
         return true;
       }
       default: {

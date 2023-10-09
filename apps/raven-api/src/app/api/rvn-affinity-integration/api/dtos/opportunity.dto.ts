@@ -1,4 +1,4 @@
-import { ListEntryResponseDto } from './list-entry-response.dto';
+import { ListEntryDto } from './list-entry.dto';
 import { EntityType } from './list-type.dto';
 
 export class OpportunityDto {
@@ -7,5 +7,5 @@ export class OpportunityDto {
   public name: string;
   public person_ids: number[];
   public organization_ids: number[];
-  public list_entries: ListEntryResponseDto[];
+  public list_entries: ListEntryDto[];
 }

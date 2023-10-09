@@ -1,8 +1,19 @@
-import { PipelineDefinitionData, PipelineStageData } from '@app/rvns-pipelines';
+import { PipelineDefinitionData } from '@app/rvns-pipelines';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
+import { PipelineStageEntity } from './entities/pipeline-stage.entity';
+
+interface PipelineStage {
+  readonly displayName: string;
+  readonly order: number;
+  readonly mappedFrom: string;
+}
+
+interface CreatePipelineOptions {
+  readonly stages: PipelineStage[];
+}
 
 @Injectable()
 export class PipelineService {
@@ -11,9 +22,17 @@ export class PipelineService {
     private readonly pipelineDefinitionRepository: Repository<PipelineDefinitionEntity>,
   ) {}
 
-  public async createPipeline(): Promise<PipelineDefinitionEntity> {
+  public async createPipeline(
+    options: CreatePipelineOptions,
+  ): Promise<PipelineDefinitionEntity> {
     const pipeline = new PipelineDefinitionEntity();
-    pipeline.stages = [];
+    pipeline.stages = options.stages.map((stage) => {
+      const pipelineStage = new PipelineStageEntity();
+      pipelineStage.displayName = stage.displayName;
+      pipelineStage.order = stage.order;
+      pipelineStage.mappedFrom = stage.mappedFrom;
+      return pipelineStage;
+    });
     return this.pipelineDefinitionRepository.save(pipeline);
   }
 
@@ -29,20 +48,5 @@ export class PipelineService {
         mappedFrom: stage.mappedFrom,
       })),
     };
-  }
-
-  public async getDefaultDefinition(): Promise<PipelineDefinitionData> {
-    const pipelineDefinitions = await this.pipelineDefinitionRepository.find();
-    const defaultDefinition = pipelineDefinitions[0];
-    return this.pipelineEntityToData(defaultDefinition);
-  }
-
-  public async mapStage(
-    pipelineDefinition: PipelineDefinitionData,
-    text: string,
-  ): Promise<PipelineStageData> {
-    return pipelineDefinition.stages.find((s) =>
-      text.toLowerCase().includes(s.mappedFrom.toLowerCase()),
-    );
   }
 }
