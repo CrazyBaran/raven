@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MsalGuard } from '@azure/msal-angular';
+import { CanActivateGuard } from './core/guards/can-activate.guard';
 
 const routes: Routes = [
   {
     path: '',
-    canActivate: [MsalGuard],
+    canActivate: [CanActivateGuard],
     loadChildren: () =>
       import('./modules/home/home-routes').then((m) => m.HOME_ROUTES),
   },

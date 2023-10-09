@@ -9,6 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Component, Input, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LoginComponent } from '../../pages/login/login.component';
 import { UiNavAsideRoute } from './nav-aside.interface';
@@ -45,7 +46,10 @@ export class NavAsideComponent {
 
   public isOpen = signal(true);
 
-  public constructor(private router: Router) {}
+  public constructor(
+    private readonly router: Router,
+    private readonly msalService: MsalService,
+  ) {}
 
   public handleToggleSidebar(): void {
     this.isOpen.update((isOpen) => !isOpen);
@@ -53,5 +57,10 @@ export class NavAsideComponent {
 
   public handleChangeRoute(path: string): void {
     this.router.navigateByUrl(path);
+  }
+
+  public handleLogout(): void {
+    this.msalService.logout();
+    console.log('Handle_Logout');
   }
 }

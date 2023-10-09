@@ -15,7 +15,7 @@
     <div class="nav-aside__routes">
       <ul>
         <li *ngFor="let route of routes">
-          <a [routerLink]="route.path" routerLinkActive="active">
+          <a class="action" [routerLink]="route.path" routerLinkActive="active">
             <i class="{{ route.icon }}"></i>
             <span>
               {{ route.name }}
@@ -23,6 +23,13 @@
           </a>
         </li>
       </ul>
+    </div>
+
+    <div class="nav-aside__settings">
+      <button class="action" (click)="handleLogout()">
+        <i class="fa-solid fa-power-off"></i>
+        Logout
+      </button>
     </div>
   </div>
 

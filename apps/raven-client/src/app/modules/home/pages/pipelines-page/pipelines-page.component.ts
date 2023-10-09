@@ -16,8 +16,6 @@ export class PipelinesPageComponent implements OnInit {
   public constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
-    console.log('Ng_On_Init');
-
     this.store.dispatch(OpportunitiesActions.getOpportunities());
   }
 }
