@@ -56,6 +56,7 @@ export class OpportunityService {
       combinedData.push(result);
     }
 
+    const defaultDefinition = await this.pipelineService.getDefaultDefinition();
     for (const org of affinityData) {
       const isAlreadyIncluded = combinedData.some((data) =>
         data.organisation.domains.some((domain) =>
@@ -64,6 +65,10 @@ export class OpportunityService {
       );
 
       if (!isAlreadyIncluded) {
+        const pipelineStage = await this.pipelineService.mapStage(
+          defaultDefinition,
+          org.stage.text,
+        );
         const result: OpportunityData = {
           id: undefined,
           organisation: {
@@ -72,7 +77,7 @@ export class OpportunityService {
             name: org.organizationDto.name,
             domains: org.organizationDto.domains,
           },
-          stage: undefined,
+          stage: pipelineStage,
         };
 
         combinedData.push(result);
@@ -107,6 +112,7 @@ export class OpportunityService {
     });
     const affinityData = await this.affinityCacheService.getAll();
 
+    const defaultDefinition = await this.pipelineService.getDefaultDefinition();
     if (opportunities.length > 0) {
       const matchedOrganization = affinityData.find((org) =>
         org.organizationDto.domains.includes(domain),
@@ -122,6 +128,10 @@ export class OpportunityService {
       );
 
       if (matchedOrganization) {
+        const pipelineStage = await this.pipelineService.mapStage(
+          defaultDefinition,
+          matchedOrganization.stage.text,
+        );
         const result: OpportunityData = {
           id: undefined, // You might need to adjust this if there's a relevant ID
           organisation: {
@@ -130,7 +140,7 @@ export class OpportunityService {
             name: matchedOrganization.organizationDto.name,
             domains: matchedOrganization.organizationDto.domains,
           },
-          stage: undefined,
+          stage: pipelineStage,
         };
 
         return [result];
