@@ -17,12 +17,17 @@ export class OpportunityService {
   ) {}
 
   public async findAll(skip = 0, take = 10): Promise<OpportunityData[]> {
-    const opportunities = await this.opportunityRepository.find();
+    const opportunities = await this.opportunityRepository.find({
+      relations: ['organisation', 'pipelineDefinition', 'pipelineStage'],
+    });
     const affinityData = await this.affinityCacheService.getAll();
 
     const combinedData: OpportunityData[] = [];
 
     for (const opportunity of opportunities) {
+      if (!opportunity.organisation?.domains[0]) {
+        continue;
+      }
       const matchedOrganization = affinityData.find((org) =>
         org.organizationDto.domains.includes(
           opportunity.organisation?.domains[0],
