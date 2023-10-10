@@ -1,0 +1,40 @@
+<div class="kendo-ui-kanban">
+  <kendo-sortable
+    [disabledIndexes]="[0, 1, 2, 3]"
+    [kendoSortableBinding]="kanbanColumns"
+    [animation]="true"
+    class="kendo-ui-kanban__container"
+  >
+    <ng-template let-column="item">
+      <div class="kendo-ui-kanban__column">
+        <div class="kendo-ui-kanban__title title {{ column }}">
+          <div class="title__name">
+            <i class="fa-solid fa-circle"></i>
+            {{ column.name }}
+          </div>
+
+          <span class="title__summary"> - {{ column.data.length }} </span>
+        </div>
+
+        <div>
+          <kendo-sortable
+            [kendoSortableBinding]="column.data"
+            [activeItemStyle]="{
+              width: '272px',
+              opacity: '0.7'
+            }"
+            zone="innerZone"
+            class="cards-group"
+            [animation]="true"
+          >
+            <ng-template let-opportunity="item">
+              <div class="card">
+                <app-opportunities-card [data]="opportunity" />
+              </div>
+            </ng-template>
+          </kendo-sortable>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-sortable>
+</div>

@@ -1,4 +1,12 @@
+import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
+import {
+  OpportunitiesEffects,
+  opportunitiesReducer,
+} from '@app/rvnc-opportunities';
+import { PipelinesEffects, pipelinesReducer } from '@app/rvnc-pipelines';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { HomeComponent } from './home.component';
 
 export const HOME_ROUTES: Routes = [
@@ -8,14 +16,54 @@ export const HOME_ROUTES: Routes = [
     children: [
       {
         path: '',
-        pathMatch: 'full',
         redirectTo: 'pipelines',
+        pathMatch: 'full',
       },
       {
         path: 'pipelines',
+        providers: [
+          importProvidersFrom(
+            StoreModule.forFeature('opportunities', opportunitiesReducer),
+            EffectsModule.forFeature([OpportunitiesEffects]),
+            StoreModule.forFeature('pipelines', pipelinesReducer),
+            EffectsModule.forFeature([PipelinesEffects]),
+          ),
+        ],
         loadComponent: () =>
           import('./pages/pipelines-page/pipelines-page.component').then(
             (c) => c.PipelinesPageComponent,
+          ),
+      },
+      {
+        path: 'opportunities',
+        providers: [
+          importProvidersFrom(
+            StoreModule.forFeature('opportunities', opportunitiesReducer),
+            EffectsModule.forFeature([OpportunitiesEffects]),
+          ),
+        ],
+        loadChildren: () =>
+          import('@app/rvnc-opportunities').then((m) => m.OPPORTUNITIES_ROUTES),
+      },
+      {
+        path: 'notes',
+        loadComponent: () =>
+          import('./pages/notes-page/notes-page.component').then(
+            (c) => c.NotesPageComponent,
+          ),
+      },
+      {
+        path: 'templates',
+        loadComponent: () =>
+          import('./pages/templates-page/templates-page.component').then(
+            (c) => c.TemplatesPageComponent,
+          ),
+      },
+      {
+        path: 'contacts',
+        loadComponent: () =>
+          import('./pages/contacts-page/contacts-page.component').then(
+            (c) => c.ContactsPageComponent,
           ),
       },
       {

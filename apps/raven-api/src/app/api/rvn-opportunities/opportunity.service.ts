@@ -34,7 +34,7 @@ export class OpportunityService {
       }
       const matchedOrganization = affinityData.find((org) =>
         org.organizationDto.domains.includes(
-          opportunity.organisation.domains[0],
+          opportunity.organisation?.domains[0],
         ),
       );
 
@@ -115,8 +115,8 @@ export class OpportunityService {
       id: opportunity.id,
       organisation: {
         id: opportunity.organisationId,
-        name: opportunity.organisation.name,
-        domains: opportunity.organisation.domains,
+        name: opportunity.organisation?.name,
+        domains: opportunity.organisation?.domains,
       },
       stage: {
         displayName: opportunity.pipelineStage.displayName,

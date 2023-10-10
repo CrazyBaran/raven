@@ -1,4 +1,7 @@
+import { HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { PipelinesPageComponent } from './pipelines-page.component';
 
 describe('PipelinesPageComponent', () => {
@@ -7,7 +10,9 @@ describe('PipelinesPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PipelinesPageComponent],
+      imports: [PipelinesPageComponent, HttpClientModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+      providers: [provideMockStore()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PipelinesPageComponent);

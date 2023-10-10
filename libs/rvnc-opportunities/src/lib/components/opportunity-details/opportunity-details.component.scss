@@ -1,0 +1,37 @@
+:host {
+  @apply grid h-full w-full;
+}
+
+.opportunity-details {
+  @apply grid;
+
+  grid-template-rows: auto 1fr;
+
+  .header {
+    @apply grid min-h-[4.75rem] grid-flow-col items-center  justify-between gap-6 px-6 py-4 text-xl text-white;
+
+    background-color: var(--rv-secondary);
+
+    &__info {
+      p {
+        color: var(--rv-primary);
+      }
+
+      span {
+        @apply text-base font-normal;
+      }
+    }
+  }
+
+  &__content {
+    @apply overflow-auto p-6;
+  }
+
+  &__loader {
+    @apply flex h-full w-full flex-col items-center justify-center;
+
+    kendo-loader {
+      @apply mb-4;
+    }
+  }
+}

@@ -8,14 +8,16 @@ import {
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, Input, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { LoginComponent } from '../../pages/login/login.component';
 import { UiNavAsideRoute } from './nav-aside.interface';
 
 @Component({
   selector: 'app-nav-aside',
   standalone: true,
-  imports: [CommonModule, ButtonsModule, RouterLink],
+  imports: [CommonModule, ButtonsModule, RouterModule, LoginComponent],
   templateUrl: './nav-aside.component.html',
   styleUrls: ['./nav-aside.component.scss'],
   animations: [
@@ -44,9 +46,20 @@ export class NavAsideComponent {
 
   public isOpen = signal(true);
 
-  public handleToggleSidebar(): void {
-    console.log('handleToggleSidebar');
+  public constructor(
+    private readonly router: Router,
+    private readonly msalService: MsalService,
+  ) {}
 
+  public handleToggleSidebar(): void {
     this.isOpen.update((isOpen) => !isOpen);
+  }
+
+  public handleChangeRoute(path: string): void {
+    this.router.navigateByUrl(path);
+  }
+
+  public handleLogout(): void {
+    this.msalService.logout();
   }
 }

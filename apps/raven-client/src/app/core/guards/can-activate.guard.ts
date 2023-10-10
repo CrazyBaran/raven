@@ -6,7 +6,7 @@ import {
 } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionStatus } from '@azure/msal-browser';
-import { filter, Observable, of, switchMap } from 'rxjs';
+import { Observable, filter, of, switchMap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CanActivateGuard {
@@ -17,7 +17,7 @@ export class CanActivateGuard {
   ) {}
 
   public canActivate(
-    route: ActivatedRouteSnapshot,
+    _route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.msalBroadcastService.inProgress$.pipe(

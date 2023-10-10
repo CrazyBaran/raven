@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import * as morgan from 'morgan';
 import { TokenIndexer } from 'morgan';
 
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { environment } from '../../environments/environment';
 import { RequestLogger } from './request.logger';
-import { Injectable, NestMiddleware } from '@nestjs/common';
 
 @Injectable()
 export class RequestLoggerMiddleware implements NestMiddleware {
@@ -73,7 +73,7 @@ export class RequestLoggerMiddleware implements NestMiddleware {
     const tokens = [];
     if (req.user) {
       tokens.push(
-        ...[req.user['email'], req.user['id'], req.user['roles'].join(',')],
+        ...[req.user['email'], req.user['id'], req.user['roles']?.join(',')],
       );
     } else {
       tokens.push(...[req.body?.username || 'null', 'null', 'null']);

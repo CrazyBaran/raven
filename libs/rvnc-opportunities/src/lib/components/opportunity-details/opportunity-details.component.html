@@ -1,0 +1,34 @@
+<div
+  class="opportunity-details__loader"
+  *ngIf="isLoading$ | async; else opportunityDetails"
+>
+  <kendo-loader type="infinite-spinner" themeColor="primary" />
+  Loading...
+</div>
+
+<ng-template #opportunityDetails>
+  <div class="opportunity-details">
+    <div class="opportunity-details__header header">
+      <div class="header__info">
+        <p>Athenian</p>
+        <span>athenian.io</span>
+      </div>
+
+      <div class="header__info">
+        <p>SEED</p>
+        <span>Last Funding Round (Deal Room)</span>
+      </div>
+
+      <div class="header__info">
+        <p>6.00</p>
+        <span>Last Funding (M) (Deal Room)</span>
+      </div>
+
+      <div class="header__info">
+        <p>0.9</p>
+        <span>MCV Score</span>
+      </div>
+    </div>
+    <div class="opportunity-details__content">Content is going here!</div>
+  </div>
+</ng-template>

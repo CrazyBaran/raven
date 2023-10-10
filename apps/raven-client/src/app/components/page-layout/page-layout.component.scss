@@ -1,0 +1,13 @@
+:host {
+  @apply grid h-full;
+}
+
+.page-layout {
+  @apply grid max-h-screen;
+
+  grid-template-rows: auto 1fr;
+
+  &__content {
+    @apply overflow-auto p-8;
+  }
+}

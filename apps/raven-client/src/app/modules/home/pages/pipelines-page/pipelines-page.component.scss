@@ -1,0 +1,17 @@
+:host {
+  @apply grid h-full;
+}
+
+.pipeline-page {
+  .content {
+    @apply grid h-full;
+
+    &__loader {
+      @apply flex h-full w-full flex-col items-center justify-center;
+
+      kendo-loader {
+        @apply mb-4;
+      }
+    }
+  }
+}

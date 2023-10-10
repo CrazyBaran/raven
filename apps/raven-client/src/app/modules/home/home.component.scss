@@ -8,8 +8,4 @@
   @apply grid h-full w-full;
 
   grid-template-columns: auto 1fr;
-
-  &__content {
-    @apply p-6;
-  }
 }

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { LoginComponent } from './pages/login/login.component';
+import { CanActivateGuard } from './core/guards/can-activate.guard';
 
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
+    canActivate: [CanActivateGuard],
     loadChildren: () =>
       import('./modules/home/home-routes').then((m) => m.HOME_ROUTES),
   },
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () =>
+      import('./pages/login/login.component').then((c) => c.LoginComponent),
   },
   {
-    path: '',
+    path: 'auth',
     loadChildren: () => import('@app/rvnc-auth').then((m) => m.RvncAuthModule),
   },
 ];

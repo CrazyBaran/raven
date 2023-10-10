@@ -1,14 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import {
   MSAL_GUARD_CONFIG,
   MsalGuardConfiguration,
   MsalService,
 } from '@azure/msal-angular';
 import { RedirectRequest } from '@azure/msal-browser';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

@@ -1,1 +1,26 @@
-<p>pipelines works!</p>
+<div class="pipeline-page">
+  <app-page-layout>
+    <h1 header>Pipeline</h1>
+
+    <div content class="pipeline-page__content content">
+      <ng-container
+        *ngIf="
+          (isLoadingOpportunities$ | async) || (isLoadingPipelines$ | async);
+          else kanbanView
+        "
+      >
+        <div class="content__loader">
+          <kendo-loader type="infinite-spinner" themeColor="primary" />
+          Loading...
+        </div>
+      </ng-container>
+
+      <ng-template #kanbanView>
+        <app-kanban-board
+          [opportunities]="(opportunities$ | async) || []"
+          [pipelines]="(pipelines$ | async) || []"
+        />
+      </ng-template>
+    </div>
+  </app-page-layout>
+</div>
