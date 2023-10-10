@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
+import { TabEntity } from './entities/tab.entity';
 import { TemplateEntity } from './entities/template.entity';
 import { TemplatesService } from './templates.service';
 
@@ -14,6 +15,7 @@ describe('TemplatesService', () => {
   let mockFieldGroupsRepository: jest.Mocked<
     Partial<Repository<FieldGroupEntity>>
   >;
+  let mockTabsRepository: jest.Mocked<Partial<Repository<TabEntity>>>;
   let mockFieldDefinitionsRepository: jest.Mocked<
     Partial<Repository<FieldDefinitionEntity>>
   >;
@@ -29,6 +31,10 @@ describe('TemplatesService', () => {
       save: jest.fn(),
       remove: jest.fn(),
     };
+    mockTabsRepository = {
+      save: jest.fn(),
+    };
+
     mockFieldDefinitionsRepository = {
       save: jest.fn(),
       remove: jest.fn(),
@@ -44,6 +50,10 @@ describe('TemplatesService', () => {
         {
           provide: getRepositoryToken(FieldGroupEntity),
           useValue: mockFieldGroupsRepository,
+        },
+        {
+          provide: getRepositoryToken(TabEntity),
+          useValue: mockTabsRepository,
         },
         {
           provide: getRepositoryToken(FieldDefinitionEntity),
