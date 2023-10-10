@@ -3,6 +3,7 @@ import {
   FieldDefinitionType,
   FieldGroupData,
   TemplateData,
+  TemplateTypeEnum,
   TemplateWithRelationsData,
 } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
@@ -13,6 +14,12 @@ import { UpdateTemplateDto } from './dto/update-template.dto';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
 import { TemplateEntity } from './entities/template.entity';
+
+interface CreateTemplateOptions {
+  name: string;
+  type: TemplateTypeEnum;
+  userEntity: UserEntity;
+}
 
 interface CreateFieldGroupOptions {
   name: string;
@@ -56,13 +63,13 @@ export class TemplatesService {
   }
 
   public async createTemplate(
-    name: string,
-    userEntity: UserEntity,
+    options: CreateTemplateOptions,
   ): Promise<TemplateEntity> {
     const templateEntity = new TemplateEntity();
-    templateEntity.name = name;
+    templateEntity.name = options.name;
+    templateEntity.type = options.type;
     templateEntity.version = 1; // TODO versioning on update will be handled later?
-    templateEntity.createdBy = userEntity;
+    templateEntity.createdBy = options.userEntity;
     return this.templatesRepository.save(templateEntity);
   }
 
@@ -148,6 +155,7 @@ export class TemplatesService {
     return {
       id: entity.id,
       name: entity.name,
+      type: entity.type as TemplateTypeEnum,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       createdById: entity.createdById,
@@ -195,6 +203,7 @@ export class TemplatesService {
     return {
       id: template.id,
       name: template.name,
+      type: template.type as TemplateTypeEnum,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
       createdById: template.createdById,
