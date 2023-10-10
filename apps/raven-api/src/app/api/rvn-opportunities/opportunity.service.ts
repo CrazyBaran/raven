@@ -58,7 +58,7 @@ export class OpportunityService {
           order: opportunity.pipelineStage.order,
           mappedFrom: opportunity.pipelineStage.mappedFrom,
         },
-        fields: matchedOrganization.fields.map((field) => {
+        fields: matchedOrganization?.fields.map((field) => {
           return {
             displayName: field.displayName,
             value: field.value,

@@ -1,4 +1,4 @@
-import { FieldDefinitionType } from '@app/rvns-templates';
+import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -77,6 +77,7 @@ describe('TemplatesService', () => {
   describe('createTemplate', () => {
     it('should successfully create a template', async () => {
       const name = 'New Template';
+      const type = TemplateTypeEnum.Note;
       const userEntity = { id: '123', name: 'Test User' };
 
       const savedTemplateMock = jest.genMockFromModule<TemplateEntity>(
@@ -91,10 +92,11 @@ describe('TemplatesService', () => {
         .spyOn(mockTemplatesRepository, 'save')
         .mockResolvedValue(savedTemplateMock);
 
-      const result = await service.createTemplate(
+      const result = await service.createTemplate({
         name,
-        userEntity as UserEntity,
-      );
+        type,
+        userEntity: userEntity as UserEntity,
+      });
 
       expect(result).toEqual(savedTemplateMock);
     });
