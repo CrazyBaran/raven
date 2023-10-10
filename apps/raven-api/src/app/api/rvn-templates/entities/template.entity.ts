@@ -17,6 +17,7 @@ import {
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { FieldGroupEntity } from './field-group.entity';
+import { TabEntity } from './tab.entity';
 
 @Entity({ name: 'templates' })
 @Index(['id'], { unique: true })
@@ -43,6 +44,9 @@ export class TemplateEntity implements AuditableEntity {
 
   @OneToMany(() => FieldGroupEntity, (fg) => fg.template, { eager: true })
   public fieldGroups: FieldGroupEntity[];
+
+  @OneToMany(() => TabEntity, (t) => t.template, { eager: true })
+  public tabs: TabEntity[];
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })

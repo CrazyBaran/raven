@@ -27,12 +27,14 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { TabData } from '../../../../../../libs/rvns-templates/src/lib/data/tab-data.interface';
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { CreateFieldDefinitionDto } from './dto/create-field-definition.dto';
 import { CreateFieldGroupDto } from './dto/create-field-group.dto';
+import { CreateTabDto } from './dto/create-tab.dto';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateFieldDefinitionDto } from './dto/update-field-definition.dto';
 import { UpdateFieldGroupDto } from './dto/update-field-group.dto';
@@ -115,6 +117,26 @@ export class TemplatesController {
     return this.service.removeTemplate(templateEntity);
   }
 
+  @ApiOperation({ description: 'Create tab' })
+  @ApiParam({ name: 'templateId', type: String })
+  @ApiResponse(GenericCreateResponseSchema())
+  @Post(':templateId/tabs')
+  public async createTab(
+    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
+    template: TemplateEntity,
+    @Body() dto: CreateTabDto,
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
+  ): Promise<TabData> {
+    return this.service.tabEntityToTabData(
+      await this.service.createTab({
+        name: dto.name,
+        templateId: template.id,
+        order: dto.order,
+        userEntity,
+      }),
+    );
+  }
+
   @ApiOperation({ description: 'Create field group' })
   @ApiParam({ name: 'templateId', type: String })
   @ApiResponse(GenericCreateResponseSchema())
@@ -130,6 +152,7 @@ export class TemplatesController {
         name: dto.name,
         templateId: template.id,
         order: dto.order,
+        tabId: dto.tabId,
         userEntity,
       }),
     );

@@ -9,10 +9,12 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TabData } from '../../../../../../libs/rvns-templates/src/lib/data/tab-data.interface';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
+import { TabEntity } from './entities/tab.entity';
 import { TemplateEntity } from './entities/template.entity';
 
 interface CreateTemplateOptions {
@@ -22,6 +24,14 @@ interface CreateTemplateOptions {
 }
 
 interface CreateFieldGroupOptions {
+  name: string;
+  order: number;
+  templateId: string;
+  tabId?: string;
+  userEntity: UserEntity;
+}
+
+interface CreateTabOptions {
   name: string;
   order: number;
   templateId: string;
@@ -52,6 +62,8 @@ export class TemplatesService {
   public constructor(
     @InjectRepository(TemplateEntity)
     private readonly templatesRepository: Repository<TemplateEntity>,
+    @InjectRepository(TabEntity)
+    private readonly tabsRepository: Repository<TabEntity>,
     @InjectRepository(FieldGroupEntity)
     private readonly fieldGroupsRepository: Repository<FieldGroupEntity>,
     @InjectRepository(FieldDefinitionEntity)
@@ -92,6 +104,9 @@ export class TemplatesService {
     const fieldGroupEntity = new FieldGroupEntity();
     fieldGroupEntity.name = options.name;
     fieldGroupEntity.order = options.order;
+    if (options.tabId) {
+      fieldGroupEntity.tabId = options.tabId;
+    }
     fieldGroupEntity.template = { id: options.templateId } as TemplateEntity;
     fieldGroupEntity.createdBy = options.userEntity;
     return this.fieldGroupsRepository.save(fieldGroupEntity);
@@ -115,6 +130,15 @@ export class TemplatesService {
     group: FieldGroupEntity,
   ): Promise<FieldGroupEntity> {
     return this.fieldGroupsRepository.remove(group);
+  }
+
+  public async createTab(options: CreateTabOptions): Promise<TabEntity> {
+    const tab = new TabEntity();
+    tab.name = options.name;
+    tab.order = options.order;
+    tab.template = { id: options.templateId } as TemplateEntity;
+    tab.createdBy = options.userEntity;
+    return this.tabsRepository.save(tab);
   }
 
   public async createFieldDefinition(
@@ -181,6 +205,17 @@ export class TemplatesService {
       createdById: entity.createdById,
     };
   }
+  public tabEntityToTabData(entity: TabEntity): TabData {
+    return {
+      id: entity.id,
+      name: entity.name,
+      order: entity.order,
+      templateId: entity.templateId,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      createdById: entity.createdById,
+    };
+  }
 
   public fieldDefinitionEntityToFieldDefinitionData(
     entity: FieldDefinitionEntity,
@@ -210,6 +245,7 @@ export class TemplatesService {
       fieldGroups: template.fieldGroups.map((group) => ({
         id: group.id,
         name: group.name,
+        tabName: group.tab?.name,
         order: group.order,
         templateId: group.templateId,
         createdAt: group.createdAt,
