@@ -45,6 +45,15 @@ export class AffinityCacheService {
     return rawData ? JSON.parse(rawData) : null;
   }
 
+  public async getByDomain(
+    domain: string,
+  ): Promise<OrganizationStageDto | null> {
+    const rawData = await this.getAll();
+    return rawData.find(
+      (item) => item?.organizationDto?.domains?.includes(domain) ?? false,
+    );
+  }
+
   public async addOrReplace(data: OrganizationStageDto): Promise<void> {
     await this.store.client.hset(
       AFFINITY_CACHE,
