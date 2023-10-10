@@ -14,8 +14,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
+import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { FieldGroupEntity } from './field-group.entity';
 
 @Entity({ name: 'templates' })
@@ -23,6 +23,9 @@ import { FieldGroupEntity } from './field-group.entity';
 export class TemplateEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
+
+  @Column({ length: 50, default: 'note' })
+  public type: string;
 
   @Column({ length: 50 })
   public name: string;

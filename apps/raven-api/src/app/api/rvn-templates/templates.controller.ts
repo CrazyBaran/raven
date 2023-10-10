@@ -1,4 +1,16 @@
 import {
+  EmptyResponseData,
+  GenericCreateResponseSchema,
+  GenericResponseSchema,
+} from '@app/rvns-api';
+import {
+  FieldDefinitionData,
+  FieldGroupData,
+  TemplateData,
+  TemplateTypeEnum,
+  TemplateWithRelationsData,
+} from '@app/rvns-templates';
+import {
   Body,
   Controller,
   Delete,
@@ -15,34 +27,23 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  EmptyResponseData,
-  GenericCreateResponseSchema,
-  GenericResponseSchema,
-} from '@app/rvns-api';
-import { Identity } from '../rvn-users/decorators/identity.decorator';
-import { CreateTemplateDto } from './dto/create-template.dto';
-import {
-  FieldDefinitionData,
-  FieldGroupData,
-  TemplateData,
-  TemplateWithRelationsData,
-} from '@app/rvns-templates';
-import { TemplatesService } from './templates.service';
-import { TemplateEntity } from './entities/template.entity';
-import { ParseTemplatePipe } from './pipes/parse-template.pipe';
-import { UpdateTemplateDto } from './dto/update-template.dto';
-import { CreateFieldGroupDto } from './dto/create-field-group.dto';
-import { FieldGroupEntity } from './entities/field-group.entity';
-import { UpdateFieldGroupDto } from './dto/update-field-group.dto';
-import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
-import { CreateFieldDefinitionDto } from './dto/create-field-definition.dto';
-import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
-import { UserEntity } from '../rvn-users/entities/user.entity';
-import { UpdateFieldDefinitionDto } from './dto/update-field-definition.dto';
-import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
-import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
+import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
+import { Identity } from '../rvn-users/decorators/identity.decorator';
+import { UserEntity } from '../rvn-users/entities/user.entity';
+import { CreateFieldDefinitionDto } from './dto/create-field-definition.dto';
+import { CreateFieldGroupDto } from './dto/create-field-group.dto';
+import { CreateTemplateDto } from './dto/create-template.dto';
+import { UpdateFieldDefinitionDto } from './dto/update-field-definition.dto';
+import { UpdateFieldGroupDto } from './dto/update-field-group.dto';
+import { UpdateTemplateDto } from './dto/update-template.dto';
+import { FieldDefinitionEntity } from './entities/field-definition.entity';
+import { FieldGroupEntity } from './entities/field-group.entity';
+import { TemplateEntity } from './entities/template.entity';
+import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
+import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
+import { ParseTemplatePipe } from './pipes/parse-template.pipe';
+import { TemplatesService } from './templates.service';
 
 @ApiTags('Templates')
 @Controller('templates')
@@ -79,8 +80,13 @@ export class TemplatesController {
     @Body() dto: CreateTemplateDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<TemplateData> {
+    const type = (dto.type as TemplateTypeEnum) || TemplateTypeEnum.Note;
     return this.service.templateEntityToTemplateData(
-      await this.service.createTemplate(dto.name, userEntity),
+      await this.service.createTemplate({
+        name: dto.name,
+        type,
+        userEntity,
+      }),
     ) as TemplateData;
   }
 
@@ -118,7 +124,7 @@ export class TemplatesController {
     template: TemplateEntity,
     @Body() dto: CreateFieldGroupDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-  ): Promise<TemplateData> {
+  ): Promise<FieldGroupData> {
     return this.service.fieldGroupEntityToFieldGroupData(
       await this.service.createFieldGroup({
         name: dto.name,
@@ -126,7 +132,7 @@ export class TemplatesController {
         order: dto.order,
         userEntity,
       }),
-    ) as TemplateData;
+    );
   }
 
   @ApiOperation({ description: 'Update field group' })
