@@ -24,7 +24,7 @@
   }
 
   &__content {
-    @apply overflow-auto p-6;
+    @apply flex flex-col gap-4 overflow-auto p-6;
   }
 
   &__loader {
@@ -32,6 +32,20 @@
 
     kendo-loader {
       @apply mb-4;
+    }
+  }
+
+  .details {
+    &__title {
+      @apply text-lg font-bold;
+    }
+
+    &__info {
+      @apply text-sm;
+    }
+
+    &__additional-info {
+      @apply text-xs italic;
     }
   }
 }

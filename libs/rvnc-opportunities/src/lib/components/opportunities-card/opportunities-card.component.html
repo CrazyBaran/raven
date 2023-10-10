@@ -18,14 +18,14 @@
   </div>
 
   <div class="opportunity-card__details details">
-    <div class="details__item item">
+    <div class="details__item item" *ngIf="dealLead">
       <div class="item__title">Deal lead</div>
-      <p class="text-error">Missing info</p>
+      <p>{{ dealLead }}</p>
     </div>
 
-    <div class="details__item item">
+    <div class="details__item item" *ngIf="dateAdded">
       <div class="item__title">Date added</div>
-      <p class="text-error">Missing info</p>
+      <p>{{ dateAdded }}</p>
     </div>
   </div>
 </div>
