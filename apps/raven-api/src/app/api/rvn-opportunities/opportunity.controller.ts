@@ -31,6 +31,7 @@ export class OpportunityController {
   @ApiResponse({ status: 200, description: 'List of opportunities' })
   @ApiQuery({ name: 'skip', type: Number, required: false })
   @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiQuery({ name: 'pipelineStageId', type: String, required: false })
   @ApiQuery({ name: 'domain', type: String, required: false })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
@@ -38,9 +39,10 @@ export class OpportunityController {
     @Query('skip') skip?: number,
     @Query('take') take?: number,
     @Query('domain') domain?: string,
+    @Query('pipelineStageId') pipelineStageId?: string,
   ): Promise<OpportunityData[]> {
     if (skip || take) {
-      return await this.opportunityService.findAll(skip, take);
+      return await this.opportunityService.findAll(skip, take, pipelineStageId);
     } else if (domain) {
       return await this.opportunityService.findByDomain(domain);
     }

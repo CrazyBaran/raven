@@ -20,10 +20,15 @@ export class OpportunityService {
     private readonly organisationService: OrganisationService,
   ) {}
 
-  public async findAll(skip = 0, take = 10): Promise<OpportunityData[]> {
-    const opportunities = await this.opportunityRepository.find({
+  public async findAll(
+    skip = 0,
+    take = 10,
+    pipelineStageId?: string,
+  ): Promise<OpportunityData[]> {
+    const options = {
       relations: ['organisation', 'pipelineDefinition', 'pipelineStage'],
-    });
+    };
+    const opportunities = await this.opportunityRepository.find(options);
     const affinityData = await this.affinityCacheService.getAll();
 
     const combinedData: OpportunityData[] = [];
@@ -103,7 +108,14 @@ export class OpportunityService {
       }
     }
 
-    return combinedData.slice(skip, skip + take);
+    return combinedData
+      .filter((data) => {
+        if (!pipelineStageId) {
+          return false;
+        }
+        return data.stage.id.toLowerCase() === pipelineStageId.toLowerCase();
+      })
+      .slice(skip, skip + take);
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {

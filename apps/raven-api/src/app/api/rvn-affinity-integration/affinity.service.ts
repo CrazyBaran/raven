@@ -179,6 +179,7 @@ export class AffinityService {
 
       matchedData.push({
         entryId: entry.id,
+        entryAdded: new Date(entry.created_at),
         organizationDto: entry.entity as OrganizationDto,
         stage: fieldChange?.value as FieldValueRankedDropdownDto,
         fields: [],
