@@ -19,3 +19,8 @@ export const selectIsLoading = createSelector(
   selectOpportunitiesState,
   (state: OpportunitiesState) => state.isLoading,
 );
+
+export const selectDetails = createSelector(
+  selectOpportunitiesState,
+  (state: OpportunitiesState) => state.details,
+);
