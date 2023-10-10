@@ -9,7 +9,7 @@
     }
 
     &__info {
-      @apply flex flex-col;
+      @apply flex flex-col overflow-hidden;
     }
 
     &__name {
@@ -17,12 +17,22 @@
     }
 
     &__page {
-      @apply text-sm italic;
+      @apply overflow-hidden text-ellipsis text-sm italic;
+    }
+  }
+
+  &:has(.details:empty) {
+    .header {
+      @apply mb-0;
     }
   }
 
   .details {
     @apply grid gap-2;
+
+    &:empty {
+      @apply hidden;
+    }
 
     grid-template-columns: repeat(2, 1fr);
 
