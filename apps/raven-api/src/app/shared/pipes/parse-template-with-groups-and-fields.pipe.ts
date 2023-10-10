@@ -19,6 +19,7 @@ export class ParseTemplateWithGroupsAndFieldsPipe
     const templateEntity = await this.entityManager
       .createQueryBuilder(TemplateEntity, 'template')
       .leftJoinAndSelect('template.fieldGroups', 'fieldGroups')
+      .leftJoinAndSelect('fieldGroups.tab', 'tab')
       .leftJoinAndSelect('fieldGroups.fieldDefinitions', 'fieldDefinitions')
       .where('template.id = :id', { id })
       .getOne();

@@ -15,13 +15,12 @@ import {
 
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
-import { FieldDefinitionEntity } from './field-definition.entity';
-import { TabEntity } from './tab.entity';
+import { FieldGroupEntity } from './field-group.entity';
 import { TemplateEntity } from './template.entity';
 
-@Entity({ name: 'field_groups' })
+@Entity({ name: 'tabs' })
 @Index(['id', 'template'], { unique: true })
-export class FieldGroupEntity implements AuditableEntity {
+export class TabEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -31,24 +30,16 @@ export class FieldGroupEntity implements AuditableEntity {
   @Column()
   public order: number;
 
-  @OneToMany(() => FieldDefinitionEntity, (fd) => fd.group, { eager: true })
-  public fieldDefinitions: FieldDefinitionEntity[];
+  @OneToMany(() => FieldGroupEntity, (fg) => fg.tab, { eager: true })
+  public fieldGroups: FieldGroupEntity[];
 
   @ManyToOne(() => TemplateEntity, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'template_id' })
   public template: TemplateEntity;
 
   @Column()
-  @RelationId((t: FieldGroupEntity) => t.template)
+  @RelationId((t: TabEntity) => t.template)
   public templateId: string;
-
-  @ManyToOne(() => TabEntity, { nullable: true })
-  @JoinColumn({ name: 'tab_id' })
-  public tab: TabEntity | null;
-
-  @Column({ nullable: true })
-  @RelationId((t: FieldGroupEntity) => t.tab)
-  public tabId: string | null;
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
@@ -71,7 +62,6 @@ export class FieldGroupEntity implements AuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.templateId = this.templateId.toLowerCase();
-    this.tabId = this.tabId?.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
   }
 }

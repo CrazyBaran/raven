@@ -1,15 +1,8 @@
-import {
-  IsDefined,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Length,
-} from 'class-validator';
+import { IsDefined, IsNumber, IsString, Length } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateFieldGroupDto {
+export class CreateTabDto {
   @ApiProperty()
   @IsDefined()
   @IsString()
@@ -20,9 +13,4 @@ export class CreateFieldGroupDto {
   @IsDefined()
   @IsNumber()
   public readonly order: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsUUID()
-  public readonly tabId?: string;
 }
