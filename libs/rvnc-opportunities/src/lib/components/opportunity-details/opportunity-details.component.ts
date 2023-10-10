@@ -3,7 +3,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { Store } from '@ngrx/store';
-import { GridModule } from '@progress/kendo-angular-grid';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { OpportunitiesActions } from '../../+state/opportunities.actions';
@@ -16,7 +15,7 @@ import { OpportunityDealLeadFieldData } from './opportunitiy-details.interface';
 @Component({
   selector: 'app-opportunity-details',
   standalone: true,
-  imports: [CommonModule, IndicatorsModule, GridModule],
+  imports: [CommonModule, IndicatorsModule],
   templateUrl: './opportunity-details.component.html',
   styleUrls: ['./opportunity-details.component.scss'],
 })
