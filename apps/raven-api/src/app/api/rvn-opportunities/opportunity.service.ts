@@ -25,14 +25,20 @@ export class OpportunityService {
     take = 10,
     pipelineStageId?: string,
   ): Promise<OpportunityData[]> {
+    let before = Date.now(); // TODO remove debug
     const options = {
       relations: ['organisation', 'pipelineDefinition', 'pipelineStage'],
     };
     const opportunities = await this.opportunityRepository.find(options);
+    console.log('OpportunityRepository.find took', Date.now() - before, 'ms'); // TODO remove debug
+
+    before = Date.now(); // TODO remove debug
     const affinityData = await this.affinityCacheService.getAll();
+    console.log('AffinityCacheService.getAll took', Date.now() - before, 'ms'); // TODO remove debug
 
     const combinedData: OpportunityData[] = [];
 
+    before = Date.now(); // TODO remove debug
     for (const opportunity of opportunities) {
       if (!opportunity.organisation?.domains[0]) {
         continue;
@@ -73,7 +79,9 @@ export class OpportunityService {
 
       combinedData.push(result);
     }
+    console.log('CombinedData 1 took', Date.now() - before, 'ms'); // TODO remove debug
 
+    before = Date.now(); // TODO remove debug
     const defaultDefinition = await this.getDefaultDefinition();
     for (const org of affinityData) {
       const isAlreadyIncluded = combinedData.some((data) =>
@@ -107,7 +115,9 @@ export class OpportunityService {
         combinedData.push(result);
       }
     }
+    console.log('CombinedData 2 took', Date.now() - before, 'ms'); // TODO remove debug
 
+    before = Date.now(); // TODO remove debug
     const filteredData = pipelineStageId
       ? combinedData.filter(
           (data) =>
@@ -115,7 +125,9 @@ export class OpportunityService {
         )
       : combinedData;
 
-    return filteredData.slice(skip, skip + take);
+    const sliced = filteredData.slice(skip, skip + take);
+    console.log('Sliced took', Date.now() - before, 'ms'); // TODO remove debug
+    return sliced;
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {
