@@ -52,7 +52,7 @@ export class NoteEntity implements AuditableEntity {
 
   @Column({ nullable: true })
   @RelationId((t: NoteEntity) => t.opportunity)
-  public opportunityId: string;
+  public opportunityId: string | null;
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })

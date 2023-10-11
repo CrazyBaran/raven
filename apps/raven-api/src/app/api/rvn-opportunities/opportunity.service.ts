@@ -108,14 +108,14 @@ export class OpportunityService {
       }
     }
 
-    return combinedData
-      .filter((data) => {
-        if (!pipelineStageId) {
-          return false;
-        }
-        return data.stage.id.toLowerCase() === pipelineStageId.toLowerCase();
-      })
-      .slice(skip, skip + take);
+    const filteredData = pipelineStageId
+      ? combinedData.filter(
+          (data) =>
+            data.stage.id.toLowerCase() === pipelineStageId.toLowerCase(),
+        )
+      : combinedData;
+
+    return filteredData.slice(skip, skip + take);
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {
