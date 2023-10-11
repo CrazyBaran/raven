@@ -3,7 +3,7 @@ import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { NoteAssignedToAffinityOpportunityEvent } from '../rvn-opportunities/events/note-assigned-to-affinity-opportunity.event';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
@@ -30,8 +30,10 @@ export class NotesService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async getAllNotes(): Promise<NoteEntity[]> {
+  public async getAllNotes(oppportunityIds?: string[]): Promise<NoteEntity[]> {
+    const where = oppportunityIds ? { opportunityId: In(oppportunityIds) } : {};
     return this.noteRepository.find({
+      where,
       relations: ['noteFieldGroups', 'noteFieldGroups.noteFields'],
     });
   }
@@ -88,6 +90,7 @@ export class NotesService {
       noteEntity.opportunityId = options.opportunityId;
       noteEntity.updatedBy = userEntity;
       noteEntity.updatedAt = new Date();
+      delete noteEntity.noteFieldGroups;
       return await this.noteRepository.save(noteEntity);
     } else if (options.opportunityAffinityInternalId) {
       this.eventEmitter.emit(
@@ -106,11 +109,12 @@ export class NotesService {
     return {
       id: noteEntity.id,
       name: noteEntity.name,
+      opportunityId: noteEntity.opportunityId,
       createdById: noteEntity.createdById,
       updatedById: noteEntity.updatedById,
       updatedAt: noteEntity.updatedAt,
       createdAt: noteEntity.createdAt,
-      noteFieldGroups: noteEntity.noteFieldGroups.map((noteFieldGroup) => {
+      noteFieldGroups: noteEntity.noteFieldGroups?.map((noteFieldGroup) => {
         return {
           id: noteFieldGroup.id,
           name: noteFieldGroup.name,
@@ -120,7 +124,7 @@ export class NotesService {
           updatedById: noteFieldGroup.updatedById,
           updatedAt: noteFieldGroup.updatedAt,
           createdAt: noteFieldGroup.createdAt,
-          noteFields: noteFieldGroup.noteFields.map((noteField) =>
+          noteFields: noteFieldGroup.noteFields?.map((noteField) =>
             this.noteFieldEntityToNoteFieldData(noteField),
           ),
         };

@@ -84,6 +84,7 @@ export class NoteEntity implements AuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.previousVersionId = this.previousVersionId?.toLowerCase();
+    this.opportunityId = this.opportunityId?.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
     this.updatedById = this.updatedById.toLowerCase();
   }
