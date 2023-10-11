@@ -1,12 +1,14 @@
 import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
 import {
+  OPPORTUNITIES_ROUTES,
   OpportunitiesEffects,
   opportunitiesReducer,
 } from '@app/rvnc-opportunities';
 import { PipelinesEffects, pipelinesReducer } from '@app/rvnc-pipelines';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { NOTES_ROUTES } from './../../../../../../libs/rvnc-notes/src/lib/notes-routes';
 import { HomeComponent } from './home.component';
 
 export const HOME_ROUTES: Routes = [
@@ -42,15 +44,11 @@ export const HOME_ROUTES: Routes = [
             EffectsModule.forFeature([OpportunitiesEffects]),
           ),
         ],
-        loadChildren: () =>
-          import('@app/rvnc-opportunities').then((m) => m.OPPORTUNITIES_ROUTES),
+        children: OPPORTUNITIES_ROUTES,
       },
       {
         path: 'notes',
-        loadComponent: () =>
-          import('./pages/notes-page/notes-page.component').then(
-            (c) => c.NotesPageComponent,
-          ),
+        children: NOTES_ROUTES,
       },
       {
         path: 'templates',
