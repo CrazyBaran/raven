@@ -53,5 +53,8 @@ export class OpportunityEntity {
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
+    this.organisationId = this.organisationId.toLowerCase();
+    this.pipelineDefinitionId = this.pipelineDefinitionId.toLowerCase();
+    this.pipelineStageId = this.pipelineStageId.toLowerCase();
   }
 }

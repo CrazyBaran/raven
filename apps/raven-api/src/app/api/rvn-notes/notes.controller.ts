@@ -22,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
+import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
@@ -31,6 +32,7 @@ import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
+import { GetOpportunityRelatedToDomainPipe } from './pipes/get-opportunity-related-to-domain.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
@@ -61,10 +63,19 @@ export class NotesController {
 
   @ApiOperation({ description: 'Get all notes' })
   @ApiResponse(GenericResponseSchema())
+  @ApiQuery({ name: 'domain', type: String, required: false })
   @Get()
-  public async getAllNotes(): Promise<NoteData[]> {
+  public async getAllNotes(
+    @Query('domain', GetOpportunityRelatedToDomainPipe)
+    opportunities?: OpportunityEntity[],
+  ): Promise<NoteData[]> {
+    const opportunityIds =
+      opportunities !== null ? opportunities?.map((o) => o.id) : undefined;
+    if (opportunityIds.length === 0) {
+      return [];
+    }
     return await Promise.all(
-      (await this.notesService.getAllNotes()).map((note) =>
+      (await this.notesService.getAllNotes(opportunityIds)).map((note) =>
         this.notesService.noteEntityToNoteData(note),
       ),
     );
