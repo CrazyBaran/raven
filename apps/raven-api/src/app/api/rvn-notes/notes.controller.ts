@@ -71,7 +71,7 @@ export class NotesController {
   ): Promise<NoteData[]> {
     const opportunityIds =
       opportunities !== null ? opportunities?.map((o) => o.id) : undefined;
-    if (opportunityIds.length === 0) {
+    if (opportunityIds?.length === 0) {
       return [];
     }
     return await Promise.all(
