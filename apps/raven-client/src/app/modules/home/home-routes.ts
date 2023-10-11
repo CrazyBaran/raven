@@ -1,5 +1,6 @@
 import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
+import { NOTES_ROUTES } from '@app/rvnc-notes';
 import {
   OPPORTUNITIES_ROUTES,
   OpportunitiesEffects,
@@ -8,7 +9,6 @@ import {
 import { PipelinesEffects, pipelinesReducer } from '@app/rvnc-pipelines';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { NOTES_ROUTES } from './../../../../../../libs/rvnc-notes/src/lib/notes-routes';
 import { HomeComponent } from './home.component';
 
 export const HOME_ROUTES: Routes = [
