@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RvncNotesComponent } from './notes.component';
+import { NotesComponent } from './notes.component';
 
-describe('RvncNotesComponent', () => {
-  let component: RvncNotesComponent;
-  let fixture: ComponentFixture<RvncNotesComponent>;
+describe('NotesComponent', () => {
+  let component: NotesComponent;
+  let fixture: ComponentFixture<NotesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RvncNotesComponent],
+      imports: [NotesComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RvncNotesComponent);
+    fixture = TestBed.createComponent(NotesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
