@@ -24,6 +24,7 @@
       "@app/rvnc-auth": ["libs/rvnc-auth/src/index.ts"],
       "@app/rvnc-core-ui": ["libs/rvnc-core-ui/src/index.ts"],
       "@app/rvnc-environment": ["libs/rvnc-environment/index.ts"],
+      "@app/rvnc-notes": ["libs/rvnc-notes/src/index.ts"],
       "@app/rvnc-opportunities": ["libs/rvnc-opportunities/src/index.ts"],
       "@app/rvnc-pipelines": ["libs/rvnc-pipelines/src/index.ts"],
       "@app/rvnc-teams": ["libs/rvnc-teams/src/index.ts"],

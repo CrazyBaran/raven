@@ -3,10 +3,10 @@ import { Component } from '@angular/core';
 import { UnderConstructionComponent } from '../under-construction/under-construction.component';
 
 @Component({
-  selector: 'app-notes-page',
+  selector: 'app-home-page',
   standalone: true,
   imports: [CommonModule, UnderConstructionComponent],
-  templateUrl: './notes-page.component.html',
-  styleUrls: ['./notes-page.component.scss'],
+  templateUrl: './home-page.component.html',
+  styleUrls: ['./home-page.component.scss'],
 })
-export class NotesPageComponent {}
+export class HomePageComponent {}

@@ -12,26 +12,65 @@ import { UiNavAsideRoute } from '../../components/nav-aside/nav-aside.interface'
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-  public readonly mainRoutes: UiNavAsideRoute[] = [
+  public readonly mainRoutes2: UiNavAsideRoute[] = [
     {
-      name: 'Pipeline',
-      path: 'pipelines',
-      icon: 'fa-regular fa-fire',
+      name: 'Home Dashboard',
+      path: '',
+      icon: 'fa-sharp fa-solid fa-grid',
+      exact: true,
+    },
+    {
+      name: 'Companies',
+      path: 'companies',
+      icon: 'fa-solid fa-building',
+      subRoutes: [
+        {
+          name: 'All Companies',
+          path: 'companies',
+          icon: 'fa-regular fa-cart-shopping',
+        },
+        {
+          name: 'Shortlist',
+          path: 'companies/shortlist',
+          icon: 'fa-solid fa-check',
+          disabled: true,
+        },
+        {
+          name: 'Pipeline',
+          path: 'companies/pipeline',
+          icon: 'fa-regular fa-fire',
+        },
+        {
+          name: 'portfolio',
+          path: 'companies/portfolio',
+          icon: 'fa-regular fa-house',
+          disabled: true,
+        },
+      ],
+    },
+    {
+      name: 'Investors',
+      path: 'investors',
+      icon: 'fa-solid fa-user-tie',
+      disabled: true,
     },
     {
       name: 'Notes',
       path: 'notes',
-      icon: 'fa-regular fa-notes',
+      icon: 'fa-solid fa-notebook',
+      subRoutes: [
+        {
+          name: 'All Notes',
+          path: 'notes',
+          icon: 'fa-solid fa-notebook',
+        },
+      ],
     },
     {
-      name: 'Templates',
-      path: 'templates',
-      icon: 'fa-regular fa-memo',
-    },
-    {
-      name: 'Contacts',
-      path: 'contacts',
-      icon: 'fa-regular fa-user',
+      name: 'Reminders',
+      path: 'reminders',
+      icon: 'fa-solid fa-alarm-clock',
+      disabled: true,
     },
   ];
 }
