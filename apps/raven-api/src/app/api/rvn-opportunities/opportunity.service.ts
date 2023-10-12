@@ -25,20 +25,24 @@ export class OpportunityService {
     take = 10,
     pipelineStageId?: string,
   ): Promise<OpportunityData[]> {
-    let before = Date.now(); // TODO remove debug
     const options = {
-      relations: ['organisation', 'pipelineDefinition', 'pipelineStage'],
+      where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
+      relations: ['organisation'],
     };
-    const opportunities = await this.opportunityRepository.find(options);
-    console.log('OpportunityRepository.find took', Date.now() - before, 'ms'); // TODO remove debug
 
-    before = Date.now(); // TODO remove debug
-    const affinityData = await this.affinityCacheService.getAll();
-    console.log('AffinityCacheService.getAll took', Date.now() - before, 'ms'); // TODO remove debug
+    const defaultPipeline = await this.getDefaultPipelineDefinition();
+    const affinityFilter = this.getAffinityFilter(
+      defaultPipeline,
+      pipelineStageId,
+    );
+
+    const [opportunities, affinityData] = await Promise.all([
+      this.opportunityRepository.find(options),
+      this.affinityCacheService.getAll(affinityFilter),
+    ]);
 
     const combinedData: OpportunityData[] = [];
 
-    before = Date.now(); // TODO remove debug
     for (const opportunity of opportunities) {
       if (!opportunity.organisation?.domains[0]) {
         continue;
@@ -49,6 +53,10 @@ export class OpportunityService {
         ),
       );
 
+      const pipelineStage = this.getPipelineStage(
+        defaultPipeline,
+        opportunity.pipelineStageId,
+      );
       const result: OpportunityData = {
         id: opportunity.id,
         organisation: {
@@ -64,10 +72,10 @@ export class OpportunityService {
             : opportunity.organisation.domains,
         },
         stage: {
-          id: opportunity.pipelineStage.id,
-          displayName: opportunity.pipelineStage.displayName,
-          order: opportunity.pipelineStage.order,
-          mappedFrom: opportunity.pipelineStage.mappedFrom,
+          id: opportunity.pipelineStageId,
+          displayName: pipelineStage.displayName,
+          order: pipelineStage.order,
+          mappedFrom: pipelineStage.mappedFrom,
         },
         fields: matchedOrganization?.fields.map((field) => {
           return {
@@ -79,10 +87,6 @@ export class OpportunityService {
 
       combinedData.push(result);
     }
-    console.log('CombinedData 1 took', Date.now() - before, 'ms'); // TODO remove debug
-
-    before = Date.now(); // TODO remove debug
-    const defaultDefinition = await this.getDefaultDefinition();
     for (const org of affinityData) {
       const isAlreadyIncluded = combinedData.some((data) =>
         data.organisation.domains.some((domain) =>
@@ -91,8 +95,8 @@ export class OpportunityService {
       );
 
       if (!isAlreadyIncluded) {
-        const pipelineStage = await this.mapStage(
-          defaultDefinition,
+        const pipelineStage = await this.mapPipelineStage(
+          defaultPipeline,
           org?.stage?.text,
         );
         const result: OpportunityData = {
@@ -115,9 +119,6 @@ export class OpportunityService {
         combinedData.push(result);
       }
     }
-    console.log('CombinedData 2 took', Date.now() - before, 'ms'); // TODO remove debug
-
-    before = Date.now(); // TODO remove debug
     const filteredData = pipelineStageId
       ? combinedData.filter(
           (data) =>
@@ -125,9 +126,7 @@ export class OpportunityService {
         )
       : combinedData;
 
-    const sliced = filteredData.slice(skip, skip + take);
-    console.log('Sliced took', Date.now() - before, 'ms'); // TODO remove debug
-    return sliced;
+    return filteredData.slice(skip, skip + take);
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {
@@ -165,7 +164,7 @@ export class OpportunityService {
     });
     const affinityData = await this.affinityCacheService.getAll();
 
-    const defaultDefinition = await this.getDefaultDefinition();
+    const defaultDefinition = await this.getDefaultPipelineDefinition();
     if (opportunities.length > 0) {
       const matchedOrganization = affinityData.find((org) =>
         org.organizationDto.domains.includes(domain),
@@ -181,7 +180,7 @@ export class OpportunityService {
       );
 
       if (matchedOrganization) {
-        const pipelineStage = await this.mapStage(
+        const pipelineStage = await this.mapPipelineStage(
           defaultDefinition,
           matchedOrganization?.stage?.text,
         );
@@ -276,8 +275,8 @@ export class OpportunityService {
     const opportunity = new OpportunityEntity();
     opportunity.organisationId = organisationId;
 
-    const pipelineDefinition = await this.getDefaultDefinition();
-    const pipelineStage = await this.mapStage(
+    const pipelineDefinition = await this.getDefaultPipelineDefinition();
+    const pipelineStage = await this.mapPipelineStage(
       pipelineDefinition,
       affinityData.stage.text,
     );
@@ -305,7 +304,7 @@ export class OpportunityService {
       });
     });
 
-    const defaultDefinition = await this.getDefaultDefinition();
+    const defaultDefinition = await this.getDefaultPipelineDefinition();
 
     for (const org of nonexitstingAffinityData) {
       const organisation =
@@ -327,7 +326,7 @@ export class OpportunityService {
         continue;
       }
 
-      const pipelineStage = await this.mapStage(
+      const pipelineStage = await this.mapPipelineStage(
         defaultDefinition,
         org?.stage?.text,
       );
@@ -342,14 +341,18 @@ export class OpportunityService {
     }
   }
 
-  private async getDefaultDefinition(): Promise<PipelineDefinitionEntity> {
+  // TODO using this might cause problem in the future if we would switch to use multiple pipelines
+  private async getDefaultPipelineDefinition(): Promise<PipelineDefinitionEntity> {
     const pipelineDefinitions = await this.pipelineRepository.find({
       relations: ['stages'],
     });
+    if (pipelineDefinitions.length !== 1) {
+      throw new Error('There should be only one pipeline definition!');
+    }
     return pipelineDefinitions[0];
   }
 
-  private async mapStage(
+  private async mapPipelineStage(
     pipelineDefinition: PipelineDefinitionEntity,
     text: string,
   ): Promise<PipelineStageEntity> {
@@ -361,5 +364,31 @@ export class OpportunityService {
     return pipelineDefinition.stages.find((s: { mappedFrom: string }) =>
       text.toLowerCase().includes(s.mappedFrom.toLowerCase()),
     );
+  }
+
+  private getPipelineStage(
+    pipelineDefinition: PipelineDefinitionEntity,
+    id: string,
+  ): PipelineStageEntity {
+    const pipelineStage = pipelineDefinition.stages.find(
+      (s: { id: string }) => s.id === id,
+    );
+    if (!pipelineStage) {
+      throw new Error('Pipeline stage not found! Incorrect configuration');
+    }
+    return pipelineStage;
+  }
+
+  private getAffinityFilter(
+    pipelineDefinition: PipelineDefinitionEntity,
+    pipelineStageId?: string,
+  ): (data: OrganizationStageDto) => boolean | undefined {
+    if (!pipelineStageId) {
+      return undefined;
+    }
+    const pipelineStage = pipelineDefinition.stages.find(
+      (s: { id: string }) => s.id === pipelineStageId,
+    );
+    return (data) => data.stage?.text === pipelineStage.mappedFrom;
   }
 }
