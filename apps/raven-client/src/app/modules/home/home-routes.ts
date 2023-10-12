@@ -1,6 +1,6 @@
 import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
-import { NOTES_ROUTES } from '@app/rvnc-notes';
+import { NotesEffects, notesReducer } from '@app/rvnc-notes';
 import {
   OPPORTUNITIES_ROUTES,
   OpportunitiesEffects,
@@ -18,37 +18,62 @@ export const HOME_ROUTES: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'pipelines',
+        loadComponent: () =>
+          import('./pages/home-page/home-page.component').then(
+            (c) => c.HomePageComponent,
+          ),
         pathMatch: 'full',
       },
       {
-        path: 'pipelines',
-        providers: [
-          importProvidersFrom(
-            StoreModule.forFeature('opportunities', opportunitiesReducer),
-            EffectsModule.forFeature([OpportunitiesEffects]),
-            StoreModule.forFeature('pipelines', pipelinesReducer),
-            EffectsModule.forFeature([PipelinesEffects]),
-          ),
+        path: 'companies',
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('./pages/companies-page/companies-page.component').then(
+                (c) => c.CompaniesPageComponent,
+              ),
+          },
+          {
+            path: 'pipeline',
+            providers: [
+              importProvidersFrom(
+                StoreModule.forFeature('opportunities', opportunitiesReducer),
+                EffectsModule.forFeature([OpportunitiesEffects]),
+                StoreModule.forFeature('pipelines', pipelinesReducer),
+                EffectsModule.forFeature([PipelinesEffects]),
+              ),
+            ],
+            loadComponent: () =>
+              import('./pages/pipelines-page/pipelines-page.component').then(
+                (c) => c.PipelinesPageComponent,
+              ),
+          },
+          {
+            path: 'opportunities',
+            providers: [
+              importProvidersFrom(
+                StoreModule.forFeature('opportunities', opportunitiesReducer),
+                EffectsModule.forFeature([OpportunitiesEffects]),
+              ),
+            ],
+            children: OPPORTUNITIES_ROUTES,
+          },
         ],
-        loadComponent: () =>
-          import('./pages/pipelines-page/pipelines-page.component').then(
-            (c) => c.PipelinesPageComponent,
-          ),
-      },
-      {
-        path: 'opportunities',
-        providers: [
-          importProvidersFrom(
-            StoreModule.forFeature('opportunities', opportunitiesReducer),
-            EffectsModule.forFeature([OpportunitiesEffects]),
-          ),
-        ],
-        children: OPPORTUNITIES_ROUTES,
       },
       {
         path: 'notes',
-        children: NOTES_ROUTES,
+        providers: [
+          importProvidersFrom(
+            StoreModule.forFeature('notes', notesReducer),
+            EffectsModule.forFeature([NotesEffects]),
+          ),
+        ],
+        loadComponent: () =>
+          import('./pages/notes-page/notes-page.component').then(
+            (c) => c.NotesPageComponent,
+          ),
       },
       {
         path: 'templates',

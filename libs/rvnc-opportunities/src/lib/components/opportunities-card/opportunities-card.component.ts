@@ -36,6 +36,6 @@ export class OpportunitiesCardComponent {
   }
 
   public handleGoToDetails(opportunityId: string): void {
-    this.router.navigateByUrl(`/opportunities/${opportunityId}`);
+    this.router.navigateByUrl(`/companies/opportunities/${opportunityId}`);
   }
 }

@@ -1,4 +1,4 @@
-$primary-color: #00ccbe;
+$primary-color: #00a59b;
 $secondary-color: #002c3c;
 $tertiary-color: #9bcbeb;
 
@@ -21,4 +21,9 @@ $warning-color: #ffc000;
   --rv-base-border-radius: 4px;
   --rv-sm-border-radius: 2px;
   --rv-bg-border-radius: 6px;
+
+  // BUTTONS
+  --rv-primary-button-bg: #00a59b;
+
+  --rv-button-text-20: #002c3c;
 }
