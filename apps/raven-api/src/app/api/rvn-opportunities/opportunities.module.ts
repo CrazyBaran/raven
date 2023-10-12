@@ -9,6 +9,7 @@ import { BullService } from '../../core/bull.service';
 import { AffinityIntegrationModule } from '../rvn-affinity-integration/affinity-integration.module';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
+import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { PipelineModule } from '../rvn-pipeline/pipeline.module';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { NoteAssignedToAffinityOpportunityEventHandler } from './event-handlers/note-assigned-to-affinity-opportunity.event-handler';
@@ -40,6 +41,7 @@ import { OpportunityProducerLogger } from './queues/opportunity.producer.logger'
       OpportunityEntity,
       OrganisationEntity,
       PipelineDefinitionEntity,
+      PipelineStageEntity,
     ]),
     AffinityIntegrationModule,
     EventEmitterModule,
