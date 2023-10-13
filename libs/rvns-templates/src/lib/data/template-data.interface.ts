@@ -12,7 +12,7 @@ export interface TemplateData {
   readonly createdAt: Date;
 }
 
-interface TabWithFieldGroupsData extends TabData {
+export interface TabWithFieldGroupsData extends TabData {
   fieldGroups: FieldGroupData[];
 }
 

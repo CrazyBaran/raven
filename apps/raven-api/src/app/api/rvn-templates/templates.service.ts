@@ -2,6 +2,7 @@ import {
   FieldDefinitionData,
   FieldDefinitionType,
   FieldGroupsWithDefinitionsData,
+  TabWithFieldGroupsData,
   TemplateData,
   TemplateTypeEnum,
   TemplateWithRelationsData,
@@ -9,7 +10,6 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TabData } from '../../../../../../libs/rvns-templates/src/lib/data/tab-data.interface';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
@@ -39,6 +39,11 @@ interface CreateTabOptions {
 }
 
 interface UpdateFieldGroupOptions {
+  name?: string;
+  order?: number;
+}
+
+interface UpdateTabOptions {
   name?: string;
   order?: number;
 }
@@ -141,6 +146,24 @@ export class TemplatesService {
     return this.tabsRepository.save(tab);
   }
 
+  public async updateTab(
+    tab: TabEntity,
+    options: UpdateTabOptions,
+  ): Promise<TabEntity> {
+    delete tab.fieldGroups;
+    if (options.name) {
+      tab.name = options.name;
+    }
+    if (options.order) {
+      tab.order = options.order;
+    }
+    return this.tabsRepository.save(tab);
+  }
+
+  public async removeTab(tab: TabEntity): Promise<void> {
+    await this.tabsRepository.remove(tab);
+  }
+
   public async createFieldDefinition(
     options: CreateFieldDefinitionOptions,
   ): Promise<FieldDefinitionEntity> {
@@ -209,11 +232,14 @@ export class TemplatesService {
       createdById: entity.createdById,
     };
   }
-  public tabEntityToTabData(entity: TabEntity): TabData {
+  public tabEntityToTabData(entity: TabEntity): TabWithFieldGroupsData {
     return {
       id: entity.id,
       name: entity.name,
       order: entity.order,
+      fieldGroups: entity.fieldGroups?.map(
+        this.fieldGroupEntityToFieldGroupData.bind(this),
+      ),
       templateId: entity.templateId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
@@ -246,18 +272,7 @@ export class TemplatesService {
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
       createdById: template.createdById,
-      tabs: template.tabs.map((tab) => ({
-        id: tab.id,
-        name: tab.name,
-        order: tab.order,
-        templateId: tab.templateId,
-        createdAt: tab.createdAt,
-        updatedAt: tab.updatedAt,
-        createdById: tab.createdById,
-        fieldGroups: tab.fieldGroups?.map(
-          this.fieldGroupEntityToFieldGroupData.bind(this),
-        ),
-      })),
+      tabs: template.tabs.map(this.tabEntityToTabData.bind(this)),
       fieldGroups: template.fieldGroups?.map(
         this.fieldGroupEntityToFieldGroupData.bind(this),
       ),
