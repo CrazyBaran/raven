@@ -1,6 +1,7 @@
 import { TemplateTypeEnum } from '../enums/template-type.enum';
 import { FieldDefinitionData } from './field-definition-data.interface';
 import { FieldGroupData } from './field-group-data.interface';
+import { TabData } from './tab-data.interface';
 
 export interface TemplateData {
   readonly id: string;
@@ -11,10 +12,15 @@ export interface TemplateData {
   readonly createdAt: Date;
 }
 
-interface FieldGroupsWithDefinitionsData extends FieldGroupData {
+interface TabWithFieldGroupsData extends TabData {
+  fieldGroups: FieldGroupData[];
+}
+
+export interface FieldGroupsWithDefinitionsData extends FieldGroupData {
   fieldDefinitions: FieldDefinitionData[];
 }
 
 export interface TemplateWithRelationsData extends TemplateData {
+  tabs: TabWithFieldGroupsData[];
   fieldGroups: FieldGroupsWithDefinitionsData[];
 }

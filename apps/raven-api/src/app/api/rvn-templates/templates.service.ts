@@ -1,7 +1,7 @@
 import {
   FieldDefinitionData,
   FieldDefinitionType,
-  FieldGroupData,
+  FieldGroupsWithDefinitionsData,
   TemplateData,
   TemplateTypeEnum,
   TemplateWithRelationsData,
@@ -189,16 +189,20 @@ export class TemplatesService {
   public templateEntitiesToTemplateData(
     entities: TemplateEntity[],
   ): TemplateData[] {
-    return entities.map((e) => this.templateEntityToTemplateData(e));
+    return entities?.map(this.templateEntityToTemplateData.bind(this));
   }
 
   public fieldGroupEntityToFieldGroupData(
     entity: FieldGroupEntity,
-  ): FieldGroupData {
+  ): FieldGroupsWithDefinitionsData {
     return {
       id: entity.id,
       name: entity.name,
       order: entity.order,
+      tabId: entity.tabId,
+      fieldDefinitions: entity.fieldDefinitions?.map(
+        this.fieldDefinitionEntityToFieldDefinitionData.bind(this),
+      ),
       templateId: entity.templateId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
@@ -242,26 +246,21 @@ export class TemplatesService {
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
       createdById: template.createdById,
-      fieldGroups: template.fieldGroups.map((group) => ({
-        id: group.id,
-        name: group.name,
-        tabName: group.tab?.name,
-        order: group.order,
-        templateId: group.templateId,
-        createdAt: group.createdAt,
-        updatedAt: group.updatedAt,
-        createdById: group.createdById,
-        fieldDefinitions: group.fieldDefinitions.map((fd) => ({
-          id: fd.id,
-          name: fd.name,
-          order: fd.order,
-          type: fd.type,
-          fieldGroupId: fd.groupId,
-          createdById: fd.createdById,
-          createdAt: fd.createdAt,
-          updatedAt: fd.updatedAt,
-        })),
+      tabs: template.tabs.map((tab) => ({
+        id: tab.id,
+        name: tab.name,
+        order: tab.order,
+        templateId: tab.templateId,
+        createdAt: tab.createdAt,
+        updatedAt: tab.updatedAt,
+        createdById: tab.createdById,
+        fieldGroups: tab.fieldGroups?.map(
+          this.fieldGroupEntityToFieldGroupData.bind(this),
+        ),
       })),
+      fieldGroups: template.fieldGroups?.map(
+        this.fieldGroupEntityToFieldGroupData.bind(this),
+      ),
     };
   }
 }
