@@ -3,8 +3,7 @@ import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { NoteAssignedToAffinityOpportunityEvent } from '../rvn-opportunities/events/note-assigned-to-affinity-opportunity.event';
+import { Repository } from 'typeorm';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
@@ -30,10 +29,8 @@ export class NotesService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async getAllNotes(oppportunityIds?: string[]): Promise<NoteEntity[]> {
-    const where = oppportunityIds ? { opportunityId: In(oppportunityIds) } : {};
+  public async getAllNotes(): Promise<NoteEntity[]> {
     return this.noteRepository.find({
-      where,
       relations: ['noteFieldGroups', 'noteFieldGroups.noteFields'],
     });
   }
@@ -81,35 +78,10 @@ export class NotesService {
     return await this.noteFieldRepository.save(noteFieldEntity);
   }
 
-  public async updateNote(
-    noteEntity: NoteEntity,
-    userEntity: UserEntity,
-    options: UpdateNoteOptions,
-  ): Promise<NoteEntity> {
-    if (options.opportunityId) {
-      noteEntity.opportunityId = options.opportunityId;
-      noteEntity.updatedBy = userEntity;
-      noteEntity.updatedAt = new Date();
-      delete noteEntity.noteFieldGroups;
-      return await this.noteRepository.save(noteEntity);
-    } else if (options.opportunityAffinityInternalId) {
-      this.eventEmitter.emit(
-        `note.assigned.affinity-opportunity`,
-        new NoteAssignedToAffinityOpportunityEvent(
-          noteEntity,
-          options.opportunityAffinityInternalId,
-          userEntity,
-        ),
-      );
-      return noteEntity;
-    }
-  }
-
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
     return {
       id: noteEntity.id,
       name: noteEntity.name,
-      opportunityId: noteEntity.opportunityId,
       createdById: noteEntity.createdById,
       updatedById: noteEntity.updatedById,
       updatedAt: noteEntity.updatedAt,
