@@ -18,8 +18,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
+import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityService } from './opportunity.service';
+import { FindOrganizationByDomainPipe } from './pipes/find-organization-by-domain.pipe';
 
 @ApiTags('Opportunities')
 @Controller('opportunities')
@@ -65,10 +68,23 @@ export class OpportunityController {
   })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public create(
-    @Body() opportunity: OpportunityEntity,
-  ): Promise<OpportunityEntity> {
-    return this.opportunityService.create(opportunity);
+  public async create(
+    @Body() dto: CreateOpportunityDto,
+    @Body('domain', FindOrganizationByDomainPipe)
+    organisation: OrganisationEntity | null,
+  ): Promise<OpportunityData> {
+    if (organisation) {
+      return this.opportunityService.opportunityEntityToData(
+        await this.opportunityService.createFromOrganisation({ organisation }),
+      );
+    }
+
+    return this.opportunityService.opportunityEntityToData(
+      await this.opportunityService.createForNonExistingOrganisation({
+        name: dto.name,
+        domain: dto.domain,
+      }),
+    );
   }
 
   @Put(':id')

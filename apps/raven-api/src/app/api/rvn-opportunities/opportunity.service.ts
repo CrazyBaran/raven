@@ -7,7 +7,17 @@ import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisat
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
+import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
+
+interface CreateOpportunityForNonExistingOrganisationOptions {
+  domain: string;
+  name: string;
+}
+
+interface CreateOpportunityForOrganisationOptions {
+  organisation: OrganisationEntity;
+}
 
 @Injectable()
 export class OpportunityService {
@@ -77,12 +87,13 @@ export class OpportunityService {
           order: pipelineStage.order,
           mappedFrom: pipelineStage.mappedFrom,
         },
-        fields: matchedOrganization?.fields.map((field) => {
-          return {
-            displayName: field.displayName,
-            value: field.value,
-          };
-        }),
+        fields:
+          matchedOrganization?.fields.map((field) => {
+            return {
+              displayName: field.displayName,
+              value: field.value,
+            };
+          }) || [],
       };
 
       combinedData.push(result);
@@ -208,9 +219,35 @@ export class OpportunityService {
     return null;
   }
 
-  public async create(
-    opportunity: OpportunityEntity,
+  public async createFromOrganisation(
+    options: CreateOpportunityForOrganisationOptions,
   ): Promise<OpportunityEntity> {
+    const { pipeline, pipelineStage } =
+      await this.getDefaultPipelineAndFirstStage();
+    const opportunity = new OpportunityEntity();
+    opportunity.organisation = options.organisation;
+    opportunity.pipelineDefinition = pipeline;
+    opportunity.pipelineStage = pipelineStage;
+
+    return this.opportunityRepository.save(opportunity);
+  }
+
+  public async createForNonExistingOrganisation(
+    options: CreateOpportunityForNonExistingOrganisationOptions,
+  ): Promise<OpportunityEntity> {
+    const { pipeline, pipelineStage } =
+      await this.getDefaultPipelineAndFirstStage();
+
+    const organisation = await this.organisationService.create({
+      domain: options.domain,
+      name: options.name,
+    });
+
+    const opportunity = new OpportunityEntity();
+    opportunity.organisation = organisation;
+    opportunity.pipelineDefinition = pipeline;
+    opportunity.pipelineStage = pipelineStage;
+
     return this.opportunityRepository.save(opportunity);
   }
 
@@ -252,6 +289,7 @@ export class OpportunityService {
     };
   }
 
+  // TODO check with Filip if we can delete this
   public async createFromAffinity(
     organisationId: string,
     opportunityAffinityInternalId: number,
@@ -341,6 +379,24 @@ export class OpportunityService {
     }
   }
 
+  public opportunityEntityToData(entity: OpportunityEntity): OpportunityData {
+    return {
+      id: entity.id,
+      organisation: {
+        id: entity.organisationId,
+        name: entity.organisation?.name,
+        domains: entity.organisation?.domains,
+      },
+      stage: {
+        id: entity.pipelineStage.id,
+        displayName: entity.pipelineStage.displayName,
+        order: entity.pipelineStage.order,
+        mappedFrom: entity.pipelineStage.mappedFrom,
+      },
+      fields: [],
+    };
+  }
+
   // TODO using this might cause problem in the future if we would switch to use multiple pipelines
   private async getDefaultPipelineDefinition(): Promise<PipelineDefinitionEntity> {
     const pipelineDefinitions = await this.pipelineRepository.find({
@@ -390,5 +446,21 @@ export class OpportunityService {
       (s: { id: string }) => s.id === pipelineStageId,
     );
     return (data) => data.stage?.text === pipelineStage.mappedFrom;
+  }
+
+  private async getDefaultPipelineAndFirstStage(): Promise<{
+    pipeline: PipelineDefinitionEntity;
+    pipelineStage: PipelineStageEntity;
+  }> {
+    const pipeline = await this.getDefaultPipelineDefinition();
+    const pipelineStage = pipeline.stages.find(
+      (s: { order: number }) => s.order === 1,
+    );
+    if (!pipelineStage) {
+      throw new Error(
+        'Pipeline stage with order = 1 not found! Incorrect configuration',
+      );
+    }
+    return { pipeline, pipelineStage };
   }
 }

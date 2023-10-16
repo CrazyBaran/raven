@@ -6,6 +6,11 @@ import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
 
+interface CreateOrganisationOptions {
+  name: string;
+  domain: string;
+}
+
 @Injectable()
 export class OrganisationService {
   public constructor(
@@ -60,8 +65,11 @@ export class OrganisationService {
   }
 
   public async create(
-    organisation: OrganisationEntity,
+    options: CreateOrganisationOptions,
   ): Promise<OrganisationEntity> {
+    const organisation = new OrganisationEntity();
+    organisation.name = options.name;
+    organisation.domains = [options.domain];
     return this.organisationRepository.save(organisation);
   }
 

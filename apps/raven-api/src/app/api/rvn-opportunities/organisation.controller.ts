@@ -11,6 +11,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateOrganisationDto } from './dto/create-organisation.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
 
@@ -48,9 +49,12 @@ export class OrganisationController {
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public create(
-    @Body() organisation: OrganisationEntity,
+    @Body() dto: CreateOrganisationDto,
   ): Promise<OrganisationEntity> {
-    return this.organisationService.create(organisation);
+    return this.organisationService.create({
+      name: dto.name,
+      domain: dto.domain,
+    });
   }
 
   @Put(':id')

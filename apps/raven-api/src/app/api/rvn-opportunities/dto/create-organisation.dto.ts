@@ -1,15 +1,15 @@
-import { IsDefined, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsDefined, IsString, IsUrl } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateOpportunityDto {
+export class CreateOrganisationDto {
   @ApiProperty()
   @IsDefined()
   @IsUrl()
   public readonly domain: string;
 
   @ApiProperty()
-  @IsOptional()
+  @IsDefined()
   @IsString()
-  public readonly name?: string;
+  public readonly name: string;
 }
