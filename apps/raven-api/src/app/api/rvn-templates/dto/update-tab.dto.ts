@@ -2,7 +2,7 @@ import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateFieldGroupDto {
+export class UpdateTabDto {
   @ApiProperty()
   @IsOptional()
   @IsString()

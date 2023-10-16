@@ -22,17 +22,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
-import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
-import { UpdateNoteDto } from './dto/UpdateNoteDto';
+
 import { UpdateNoteFieldDto } from './dto/update-note-field.dto';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
-import { GetOpportunityRelatedToDomainPipe } from './pipes/get-opportunity-related-to-domain.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
@@ -63,19 +61,11 @@ export class NotesController {
 
   @ApiOperation({ description: 'Get all notes' })
   @ApiResponse(GenericResponseSchema())
-  @ApiQuery({ name: 'domain', type: String, required: false })
   @Get()
-  public async getAllNotes(
-    @Query('domain', GetOpportunityRelatedToDomainPipe)
-    opportunities?: OpportunityEntity[],
-  ): Promise<NoteData[]> {
-    const opportunityIds =
-      opportunities !== null ? opportunities?.map((o) => o.id) : undefined;
-    if (opportunityIds?.length === 0) {
-      return [];
-    }
+  public async getAllNotes(): Promise<NoteData[]> {
+    // TODO filtering byu domain will be handled with tags - there is no longer relation between note and opportunity
     return await Promise.all(
-      (await this.notesService.getAllNotes(opportunityIds)).map((note) =>
+      (await this.notesService.getAllNotes()).map((note) =>
         this.notesService.noteEntityToNoteData(note),
       ),
     );
@@ -86,7 +76,7 @@ export class NotesController {
   @ApiParam({ name: 'id', type: String })
   @Get(':id')
   public async getNote(
-    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity,
+    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
   ): Promise<NoteData> {
     return this.notesService.noteEntityToNoteData(noteEntity);
   }
@@ -114,21 +104,21 @@ export class NotesController {
       ),
     );
   }
-
-  @ApiOperation({ description: 'Update note' })
-  @ApiResponse(GenericResponseSchema())
-  @ApiParam({ name: 'noteId', type: String })
-  @Put(':noteId')
-  public async updateNote(
-    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-    @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
-    @Body() dto: UpdateNoteDto,
-  ): Promise<NoteData> {
-    return this.notesService.noteEntityToNoteData(
-      await this.notesService.updateNote(noteEntity, userEntity, {
-        opportunityAffinityInternalId: dto.opportunityAffinityInternalId,
-        opportunityId: dto.opportunityId,
-      }),
-    );
-  }
+  // TODO this will be changed when tag system is in place
+  // @ApiOperation({ description: 'Update note' })
+  // @ApiResponse(GenericResponseSchema())
+  // @ApiParam({ name: 'noteId', type: String })
+  // @Put(':noteId')
+  // public async updateNote(
+  //   @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
+  //   @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+  //   @Body() dto: UpdateNoteDto,
+  // ): Promise<NoteData> {
+  //   return this.notesService.noteEntityToNoteData(
+  //     await this.notesService.updateNote(noteEntity, userEntity, {
+  //       opportunityAffinityInternalId: dto.opportunityAffinityInternalId,
+  //       opportunityId: dto.opportunityId,
+  //     }),
+  //   );
+  // }
 }

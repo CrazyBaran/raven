@@ -12,7 +12,6 @@ import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-defi
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { PipelineModule } from '../rvn-pipeline/pipeline.module';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
-import { NoteAssignedToAffinityOpportunityEventHandler } from './event-handlers/note-assigned-to-affinity-opportunity.event-handler';
 import { OPPORTUNITY_QUEUE } from './opportunities.const';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
@@ -51,7 +50,6 @@ import { OpportunityProducerLogger } from './queues/opportunity.producer.logger'
     OrganisationService,
     OpportunityService,
     AffinityCacheService,
-    NoteAssignedToAffinityOpportunityEventHandler,
     OpportunityProducer,
     OpportunityProducerLogger,
     OpportunityProcessorLogger,

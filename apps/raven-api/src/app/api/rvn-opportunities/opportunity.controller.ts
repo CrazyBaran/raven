@@ -7,19 +7,28 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
+  Patch,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 import {
   ApiOAuth2,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ParsePipelineStagePipe } from '../../shared/pipes/parse-pipeline-stage.pipe';
+import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
+import { CreateOpportunityDto } from './dto/create-opportunity.dto';
+import { UpdateOpportunityDto } from './dto/update-opportunity.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
+import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityService } from './opportunity.service';
+import { FindOrganizationByDomainPipe } from './pipes/find-organization-by-domain.pipe';
+import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
 
 @ApiTags('Opportunities')
 @Controller('opportunities')
@@ -65,25 +74,46 @@ export class OpportunityController {
   })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public create(
-    @Body() opportunity: OpportunityEntity,
-  ): Promise<OpportunityEntity> {
-    return this.opportunityService.create(opportunity);
+  public async create(
+    @Body() dto: CreateOpportunityDto,
+    @Body('domain', FindOrganizationByDomainPipe)
+    organisation: OrganisationEntity | null,
+  ): Promise<OpportunityData> {
+    if (organisation) {
+      // TODO - find previous opportunity, check if is at last stage? remove or soft delete? confirm logic for that
+      // TODO - current logic should be one opportunity for given organisation is in active stages...
+      return this.opportunityService.opportunityEntityToData(
+        await this.opportunityService.createFromOrganisation({ organisation }),
+      );
+    }
+
+    return this.opportunityService.opportunityEntityToData(
+      await this.opportunityService.createForNonExistingOrganisation({
+        name: dto.name,
+        domain: dto.domain,
+      }),
+    );
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update an opportunity' })
   @ApiResponse({
     status: 200,
     description: 'The opportunity has been successfully updated.',
   })
+  @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public update(
-    @Param('id') id: string,
-    @Body() opportunity: OpportunityEntity,
-  ): Promise<void> {
-    return this.opportunityService.update(id, opportunity);
+  public async update(
+    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
+    opportunity: OpportunityEntity,
+    @Body() dto: UpdateOpportunityDto,
+    @Body('pipelineStageId', ParseUUIDPipe, ParsePipelineStagePipe)
+    pipelineStage: PipelineStageEntity,
+  ): Promise<OpportunityData> {
+    return this.opportunityService.opportunityEntityToData(
+      await this.opportunityService.update(opportunity, { pipelineStage }),
+    );
   }
 
   @Delete(':id')
@@ -92,6 +122,7 @@ export class OpportunityController {
     status: 200,
     description: 'The opportunity has been successfully deleted.',
   })
+  @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public remove(@Param('id') id: string): Promise<void> {

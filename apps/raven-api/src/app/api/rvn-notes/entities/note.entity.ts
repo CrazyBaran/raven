@@ -17,13 +17,14 @@ import {
 } from 'typeorm';
 
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
-import { OpportunityEntity } from '../../rvn-opportunities/entities/opportunity.entity';
+
 import { TagEntity } from '../../rvn-tags/entities/tag.entity';
+import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './note-field-group.entity';
 
 @Entity({ name: 'notes' })
-@Index(['id', 'opportunity'], { unique: true })
+@Index(['id'], { unique: true })
 export class NoteEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
@@ -42,6 +43,16 @@ export class NoteEntity implements AuditableEntity {
   @RelationId((n: NoteEntity) => n.previousVersion)
   public previousVersionId: string | null;
 
+  @Index()
+  @ManyToOne(() => TemplateEntity, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'template_id' })
+  public template: TemplateEntity | null;
+
+  @Column({ nullable: true })
+  @RelationId((n: NoteEntity) => n.template)
+  public templateId: string | null;
+
+  // TODO discuss with Filip - I want to get rid of this entity as I feel it's useless
   @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.note, {
     eager: true,
     cascade: ['insert'],
@@ -55,15 +66,6 @@ export class NoteEntity implements AuditableEntity {
     inverseJoinColumn: { name: 'tag_id' },
   })
   public tags: TagEntity[];
-
-  @Index()
-  @ManyToOne(() => OpportunityEntity, { nullable: true })
-  @JoinColumn({ name: 'opportunity_id' })
-  public opportunity: OpportunityEntity | null;
-
-  @Column({ nullable: true })
-  @RelationId((t: NoteEntity) => t.opportunity)
-  public opportunityId: string | null;
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
@@ -95,7 +97,6 @@ export class NoteEntity implements AuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.previousVersionId = this.previousVersionId?.toLowerCase();
-    this.opportunityId = this.opportunityId?.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
     this.updatedById = this.updatedById.toLowerCase();
   }
