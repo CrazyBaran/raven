@@ -39,6 +39,7 @@ import { SentryModule } from './sentry/sentry.module';
 import { SwaggerService } from './swagger.service';
 import { ThrottlerGuard } from './throttler.guard';
 import { TransformInterceptor } from './transform.interceptor';
+import {StorageAccountModule} from "../api/rvn-storage-account/storage-account.module";
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { TransformInterceptor } from './transform.interceptor';
     TemplatesModule,
     NotesModule,
     PipelineModule,
+    StorageAccountModule
   ],
   providers: [
     // core
