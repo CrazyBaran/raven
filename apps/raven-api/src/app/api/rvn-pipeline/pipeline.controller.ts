@@ -22,6 +22,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ParsePipelineStagePipe } from '../../shared/pipes/parse-pipeline-stage.pipe';
 import { CreatePipelineStageDto } from './dto/create-pipeline-stage.dto';
 import { CreatePipelineDto } from './dto/create-pipeline.dto';
 import { UpdatePipelineStageDto } from './dto/update-pipeline-stage.dto';
@@ -29,7 +30,6 @@ import { UpdatePipelineDto } from './dto/update-pipeline.dto';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
 import { PipelineStageEntity } from './entities/pipeline-stage.entity';
 import { PipelineService } from './pipeline.service';
-import { ParsePipelineStagePipe } from './pipes/parse-pipeline-stage.pipe';
 import { ParsePipelineWithStagesPipe } from './pipes/parse-pipeline-with-stages.pipe';
 import { ParsePipelinePipe } from './pipes/parse-pipeline.pipe';
 

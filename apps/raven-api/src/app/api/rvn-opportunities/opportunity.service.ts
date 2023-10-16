@@ -252,10 +252,11 @@ export class OpportunityService {
   }
 
   public async update(
-    id: string,
     opportunity: OpportunityEntity,
-  ): Promise<void> {
-    await this.opportunityRepository.update(id, opportunity);
+    options: { pipelineStage: PipelineStageEntity },
+  ): Promise<OpportunityEntity> {
+    opportunity.pipelineStage = options.pipelineStage;
+    return await this.opportunityRepository.save(opportunity);
   }
 
   public async remove(id: string): Promise<void> {
