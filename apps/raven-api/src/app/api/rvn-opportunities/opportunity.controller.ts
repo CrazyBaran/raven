@@ -8,13 +8,14 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 import {
   ApiOAuth2,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -79,6 +80,8 @@ export class OpportunityController {
     organisation: OrganisationEntity | null,
   ): Promise<OpportunityData> {
     if (organisation) {
+      // TODO - find previous opportunity, check if is at last stage? remove or soft delete? confirm logic for that
+      // TODO - current logic should be one opportunity for given organisation is in active stages...
       return this.opportunityService.opportunityEntityToData(
         await this.opportunityService.createFromOrganisation({ organisation }),
       );
@@ -92,12 +95,13 @@ export class OpportunityController {
     );
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update an opportunity' })
   @ApiResponse({
     status: 200,
     description: 'The opportunity has been successfully updated.',
   })
+  @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public async update(
@@ -118,6 +122,7 @@ export class OpportunityController {
     status: 200,
     description: 'The opportunity has been successfully deleted.',
   })
+  @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public remove(@Param('id') id: string): Promise<void> {
