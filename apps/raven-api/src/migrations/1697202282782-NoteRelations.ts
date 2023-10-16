@@ -14,10 +14,10 @@ export class NoteRelations1697202282782 implements MigrationInterface {
       `DROP INDEX "IDX_bc7cbe8e92ce3c65e71747681e" ON "rvn_notes"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "sql-uks-mc-raven-dev-db-01.dbo.rvn_notes" DROP COLUMN "opportunity_id"`,
+      `ALTER TABLE "rvn_notes" DROP COLUMN "opportunity_id"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "sql-uks-mc-raven-dev-db-01.dbo.rvn_notes" ADD "template_id" uniqueidentifier`,
+      `ALTER TABLE "rvn_notes" ADD "template_id" uniqueidentifier`,
     );
 
     await queryRunner.query(
@@ -42,10 +42,10 @@ export class NoteRelations1697202282782 implements MigrationInterface {
       `DROP INDEX "IDX_6c23d90017dcbe0abe4321c1ea" ON "rvn_notes"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "sql-uks-mc-raven-dev-db-01.dbo.rvn_notes" DROP COLUMN "template_id"`,
+      `ALTER TABLE "rvn_notes" DROP COLUMN "template_id"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "sql-uks-mc-raven-dev-db-01.dbo.rvn_notes" ADD "opportunity_id" uniqueidentifier`,
+      `ALTER TABLE "rvn_notes" ADD "opportunity_id" uniqueidentifier`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_bc7cbe8e92ce3c65e71747681e" ON "rvn_notes" ("id", "opportunity_id") `,

@@ -76,7 +76,7 @@ export class NotesController {
   @ApiParam({ name: 'id', type: String })
   @Get(':id')
   public async getNote(
-    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity,
+    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
   ): Promise<NoteData> {
     return this.notesService.noteEntityToNoteData(noteEntity);
   }

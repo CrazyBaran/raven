@@ -31,7 +31,12 @@ export class NotesService {
 
   public async getAllNotes(): Promise<NoteEntity[]> {
     return this.noteRepository.find({
-      relations: ['noteFieldGroups', 'noteFieldGroups.noteFields'],
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
     });
   }
 
@@ -79,11 +84,21 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
+    console.log({ noteEntity });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
+      templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
+      createdBy: {
+        name: noteEntity.createdBy.name,
+        email: noteEntity.createdBy.email,
+      },
       updatedById: noteEntity.updatedById,
+      updatedBy: {
+        name: noteEntity.updatedBy.name,
+        email: noteEntity.updatedBy.email,
+      },
       updatedAt: noteEntity.updatedAt,
       createdAt: noteEntity.createdAt,
       noteFieldGroups: noteEntity.noteFieldGroups?.map((noteFieldGroup) => {
@@ -128,6 +143,7 @@ export class NotesService {
     const note = new NoteEntity();
     note.name = templateEntity.name;
     note.version = 1;
+    note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
     note.noteFieldGroups = templateEntity.fieldGroups.map((fieldGroup) => {
