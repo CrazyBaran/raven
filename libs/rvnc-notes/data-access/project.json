@@ -1,7 +1,7 @@
 {
-  "name": "rvnc-notes",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/rvnc-notes/src",
+  "name": "rvnc-notes-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rvnc-notes/data-access/src",
   "prefix": "app",
   "tags": [],
   "projectType": "library",
@@ -10,7 +10,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/rvnc-notes/jest.config.ts",
+        "jestConfig": "libs/rvnc-notes/data-access/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -25,8 +25,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/rvnc-notes/**/*.ts",
-          "libs/rvnc-notes/**/*.html"
+          "libs/rvnc-notes/data-access/**/*.ts",
+          "libs/rvnc-notes/data-access/**/*.html"
         ]
       }
     }
