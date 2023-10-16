@@ -77,12 +77,13 @@ export class OpportunityService {
           order: pipelineStage.order,
           mappedFrom: pipelineStage.mappedFrom,
         },
-        fields: matchedOrganization?.fields.map((field) => {
-          return {
-            displayName: field.displayName,
-            value: field.value,
-          };
-        }),
+        fields:
+          matchedOrganization?.fields.map((field) => {
+            return {
+              displayName: field.displayName,
+              value: field.value,
+            };
+          }) || [],
       };
 
       combinedData.push(result);
