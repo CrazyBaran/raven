@@ -3,8 +3,7 @@ import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { NoteAssignedToAffinityOpportunityEvent } from '../rvn-opportunities/events/note-assigned-to-affinity-opportunity.event';
+import { Repository } from 'typeorm';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
@@ -30,11 +29,14 @@ export class NotesService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async getAllNotes(oppportunityIds?: string[]): Promise<NoteEntity[]> {
-    const where = oppportunityIds ? { opportunityId: In(oppportunityIds) } : {};
+  public async getAllNotes(): Promise<NoteEntity[]> {
     return this.noteRepository.find({
-      where,
-      relations: ['noteFieldGroups', 'noteFieldGroups.noteFields'],
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
     });
   }
 
@@ -81,37 +83,22 @@ export class NotesService {
     return await this.noteFieldRepository.save(noteFieldEntity);
   }
 
-  public async updateNote(
-    noteEntity: NoteEntity,
-    userEntity: UserEntity,
-    options: UpdateNoteOptions,
-  ): Promise<NoteEntity> {
-    if (options.opportunityId) {
-      noteEntity.opportunityId = options.opportunityId;
-      noteEntity.updatedBy = userEntity;
-      noteEntity.updatedAt = new Date();
-      delete noteEntity.noteFieldGroups;
-      return await this.noteRepository.save(noteEntity);
-    } else if (options.opportunityAffinityInternalId) {
-      this.eventEmitter.emit(
-        `note.assigned.affinity-opportunity`,
-        new NoteAssignedToAffinityOpportunityEvent(
-          noteEntity,
-          options.opportunityAffinityInternalId,
-          userEntity,
-        ),
-      );
-      return noteEntity;
-    }
-  }
-
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
+    console.log({ noteEntity });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
-      opportunityId: noteEntity.opportunityId,
+      templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
+      createdBy: {
+        name: noteEntity.createdBy.name,
+        email: noteEntity.createdBy.email,
+      },
       updatedById: noteEntity.updatedById,
+      updatedBy: {
+        name: noteEntity.updatedBy.name,
+        email: noteEntity.updatedBy.email,
+      },
       updatedAt: noteEntity.updatedAt,
       createdAt: noteEntity.createdAt,
       noteFieldGroups: noteEntity.noteFieldGroups?.map((noteFieldGroup) => {
@@ -156,6 +143,7 @@ export class NotesService {
     const note = new NoteEntity();
     note.name = templateEntity.name;
     note.version = 1;
+    note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
     note.noteFieldGroups = templateEntity.fieldGroups.map((fieldGroup) => {

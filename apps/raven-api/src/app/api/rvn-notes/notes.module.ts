@@ -6,7 +6,6 @@ import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.ent
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
-import { NoteAssignedToOpportunityEventHandler } from './event-handlers/note-assigned-to-opportunity.event-handler';
 import { NotesController } from './notes.controller';
 import { NotesService } from './notes.service';
 
@@ -25,7 +24,6 @@ import { NotesService } from './notes.service';
     NotesService,
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,
-    NoteAssignedToOpportunityEventHandler,
   ],
 })
 export class NotesModule {}

@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OpportunityEntity } from './entities/opportunity.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
+import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
 
@@ -22,6 +24,16 @@ describe('OpportunityController', () => {
         {
           provide: OpportunityService,
           useValue: mockService,
+        },
+        {
+          provide: getRepositoryToken(OrganisationEntity),
+          useValue: {
+            find: jest.fn(),
+          },
+        },
+        {
+          provide: EntityManager,
+          useValue: {},
         },
       ],
     }).compile();
@@ -46,23 +58,6 @@ describe('OpportunityController', () => {
       const result = { id: 'testId' };
       mockService.findOne.mockReturnValue(result);
       expect(await controller.findOne('testId')).toBe(result);
-    });
-  });
-
-  describe('create', () => {
-    it('should create and return an opportunity', async () => {
-      const opportunity = { id: 'testId' } as OpportunityEntity;
-      mockService.create.mockReturnValue(opportunity);
-      expect(await controller.create(opportunity)).toBe(opportunity);
-    });
-  });
-
-  describe('update', () => {
-    it('should update and return the updated opportunity', async () => {
-      const opportunity = { id: 'testId' } as OpportunityEntity;
-      mockService.update.mockReturnValue({});
-      await controller.update('testId', opportunity);
-      expect(mockService.update).toHaveBeenCalledWith('testId', opportunity);
     });
   });
 

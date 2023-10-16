@@ -1,7 +1,7 @@
 export interface FieldGroupData {
   readonly id: string;
   readonly name: string;
-  readonly tabName?: string;
+  readonly tabId: string;
   readonly order: number;
   readonly templateId: string;
   readonly updatedAt: Date;

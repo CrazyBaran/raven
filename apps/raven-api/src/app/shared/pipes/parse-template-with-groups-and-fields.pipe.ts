@@ -16,12 +16,35 @@ export class ParseTemplateWithGroupsAndFieldsPipe
   protected entityManager: EntityManager;
 
   public async transform(id: string): Promise<TemplateEntity> {
-    const templateEntity = await this.entityManager
-      .createQueryBuilder(TemplateEntity, 'template')
-      .leftJoinAndSelect('template.fieldGroups', 'fieldGroups')
-      .leftJoinAndSelect('fieldGroups.tab', 'tab')
-      .leftJoinAndSelect('fieldGroups.fieldDefinitions', 'fieldDefinitions')
-      .where('template.id = :id', { id })
+    // const templateEntity = await this.entityManager.findOne(TemplateEntity, {
+    //   where: { id },
+    //   relations: [
+    //     'tabs',
+    //     'tabs.fieldGroups',
+    //     'tabs.fieldGroups.fieldDefinitions',
+    //     'fieldGroups',
+    //     'fieldGroups.fieldDefinitions',
+    //   ],
+    // });
+
+    const templateEntity = this.entityManager
+      .createQueryBuilder(TemplateEntity, 'templateEntity')
+      .leftJoinAndSelect('templateEntity.tabs', 'tabs')
+      .leftJoinAndSelect('tabs.fieldGroups', 'tabFieldGroups')
+      .leftJoinAndSelect(
+        'tabFieldGroups.fieldDefinitions',
+        'tabFieldDefinitions',
+      )
+      .leftJoinAndSelect(
+        'templateEntity.fieldGroups',
+        'directFieldGroups',
+        'directFieldGroups.tabId IS NULL',
+      )
+      .leftJoinAndSelect(
+        'directFieldGroups.fieldDefinitions',
+        'directFieldDefinitions',
+      )
+      .where('templateEntity.id = :id', { id })
       .getOne();
 
     if (templateEntity) {
