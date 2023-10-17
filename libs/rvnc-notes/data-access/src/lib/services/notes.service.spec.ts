@@ -9,6 +9,7 @@ describe('NotesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
+      providers: [NotesService],
     });
     service = TestBed.inject(NotesService);
   });
