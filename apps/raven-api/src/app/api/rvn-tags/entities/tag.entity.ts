@@ -1,5 +1,7 @@
 import { TagTypeEnum } from '@app/rvns-tags';
 import {
+  AfterInsert,
+  AfterLoad,
   ChildEntity,
   Column,
   Entity,
@@ -15,9 +17,10 @@ import { UserEntity } from '../../rvn-users/entities/user.entity';
 
 @Entity({ name: 'tags' })
 @Index(['id', 'type'])
-@TableInheritance({ column: 'type' })
+@Index(['name', 'type'], { unique: true })
+@TableInheritance({ column: 'class' })
 export class TagEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: string;
 
   @Column()
@@ -25,6 +28,15 @@ export class TagEntity {
 
   @Column({ type: 'varchar' })
   public type: TagTypeEnum;
+
+  @Column({ type: 'varchar' })
+  public class: string;
+
+  @AfterInsert()
+  @AfterLoad()
+  public lifecycleUuidLowerCase(): void {
+    this.id = this.id.toLowerCase();
+  }
 }
 
 @ChildEntity()
@@ -36,6 +48,13 @@ export class PeopleTagEntity extends TagEntity {
   @Column()
   @RelationId((t: PeopleTagEntity) => t.user)
   public userId: string;
+
+  @AfterInsert()
+  @AfterLoad()
+  public lifecycleUuidLowerCase(): void {
+    this.id = this.id.toLowerCase();
+    this.userId = this.userId.toLowerCase();
+  }
 }
 
 @ChildEntity()
@@ -47,4 +66,11 @@ export class OrganisationTagEntity extends TagEntity {
   @Column()
   @RelationId((t: OrganisationTagEntity) => t.organisation)
   public organisationId: string;
+
+  @AfterInsert()
+  @AfterLoad()
+  public lifecycleUuidLowerCase(): void {
+    this.id = this.id.toLowerCase();
+    this.organisationId = this.organisationId.toLowerCase();
+  }
 }

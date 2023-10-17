@@ -27,10 +27,12 @@ export class TagsService {
   public async createTag(options: CreateTagOptions): Promise<TagEntity> {
     const tagEntity = TagEntityFactory.createTag(options);
 
+    console.log({ tagEntity });
     return this.tagsRepository.save(tagEntity);
   }
 
   public tagEntityToTagData(tag: TagEntity): TagData {
+    console.log({ tag });
     return {
       id: tag.id,
       name: tag.name,

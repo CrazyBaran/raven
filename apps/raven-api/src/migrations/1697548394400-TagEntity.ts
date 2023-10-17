@@ -1,20 +1,23 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class TagEntity1697543327664 implements MigrationInterface {
-  public name = 'TagEntity1697543327664';
+export class TagEntity1697548394400 implements MigrationInterface {
+  public name = 'TagEntity1697548394400';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "rvn_tags" ("id" int NOT NULL IDENTITY(1,1), "name" nvarchar(255) NOT NULL, "type" varchar(255) NOT NULL, "user_id" uniqueidentifier, "organisation_id" uniqueidentifier, CONSTRAINT "PK_768cc5495152d4189958d9c20ca" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "rvn_tags" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_768cc5495152d4189958d9c20ca" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(255) NOT NULL, "type" varchar(255) NOT NULL, "class" varchar(255) NOT NULL, "user_id" uniqueidentifier, "organisation_id" uniqueidentifier, CONSTRAINT "PK_768cc5495152d4189958d9c20ca" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_5a3b257e9c2c09d40808b1d59b" ON "rvn_tags" ("name", "type") `,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_4f5700ff0dac744b960fd6a34b" ON "rvn_tags" ("id", "type") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_a9b3ad9764d2657e6518717534" ON "rvn_tags" ("type") `,
+      `CREATE INDEX "IDX_9633fa977d55fda2e8dddcf567" ON "rvn_tags" ("class") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "rvn_note_tags" ("note_id" uniqueidentifier NOT NULL, "tag_id" int NOT NULL, CONSTRAINT "PK_5cfce1f58d122481db44936bfbb" PRIMARY KEY ("note_id", "tag_id"))`,
+      `CREATE TABLE "rvn_note_tags" ("note_id" uniqueidentifier NOT NULL, "tag_id" uniqueidentifier NOT NULL, CONSTRAINT "PK_5cfce1f58d122481db44936bfbb" PRIMARY KEY ("note_id", "tag_id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_6b84ceba4da7f9114aa0567ae7" ON "rvn_note_tags" ("note_id") `,
@@ -57,10 +60,13 @@ export class TagEntity1697543327664 implements MigrationInterface {
     );
     await queryRunner.query(`DROP TABLE "rvn_note_tags"`);
     await queryRunner.query(
-      `DROP INDEX "IDX_a9b3ad9764d2657e6518717534" ON "rvn_tags"`,
+      `DROP INDEX "IDX_9633fa977d55fda2e8dddcf567" ON "rvn_tags"`,
     );
     await queryRunner.query(
       `DROP INDEX "IDX_4f5700ff0dac744b960fd6a34b" ON "rvn_tags"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "IDX_5a3b257e9c2c09d40808b1d59b" ON "rvn_tags"`,
     );
     await queryRunner.query(`DROP TABLE "rvn_tags"`);
   }
