@@ -29,6 +29,11 @@
           "libs/rvnc-notes/ui/**/*.html"
         ]
       }
+    },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
     }
   }
-}

@@ -1,4 +1,4 @@
-import { NoteData } from '@app/rvns-notes';
+import { NoteData } from '@app/rvns-notes/data-access';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { NotesActions } from './notes.actions';

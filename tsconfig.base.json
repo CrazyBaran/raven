@@ -28,6 +28,12 @@
         "libs/rvnc-notes/data-access/src/index.ts"
       ],
       "@app/rvnc-notes/feature": ["libs/rvnc-notes/feature/src/index.ts"],
+      "@app/rvnc-notes/feature/notepad": [
+        "libs/rvnc-notes/feature/notepad/src/index.ts"
+      ],
+      "@app/rvnc-notes/feature/shell": [
+        "libs/rvnc-notes/feature/shell/src/index.ts"
+      ],
       "@app/rvnc-notes/ui": ["libs/rvnc-notes/ui/src/index.ts"],
       "@app/rvnc-notes/util": ["libs/rvnc-notes/util/src/index.ts"],
       "@app/rvnc-opportunities": ["libs/rvnc-opportunities/src/index.ts"],

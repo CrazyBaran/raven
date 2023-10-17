@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-rvnc-notes-feature',
+  selector: 'app-notepad',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './rvnc-notes-feature.component.html',
-  styleUrls: ['./rvnc-notes-feature.component.scss'],
+  templateUrl: './notepad.component.html',
+  styleUrls: ['./notepad.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RvncNotesFeatureComponent {}
+export class NotepadComponent {}

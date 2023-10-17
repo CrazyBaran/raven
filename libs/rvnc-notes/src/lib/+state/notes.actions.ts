@@ -1,4 +1,4 @@
-import { NoteData } from '@app/rvns-notes';
+import { NoteData } from '@app/rvns-notes/data-access';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
 export const NotesActions = createActionGroup({

@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'rvnc-notes-feature',
+  displayName: 'rvns-notes-data-access',
   preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../../coverage/libs/rvnc-notes/feature',
+  coverageDirectory: '../../../coverage/libs/rvns-notes/data-access',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

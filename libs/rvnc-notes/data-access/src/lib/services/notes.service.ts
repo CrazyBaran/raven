@@ -1,12 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
-import { NoteData } from '@app/rvns-notes';
+import { NoteData } from '@app/rvns-notes/data-access';
 import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class NotesService {
   public constructor(private http: HttpClient) {}
 

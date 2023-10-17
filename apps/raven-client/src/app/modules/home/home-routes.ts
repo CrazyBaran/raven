@@ -1,6 +1,5 @@
 import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
-import { NotesEffects, notesReducer } from '@app/rvnc-notes';
 import {
   OPPORTUNITIES_ROUTES,
   OpportunitiesEffects,
@@ -64,16 +63,8 @@ export const HOME_ROUTES: Routes = [
       },
       {
         path: 'notes',
-        providers: [
-          importProvidersFrom(
-            StoreModule.forFeature('notes', notesReducer),
-            EffectsModule.forFeature([NotesEffects]),
-          ),
-        ],
-        loadComponent: () =>
-          import('./pages/notes-page/notes-page.component').then(
-            (c) => c.NotesPageComponent,
-          ),
+        loadChildren: () =>
+          import('@app/rvnc-notes/feature/shell').then((m) => m.NOTES_ROUTES),
       },
       {
         path: 'templates',

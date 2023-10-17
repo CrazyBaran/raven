@@ -19,3 +19,9 @@ export const selectError = createSelector(
   selectNotesState,
   (state: NotesState) => state.error,
 );
+
+export const notesQuery = {
+  selectAllNotes,
+  selectIsLoading,
+  selectError,
+};
