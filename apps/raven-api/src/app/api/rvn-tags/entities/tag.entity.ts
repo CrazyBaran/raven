@@ -13,17 +13,17 @@ import {
 import { OrganisationEntity } from '../../rvn-opportunities/entities/organisation.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 
-@Entity()
+@Entity({ name: 'tags' })
 @Index(['id', 'type'])
 @TableInheritance({ column: 'type' })
-export abstract class TagEntity {
+export class TagEntity {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id: string;
 
   @Column()
   public name: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   public type: TagTypeEnum;
 }
 

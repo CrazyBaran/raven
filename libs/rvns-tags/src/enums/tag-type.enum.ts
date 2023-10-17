@@ -2,7 +2,8 @@ export enum TagTypeEnum {
   General = 'general',
   People = 'people',
   Company = 'company',
-  Investor = 'investor',
   Industry = 'industry',
+  Opportunity = 'opportunity',
+  Investor = 'investor',
   BusinessModel = 'business-model',
 }

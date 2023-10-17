@@ -84,10 +84,13 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
-    console.log({ noteEntity });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
+      tags: noteEntity.tags?.map((tag) => ({
+        name: tag.name,
+        type: tag.type,
+      })),
       templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
       createdBy: {
