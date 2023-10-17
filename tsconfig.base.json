@@ -38,7 +38,9 @@
       "@app/rvns-api": ["libs/rvns-api/src/index.ts"],
       "@app/rvns-auth": ["libs/rvns-auth/src/index.ts"],
       "@app/rvns-bull": ["libs/rvns-bull/src/index.ts"],
-      "@app/rvns-notes": ["libs/rvns-notes/src/index.ts"],
+      "@app/rvns-notes/data-access": [
+        "libs/rvns-notes/data-access/src/index.ts"
+      ],
       "@app/rvns-opportunities": ["libs/rvns-opportunities/src/index.ts"],
       "@app/rvns-pipelines": ["libs/rvns-pipelines/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
