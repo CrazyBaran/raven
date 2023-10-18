@@ -23,13 +23,11 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
         this.logger.debug(
           `Proxying ${req.method} request originally made to '${req.originalUrl}'...`,
         );
-        console.log(proxyReq);
       },
       onProxyRes: (proxyRes, req, res) => {
         this.logger.debug(
           `Request ${req.method} originally made to '${req.originalUrl}' has been proxied.`,
         );
-        console.log(proxyRes);
       },
     });
   }
