@@ -13,22 +13,17 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
         '/api/storage-account': '',
       },
       secure: false,
-      onProxyReq: (proxyReq, req, res) => {
-        proxyReq.removeHeader('authorization');
-        proxyReq.removeHeader('host');
-        proxyReq.setHeader(
-          'host',
-          `${environment.azureStorageAccount.name}.blob.core.windows.net`,
-        );
-        this.logger.debug(
-          `Proxying ${req.method} request originally made to '${req.originalUrl}'...`,
-        );
+      on: {
+        proxyReq: (proxyReq, req, res) => {
+          proxyReq.removeHeader('authorization');
+          proxyReq.removeHeader('host');
+          proxyReq.setHeader(
+            'host',
+            `${environment.azureStorageAccount.name}.blob.core.windows.net`,
+          );
+        },
       },
-      onProxyRes: (proxyRes, req, res) => {
-        this.logger.debug(
-          `Request ${req.method} originally made to '${req.originalUrl}' has been proxied.`,
-        );
-      },
+      logger: this.logger,
     });
   }
   use(req: any, res: any, next: (error?: any) => void): any {

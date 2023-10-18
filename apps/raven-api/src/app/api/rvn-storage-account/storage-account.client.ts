@@ -58,7 +58,6 @@ export class StorageAccountClient {
       protocol: SASProtocol.Https, // Only allow HTTPS access to the blob
     });
     const sasUrl = new URL(originalSasUrl);
-    console.log(sasUrl);
     return `${environment.app.apiUrl}/api/storage-account${sasUrl.pathname}${sasUrl.search}`;
   }
 
