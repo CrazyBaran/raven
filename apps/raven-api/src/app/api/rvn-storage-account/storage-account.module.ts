@@ -4,7 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { environment } from '../../../environments/environment';
 import { StorageAccountFileEntity } from './entities/storage-account-file.entity';
+import { StorageAccountProxyMiddleware } from './storage-account-proxy.middleware';
+import { StorageAccountProxyMiddlewareLogger } from './storage-account-proxy.middleware.logger';
 import { StorageAccountClient } from './storage-account.client';
+import { StorageAccountClientLogger } from './storage-account.client.logger';
 import { StorageAccountController } from './storage-account.controller';
 import { StorageAccountService } from './storage-account.service';
 import { StorageAccountServiceLogger } from './storage-account.service.logger';
@@ -15,6 +18,9 @@ import { StorageAccountServiceLogger } from './storage-account.service.logger';
     StorageAccountService,
     StorageAccountServiceLogger,
     StorageAccountClient,
+    StorageAccountClientLogger,
+    StorageAccountProxyMiddleware,
+    StorageAccountProxyMiddlewareLogger,
     {
       provide: BlobServiceClient,
       useFactory: () => {

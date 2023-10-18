@@ -47,7 +47,9 @@ export class StorageAccountClient {
     const NOW = new Date();
 
     this.logger.debug(
-      `Generating SAS URL for ${fileName} with permissions ${permissions} and time range ${TIMESPAN}`,
+      `Generating SAS URL for ${fileName} with time range ${TIMESPAN}s and permissions ${JSON.stringify(
+        permissions,
+      )}`,
     );
     const originalSasUrl = await blockBlobClient.generateSasUrl({
       startsOn: NOW,
@@ -57,7 +59,7 @@ export class StorageAccountClient {
     });
     const sasUrl = new URL(originalSasUrl);
     console.log(sasUrl);
-    return sasUrl.toString();
+    return `${environment.app.apiUrl}/api/storage-account${sasUrl.pathname}${sasUrl.search}`;
   }
 
   private async getContainerClient(

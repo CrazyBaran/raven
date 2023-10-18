@@ -1,4 +1,4 @@
 export class SasTokenDto {
   public fileName: string;
-  public SasToken: string;
+  public sasToken: string;
 }
