@@ -23,7 +23,7 @@ import { StorageAccountServiceLogger } from './storage-account.service.logger';
     StorageAccountProxyMiddlewareLogger,
     {
       provide: BlobServiceClient,
-      useFactory: () => {
+      useFactory: (): BlobServiceClient => {
         return BlobServiceClient.fromConnectionString(
           environment.azureStorageAccount.connectionString,
         );

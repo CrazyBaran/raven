@@ -1,5 +1,6 @@
 import { Body, Controller, Next, Post, Put, Req, Res } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
+import { NextFunction, Request, Response } from 'express';
 import { CreateSasTokenDto } from './dto/create-sas-token.dto';
 import { SasTokenDto } from './dto/sas-token.dto';
 import { StorageAccountProxyMiddleware } from './storage-account-proxy.middleware';
@@ -14,8 +15,12 @@ export class StorageAccountController {
     private readonly storageAccountProxyMiddleware: StorageAccountProxyMiddleware,
   ) {}
   @Put('*')
-  public proxyForUpload(@Req() req, @Res() res, @Next() next) {
-    this.storageAccountProxyMiddleware.use(req, res, next);
+  public async proxyForUpload(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ): Promise<void> {
+    return this.storageAccountProxyMiddleware.use(req, res, next);
   }
 
   @Post()

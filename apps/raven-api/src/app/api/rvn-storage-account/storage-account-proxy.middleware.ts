@@ -1,12 +1,15 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
 import { RequestHandler, createProxyMiddleware } from 'http-proxy-middleware';
 import { environment } from '../../../environments/environment';
 import { StorageAccountProxyMiddlewareLogger } from './storage-account-proxy.middleware.logger';
 
 @Injectable()
 export class StorageAccountProxyMiddleware implements NestMiddleware {
-  private readonly proxy: RequestHandler;
-  constructor(private readonly logger: StorageAccountProxyMiddlewareLogger) {
+  private readonly proxy: RequestHandler<Request, Response, NextFunction>;
+  public constructor(
+    private readonly logger: StorageAccountProxyMiddlewareLogger,
+  ) {
     this.proxy = createProxyMiddleware({
       target: `https://${environment.azureStorageAccount.name}.blob.core.windows.net`,
       pathRewrite: {
@@ -14,7 +17,7 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
       },
       secure: false,
       on: {
-        proxyReq: (proxyReq, req, res) => {
+        proxyReq: (proxyReq) => {
           proxyReq.removeHeader('authorization');
           proxyReq.removeHeader('host');
           proxyReq.setHeader(
@@ -26,7 +29,11 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
       logger: this.logger,
     });
   }
-  use(req: any, res: any, next: (error?: any) => void): any {
-    this.proxy(req, res, next);
+  public async use(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    return this.proxy(req, res, next);
   }
 }
