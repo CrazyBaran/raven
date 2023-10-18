@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RvncNotesFeatureNotepadComponent } from '@app/rvnc-notes/feature/notepad';
+import { RvncNotesFeatureNotepadComponent } from './rvnc-notes-feature-notepad.component';
 
 describe('RvncNotesFeatureNotepadComponent', () => {
   let component: RvncNotesFeatureNotepadComponent;

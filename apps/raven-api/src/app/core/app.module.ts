@@ -26,6 +26,7 @@ import { CommModule } from '../api/rvn-comm/comm.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
 import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import { PipelineModule } from '../api/rvn-pipeline/pipeline.module';
+import { TagsModule } from '../api/rvn-tags/tags.module';
 import { TeamsModule } from '../api/rvn-teams/teams.module';
 import { TemplatesModule } from '../api/rvn-templates/templates.module';
 import { UsersSessionsModule } from '../api/rvn-users-sessions/users-sessions.module';
@@ -75,6 +76,7 @@ import { TransformInterceptor } from './transform.interceptor';
     AffinityIntegrationModule,
     TemplatesModule,
     NotesModule,
+    TagsModule,
     PipelineModule,
   ],
   providers: [

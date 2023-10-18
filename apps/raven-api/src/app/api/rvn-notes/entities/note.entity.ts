@@ -6,6 +6,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,6 +17,8 @@ import {
 } from 'typeorm';
 
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
+
+import { TagEntity } from '../../rvn-tags/entities/tag.entity';
 import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './note-field-group.entity';
@@ -54,6 +58,14 @@ export class NoteEntity implements AuditableEntity {
     cascade: ['insert'],
   })
   public noteFieldGroups: NoteFieldGroupEntity[];
+
+  @ManyToMany(() => TagEntity, { eager: true })
+  @JoinTable({
+    name: 'note_tags',
+    joinColumn: { name: 'note_id' },
+    inverseJoinColumn: { name: 'tag_id' },
+  })
+  public tags: TagEntity[];
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })

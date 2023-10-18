@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
@@ -46,6 +47,7 @@ export class NotesService {
   public async createNote(
     userEntity: UserEntity,
     templateEntity: TemplateEntity | null,
+    tags: TagEntity[],
   ): Promise<NoteEntity> {
     if (templateEntity) {
       return await this.createNoteFromTemplate(templateEntity, userEntity);
@@ -68,6 +70,7 @@ export class NotesService {
     const note = new NoteEntity();
     note.name = 'New Note';
     note.version = 1;
+    note.tags = tags;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
     note.noteFieldGroups = [noteFieldGroup];
@@ -87,10 +90,13 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
-    console.log({ noteEntity });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
+      tags: noteEntity.tags?.map((tag) => ({
+        name: tag.name,
+        type: tag.type,
+      })),
       templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
       createdBy: {

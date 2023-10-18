@@ -9,19 +9,19 @@ import { notesQuery } from './notes.selectors';
 
 @Injectable()
 export class NoteStoreFacadeService {
-  notes$: Observable<NoteData[]> = this.store.pipe(
+  public notes$: Observable<NoteData[]> = this.store.pipe(
     select(notesQuery.selectAllNotes),
   );
-  error$: Observable<string | null> = this.store.pipe(
+  public error$: Observable<string | null> = this.store.pipe(
     select(notesQuery.selectError),
   );
-  isLoading$: Observable<boolean> = this.store.pipe(
+  public isLoading$: Observable<boolean> = this.store.pipe(
     select(notesQuery.selectIsLoading),
   );
 
-  constructor(private store: Store) {}
+  public constructor(private store: Store) {}
 
-  getNotes(): void {
+  public getNotes(): void {
     this.store.dispatch(NotesActions.getNotes());
   }
 }

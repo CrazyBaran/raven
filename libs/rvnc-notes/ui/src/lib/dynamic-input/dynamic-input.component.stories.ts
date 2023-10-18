@@ -6,7 +6,9 @@ import {
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 
-import { CONTROL_DATA, ControlData } from '../../../../util/src';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { CONTROL_DATA, ControlData } from '@app/rvnc-notes/util';
 import { DynamicInputComponent } from './dynamic-input.component';
 
 const meta: Meta<DynamicInputComponent> = {
@@ -17,7 +19,7 @@ const meta: Meta<DynamicInputComponent> = {
       providers: [
         {
           provide: ControlContainer,
-          useFactory: () => {
+          useFactory: (): ControlContainer => {
             const fg: FormGroup = new FormGroup({});
             const fgd: FormGroupDirective = new FormGroupDirective([], []);
             fgd.form = fg;
