@@ -5,7 +5,7 @@ const plugin = require('tailwindcss/plugin');
 module.exports = {
   darkMode: 'class',
   content: [
-    join(__dirname, 'src/**/!(*.stories|*.spec).{ts,html}'),
+    join(__dirname, '../**/!(*.stories|*.spec).{ts,html}'),
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
@@ -51,7 +51,11 @@ module.exports = {
       error: '#D62929',
       info: '#5A74D8',
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        interstate: ['Interstate'],
+      },
+    },
   },
   plugins: [
     plugin(({ addBase }) => {

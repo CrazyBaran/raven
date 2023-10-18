@@ -26,6 +26,8 @@ import { CommModule } from '../api/rvn-comm/comm.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
 import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import { PipelineModule } from '../api/rvn-pipeline/pipeline.module';
+import { StorageAccountModule } from '../api/rvn-storage-account/storage-account.module';
+import { TagsModule } from '../api/rvn-tags/tags.module';
 import { TeamsModule } from '../api/rvn-teams/teams.module';
 import { TemplatesModule } from '../api/rvn-templates/templates.module';
 import { UsersSessionsModule } from '../api/rvn-users-sessions/users-sessions.module';
@@ -39,7 +41,6 @@ import { SentryModule } from './sentry/sentry.module';
 import { SwaggerService } from './swagger.service';
 import { ThrottlerGuard } from './throttler.guard';
 import { TransformInterceptor } from './transform.interceptor';
-import {StorageAccountModule} from "../api/rvn-storage-account/storage-account.module";
 
 @Module({
   imports: [
@@ -76,8 +77,9 @@ import {StorageAccountModule} from "../api/rvn-storage-account/storage-account.m
     AffinityIntegrationModule,
     TemplatesModule,
     NotesModule,
+    TagsModule,
     PipelineModule,
-    StorageAccountModule
+    StorageAccountModule,
   ],
   providers: [
     // core

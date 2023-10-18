@@ -82,13 +82,19 @@ describe('NotesService', () => {
       const note = new NoteEntity();
       note.name = 'New Note';
       note.version = 1;
+      note.tags = [];
       note.createdBy = userEntity;
       note.updatedBy = userEntity;
       note.noteFieldGroups = [noteFieldGroup];
 
       jest.spyOn(mockNoteRepository, 'save').mockResolvedValue(note);
 
-      const result = await service.createNote(userEntity, null);
+      const result = await service.createNote({
+        name: 'Note',
+        userEntity,
+        templateEntity: null,
+        tags: [],
+      });
 
       expect(mockNoteRepository.save).toHaveBeenCalledWith(note);
       expect(result).toBe(note);

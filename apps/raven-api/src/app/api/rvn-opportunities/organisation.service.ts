@@ -3,8 +3,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
-import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
+
+interface CreateOrganisationOptions {
+  name: string;
+  domain: string;
+}
+
+interface UpdateOrganisationOptions {
+  name?: string;
+  domains?: string[];
+}
 
 @Injectable()
 export class OrganisationService {
@@ -60,16 +69,25 @@ export class OrganisationService {
   }
 
   public async create(
-    organisation: OrganisationEntity,
+    options: CreateOrganisationOptions,
   ): Promise<OrganisationEntity> {
+    const organisation = new OrganisationEntity();
+    organisation.name = options.name;
+    organisation.domains = [options.domain];
     return this.organisationRepository.save(organisation);
   }
 
   public async update(
-    id: string,
     organisation: OrganisationEntity,
-  ): Promise<void> {
-    await this.organisationRepository.update(id, organisation);
+    options: UpdateOrganisationOptions,
+  ): Promise<OrganisationEntity> {
+    if (options.name) {
+      organisation.name = options.name;
+    }
+    if (options.domains) {
+      organisation.domains = options.domains;
+    }
+    return await this.organisationRepository.save(organisation);
   }
 
   public async remove(id: string): Promise<void> {
@@ -104,15 +122,13 @@ export class OrganisationService {
     return await this.organisationRepository.save(organisation);
   }
 
-  public entityToData(
-    entity?: OrganisationEntity,
-    affinityDto?: OrganizationStageDto,
+  public organisationEntityToData(
+    entity: OrganisationEntity,
   ): OrganisationData {
     return {
-      id: entity?.id,
-      affinityInternalId: affinityDto?.organizationDto?.id,
-      name: affinityDto?.organizationDto?.name,
-      domains: affinityDto?.organizationDto?.domains,
+      id: entity.id,
+      name: entity.name,
+      domains: entity.domains,
     };
   }
 }

@@ -1,0 +1,10 @@
+<div
+  class="grid h-full grid-cols-[160px_1fr] grid-rows-[1fr] gap-6 overflow-hidden"
+>
+  <div class="flex h-full flex-col gap-3.5 overflow-y-auto overflow-x-hidden">
+    <ng-content select="[tabs]"></ng-content>
+  </div>
+  <div class="max-h-full overflow-auto">
+    <ng-content select="[controls]"></ng-content>
+  </div>
+</div>

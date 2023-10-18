@@ -6,6 +6,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,12 +17,15 @@ import {
 } from 'typeorm';
 
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
-import { OpportunityEntity } from '../../rvn-opportunities/entities/opportunity.entity';
+
+import { TagEntity } from '../../rvn-tags/entities/tag.entity';
+import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './note-field-group.entity';
+import { NoteTabEntity } from './note-tab.entity';
 
 @Entity({ name: 'notes' })
-@Index(['id', 'opportunity'], { unique: true })
+@Index(['id'], { unique: true })
 export class NoteEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
@@ -39,20 +44,32 @@ export class NoteEntity implements AuditableEntity {
   @RelationId((n: NoteEntity) => n.previousVersion)
   public previousVersionId: string | null;
 
+  @Index()
+  @ManyToOne(() => TemplateEntity, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'template_id' })
+  public template: TemplateEntity | null;
+
+  @Column({ nullable: true })
+  @RelationId((n: NoteEntity) => n.template)
+  public templateId: string | null;
+
+  @OneToMany(() => NoteTabEntity, (t) => t.note, {
+    cascade: ['insert'],
+  })
+  public noteTabs: NoteTabEntity[];
+
   @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.note, {
-    eager: true,
     cascade: ['insert'],
   })
   public noteFieldGroups: NoteFieldGroupEntity[];
 
-  @Index()
-  @ManyToOne(() => OpportunityEntity, { nullable: true })
-  @JoinColumn({ name: 'opportunity_id' })
-  public opportunity: OpportunityEntity | null;
-
-  @Column({ nullable: true })
-  @RelationId((t: NoteEntity) => t.opportunity)
-  public opportunityId: string | null;
+  @ManyToMany(() => TagEntity, { eager: true })
+  @JoinTable({
+    name: 'note_tags',
+    joinColumn: { name: 'note_id' },
+    inverseJoinColumn: { name: 'tag_id' },
+  })
+  public tags: TagEntity[];
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
@@ -79,12 +96,24 @@ export class NoteEntity implements AuditableEntity {
   @RelationId((t: NoteEntity) => t.updatedBy)
   public updatedById: string;
 
+  @Index()
+  @Column({ nullable: true })
+  public deletedAt: Date | null;
+
+  @Index()
+  @ManyToOne(() => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'deleted_by_id' })
+  public deletedBy: UserEntity | null;
+
+  @Column({ nullable: true })
+  @RelationId((t: NoteEntity) => t.deletedBy)
+  public deletedById: string | null;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.previousVersionId = this.previousVersionId?.toLowerCase();
-    this.opportunityId = this.opportunityId?.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
     this.updatedById = this.updatedById.toLowerCase();
   }

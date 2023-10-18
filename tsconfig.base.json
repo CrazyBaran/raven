@@ -24,7 +24,18 @@
       "@app/rvnc-auth": ["libs/rvnc-auth/src/index.ts"],
       "@app/rvnc-core-ui": ["libs/rvnc-core-ui/src/index.ts"],
       "@app/rvnc-environment": ["libs/rvnc-environment/index.ts"],
-      "@app/rvnc-notes": ["libs/rvnc-notes/src/index.ts"],
+      "@app/rvnc-notes/data-access": [
+        "libs/rvnc-notes/data-access/src/index.ts"
+      ],
+      "@app/rvnc-notes/feature": ["libs/rvnc-notes/feature/src/index.ts"],
+      "@app/rvnc-notes/feature/notepad": [
+        "libs/rvnc-notes/feature/notepad/src/index.ts"
+      ],
+      "@app/rvnc-notes/feature/shell": [
+        "libs/rvnc-notes/feature/shell/src/index.ts"
+      ],
+      "@app/rvnc-notes/ui": ["libs/rvnc-notes/ui/src/index.ts"],
+      "@app/rvnc-notes/util": ["libs/rvnc-notes/util/src/index.ts"],
       "@app/rvnc-opportunities": ["libs/rvnc-opportunities/src/index.ts"],
       "@app/rvnc-pipelines": ["libs/rvnc-pipelines/src/index.ts"],
       "@app/rvnc-teams": ["libs/rvnc-teams/src/index.ts"],
@@ -33,11 +44,14 @@
       "@app/rvns-api": ["libs/rvns-api/src/index.ts"],
       "@app/rvns-auth": ["libs/rvns-auth/src/index.ts"],
       "@app/rvns-bull": ["libs/rvns-bull/src/index.ts"],
-      "@app/rvns-notes": ["libs/rvns-notes/src/index.ts"],
+      "@app/rvns-notes/data-access": [
+        "libs/rvns-notes/data-access/src/index.ts"
+      ],
       "@app/rvns-opportunities": ["libs/rvns-opportunities/src/index.ts"],
       "@app/rvns-pipelines": ["libs/rvns-pipelines/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],
+      "@app/rvns-tags": ["libs/rvns-tags/src/index.ts"],
       "@app/rvns-teams": ["libs/rvns-teams/src/index.ts"],
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"]

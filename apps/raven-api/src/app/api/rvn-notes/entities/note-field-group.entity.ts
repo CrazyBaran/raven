@@ -16,6 +16,7 @@ import {
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { NoteFieldEntity } from './note-field.entity';
+import { NoteTabEntity } from './note-tab.entity';
 import { NoteEntity } from './note.entity';
 
 @Entity({ name: 'note_field_groups' })
@@ -29,6 +30,14 @@ export class NoteFieldGroupEntity implements AuditableEntity {
 
   @Column()
   public order: number;
+
+  @ManyToOne(() => NoteTabEntity, { nullable: true })
+  @JoinColumn({ name: 'note_tab_id' })
+  public noteTab: NoteTabEntity | null;
+
+  @Column({ nullable: true })
+  @RelationId((t: NoteFieldGroupEntity) => t.noteTab)
+  public noteTabId: string | null;
 
   @OneToMany(() => NoteFieldEntity, (nfd) => nfd.noteGroup, {
     eager: true,

@@ -6,6 +6,7 @@ import {
 import {
   FieldDefinitionData,
   FieldGroupData,
+  TabWithFieldGroupsData,
   TemplateData,
   TemplateTypeEnum,
   TemplateWithRelationsData,
@@ -38,12 +39,15 @@ import { CreateTabDto } from './dto/create-tab.dto';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateFieldDefinitionDto } from './dto/update-field-definition.dto';
 import { UpdateFieldGroupDto } from './dto/update-field-group.dto';
+import { UpdateTabDto } from './dto/update-tab.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
+import { TabEntity } from './entities/tab.entity';
 import { TemplateEntity } from './entities/template.entity';
 import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
 import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
+import { ParseTabPipe } from './pipes/parse-tab.pipe';
 import { ParseTemplatePipe } from './pipes/parse-template.pipe';
 import { TemplatesService } from './templates.service';
 
@@ -135,6 +139,40 @@ export class TemplatesController {
         userEntity,
       }),
     );
+  }
+
+  @ApiOperation({ description: 'Update tab' })
+  @ApiParam({ name: 'templateId', type: String })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse(GenericResponseSchema())
+  @Patch(':templateId/tabs/:id')
+  public async updateTab(
+    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
+    template: TemplateEntity,
+    @Param('id', ParseUUIDPipe, ParseTabPipe)
+    tabEntity: TabEntity,
+    @Body() dto: UpdateTabDto,
+  ): Promise<TabWithFieldGroupsData> {
+    return this.service.tabEntityToTabData(
+      await this.service.updateTab(tabEntity, {
+        name: dto.name,
+        order: dto.order,
+      }),
+    );
+  }
+
+  @ApiOperation({ description: 'Remove tab' })
+  @ApiParam({ name: 'templateId', type: String })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse(GenericResponseSchema())
+  @Delete(':templateId/tabs/:id')
+  public async removeTab(
+    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
+    template: TemplateEntity,
+    @Param('id', ParseUUIDPipe, ParseTabPipe)
+    tabEntity: TabEntity,
+  ): Promise<EmptyResponseData> {
+    return this.service.removeTab(tabEntity);
   }
 
   @ApiOperation({ description: 'Create field group' })

@@ -1,0 +1,39 @@
+{
+  "name": "rvnc-notes-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rvnc-notes/ui/src",
+  "prefix": "app",
+  "tags": [],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/rvnc-notes/ui/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/rvnc-notes/ui/**/*.ts",
+          "libs/rvnc-notes/ui/**/*.html"
+        ]
+      }
+    },
+    "configurations": {
+      "ci": {
+        "quiet": true
+      }
+    }
+  }
+}
