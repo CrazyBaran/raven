@@ -17,7 +17,7 @@ describe('DynamicRichTextComponent', () => {
       providers: [
         {
           provide: ControlContainer,
-          useFactory: () => {
+          useFactory: (): ControlContainer => {
             const fg: FormGroup = new FormGroup({});
             const fgd: FormGroupDirective = new FormGroupDirective([], []);
             fgd.form = fg;

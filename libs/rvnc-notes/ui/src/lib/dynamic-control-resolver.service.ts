@@ -1,9 +1,9 @@
 import { Injectable, Type } from '@angular/core';
 import { DynamicControl } from '@app/rvnc-notes/util';
-import { from, of, tap } from 'rxjs';
+import { Observable, from, of, tap } from 'rxjs';
 
 type DynamicControlsMap = {
-  [T in DynamicControl['controlType']]: () => Promise<Type<any>>;
+  [T in DynamicControl['controlType']]: () => Promise<Type<unknown>>;
 };
 
 @Injectable({
@@ -20,9 +20,12 @@ export class DynamicControlResolver {
         (c) => c.DynamicRichTextComponent,
       ),
   };
-  private loadedControlComponents = new Map<string, Type<any>>();
 
-  resolve(controlType: keyof DynamicControlsMap) {
+  private loadedControlComponents = new Map<string, Type<unknown>>();
+
+  public resolve(
+    controlType: keyof DynamicControlsMap,
+  ): Observable<Type<unknown>> {
     const loadedComponent = this.loadedControlComponents.get(controlType);
     if (loadedComponent) {
       return of(loadedComponent);

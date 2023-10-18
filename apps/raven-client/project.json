@@ -146,7 +146,8 @@
 
         "styles": [
           "node_modules/@progress/kendo-theme-default/dist/all.css",
-          "apps/raven-client/src/styles.scss"
+
+          "apps/raven-client/.storybook/styles.scss"
         ]
       },
       "configurations": {
