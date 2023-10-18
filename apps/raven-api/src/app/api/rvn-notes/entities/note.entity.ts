@@ -54,13 +54,11 @@ export class NoteEntity implements AuditableEntity {
   public templateId: string | null;
 
   @OneToMany(() => NoteTabEntity, (t) => t.note, {
-    eager: true,
     cascade: ['insert'],
   })
   public noteTabs: NoteTabEntity[];
 
   @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.note, {
-    eager: true,
     cascade: ['insert'],
   })
   public noteFieldGroups: NoteFieldGroupEntity[];

@@ -16,6 +16,7 @@ interface NoteTagData {
 export interface NoteData {
   readonly id: string;
   readonly name: string;
+  readonly version: number;
   readonly tags: NoteTagData[];
   readonly templateId?: string;
   readonly createdById: string;
