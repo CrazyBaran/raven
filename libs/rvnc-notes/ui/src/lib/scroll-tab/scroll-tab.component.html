@@ -1,0 +1,34 @@
+<div
+  [ngClass]="{
+    'cursor-not-allowed opacity-50': state === 'disabled'
+  }"
+  class="flex cursor-pointer items-center gap-2"
+>
+  <kendo-button
+    size="small"
+    fillMode="flat"
+    (click)="eyeClick.emit($event)"
+    [iconClass]="
+      state === 'disabled'
+        ? 'fa-sharp fa-solid fa-eye-slash'
+        : 'fa-solid fa-eye'
+    "
+    class="border-0 !p-0"
+    [class.invisible]="!showEye"
+  ></kendo-button>
+
+  <div class="flex-grow-1 overflow-hidden">
+    <kendo-button
+      size="small"
+      fillMode="flat"
+      [disabled]="state === 'disabled'"
+      (click)="labelClick.emit($event)"
+      [ngClass]="{
+        'text-primary-700': state === 'active'
+      }"
+      class="font-interstate max-w-full border-0 !p-0"
+    >
+      <span class="truncate">{{ label }}</span>
+    </kendo-button>
+  </div>
+</div>

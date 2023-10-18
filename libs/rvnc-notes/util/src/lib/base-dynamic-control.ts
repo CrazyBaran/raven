@@ -1,11 +1,16 @@
 import { CommonModule, KeyValue } from '@angular/common';
 import {
+  DestroyRef,
   Directive,
+  ElementRef,
   HostBinding,
   OnInit,
   StaticProvider,
+  computed,
   inject,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlContainer,
@@ -14,16 +19,25 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-
+import { FormFieldModule } from '@progress/kendo-angular-inputs';
+import { LabelModule } from '@progress/kendo-angular-label';
 import { CONTROL_DATA } from './control-data.token';
-import { DynamicControl } from './dynamic-forms.model';
+import { DynamicControlFocusHandler } from './dynamic-control-focus-handler.service';
+import { DynamicControl, validatorMapper } from './dynamic-forms.model';
+import { ErrorMessagePipe } from './error-message.pipe';
 
 export const comparatorFn = (
   a: KeyValue<string, DynamicControl>,
   b: KeyValue<string, DynamicControl>,
 ): number => a.value.order - b.value.order;
 
-export const sharedDynamicControlDeps = [CommonModule, ReactiveFormsModule];
+export const sharedDynamicControlDeps = [
+  CommonModule,
+  FormFieldModule,
+  LabelModule,
+  ReactiveFormsModule,
+  ErrorMessagePipe,
+];
 
 export const dynamicControlProvider: StaticProvider = {
   provide: ControlContainer,
@@ -31,47 +45,67 @@ export const dynamicControlProvider: StaticProvider = {
 };
 
 @Directive()
-export class BaseDynamicControl implements OnInit {
+export abstract class BaseDynamicControl implements OnInit {
   @HostBinding('class') hostClass = 'form-field';
 
   control = inject(CONTROL_DATA);
+  elementRef = inject(ElementRef);
+  destroyRef = inject(DestroyRef);
+  focusHandler = inject(DynamicControlFocusHandler, {
+    optional: true,
+  });
+  parentGroupDir = inject(ControlContainer);
 
   formControl: AbstractControl = new FormControl(
     this.control.config.value,
     this.resolveValidators(this.control.config),
   );
 
-  private parentGroupDir = inject(ControlContainer);
+  state = signal({
+    focused: false,
+  });
+
+  focused = computed(() => this.state().focused);
 
   ngOnInit() {
     (this.parentGroupDir.control as FormGroup).addControl(
       this.control.controlKey,
       this.formControl,
     );
+    this.registerFocusHandler(this.control.controlKey);
   }
 
-  private resolveValidators({ validators = {} }: DynamicControl) {
-    return (Object.keys(validators) as Array<keyof typeof validators>).map(
-      (validatorKey) => {
-        const validatorValue = validators[validatorKey];
-        if (validatorKey === 'required') {
-          return Validators.required;
-        }
-        if (validatorKey === 'email') {
-          return Validators.email;
-        }
-        if (validatorKey === 'requiredTrue') {
-          return Validators.requiredTrue;
-        }
-        if (
-          typeof validatorValue === 'number' &&
-          validatorKey === 'minLength'
-        ) {
-          return Validators.minLength(validatorValue);
-        }
+  abstract onFocus: () => void;
 
-        return Validators.nullValidator;
-      },
+  private resolveValidators({ validators = {} }: DynamicControl) {
+    const entries = Object.entries(validators) as [
+      keyof typeof validators,
+      unknown,
+    ][];
+
+    return entries.map(
+      ([validatorKey, validatorValue]) =>
+        validatorMapper[validatorKey]?.(validatorValue) ??
+        Validators.nullValidator,
     );
+  }
+
+  private registerFocusHandler(controlKey: string) {
+    if (!this.focusHandler) {
+      return;
+    }
+
+    this.focusHandler
+      .focusChanged$(controlKey)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((focused) => {
+        if (focused) {
+          this?.onFocus();
+        }
+        this.state.update((state) => ({
+          ...state,
+          focused,
+        }));
+      });
   }
 }

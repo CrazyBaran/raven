@@ -1,29 +1,36 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 
 import {
   BaseDynamicControl,
-  ErrorMessagePipe,
   dynamicControlProvider,
+  sharedDynamicControlDeps,
 } from '@app/rvnc-notes/util';
-import { FormFieldModule, TextBoxModule } from '@progress/kendo-angular-inputs';
-import { LabelModule } from '@progress/kendo-angular-label';
+import {
+  TextBoxComponent,
+  TextBoxModule,
+} from '@progress/kendo-angular-inputs';
 
 @Component({
   selector: 'app-dynamic-input',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TextBoxModule,
-    LabelModule,
-    FormFieldModule,
-    ErrorMessagePipe,
-  ],
+  imports: [sharedDynamicControlDeps, TextBoxModule],
   templateUrl: './dynamic-input.component.html',
   styleUrls: ['./dynamic-input.component.scss'],
   viewProviders: [dynamicControlProvider],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DynamicInputComponent extends BaseDynamicControl {}
+export class DynamicInputComponent extends BaseDynamicControl {
+  @ViewChild(TextBoxComponent) textBox: TextBoxComponent;
+
+  override onFocus = () => {
+    this.textBox?.focus();
+    this.elementRef?.nativeElement?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
+
+  setFocus() {
+    this.focusHandler?.focusTo(this.control.controlKey);
+  }
+}

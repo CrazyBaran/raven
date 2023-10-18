@@ -4,12 +4,12 @@
     [for]="control.controlKey"
     [text]="control.config.label"
   ></kendo-label>
-  <input
+  <kendo-textbox
     [formControlName]="control.controlKey"
     [value]="control.config.value!"
     [id]="control.controlKey"
-    [placeholder]="control.config.placeholder"
-    kendoTextBox
+    [placeholder]="control.config.placeholder!"
+    (focus)="setFocus()"
   />
   <kendo-formerror
     class="text-danger"

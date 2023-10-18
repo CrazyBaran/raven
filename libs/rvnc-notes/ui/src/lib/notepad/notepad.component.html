@@ -1,1 +1,28 @@
-<p>notepad works!</p>
+<app-notepad-template>
+  <app-scroll-tab
+    tabs
+    *ngFor="let tab of tabs(); trackBy: trackTabByFn; let i = index"
+    [state]="tab.state"
+    [label]="tab.label"
+    [showEye]="tab.canBeDisabled"
+    (eyeClick)="toggleDisabled(tab, i)"
+    (labelClick)="setActiveTab(tab)"
+  ></app-scroll-tab>
+  <form controls [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="mr-1">
+    <ng-container
+      *ngFor="
+        let control of visibleControls() | keyvalue: comparatorFn;
+        trackBy: trackByFn
+      "
+    >
+      <ng-container
+        [ngComponentOutlet]="
+          controlResolver.resolve(control.value.controlType) | async
+        "
+        [ngComponentOutletInjector]="
+          control.key | controlInjector: control.value
+        "
+      ></ng-container>
+    </ng-container>
+  </form>
+</app-notepad-template>
