@@ -28,6 +28,7 @@ export class LoginComponent {
     this.route.queryParams.subscribe((params) => {
       const redirectUrl = params['redirectUrl'] ?? '/';
       this.msalService.loginRedirect({
+        prompt: 'select_account',
         redirectStartPage: redirectUrl,
         ...authRequest,
       } as RedirectRequest);
