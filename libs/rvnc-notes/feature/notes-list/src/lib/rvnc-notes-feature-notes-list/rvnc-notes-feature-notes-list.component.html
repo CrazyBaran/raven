@@ -1,1 +1,10 @@
-<p>rvnc-notes-feature-notes-list works!</p>
+<div class="notes-list grid">
+  <ui-header pageName="All Notes" pageIcon="fa-solid fa-notebook" />
+
+  <div class="notes-list__content p-6">
+    <ui-loader />
+    <!--    <ui-loader *ngIf="isLoading$ | async; else notesListView" />-->
+
+    <!--    <ng-template #notesListView> Notes List View </ng-template>-->
+  </div>
+</div>

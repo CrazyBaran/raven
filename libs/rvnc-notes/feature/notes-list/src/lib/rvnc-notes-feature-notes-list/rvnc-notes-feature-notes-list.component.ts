@@ -1,12 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { HeaderComponent, LoaderComponent } from '@app/rvnc-core-ui';
+import { NoteStoreFacadeService } from '@app/rvnc-notes/data-access';
 
 @Component({
   selector: 'app-rvnc-notes-feature-notes-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HeaderComponent, LoaderComponent],
   templateUrl: './rvnc-notes-feature-notes-list.component.html',
   styleUrls: ['./rvnc-notes-feature-notes-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RvncNotesFeatureNotesListComponent {}
+export class RvncNotesFeatureNotesListComponent implements OnInit {
+  public readonly isLoading$ = this.noteStoreFacadeService.isLoading$;
+
+  public constructor(
+    private readonly noteStoreFacadeService: NoteStoreFacadeService,
+  ) {}
+
+  public ngOnInit(): void {
+    this.noteStoreFacadeService.getNotes();
+  }
+}
