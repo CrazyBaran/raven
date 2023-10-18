@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsUUID } from 'class-validator';
+import { IsDefined, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateNoteDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsString()
+  public readonly name: string;
+
   @ApiProperty()
   @IsOptional()
   @IsUUID(undefined, { each: true })

@@ -9,6 +9,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -27,6 +28,7 @@ import { UserEntity } from '../rvn-users/entities/user.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteFieldDto } from './dto/update-note-field.dto';
+import { UpdateNoteDto } from './dto/update-note.dto';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
@@ -48,17 +50,18 @@ export class NotesController {
   @Post()
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
-    templateEntity: string | TemplateEntity | null, // workaround so query parameter is passed to pipe as string
+    templateEntity: TemplateEntity | null,
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
     @Body() dto: CreateNoteDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<NoteData> {
     return this.notesService.noteEntityToNoteData(
-      await this.notesService.createNote(
+      await this.notesService.createNote({
+        name: dto.name,
         userEntity,
-        templateEntity as TemplateEntity | null,
+        templateEntity,
         tags,
-      ),
+      }),
     );
   }
 
@@ -84,7 +87,11 @@ export class NotesController {
     return this.notesService.noteEntityToNoteData(noteEntity);
   }
 
-  @ApiOperation({ description: 'Update note field' })
+  @ApiOperation({
+    description:
+      'Update note field. Deprecated - bulk update to be used in order to maintain correct note versioning.',
+    deprecated: true,
+  })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
   @ApiParam({ name: 'noteFieldGroupId', type: String })
@@ -107,21 +114,22 @@ export class NotesController {
       ),
     );
   }
-  // TODO this will be changed when tag system is in place
-  // @ApiOperation({ description: 'Update note' })
-  // @ApiResponse(GenericResponseSchema())
-  // @ApiParam({ name: 'noteId', type: String })
-  // @Put(':noteId')
-  // public async updateNote(
-  //   @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-  //   @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
-  //   @Body() dto: UpdateNoteDto,
-  // ): Promise<NoteData> {
-  //   return this.notesService.noteEntityToNoteData(
-  //     await this.notesService.updateNote(noteEntity, userEntity, {
-  //       opportunityAffinityInternalId: dto.opportunityAffinityInternalId,
-  //       opportunityId: dto.opportunityId,
-  //     }),
-  //   );
-  // }
+
+  @ApiOperation({ description: 'Update note' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'noteId', type: String })
+  @Patch(':noteId')
+  public async updateNote(
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
+    @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+    @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
+    @Body() dto: UpdateNoteDto,
+  ): Promise<NoteData> {
+    return this.notesService.noteEntityToNoteData(
+      await this.notesService.updateNote(noteEntity, userEntity, {
+        tags,
+        fields: dto.fields,
+      }),
+    );
+  }
 }

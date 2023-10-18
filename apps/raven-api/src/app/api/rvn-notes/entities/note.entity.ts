@@ -22,6 +22,7 @@ import { TagEntity } from '../../rvn-tags/entities/tag.entity';
 import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './note-field-group.entity';
+import { NoteTabEntity } from './note-tab.entity';
 
 @Entity({ name: 'notes' })
 @Index(['id'], { unique: true })
@@ -52,9 +53,12 @@ export class NoteEntity implements AuditableEntity {
   @RelationId((n: NoteEntity) => n.template)
   public templateId: string | null;
 
-  // TODO discuss with Filip - I want to get rid of this entity as I feel it's useless
+  @OneToMany(() => NoteTabEntity, (t) => t.note, {
+    cascade: ['insert'],
+  })
+  public noteTabs: NoteTabEntity[];
+
   @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.note, {
-    eager: true,
     cascade: ['insert'],
   })
   public noteFieldGroups: NoteFieldGroupEntity[];
@@ -91,6 +95,19 @@ export class NoteEntity implements AuditableEntity {
   @Column()
   @RelationId((t: NoteEntity) => t.updatedBy)
   public updatedById: string;
+
+  @Index()
+  @Column({ nullable: true })
+  public deletedAt: Date | null;
+
+  @Index()
+  @ManyToOne(() => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'deleted_by_id' })
+  public deletedBy: UserEntity | null;
+
+  @Column({ nullable: true })
+  @RelationId((t: NoteEntity) => t.deletedBy)
+  public deletedById: string | null;
 
   @AfterInsert()
   @AfterLoad()

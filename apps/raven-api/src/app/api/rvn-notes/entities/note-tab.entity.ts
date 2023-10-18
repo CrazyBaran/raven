@@ -15,13 +15,12 @@ import {
 
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
-import { NoteFieldEntity } from './note-field.entity';
-import { NoteTabEntity } from './note-tab.entity';
+import { NoteFieldGroupEntity } from './note-field-group.entity';
 import { NoteEntity } from './note.entity';
 
-@Entity({ name: 'note_field_groups' })
+@Entity({ name: 'note_tabs' })
 @Index(['id', 'note'], { unique: true })
-export class NoteFieldGroupEntity implements AuditableEntity {
+export class NoteTabEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -31,26 +30,18 @@ export class NoteFieldGroupEntity implements AuditableEntity {
   @Column()
   public order: number;
 
-  @ManyToOne(() => NoteTabEntity, { nullable: true })
-  @JoinColumn({ name: 'note_tab_id' })
-  public noteTab: NoteTabEntity | null;
-
-  @Column({ nullable: true })
-  @RelationId((t: NoteFieldGroupEntity) => t.noteTab)
-  public noteTabId: string | null;
-
-  @OneToMany(() => NoteFieldEntity, (nfd) => nfd.noteGroup, {
+  @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.noteTab, {
     eager: true,
     cascade: ['insert'],
   })
-  public noteFields: NoteFieldEntity[];
+  public noteFieldGroups: NoteFieldGroupEntity[];
 
   @ManyToOne(() => NoteEntity, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'note_id' })
   public note: NoteEntity;
 
   @Column()
-  @RelationId((t: NoteFieldGroupEntity) => t.note)
+  @RelationId((t: NoteTabEntity) => t.note)
   public noteId: string;
 
   @Index()
@@ -59,24 +50,24 @@ export class NoteFieldGroupEntity implements AuditableEntity {
   public createdBy: UserEntity;
 
   @Column()
-  @RelationId((t: NoteFieldGroupEntity) => t.createdBy)
+  @RelationId((t: NoteTabEntity) => t.createdBy)
   public createdById: string;
 
   @CreateDateColumn()
   public createdAt: Date;
 
-  @Index()
-  @UpdateDateColumn()
-  public updatedAt: Date;
+  @Column()
+  @RelationId((t: NoteTabEntity) => t.updatedBy)
+  public updatedById: string;
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
   @JoinColumn({ name: 'updated_by_id' })
   public updatedBy: UserEntity;
 
-  @Column()
-  @RelationId((t: NoteFieldGroupEntity) => t.updatedBy)
-  public updatedById: string;
+  @Index()
+  @UpdateDateColumn()
+  public updatedAt: Date;
 
   @AfterInsert()
   @AfterLoad()
@@ -84,6 +75,5 @@ export class NoteFieldGroupEntity implements AuditableEntity {
     this.id = this.id.toLowerCase();
     this.noteId = this.noteId.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
-    this.updatedById = this.updatedById.toLowerCase();
   }
 }

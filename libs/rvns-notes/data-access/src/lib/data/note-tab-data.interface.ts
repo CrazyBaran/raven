@@ -1,4 +1,4 @@
-export interface NoteFieldGroupData {
+export interface NoteTabData {
   readonly id: string;
   readonly name: string;
   readonly order: number;
@@ -6,5 +6,4 @@ export interface NoteFieldGroupData {
   readonly updatedAt: Date;
   readonly createdAt: Date;
   readonly createdById: string;
-  readonly updatedById: string;
 }
