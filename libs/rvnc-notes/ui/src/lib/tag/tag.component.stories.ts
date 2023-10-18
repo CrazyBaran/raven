@@ -8,7 +8,6 @@ const meta: Meta<TagComponent> = {
   render: (args: TagComponent) => ({
     props: {
       ...args,
-      onTagDelete: () => {},
       tagClick: action('tagClick'),
       tagRemove: action('tagRemove'),
     },

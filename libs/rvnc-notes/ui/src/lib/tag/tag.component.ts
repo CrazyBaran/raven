@@ -18,12 +18,12 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagComponent {
-  @Input() labelTemplate?: TemplateRef<any>;
+  @Input() public labelTemplate?: TemplateRef<unknown>;
 
-  @Input() icon?: string;
-  @Input() label?: string;
-  @Input() htmlClass?: string;
+  @Input() public icon?: string;
+  @Input() public label?: string;
+  @Input() public htmlClass?: string;
 
-  @Output() tagClick = new EventEmitter<MouseEvent>();
-  @Output() tagRemove = new EventEmitter<void>();
+  @Output() public tagClick = new EventEmitter<MouseEvent>();
+  @Output() public tagRemove = new EventEmitter<void>();
 }
