@@ -6,9 +6,16 @@ interface UserData {
   readonly email: string;
 }
 
+// TODO expand when needed
+interface NoteTagData {
+  readonly name: string;
+  readonly type: string;
+}
+
 export interface NoteData {
   readonly id: string;
   readonly name: string;
+  readonly tags: NoteTagData[];
   readonly templateId?: string;
   readonly createdById: string;
   readonly createdBy: UserData;

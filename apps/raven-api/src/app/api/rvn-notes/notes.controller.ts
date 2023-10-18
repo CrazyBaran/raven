@@ -11,13 +11,11 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import {
   ApiOAuth2,
   ApiOperation,
   ApiParam,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -26,6 +24,8 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 
+import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteFieldDto } from './dto/update-note-field.dto';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
@@ -35,6 +35,7 @@ import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from './pipes/parse-optional-template-with-groups-and-fields.pipe';
+import { ParseTagsPipe } from './pipes/parse-tags.pipe';
 
 @ApiTags('Notes')
 @Controller('notes')
@@ -43,18 +44,20 @@ export class NotesController {
   public constructor(private readonly notesService: NotesService) {}
 
   @ApiOperation({ description: 'Create note' })
-  @ApiQuery({ name: 'templateId', type: String, required: false })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()
   public async createNote(
-    @Query('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
+    @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
     templateEntity: string | TemplateEntity | null, // workaround so query parameter is passed to pipe as string
+    @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
+    @Body() dto: CreateNoteDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<NoteData> {
     return this.notesService.noteEntityToNoteData(
       await this.notesService.createNote(
         userEntity,
         templateEntity as TemplateEntity | null,
+        tags,
       ),
     );
   }

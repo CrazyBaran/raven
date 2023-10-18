@@ -51,6 +51,7 @@
       "@app/rvns-pipelines": ["libs/rvns-pipelines/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],
+      "@app/rvns-tags": ["libs/rvns-tags/src/index.ts"],
       "@app/rvns-teams": ["libs/rvns-teams/src/index.ts"],
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"]
