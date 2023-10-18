@@ -1,5 +1,3 @@
-<p class="text-lg font-medium">test</p>
-
 <kendo-formfield>
   <kendo-label
     labelCssClass="k-form-label text-secondary-900 text-sm"
@@ -10,13 +8,14 @@
     [formControlName]="control.controlKey"
     [value]="control.config.value!"
     [id]="control.controlKey"
-    (focus)="focused.set(true)"
-    (clickOutside)="focused.set(false)"
-    style="height: 300px"
+    (focus)="setFocus()"
+    class="relative"
+    [style.height]="currentHeight()"
+    [class.mb-[50px]]="focused()"
   >
     <kendo-toolbar
-      class="space order-last flex gap-2"
-      [style.display]="focused() ? 'block' : 'none'"
+      class="space absolute -bottom-[50px] order-last flex gap-2 border-0 !bg-transparent"
+      [class.hidden]="!focused()"
     >
       <kendo-toolbar-buttongroup class="space-x-2">
         <kendo-toolbar-button kendoEditorBoldButton></kendo-toolbar-button>
@@ -27,7 +26,7 @@
         ></kendo-toolbar-button>
       </kendo-toolbar-buttongroup>
 
-      <kendo-toolbar-buttongroup [class] class="space-x-2">
+      <kendo-toolbar-buttongroup class="space-x-2">
         <kendo-toolbar-button kendoEditorAlignLeftButton></kendo-toolbar-button>
         <kendo-toolbar-button
           kendoEditorAlignCenterButton

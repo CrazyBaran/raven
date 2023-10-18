@@ -7,9 +7,9 @@ import { DynamicControl } from './dynamic-forms.model';
   standalone: true,
 })
 export class ControlInjectorPipe implements PipeTransform {
-  injector = inject(Injector);
+  private injector = inject(Injector);
 
-  transform(controlKey: string, config: DynamicControl): Injector {
+  public transform(controlKey: string, config: DynamicControl): Injector {
     return Injector.create({
       parent: this.injector,
       providers: [

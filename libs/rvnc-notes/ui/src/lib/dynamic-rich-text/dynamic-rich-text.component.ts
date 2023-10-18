@@ -1,63 +1,44 @@
-import { CommonModule } from '@angular/common';
-
 import {
   ChangeDetectionStrategy,
   Component,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Output,
-  signal,
+  computed,
+  Input,
+  ViewChild,
 } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import {
   BaseDynamicControl,
-  ErrorMessagePipe,
   dynamicControlProvider,
+  sharedDynamicControlDeps,
 } from '@app/rvnc-notes/util';
-import { EditorModule } from '@progress/kendo-angular-editor';
-import { FormFieldModule } from '@progress/kendo-angular-inputs';
-import { LabelModule } from '@progress/kendo-angular-label';
-
-@Directive({
-  selector: '[clickOutside]',
-  standalone: true,
-})
-export class ClickOutsideDirective {
-  constructor(private elementRef: ElementRef) {}
-
-  @Output() clickOutside = new EventEmitter<MouseEvent>();
-
-  @HostListener('document:click', ['$event', '$event.target'])
-  public onClick(event: MouseEvent, targetElement: HTMLElement): void {
-    if (!targetElement) {
-      return;
-    }
-    const clickedInside = this.elementRef.nativeElement.contains(targetElement);
-    if (!clickedInside) {
-      this.clickOutside.emit(event);
-    }
-  }
-}
+import { EditorComponent, EditorModule } from '@progress/kendo-angular-editor';
 
 @Component({
   selector: 'app-dynamic-rich-text',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormFieldModule,
-    LabelModule,
-    ReactiveFormsModule,
-    EditorModule,
-    ErrorMessagePipe,
-    ClickOutsideDirective,
-  ],
+  imports: [sharedDynamicControlDeps, EditorModule],
   templateUrl: './dynamic-rich-text.component.html',
   styleUrls: ['./dynamic-rich-text.component.scss'],
   viewProviders: [dynamicControlProvider],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicRichTextComponent extends BaseDynamicControl {
-  focused = signal(false);
+  @Input() protected height = 160;
+
+  @ViewChild(EditorComponent) protected editor: EditorComponent;
+
+  protected currentHeight = computed(() => {
+    return `${this.height - (this.focused() ? 50 : 0)}px`;
+  });
+
+  protected setFocus(): void {
+    this.focusHandler?.focusTo(this.control.controlKey);
+  }
+
+  protected override onFocus = (): void => {
+    this.editor?.focus();
+    this.elementRef?.nativeElement?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
 }

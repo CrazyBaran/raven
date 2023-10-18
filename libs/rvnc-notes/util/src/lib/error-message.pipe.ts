@@ -8,7 +8,7 @@ import { VALIDATION_ERROR_MESSAGES } from './validation-error-messages.token';
 export class ErrorMessagePipe implements PipeTransform {
   private errorMessages = inject(VALIDATION_ERROR_MESSAGES);
 
-  transform(key: string, errValue: any): string {
+  public transform(key: string, errValue: unknown): string {
     if (!this.errorMessages[key]) {
       console.warn(`Missing message for ${key} validator...`);
       return '';

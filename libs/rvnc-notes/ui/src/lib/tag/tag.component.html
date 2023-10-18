@@ -1,0 +1,29 @@
+<div
+  [className]="
+    ' group flex cursor-pointer items-center gap-1 text-red-400 ' +
+    (htmlClass ? htmlClass : '')
+  "
+  (click)="tagClick.emit($event)"
+>
+  <i [className]="icon + ' h-fit p-0.5 '"></i>
+  <ng-container
+    *ngTemplateOutlet="
+      labelTemplate ?? defaultLabel;
+      context: { $implicit: label }
+    "
+  ></ng-container>
+
+  <kendo-button
+    class="hidden border-0 !p-0 group-hover:block"
+    iconClass="fa-solid fa-trash h-4 text-xs"
+    fillMode="flat"
+    size="small"
+    (click)="$event?.stopPropagation(); tagRemove.emit($event)"
+  ></kendo-button>
+</div>
+
+<ng-template #defaultLabel>
+  <span class="text-xs leading-5">
+    {{ label }}
+  </span>
+</ng-template>

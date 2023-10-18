@@ -1,6 +1,7 @@
 export * from './lib/base-dynamic-control';
 export * from './lib/control-data.token';
 export * from './lib/control-injector.pipe';
+export { DynamicControlFocusHandler } from './lib/dynamic-control-focus-handler.service';
 export * from './lib/dynamic-forms.model';
 export * from './lib/error-message.pipe';
 export * from './lib/validation-error-messages.token';
