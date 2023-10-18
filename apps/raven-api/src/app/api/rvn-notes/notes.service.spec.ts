@@ -89,7 +89,12 @@ describe('NotesService', () => {
 
       jest.spyOn(mockNoteRepository, 'save').mockResolvedValue(note);
 
-      const result = await service.createNote(userEntity, null, []);
+      const result = await service.createNote({
+        name: 'Note',
+        userEntity,
+        templateEntity: null,
+        tags: [],
+      });
 
       expect(mockNoteRepository.save).toHaveBeenCalledWith(note);
       expect(result).toBe(note);

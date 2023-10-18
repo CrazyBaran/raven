@@ -1,5 +1,6 @@
 import {
   NoteFieldData,
+  NoteFieldGroupsWithFieldData,
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { FieldDefinitionType } from '@app/rvns-templates';
@@ -8,11 +9,21 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { FieldDefinitionEntity } from '../rvn-templates/entities/field-definition.entity';
+import { FieldGroupEntity } from '../rvn-templates/entities/field-group.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
+import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
+
+interface CreateNoteOptions {
+  name: string;
+  userEntity: UserEntity;
+  templateEntity: TemplateEntity | null;
+  tags: TagEntity[];
+}
 
 interface UpdateNoteFieldOptions {
   value: string;
@@ -44,35 +55,35 @@ export class NotesService {
     });
   }
 
-  public async createNote(
-    userEntity: UserEntity,
-    templateEntity: TemplateEntity | null,
-    tags: TagEntity[],
-  ): Promise<NoteEntity> {
-    if (templateEntity) {
-      return await this.createNoteFromTemplate(templateEntity, userEntity);
+  public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
+    if (options.templateEntity) {
+      return await this.createNoteFromTemplate(
+        options.name,
+        options.templateEntity,
+        options.userEntity,
+      );
     }
 
     const noteField = new NoteFieldEntity();
-    noteField.name = 'Note';
+    noteField.name = options.name;
     noteField.order = 1;
-    noteField.createdBy = userEntity;
-    noteField.updatedBy = userEntity;
+    noteField.createdBy = options.userEntity;
+    noteField.updatedBy = options.userEntity;
     noteField.type = FieldDefinitionType.RichText;
 
     const noteFieldGroup = new NoteFieldGroupEntity();
     noteFieldGroup.name = 'New Note Group';
     noteFieldGroup.order = 1;
-    noteFieldGroup.createdBy = userEntity;
-    noteFieldGroup.updatedBy = userEntity;
+    noteFieldGroup.createdBy = options.userEntity;
+    noteFieldGroup.updatedBy = options.userEntity;
     noteFieldGroup.noteFields = [noteField];
 
     const note = new NoteEntity();
     note.name = 'New Note';
     note.version = 1;
-    note.tags = tags;
-    note.createdBy = userEntity;
-    note.updatedBy = userEntity;
+    note.tags = options.tags;
+    note.createdBy = options.userEntity;
+    note.updatedBy = options.userEntity;
     note.noteFieldGroups = [noteFieldGroup];
 
     return await this.noteRepository.save(note);
@@ -97,6 +108,21 @@ export class NotesService {
         name: tag.name,
         type: tag.type,
       })),
+      noteTabs: noteEntity.noteTabs?.map((noteTab) => {
+        return {
+          id: noteTab.id,
+          name: noteTab.name,
+          order: noteTab.order,
+          noteId: noteTab.noteId,
+          createdById: noteTab.createdById,
+          updatedById: noteTab.updatedById,
+          updatedAt: noteTab.updatedAt,
+          createdAt: noteTab.createdAt,
+          noteFieldGroups: noteTab.noteFieldGroups?.map(
+            this.mapNoteFieldGroupEntityToFieldGroupData.bind(this),
+          ),
+        };
+      }),
       templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
       createdBy: {
@@ -110,21 +136,23 @@ export class NotesService {
       },
       updatedAt: noteEntity.updatedAt,
       createdAt: noteEntity.createdAt,
-      noteFieldGroups: noteEntity.noteFieldGroups?.map((noteFieldGroup) => {
-        return {
-          id: noteFieldGroup.id,
-          name: noteFieldGroup.name,
-          order: noteFieldGroup.order,
-          noteId: noteFieldGroup.noteId,
-          createdById: noteFieldGroup.createdById,
-          updatedById: noteFieldGroup.updatedById,
-          updatedAt: noteFieldGroup.updatedAt,
-          createdAt: noteFieldGroup.createdAt,
-          noteFields: noteFieldGroup.noteFields?.map((noteField) =>
-            this.noteFieldEntityToNoteFieldData(noteField),
-          ),
-        };
-      }),
+      noteFieldGroups: noteEntity.noteFieldGroups
+        ?.filter((nfg) => !nfg.noteTabId)
+        .map((noteFieldGroup) => {
+          return {
+            id: noteFieldGroup.id,
+            name: noteFieldGroup.name,
+            order: noteFieldGroup.order,
+            noteId: noteFieldGroup.noteId,
+            createdById: noteFieldGroup.createdById,
+            updatedById: noteFieldGroup.updatedById,
+            updatedAt: noteFieldGroup.updatedAt,
+            createdAt: noteFieldGroup.createdAt,
+            noteFields: noteFieldGroup.noteFields?.map((noteField) =>
+              this.noteFieldEntityToNoteFieldData(noteField),
+            ),
+          };
+        }),
     };
   }
 
@@ -145,25 +173,66 @@ export class NotesService {
     };
   }
 
+  private mapNoteFieldGroupEntityToFieldGroupData(
+    noteFieldGroup: NoteFieldGroupEntity,
+  ): NoteFieldGroupsWithFieldData {
+    return {
+      id: noteFieldGroup.id,
+      name: noteFieldGroup.name,
+      order: noteFieldGroup.order,
+      noteId: noteFieldGroup.noteId,
+      createdById: noteFieldGroup.createdById,
+      updatedById: noteFieldGroup.updatedById,
+      updatedAt: noteFieldGroup.updatedAt,
+      createdAt: noteFieldGroup.createdAt,
+      noteFields: noteFieldGroup.noteFields?.map((noteField) =>
+        this.noteFieldEntityToNoteFieldData(noteField),
+      ),
+    };
+  }
+
   private async createNoteFromTemplate(
+    name: string,
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
-    note.name = templateEntity.name;
+    note.name = name;
     note.version = 1;
     note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
-    note.noteFieldGroups = templateEntity.fieldGroups.map((fieldGroup) => {
+    note.noteTabs = templateEntity.tabs.map((tab) => {
+      const noteTab = new NoteTabEntity();
+      noteTab.name = tab.name;
+      noteTab.order = tab.order;
+      noteTab.createdBy = userEntity;
+      noteTab.updatedBy = userEntity;
+      noteTab.noteFieldGroups = tab.fieldGroups.map(
+        this.getMapFieldGroupToNoteFieldGroup(userEntity, note),
+      );
+      return noteTab;
+    });
+    note.noteFieldGroups = templateEntity.fieldGroups.map(
+      this.getMapFieldGroupToNoteFieldGroup(userEntity, note),
+    );
+
+    return await this.noteRepository.save(note);
+  }
+
+  private getMapFieldGroupToNoteFieldGroup(
+    userEntity: UserEntity,
+    note: NoteEntity,
+  ): (fieldGroup: FieldGroupEntity) => NoteFieldGroupEntity {
+    return (fieldGroup: FieldGroupEntity) => {
       const noteFieldGroup = new NoteFieldGroupEntity();
       noteFieldGroup.name = fieldGroup.name;
       noteFieldGroup.order = fieldGroup.order;
       noteFieldGroup.createdBy = userEntity;
       noteFieldGroup.updatedBy = userEntity;
-
+      noteFieldGroup.note = note;
       noteFieldGroup.noteFields = fieldGroup.fieldDefinitions.map(
-        (fieldDefinition) => {
+        (fieldDefinition: FieldDefinitionEntity) => {
           const noteField = new NoteFieldEntity();
           noteField.name = fieldDefinition.name;
           noteField.order = fieldDefinition.order;
@@ -174,8 +243,6 @@ export class NotesService {
         },
       );
       return noteFieldGroup;
-    });
-
-    return await this.noteRepository.save(note);
+    };
   }
 }
