@@ -1,20 +1,20 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, KeyValue } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
-  inject,
   Input,
   OnInit,
-  signal,
   WritableSignal,
+  computed,
+  inject,
+  signal,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
-  comparatorFn,
   ControlInjectorPipe,
   DynamicControl,
   DynamicControlFocusHandler,
+  comparatorFn,
 } from '@app/rvnc-notes/util';
 import { DynamicControlResolver } from '../dynamic-control-resolver.service';
 import { NotepadTemplateComponent } from '../notepad-template/notepad-template.component';
@@ -22,6 +22,13 @@ import {
   ScrollTabComponent,
   ScrollTabState,
 } from '../scroll-tab/scroll-tab.component';
+
+export type Tab = {
+  id: string;
+  label: string;
+  state: ScrollTabState;
+  canBeDisabled: boolean;
+};
 
 @Component({
   selector: 'app-notepad',
@@ -55,16 +62,18 @@ export class NotepadComponent implements OnInit {
 
   protected tabs = computed(() => {
     const formConfig = this.formConfig();
-    return Object.keys(formConfig).map((key) => ({
-      id: key,
-      label: formConfig[key].label,
-      state: (this.state().disabledTabIds.includes(key)
-        ? 'disabled'
-        : this.state().activeTabId === key
-        ? 'active'
-        : 'default') as ScrollTabState,
-      canBeDisabled: this.formConfig()[key].order !== 1,
-    }));
+    return Object.keys(formConfig).map(
+      (key): Tab => ({
+        id: key,
+        label: formConfig[key].label,
+        state: (this.state().disabledTabIds.includes(key)
+          ? 'disabled'
+          : this.state().activeTabId === key
+          ? 'active'
+          : 'default') as ScrollTabState,
+        canBeDisabled: this.formConfig()[key].order !== 1,
+      }),
+    );
   });
 
   protected visibleControls = computed(() => {
@@ -98,19 +107,11 @@ export class NotepadComponent implements OnInit {
     //
   }
 
-  public trackTabByFn(index: number, item: { id: string }): string {
+  public trackTabByFn(index: number, item: Tab): string {
     return item.id;
   }
 
-  public toggleDisabled(
-    tab: {
-      id: string;
-      label: string;
-      state: string;
-      cannotBeDisabled: boolean;
-    },
-    currentTabIndex: number,
-  ): void {
+  public toggleDisabled(tab: Tab, currentTabIndex: number): void {
     //set as active the closest tab that are not disabled to the bottom or top if not exists
     if (tab.id === this.state().activeTabId) {
       const tabs = this.tabs();
@@ -136,7 +137,10 @@ export class NotepadComponent implements OnInit {
     }));
   }
 
-  public trackByFn(index: number, item: { key: string }): string {
+  public trackByFn(
+    index: number,
+    item: KeyValue<string, DynamicControl>,
+  ): string {
     return item.key;
   }
 
