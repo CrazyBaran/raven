@@ -39,37 +39,35 @@ import {
   providers: [DynamicControlFocusHandler],
 })
 export class NotepadComponent implements OnInit {
-  dynamicControlFocusHandler = inject(DynamicControlFocusHandler);
+  protected formConfig: WritableSignal<Record<string, DynamicControl>> = signal(
+    {},
+  );
 
-  @Input() set config(value: Record<string, DynamicControl>) {
-    this.formConfig.set(value);
-  }
-
-  formConfig: WritableSignal<Record<string, DynamicControl>> = signal({});
-
-  state = signal({
+  protected state = signal({
     activeTabId: null as string | null,
     disabledTabIds: [] as string[],
   });
 
-  tabs = computed(() => {
+  protected formGroup = new FormGroup({});
+  protected controlResolver = inject(DynamicControlResolver);
+  protected readonly comparatorFn = comparatorFn;
+  protected dynamicControlFocusHandler = inject(DynamicControlFocusHandler);
+
+  protected tabs = computed(() => {
     const formConfig = this.formConfig();
-    return Object.keys(formConfig).map(
-      (key) =>
-        ({
-          id: key,
-          label: formConfig[key].label,
-          state: (this.state().disabledTabIds.includes(key)
-            ? 'disabled'
-            : this.state().activeTabId === key
-            ? 'active'
-            : 'default') as ScrollTabState,
-          canBeDisabled: this.formConfig()[key].order !== 1,
-        }) as any,
-    );
+    return Object.keys(formConfig).map((key) => ({
+      id: key,
+      label: formConfig[key].label,
+      state: (this.state().disabledTabIds.includes(key)
+        ? 'disabled'
+        : this.state().activeTabId === key
+        ? 'active'
+        : 'default') as ScrollTabState,
+      canBeDisabled: this.formConfig()[key].order !== 1,
+    }));
   });
 
-  visibleControls = computed(() => {
+  protected visibleControls = computed(() => {
     const formConfig = this.formConfig();
     //remove disabled keys from object
     return Object.keys(formConfig).reduce(
@@ -83,7 +81,11 @@ export class NotepadComponent implements OnInit {
     );
   });
 
-  ngOnInit(): void {
+  @Input() public set config(value: Record<string, DynamicControl>) {
+    this.formConfig.set(value);
+  }
+
+  public ngOnInit(): void {
     this.dynamicControlFocusHandler.focus$().subscribe((controlKey) => {
       this.state.update((state) => ({
         ...state,
@@ -92,18 +94,15 @@ export class NotepadComponent implements OnInit {
     });
   }
 
-  formGroup = new FormGroup({});
-  controlResolver = inject(DynamicControlResolver);
+  public onSubmit(): void {
+    //
+  }
 
-  protected readonly comparatorFn = comparatorFn;
-
-  onSubmit() {}
-
-  trackTabByFn(index: number, item: { id: string }) {
+  public trackTabByFn(index: number, item: { id: string }): string {
     return item.id;
   }
 
-  toggleDisabled(
+  public toggleDisabled(
     tab: {
       id: string;
       label: string;
@@ -111,7 +110,7 @@ export class NotepadComponent implements OnInit {
       cannotBeDisabled: boolean;
     },
     currentTabIndex: number,
-  ) {
+  ): void {
     //set as active the closest tab that are not disabled to the bottom or top if not exists
     if (tab.id === this.state().activeTabId) {
       const tabs = this.tabs();
@@ -137,11 +136,11 @@ export class NotepadComponent implements OnInit {
     }));
   }
 
-  trackByFn(index: number, item: any) {
+  public trackByFn(index: number, item: { key: string }): string {
     return item.key;
   }
 
-  setActiveTab(tab: { id: string }) {
+  public setActiveTab(tab: { id: string }): void {
     this.dynamicControlFocusHandler.focusTo(tab.id);
   }
 }

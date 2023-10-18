@@ -17,6 +17,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { FormFieldModule } from '@progress/kendo-angular-inputs';
@@ -46,28 +47,30 @@ export const dynamicControlProvider: StaticProvider = {
 
 @Directive()
 export abstract class BaseDynamicControl implements OnInit {
-  @HostBinding('class') hostClass = 'form-field';
+  @HostBinding('class') protected hostClass = 'form-field';
 
-  control = inject(CONTROL_DATA);
-  elementRef = inject(ElementRef);
-  destroyRef = inject(DestroyRef);
-  focusHandler = inject(DynamicControlFocusHandler, {
+  protected control = inject(CONTROL_DATA);
+  protected elementRef = inject(ElementRef);
+  protected destroyRef = inject(DestroyRef);
+  protected focusHandler = inject(DynamicControlFocusHandler, {
     optional: true,
   });
-  parentGroupDir = inject(ControlContainer);
+  protected parentGroupDir = inject(ControlContainer);
 
-  formControl: AbstractControl = new FormControl(
+  protected formControl: AbstractControl = new FormControl(
     this.control.config.value,
     this.resolveValidators(this.control.config),
   );
 
-  state = signal({
+  protected state = signal({
     focused: false,
   });
 
-  focused = computed(() => this.state().focused);
+  protected focused = computed(() => this.state().focused);
 
-  ngOnInit() {
+  protected abstract onFocus: () => void;
+
+  public ngOnInit(): void {
     (this.parentGroupDir.control as FormGroup).addControl(
       this.control.controlKey,
       this.formControl,
@@ -75,9 +78,9 @@ export abstract class BaseDynamicControl implements OnInit {
     this.registerFocusHandler(this.control.controlKey);
   }
 
-  abstract onFocus: () => void;
-
-  private resolveValidators({ validators = {} }: DynamicControl) {
+  private resolveValidators({
+    validators = {},
+  }: DynamicControl): ValidatorFn[] {
     const entries = Object.entries(validators) as [
       keyof typeof validators,
       unknown,
@@ -90,7 +93,7 @@ export abstract class BaseDynamicControl implements OnInit {
     );
   }
 
-  private registerFocusHandler(controlKey: string) {
+  private registerFocusHandler(controlKey: string): void {
     if (!this.focusHandler) {
       return;
     }

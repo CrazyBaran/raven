@@ -2,12 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  HostListener,
   Input,
-  Output,
   ViewChild,
 } from '@angular/core';
 import {
@@ -16,27 +11,6 @@ import {
   sharedDynamicControlDeps,
 } from '@app/rvnc-notes/util';
 import { EditorComponent, EditorModule } from '@progress/kendo-angular-editor';
-
-@Directive({
-  selector: '[clickOutside]',
-  standalone: true,
-})
-export class ClickOutsideDirective {
-  constructor(private elementRef: ElementRef) {}
-
-  @Output() clickOutside = new EventEmitter<MouseEvent>();
-
-  @HostListener('document:click', ['$event', '$event.target'])
-  public onClick(event: MouseEvent, targetElement: HTMLElement): void {
-    if (!targetElement) {
-      return;
-    }
-    const clickedInside = this.elementRef.nativeElement.contains(targetElement);
-    if (!clickedInside) {
-      this.clickOutside.emit(event);
-    }
-  }
-}
 
 @Component({
   selector: 'app-dynamic-rich-text',
@@ -48,19 +22,19 @@ export class ClickOutsideDirective {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicRichTextComponent extends BaseDynamicControl {
-  @Input() height = 160;
+  @Input() protected height = 160;
 
-  @ViewChild(EditorComponent) editor: EditorComponent;
+  @ViewChild(EditorComponent) protected editor: EditorComponent;
 
-  currentHeight = computed(() => {
+  protected currentHeight = computed(() => {
     return `${this.height - (this.focused() ? 50 : 0)}px`;
   });
 
-  setFocus() {
+  protected setFocus(): void {
     this.focusHandler?.focusTo(this.control.controlKey);
   }
 
-  override onFocus = () => {
+  protected override onFocus = (): void => {
     this.editor?.focus();
     this.elementRef?.nativeElement?.scrollIntoView({
       behavior: 'smooth',

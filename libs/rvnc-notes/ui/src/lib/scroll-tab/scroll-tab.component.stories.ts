@@ -8,7 +8,6 @@ const meta: Meta<ScrollTabComponent> = {
   render: (args: ScrollTabComponent) => ({
     props: {
       ...args,
-      onTagDelete: () => {},
       eyeClick: action('eyeClick'),
       labelClick: action('labelClick'),
     },

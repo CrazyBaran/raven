@@ -20,9 +20,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicInputComponent extends BaseDynamicControl {
-  @ViewChild(TextBoxComponent) textBox: TextBoxComponent;
+  @ViewChild(TextBoxComponent) protected textBox: TextBoxComponent;
 
-  override onFocus = () => {
+  protected override onFocus = (): void => {
     this.textBox?.focus();
     this.elementRef?.nativeElement?.scrollIntoView({
       behavior: 'smooth',
@@ -30,7 +30,7 @@ export class DynamicInputComponent extends BaseDynamicControl {
     });
   };
 
-  setFocus() {
+  protected setFocus(): void {
     this.focusHandler?.focusTo(this.control.controlKey);
   }
 }

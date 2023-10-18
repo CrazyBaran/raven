@@ -20,10 +20,10 @@ export type ScrollTabState = (typeof scrollTabStates)[number];
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollTabComponent {
-  @Input() state: ScrollTabState = 'default';
-  @Input() label: string | undefined | null = null;
-  @Input() showEye = true;
+  @Input() public state: ScrollTabState = 'default';
+  @Input() public label: string | undefined | null = null;
+  @Input() public showEye = true;
 
-  @Output() eyeClick = new EventEmitter<MouseEvent>();
-  @Output() labelClick = new EventEmitter<MouseEvent>();
+  @Output() public eyeClick = new EventEmitter<MouseEvent>();
+  @Output() public labelClick = new EventEmitter<MouseEvent>();
 }

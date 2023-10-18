@@ -4,7 +4,9 @@ export interface DynamicOptions {
   label: string;
   value: string;
 }
-type CustomValidators = {};
+type CustomValidators = {
+  //
+};
 
 type ValidatorKeys = keyof Omit<
   typeof Validators & CustomValidators,
@@ -32,17 +34,34 @@ export interface DynamicFormConfig {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const validatorMapper: Record<
   ValidatorKeys,
-  (...value: any) => ValidatorFn
+  (value: unknown) => ValidatorFn
 > = {
   required: () => Validators.required,
   email: () => Validators.email,
   requiredTrue: () => Validators.requiredTrue,
-  minLength: (value: number) => Validators.minLength(value),
-  maxLength: (value: number) => Validators.maxLength(value),
-  min: (value: number) => Validators.min(value),
-  max: (value: number) => Validators.max(value),
-  pattern: (value: string | RegExp) => Validators.pattern(value),
+  minLength: (value: unknown) =>
+    typeof value === 'number'
+      ? Validators.minLength(value)
+      : Validators.nullValidator,
+  maxLength: (value: unknown) =>
+    typeof value === 'number'
+      ? Validators.maxLength(value)
+      : Validators.nullValidator,
+  min: (value: unknown) =>
+    typeof value === 'number'
+      ? Validators.min(value)
+      : Validators.nullValidator,
+  max: (value: unknown) =>
+    typeof value === 'number'
+      ? Validators.max(value)
+      : Validators.nullValidator,
+  pattern: (value: unknown) =>
+    typeof value === 'string'
+      ? Validators.pattern(value)
+      : Validators.nullValidator,
   nullValidator: () => Validators.nullValidator,
 };

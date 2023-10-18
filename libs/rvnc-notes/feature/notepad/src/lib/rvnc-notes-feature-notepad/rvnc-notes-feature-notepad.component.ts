@@ -12,7 +12,7 @@ import { DynamicControl } from '@app/rvnc-notes/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RvncNotesFeatureNotepadComponent {
-  mockConfig: Record<string, DynamicControl> = {
+  protected mockConfig: Record<string, DynamicControl> = {
     title: {
       controlType: 'input',
       label: 'Title',
