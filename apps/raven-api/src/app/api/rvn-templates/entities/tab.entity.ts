@@ -47,7 +47,7 @@ export class TabEntity implements AuditableEntity {
   public createdBy: UserEntity;
 
   @Column()
-  @RelationId((t: FieldGroupEntity) => t.createdBy)
+  @RelationId((t: TabEntity) => t.createdBy)
   public createdById: string;
 
   @CreateDateColumn()

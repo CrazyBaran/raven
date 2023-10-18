@@ -48,17 +48,18 @@ export class NotesController {
   @Post()
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
-    templateEntity: string | TemplateEntity | null, // workaround so query parameter is passed to pipe as string
+    templateEntity: TemplateEntity | null,
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
     @Body() dto: CreateNoteDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<NoteData> {
     return this.notesService.noteEntityToNoteData(
-      await this.notesService.createNote(
+      await this.notesService.createNote({
+        name: dto.name,
         userEntity,
-        templateEntity as TemplateEntity | null,
+        templateEntity,
         tags,
-      ),
+      }),
     );
   }
 

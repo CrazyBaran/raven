@@ -1,5 +1,6 @@
 import { NoteFieldData } from './note-field-data.interface';
-import { NoteFieldGroupDataInterface } from './note-field-group-data.interface';
+import { NoteFieldGroupData } from './note-field-group-data.interface';
+import { NoteTabData } from './note-tab-data.interface';
 
 interface UserData {
   readonly name: string;
@@ -25,10 +26,15 @@ export interface NoteData {
   readonly updatedById: string;
 }
 
-interface NoteFieldGroupsWithFieldData extends NoteFieldGroupDataInterface {
+export interface NoteFieldGroupsWithFieldData extends NoteFieldGroupData {
   noteFields: NoteFieldData[];
 }
 
+interface NoteTabWithFieldGroupsData extends NoteTabData {
+  noteFieldGroups: NoteFieldGroupsWithFieldData[];
+}
+
 export interface NoteWithRelationsData extends NoteData {
+  noteTabs: NoteTabWithFieldGroupsData[];
   noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
