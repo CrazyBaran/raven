@@ -1,0 +1,10 @@
+<header class="header flex h-20 items-center px-10">
+  <div class="header__name flex flex-row items-center gap-5">
+    <i class="{{ pageIcon }} text-xl"></i>
+    <h1 *ngIf="pageName">{{ pageName }}</h1>
+  </div>
+
+  <div class="header__content">
+    <ng-content />
+  </div>
+</header>

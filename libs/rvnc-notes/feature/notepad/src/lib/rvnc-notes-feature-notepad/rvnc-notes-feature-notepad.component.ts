@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NoteStoreFacadeService } from '@app/rvnc-notes/data-access';
 
 @Component({
   selector: 'app-rvnc-notes-feature-notepad',
@@ -9,4 +10,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./rvnc-notes-feature-notepad.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RvncNotesFeatureNotepadComponent {}
+export class RvncNotesFeatureNotepadComponent {
+  public constructor(
+    public readonly notesStoreFacadeService: NoteStoreFacadeService,
+  ) {}
+}
