@@ -63,6 +63,12 @@ export class HomeComponent {
           name: 'All Notes',
           path: 'notes',
           icon: 'fa-solid fa-notebook',
+          exact: true,
+        },
+        {
+          name: 'Notepad',
+          path: 'notes/notepad',
+          icon: 'fa-solid fa-notebook',
         },
       ],
     },
