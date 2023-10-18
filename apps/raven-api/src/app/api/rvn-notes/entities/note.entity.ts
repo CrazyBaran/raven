@@ -54,13 +54,11 @@ export class NoteEntity implements AuditableEntity {
   public templateId: string | null;
 
   @OneToMany(() => NoteTabEntity, (t) => t.note, {
-    eager: true,
     cascade: ['insert'],
   })
   public noteTabs: NoteTabEntity[];
 
   @OneToMany(() => NoteFieldGroupEntity, (nfg) => nfg.note, {
-    eager: true,
     cascade: ['insert'],
   })
   public noteFieldGroups: NoteFieldGroupEntity[];
@@ -97,6 +95,19 @@ export class NoteEntity implements AuditableEntity {
   @Column()
   @RelationId((t: NoteEntity) => t.updatedBy)
   public updatedById: string;
+
+  @Index()
+  @Column({ nullable: true })
+  public deletedAt: Date | null;
+
+  @Index()
+  @ManyToOne(() => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'deleted_by_id' })
+  public deletedBy: UserEntity | null;
+
+  @Column({ nullable: true })
+  @RelationId((t: NoteEntity) => t.deletedBy)
+  public deletedById: string | null;
 
   @AfterInsert()
   @AfterLoad()

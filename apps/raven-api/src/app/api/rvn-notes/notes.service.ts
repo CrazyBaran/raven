@@ -29,9 +29,14 @@ interface UpdateNoteFieldOptions {
   value: string;
 }
 
+interface FieldUpdate {
+  id: string;
+  value: string;
+}
+
 interface UpdateNoteOptions {
-  opportunityId?: string;
-  opportunityAffinityInternalId?: number;
+  tags: TagEntity[];
+  fields: FieldUpdate[];
 }
 
 @Injectable()
@@ -46,12 +51,7 @@ export class NotesService {
 
   public async getAllNotes(): Promise<NoteEntity[]> {
     return this.noteRepository.find({
-      relations: [
-        'createdBy',
-        'updatedBy',
-        'noteFieldGroups',
-        'noteFieldGroups.noteFields',
-      ],
+      relations: ['createdBy', 'updatedBy', 'tags', 'template'],
     });
   }
 
@@ -89,6 +89,36 @@ export class NotesService {
     return await this.noteRepository.save(note);
   }
 
+  public async updateNote(
+    noteEntity: NoteEntity,
+    userEntity: UserEntity,
+    options: UpdateNoteOptions,
+  ): Promise<NoteEntity> {
+    const newNoteVersion = new NoteEntity();
+    newNoteVersion.name = noteEntity.name;
+    newNoteVersion.version = noteEntity.version + 1;
+    newNoteVersion.tags = options.tags;
+    newNoteVersion.previousVersion = noteEntity;
+    newNoteVersion.createdBy = noteEntity.createdBy;
+    newNoteVersion.updatedBy = userEntity;
+    newNoteVersion.noteTabs = noteEntity.noteTabs.map((noteTab) => {
+      const newNoteTab = new NoteTabEntity();
+      newNoteTab.name = noteTab.name;
+      newNoteTab.order = noteTab.order;
+      newNoteTab.createdBy = noteTab.createdBy;
+      newNoteTab.createdById = noteTab.createdById;
+      newNoteTab.updatedBy = userEntity;
+      newNoteTab.noteFieldGroups = noteTab.noteFieldGroups.map(
+        this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
+      );
+      return newNoteTab;
+    });
+    newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups.map(
+      this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
+    );
+    return await this.noteRepository.save(newNoteVersion);
+  }
+
   public async updateNoteField(
     noteFieldEntity: NoteFieldEntity,
     options: UpdateNoteFieldOptions,
@@ -101,9 +131,12 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
+    console.log({ temp: noteEntity.template });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
+      version: noteEntity.version,
+      templateName: noteEntity.template?.name,
       tags: noteEntity.tags?.map((tag) => ({
         name: tag.name,
         type: tag.type,
@@ -244,5 +277,43 @@ export class NotesService {
       );
       return noteFieldGroup;
     };
+  }
+
+  private getNewGroupsAndFieldsMapping(
+    userEntity: UserEntity,
+    newNoteVersion: NoteEntity,
+    options: UpdateNoteOptions,
+  ): (noteFieldGroup: NoteFieldGroupEntity) => NoteFieldGroupEntity {
+    return (noteFieldGroup: NoteFieldGroupEntity) => {
+      const newNoteFieldGroup = new NoteFieldGroupEntity();
+      newNoteFieldGroup.name = noteFieldGroup.name;
+      newNoteFieldGroup.order = noteFieldGroup.order;
+      newNoteFieldGroup.createdBy = noteFieldGroup.createdBy;
+      newNoteFieldGroup.createdById = noteFieldGroup.createdById;
+      newNoteFieldGroup.updatedBy = userEntity;
+      newNoteFieldGroup.note = newNoteVersion;
+      newNoteFieldGroup.noteFields = noteFieldGroup.noteFields.map(
+        (noteField) => {
+          const newNoteField = new NoteFieldEntity();
+          newNoteField.name = noteField.name;
+          newNoteField.order = noteField.order;
+          newNoteField.type = noteField.type;
+          newNoteField.createdBy = noteField.createdBy;
+          newNoteField.createdById = noteField.createdById;
+          newNoteField.updatedBy = userEntity;
+          newNoteField.value = this.findFieldValue(noteField, options.fields);
+          return newNoteField;
+        },
+      );
+      return newNoteFieldGroup;
+    };
+  }
+
+  private findFieldValue(
+    fieldEntity: NoteFieldEntity,
+    fieldUpdates: FieldUpdate[],
+  ): string {
+    const fieldUpdate = fieldUpdates.find((fu) => fu.id === fieldEntity.id);
+    return fieldUpdate ? fieldUpdate.value : fieldEntity.value;
   }
 }

@@ -1,14 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsDefined,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
+
+class FieldUpdateDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsUUID()
+  public readonly id: string;
+
+  @ApiProperty()
+  @IsDefined()
+  @IsString()
+  public readonly value: string;
+}
 
 export class UpdateNoteDto {
   @ApiProperty()
-  @IsOptional()
-  @IsString()
-  public readonly opportunityId?: string;
+  @IsDefined()
+  @IsUUID(undefined, { each: true })
+  public readonly tagIds?: string[];
 
   @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  public readonly opportunityAffinityInternalId?: number;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FieldUpdateDto)
+  public readonly fields: FieldUpdateDto[];
 }
