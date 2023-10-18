@@ -51,7 +51,7 @@ export class NotesService {
 
   public async getAllNotes(): Promise<NoteEntity[]> {
     return this.noteRepository.find({
-      relations: ['createdBy', 'updatedBy'],
+      relations: ['createdBy', 'updatedBy', 'tags', 'template'],
     });
   }
 
@@ -131,10 +131,12 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
+    console.log({ temp: noteEntity.template });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
       version: noteEntity.version,
+      templateName: noteEntity.template?.name,
       tags: noteEntity.tags?.map((tag) => ({
         name: tag.name,
         type: tag.type,
