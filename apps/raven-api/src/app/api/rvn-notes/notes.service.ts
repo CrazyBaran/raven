@@ -1,4 +1,7 @@
-import { NoteFieldData, NoteWithRelationsData } from '@app/rvns-notes';
+import {
+  NoteFieldData,
+  NoteWithRelationsData,
+} from '@app/rvns-notes/data-access';
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';

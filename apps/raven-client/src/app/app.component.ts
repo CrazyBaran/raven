@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import { filter } from 'rxjs';
 import {
   AuthenticationResult,
   EventMessage,
   EventType,
 } from '@azure/msal-browser';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',

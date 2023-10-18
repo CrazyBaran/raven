@@ -2,7 +2,7 @@ import {
   GenericCreateResponseSchema,
   GenericResponseSchema,
 } from '@app/rvns-api';
-import { NoteData, NoteFieldData } from '@app/rvns-notes';
+import { NoteData, NoteFieldData } from '@app/rvns-notes/data-access';
 import {
   Body,
   Controller,

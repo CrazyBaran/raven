@@ -1,0 +1,21 @@
+<kendo-formfield>
+  <kendo-label
+    labelCssClass="k-form-label text-secondary-900 text-sm leading-5"
+    [for]="control.controlKey"
+    [text]="control.config.label"
+  ></kendo-label>
+  <input
+    [formControlName]="control.controlKey"
+    [value]="control.config.value!"
+    [id]="control.controlKey"
+    [placeholder]="control.config.placeholder"
+    kendoTextBox
+  />
+  <kendo-formerror
+    class="text-danger"
+    *ngFor="let error of formControl.errors ?? [] | keyvalue"
+  >
+    {{ error.key | errorMessage: error.value }}
+  </kendo-formerror>
+  <!--  <app-input-error [errors]="formControl.errors"></app-input-error>-->
+</kendo-formfield>
