@@ -30,6 +30,7 @@ export const NOTES_ROUTES: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
         loadComponent: () =>
           import('@app/rvnc-notes/feature/notes-list').then(
             (m) => m.RvncNotesFeatureNotesListComponent,
