@@ -1,6 +1,6 @@
-import { AuthService } from './auth.service';
 import { Controller } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
+import { AuthService } from './auth.service';
 
 @ApiTags('Auth')
 @ApiOAuth2(['openid'])

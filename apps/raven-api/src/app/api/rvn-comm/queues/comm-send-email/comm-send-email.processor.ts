@@ -1,12 +1,12 @@
 import { CryptoHelper } from '@app/rvnb-crypto';
 import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
 
-import { CommService } from '../../comm.service';
-import { CommEmailTemplatesEnum } from '../../templates/comm-email-templates.enum';
-import { CommSendEmailProcessorLogger } from './comm-send-email-processor.logger';
 import { EmailRecipients } from '@azure/communication-email';
 import { Job } from '@taskforcesh/bullmq-pro';
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
+import { CommService } from '../../comm.service';
+import { CommEmailTemplatesEnum } from '../../templates/comm-email-templates.enum';
+import { CommSendEmailProcessorLogger } from './comm-send-email-processor.logger';
 
 export const COMM_SEND_EMAIL_QUEUE = 'CommSendEmailQueue';
 export const COMM_SEND_EMAIL_QUEUE__SEND = 'CommSendEmailQueue-Send';

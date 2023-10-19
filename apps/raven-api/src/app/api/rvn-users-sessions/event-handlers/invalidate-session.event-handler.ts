@@ -1,8 +1,8 @@
+import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { UsersSessionsService } from '../users-sessions.service';
 import { InvalidateSessionEventHandlerLogger } from './invalidate-session-event-handler.logger';
-import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class InvalidateSessionEventHandler {

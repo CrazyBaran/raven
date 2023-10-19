@@ -6,10 +6,10 @@ import { MoreThan, Repository } from 'typeorm';
 import { CryptoHelper } from '@app/rvnb-crypto';
 import { UserData } from '@app/rvns-api';
 
-import { UserEntity } from '../rvn-users/entities/user.entity';
-import { UserSessionEntity } from './entities/user-session.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from '../rvn-users/entities/user.entity';
+import { UserSessionEntity } from './entities/user-session.entity';
 
 interface RegisterOptions {
   readonly refresh: string;

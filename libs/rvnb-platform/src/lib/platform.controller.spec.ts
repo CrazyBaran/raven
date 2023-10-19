@@ -1,8 +1,8 @@
 import { EntityManager } from 'typeorm';
 
+import { Test, TestingModule } from '@nestjs/testing';
 import { PlatformController } from './platform.controller';
 import { PlatformService } from './platform.service';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('PlatformController', () => {
   let controller: PlatformController;

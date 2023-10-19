@@ -1,14 +1,14 @@
 import { EntityManager } from 'typeorm';
 
+import { AzureAdPayload } from '@app/rvns-auth';
 import {
   Inject,
   Injectable,
   NotFoundException,
   PipeTransform,
 } from '@nestjs/common';
-import { AzureAdPayload } from '@app/rvns-auth';
-import { UserEntity } from '../../api/rvn-users/entities/user.entity';
 import { environment } from '../../../environments/environment';
+import { UserEntity } from '../../api/rvn-users/entities/user.entity';
 
 @Injectable()
 export class ParseUserFromIdentityPipe

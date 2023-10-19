@@ -1,20 +1,13 @@
 import {
   EmptyResponseData,
-  UserData,
   GenericCreateResponseSchema,
   GenericResponseSchema,
+  UserData,
 } from '@app/rvns-api';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import { TeamData, TeamsData } from '@app/rvns-teams';
 
-import { Identity } from '../rvn-users/decorators/identity.decorator';
-import { CreateTeamDto } from './dto/create-team.dto';
-import { ListTeamsDto } from './dto/list-teams.dto';
-import { UpdateTeamDto } from './dto/update-team.dto';
-import { TeamEntity } from './entities/team.entity';
-import { ParseTeamPipe } from './pipes/parse-team.pipe';
-import { TeamsService } from './teams.service';
 import {
   BadRequestException,
   Body,
@@ -34,6 +27,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Identity } from '../rvn-users/decorators/identity.decorator';
+import { CreateTeamDto } from './dto/create-team.dto';
+import { ListTeamsDto } from './dto/list-teams.dto';
+import { UpdateTeamDto } from './dto/update-team.dto';
+import { TeamEntity } from './entities/team.entity';
+import { ParseTeamPipe } from './pipes/parse-team.pipe';
+import { TeamsService } from './teams.service';
 
 import { Scopes } from '../rvn-auth/scopes';
 

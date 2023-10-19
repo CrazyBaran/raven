@@ -1,5 +1,6 @@
 import { CryptoModule } from '@app/rvnb-crypto';
 
+import { Module } from '@nestjs/common';
 import { environment } from '../../../environments/environment';
 import { BullService } from '../../core/bull.service';
 import { CommService } from './comm.service';
@@ -9,7 +10,6 @@ import {
   CommSendEmailProcessor,
 } from './queues/comm-send-email/comm-send-email.processor';
 import { CommSendEmailProducer } from './queues/comm-send-email/comm-send-email.producer';
-import { Module } from '@nestjs/common';
 
 @Module({
   imports: [

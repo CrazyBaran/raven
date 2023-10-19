@@ -1,5 +1,5 @@
-import { CommService } from './comm.service';
 import { Test } from '@nestjs/testing';
+import { CommService } from './comm.service';
 
 describe('CommService', () => {
   let service: CommService;

@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 
-import { CryptoModuleOptions } from './crypto.module';
 import { Inject, Injectable } from '@nestjs/common';
+import { CryptoModuleOptions } from './crypto.module';
 
 @Injectable()
 export class CryptoHelper {

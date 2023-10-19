@@ -1,6 +1,5 @@
 import { catchError, finalize, Observable, throwError } from 'rxjs';
 
-import { SentryService } from './sentry.service';
 import {
   CallHandler,
   ExecutionContext,
@@ -9,6 +8,7 @@ import {
   Scope,
 } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
+import { SentryService } from './sentry.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class SentryInterceptor implements NestInterceptor {

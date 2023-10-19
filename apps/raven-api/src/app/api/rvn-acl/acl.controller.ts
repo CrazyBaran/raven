@@ -7,20 +7,6 @@ import {
   UserData,
 } from '@app/rvns-api';
 
-import { Identity } from '../rvn-users/decorators/identity.decorator';
-import { UserEntity } from '../rvn-users/entities/user.entity';
-import { ParseUsersPipe } from '../rvn-users/pipes/parse-users.pipe';
-import { AclService } from './acl.service';
-import { AuthorizationService } from './authorization.service';
-import { ShareAbility } from './casl/ability.factory';
-import { ShareResource } from './contracts/share-resource.interface';
-import { ListSharesDto } from './dto/list-shares.dto';
-import { ShareDto } from './dto/share.dto';
-import { AbstractShareEntity } from './entities/abstract-share.entity';
-import { ShareAction } from './enums/share-action.enum';
-import { CheckShare } from './permissions/share-policy.decorator';
-import { ParseShareResourcePipe } from './pipes/parse-share-resource.pipe';
-import { ParseShareWithActorPipe } from './pipes/parse-share-with-actor.pipe';
 import {
   BadRequestException,
   Body,
@@ -41,6 +27,20 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Identity } from '../rvn-users/decorators/identity.decorator';
+import { UserEntity } from '../rvn-users/entities/user.entity';
+import { ParseUsersPipe } from '../rvn-users/pipes/parse-users.pipe';
+import { AclService } from './acl.service';
+import { AuthorizationService } from './authorization.service';
+import { ShareAbility } from './casl/ability.factory';
+import { ShareResource } from './contracts/share-resource.interface';
+import { ListSharesDto } from './dto/list-shares.dto';
+import { ShareDto } from './dto/share.dto';
+import { AbstractShareEntity } from './entities/abstract-share.entity';
+import { ShareAction } from './enums/share-action.enum';
+import { CheckShare } from './permissions/share-policy.decorator';
+import { ParseShareResourcePipe } from './pipes/parse-share-resource.pipe';
+import { ParseShareWithActorPipe } from './pipes/parse-share-with-actor.pipe';
 
 @ApiOAuth2(['openid'])
 @ApiTags('Acl')

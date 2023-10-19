@@ -1,17 +1,19 @@
 import {
-  AfterInsert, AfterLoad,
+  AfterInsert,
+  AfterLoad,
   Column,
   CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn, RelationId,
-  UpdateDateColumn
-} from "typeorm";
-import {UserEntity} from "../../rvn-users/entities/user.entity";
+  PrimaryGeneratedColumn,
+  RelationId,
+  UpdateDateColumn,
+} from 'typeorm';
+import { UserEntity } from '../../rvn-users/entities/user.entity';
 
-@Entity({ name: 'storage_account_files'})
+@Entity({ name: 'storage_account_files' })
 export class StorageAccountFileEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;

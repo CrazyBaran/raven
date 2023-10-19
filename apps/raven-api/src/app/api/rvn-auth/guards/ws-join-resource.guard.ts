@@ -1,7 +1,7 @@
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthorizationService } from '../../rvn-acl/authorization.service';
 import { ShareAction } from '../../rvn-acl/enums/share-action.enum';
 import { AuthService } from '../auth.service';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class WsJoinResourceGuard implements CanActivate {

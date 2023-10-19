@@ -1,7 +1,7 @@
+import { Test } from '@nestjs/testing';
 import { UsersSessionsService } from '../users-sessions.service';
 import { InvalidateSessionEventHandlerLogger } from './invalidate-session-event-handler.logger';
 import { InvalidateSessionEventHandler } from './invalidate-session.event-handler';
-import { Test } from '@nestjs/testing';
 
 describe('InvalidateSessionEventHandler', () => {
   let handler: InvalidateSessionEventHandler;

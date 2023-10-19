@@ -1,8 +1,8 @@
 import { EntityManager } from 'typeorm';
 
+import { Test, TestingModule } from '@nestjs/testing';
 import { TeamsController } from './teams.controller';
 import { TeamsService } from './teams.service';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('TeamsController', () => {
   let controller: TeamsController;

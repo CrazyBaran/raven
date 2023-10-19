@@ -1,8 +1,8 @@
 import { EntityManager } from 'typeorm';
 
+import { Test } from '@nestjs/testing';
 import { AclService } from '../rvn-acl/acl.service';
 import { TeamsService } from './teams.service';
-import { Test } from '@nestjs/testing';
 
 describe('TeamsService', () => {
   let service: TeamsService;

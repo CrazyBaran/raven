@@ -1,12 +1,12 @@
-import { environment } from '../../../environments/environment';
-import { CommEmailTemplatesEnum } from './templates/comm-email-templates.enum';
-import * as WelcomeActivate from './templates/email/welcome-activate.tpl';
 import {
   EmailClient,
   EmailMessage,
   EmailRecipients,
 } from '@azure/communication-email';
 import { Injectable } from '@nestjs/common';
+import { environment } from '../../../environments/environment';
+import { CommEmailTemplatesEnum } from './templates/comm-email-templates.enum';
+import * as WelcomeActivate from './templates/email/welcome-activate.tpl';
 
 interface SendEmailOptions {
   readonly subject: string;

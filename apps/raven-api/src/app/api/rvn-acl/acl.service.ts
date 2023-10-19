@@ -3,6 +3,7 @@ import { EntityManager } from 'typeorm';
 import { ShareData, ShareRole } from '@app/rvns-acl';
 import { UserData } from '@app/rvns-api';
 
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { AclServiceLogger } from './acl.service.logger';
@@ -12,7 +13,6 @@ import { ShareResource } from './contracts/share-resource.interface';
 import { AbstractShareEntity } from './entities/abstract-share.entity';
 import { ShareTeamEntity } from './entities/share-team.entity';
 import { ShareResourceCode } from './enums/share-resource-code.enum';
-import { BadRequestException, Injectable } from '@nestjs/common';
 
 interface GetByActorOptions {
   readonly shareEntities?: (typeof ShareTeamEntity)[];

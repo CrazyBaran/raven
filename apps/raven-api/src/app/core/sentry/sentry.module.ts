@@ -1,10 +1,10 @@
-import { environment } from '../../../environments/environment';
-import { SentryInterceptor } from './sentry.interceptor';
-import { SentryService } from './sentry.service';
 import { Module } from '@nestjs/common';
 import { DynamicModule } from '@nestjs/common/interfaces/modules/dynamic-module.interface';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
+import { environment } from '../../../environments/environment';
+import { SentryInterceptor } from './sentry.interceptor';
+import { SentryService } from './sentry.service';
 
 // based on https://github.com/ericjeker/nestjs-sentry-example
 @Module({

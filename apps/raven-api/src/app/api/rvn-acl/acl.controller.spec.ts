@@ -1,10 +1,10 @@
 import { EntityManager } from 'typeorm';
 
+import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../rvn-users/users.service';
 import { AclController } from './acl.controller';
 import { AclService } from './acl.service';
 import { AuthorizationService } from './authorization.service';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('AclController', () => {
   let controller: AclController;

@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 
-import { ApiProperty } from '@nestjs/swagger';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ListUsersDto {
   @ApiProperty()

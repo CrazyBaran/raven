@@ -2,14 +2,14 @@ import { Request } from 'express';
 
 import { UserData } from '@app/rvns-api';
 
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { AbilityFactory, ShareAbility } from '../casl/ability.factory';
 import { CHECK_SHARE_KEY } from './share-policy.decorator';
 import {
   PolicyRequestContext,
   SharePolicyHandler,
 } from './share-policy.handler';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class SharePolicyGuard implements CanActivate {

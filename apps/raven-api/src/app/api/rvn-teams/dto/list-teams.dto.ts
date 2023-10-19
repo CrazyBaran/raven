@@ -1,10 +1,9 @@
 import { IsIn, IsOptional, IsString } from 'class-validator';
 
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PaginationDto } from '../../../shared/dto/pagination.dto';
 import { SortOptions } from '../../../shared/enum/sort-options.enum';
 import { SortableColumns, SortableColumnsType } from '../teams.service';
-import { ApiProperty } from '@nestjs/swagger';
-import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ListTeamsDto extends PaginationDto {
   @ApiProperty({ enum: SortOptions })

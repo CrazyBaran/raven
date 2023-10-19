@@ -11,9 +11,9 @@ import * as fromAuth from './+state/auth.reducer';
 
 import { SsoComponent } from './pages/sso/sso.component';
 
+import { AzureAdSsoComponent } from './components/azure-ad-sso/azure-ad-sso.component';
 import { RvncAuthRoutingModule } from './rvnc-auth-routing.module';
 import { RvncAuthComponent } from './rvnc-auth.component';
-import { AzureAdSsoComponent } from './components/azure-ad-sso/azure-ad-sso.component';
 
 @NgModule({
   imports: [

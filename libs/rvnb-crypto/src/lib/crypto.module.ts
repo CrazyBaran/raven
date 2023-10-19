@@ -1,5 +1,5 @@
-import { CryptoHelper } from './crypto.helper';
 import { DynamicModule, Module } from '@nestjs/common';
+import { CryptoHelper } from './crypto.helper';
 
 const CRYPTO_MODULE_OPTIONS = 'CRYPTO_MODULE_OPTIONS';
 

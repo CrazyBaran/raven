@@ -1,7 +1,6 @@
 import * as expressBasicAuth from 'express-basic-auth';
 import * as _ from 'lodash';
 
-import { environment } from '../../environments/environment';
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/dist/src/queueAdapters/bullMQ';
 import { ExpressAdapter } from '@bull-board/express';
@@ -10,6 +9,7 @@ import { Queue } from '@taskforcesh/bullmq-pro';
 import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
 import { RegisterFlowProducerOptions } from '@taskforcesh/nestjs-bullmq-pro/dist/interfaces/register-flow-producer-options.interface';
 import { RegisterQueueOptions } from '@taskforcesh/nestjs-bullmq-pro/dist/interfaces/register-queue-options.interface';
+import { environment } from '../../environments/environment';
 
 interface EnhancedBullModuleOptions extends RegisterQueueOptions {
   order?: number;

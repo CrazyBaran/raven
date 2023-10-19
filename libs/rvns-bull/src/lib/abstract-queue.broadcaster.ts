@@ -1,6 +1,6 @@
-import { EventPublisher } from './event-publisher.interface';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Queue } from '@taskforcesh/bullmq-pro';
+import { EventPublisher } from './event-publisher.interface';
 
 export abstract class AbstractQueueBroadcaster {
   protected abstract readonly queue: Queue<{ resourceId: string }>;

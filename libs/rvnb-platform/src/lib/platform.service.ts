@@ -1,8 +1,8 @@
 import Redis from 'ioredis';
 import { EntityManager } from 'typeorm';
 
-import { PlatformModuleOptions } from './platform.module';
 import { Inject, Injectable, Optional } from '@nestjs/common';
+import { PlatformModuleOptions } from './platform.module';
 
 @Injectable()
 export class PlatformService {

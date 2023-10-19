@@ -2,20 +2,20 @@ import * as _ from 'lodash';
 
 import { UserData } from '@app/rvns-api';
 
+import {
+  AbilityBuilder,
+  AbilityClass,
+  FieldMatcher,
+  InferSubjects,
+  PureAbility,
+} from '@casl/ability';
+import { Injectable } from '@nestjs/common';
 import { JwtPayload } from '../../rvn-auth/contracts/jwt-payload.interface';
 import { AclService } from '../acl.service';
 import { Share } from '../contracts/share.interface';
 import { ShareAction } from '../enums/share-action.enum';
 import { ShareRolePermissions } from '../permissions/share-role.permission';
 import { AbilityCache } from './ability.cache';
-import {
-  PureAbility,
-  AbilityBuilder,
-  AbilityClass,
-  InferSubjects,
-  FieldMatcher,
-} from '@casl/ability';
-import { Injectable } from '@nestjs/common';
 
 export type ShareAbility = PureAbility<[ShareAction, ShareSubjects]>;
 type ShareSubjects = InferSubjects<string>;
