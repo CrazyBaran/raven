@@ -58,6 +58,7 @@
               <a
                 [routerLink]="subRoute.disabled ? null : subRoute.path"
                 [ngClass]="{ 'menu__item--disabled': subRoute.disabled }"
+                [routerLinkActiveOptions]="{ exact: subRoute.exact || false }"
                 routerLinkActive="menu__item--active"
                 (click)="!subRoute.disabled && handleToggleSidebar(false)"
                 class="menu__item"

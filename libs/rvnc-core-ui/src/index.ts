@@ -1,1 +1,2 @@
-export * from './lib/rvnc-core-ui.module';
+export * from './lib/header/header.component';
+export * from './lib/loader/loader.component';
