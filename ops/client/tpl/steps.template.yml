@@ -15,6 +15,11 @@ steps:
     env:
       NPM_TASKFORCESH_TOKEN: $(NPM_TASKFORCESH_TOKEN__SECRET)
 
+  - script: npx kendo-ui-license activate
+    displayName: Activate Kendo UI License
+    env:
+      KENDO_UI_LICENSE: $(KENDO_UI_LICENSE)
+
   - script: npm run -- nx run raven-client:test --code-coverage
     displayName: Run unit tests
 
