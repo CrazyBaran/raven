@@ -1,0 +1,15 @@
+.quick-filters {
+  .buttons {
+    &__section {
+      kendo-button {
+        &:first-child {
+          border-radius: 4px 0 0 4px !important;
+        }
+
+        &:last-child {
+          border-radius: 0 4px 4px 0 !important;
+        }
+      }
+    }
+  }
+}
