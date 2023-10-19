@@ -1,0 +1,7 @@
+<div class="loader flex flex-col items-center justify-center gap-6">
+  <kendo-loader type="infinite-spinner" themeColor="primary" />
+
+  <span *ngIf="!disableInfo">
+    {{ loaderInfo }}
+  </span>
+</div>

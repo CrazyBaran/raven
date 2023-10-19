@@ -31,6 +31,9 @@
       "@app/rvnc-notes/feature/notepad": [
         "libs/rvnc-notes/feature/notepad/src/index.ts"
       ],
+      "@app/rvnc-notes/feature/notes-list": [
+        "libs/rvnc-notes/feature/notes-list/src/index.ts"
+      ],
       "@app/rvnc-notes/feature/shell": [
         "libs/rvnc-notes/feature/shell/src/index.ts"
       ],

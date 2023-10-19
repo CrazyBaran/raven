@@ -1,0 +1,73 @@
+<kendo-grid [kendoGridBinding]="notes" [sortable]="true">
+  <kendo-grid-column
+    field="name"
+    title="Note Title"
+    [headerStyle]="{ 'font-weight': '700' }"
+  />
+
+  <kendo-grid-column
+    field="templateName"
+    title="Note Type"
+    [headerStyle]="{ 'font-weight': '700' }"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div
+        *ngIf="dataItem?.templateName"
+        class="bg-primary-400 flex w-fit rounded-md p-[0.5rem] text-sm"
+      >
+        {{ dataItem?.templateName }}
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column
+    field="createdBy"
+    title="Created"
+    [headerStyle]="{ 'font-weight': '700' }"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col">
+        {{ dataItem?.createdBy?.name || '' }}
+        <span class="text-xs">
+          Updated: {{ dataItem?.updatedAt || '' | date: 'dd/mm/yyyy' }}
+        </span>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column
+    field="type"
+    title="People"
+    [headerStyle]="{ 'font-weight': '700' }"
+  >
+    <ng-template kendoGridCellTemplate>
+      <span class="text-xs italic">Missing BE info</span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column
+    field="type"
+    title="Tags"
+    [headerStyle]="{ 'font-weight': '700' }"
+  >
+    <ng-template kendoGridCellTemplate>
+      <span class="text-xs italic">Missing BE info</span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column title="Actions" [headerStyle]="{ 'font-weight': '700' }">
+    <ng-template kendoGridCellTemplate>
+      <div class="flex flex-row gap-1">
+        <kendo-button themeColor="primary">
+          <i class="fa-solid fa-eye"></i>
+        </kendo-button>
+        <kendo-button themeColor="light">
+          <i class="fa-solid fa-link"></i>
+        </kendo-button>
+        <kendo-button themeColor="light">
+          <i class="fa-regular fa-trash-can"></i>
+        </kendo-button>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
