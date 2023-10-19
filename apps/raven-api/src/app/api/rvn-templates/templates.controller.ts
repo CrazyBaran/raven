@@ -60,10 +60,11 @@ export class TemplatesController {
   @ApiOperation({ description: 'List templates' })
   @ApiResponse(GenericResponseSchema())
   @Get()
-  public async listTemplates(): Promise<TemplateData[]> {
-    return this.service.templateEntitiesToTemplateData(
-      await this.service.list(),
-    ) as TemplateData[];
+  public async listTemplates(): Promise<TemplateWithRelationsData[]> {
+    const templates = await this.service.list();
+    return templates.map((template) =>
+      this.service.templateWithRelationsToTemplateWithRelationsData(template),
+    );
   }
 
   @ApiOperation({ description: 'Get single template' })

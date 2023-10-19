@@ -76,7 +76,15 @@ export class TemplatesService {
   ) {}
 
   public async list(): Promise<TemplateEntity[]> {
-    return this.templatesRepository.find();
+    return this.templatesRepository.find({
+      relations: [
+        'tabs',
+        'tabs.fieldGroups',
+        'tabs.fieldGroups.fieldDefinitions',
+        'fieldGroups',
+        'fieldGroups.fieldDefinitions',
+      ],
+    });
   }
 
   public async createTemplate(
@@ -273,9 +281,9 @@ export class TemplatesService {
       updatedAt: template.updatedAt,
       createdById: template.createdById,
       tabs: template.tabs.map(this.tabEntityToTabData.bind(this)),
-      fieldGroups: template.fieldGroups?.map(
-        this.fieldGroupEntityToFieldGroupData.bind(this),
-      ),
+      fieldGroups: template.fieldGroups
+        ?.filter((fg) => !fg.tabId)
+        .map(this.fieldGroupEntityToFieldGroupData.bind(this)),
     };
   }
 }
