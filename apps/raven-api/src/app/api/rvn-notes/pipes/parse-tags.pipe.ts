@@ -14,11 +14,8 @@ export class ParseTagsPipe
     if (!tagIds || tagIds.length === 0) {
       return [];
     }
-    const tags = await this.entityManager.find(TagEntity, {
+    return await this.entityManager.find(TagEntity, {
       where: { id: In(tagIds) },
     });
-
-    console.log({ tags });
-    return tags;
   }
 }

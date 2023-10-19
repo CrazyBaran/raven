@@ -62,6 +62,7 @@ export class NotesService {
       .leftJoinAndMapMany('note.tags', 'note.tags', 'tags')
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
       .where(`note.version = (${subQuery.getQuery()})`)
+      .andWhere('note.deletedAt IS NULL')
       .orderBy('note.createdAt', 'ASC');
 
     return await queryBuilder.getMany();
@@ -126,9 +127,11 @@ export class NotesService {
       );
       return newNoteTab;
     });
-    newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups.map(
-      this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
-    );
+    newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
+      .filter((nfg) => !nfg.noteTabId)
+      .map(
+        this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
+      );
     return await this.noteRepository.save(newNoteVersion);
   }
 
@@ -141,6 +144,15 @@ export class NotesService {
     noteFieldEntity.updatedBy = userEntity;
     noteFieldEntity.updatedAt = new Date();
     return await this.noteFieldRepository.save(noteFieldEntity);
+  }
+
+  public async deleteNote(
+    noteEntity: NoteEntity,
+    userEntity: UserEntity,
+  ): Promise<void> {
+    noteEntity.deletedAt = new Date();
+    noteEntity.updatedBy = userEntity;
+    await this.noteRepository.save(noteEntity);
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
