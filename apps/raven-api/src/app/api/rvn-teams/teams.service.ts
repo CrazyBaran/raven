@@ -4,13 +4,13 @@ import { ShareRole } from '@app/rvns-acl';
 import { UserData } from '@app/rvns-api';
 import { TeamData, TeamsData } from '@app/rvns-teams';
 
+import { Injectable } from '@nestjs/common';
 import { SortOptions } from '../../shared/enum/sort-options.enum';
 import { AclService } from '../rvn-acl/acl.service';
 import { ShareTeamEntity } from '../rvn-acl/entities/share-team.entity';
 import { ShareResourceCode } from '../rvn-acl/enums/share-resource-code.enum';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { TeamEntity } from './entities/team.entity';
-import { Injectable } from '@nestjs/common';
 
 export const SortableColumns = ['name', 'createdAt'] as const;
 export type SortableColumnsType = (typeof SortableColumns)[number];

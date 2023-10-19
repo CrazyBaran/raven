@@ -1,17 +1,12 @@
 import {
-  GenericResponseSchema,
   EmptyResponseData,
+  GenericResponseSchema,
   Public,
 } from '@app/rvns-api';
 
-import { PlatformService } from './platform.service';
 import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOAuth2,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PlatformService } from './platform.service';
 
 @ApiOAuth2(['openid'])
 @ApiTags('Platform')

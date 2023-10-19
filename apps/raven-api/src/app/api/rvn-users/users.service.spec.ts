@@ -1,13 +1,13 @@
 import { CryptoHelper } from '@app/rvnb-crypto';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Test } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { AclService } from '../rvn-acl/acl.service';
 import { TeamsService } from '../rvn-teams/teams.service';
 import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { UsersServiceLogger } from './users.service.logger';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('UsersService', () => {
   let service: UsersService;

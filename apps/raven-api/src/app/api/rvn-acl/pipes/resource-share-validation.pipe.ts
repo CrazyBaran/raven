@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import { ObjectLiteral } from 'typeorm';
 
+import { ForbiddenException, Injectable, PipeTransform } from '@nestjs/common';
 import { ShareResourceCode } from '../enums/share-resource-code.enum';
 import { resourceConfig } from '../permissions/resource.config';
 import { ShareValidationPipe } from './share-validation.pipe';
-import { ForbiddenException, Injectable, PipeTransform } from '@nestjs/common';
 
 @Injectable()
 export class ResourceShareValidationPipe<

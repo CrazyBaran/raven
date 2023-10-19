@@ -1,8 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsDefined, IsOptional, IsUUID } from 'class-validator';
 
-import { ApiProperty } from '@nestjs/swagger';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ListSharesDto {
   @ApiProperty({

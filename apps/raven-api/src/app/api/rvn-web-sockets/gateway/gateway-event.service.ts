@@ -2,8 +2,8 @@ import { Socket } from 'socket.io';
 
 import { WebsocketEvent } from '@app/rvns-web-sockets';
 
-import { SocketService } from '../socket/socket.service';
 import { Injectable } from '@nestjs/common';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable()
 export class GatewayEventService {

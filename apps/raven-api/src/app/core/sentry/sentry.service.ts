@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { Scope, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';

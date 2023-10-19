@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AuditLogEntity } from './entities/audit-log.entity';
 import { ActionTypeEnum } from './enums/action-type.enum';
 import { AuditLog } from './interfaces/audit-log.interface';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuditLogsService {

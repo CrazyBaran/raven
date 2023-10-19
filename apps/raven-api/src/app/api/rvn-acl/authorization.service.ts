@@ -1,9 +1,9 @@
 import { UserData } from '@app/rvns-api';
 
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtPayload } from '../rvn-auth/contracts/jwt-payload.interface';
 import { AbilityFactory } from './casl/ability.factory';
 import { ShareAction } from './enums/share-action.enum';
-import { ForbiddenException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthorizationService {

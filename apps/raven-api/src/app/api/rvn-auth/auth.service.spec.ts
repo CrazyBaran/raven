@@ -4,6 +4,11 @@ import { EntityManager, Repository } from 'typeorm';
 import { CryptoHelper } from '@app/rvnb-crypto';
 import { AuthModeEnum, UserData } from '@app/rvns-api';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { Test } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
 import { environment } from '../../../environments/environment';
 import { AclService } from '../rvn-acl/acl.service';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
@@ -13,11 +18,6 @@ import { UserEntity } from '../rvn-users/entities/user.entity';
 import { UsersService } from '../rvn-users/users.service';
 import { UsersServiceLogger } from '../rvn-users/users.service.logger';
 import { AuthService } from './auth.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
 
 describe('AuthService', () => {
   let authService: AuthService;

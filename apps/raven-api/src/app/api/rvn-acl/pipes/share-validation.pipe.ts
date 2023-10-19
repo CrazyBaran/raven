@@ -1,8 +1,8 @@
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { HttpMethodEnum } from '../../../shared/enum/http-method.enum';
 import { AuthorizationService } from '../authorization.service';
 import { ShareAction } from '../enums/share-action.enum';
-import { Inject, Injectable, Scope } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
 
 @Injectable({ scope: Scope.REQUEST })
 export class ShareValidationPipe {

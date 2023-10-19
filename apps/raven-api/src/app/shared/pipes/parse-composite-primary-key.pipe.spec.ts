@@ -1,5 +1,5 @@
-import { ParseCompositePrimaryKeyPipe } from './parse-composite-primary-key.pipe';
 import { BadRequestException } from '@nestjs/common';
+import { ParseCompositePrimaryKeyPipe } from './parse-composite-primary-key.pipe';
 
 describe('ParseCompositePrimaryKeyPipe', () => {
   let pipe: ParseCompositePrimaryKeyPipe;

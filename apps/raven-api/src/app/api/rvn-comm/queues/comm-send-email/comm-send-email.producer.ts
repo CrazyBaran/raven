@@ -1,15 +1,15 @@
 import { CryptoHelper } from '@app/rvnb-crypto';
 import { AbstractSimpleQueueProducer, EnqueueJobEvent } from '@app/rvns-bull';
 
+import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
+import { Queue } from '@taskforcesh/bullmq-pro';
+import { InjectQueue } from '@taskforcesh/nestjs-bullmq-pro';
 import {
   COMM_SEND_EMAIL_QUEUE,
   COMM_SEND_EMAIL_QUEUE__SEND,
   CommSendEmailJobData,
 } from './comm-send-email.processor';
-import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Queue } from '@taskforcesh/bullmq-pro';
-import { InjectQueue } from '@taskforcesh/nestjs-bullmq-pro';
 
 @Injectable()
 export class CommSendEmailProducer extends AbstractSimpleQueueProducer {

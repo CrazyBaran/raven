@@ -1,9 +1,5 @@
 import { Server, Socket } from 'socket.io';
 
-import { AuthService } from '../../rvn-auth/auth.service';
-import { WsJoinResourceGuard } from '../../rvn-auth/guards/ws-join-resource.guard';
-import { SocketProvider } from '../socket/socket.provider';
-import { GatewayServiceLogger } from './gateway-service.logger';
 import { UseGuards } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
@@ -15,6 +11,10 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { AuthService } from '../../rvn-auth/auth.service';
+import { WsJoinResourceGuard } from '../../rvn-auth/guards/ws-join-resource.guard';
+import { SocketProvider } from '../socket/socket.provider';
+import { GatewayServiceLogger } from './gateway-service.logger';
 
 @WebSocketGateway()
 export class GatewayService implements OnGatewayInit, OnGatewayConnection {

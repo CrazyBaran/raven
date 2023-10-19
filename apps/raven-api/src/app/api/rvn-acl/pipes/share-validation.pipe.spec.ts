@@ -1,7 +1,7 @@
+import { Test, TestingModule } from '@nestjs/testing';
 import { AuthorizationService } from '../authorization.service';
 import { ShareAction } from '../enums/share-action.enum';
 import { ShareValidationPipe } from './share-validation.pipe';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('ShareValidationPipe', () => {
   let pipe: ShareValidationPipe;

@@ -1,5 +1,3 @@
-import { UserEntity } from '../entities/user.entity';
-import { UsersService } from '../users.service';
 import {
   ArgumentMetadata,
   BadRequestException,
@@ -7,6 +5,8 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
+import { UserEntity } from '../entities/user.entity';
+import { UsersService } from '../users.service';
 
 @Injectable()
 export class ParseUsersPipe

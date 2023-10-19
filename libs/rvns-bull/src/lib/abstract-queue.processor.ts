@@ -1,8 +1,8 @@
-import { AbstractSimpleQueueProcessor } from './abstract-simple-queue.processor';
-import { EventPublisher } from './event-publisher.interface';
 import { ConsoleLogger } from '@nestjs/common';
 import { Job } from '@taskforcesh/bullmq-pro';
 import { OnWorkerEvent } from '@taskforcesh/nestjs-bullmq-pro';
+import { AbstractSimpleQueueProcessor } from './abstract-simple-queue.processor';
+import { EventPublisher } from './event-publisher.interface';
 
 export interface MsOutput<DataType = unknown[]> {
   readonly success: boolean;

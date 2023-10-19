@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TemplatesController } from './templates.controller';
 import { EntityManager } from 'typeorm';
+import { TemplatesController } from './templates.controller';
 import { TemplatesService } from './templates.service';
 
 describe('TemplatesController', () => {

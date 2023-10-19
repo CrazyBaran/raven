@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 
-import { SocketProvider } from './socket.provider';
 import { Injectable } from '@nestjs/common';
+import { SocketProvider } from './socket.provider';
 
 @Injectable()
 export class SocketService {

@@ -1,10 +1,10 @@
 import { Cache } from 'cache-manager';
 
-import { environment } from '../../../../environments/environment';
-import { ShareAction } from '../enums/share-action.enum';
 import { MongoQuery, SubjectRawRule, SubjectType } from '@casl/ability';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
+import { environment } from '../../../../environments/environment';
+import { ShareAction } from '../enums/share-action.enum';
 
 @Injectable()
 export class AbilityCache {

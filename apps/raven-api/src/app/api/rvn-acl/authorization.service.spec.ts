@@ -1,11 +1,11 @@
 import { UserData } from '@app/rvns-api';
 
+import { ForbiddenException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { AuthorizationService } from './authorization.service';
 import { AbilityFactory, ShareAbility } from './casl/ability.factory';
 import { ShareAction } from './enums/share-action.enum';
-import { ForbiddenException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('AuthorizationService', () => {
   let service: AuthorizationService;

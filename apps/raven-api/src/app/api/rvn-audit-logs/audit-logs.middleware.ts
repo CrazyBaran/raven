@@ -2,14 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 
 import { HttpMethodEnum } from '../../shared/enum/http-method.enum';
 
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { environment } from '../../../environments/environment';
+import { AuthService } from '../rvn-auth/auth.service';
 import { AuditLogsService } from './audit-logs.service';
 import { ActionTypeEnum } from './enums/action-type.enum';
 import { AuditLog } from './interfaces/audit-log.interface';
 import { ParsedRequest } from './interfaces/parsed-request.interface';
 import { AuditLogsLogger } from './loggers/audit-logs.logger';
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { AuthService } from '../rvn-auth/auth.service';
-import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuditLogsMiddleware implements NestMiddleware {

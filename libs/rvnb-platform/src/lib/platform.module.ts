@@ -1,9 +1,9 @@
 import Redis from 'ioredis';
 
-import { PlatformController } from './platform.controller';
-import { PlatformService } from './platform.service';
 import { DynamicModule, Module } from '@nestjs/common';
 import { RedisOptions } from 'ioredis/built/redis/RedisOptions';
+import { PlatformController } from './platform.controller';
+import { PlatformService } from './platform.service';
 
 export interface PlatformModuleOptions {
   readonly disableDbTest?: boolean;

@@ -1,7 +1,7 @@
 import { IsDefined, IsEmail } from 'class-validator';
 
-import { ProfileUpdateDto } from './profile-update.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { ProfileUpdateDto } from './profile-update.dto';
 
 export class CreateUserDto extends ProfileUpdateDto {
   @ApiProperty()

@@ -1,8 +1,8 @@
 import { EntityManager } from 'typeorm';
 
+import { Test, TestingModule } from '@nestjs/testing';
 import { AclService } from '../acl.service';
 import { ParseSharePipe } from './parse-share.pipe';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('ParseSharePipe', () => {
   let pipe: ParseSharePipe;

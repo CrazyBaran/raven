@@ -1,20 +1,14 @@
 import { Request as ExpressRequest } from 'express';
-import { CookieOptions } from 'express-serve-static-core';
-import { DateTime } from 'luxon';
 import { EntityManager } from 'typeorm';
 
 import { AuthModeEnum, LoginResponseData, UserData } from '@app/rvns-api';
 
-import { environment } from '../../../environments/environment';
-import { UsersSessionsService } from '../rvn-users-sessions/users-sessions.service';
-import { UserEntity } from '../rvn-users/entities/user.entity';
-import {
-  CACHE_USER_ORM_PROFILE,
-  UsersService,
-} from '../rvn-users/users.service';
-import { JwtPayload } from './contracts/jwt-payload.interface';
 import { Injectable } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { UsersSessionsService } from '../rvn-users-sessions/users-sessions.service';
+import { UserEntity } from '../rvn-users/entities/user.entity';
+import { UsersService } from '../rvn-users/users.service';
+import { JwtPayload } from './contracts/jwt-payload.interface';
 
 interface UserJwtData extends LoginResponseData {
   readonly refreshToken: string;

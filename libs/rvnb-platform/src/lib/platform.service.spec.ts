@@ -1,8 +1,8 @@
 import Redis from 'ioredis';
 import { EntityManager } from 'typeorm';
 
-import { PlatformService } from './platform.service';
 import { Test } from '@nestjs/testing';
+import { PlatformService } from './platform.service';
 
 describe('PlatformService', () => {
   let service: PlatformService;

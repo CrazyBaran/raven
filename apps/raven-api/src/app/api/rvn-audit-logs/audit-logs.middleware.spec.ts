@@ -1,11 +1,11 @@
 import { Request } from 'express';
 
+import { Test, TestingModule } from '@nestjs/testing';
 import { HttpMethodEnum } from '../../shared/enum/http-method.enum';
+import { AuthService } from '../rvn-auth/auth.service';
 import { AuditLogsMiddleware } from './audit-logs.middleware';
 import { AuditLogsService } from './audit-logs.service';
 import { AuditLogsLogger } from './loggers/audit-logs.logger';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../rvn-auth/auth.service';
 
 describe('AuditLogsMiddleware', () => {
   let middleware: AuditLogsMiddleware;

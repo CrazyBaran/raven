@@ -1,9 +1,9 @@
 import { EntityManager } from 'typeorm';
 
-import { AclService, ShareEntityRelation } from '../acl.service';
-import { AbstractShareEntity } from '../entities/abstract-share.entity';
 import { Injectable, NotFoundException, PipeTransform } from '@nestjs/common';
 import { ArgumentMetadata } from '@nestjs/common/interfaces/features/pipe-transform.interface';
+import { AclService, ShareEntityRelation } from '../acl.service';
+import { AbstractShareEntity } from '../entities/abstract-share.entity';
 
 @Injectable()
 export class ParseSharePipe

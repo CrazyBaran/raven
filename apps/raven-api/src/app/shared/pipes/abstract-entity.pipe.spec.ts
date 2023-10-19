@@ -1,9 +1,9 @@
 import { EntityManager } from 'typeorm';
 
-import { AbstractEntityPipe } from './abstract-entity.pipe';
 import { NotFoundException } from '@nestjs/common';
 import { ArgumentMetadata } from '@nestjs/common/interfaces/features/pipe-transform.interface';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AbstractEntityPipe } from './abstract-entity.pipe';
 
 class FakeEntity {}
 

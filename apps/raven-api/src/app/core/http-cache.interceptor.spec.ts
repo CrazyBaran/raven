@@ -1,6 +1,6 @@
-import { HttpCacheInterceptor } from './http-cache.interceptor';
 import { CallHandler, ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpCacheInterceptor } from './http-cache.interceptor';
 
 describe('HttpCacheInterceptor', () => {
   let interceptor: HttpCacheInterceptor;

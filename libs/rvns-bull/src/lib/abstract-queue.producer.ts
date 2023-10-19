@@ -1,6 +1,6 @@
+import { JobPro, JobsProOptions } from '@taskforcesh/bullmq-pro';
 import { AbstractSimpleQueueProducer } from './abstract-simple-queue.producer';
 import { EventPublisher } from './event-publisher.interface';
-import { JobPro, JobsProOptions } from '@taskforcesh/bullmq-pro';
 
 export interface QueueProducerAddOptions extends JobsProOptions {
   // re-add job even if jid already exists

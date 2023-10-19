@@ -1,12 +1,12 @@
 import { Repository } from 'typeorm';
 
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { HttpMethodEnum } from '../../shared/enum/http-method.enum';
 import { AuditLogsService } from './audit-logs.service';
 import { AuditLogEntity } from './entities/audit-log.entity';
 import { ActionTypeEnum } from './enums/action-type.enum';
 import { AuditLog } from './interfaces/audit-log.interface';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('AuditLogsService', () => {
   let service: AuditLogsService;

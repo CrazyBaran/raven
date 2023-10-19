@@ -1,9 +1,9 @@
 import { CryptoHelper } from '@app/rvnb-crypto';
 
+import { Test, TestingModule } from '@nestjs/testing';
 import { CommService } from '../../comm.service';
 import { CommSendEmailProcessorLogger } from './comm-send-email-processor.logger';
 import { CommSendEmailProcessor } from './comm-send-email.processor';
-import { Test, TestingModule } from '@nestjs/testing';
 
 describe('CommSendEmailProcessor', () => {
   let processor: CommSendEmailProcessor;

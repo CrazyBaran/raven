@@ -4,9 +4,9 @@ import {
   SwaggerCustomOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
+import { SecuritySchemeType } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { environment } from '../../environments/environment';
 import { Scopes } from '../api/rvn-auth/scopes';
-import { SecuritySchemeType } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 @Injectable()
 export class SwaggerService {
   public enableSwagger(
