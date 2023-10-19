@@ -1,7 +1,7 @@
 <div class="notes-list grid max-h-screen">
   <ui-header pageName="All Notes" pageIcon="fa-solid fa-notebook" />
 
-  <div class="notes-list__content overflow-auto p-6">
+  <div class="notes-list__content overflow-hidden p-6">
     <ui-loader *ngIf="isLoading$ | async; else notesListView" />
 
     <ng-template #notesListView>

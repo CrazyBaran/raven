@@ -1,3 +1,25 @@
+app-notes-table {
+  @apply grid h-full;
+}
+
 .k-grid {
-  @apply border-none;
+  @apply overflow-auto border-none;
+}
+
+table {
+  thead {
+    .k-table-th {
+      border: none !important;
+    }
+  }
+
+  tbody {
+    .k-table-row {
+      height: 56px;
+    }
+
+    .k-table-td {
+      border: none !important;
+    }
+  }
 }
