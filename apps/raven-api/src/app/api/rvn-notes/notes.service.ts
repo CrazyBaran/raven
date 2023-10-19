@@ -50,9 +50,21 @@ export class NotesService {
   ) {}
 
   public async getAllNotes(): Promise<NoteEntity[]> {
-    return this.noteRepository.find({
-      relations: ['createdBy', 'updatedBy', 'tags', 'template'],
-    });
+    const subQuery = this.noteRepository
+      .createQueryBuilder('note_sub')
+      .select('MAX(note_sub.version)', 'maxVersion')
+      .where('note_sub.rootVersionId = note.rootVersionId');
+
+    const queryBuilder = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndMapOne('note.createdBy', 'note.createdBy', 'createdBy')
+      .leftJoinAndMapOne('note.updatedBy', 'note.updatedBy', 'updatedBy')
+      .leftJoinAndMapMany('note.tags', 'note.tags', 'tags')
+      .leftJoinAndMapOne('note.template', 'note.template', 'template')
+      .where(`note.version = (${subQuery.getQuery()})`)
+      .orderBy('note.createdAt', 'ASC');
+
+    return await queryBuilder.getMany();
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
@@ -96,6 +108,7 @@ export class NotesService {
   ): Promise<NoteEntity> {
     const newNoteVersion = new NoteEntity();
     newNoteVersion.name = noteEntity.name;
+    newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;
     newNoteVersion.previousVersion = noteEntity;
@@ -131,7 +144,6 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
-    console.log({ temp: noteEntity.template });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
