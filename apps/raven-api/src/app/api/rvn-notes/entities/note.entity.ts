@@ -30,6 +30,9 @@ export class NoteEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
+  @Column({ default: () => 'NEWID()' })
+  public rootVersionId: string;
+
   @Column({ length: 50 })
   public name: string;
 

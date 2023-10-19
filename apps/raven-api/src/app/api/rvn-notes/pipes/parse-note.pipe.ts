@@ -7,6 +7,7 @@ export class ParseNotePipe extends AbstractEntityPipe<NoteEntity> {
   public readonly relations = [
     'createdBy',
     'updatedBy',
+    'deletedBy',
     'tags',
     'noteTabs',
     'noteTabs.noteFieldGroups',

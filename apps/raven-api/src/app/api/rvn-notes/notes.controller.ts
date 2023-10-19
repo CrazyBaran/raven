@@ -1,4 +1,5 @@
 import {
+  EmptyResponseData,
   GenericCreateResponseSchema,
   GenericResponseSchema,
 } from '@app/rvns-api';
@@ -6,17 +7,20 @@ import { NoteData, NoteFieldData } from '@app/rvns-notes/data-access';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiOAuth2,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -33,6 +37,7 @@ import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
+import { ParseAllNoteVersionsPipe } from './pipes/parse-all-note-versions.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
@@ -77,13 +82,22 @@ export class NotesController {
     );
   }
 
-  @ApiOperation({ description: 'Get single notes' })
+  @ApiOperation({ description: 'Get single note' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: String })
+  @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
   @Get(':id')
   public async getNote(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
-  ): Promise<NoteData> {
+    @Param('id', ParseUUIDPipe, ParseAllNoteVersionsPipe)
+    noteEntites: NoteEntity[],
+    @Query('showHistory') showHistory: boolean,
+  ): Promise<NoteData | NoteData[]> {
+    if (showHistory) {
+      return noteEntites.map((noteEntity) =>
+        this.notesService.noteEntityToNoteData(noteEntity),
+      );
+    }
     return this.notesService.noteEntityToNoteData(noteEntity);
   }
 
@@ -131,5 +145,17 @@ export class NotesController {
         fields: dto.fields,
       }),
     );
+  }
+
+  @ApiOperation({ description: 'Delete note' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'noteId', type: String })
+  @Delete(':noteId')
+  public async deleteNote(
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
+    @Param('noteId', ParseUUIDPipe, ParseAllNoteVersionsPipe)
+    noteEntities: NoteEntity[],
+  ): Promise<EmptyResponseData> {
+    return await this.notesService.deleteNotes(noteEntities, userEntity);
   }
 }

@@ -50,9 +50,22 @@ export class NotesService {
   ) {}
 
   public async getAllNotes(): Promise<NoteEntity[]> {
-    return this.noteRepository.find({
-      relations: ['createdBy', 'updatedBy', 'tags', 'template'],
-    });
+    const subQuery = this.noteRepository
+      .createQueryBuilder('note_sub')
+      .select('MAX(note_sub.version)', 'maxVersion')
+      .where('note_sub.rootVersionId = note.rootVersionId');
+
+    const queryBuilder = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndMapOne('note.createdBy', 'note.createdBy', 'createdBy')
+      .leftJoinAndMapOne('note.updatedBy', 'note.updatedBy', 'updatedBy')
+      .leftJoinAndMapMany('note.tags', 'note.tags', 'tags')
+      .leftJoinAndMapOne('note.template', 'note.template', 'template')
+      .where(`note.version = (${subQuery.getQuery()})`)
+      .andWhere('note.deletedAt IS NULL')
+      .orderBy('note.createdAt', 'ASC');
+
+    return await queryBuilder.getMany();
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
@@ -96,6 +109,7 @@ export class NotesService {
   ): Promise<NoteEntity> {
     const newNoteVersion = new NoteEntity();
     newNoteVersion.name = noteEntity.name;
+    newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;
     newNoteVersion.previousVersion = noteEntity;
@@ -113,9 +127,11 @@ export class NotesService {
       );
       return newNoteTab;
     });
-    newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups.map(
-      this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
-    );
+    newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
+      .filter((nfg) => !nfg.noteTabId)
+      .map(
+        this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
+      );
     return await this.noteRepository.save(newNoteVersion);
   }
 
@@ -130,13 +146,48 @@ export class NotesService {
     return await this.noteFieldRepository.save(noteFieldEntity);
   }
 
+  public async deleteNotes(
+    noteEntities: NoteEntity[],
+    userEntity: UserEntity,
+  ): Promise<void> {
+    await this.noteRepository.manager.transaction(async (tem) => {
+      for (const noteEntity of noteEntities) {
+        delete noteEntity.noteFieldGroups;
+        delete noteEntity.noteTabs;
+        delete noteEntity.tags;
+        noteEntity.deletedAt = new Date();
+        noteEntity.deletedBy = userEntity;
+        await tem.save(noteEntity);
+      }
+    });
+  }
+
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
-    console.log({ temp: noteEntity.template });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
       version: noteEntity.version,
       templateName: noteEntity.template?.name,
+      templateId: noteEntity.templateId,
+      createdById: noteEntity.createdById,
+      createdBy: {
+        name: noteEntity.createdBy.name,
+        email: noteEntity.createdBy.email,
+      },
+      updatedById: noteEntity.updatedById,
+      updatedBy: {
+        name: noteEntity.updatedBy.name,
+        email: noteEntity.updatedBy.email,
+      },
+      updatedAt: noteEntity.updatedAt,
+      createdAt: noteEntity.createdAt,
+      deletedAt: noteEntity.deletedAt,
+      deletedBy: noteEntity.deletedBy
+        ? {
+            name: noteEntity.deletedBy.name,
+            email: noteEntity.deletedBy.email,
+          }
+        : undefined,
       tags: noteEntity.tags?.map((tag) => ({
         name: tag.name,
         type: tag.type,
@@ -156,19 +207,7 @@ export class NotesService {
           ),
         };
       }),
-      templateId: noteEntity.templateId,
-      createdById: noteEntity.createdById,
-      createdBy: {
-        name: noteEntity.createdBy.name,
-        email: noteEntity.createdBy.email,
-      },
-      updatedById: noteEntity.updatedById,
-      updatedBy: {
-        name: noteEntity.updatedBy.name,
-        email: noteEntity.updatedBy.email,
-      },
-      updatedAt: noteEntity.updatedAt,
-      createdAt: noteEntity.createdAt,
+
       noteFieldGroups: noteEntity.noteFieldGroups
         ?.filter((nfg) => !nfg.noteTabId)
         .map((noteFieldGroup) => {
