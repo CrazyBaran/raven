@@ -14,16 +14,6 @@ export class ParseAllNoteVersionsPipe
   public async transform(id: string): Promise<NoteEntity[]> {
     const note = await this.noteRepository.findOne({
       where: { id },
-      relations: [
-        'createdBy',
-        'updatedBy',
-        'tags',
-        'noteTabs',
-        'noteTabs.noteFieldGroups',
-        'noteTabs.noteFieldGroups.noteFields',
-        'noteFieldGroups',
-        'noteFieldGroups.noteFields',
-      ],
     });
 
     if (!note) {
@@ -32,6 +22,17 @@ export class ParseAllNoteVersionsPipe
 
     return await this.noteRepository.find({
       where: { rootVersionId: note.rootVersionId },
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'deletedBy',
+        'tags',
+        'noteTabs',
+        'noteTabs.noteFieldGroups',
+        'noteTabs.noteFieldGroups.noteFields',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
     });
   }
 }

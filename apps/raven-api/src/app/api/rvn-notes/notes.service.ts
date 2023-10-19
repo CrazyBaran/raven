@@ -146,13 +146,20 @@ export class NotesService {
     return await this.noteFieldRepository.save(noteFieldEntity);
   }
 
-  public async deleteNote(
-    noteEntity: NoteEntity,
+  public async deleteNotes(
+    noteEntities: NoteEntity[],
     userEntity: UserEntity,
   ): Promise<void> {
-    noteEntity.deletedAt = new Date();
-    noteEntity.updatedBy = userEntity;
-    await this.noteRepository.save(noteEntity);
+    await this.noteRepository.manager.transaction(async (tem) => {
+      for (const noteEntity of noteEntities) {
+        delete noteEntity.noteFieldGroups;
+        delete noteEntity.noteTabs;
+        delete noteEntity.tags;
+        noteEntity.deletedAt = new Date();
+        noteEntity.deletedBy = userEntity;
+        await tem.save(noteEntity);
+      }
+    });
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
@@ -161,6 +168,26 @@ export class NotesService {
       name: noteEntity.name,
       version: noteEntity.version,
       templateName: noteEntity.template?.name,
+      templateId: noteEntity.templateId,
+      createdById: noteEntity.createdById,
+      createdBy: {
+        name: noteEntity.createdBy.name,
+        email: noteEntity.createdBy.email,
+      },
+      updatedById: noteEntity.updatedById,
+      updatedBy: {
+        name: noteEntity.updatedBy.name,
+        email: noteEntity.updatedBy.email,
+      },
+      updatedAt: noteEntity.updatedAt,
+      createdAt: noteEntity.createdAt,
+      deletedAt: noteEntity.deletedAt,
+      deletedBy: noteEntity.deletedBy
+        ? {
+            name: noteEntity.deletedBy.name,
+            email: noteEntity.deletedBy.email,
+          }
+        : undefined,
       tags: noteEntity.tags?.map((tag) => ({
         name: tag.name,
         type: tag.type,
@@ -180,19 +207,7 @@ export class NotesService {
           ),
         };
       }),
-      templateId: noteEntity.templateId,
-      createdById: noteEntity.createdById,
-      createdBy: {
-        name: noteEntity.createdBy.name,
-        email: noteEntity.createdBy.email,
-      },
-      updatedById: noteEntity.updatedById,
-      updatedBy: {
-        name: noteEntity.updatedBy.name,
-        email: noteEntity.updatedBy.email,
-      },
-      updatedAt: noteEntity.updatedAt,
-      createdAt: noteEntity.createdAt,
+
       noteFieldGroups: noteEntity.noteFieldGroups
         ?.filter((nfg) => !nfg.noteTabId)
         .map((noteFieldGroup) => {

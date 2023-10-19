@@ -82,7 +82,7 @@ export class NotesController {
     );
   }
 
-  @ApiOperation({ description: 'Get single notes' })
+  @ApiOperation({ description: 'Get single note' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
@@ -153,9 +153,9 @@ export class NotesController {
   @Delete(':noteId')
   public async deleteNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-    @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+    @Param('noteId', ParseUUIDPipe, ParseAllNoteVersionsPipe)
+    noteEntities: NoteEntity[],
   ): Promise<EmptyResponseData> {
-    // TODO delete all versions...
-    return await this.notesService.deleteNote(noteEntity, userEntity);
+    return await this.notesService.deleteNotes(noteEntities, userEntity);
   }
 }
