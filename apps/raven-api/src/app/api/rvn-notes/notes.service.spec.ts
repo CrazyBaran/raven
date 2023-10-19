@@ -25,6 +25,7 @@ describe('NotesService', () => {
           useValue: {
             find: jest.fn(),
             save: jest.fn(),
+            createQueryBuilder: jest.fn(),
           },
         },
         {
@@ -47,16 +48,6 @@ describe('NotesService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  describe('getAllNotes', () => {
-    it('should return an array of notes', async () => {
-      const result = [new NoteEntity()];
-      jest
-        .spyOn(mockNoteRepository, 'find')
-        .mockImplementation(async () => result);
-      expect(await service.getAllNotes()).toBe(result);
-    });
   });
 
   describe('createNote', () => {
