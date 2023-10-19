@@ -16,17 +16,6 @@ export class ParseTemplateWithGroupsAndFieldsPipe
   protected entityManager: EntityManager;
 
   public async transform(id: string): Promise<TemplateEntity> {
-    // const templateEntity = await this.entityManager.findOne(TemplateEntity, {
-    //   where: { id },
-    //   relations: [
-    //     'tabs',
-    //     'tabs.fieldGroups',
-    //     'tabs.fieldGroups.fieldDefinitions',
-    //     'fieldGroups',
-    //     'fieldGroups.fieldDefinitions',
-    //   ],
-    // });
-
     const templateEntity = this.entityManager
       .createQueryBuilder(TemplateEntity, 'templateEntity')
       .leftJoinAndSelect('templateEntity.tabs', 'tabs')
