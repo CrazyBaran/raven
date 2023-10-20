@@ -3,7 +3,7 @@ import { DynamicControl } from '@app/rvnc-notes/util';
 import { Observable, from, of, tap } from 'rxjs';
 
 type DynamicControlsMap = {
-  [T in DynamicControl['controlType']]: () => Promise<Type<unknown>>;
+  [T in DynamicControl['type']]: () => Promise<Type<unknown>>;
 };
 
 @Injectable({

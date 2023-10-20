@@ -1,9 +1,13 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  HostBinding,
   Input,
+  signal,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import {
   BaseDynamicControl,
@@ -20,15 +24,40 @@ import { EditorComponent, EditorModule } from '@progress/kendo-angular-editor';
   styleUrls: ['./dynamic-rich-text.component.scss'],
   viewProviders: [dynamicControlProvider],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
-export class DynamicRichTextComponent extends BaseDynamicControl {
-  @Input() protected height = 160;
+export class DynamicRichTextComponent
+  extends BaseDynamicControl
+  implements AfterViewInit
+{
+  // setup observer for elementRef
+
+  @HostBinding('class.rich-text-full') public grow: boolean | undefined;
 
   @ViewChild(EditorComponent) protected editor: EditorComponent;
 
+  protected heightSignal = signal(0);
+
   protected currentHeight = computed(() => {
-    return `${this.height - (this.focused() ? 50 : 0)}px`;
+    if (this.grow) {
+      return `calc(100% - ${this.focused() ? 50 : 0}px)`;
+    }
+    return `${this.heightSignal() - (this.focused() ? 50 : 0)}px`;
   });
+
+  @Input() protected set height(value: number) {
+    this.heightSignal.set(value);
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+    this.grow = this.control.config.grow;
+  }
+
+  public override ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.heightSignal.set(this.elementRef.nativeElement.offsetHeight);
+  }
 
   protected setFocus(): void {
     this.focusHandler?.focusTo(this.control.controlKey);

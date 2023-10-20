@@ -1,0 +1,59 @@
+<form class="k-form flex h-full flex-col gap-4" [formGroup]="notepadForm">
+  <div class="grid grid-cols-[1fr_2fr_1fr] gap-2">
+    <!--        TEMPLATES       -->
+    <kendo-dropdownlist
+      formControlName="template"
+      [data]="templates()"
+      [textField]="templateDropdownConfig.textField"
+      [defaultItem]="defaultTemplate"
+      [valueField]="templateDropdownConfig.valueField"
+      fillMode="outline"
+    ></kendo-dropdownlist>
+
+    <!--        TAGS       -->
+    <kendo-dropdowntree
+      [data]="[]"
+      textField="text"
+      placeholder="Select tags..."
+      valueField="id"
+      fillMode="outline"
+    ></kendo-dropdowntree>
+
+    <!--        SHARE       -->
+    <kendo-multiselect
+      [data]="[]"
+      textField="text"
+      placeholder="Share with..."
+      valueField="id"
+      [checkboxes]="true"
+      fillMode="outline"
+      kendoMultiSelectSummaryTag
+    >
+      <ng-template kendoMultiSelectGroupTagTemplate let-dataItems>
+        <p>Share with...</p>
+      </ng-template>
+    </kendo-multiselect>
+  </div>
+  <div class="grow overflow-hidden">
+    <app-notepad
+      [config]="config()"
+      [notepadFormGroup]="notepadForm.controls.notes"
+      [hideTabs]="isDefaultTemplate()"
+    ></app-notepad>
+  </div>
+
+  <div class="k-actions k-actions-end">
+    <button kendoButton type="button" size="large">Cancel</button>
+    <button
+      kendoButton
+      iconClass="fa-solid fa-plus"
+      themeColor="primary"
+      fillMode="solid"
+      type="button"
+      size="large"
+    >
+      Add Note
+    </button>
+  </div>
+</form>
+<div kendoDialogContainer></div>

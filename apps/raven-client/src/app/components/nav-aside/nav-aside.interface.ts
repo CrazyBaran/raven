@@ -1,10 +1,11 @@
 export interface UiNavAsideRoute {
-  path: string;
   name: string;
   icon: string;
+  path?: string;
   disabled?: boolean;
   subRoutes?: UiNavAsideSubRoute[];
   exact?: boolean;
+  click?: () => void;
 }
 
 export interface UiNavAsideSubRoute extends Omit<UiNavAsideRoute, 'subRoutes'> {

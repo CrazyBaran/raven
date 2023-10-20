@@ -1,14 +1,22 @@
-<app-notepad-template>
-  <app-scroll-tab
-    tabs
-    *ngFor="let tab of tabs(); trackBy: trackTabByFn; let i = index"
-    [state]="tab.state"
-    [label]="tab.label"
-    [showEye]="tab.canBeDisabled"
-    (eyeClick)="toggleDisabled(tab, i)"
-    (labelClick)="setActiveTab(tab)"
-  ></app-scroll-tab>
-  <form controls [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="mr-1">
+<app-notepad-template [hideTabs]="hideTabs">
+  <ng-container tabs>
+    <p class="mb-3 text-[10px] uppercase">quick scroll</p>
+    <app-scroll-tab
+      *ngFor="let tab of tabs(); trackBy: trackTabByFn; let i = index"
+      [state]="tab.state"
+      [label]="tab.label"
+      [showEye]="tab.canBeDisabled"
+      (eyeClick)="toggleDisabled(tab, i)"
+      (labelClick)="setActiveTab(tab)"
+    ></app-scroll-tab>
+  </ng-container>
+
+  <form
+    controls
+    [formGroup]="notepadFormGroup"
+    (ngSubmit)="onSubmit()"
+    class="mr-1 flex min-h-full flex-col gap-4"
+  >
     <ng-container
       *ngFor="
         let control of visibleControls() | keyvalue: comparatorFn;
@@ -17,7 +25,7 @@
     >
       <ng-container
         [ngComponentOutlet]="
-          controlResolver.resolve(control.value.controlType) | async
+          controlResolver.resolve(control.value.type) | async
         "
         [ngComponentOutletInjector]="
           control.key | controlInjector: control.value

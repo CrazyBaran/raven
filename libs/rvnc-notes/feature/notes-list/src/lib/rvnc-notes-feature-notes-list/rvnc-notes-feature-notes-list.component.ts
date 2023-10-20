@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderComponent, LoaderComponent } from '@app/rvnc-core-ui';
-import { NoteStoreFacadeService } from '@app/rvnc-notes/data-access';
+import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import { NotesTableComponent, QuickFiltersComponent } from '@app/rvnc-notes/ui';
 import { FilterMenuModule } from '@progress/kendo-angular-grid';
 import { Subject, takeUntil } from 'rxjs';
@@ -34,7 +34,7 @@ export class RvncNotesFeatureNotesListComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
 
   public constructor(
-    private readonly noteStoreFacadeService: NoteStoreFacadeService,
+    private readonly noteStoreFacadeService: NoteStoreFacade,
     private readonly route: ActivatedRoute,
   ) {}
 

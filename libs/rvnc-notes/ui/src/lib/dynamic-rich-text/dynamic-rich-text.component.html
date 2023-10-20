@@ -1,15 +1,15 @@
-<kendo-formfield>
+<kendo-formfield class="!flex min-h-full flex-col">
   <kendo-label
     labelCssClass="k-form-label text-secondary-900 text-sm"
     [for]="control.controlKey"
-    [text]="control.config.label"
+    [text]="control.config.name"
   ></kendo-label>
   <kendo-editor
     [formControlName]="control.controlKey"
     [value]="control.config.value!"
     [id]="control.controlKey"
     (focus)="setFocus()"
-    class="relative"
+    class="grow-1 relative"
     [style.height]="currentHeight()"
     [class.mb-[50px]]="focused()"
   >

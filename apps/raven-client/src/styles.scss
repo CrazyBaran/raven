@@ -35,3 +35,17 @@ body {
 @tailwind utilities;
 
 /* You can add global styles to this file, and also import other style files */
+
+.kendo-window {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  transform: rotate(180deg);
+}
+
+.shelf-window:not(.k-window-maximized) {
+  width: var(--shelf-window-width) !important;
+  height: var(--shelf-window-height) !important;
+  transform: rotate(180deg) var(--shelf-window-transform) !important;
+}
