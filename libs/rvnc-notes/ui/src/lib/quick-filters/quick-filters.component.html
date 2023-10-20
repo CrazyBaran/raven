@@ -3,22 +3,23 @@
 
   <div class="quick-filters__buttons buttons flex flex-row gap-6">
     <div class="buttons__section flex gap-0.5">
-      <kendo-button rounded="none" themeColor="primary"
-        >Created by me</kendo-button
+      <kendo-button
+        rounded="none"
+        *ngFor="let quickFilter of filtersSection1; index as i"
+        [selected]="i === 0"
       >
-      <kendo-button rounded="none">I am tagged</kendo-button>
+        {{ quickFilter.name }}
+      </kendo-button>
     </div>
 
     <div class="buttons__section flex gap-0.5">
-      <kendo-button rounded="none" themeColor="primary"
-        >All Note Types</kendo-button
+      <kendo-button
+        rounded="none"
+        *ngFor="let quickFilter of filtersSection2; index as i"
+        [selected]="i === 0"
       >
-      <kendo-button rounded="none">Company Call</kendo-button>
-      <kendo-button rounded="none">Investor Call</kendo-button>
-      <kendo-button rounded="none">Market Expert Call</kendo-button>
-      <kendo-button rounded="none">Customer Reference Call</kendo-button>
-      <kendo-button rounded="none">Pipeline Call</kendo-button>
-      <kendo-button rounded="none">Loose Note</kendo-button>
+        {{ quickFilter.name }}
+      </kendo-button>
     </div>
   </div>
 </div>
