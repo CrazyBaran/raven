@@ -8,7 +8,7 @@ import { NotesActions } from './notes.actions';
 import { notesQuery } from './notes.selectors';
 
 @Injectable()
-export class NoteStoreFacadeService {
+export class NoteStoreFacade {
   public notes$: Observable<NoteData[]> = this.store.pipe(
     select(notesQuery.selectAllNotes),
   );

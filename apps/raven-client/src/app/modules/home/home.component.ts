@@ -1,17 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ShelfModule, ShelfStoreFacade } from '@app/rvnc-shelf';
+import { WindowModule } from '@progress/kendo-angular-dialog';
 import { NavAsideComponent } from '../../components/nav-aside/nav-aside.component';
 import { UiNavAsideRoute } from '../../components/nav-aside/nav-aside.interface';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NavAsideComponent, RouterOutlet],
+  imports: [
+    CommonModule,
+    NavAsideComponent,
+    RouterOutlet,
+    WindowModule,
+    ShelfModule,
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
+  public shelfFacade = inject(ShelfStoreFacade);
+
   public readonly mainRoutes2: UiNavAsideRoute[] = [
     {
       name: 'Home Dashboard',
@@ -67,8 +78,10 @@ export class HomeComponent {
         },
         {
           name: 'Notepad',
-          path: 'notes/notepad',
           icon: 'fa-solid fa-notebook',
+          click: (): void => {
+            this.shelfFacade.openNotepad();
+          },
         },
       ],
     },

@@ -13,13 +13,26 @@ type ValidatorKeys = keyof Omit<
   'prototype' | 'compose' | 'composeAsync'
 >;
 
+export interface FieldDefinitionData {
+  readonly id: string;
+  readonly name: string;
+  readonly type: string;
+  readonly order: number;
+  readonly fieldGroupId: string;
+  readonly updatedAt: Date;
+  readonly createdAt: Date;
+  readonly createdById: string;
+}
+
 export interface DynamicControl<T = string> {
-  controlType: 'input' | 'richText';
-  type?: string;
-  label: string;
-  placeholder?: string;
+  type: 'input' | 'richText';
+  name: string;
   order: number;
-  value: T | null;
+  id: string;
+
+  grow?: boolean;
+  placeholder?: string;
+  value?: T | null;
   options?: DynamicOptions[];
   controls?: DynamicFormConfig['controls'];
   validators?: {

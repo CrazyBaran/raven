@@ -29,7 +29,7 @@ describe('DynamicRichTextComponent', () => {
           useValue: {
             controlKey: 'textInputKey',
             config: {
-              label: 'test',
+              name: 'test',
               placeholder: 'Write something here',
             },
           } as ControlData,

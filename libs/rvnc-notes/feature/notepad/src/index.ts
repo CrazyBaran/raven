@@ -1,1 +1,2 @@
-export * from './lib/rvnc-notes-feature-notepad/rvnc-notes-feature-notepad.component';
+export * from './lib/notepad-content/notepad-content.component';
+export * from './lib/providers';

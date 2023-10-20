@@ -9,7 +9,7 @@
               disabled: route.disabled,
               active: route.exact
                 ? activeUrl === route.path
-                : activeUrl.includes(route.path)
+                : activeUrl.includes(route.path!)
             }"
             [disabled]="route.disabled"
             (click)="handleOpenSubRoute(route)"
@@ -56,11 +56,18 @@
           <ul *ngFor="let subRoute of subRoutes">
             <li>
               <a
-                [routerLink]="subRoute.disabled ? null : subRoute.path"
+                [routerLink]="
+                  subRoute.disabled || subRoute.path === null
+                    ? null
+                    : subRoute.path!
+                "
                 [ngClass]="{ 'menu__item--disabled': subRoute.disabled }"
                 [routerLinkActiveOptions]="{ exact: subRoute.exact || false }"
                 routerLinkActive="menu__item--active"
-                (click)="!subRoute.disabled && handleToggleSidebar(false)"
+                (click)="
+                  !subRoute.disabled && handleToggleSidebar(false);
+                  subRoute.click?.()
+                "
                 class="menu__item"
               >
                 <i class="{{ subRoute.icon }}"></i>
@@ -80,7 +87,7 @@
                 'menu__item--disabled': route.disabled,
                 'menu__item--active': route.exact
                   ? activeUrl === route.path
-                  : activeUrl.includes(route.path)
+                  : activeUrl.includes(route.path!)
               }"
               [disabled]="route.disabled"
               (click)="handleOpenSubRoute(route, true)"

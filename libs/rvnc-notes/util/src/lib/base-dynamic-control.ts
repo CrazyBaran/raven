@@ -1,5 +1,6 @@
 import { CommonModule, KeyValue } from '@angular/common';
 import {
+  AfterViewInit,
   DestroyRef,
   Directive,
   ElementRef,
@@ -22,6 +23,7 @@ import {
 } from '@angular/forms';
 import { FormFieldModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
+import { take } from 'rxjs';
 import { CONTROL_DATA } from './control-data.token';
 import { DynamicControlFocusHandler } from './dynamic-control-focus-handler.service';
 import { DynamicControl, validatorMapper } from './dynamic-forms.model';
@@ -46,8 +48,8 @@ export const dynamicControlProvider: StaticProvider = {
 };
 
 @Directive()
-export abstract class BaseDynamicControl implements OnInit {
-  @HostBinding('class') protected hostClass = 'form-field';
+export abstract class BaseDynamicControl implements OnInit, AfterViewInit {
+  @HostBinding('class') protected hostClass = 'form-field block';
 
   protected control = inject(CONTROL_DATA);
   protected elementRef = inject(ElementRef);
@@ -76,6 +78,19 @@ export abstract class BaseDynamicControl implements OnInit {
       this.formControl,
     );
     this.registerFocusHandler(this.control.controlKey);
+  }
+
+  public ngAfterViewInit(): void {
+    this.focusHandler
+      ?.focusChanged$(this.control.controlKey)
+      ?.pipe(take(1))
+      .subscribe((isFocused) => {
+        if (isFocused) {
+          setTimeout(() => {
+            this?.onFocus();
+          }, 25);
+        }
+      });
   }
 
   private resolveValidators({

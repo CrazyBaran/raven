@@ -4,5 +4,6 @@ export * from './lib/control-injector.pipe';
 export { DynamicControlFocusHandler } from './lib/dynamic-control-focus-handler.service';
 export * from './lib/dynamic-forms.model';
 export * from './lib/error-message.pipe';
+export * from './lib/resize-observer';
 export * from './lib/validation-error-messages.token';
 export * from './lib/validator-message-container.directive';
