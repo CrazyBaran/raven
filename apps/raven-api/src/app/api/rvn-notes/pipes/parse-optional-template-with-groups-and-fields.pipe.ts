@@ -1,5 +1,3 @@
-import { EntityManager } from 'typeorm';
-
 import {
   Inject,
   Injectable,
@@ -14,9 +12,6 @@ import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
 export class ParseOptionalTemplateWithGroupsAndFieldsPipe
   implements PipeTransform<string, Promise<TemplateEntity | null>>
 {
-  @Inject(EntityManager)
-  protected entityManager: EntityManager;
-
   @Inject(ParseUUIDPipe)
   protected parseUUIDPipe: ParseUUIDPipe;
 

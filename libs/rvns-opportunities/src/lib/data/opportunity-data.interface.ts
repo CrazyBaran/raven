@@ -6,8 +6,14 @@ export interface OpportunityData extends OpportunityDataWithoutOrganisation {
   readonly organisation: OrganisationData;
 }
 
+interface TagData {
+  readonly id: string;
+  readonly name: string;
+}
+
 export interface OpportunityDataWithoutOrganisation {
   readonly id: string;
   readonly stage: PipelineStageData;
   readonly fields: FieldData[];
+  readonly tag?: TagData;
 }

@@ -21,14 +21,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
-import { ParsePipelineStagePipe } from '../../shared/pipes/parse-pipeline-stage.pipe';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
+import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { UpdateOpportunityDto } from './dto/update-opportunity.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityService } from './opportunity.service';
 import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
+import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-stage.pipe';
+import { ParseOptionalTagPipe } from './pipes/parse-optional-tag.pipe';
+import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pipe';
 
 @ApiTags('Opportunities')
 @Controller('opportunities')
@@ -108,11 +111,16 @@ export class OpportunityController {
     @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
     opportunity: OpportunityEntity,
     @Body() dto: UpdateOpportunityDto,
-    @Body('pipelineStageId', ParseUUIDPipe, ParsePipelineStagePipe)
-    pipelineStage: PipelineStageEntity,
+    @Body('pipelineStageId', ParseOptionalPipelineStagePipe)
+    pipelineStage: string | PipelineStageEntity | null,
+    @Body('tagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
+    tag: string | TagEntity | null,
   ): Promise<OpportunityData> {
     return this.opportunityService.opportunityEntityToData(
-      await this.opportunityService.update(opportunity, { pipelineStage }),
+      await this.opportunityService.update(opportunity, {
+        pipelineStage: pipelineStage as PipelineStageEntity,
+        tag: tag as TagEntity,
+      }),
     );
   }
 
