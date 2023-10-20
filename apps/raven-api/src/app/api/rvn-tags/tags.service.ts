@@ -12,6 +12,9 @@ export interface CreateTagOptions {
   organisationId?: string;
 }
 
+export interface UpdateTagOptions
+  extends Omit<CreateTagOptions, 'type' | 'userId' | 'organisationId'> {}
+
 @Injectable()
 export class TagsService {
   public constructor(
@@ -27,12 +30,22 @@ export class TagsService {
   public async createTag(options: CreateTagOptions): Promise<TagEntity> {
     const tagEntity = TagEntityFactory.createTag(options);
 
-    console.log({ tagEntity });
     return this.tagsRepository.save(tagEntity);
   }
 
+  public async updateTag(
+    tagEntity: TagEntity,
+    options: UpdateTagOptions,
+  ): Promise<TagEntity> {
+    tagEntity.name = options.name;
+    return await this.tagsRepository.save(tagEntity);
+  }
+
+  public async deleteTag(tagEntity: TagEntity): Promise<void> {
+    await this.tagsRepository.remove(tagEntity);
+  }
+
   public tagEntityToTagData(tag: TagEntity): TagData {
-    console.log({ tag });
     return {
       id: tag.id,
       name: tag.name,
