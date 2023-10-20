@@ -5,10 +5,12 @@ import {
 } from '@app/rvns-notes/data-access';
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import {
+  OrganisationTagEntity,
+  TagEntity,
+} from '../rvn-tags/entities/tag.entity';
 import { FieldDefinitionEntity } from '../rvn-templates/entities/field-definition.entity';
 import { FieldGroupEntity } from '../rvn-templates/entities/field-group.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
@@ -46,10 +48,17 @@ export class NotesService {
     private readonly noteRepository: Repository<NoteEntity>,
     @InjectRepository(NoteFieldEntity)
     private readonly noteFieldRepository: Repository<NoteFieldEntity>,
-    private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async getAllNotes(): Promise<NoteEntity[]> {
+  public async getAllNotes(
+    organisationTagEntity?: OrganisationTagEntity,
+  ): Promise<NoteEntity[]> {
+    const tagSubQuery = this.noteRepository
+      .createQueryBuilder('note_with_tag')
+      .select('note_with_tag.id')
+      .innerJoin('note_with_tag.tags', 'tag')
+      .where('tag.id = :tagId');
+
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
       .select('MAX(note_sub.version)', 'maxVersion')
@@ -62,8 +71,15 @@ export class NotesService {
       .leftJoinAndMapMany('note.tags', 'note.tags', 'tags')
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
       .where(`note.version = (${subQuery.getQuery()})`)
-      .andWhere('note.deletedAt IS NULL')
-      .orderBy('note.createdAt', 'ASC');
+      .andWhere('note.deletedAt IS NULL');
+
+    if (organisationTagEntity) {
+      queryBuilder
+        .andWhere(`note.id IN (${tagSubQuery.getQuery()})`)
+        .setParameter('tagId', organisationTagEntity.id);
+    }
+
+    queryBuilder.orderBy('note.createdAt', 'ASC');
 
     return await queryBuilder.getMany();
   }
@@ -78,7 +94,7 @@ export class NotesService {
     }
 
     const noteField = new NoteFieldEntity();
-    noteField.name = options.name;
+    noteField.name = "Note's content";
     noteField.order = 1;
     noteField.createdBy = options.userEntity;
     noteField.updatedBy = options.userEntity;
@@ -92,7 +108,7 @@ export class NotesService {
     noteFieldGroup.noteFields = [noteField];
 
     const note = new NoteEntity();
-    note.name = 'New Note';
+    note.name = options.name;
     note.version = 1;
     note.tags = options.tags;
     note.createdBy = options.userEntity;

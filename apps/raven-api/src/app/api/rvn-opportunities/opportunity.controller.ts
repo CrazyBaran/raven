@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParsePipelineStagePipe } from '../../shared/pipes/parse-pipeline-stage.pipe';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { CreateOpportunityDto } from './dto/create-opportunity.dto';
@@ -27,7 +28,6 @@ import { UpdateOpportunityDto } from './dto/update-opportunity.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityService } from './opportunity.service';
-import { FindOrganizationByDomainPipe } from './pipes/find-organization-by-domain.pipe';
 import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
 
 @ApiTags('Opportunities')

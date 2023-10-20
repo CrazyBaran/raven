@@ -57,7 +57,7 @@ describe('NotesService', () => {
       );
 
       const noteField = new NoteFieldEntity();
-      noteField.name = 'Note';
+      noteField.name = "Note's content";
       noteField.order = 1;
       noteField.createdBy = userEntity;
       noteField.updatedBy = userEntity;
@@ -71,7 +71,7 @@ describe('NotesService', () => {
       noteFieldGroup.noteFields = [noteField];
 
       const note = new NoteEntity();
-      note.name = 'New Note';
+      note.name = 'Note';
       note.version = 1;
       note.tags = [];
       note.createdBy = userEntity;

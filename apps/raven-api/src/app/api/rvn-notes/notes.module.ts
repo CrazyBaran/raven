@@ -3,6 +3,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
@@ -20,6 +21,7 @@ import { NotesService } from './notes.service';
       NoteFieldEntity,
       TagEntity,
       OpportunityEntity,
+      OrganisationEntity,
     ]),
     EventEmitterModule,
   ],

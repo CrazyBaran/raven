@@ -29,7 +29,11 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 
-import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
+import {
+  OrganisationTagEntity,
+  TagEntity,
+} from '../rvn-tags/entities/tag.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteFieldDto } from './dto/update-note-field.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -37,6 +41,7 @@ import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
+import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe';
 import { ParseAllNoteVersionsPipe } from './pipes/parse-all-note-versions.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
@@ -55,7 +60,7 @@ export class NotesController {
   @Post()
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
-    templateEntity: TemplateEntity | null,
+    templateEntity: string | TemplateEntity | null,
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
     @Body() dto: CreateNoteDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
@@ -64,7 +69,7 @@ export class NotesController {
       await this.notesService.createNote({
         name: dto.name,
         userEntity,
-        templateEntity,
+        templateEntity: templateEntity as TemplateEntity,
         tags,
       }),
     );
@@ -72,13 +77,21 @@ export class NotesController {
 
   @ApiOperation({ description: 'Get all notes' })
   @ApiResponse(GenericResponseSchema())
+  @ApiQuery({ name: 'domain', type: String, required: false })
   @Get()
-  public async getAllNotes(): Promise<NoteData[]> {
-    // TODO filtering byu domain will be handled with tags - there is no longer relation between note and opportunity
+  public async getAllNotes(
+    @Query('domain')
+    domain: string,
+    @Query('domain', FindOrganizationByDomainPipe, FindTagByOgranisationPipe)
+    tagEntity: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
+  ): Promise<NoteData[]> {
+    if (domain && tagEntity === null) {
+      return [];
+    }
     return await Promise.all(
-      (await this.notesService.getAllNotes()).map((note) =>
-        this.notesService.noteEntityToNoteData(note),
-      ),
+      (
+        await this.notesService.getAllNotes(tagEntity as OrganisationTagEntity)
+      ).map((note) => this.notesService.noteEntityToNoteData(note)),
     );
   }
 
