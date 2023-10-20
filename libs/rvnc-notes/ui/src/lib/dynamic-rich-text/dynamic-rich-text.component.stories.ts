@@ -21,8 +21,10 @@ const meta: Meta<DynamicRichTextComponent> = {
           useValue: {
             controlKey: 'test',
             config: {
+              id: 'test',
+              name: 'Test',
               label: 'Rich editor input',
-              type: 'text',
+              type: 'richText',
               value: '',
               order: 1,
             },

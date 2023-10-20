@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 
 import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { Observable } from 'rxjs';
+import { CreateNote, PatchNote } from '../domain/createNote';
 import { NotesActions } from './notes.actions';
 import { notesQuery } from './notes.selectors';
 
@@ -34,5 +35,13 @@ export class NoteStoreFacade {
 
   public getNoteDetails(id: string): void {
     this.store.dispatch(NotesActions.getNoteDetails({ id }));
+  }
+
+  public createNote(data: CreateNote & PatchNote): void {
+    this.store.dispatch(
+      NotesActions.createNote({
+        data,
+      }),
+    );
   }
 }
