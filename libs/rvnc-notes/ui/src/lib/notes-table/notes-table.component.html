@@ -67,9 +67,14 @@
   </kendo-grid-column>
 
   <kendo-grid-column [width]="135">
-    <ng-template kendoGridCellTemplate>
+    <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-row gap-1">
-        <kendo-button themeColor="primary" iconClass="fa-solid fa-eye" />
+        <kendo-button
+          themeColor="primary"
+          iconClass="fa-solid fa-eye"
+          [routerLink]="['./']"
+          [queryParams]="{ noteId: dataItem.id }"
+        />
         <kendo-button themeColor="light" iconClass="fa-solid fa-link" />
         <kendo-button themeColor="light" iconClass="fa-solid fa-trash-can" />
       </div>

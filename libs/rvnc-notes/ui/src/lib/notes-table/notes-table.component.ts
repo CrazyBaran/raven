@@ -5,6 +5,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { NoteData } from '@app/rvns-notes/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
@@ -12,7 +13,7 @@ import { GridModule } from '@progress/kendo-angular-grid';
 @Component({
   selector: 'app-notes-table',
   standalone: true,
-  imports: [CommonModule, GridModule, ButtonsModule],
+  imports: [CommonModule, GridModule, ButtonsModule, RouterLink],
   templateUrl: './notes-table.component.html',
   styleUrls: ['./notes-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

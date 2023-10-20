@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NotepadComponent } from '@app/rvnc-notes/ui';
 import { DynamicControl } from '@app/rvnc-notes/util';
 
@@ -11,7 +11,7 @@ import { DynamicControl } from '@app/rvnc-notes/util';
   styleUrls: ['./rvnc-notes-feature-notepad.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RvncNotesFeatureNotepadComponent {
+export class RvncNotesFeatureNotepadComponent implements OnInit {
   protected mockConfig: Record<string, DynamicControl> = {
     title: {
       controlType: 'input',
@@ -50,4 +50,8 @@ export class RvncNotesFeatureNotepadComponent {
       value: '',
     },
   };
+
+  public ngOnInit(): void {
+    console.log('Ng_On_Init');
+  }
 }
