@@ -52,8 +52,9 @@ export class NotesService {
 
   public async getAllNotes(
     organisationTagEntity?: OrganisationTagEntity,
+    tagEntities?: TagEntity[],
   ): Promise<NoteEntity[]> {
-    const tagSubQuery = this.noteRepository
+    const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
       .select('note_with_tag.id')
       .innerJoin('note_with_tag.tags', 'tag')
@@ -75,8 +76,22 @@ export class NotesService {
 
     if (organisationTagEntity) {
       queryBuilder
-        .andWhere(`note.id IN (${tagSubQuery.getQuery()})`)
+        .andWhere(`note.id IN (${orgTagSubQuery.getQuery()})`)
         .setParameter('tagId', organisationTagEntity.id);
+    }
+
+    if (tagEntities) {
+      for (const tag of tagEntities) {
+        const tagSubQuery = this.noteRepository
+          .createQueryBuilder('note_with_tag')
+          .select('note_with_tag.id')
+          .innerJoin('note_with_tag.tags', 'tag')
+          .where('tag.id = :tagId');
+
+        queryBuilder
+          .andWhere(`note.id IN (${tagSubQuery.getQuery()})`)
+          .setParameter('tagId', tag.id);
+      }
     }
 
     queryBuilder.orderBy('note.createdAt', 'ASC');
@@ -366,9 +381,9 @@ export class NotesService {
 
   private findFieldValue(
     fieldEntity: NoteFieldEntity,
-    fieldUpdates: FieldUpdate[],
+    fieldUpdates?: FieldUpdate[],
   ): string {
-    const fieldUpdate = fieldUpdates.find((fu) => fu.id === fieldEntity.id);
+    const fieldUpdate = fieldUpdates?.find((fu) => fu.id === fieldEntity.id);
     return fieldUpdate ? fieldUpdate.value : fieldEntity.value;
   }
 }

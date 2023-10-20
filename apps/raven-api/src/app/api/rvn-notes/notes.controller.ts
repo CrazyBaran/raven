@@ -78,19 +78,30 @@ export class NotesController {
   @ApiOperation({ description: 'Get all notes' })
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'domain', type: String, required: false })
+  @ApiQuery({
+    name: 'tagIds',
+    type: String,
+    required: false,
+    description: 'Comma separated list of tag ids',
+  })
   @Get()
   public async getAllNotes(
     @Query('domain')
     domain: string,
     @Query('domain', FindOrganizationByDomainPipe, FindTagByOgranisationPipe)
-    tagEntity: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
+    organisationTagEntity: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
+    @Query('tagIds', ParseTagsPipe)
+    tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
   ): Promise<NoteData[]> {
-    if (domain && tagEntity === null) {
+    if (domain && organisationTagEntity === null) {
       return [];
     }
     return await Promise.all(
       (
-        await this.notesService.getAllNotes(tagEntity as OrganisationTagEntity)
+        await this.notesService.getAllNotes(
+          organisationTagEntity as OrganisationTagEntity,
+          tagEntities as TagEntity[],
+        )
       ).map((note) => this.notesService.noteEntityToNoteData(note)),
     );
   }
