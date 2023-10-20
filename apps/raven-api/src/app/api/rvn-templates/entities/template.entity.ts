@@ -28,6 +28,9 @@ export class TemplateEntity implements AuditableEntity {
   @Column({ length: 50, default: 'note' })
   public type: string;
 
+  @Column({ default: false })
+  public isDefault: boolean;
+
   @Column({ length: 50 })
   public name: string;
 
