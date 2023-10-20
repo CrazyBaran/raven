@@ -20,11 +20,13 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiOAuth2,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -49,6 +51,7 @@ import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
 import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
 import { ParseTabPipe } from './pipes/parse-tab.pipe';
 import { ParseTemplatePipe } from './pipes/parse-template.pipe';
+import { ValidateTemplateTypePipe } from './pipes/validate-template-type.pipe';
 import { TemplatesService } from './templates.service';
 
 @ApiTags('Templates')
@@ -59,9 +62,13 @@ export class TemplatesController {
 
   @ApiOperation({ description: 'List templates' })
   @ApiResponse(GenericResponseSchema())
+  @ApiQuery({ name: 'type', enum: TemplateTypeEnum, required: false })
   @Get()
-  public async listTemplates(): Promise<TemplateWithRelationsData[]> {
-    const templates = await this.service.list();
+  public async listTemplates(
+    @Query('type', ValidateTemplateTypePipe)
+    type?: string | TemplateTypeEnum | null, // workaround for passing string to pipe
+  ): Promise<TemplateWithRelationsData[]> {
+    const templates = await this.service.list(type as TemplateTypeEnum);
     return templates.map((template) =>
       this.service.templateWithRelationsToTemplateWithRelationsData(template),
     );

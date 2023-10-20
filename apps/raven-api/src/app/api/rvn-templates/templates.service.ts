@@ -75,8 +75,9 @@ export class TemplatesService {
     private readonly fieldDefinitionsRepository: Repository<FieldDefinitionEntity>,
   ) {}
 
-  public async list(): Promise<TemplateEntity[]> {
+  public async list(type?: TemplateTypeEnum): Promise<TemplateEntity[]> {
     return this.templatesRepository.find({
+      where: type ? { type } : {},
       relations: [
         'tabs',
         'tabs.fieldGroups',
