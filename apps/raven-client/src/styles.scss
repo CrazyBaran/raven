@@ -4,8 +4,6 @@
 // When you are finished with your customization, import the theme
 @import '@progress/kendo-theme-default/dist/all.scss';
 
-@import 'assets/styles/fonts';
-
 @import 'assets/fontawesome/scss/fontawesome';
 @import 'assets/fontawesome/scss/brands';
 @import 'assets/fontawesome/scss/solid';
@@ -26,7 +24,9 @@ router-outlet.router-flex + * {
 body {
   @apply text-text;
 
-  font-family: 'Avenir Next LT Pro', sans-serif;
+  font-family: interstate, sans-serif;
+  font-style: normal;
+  font-weight: 100;
   min-height: 100vh;
 }
 

@@ -20,8 +20,20 @@ export const selectError = createSelector(
   (state: NotesState) => state.error,
 );
 
+export const selectNoteDetails = createSelector(
+  selectNotesState,
+  (state: NotesState) => state.details.data,
+);
+
+export const selectNoteDetailsIsLoading = createSelector(
+  selectNotesState,
+  (state: NotesState) => state.details.isLoading,
+);
+
 export const notesQuery = {
   selectAllNotes,
   selectIsLoading,
   selectError,
+  selectNoteDetails,
+  selectNoteDetailsIsLoading,
 };

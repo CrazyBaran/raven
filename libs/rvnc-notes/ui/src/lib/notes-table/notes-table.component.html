@@ -1,4 +1,8 @@
-<kendo-grid [kendoGridBinding]="notes" [sortable]="true">
+<kendo-grid
+  [kendoGridBinding]="notes"
+  [sortable]="true"
+  scrollable="scrollable"
+>
   <kendo-grid-column
     field="name"
     title="Note Title"
@@ -8,12 +12,13 @@
   <kendo-grid-column
     field="templateName"
     title="Note Type"
+    [sortable]="false"
     [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div
         *ngIf="dataItem?.templateName"
-        class="bg-primary-400 flex w-fit rounded-md p-[0.5rem] text-sm"
+        class="text-xxs bg-primary-500 flex h-6 w-fit items-center rounded px-[0.375rem] font-normal"
       >
         {{ dataItem?.templateName }}
       </div>
@@ -26,8 +31,12 @@
     [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <div class="flex flex-col">
-        {{ dataItem?.createdBy?.name || '' }}
+      <div class="flex flex-col gap-1">
+        <span>
+          <i class="fa-solid fa-circle-user mr-1"></i>
+          {{ dataItem?.createdBy?.name || '' }}
+        </span>
+
         <span class="text-xs">
           Updated: {{ dataItem?.updatedAt || '' | date: 'dd/mm/yyyy' }}
         </span>
@@ -36,8 +45,9 @@
   </kendo-grid-column>
 
   <kendo-grid-column
-    field="type"
+    field="people"
     title="People"
+    [sortable]="false"
     [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate>
@@ -46,8 +56,9 @@
   </kendo-grid-column>
 
   <kendo-grid-column
-    field="type"
+    field="tags"
     title="Tags"
+    [sortable]="false"
     [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate>
@@ -55,18 +66,17 @@
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column title="Actions" [headerStyle]="{ 'font-weight': '700' }">
-    <ng-template kendoGridCellTemplate>
+  <kendo-grid-column [width]="135">
+    <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-row gap-1">
-        <kendo-button themeColor="primary">
-          <i class="fa-solid fa-eye"></i>
-        </kendo-button>
-        <kendo-button themeColor="light">
-          <i class="fa-solid fa-link"></i>
-        </kendo-button>
-        <kendo-button themeColor="light">
-          <i class="fa-regular fa-trash-can"></i>
-        </kendo-button>
+        <kendo-button
+          themeColor="primary"
+          iconClass="fa-solid fa-eye"
+          [routerLink]="['./']"
+          [queryParams]="{ noteId: dataItem.id }"
+        />
+        <kendo-button themeColor="light" iconClass="fa-solid fa-link" />
+        <kendo-button themeColor="light" iconClass="fa-solid fa-trash-can" />
       </div>
     </ng-template>
   </kendo-grid-column>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
+import { NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { catchError, concatMap, map, of } from 'rxjs';
 import { NotesService } from '../services/notes.service';
 import { NotesActions } from './notes.actions';
@@ -14,6 +15,24 @@ export class NotesEffects {
         this.notesService.getNotes().pipe(
           map(({ data }) => NotesActions.getNotesSuccess({ data: data || [] })),
           catchError((error) => of(NotesActions.getNotesFailure({ error }))),
+        ),
+      ),
+    );
+  });
+
+  private loadNoteDetails$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(NotesActions.getNoteDetails),
+      concatMap(({ id }) =>
+        this.notesService.getNoteDetails(id).pipe(
+          map(({ data }) =>
+            NotesActions.getNoteDetailsSuccess({
+              data: data as NoteWithRelationsData,
+            }),
+          ),
+          catchError((error) =>
+            of(NotesActions.getNoteDetailsFailure({ error })),
+          ),
         ),
       ),
     );

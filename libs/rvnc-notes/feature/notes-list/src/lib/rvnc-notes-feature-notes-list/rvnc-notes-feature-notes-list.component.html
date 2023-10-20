@@ -1,11 +1,44 @@
 <div class="notes-list grid max-h-screen">
-  <ui-header pageName="All Notes" pageIcon="fa-solid fa-notebook" />
+  <ui-header pageName="All Notes" pageIcon="fa-solid fa-notebook">
+    <div class="flex gap-3">
+      <kendo-textbox
+        placeholder="Search Note Tags"
+        [style]="{ width: '260px' }"
+        size="large"
+      />
 
-  <div class="notes-list__content overflow-auto p-6">
+      <kendo-button
+        iconClass="fa-solid fa-square-plus"
+        fillMode="clear"
+        themeColor="secondary"
+        (click)="handleOpenNotepad()"
+        >Add New</kendo-button
+      >
+
+      <kendo-button
+        iconClass="fa-solid fa-filter"
+        fillMode="clear"
+        themeColor="secondary"
+        >Filter</kendo-button
+      >
+    </div>
+  </ui-header>
+
+  <div class="notes-list__content overflow-hidden p-6">
     <ui-loader *ngIf="isLoading$ | async; else notesListView" />
 
     <ng-template #notesListView>
-      <app-notes-table [notes]="(notes$ | async) || []" />
+      <app-quick-filters />
+
+      <div class="flex overflow-hidden">
+        <app-notes-table [notes]="(notes$ | async) || []" />
+      </div>
     </ng-template>
   </div>
 </div>
+
+<app-note-details
+  *ngIf="openNoteId()"
+  [noteId]="openNoteId()"
+  (closeWindow)="handleClosePreview()"
+/>

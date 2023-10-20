@@ -1,4 +1,4 @@
-import { NoteData } from '@app/rvns-notes/data-access';
+import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
 export const NotesActions = createActionGroup({
@@ -9,5 +9,9 @@ export const NotesActions = createActionGroup({
     'Get Notes Failure': props<{ error: string }>(),
 
     'Clear Notes': emptyProps(),
+
+    'Get Note Details': props<{ id: string }>(),
+    'Get Note Details Success': props<{ data: NoteWithRelationsData }>(),
+    'Get Note Details Failure': props<{ error: string }>(),
   },
 });
