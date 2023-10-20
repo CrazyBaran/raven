@@ -8,7 +8,7 @@ interface UserData {
 }
 
 // TODO expand when needed
-interface NoteTagData {
+export interface NoteTagData {
   readonly name: string;
   readonly type: string;
 }

@@ -11,7 +11,7 @@ type DynamicControlsMap = {
 })
 export class DynamicControlResolver {
   private lazyControlComponents: DynamicControlsMap = {
-    input: () =>
+    text: () =>
       import('./dynamic-input/dynamic-input.component').then(
         (c) => c.DynamicInputComponent,
       ),

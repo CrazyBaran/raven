@@ -51,6 +51,8 @@
       fillMode="solid"
       type="button"
       size="large"
+      [disabled]="!notepadForm.valid"
+      (click)="submit()"
     >
       Add Note
     </button>

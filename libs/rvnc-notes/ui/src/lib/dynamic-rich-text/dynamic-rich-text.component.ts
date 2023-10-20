@@ -42,7 +42,7 @@ export class DynamicRichTextComponent
     if (this.grow) {
       return `calc(100% - ${this.focused() ? 50 : 0}px)`;
     }
-    return `${this.heightSignal() - (this.focused() ? 50 : 0)}px`;
+    return `${this.heightSignal() - (this.focused() ? 50 : 0) - 20}px`;
   });
 
   @Input() protected set height(value: number) {

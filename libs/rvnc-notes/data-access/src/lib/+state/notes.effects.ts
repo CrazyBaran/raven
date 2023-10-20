@@ -38,6 +38,18 @@ export class NotesEffects {
     );
   });
 
+  private createNote$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(NotesActions.createNote),
+      concatMap(({ data }) =>
+        this.notesService.createNoteFull(data).pipe(
+          map(({ data }) => NotesActions.createNoteSuccess({ data: data! })),
+          catchError((error) => of(NotesActions.createNoteFailure({ error }))),
+        ),
+      ),
+    );
+  });
+
   public constructor(
     private readonly actions$: Actions,
     private readonly notesService: NotesService,

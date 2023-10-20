@@ -9,7 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormRecord, ReactiveFormsModule } from '@angular/forms';
 import {
   ControlInjectorPipe,
   DynamicControl,
@@ -46,7 +46,7 @@ export type Tab = {
   providers: [DynamicControlFocusHandler],
 })
 export class NotepadComponent implements OnInit {
-  @Input() public notepadFormGroup = new FormGroup({});
+  @Input() public notepadFormGroup = new FormRecord({});
   @Input() public hideTabs = false;
 
   protected formConfig: WritableSignal<Record<string, DynamicControl>> = signal(
@@ -73,7 +73,7 @@ export class NotepadComponent implements OnInit {
           : this.state().activeTabId === key
           ? 'active'
           : 'default') as ScrollTabState,
-        canBeDisabled: this.formConfig()[key].order !== 1,
+        canBeDisabled: this.formConfig()[key].id !== 'TITLE',
       }),
     );
   });
@@ -93,7 +93,18 @@ export class NotepadComponent implements OnInit {
   });
 
   @Input() public set config(value: Record<string, DynamicControl>) {
-    this.formConfig.set(value);
+    this.formConfig.set({
+      TITLE: {
+        name: 'Note Title',
+        id: 'TITLE',
+        type: 'text',
+        order: 0,
+        validators: {
+          required: true,
+        },
+      },
+      ...value,
+    });
   }
 
   public ngOnInit(): void {

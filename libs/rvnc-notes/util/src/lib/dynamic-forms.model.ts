@@ -25,7 +25,7 @@ export interface FieldDefinitionData {
 }
 
 export interface DynamicControl<T = string> {
-  type: 'input' | 'richText';
+  type: 'text' | 'richText';
   name: string;
   order: number;
   id: string;

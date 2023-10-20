@@ -7,13 +7,20 @@ import {
   OnInit,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { ComponentData } from '@app/rvnc-dynamic-renderer/data-access';
+import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import { NotepadComponent } from '@app/rvnc-notes/ui';
 import { DynamicControl, OnResizeDirective } from '@app/rvnc-notes/util';
 import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
+import { NoteTagData } from '@app/rvns-notes/data-access';
 import { TemplateWithRelationsData } from '@app/rvns-templates';
-import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
+import { Actions, ofType } from '@ngrx/effects';
+import {
+  DialogModule,
+  WindowModule,
+  WindowRef,
+} from '@progress/kendo-angular-dialog';
 import {
   DropDownListModule,
   DropDownTreesModule,
@@ -22,15 +29,10 @@ import {
 import { EditorModule } from '@progress/kendo-angular-editor';
 import * as _ from 'lodash';
 import { Dictionary } from 'lodash';
-import { map, of, startWith, switchMap } from 'rxjs';
+import { filter, map, of, startWith, switchMap, take } from 'rxjs';
+import { NotesActions } from '../../../../../data-access/src/lib/+state/notes.actions';
 
 const defaultTemplate: Record<string, DynamicControl> = {
-  title: {
-    id: 'title',
-    type: 'input',
-    name: 'Note Title',
-    order: 1,
-  },
   note: {
     id: 'description',
     name: 'Note',
@@ -61,6 +63,9 @@ const defaultTemplate: Record<string, DynamicControl> = {
 })
 export class NotepadContentComponent implements OnInit {
   protected templateFacade = inject(TemplatesStoreFacade);
+  protected noteFacade = inject(NoteStoreFacade);
+  protected actions$ = inject(Actions);
+  protected windowRef = inject(WindowRef);
 
   protected templates = toSignal(this.templateFacade.templates$);
 
@@ -77,7 +82,7 @@ export class NotepadContentComponent implements OnInit {
   protected fb = inject(FormBuilder);
   protected notepadForm = this.fb.group({
     template: [this.defaultTemplate],
-    notes: this.fb.group({}),
+    notes: new FormRecord<FormControl<string | null>>({}),
   });
 
   protected selectedTemplateId$ =
@@ -96,6 +101,11 @@ export class NotepadContentComponent implements OnInit {
 
   protected config = computed((): Dictionary<DynamicControl> => {
     const template = this.selectedTemplate();
+
+    Object.keys(this.notepadForm.controls.notes.controls).forEach((key) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.notepadForm.controls.notes as any).removeControl(key);
+    });
 
     if (template) {
       return _.chain(template.fieldGroups)
@@ -116,6 +126,29 @@ export class NotepadContentComponent implements OnInit {
 
   public ngOnInit(): void {
     this.templateFacade.getTemplates();
+  }
+
+  public submit(): void {
+    const fields = Object.entries(this.notepadForm.controls.notes.value)
+      .filter(([key, value]) => key !== 'TITLE')
+      .map(([id, value]) => ({ id, value: value || '' }));
+    const payload = {
+      name: this.notepadForm.controls.notes.get('TITLE')!.value!,
+      templateId: this.selectedTemplateId()!,
+      fields: fields,
+      tags: <NoteTagData[]>[],
+      tagIds: [],
+    };
+
+    this.noteFacade.createNote(payload);
+
+    this.actions$
+      .pipe(
+        ofType(NotesActions.createNoteSuccess),
+        filter(({ data }) => data.name === payload.name),
+        take(1),
+      )
+      .subscribe(() => this.windowRef?.close());
   }
 }
 
