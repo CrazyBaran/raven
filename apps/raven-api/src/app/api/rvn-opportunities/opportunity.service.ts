@@ -6,6 +6,7 @@ import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
+import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
@@ -17,6 +18,11 @@ interface CreateOpportunityForNonExistingOrganisationOptions {
 
 interface CreateOpportunityForOrganisationOptions {
   organisation: OrganisationEntity;
+}
+
+interface UpdateOpportunityOptions {
+  pipelineStage?: PipelineStageEntity;
+  tag?: TagEntity;
 }
 
 @Injectable()
@@ -37,7 +43,7 @@ export class OpportunityService {
   ): Promise<OpportunityData[]> {
     const options = {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
-      relations: ['organisation'],
+      relations: ['organisation', 'tag'],
     };
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
@@ -87,6 +93,7 @@ export class OpportunityService {
           order: pipelineStage.order,
           mappedFrom: pipelineStage.mappedFrom,
         },
+        tag: opportunity.tag,
         fields:
           matchedOrganization?.fields.map((field) => {
             return {
@@ -172,6 +179,7 @@ export class OpportunityService {
   public async findByDomain(domain: string): Promise<OpportunityData[]> {
     const opportunities = await this.opportunityRepository.find({
       where: { organisation: { domains: Like(`%${domain}%`) } },
+      relations: ['organisation', 'tag'],
     });
     const affinityData = await this.affinityCacheService.getAll();
 
@@ -253,9 +261,14 @@ export class OpportunityService {
 
   public async update(
     opportunity: OpportunityEntity,
-    options: { pipelineStage: PipelineStageEntity },
+    options: UpdateOpportunityOptions,
   ): Promise<OpportunityEntity> {
-    opportunity.pipelineStage = options.pipelineStage;
+    if (options.pipelineStage) {
+      opportunity.pipelineStage = options.pipelineStage;
+    }
+    if (options.tag) {
+      opportunity.tag = options.tag;
+    }
     return await this.opportunityRepository.save(opportunity);
   }
 
@@ -280,6 +293,10 @@ export class OpportunityService {
         displayName: entity?.pipelineStage?.displayName,
         order: entity?.pipelineStage?.order,
         mappedFrom: entity?.pipelineStage?.mappedFrom,
+      },
+      tag: entity.tag && {
+        id: entity.tag.id,
+        name: entity.tag.name,
       },
       fields: affinityDto.fields.map((field) => {
         return {
@@ -394,6 +411,9 @@ export class OpportunityService {
         order: entity.pipelineStage.order,
         mappedFrom: entity.pipelineStage.mappedFrom,
       },
+      tag: entity.tag
+        ? { id: entity.tag.id, name: entity.tag.name }
+        : undefined,
       fields: [],
     };
   }

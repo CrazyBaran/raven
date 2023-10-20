@@ -18,6 +18,7 @@ export abstract class AbstractEntityPipe<E>
    */
   @Inject(EntityManager)
   protected entityManager: EntityManager;
+  protected optional = false;
   protected readonly entityField: string = 'id';
   protected readonly relations: string[] = [];
   protected abstract entityClass: EntityTarget<E>;
@@ -37,6 +38,9 @@ export abstract class AbstractEntityPipe<E>
       throw new NotFoundException(
         `Unable to find "${this.resource}" with id: "${id}"`,
       );
+    }
+    if (this.optional) {
+      return null;
     }
     throw new NotFoundException(
       `"${metadata.data}" should not be null or undefined`,
