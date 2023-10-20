@@ -11,6 +11,7 @@
         iconClass="fa-solid fa-square-plus"
         fillMode="clear"
         themeColor="secondary"
+        (click)="handleOpenNotepad()"
         >Add New</kendo-button
       >
 
@@ -35,3 +36,9 @@
     </ng-template>
   </div>
 </div>
+
+<app-note-details
+  *ngIf="openNoteId()"
+  [noteId]="openNoteId()"
+  (closeWindow)="handleClosePreview()"
+/>

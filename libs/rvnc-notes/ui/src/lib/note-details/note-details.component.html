@@ -1,1 +1,83 @@
-<p>note-details works!</p>
+<div class="absolute left-0 top-0 h-full w-full">
+  <kendo-window
+    (close)="handleCloseWindow()"
+    title="Note"
+    themeColor="primary"
+    [width]="860"
+  >
+    <div class="flex py-20" *ngIf="isLoading$ | async; else noteDetailsView">
+      <ui-loader />
+    </div>
+
+    <ng-template #noteDetailsView>
+      <div class="grid grid-flow-row gap-6" *ngIf="noteDetails">
+        <div class="flex flex-row justify-between">
+          <div class="flex flex-col gap-5">
+            <div
+              class="text-xxs bg-primary-500 flex h-6 w-fit items-center rounded px-[0.375rem] font-normal"
+              *ngIf="noteDetails.templateName"
+            >
+              {{ noteDetails.templateName }}
+            </div>
+            <span class="font-bold">
+              {{ noteDetails.name }}
+            </span>
+          </div>
+
+          <div>
+            <i class="fa-solid fa-circle-user mr-1"></i>
+            {{ noteDetails.createdBy.name }}
+          </div>
+        </div>
+
+        <ul class="flex flex-row gap-3">
+          <li *ngFor="let tag of mockedTags" class="text-sm {{ tag.color }}">
+            <i class="fa-regular fa-tag mr-1"></i>
+            {{ tag.name }}
+          </li>
+        </ul>
+
+        <div class="border-grey-200 border-t border-solid pt-4">
+          <kendo-expansionpanel
+            [title]="note.name"
+            *ngFor="let note of noteFields"
+          >
+            <div *ngIf="!note.value" class="text-sm italic">Note is empty</div>
+            <ng-template #noteView>
+              {{ note.value }}
+            </ng-template>
+          </kendo-expansionpanel>
+        </div>
+
+        <div class="flex flex-row items-center justify-between gap-6">
+          <kendo-button iconClass="fa-solid fa-link" size="small"
+            >Copy Link</kendo-button
+          >
+
+          <div class="flex flex-row gap-3">
+            <kendo-button
+              themeColor="primary"
+              iconClass="fa-regular fa-trash-can"
+              fillMode="outline"
+              size="large"
+              >Delete</kendo-button
+            >
+            <kendo-button
+              themeColor="primary"
+              fillMode="outline"
+              iconClass="fa-regular fa-pen"
+              size="large"
+              >Edit / Update</kendo-button
+            >
+            <kendo-button
+              themeColor="primary"
+              size="large"
+              (click)="handleCloseWindow()"
+              >Close</kendo-button
+            >
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-window>
+</div>

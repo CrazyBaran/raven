@@ -1,4 +1,4 @@
-import { NoteData } from '@app/rvns-notes/data-access';
+import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { NotesActions } from './notes.actions';
@@ -9,6 +9,11 @@ export interface NotesState extends EntityState<NoteData> {
   // additional entities state properties
   isLoading: boolean;
   error: string | null;
+  details: {
+    isLoading: boolean;
+    isPending: boolean;
+    data: NoteWithRelationsData | null;
+  };
 }
 
 export const notesAdapter: EntityAdapter<NoteData> =
@@ -18,6 +23,11 @@ export const initialState: NotesState = notesAdapter.getInitialState({
   // additional entity state properties
   isLoading: false,
   error: null,
+  details: {
+    isLoading: false,
+    isPending: false,
+    data: null,
+  },
 });
 
 export const notesReducer = createReducer(
@@ -40,6 +50,30 @@ export const notesReducer = createReducer(
   })),
 
   on(NotesActions.clearNotes, (state) => notesAdapter.removeAll(state)),
+
+  on(NotesActions.getNoteDetails, (state) => ({
+    ...state,
+    details: {
+      ...state.details,
+      isLoading: true,
+    },
+  })),
+  on(NotesActions.getNoteDetailsSuccess, (state, { data }) => ({
+    ...state,
+    details: {
+      ...state.details,
+      isLoading: false,
+      data,
+    },
+  })),
+  on(NotesActions.getNoteDetailsFailure, (state, { error }) => ({
+    ...state,
+    error,
+    details: {
+      ...state.details,
+      isLoading: false,
+    },
+  })),
 );
 
 export const notesFeature = createFeature({
