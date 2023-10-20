@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDefined,
+  IsOptional,
   IsString,
   IsUUID,
   ValidateNested,
@@ -22,13 +23,14 @@ class FieldUpdateDto {
 
 export class UpdateNoteDto {
   @ApiProperty()
-  @IsDefined()
+  @IsOptional()
   @IsUUID(undefined, { each: true })
   public readonly tagIds?: string[];
 
   @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => FieldUpdateDto)
-  public readonly fields: FieldUpdateDto[];
+  public readonly fields?: FieldUpdateDto[];
 }
