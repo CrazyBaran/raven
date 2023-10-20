@@ -103,6 +103,7 @@ export class NotepadContentComponent implements OnInit {
     const template = this.selectedTemplate();
 
     Object.keys(this.notepadForm.controls.notes.controls).forEach((key) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this.notepadForm.controls.notes as any).removeControl(key);
     });
 
