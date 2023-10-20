@@ -12,8 +12,10 @@ export interface CreateTagOptions {
   organisationId?: string;
 }
 
-export interface UpdateTagOptions
-  extends Omit<CreateTagOptions, 'type' | 'userId' | 'organisationId'> {}
+export type UpdateTagOptions = Omit<
+  CreateTagOptions,
+  'type' | 'userId' | 'organisationId'
+>;
 
 @Injectable()
 export class TagsService {

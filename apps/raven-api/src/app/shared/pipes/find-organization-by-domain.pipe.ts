@@ -2,16 +2,19 @@ import { Like, Repository } from 'typeorm';
 
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrganisationEntity } from '../entities/organisation.entity';
+import { OrganisationEntity } from '../../api/rvn-opportunities/entities/organisation.entity';
 
 @Injectable()
 export class FindOrganizationByDomainPipe
-  implements PipeTransform<string, Promise<OrganisationEntity>>
+  implements PipeTransform<string | undefined, Promise<OrganisationEntity>>
 {
   @InjectRepository(OrganisationEntity)
-  protected readonly organizationRepository: Repository<OrganisationEntity | null>;
+  protected readonly organizationRepository: Repository<OrganisationEntity>;
 
-  public async transform(domain: string): Promise<OrganisationEntity | null> {
+  public async transform(domain?: string): Promise<OrganisationEntity | null> {
+    if (!domain) {
+      return null;
+    }
     const organisation = await this.organizationRepository.find({
       where: { domains: Like(`%${domain}%`) },
     });
