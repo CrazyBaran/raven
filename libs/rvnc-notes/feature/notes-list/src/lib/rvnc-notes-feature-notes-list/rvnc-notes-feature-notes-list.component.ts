@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { HeaderComponent, LoaderComponent } from '@app/rvnc-core-ui';
-import { NoteStoreFacadeService } from '@app/rvnc-notes/data-access';
+import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import { NotesTableComponent } from '@app/rvnc-notes/ui';
 
 @Component({
@@ -22,7 +22,7 @@ export class RvncNotesFeatureNotesListComponent implements OnInit {
   public readonly notes$ = this.noteStoreFacadeService.notes$;
 
   public constructor(
-    private readonly noteStoreFacadeService: NoteStoreFacadeService,
+    private readonly noteStoreFacadeService: NoteStoreFacade,
   ) {}
 
   public ngOnInit(): void {

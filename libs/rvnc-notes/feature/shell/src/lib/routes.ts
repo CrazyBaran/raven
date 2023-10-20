@@ -9,14 +9,14 @@ import {
   notesFeatureKey,
   notesReducer,
   NotesService,
-  NoteStoreFacadeService,
+  NoteStoreFacade,
 } from '@app/rvnc-notes/data-access';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
 const notesProviders: Array<Provider | EnvironmentProviders> = [
   NotesService,
-  NoteStoreFacadeService,
+  NoteStoreFacade,
   importProvidersFrom(
     StoreModule.forFeature(notesFeatureKey, notesReducer),
     EffectsModule.forFeature([NotesEffects]),
@@ -34,13 +34,6 @@ export const NOTES_ROUTES: Routes = [
         loadComponent: () =>
           import('@app/rvnc-notes/feature/notes-list').then(
             (m) => m.RvncNotesFeatureNotesListComponent,
-          ),
-      },
-      {
-        path: 'notepad',
-        loadComponent: () =>
-          import('@app/rvnc-notes/feature/notepad').then(
-            (m) => m.RvncNotesFeatureNotepadComponent,
           ),
       },
     ],

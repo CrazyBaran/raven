@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PageInfoHeaderComponent } from '../page-info-header/page-info-header.component';
 
 @Component({
@@ -8,5 +8,6 @@ import { PageInfoHeaderComponent } from '../page-info-header/page-info-header.co
   imports: [CommonModule, PageInfoHeaderComponent],
   templateUrl: './page-layout.component.html',
   styleUrls: ['./page-layout.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutComponent {}

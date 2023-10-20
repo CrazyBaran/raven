@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoteStoreFacadeService } from '@app/rvnc-notes/data-access';
+import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
 import { RvncNotesFeatureNotesListComponent } from './rvnc-notes-feature-notes-list.component';
 
@@ -10,7 +10,7 @@ describe('RvncNotesFeatureNotesListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RvncNotesFeatureNotesListComponent],
-      providers: [NoteStoreFacadeService, provideMockStore({})],
+      providers: [NoteStoreFacade, provideMockStore({})],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RvncNotesFeatureNotesListComponent);

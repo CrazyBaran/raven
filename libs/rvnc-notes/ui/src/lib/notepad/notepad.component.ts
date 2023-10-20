@@ -46,6 +46,9 @@ export type Tab = {
   providers: [DynamicControlFocusHandler],
 })
 export class NotepadComponent implements OnInit {
+  @Input() public notepadFormGroup = new FormGroup({});
+  @Input() public hideTabs = false;
+
   protected formConfig: WritableSignal<Record<string, DynamicControl>> = signal(
     {},
   );
@@ -55,7 +58,6 @@ export class NotepadComponent implements OnInit {
     disabledTabIds: [] as string[],
   });
 
-  protected formGroup = new FormGroup({});
   protected controlResolver = inject(DynamicControlResolver);
   protected readonly comparatorFn = comparatorFn;
   protected dynamicControlFocusHandler = inject(DynamicControlFocusHandler);
@@ -65,7 +67,7 @@ export class NotepadComponent implements OnInit {
     return Object.keys(formConfig).map(
       (key): Tab => ({
         id: key,
-        label: formConfig[key].label,
+        label: formConfig[key].name,
         state: (this.state().disabledTabIds.includes(key)
           ? 'disabled'
           : this.state().activeTabId === key
@@ -112,6 +114,8 @@ export class NotepadComponent implements OnInit {
   }
 
   public toggleDisabled(tab: Tab, currentTabIndex: number): void {
+    const isDisabled = this.state().disabledTabIds.includes(tab.id);
+
     //set as active the closest tab that are not disabled to the bottom or top if not exists
     if (tab.id === this.state().activeTabId) {
       const tabs = this.tabs();
@@ -127,6 +131,12 @@ export class NotepadComponent implements OnInit {
         .find((t) => !this.state().disabledTabIds.includes(t.id));
 
       this.setActiveTab(notDisabledNextTab || notDisabledPrevTab || tabs[0]);
+    }
+
+    if (isDisabled) {
+      setTimeout(() => {
+        this.setActiveTab(tab);
+      }, 5);
     }
 
     this.state.update((state) => ({

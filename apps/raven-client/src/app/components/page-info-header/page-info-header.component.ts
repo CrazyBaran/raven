@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-page-info-header',
@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './page-info-header.component.html',
   styleUrls: ['./page-info-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageInfoHeaderComponent {}

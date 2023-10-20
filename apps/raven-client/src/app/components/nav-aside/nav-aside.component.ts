@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  signal,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -14,6 +19,7 @@ import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
   templateUrl: './nav-aside.component.html',
   styleUrls: ['./nav-aside.component.scss'],
   animations: [collapseAnimation],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavAsideComponent {
   @Input() public routes: UiNavAsideRoute[];
@@ -59,7 +65,10 @@ export class NavAsideComponent {
 
   public handleOpenSubRoute(route: UiNavAsideRoute, navigate?: boolean): void {
     if (!route.subRoutes && navigate) {
-      this.router.navigateByUrl(route.path);
+      if (route.path) {
+        this.router.navigateByUrl(route.path);
+      }
+
       this.handleToggleSidebar(false);
       return;
     }

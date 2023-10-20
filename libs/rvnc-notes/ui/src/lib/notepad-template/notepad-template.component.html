@@ -1,5 +1,9 @@
 <div
-  class="grid h-full grid-cols-[160px_1fr] grid-rows-[1fr] gap-6 overflow-hidden"
+  class="grid h-full grid-rows-[1fr] overflow-hidden"
+  [ngClass]="{
+    'grid-cols-[160px_1fr] gap-6': !hideTabs,
+    'grid-cols-[0px_1fr]': hideTabs
+  }"
 >
   <div class="flex h-full flex-col gap-3.5 overflow-y-auto overflow-x-hidden">
     <ng-content select="[tabs]"></ng-content>
