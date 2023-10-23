@@ -26,6 +26,7 @@ import { CommModule } from '../api/rvn-comm/comm.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
 import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import { PipelineModule } from '../api/rvn-pipeline/pipeline.module';
+import { StorageAccountModule } from '../api/rvn-storage-account/storage-account.module';
 import { TagsModule } from '../api/rvn-tags/tags.module';
 import { TeamsModule } from '../api/rvn-teams/teams.module';
 import { TemplatesModule } from '../api/rvn-templates/templates.module';
@@ -78,7 +79,7 @@ import { TransformInterceptor } from './transform.interceptor';
     NotesModule,
     TagsModule,
     PipelineModule,
-    //StorageAccountModule,
+    StorageAccountModule,
   ],
   providers: [
     // core
