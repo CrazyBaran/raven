@@ -88,7 +88,8 @@ export class NotepadComponent implements OnInit {
     );
   });
 
-  protected itemsRendered = new Subject<unknown[]>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected itemsRendered = new Subject<any[]>();
   protected startRender = new Subject<void>();
 
   protected visible = toSignal(
