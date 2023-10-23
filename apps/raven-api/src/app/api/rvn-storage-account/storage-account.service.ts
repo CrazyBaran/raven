@@ -30,4 +30,16 @@ export class StorageAccountService {
       sasToken: sasToken,
     };
   }
+
+  public async getSasTokenForFile(
+    containerName: string,
+    fileName: string,
+  ): Promise<string> {
+    return await this.storageAccountClient.generateSASUrl(
+      containerName,
+      fileName,
+      { read: true },
+      600,
+    );
+  }
 }

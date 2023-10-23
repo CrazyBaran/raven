@@ -1,4 +1,14 @@
-import { Body, Controller, Next, Post, Put, Req, Res } from '@nestjs/common';
+import { Public } from '@app/rvns-api';
+import {
+  Body,
+  Controller,
+  Get,
+  Next,
+  Post,
+  Put,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { NextFunction, Request, Response } from 'express';
 import { CreateSasTokenDto } from './dto/create-sas-token.dto';
@@ -23,17 +33,39 @@ export class StorageAccountController {
     return this.storageAccountProxyMiddleware.use(req, res, next);
   }
 
+  @Public()
+  @Get('*')
+  public async proxyForDownload(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ): Promise<void> {
+    return this.storageAccountProxyMiddleware.use(req, res, next);
+  }
+
   @Post()
   public async createSasToken(
     @Body() dto: CreateSasTokenDto,
   ): Promise<SasTokenDto> {
-    const sasToken = await this.storageAccountService.createStorageAccountFile(
-      'default',
-      dto.fileName,
-    );
-    return {
-      sasToken: sasToken.sasToken,
-      fileName: sasToken.storageAccountFile.fileName,
-    } as SasTokenDto;
+    if (dto.permission === 'write') {
+      const sasToken =
+        await this.storageAccountService.createStorageAccountFile(
+          'default',
+          dto.fileName,
+        );
+      return {
+        sasToken: sasToken.sasToken,
+        fileName: sasToken.storageAccountFile.fileName,
+      } as SasTokenDto;
+    } else {
+      const sasToken = await this.storageAccountService.getSasTokenForFile(
+        'default',
+        dto.fileName,
+      );
+      return {
+        sasToken,
+        fileName: dto.fileName,
+      } as SasTokenDto;
+    }
   }
 }
