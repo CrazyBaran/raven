@@ -63,11 +63,12 @@ export class NavAsideComponent {
     this.openRoute = null;
   }
 
-  public handleOpenSubRoute(route: UiNavAsideRoute, navigate?: boolean): void {
+  public async handleOpenSubRoute(
+    route: UiNavAsideRoute,
+    navigate?: boolean,
+  ): Promise<void> {
     if (!route.subRoutes && navigate) {
-      if (route.path) {
-        this.router.navigateByUrl(route.path);
-      }
+      await this.router.navigateByUrl(route.path);
 
       this.handleToggleSidebar(false);
       return;
