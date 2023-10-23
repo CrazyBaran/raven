@@ -32,6 +32,10 @@ const meta: Meta<DynamicInputComponent> = {
             controlKey: 'textInputKey',
             config: {
               label: 'test',
+              id: 'test',
+              order: 1,
+              name: 'label',
+              type: 'richText',
               placeholder: 'Write something here',
             },
           } as ControlData,
@@ -58,6 +62,10 @@ export const Required: Story = {
             controlKey: 'textInputKey',
             config: {
               label: 'test',
+              id: 'test',
+              order: 1,
+              name: 'label',
+              type: 'richText',
               placeholder: 'Write something here',
               validators: {
                 required: true,

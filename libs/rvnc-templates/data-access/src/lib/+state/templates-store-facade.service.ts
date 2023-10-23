@@ -25,6 +25,10 @@ export class TemplatesStoreFacade {
     this.store.dispatch(TemplateActions.getTemplates());
   }
 
+  public getTemplatesIfNotLoaded(): void {
+    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
+  }
+
   public getTemplate(id: string): void {
     this.store.dispatch(TemplateActions.getTemplate({ id }));
   }

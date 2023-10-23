@@ -75,8 +75,9 @@ export class TemplatesService {
     private readonly fieldDefinitionsRepository: Repository<FieldDefinitionEntity>,
   ) {}
 
-  public async list(): Promise<TemplateEntity[]> {
+  public async list(type?: TemplateTypeEnum): Promise<TemplateEntity[]> {
     return this.templatesRepository.find({
+      where: type ? { type } : {},
       relations: [
         'tabs',
         'tabs.fieldGroups',
@@ -169,7 +170,13 @@ export class TemplatesService {
   }
 
   public async removeTab(tab: TabEntity): Promise<void> {
-    await this.tabsRepository.remove(tab);
+    await this.tabsRepository.manager.transaction(async (manager) => {
+      for (const group of tab.fieldGroups) {
+        await manager.remove(group.fieldDefinitions);
+      }
+      await manager.remove(tab.fieldGroups);
+      await manager.remove(tab);
+    });
   }
 
   public async createFieldDefinition(
@@ -231,6 +238,7 @@ export class TemplatesService {
       name: entity.name,
       order: entity.order,
       tabId: entity.tabId,
+      tabName: entity.tab?.name,
       fieldDefinitions: entity.fieldDefinitions?.map(
         this.fieldDefinitionEntityToFieldDefinitionData.bind(this),
       ),

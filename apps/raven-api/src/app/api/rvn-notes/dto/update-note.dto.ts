@@ -1,25 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsDefined,
-  IsOptional,
-  IsString,
-  IsUUID,
-  ValidateNested,
-} from 'class-validator';
-
-class FieldUpdateDto {
-  @ApiProperty()
-  @IsDefined()
-  @IsUUID()
-  public readonly id: string;
-
-  @ApiProperty()
-  @IsDefined()
-  @IsString()
-  public readonly value: string;
-}
+import { IsArray, IsOptional, IsUUID, ValidateNested } from 'class-validator';
+import { FieldUpdateDto } from './field-update.dto';
 
 export class UpdateNoteDto {
   @ApiProperty()

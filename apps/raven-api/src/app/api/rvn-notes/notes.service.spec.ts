@@ -85,6 +85,7 @@ describe('NotesService', () => {
         userEntity,
         templateEntity: null,
         tags: [],
+        fields: [],
       });
 
       expect(mockNoteRepository.save).toHaveBeenCalledWith(note);

@@ -5,6 +5,7 @@ import {
   Directive,
   ElementRef,
   HostBinding,
+  OnDestroy,
   OnInit,
   StaticProvider,
   computed,
@@ -34,6 +35,9 @@ export const comparatorFn = (
   b: KeyValue<string, DynamicControl>,
 ): number => a.value.order - b.value.order;
 
+export const comparatorFn2 = (a: DynamicControl, b: DynamicControl): number =>
+  a.order - b.order;
+
 export const sharedDynamicControlDeps = [
   CommonModule,
   FormFieldModule,
@@ -48,7 +52,9 @@ export const dynamicControlProvider: StaticProvider = {
 };
 
 @Directive()
-export abstract class BaseDynamicControl implements OnInit, AfterViewInit {
+export abstract class BaseDynamicControl
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @HostBinding('class') protected hostClass = 'form-field block';
 
   protected control = inject(CONTROL_DATA);
@@ -91,6 +97,12 @@ export abstract class BaseDynamicControl implements OnInit, AfterViewInit {
           }, 25);
         }
       });
+  }
+
+  public ngOnDestroy(): void {
+    (this.parentGroupDir.control as FormGroup).removeControl(
+      this.control.controlKey,
+    );
   }
 
   private resolveValidators({

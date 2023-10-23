@@ -5,6 +5,7 @@ import {
   computed,
   HostBinding,
   Input,
+  OnInit,
   signal,
   ViewChild,
   ViewEncapsulation,
@@ -28,7 +29,7 @@ import { EditorComponent, EditorModule } from '@progress/kendo-angular-editor';
 })
 export class DynamicRichTextComponent
   extends BaseDynamicControl
-  implements AfterViewInit
+  implements OnInit, AfterViewInit
 {
   // setup observer for elementRef
 

@@ -1,4 +1,4 @@
- {
+{
   "name": "raven",
   "version": "0.0.1",
   "scripts": {
@@ -116,6 +116,7 @@
     "@progress/kendo-svg-icons": "^2.0.0",
     "@progress/kendo-theme-default": "^7.0.1",
     "@progress/kendo-theme-material": "^6.7.0",
+    "@rx-angular/template": "^16.1.1",
     "@sentry/node": "^7.66.0",
     "@sentry/tracing": "^7.66.0",
     "@taskforcesh/bullmq-pro": "^6.3.4",

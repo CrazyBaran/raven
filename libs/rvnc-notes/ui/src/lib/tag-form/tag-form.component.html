@@ -1,0 +1,42 @@
+<kendo-dialog-titlebar> Add New Tag</kendo-dialog-titlebar>
+<div class="p-10">
+  <div class="text-primary-600 mb-4 flex h-5 items-center gap-2">
+    <i class="fa-regular fa-tag"></i>
+    <p class="text-sm">{{ name() }}</p>
+  </div>
+
+  <kendo-buttongroup
+    selection="single"
+    class="w-full justify-between gap-2 py-3"
+  >
+    <button
+      *ngFor="let button of buttons"
+      size="small"
+      kendoButton
+      [toggleable]="true"
+      [selected]="button.selected!"
+      (click)="selectedChange(button.id)"
+    >
+      <span>
+        {{ button.text }}
+      </span>
+    </button>
+  </kendo-buttongroup>
+
+  <div class="mt-4 flex flex-col gap-4" [formGroup]="tagForm">
+    <ng-container *ngFor="let control of dynamicData(); trackBy: trackByFn">
+      <ng-container
+        [ngComponentOutlet]="controlResolver.resolve(control.type) | async"
+        [ngComponentOutletInjector]="control.id | controlInjector: control"
+      ></ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<kendo-dialog-actions>
+  <button kendoButton (click)="dialog.close()">Cancel</button>
+  <button kendoButton (click)="submit()" themeColor="primary">
+    <!--    [disabled]="controlKeys?.length === 0 || !tagForm.valid"-->
+    Submit
+  </button>
+</kendo-dialog-actions>

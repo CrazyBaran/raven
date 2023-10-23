@@ -9,13 +9,19 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { LoaderComponent } from '@app/rvnc-core-ui';
 import {
   ControlInjectorPipe,
   DynamicControl,
   DynamicControlFocusHandler,
   comparatorFn,
 } from '@app/rvnc-notes/util';
+import { RxFor } from '@rx-angular/template/for';
+import { RxIf } from '@rx-angular/template/if';
+import { RxUnpatch } from '@rx-angular/template/unpatch';
+import { Subject, map, merge } from 'rxjs';
 import { DynamicControlResolver } from '../dynamic-control-resolver.service';
 import { NotepadTemplateComponent } from '../notepad-template/notepad-template.component';
 import {
@@ -39,6 +45,10 @@ export type Tab = {
     ReactiveFormsModule,
     ControlInjectorPipe,
     NotepadTemplateComponent,
+    RxFor,
+    RxUnpatch,
+    LoaderComponent,
+    RxIf,
   ],
   templateUrl: './notepad.component.html',
   styleUrls: ['./notepad.component.scss'],
@@ -78,6 +88,17 @@ export class NotepadComponent implements OnInit {
     );
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected itemsRendered = new Subject<any[]>();
+  protected startRender = new Subject<void>();
+
+  protected visible = toSignal(
+    merge(
+      this.itemsRendered.pipe(map(() => true)),
+      this.startRender.pipe(map(() => false)),
+    ),
+  );
+
   protected visibleControls = computed(() => {
     const formConfig = this.formConfig();
     //remove disabled keys from object
@@ -93,6 +114,7 @@ export class NotepadComponent implements OnInit {
   });
 
   @Input() public set config(value: Record<string, DynamicControl>) {
+    this.startRender.next();
     this.formConfig.set({
       TITLE: {
         name: 'Note Title',
