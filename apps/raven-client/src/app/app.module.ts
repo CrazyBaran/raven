@@ -13,12 +13,12 @@ import {
 } from '@azure/msal-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { ErrorInterceptor, RvncAuthModule } from '@app/rvnc-auth';
 import { ENVIRONMENT } from '@app/rvnc-environment';
 
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
+import { WindowModule } from '@progress/kendo-angular-dialog';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -69,10 +69,11 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
     ),
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-      logOnly: environment.production,
-    }),
+    WindowModule,
+    // StoreDevtoolsModule.instrument({
+    //   maxAge: 25,
+    //   logOnly: environment.production,
+    // }),
   ],
   providers: [
     AppRoutingModule,

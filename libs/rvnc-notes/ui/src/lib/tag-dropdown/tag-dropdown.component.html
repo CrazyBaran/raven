@@ -1,0 +1,60 @@
+<kendo-dropdowntree
+  #dropDownTree
+  kendoDropDownTreeExpandable
+  [kendoDropDownTreeFlatBinding]="filteredData()"
+  parentIdField="companyId"
+  [filterable]="true"
+  placeholder="Select tag..."
+  valueField="id"
+  textField="name"
+  [expandOnFilter]="filterExpandSettings"
+  (filterChange)="filterValue.set($event)"
+  fillMode="outline"
+  (clickOutside)="dropDownTree.toggle(false)"
+  (close)="$event.preventDefault()"
+>
+  <ng-template kendoDropDownTreeHeaderTemplate>
+    <div class="flex flex-col gap-3 px-3 pb-1 pt-2">
+      <kendo-buttongroup
+        selection="single"
+        class="w-full justify-between gap-1"
+      >
+        <button
+          *ngFor="let button of selectedButtons()"
+          size="small"
+          kendoButton
+          [toggleable]="true"
+          [selected]="button.selected!"
+          (selectedChange)="selectedChange(button)"
+        >
+          <span>
+            {{ button.text }}
+          </span>
+        </button>
+      </kendo-buttongroup>
+      <div
+        *ngIf="filterValue().trim()"
+        class="selected-item-shadow flex gap-2 px-1.5 py-0.5"
+      >
+        <p class="grow">{{ filterValue() }} (Add new tag)</p>
+        <kendo-button
+          class="!p-0"
+          fillMode="flat"
+          iconClass="fa-solid fa-plus"
+          (click)="onOpenTagDialog(); dropDownTree.toggle(false)"
+        ></kendo-button>
+      </div>
+      <p class="font-bold">{{ type() | titlecase }}</p>
+    </div>
+  </ng-template>
+
+  <ng-template kendoDropDownTreeNodeTemplate let-dataItem let-index="index">
+    <div
+      class="align-center flex px-2 py-1"
+      (click)="itemClicked(dataItem); $event.stopPropagation()"
+    >
+      <span> {{ dataItem.name }}</span>
+      <!--      <i class="fa-regular fa-tag ml-20"></i>-->
+    </div>
+  </ng-template>
+</kendo-dropdowntree>

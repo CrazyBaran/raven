@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { NotepadComponent } from './notepad.component';
 
+import { DynamicControl } from '@app/rvnc-notes/util';
 import { componentWrapperDecorator } from '@storybook/angular';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
@@ -22,42 +23,42 @@ export const Primary: Story = {
   args: {
     config: {
       title: {
-        controlType: 'input',
+        type: 'text',
         label: 'Title',
         order: 1,
         value: '',
       },
       description: {
-        controlType: 'richText',
+        type: 'richText',
         label: 'Description',
         order: 2,
         value: '',
       },
       content: {
-        controlType: 'richText',
+        type: 'richText',
         label: 'Content',
         order: 3,
         value: '',
       },
       market: {
-        controlType: 'input',
+        type: 'text',
         label: 'Market/Competition',
         order: 5,
         value: '',
       },
       product: {
-        controlType: 'richText',
+        type: 'richText',
         label: 'Product/Tech',
         order: 6,
         value: '',
       },
       team: {
-        controlType: 'richText',
+        controlType: 'r',
         label: 'Team/Founding Story',
         order: 7,
         value: '',
       },
-    },
+    } as any as Record<string, DynamicControl>,
   },
 };
 

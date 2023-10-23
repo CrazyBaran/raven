@@ -1,16 +1,24 @@
 import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   OnInit,
+  ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { ComponentData } from '@app/rvnc-dynamic-renderer/data-access';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
-import { NotepadComponent } from '@app/rvnc-notes/ui';
+import {
+  NotepadComponent,
+  TagComponent,
+  TagDropdownComponent,
+  TagFormComponent,
+} from '@app/rvnc-notes/ui';
 import { DynamicControl, OnResizeDirective } from '@app/rvnc-notes/util';
 import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
 import { NoteTagData } from '@app/rvns-notes/data-access';
@@ -18,6 +26,7 @@ import { TemplateWithRelationsData } from '@app/rvns-templates';
 import { Actions, ofType } from '@ngrx/effects';
 import {
   DialogModule,
+  DialogService,
   WindowModule,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
@@ -55,6 +64,8 @@ const defaultTemplate: Record<string, DynamicControl> = {
     DropDownTreesModule,
     MultiSelectModule,
     DialogModule,
+    TagDropdownComponent,
+    TagComponent,
   ],
   templateUrl: './notepad-content.component.html',
   styleUrls: ['./notepad-content.component.scss'],
@@ -97,6 +108,13 @@ export class NotepadContentComponent implements OnInit {
     switchMap((id) => (id ? this.templateFacade.template$(id) : of(undefined))),
   );
 
+  protected tags: {
+    name: string;
+    type: string;
+  }[] = [];
+
+  protected templateLoading = toSignal(this.templateFacade.isLoading$);
+
   protected selectedTemplate = toSignal(this.selectedTemplate$);
 
   protected config = computed((): Dictionary<DynamicControl> => {
@@ -120,12 +138,19 @@ export class NotepadContentComponent implements OnInit {
   protected isDefaultTemplate = computed(
     () => this.selectedTemplateId() === this.defaultTemplate.id,
   );
+  protected dialogService = inject(DialogService);
 
-  protected defaultTag = { text: 'Choose Tag', id: 0 };
   protected defaultPerson = { text: 'Choose Person', id: 0 };
 
+  public get hasChanges(): boolean {
+    return (
+      _.values(this.notepadForm.controls.notes.value).some(Boolean) ||
+      this.tags.length > 0
+    );
+  }
+
   public ngOnInit(): void {
-    this.templateFacade.getTemplates();
+    this.templateFacade.getTemplatesIfNotLoaded();
   }
 
   public submit(): void {
@@ -149,6 +174,39 @@ export class NotepadContentComponent implements OnInit {
         take(1),
       )
       .subscribe(() => this.windowRef?.close());
+  }
+
+  @ViewChild('container', { read: ViewContainerRef })
+  public containerRef: ViewContainerRef;
+
+  public openTagDialog($event: { type: string; search: string }): void {
+    const dialogRef = this.dialogService.open({
+      content: TagFormComponent,
+      appendTo: this.containerRef,
+    });
+
+    dialogRef.content.instance.inputData = $event;
+
+    dialogRef.result.subscribe((result) => {
+      console.log('create tag', result);
+
+      if ('submitted' in result) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const tag = result.submitted as any;
+        this.tags.push({
+          type: 'type' in tag ? tag.type : '',
+          name: 'name' in tag ? tag.name : '',
+        });
+      }
+    });
+  }
+
+  public addTag($event: any) {
+    this.tags.push($event);
+  }
+
+  public removeTag(tag: { name: string; type: string }) {
+    this.tags = this.tags.filter((t) => t.name !== tag.name);
   }
 }
 
