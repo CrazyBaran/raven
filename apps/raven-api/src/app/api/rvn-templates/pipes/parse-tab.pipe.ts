@@ -4,4 +4,5 @@ import { TabEntity } from '../entities/tab.entity';
 export class ParseTabPipe extends AbstractEntityPipe<TabEntity> {
   public readonly entityClass = TabEntity;
   public readonly resource = 'tab';
+  public readonly relations = ['fieldGroups', 'fieldGroups.fieldDefinitions'];
 }

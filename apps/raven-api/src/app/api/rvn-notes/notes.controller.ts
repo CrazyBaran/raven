@@ -71,6 +71,7 @@ export class NotesController {
         userEntity,
         templateEntity: templateEntity as TemplateEntity,
         tags,
+        fields: dto.fields,
       }),
     );
   }
