@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { NotepadComponent } from './notepad.component';
 
-import { DynamicControl } from '@app/rvnc-notes/util';
 import { componentWrapperDecorator } from '@storybook/angular';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { DynamicControl } from '../../../../util/src';
 
 const meta: Meta<NotepadComponent> = {
   component: NotepadComponent,
@@ -58,7 +59,7 @@ export const Primary: Story = {
         order: 7,
         value: '',
       },
-    } as any as Record<string, DynamicControl>,
+    } as unknown as Record<string, DynamicControl>,
   },
 };
 

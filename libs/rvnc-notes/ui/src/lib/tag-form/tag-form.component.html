@@ -15,7 +15,7 @@
       kendoButton
       [toggleable]="true"
       [selected]="button.selected!"
-      (click)="selectedChange(button)"
+      (click)="selectedChange(button.id)"
     >
       <span>
         {{ button.text }}

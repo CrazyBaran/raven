@@ -88,7 +88,7 @@ export class NotepadComponent implements OnInit {
     );
   });
 
-  protected itemsRendered = new Subject<any[]>();
+  protected itemsRendered = new Subject<unknown[]>();
   protected startRender = new Subject<void>();
 
   protected visible = toSignal(

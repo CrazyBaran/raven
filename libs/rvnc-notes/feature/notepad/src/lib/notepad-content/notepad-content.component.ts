@@ -14,6 +14,7 @@ import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { ComponentData } from '@app/rvnc-dynamic-renderer/data-access';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import {
+  DropdownTag,
   NotepadComponent,
   TagComponent,
   TagDropdownComponent,
@@ -73,6 +74,9 @@ const defaultTemplate: Record<string, DynamicControl> = {
   providers: [],
 })
 export class NotepadContentComponent implements OnInit {
+  @ViewChild('container', { read: ViewContainerRef })
+  public containerRef: ViewContainerRef;
+
   protected templateFacade = inject(TemplatesStoreFacade);
   protected noteFacade = inject(NoteStoreFacade);
   protected actions$ = inject(Actions);
@@ -176,9 +180,6 @@ export class NotepadContentComponent implements OnInit {
       .subscribe(() => this.windowRef?.close());
   }
 
-  @ViewChild('container', { read: ViewContainerRef })
-  public containerRef: ViewContainerRef;
-
   public openTagDialog($event: { type: string; search: string }): void {
     const dialogRef = this.dialogService.open({
       content: TagFormComponent,
@@ -201,11 +202,11 @@ export class NotepadContentComponent implements OnInit {
     });
   }
 
-  public addTag($event: any) {
+  public addTag($event: DropdownTag): void {
     this.tags.push($event);
   }
 
-  public removeTag(tag: { name: string; type: string }) {
+  public removeTag(tag: { name: string; type: string }): void {
     this.tags = this.tags.filter((t) => t.name !== tag.name);
   }
 }

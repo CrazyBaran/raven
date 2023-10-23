@@ -21,7 +21,6 @@ import {
 } from '@progress/kendo-angular-dialog';
 import { debounceTime, map, startWith } from 'rxjs';
 import { DynamicControlResolver } from '../dynamic-control-resolver.service';
-import { IButton } from '../tag-dropdown/tag-dropdown.component';
 
 const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
   company: [
@@ -137,14 +136,15 @@ export class TagFormComponent
     ),
   );
 
-  protected buttons: IButton[] = [
+  protected buttons = [
     { text: 'Company', id: 'company', selected: true },
     {
       text: 'Industry',
       id: 'industry',
+      selected: false,
     },
-    { text: 'Investor', id: 'investor' },
-    { text: 'Business Model', id: 'businessModel' },
+    { text: 'Investor', id: 'investor', selected: false },
+    { text: 'Business Model', id: 'businessModel', selected: false },
   ];
 
   public constructor(public override dialog: DialogRef) {
@@ -176,8 +176,8 @@ export class TagFormComponent
   protected trackByFn = (index: number, item: DynamicControl): string =>
     item.id;
 
-  protected selectedChange(btn: IButton): void {
-    this.dynamicData.set(this.formDictioanry[btn.id]);
+  protected selectedChange(id: string): void {
+    this.dynamicData.set(this.formDictioanry[id]);
   }
 
   protected submit(): void {

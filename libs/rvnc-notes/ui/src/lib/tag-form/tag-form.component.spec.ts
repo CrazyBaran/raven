@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DialogRef } from '@progress/kendo-angular-dialog';
 import { TagFormComponent } from './tag-form.component';
 
 describe('TagFormComponent', () => {
@@ -8,6 +9,12 @@ describe('TagFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TagFormComponent],
+      providers: [
+        {
+          provide: DialogRef,
+          useValue: {},
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TagFormComponent);

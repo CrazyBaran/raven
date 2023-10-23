@@ -4,81 +4,26 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  Injectable,
-  NgZone,
-  Output,
   computed,
+  EventEmitter,
+  Output,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { FilterExpandSettings } from '@progress/kendo-angular-treeview';
-import {
-  Subject,
-  debounceTime,
-  distinctUntilChanged,
-  fromEvent,
-  startWith,
-  tap,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
+import { ClickOutsideDirective } from './click-outside.directive';
 
-export interface IButton {
-  text: string;
-  selected?: boolean;
-  id: string;
-}
-
-@Injectable({ providedIn: 'root' })
-export class DocumentClickService {
-  public documentClick$ = new Subject<Event>();
-
-  public constructor(private ngZone: NgZone) {
-    fromEvent(document, 'click')
-      .pipe(
-        takeUntilDestroyed(),
-        tap((event) => this.documentClick$.next(event)),
-      )
-      .subscribe();
-  }
-}
-
-@Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[clickOutside]',
-  standalone: true,
-})
-export class ClickOutsideDirective {
-  @Output() public clickOutside = new EventEmitter<void>();
-
-  public constructor(
-    private elementRef: ElementRef,
-    private zone: NgZone,
-    private documentClickService: DocumentClickService,
-  ) {
-    this.zone.runOutsideAngular(() => {
-      this.documentClickService.documentClick$
-        .pipe(
-          takeUntilDestroyed(),
-          tap((event) => {
-            if (!this.elementRef.nativeElement.contains(event.target)) {
-              this.zone.run(() => {
-                this.clickOutside.emit();
-              });
-            }
-          }),
-        )
-        .subscribe();
-    });
-  }
-
-  private static documentClick$ = fromEvent(document, 'click');
-}
+export type DropdownTag = {
+  id: number;
+  name: string;
+  companyId?: number | null;
+  type: string;
+};
 
 @Component({
   selector: 'app-tag-dropdown',
@@ -101,7 +46,7 @@ export class TagDropdownComponent {
     search: string;
   }>();
 
-  @Output() public tagClicked = new EventEmitter<any>();
+  @Output() public tagClicked = new EventEmitter<DropdownTag>();
 
   public data = signal([
     { id: 2, name: 'Andrew Fuller', companyId: null, type: 'company' },
@@ -139,7 +84,7 @@ export class TagDropdownComponent {
 
   protected type = signal('company');
 
-  protected buttons: IButton[] = [
+  protected buttons = [
     { text: 'Company', id: 'company' },
     {
       text: 'Industry',
@@ -183,11 +128,11 @@ export class TagDropdownComponent {
     maxAutoExpandResults: 4,
   };
 
-  public selectedChange(btn: IButton): void {
-    this.type.set(btn.id);
+  public selectedChange(id: string): void {
+    this.type.set(id);
   }
 
-  public itemClicked(dataItem: { id: number; companyId: string }): void {
+  public itemClicked(dataItem: DropdownTag): void {
     if (this.type() === 'company' && !dataItem.companyId) {
       return;
     }
