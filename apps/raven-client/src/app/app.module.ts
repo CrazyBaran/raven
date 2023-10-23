@@ -18,6 +18,7 @@ import { ErrorInterceptor, RvncAuthModule } from '@app/rvnc-auth';
 import { ENVIRONMENT } from '@app/rvnc-environment';
 
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { WindowModule } from '@progress/kendo-angular-dialog';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -70,10 +71,10 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
     WindowModule,
-    // StoreDevtoolsModule.instrument({
-    //   maxAge: 25,
-    //   logOnly: environment.production,
-    // }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
   ],
   providers: [
     AppRoutingModule,
