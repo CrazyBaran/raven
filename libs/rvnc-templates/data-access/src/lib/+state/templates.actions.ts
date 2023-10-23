@@ -11,5 +11,6 @@ export const TemplateActions = createActionGroup({
     'Get Template': props<{ id: TemplateData['id'] }>(),
     'Get Template Success': props<{ data: TemplateWithRelationsData }>(),
     'Get Template Failure': props<{ error: string }>(),
+    'Get Template If Not Loaded': emptyProps(),
   },
 });

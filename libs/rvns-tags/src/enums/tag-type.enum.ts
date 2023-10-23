@@ -1,3 +1,15 @@
+export const tagTypes = [
+  'general',
+  'people',
+  'company',
+  'industry',
+  'opportunity',
+  'investor',
+  'business-model',
+] as const;
+
+export type TagType = (typeof tagTypes)[number];
+
 export enum TagTypeEnum {
   General = 'general',
   People = 'people',

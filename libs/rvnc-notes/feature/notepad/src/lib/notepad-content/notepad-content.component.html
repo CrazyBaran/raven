@@ -1,5 +1,5 @@
 <form class="k-form flex h-full flex-col gap-4" [formGroup]="notepadForm">
-  <div class="grid grid-cols-[1fr_2fr_1fr] gap-2">
+  <div class="grid grid-cols-[1fr_360px_1fr] gap-2">
     <!--        TEMPLATES       -->
     <kendo-dropdownlist
       formControlName="template"
@@ -7,17 +7,16 @@
       [textField]="templateDropdownConfig.textField"
       [defaultItem]="defaultTemplate"
       [valueField]="templateDropdownConfig.valueField"
+      [loading]="!templateLoading()!"
       fillMode="outline"
     ></kendo-dropdownlist>
 
     <!--        TAGS       -->
-    <kendo-dropdowntree
-      [data]="[]"
-      textField="text"
-      placeholder="Select tags..."
-      valueField="id"
-      fillMode="outline"
-    ></kendo-dropdowntree>
+    <app-tag-dropdown
+      (openTagDialog)="openTagDialog($event)"
+      (tagClicked)="addTag($event)"
+    >
+    </app-tag-dropdown>
 
     <!--        SHARE       -->
     <kendo-multiselect
@@ -34,6 +33,26 @@
       </ng-template>
     </kendo-multiselect>
   </div>
+
+  <div class="grid grid-cols-[auto_1fr] gap-2" *ngIf="tags.length">
+    <p class="text-[10px] uppercase leading-5">added tags:</p>
+    <div class="flex flex-wrap gap-x-0.5 gap-y-1">
+      <app-tag
+        *ngFor="let tag of tags"
+        [label]="tag.name"
+        icon="fa-solid fa-tag"
+        (tagRemove)="removeTag(tag)"
+        [ngClass]="{
+          'text-error': tag.type === 'company' || tag.type === 'opportunity',
+          'text-success': tag.type === 'industry',
+          'text-warning': tag.type === 'investor',
+          'text-primary-900': tag.type === 'businessModel'
+        }"
+      ></app-tag>
+    </div>
+  </div>
+  <!--  // 'text-error': tag.type === 'opportunity',-->
+
   <div class="grow overflow-hidden">
     <app-notepad
       [config]="config()"
@@ -48,8 +67,6 @@
       kendoButton
       iconClass="fa-solid fa-plus"
       themeColor="primary"
-      fillMode="solid"
-      type="button"
       size="large"
       [disabled]="!notepadForm.valid"
       (click)="submit()"
@@ -58,4 +75,5 @@
     </button>
   </div>
 </form>
-<div kendoDialogContainer></div>
+
+<ng-container #container></ng-container>

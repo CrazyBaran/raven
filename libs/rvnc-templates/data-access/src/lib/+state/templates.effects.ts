@@ -1,12 +1,26 @@
 import { Injectable, inject } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, map, of } from 'rxjs';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, concatMap, filter, map, of } from 'rxjs';
 import { TemplateService } from '../template.service';
 import { TemplateActions } from './templates.actions';
+import { TemplateSelectors } from './templates.selectors';
 
 @Injectable()
 export class TemplatesEffects {
   private actions$ = inject(Actions);
+  private store = inject(Store);
+
+  private getTemplateIfNotLoaded$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TemplateActions.getTemplateIfNotLoaded),
+      concatLatestFrom(() =>
+        this.store.select(TemplateSelectors.selectAllTemplates),
+      ),
+      filter(([, templates]) => !templates.length),
+      map(() => TemplateActions.getTemplates()),
+    ),
+  );
 
   private loadTemplates$ = createEffect(() =>
     this.actions$.pipe(

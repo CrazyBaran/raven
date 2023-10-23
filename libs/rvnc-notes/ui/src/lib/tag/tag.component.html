@@ -1,11 +1,11 @@
 <div
   [className]="
-    ' group flex cursor-pointer items-center gap-1 text-red-400 ' +
+    ' group flex cursor-pointer items-center hover:text-grey-400' +
     (htmlClass ? htmlClass : '')
   "
   (click)="tagClick.emit($event)"
 >
-  <i [className]="icon + ' h-fit p-0.5 '"></i>
+  <i [className]="icon + ' h-fit p-0.5 mr-1'"></i>
   <ng-container
     *ngTemplateOutlet="
       labelTemplate ?? defaultLabel;
@@ -14,7 +14,7 @@
   ></ng-container>
 
   <kendo-button
-    class="hidden border-0 !p-0 group-hover:block"
+    class="text-grey-400 invisible border-0 !p-0 group-hover:visible"
     iconClass="fa-solid fa-trash h-4 text-xs"
     fillMode="flat"
     size="small"
