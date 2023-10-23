@@ -1,6 +1,15 @@
 <aside class="nav-aside">
   <div class="nav-aside__actions">
     <div class="nav-aside__routes">
+      <button
+        kendoButton
+        iconClass="fa-solid fa-square-plus"
+        themeColor="primary"
+        size="large"
+        class="mb-10"
+        (click)="handleOpenNotepad()"
+      ></button>
+
       <ul>
         <li *ngFor="let route of routes">
           <button
@@ -50,7 +59,7 @@
 
         <div class="menu__routes">
           <div class="menu__item menu__item--title">
-            {{ openRoute?.name }}
+            {{ openRoute()?.name }}
           </div>
 
           <ul *ngFor="let subRoute of subRoutes">
@@ -72,23 +81,36 @@
       </div>
 
       <ng-template #mainMenu>
-        <ul class="menu menu--main">
-          <li *ngFor="let route of routes">
-            <button
-              class="menu__item"
-              [ngClass]="{
-                'menu__item--disabled': route.disabled,
-                'menu__item--active': route.exact
-                  ? activeUrl === route.path
-                  : activeUrl.includes(route.path!)
-              }"
-              [disabled]="route.disabled"
-              (click)="handleOpenSubRoute(route, true)"
-            >
-              {{ route.name }}
-            </button>
-          </li>
-        </ul>
+        <div>
+          <button
+            kendoButton
+            themeColor="primary"
+            size="large"
+            class="mb-10 w-full"
+            iconClass="fa-solid fa-plus"
+            (click)="handleOpenNotepad()"
+          >
+            New Note
+          </button>
+
+          <ul class="menu menu--main">
+            <li *ngFor="let route of routes">
+              <button
+                class="menu__item"
+                [ngClass]="{
+                  'menu__item--disabled': route.disabled,
+                  'menu__item--active': route.exact
+                    ? activeUrl === route.path
+                    : activeUrl.includes(route.path!)
+                }"
+                [disabled]="route.disabled"
+                (click)="handleOpenSubRoute(route, true)"
+              >
+                {{ route.name }}
+              </button>
+            </li>
+          </ul>
+        </div>
       </ng-template>
     </div>
   </div>

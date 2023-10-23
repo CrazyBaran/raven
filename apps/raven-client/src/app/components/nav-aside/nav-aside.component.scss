@@ -14,6 +14,8 @@
   }
 
   &__routes {
+    @apply text-center;
+
     ul {
       @apply flex flex-col items-center gap-10;
     }
@@ -75,7 +77,7 @@
     @apply flex flex-col;
 
     &--main {
-      @apply gap-10;
+      @apply gap-10 font-normal;
 
       .menu__item {
         @apply text-[1.1875rem];
@@ -87,7 +89,7 @@
     }
 
     &__item {
-      @apply flex h-8 items-center gap-4 whitespace-nowrap duration-300 ease-in-out;
+      @apply flex h-8 items-center gap-4 whitespace-nowrap font-normal duration-300 ease-in-out;
 
       color: var(--rv-secondary);
       filter: opacity(0.9);
@@ -97,7 +99,7 @@
       }
 
       &--back {
-        @apply cursor-pointer gap-3 text-sm font-bold;
+        @apply mt-[0.375rem] cursor-pointer gap-3 text-base font-bold;
 
         i {
           @apply text-base;

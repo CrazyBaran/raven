@@ -2,10 +2,13 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   Input,
   signal,
+  WritableSignal,
 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { ShelfStoreFacade } from '@app/rvnc-shelf';
 import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LoginComponent } from '../../pages/login/login.component';
@@ -23,10 +26,11 @@ import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
 })
 export class NavAsideComponent {
   @Input() public routes: UiNavAsideRoute[];
-  @Input() public enableToggle: boolean;
+
+  public shelfFacade = inject(ShelfStoreFacade);
 
   public isOpen = signal(false);
-  public openRoute: UiNavAsideRoute | null = null;
+  public openRoute: WritableSignal<UiNavAsideRoute | null> = signal(null);
 
   public constructor(
     private readonly msalService: MsalService,
@@ -34,7 +38,7 @@ export class NavAsideComponent {
   ) {}
 
   public get subRoutes(): UiNavAsideSubRoute[] | null {
-    return this.openRoute?.subRoutes || null;
+    return this.openRoute()?.subRoutes || null;
   }
 
   public get activeUrl(): string {
@@ -54,13 +58,13 @@ export class NavAsideComponent {
 
     setTimeout(() => {
       if (!this.isOpen()) {
-        this.openRoute = null;
+        this.openRoute.set(null);
       }
     });
   }
 
   public handleGoBackToMainMenu(): void {
-    this.openRoute = null;
+    this.openRoute.set(null);
   }
 
   public async handleOpenSubRoute(
@@ -74,11 +78,15 @@ export class NavAsideComponent {
       return;
     }
 
-    this.openRoute = route;
+    this.openRoute.set(route);
 
     if (!this.isOpen()) {
       this.handleToggleSidebar(true);
     }
+  }
+
+  public handleOpenNotepad(): void {
+    this.shelfFacade.openNotepad();
   }
 
   public handleLogout(): void {
