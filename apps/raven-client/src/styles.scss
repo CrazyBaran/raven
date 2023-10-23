@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import 'assets/styles/variables';
 @import 'assets/styles/kendo-theme';
 
@@ -15,6 +19,8 @@
 // @import 'assets/fontawesome/scss/duotone';
 @import 'assets/fontawesome/scss/sharp-solid';
 
+/* You can add global styles to this file, and also import other style files */
+
 router-outlet.router-flex + * {
   display: flex;
   flex: 1 1 auto;
@@ -29,12 +35,6 @@ body {
   font-weight: 100;
   min-height: 100vh;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* You can add global styles to this file, and also import other style files */
 
 .kendo-window {
   position: absolute;
