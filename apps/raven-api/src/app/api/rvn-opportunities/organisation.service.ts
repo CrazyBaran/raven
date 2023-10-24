@@ -1,5 +1,6 @@
 import { OrganisationData } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
@@ -21,6 +22,7 @@ export class OrganisationService {
     @InjectRepository(OrganisationEntity)
     private readonly organisationRepository: Repository<OrganisationEntity>,
     private readonly affinityCacheService: AffinityCacheService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async findAll(skip = 0, take = 10): Promise<OrganisationData[]> {
@@ -74,7 +76,10 @@ export class OrganisationService {
     const organisation = new OrganisationEntity();
     organisation.name = options.name;
     organisation.domains = [options.domain];
-    return this.organisationRepository.save(organisation);
+    const organisationEntity =
+      await this.organisationRepository.save(organisation);
+    this.eventEmitter.emit('organisation-created', organisationEntity);
+    return organisationEntity;
   }
 
   public async update(
