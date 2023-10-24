@@ -1,12 +1,13 @@
 <aside class="nav-aside">
   <div class="nav-aside__actions">
-    <div class="nav-aside__routes">
+    <div class="nav-aside__routes" kendoTooltip>
       <button
         kendoButton
         iconClass="fa-solid fa-square-plus"
         themeColor="primary"
         size="large"
         class="mb-10"
+        title="New Note"
         (click)="handleOpenNotepad()"
       ></button>
 
@@ -21,6 +22,7 @@
                 : activeUrl.includes(route.path)
             }"
             [disabled]="route.disabled"
+            [title]="route.name"
             (click)="handleOpenSubRoute(route)"
           >
             <i class="{{ route.icon }}"></i>
@@ -29,10 +31,17 @@
       </ul>
     </div>
 
-    <div class="nav-aside__settings">
-      <button class="action" (click)="handleLogout()">
-        <i class="fa-solid fa-power-off"></i>
-        Logout
+    <div class="flex items-center justify-center" kendoTooltip>
+      <button
+        kendoButton
+        class="h-8 w-8 text-base font-bold"
+        [style.background-color]="'#00a59b'"
+        (click)="handleToggleUserDetails()"
+        themeColor="primary"
+        rounded="full"
+        [title]="activeUser"
+      >
+        {{ userInitials }}
       </button>
     </div>
   </div>
@@ -112,6 +121,39 @@
           </ul>
         </div>
       </ng-template>
+      <div>
+        <ul
+          class="gap- mb-6 flex flex-col"
+          *ngIf="userOptions && visibleUserDetails()"
+        >
+          <li *ngFor="let option of userOptions">
+            <button
+              kendoButton
+              iconClass="{{ option.icon }} mr-3"
+              themeColor="secondary"
+              fillMode="clear"
+              size="large"
+              clas="w-full"
+              (click)="option.action && option.action()"
+            >
+              {{ option.name }}
+            </button>
+          </li>
+        </ul>
+
+        <button
+          class="hover:text-primary-500 flex h-8 w-full items-center justify-between gap-4 text-lg !font-normal duration-300"
+          [ngClass]="{ 'text-primary-500': visibleUserDetails() }"
+          (click)="handleToggleUserDetails()"
+        >
+          <span class="overflow-hidden text-ellipsis whitespace-nowrap">
+            {{ activeUser }}
+          </span>
+          <i
+            class="fa-solid fa-angle-{{ visibleUserDetails() ? 'down' : 'up' }}"
+          ></i>
+        </button>
+      </div>
     </div>
   </div>
 </aside>
