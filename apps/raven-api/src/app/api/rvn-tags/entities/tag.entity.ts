@@ -36,6 +36,19 @@ export class TagEntity {
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
+    if (this.type === TagTypeEnum.People) {
+      (this as unknown as PeopleTagEntity).userId = (
+        this as unknown as PeopleTagEntity
+      ).userId.toLowerCase();
+    }
+    if (
+      this.type === TagTypeEnum.Company ||
+      this.type === TagTypeEnum.Investor
+    ) {
+      (this as unknown as OrganisationTagEntity).organisationId = (
+        this as unknown as OrganisationTagEntity
+      ).organisationId.toLowerCase();
+    }
   }
 }
 
