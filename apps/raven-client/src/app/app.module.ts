@@ -20,6 +20,7 @@ import { ENVIRONMENT } from '@app/rvnc-environment';
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { WindowModule } from '@progress/kendo-angular-dialog';
+import { NotificationModule } from '@progress/kendo-angular-notification';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,6 +36,7 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
     AppRoutingModule,
     RvncAuthModule,
     ReactiveFormsModule,
+    NotificationModule,
     MsalModule.forRoot(
       new PublicClientApplication({
         auth: {
