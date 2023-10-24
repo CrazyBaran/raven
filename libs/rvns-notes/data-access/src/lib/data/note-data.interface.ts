@@ -9,8 +9,11 @@ interface UserData {
 
 // TODO expand when needed
 export interface NoteTagData {
+  readonly id: string;
   readonly name: string;
   readonly type: string;
+  readonly userId?: string;
+  readonly organisationId?: string;
 }
 
 export interface NoteData {

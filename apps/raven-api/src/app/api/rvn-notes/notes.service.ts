@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
   OrganisationTagEntity,
+  PeopleTagEntity,
   TagEntity,
 } from '../rvn-tags/entities/tag.entity';
 import { FieldDefinitionEntity } from '../rvn-templates/entities/field-definition.entity';
@@ -105,6 +106,7 @@ export class NotesService {
       return await this.createNoteFromTemplate(
         options.name,
         options.fields,
+        options.tags,
         options.templateEntity,
         options.userEntity,
       );
@@ -221,10 +223,15 @@ export class NotesService {
             email: noteEntity.deletedBy.email,
           }
         : undefined,
-      tags: noteEntity.tags?.map((tag) => ({
-        name: tag.name,
-        type: tag.type,
-      })),
+      tags: noteEntity.tags?.map(
+        (tag: TagEntity | OrganisationTagEntity | PeopleTagEntity) => ({
+          name: tag.name,
+          type: tag.type,
+          id: tag.id,
+          organisationId: (tag as OrganisationTagEntity).organisationId,
+          userId: (tag as PeopleTagEntity).userId,
+        }),
+      ),
       noteTabs: noteEntity.noteTabs?.map((noteTab) => {
         return {
           id: noteTab.id,
@@ -299,12 +306,14 @@ export class NotesService {
   private async createNoteFromTemplate(
     name: string,
     fields: FieldUpdate[],
+    tags: TagEntity[],
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
     note.version = 1;
+    note.tags = tags;
     note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
