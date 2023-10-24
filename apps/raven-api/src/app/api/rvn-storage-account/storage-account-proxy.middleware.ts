@@ -10,14 +10,12 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
   public constructor(
     private readonly logger: StorageAccountProxyMiddlewareLogger,
   ) {
-    this.proxy = createProxyMiddleware({
+    const options = {
       target: `https://${environment.azureStorageAccount.name}.blob.core.windows.net`,
-      pathRewrite: {
-        '/api/storage-account': '',
-      },
       secure: false,
+      proxyRewrite: {},
       on: {
-        proxyReq: (proxyReq) => {
+        proxyReq: (proxyReq): void => {
           proxyReq.removeHeader('authorization');
           proxyReq.removeHeader('host');
           proxyReq.setHeader(
@@ -27,7 +25,9 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
         },
       },
       logger: this.logger,
-    });
+    };
+    options.proxyRewrite[`/${environment.app.apiPrefix}/storage-account`] = '';
+    this.proxy = createProxyMiddleware(options);
   }
   public async use(
     req: Request,
