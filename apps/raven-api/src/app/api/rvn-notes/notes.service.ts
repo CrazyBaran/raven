@@ -41,6 +41,7 @@ interface FieldUpdate {
 interface UpdateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
+  name: string;
 }
 
 @Injectable()
@@ -143,7 +144,7 @@ export class NotesService {
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
     const newNoteVersion = new NoteEntity();
-    newNoteVersion.name = noteEntity.name;
+    newNoteVersion.name = options.name || noteEntity.name;
     newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;

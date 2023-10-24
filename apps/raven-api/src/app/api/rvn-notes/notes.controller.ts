@@ -168,6 +168,7 @@ export class NotesController {
       await this.notesService.updateNote(noteEntity, userEntity, {
         tags,
         fields: dto.fields,
+        name: dto.name,
       }),
     );
   }
