@@ -7,11 +7,10 @@ import {
   TemplateTypeEnum,
   TemplateWithRelationsData,
 } from '@app/rvns-templates';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../rvn-users/entities/user.entity';
-import { UpdateTemplateDto } from './dto/update-template.dto';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
 import { TabEntity } from './entities/tab.entity';
@@ -20,14 +19,20 @@ import { TemplateEntity } from './entities/template.entity';
 interface CreateTemplateOptions {
   name: string;
   type: TemplateTypeEnum;
+  isDefault: boolean;
   userEntity: UserEntity;
+}
+
+interface UpdateTemplateOptions {
+  name?: string;
+  isDefault?: boolean;
 }
 
 interface CreateFieldGroupOptions {
   name: string;
   order: number;
   templateId: string;
-  tabId?: string;
+  tab: TabEntity | null;
   userEntity: UserEntity;
 }
 
@@ -91,9 +96,18 @@ export class TemplatesService {
   public async createTemplate(
     options: CreateTemplateOptions,
   ): Promise<TemplateEntity> {
+    if (options.isDefault) {
+      const defaultTemplate = await this.templatesRepository.findOne({
+        where: { isDefault: true },
+      });
+      if (defaultTemplate) {
+        throw new BadRequestException('Only one default template is allowed');
+      }
+    }
     const templateEntity = new TemplateEntity();
     templateEntity.name = options.name;
     templateEntity.type = options.type;
+    templateEntity.isDefault = options.isDefault;
     templateEntity.version = 1; // TODO versioning on update will be handled later?
     templateEntity.createdBy = options.userEntity;
     return this.templatesRepository.save(templateEntity);
@@ -101,10 +115,21 @@ export class TemplatesService {
 
   public async updateTemplate(
     templateEntity: TemplateEntity,
-    dto: UpdateTemplateDto,
+    options: UpdateTemplateOptions,
   ): Promise<TemplateEntity> {
     delete templateEntity.fieldGroups;
-    templateEntity.name = dto.name;
+    if (options.name) {
+      templateEntity.name = options.name;
+    }
+    if (Object.prototype.hasOwnProperty.call(options, 'isDefault')) {
+      const defaultTemplate = await this.templatesRepository.findOne({
+        where: { isDefault: true },
+      });
+      if (defaultTemplate && options.isDefault) {
+        throw new BadRequestException('Only one default template is allowed');
+      }
+      templateEntity.isDefault = options.isDefault;
+    }
     return this.templatesRepository.save(templateEntity);
   }
 
@@ -118,8 +143,8 @@ export class TemplatesService {
     const fieldGroupEntity = new FieldGroupEntity();
     fieldGroupEntity.name = options.name;
     fieldGroupEntity.order = options.order;
-    if (options.tabId) {
-      fieldGroupEntity.tabId = options.tabId;
+    if (options.tab) {
+      fieldGroupEntity.tab = options.tab;
     }
     fieldGroupEntity.template = { id: options.templateId } as TemplateEntity;
     fieldGroupEntity.createdBy = options.userEntity;
@@ -218,6 +243,7 @@ export class TemplatesService {
       id: entity.id,
       name: entity.name,
       type: entity.type as TemplateTypeEnum,
+      isDefault: entity.isDefault,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       createdById: entity.createdById,
@@ -285,6 +311,7 @@ export class TemplatesService {
       id: template.id,
       name: template.name,
       type: template.type as TemplateTypeEnum,
+      isDefault: template.isDefault,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
       createdById: template.createdById,

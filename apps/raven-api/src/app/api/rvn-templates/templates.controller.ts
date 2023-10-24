@@ -49,6 +49,7 @@ import { TabEntity } from './entities/tab.entity';
 import { TemplateEntity } from './entities/template.entity';
 import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
 import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
+import { ParseOptionalTab } from './pipes/parse-optional-tab';
 import { ParseTabPipe } from './pipes/parse-tab.pipe';
 import { ParseTemplatePipe } from './pipes/parse-template.pipe';
 import { ValidateTemplateTypePipe } from './pipes/validate-template-type.pipe';
@@ -98,6 +99,7 @@ export class TemplatesController {
     return this.service.templateEntityToTemplateData(
       await this.service.createTemplate({
         name: dto.name,
+        isDefault: dto.isDefault,
         type,
         userEntity,
       }),
@@ -190,6 +192,7 @@ export class TemplatesController {
   public async createGroup(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
+    @Body('tabId', ParseOptionalTab) tabEntity: string | TabEntity | null,
     @Body() dto: CreateFieldGroupDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<FieldGroupData> {
@@ -198,7 +201,7 @@ export class TemplatesController {
         name: dto.name,
         templateId: template.id,
         order: dto.order,
-        tabId: dto.tabId,
+        tab: tabEntity as TabEntity,
         userEntity,
       }),
     );

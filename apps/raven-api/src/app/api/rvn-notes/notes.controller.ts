@@ -65,10 +65,6 @@ export class NotesController {
     @Body() dto: CreateNoteDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<NoteData> {
-    if (templateEntity === null) {
-      // find default template
-      // or add a pipe to transform null to default template
-    }
     return this.notesService.noteEntityToNoteData(
       await this.notesService.createNote({
         name: dto.name,
