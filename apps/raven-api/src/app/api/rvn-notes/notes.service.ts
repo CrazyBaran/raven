@@ -61,7 +61,7 @@ export class NotesService {
       .createQueryBuilder('note_with_tag')
       .select('note_with_tag.id')
       .innerJoin('note_with_tag.tags', 'tag')
-      .where('tag.id = :tagId');
+      .where('tag.id = :orgTagId');
 
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
@@ -80,7 +80,7 @@ export class NotesService {
     if (organisationTagEntity) {
       queryBuilder
         .andWhere(`note.id IN (${orgTagSubQuery.getQuery()})`)
-        .setParameter('tagId', organisationTagEntity.id);
+        .setParameter('orgTagId', organisationTagEntity.id);
     }
 
     if (tagEntities) {
