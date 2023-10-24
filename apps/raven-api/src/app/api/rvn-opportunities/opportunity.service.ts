@@ -45,7 +45,7 @@ export class OpportunityService {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
       relations: ['organisation', 'tag'],
       skip: skip,
-      take: take,
+      take: take > 500 ? 500 : take,
     };
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
