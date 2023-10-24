@@ -25,6 +25,7 @@ interface CreateNoteOptions {
   userEntity: UserEntity;
   templateEntity: TemplateEntity | null;
   tags: TagEntity[];
+  fields: FieldUpdate[];
 }
 
 interface UpdateNoteFieldOptions {
@@ -103,6 +104,7 @@ export class NotesService {
     if (options.templateEntity) {
       return await this.createNoteFromTemplate(
         options.name,
+        options.fields,
         options.templateEntity,
         options.userEntity,
       );
@@ -296,6 +298,7 @@ export class NotesService {
 
   private async createNoteFromTemplate(
     name: string,
+    fields: FieldUpdate[],
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
   ): Promise<NoteEntity> {
@@ -312,12 +315,12 @@ export class NotesService {
       noteTab.createdBy = userEntity;
       noteTab.updatedBy = userEntity;
       noteTab.noteFieldGroups = tab.fieldGroups.map(
-        this.getMapFieldGroupToNoteFieldGroup(userEntity, note),
+        this.getMapFieldGroupToNoteFieldGroup(userEntity, note, fields),
       );
       return noteTab;
     });
     note.noteFieldGroups = templateEntity.fieldGroups.map(
-      this.getMapFieldGroupToNoteFieldGroup(userEntity, note),
+      this.getMapFieldGroupToNoteFieldGroup(userEntity, note, fields),
     );
 
     return await this.noteRepository.save(note);
@@ -326,6 +329,7 @@ export class NotesService {
   private getMapFieldGroupToNoteFieldGroup(
     userEntity: UserEntity,
     note: NoteEntity,
+    fields: FieldUpdate[] = [],
   ): (fieldGroup: FieldGroupEntity) => NoteFieldGroupEntity {
     return (fieldGroup: FieldGroupEntity) => {
       const noteFieldGroup = new NoteFieldGroupEntity();
@@ -342,6 +346,7 @@ export class NotesService {
           noteField.type = fieldDefinition.type;
           noteField.createdBy = userEntity;
           noteField.updatedBy = userEntity;
+          noteField.value = this.findFieldValue(fieldDefinition, fields);
           return noteField;
         },
       );
@@ -380,10 +385,14 @@ export class NotesService {
   }
 
   private findFieldValue(
-    fieldEntity: NoteFieldEntity,
+    fieldEntity: NoteFieldEntity | FieldDefinitionEntity,
     fieldUpdates?: FieldUpdate[],
   ): string {
     const fieldUpdate = fieldUpdates?.find((fu) => fu.id === fieldEntity.id);
-    return fieldUpdate ? fieldUpdate.value : fieldEntity.value;
+    // if it's a field definition, it's a new field, so we don't need to check for a default value
+    const defaultValue = (fieldEntity as NoteFieldEntity).value
+      ? (fieldEntity as NoteFieldEntity).value
+      : null;
+    return fieldUpdate ? fieldUpdate.value : defaultValue;
   }
 }
