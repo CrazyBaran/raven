@@ -42,9 +42,11 @@
             [title]="note.name"
             *ngFor="let note of noteFields"
           >
-            <div *ngIf="!note.value" class="text-sm italic">Note is empty</div>
+            <div *ngIf="!note.value; else noteView" class="text-sm italic">
+              Note is empty
+            </div>
             <ng-template #noteView>
-              {{ note.value }}
+              <div [innerHTML]="note.value"></div>
             </ng-template>
           </kendo-expansionpanel>
         </div>
