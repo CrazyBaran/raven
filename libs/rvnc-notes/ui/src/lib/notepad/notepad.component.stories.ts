@@ -54,7 +54,7 @@ export const Primary: Story = {
         value: '',
       },
       team: {
-        controlType: 'r',
+        controlType: 'richText',
         label: 'Team/Founding Story',
         order: 7,
         value: '',

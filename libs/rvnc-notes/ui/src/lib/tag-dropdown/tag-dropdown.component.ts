@@ -6,6 +6,7 @@ import {
   Component,
   computed,
   EventEmitter,
+  Input,
   Output,
   signal,
 } from '@angular/core';
@@ -19,7 +20,7 @@ import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { ClickOutsideDirective } from './click-outside.directive';
 
 export type DropdownTag = {
-  id: number;
+  id: string;
   name: string;
   companyId?: number | null;
   type: string;
@@ -48,39 +49,13 @@ export class TagDropdownComponent {
 
   @Output() public tagClicked = new EventEmitter<DropdownTag>();
 
-  public data = signal([
-    { id: 2, name: 'Andrew Fuller', companyId: null, type: 'company' },
-    { id: 1, name: 'Nancy Davolio', companyId: 2, type: 'company' },
-    { id: 3, name: 'Janet Leverling', companyId: 2, type: 'company' },
-    { id: 4, name: 'Margaret Peacock', companyId: 2, type: 'company' },
-    { id: 5, name: 'Steven Buchanan', companyId: 2, type: 'company' },
-    { id: 8, name: 'Laura Callahan', companyId: 2, type: 'company' },
-    { id: 6, name: 'Michael Suyama', companyId: 2, type: 'company' },
-    { id: 7, name: 'Robert King', companyId: 2, type: 'company' },
-    { id: 9, name: 'Anne Dodsworth', companyId: null, type: 'company' },
-    { id: 10, name: 'Pedro Afonso', companyId: 9, type: 'company' },
-    { id: 11, name: 'Maria Anders', companyId: 9, type: 'company' },
-    { id: 12, name: 'Christina Berglund', companyId: 9, type: 'company' },
-    { id: 13, name: 'Hanna Moos', companyId: 9, type: 'company' },
-    { id: 14, name: 'Frédérique Citeaux', companyId: 9, type: 'company' },
-    { id: 15, name: 'Martín Sommer', companyId: 9, type: 'company' },
-    { id: 16, name: 'Laurence Lebihan', companyId: 9, type: 'company' },
-    { id: 17, name: 'Elizabeth Lincoln', type: 'industry' },
-    { id: 18, name: 'Victoria Ashworth', type: 'industry' },
-    { id: 19, name: 'Patricio Simpson', type: 'industry' },
-    { id: 20, name: 'Francisco Chang', type: 'industry' },
-    { id: 21, name: 'Yang Wang', type: 'investor' },
-    { id: 22, name: 'Pedro Afonso', type: 'investor' },
-    { id: 23, name: 'Elizabeth Brown', type: 'investor' },
-    { id: 24, name: 'Sven Ottlieb', type: 'investor' },
-    { id: 25, name: 'Janine Labrune', type: 'businessModel' },
-    { id: 26, name: 'Ann Devon', type: 'businessModel' },
-    { id: 27, name: 'Roland Mendel', type: 'businessModel' },
-    { id: 28, name: 'Aria Cruz', type: 'businessModel' },
-    { id: 29, name: 'Diego Roel', type: 'businessModel' },
-    { id: 30, name: 'Martine Rancé', type: 'businessModel' },
-    { id: 31, name: 'Maria Larsson', type: 'businessModel' },
-  ]);
+  @Input() public loading = false;
+
+  @Input() public set tags(value: DropdownTag[]) {
+    this.data.set(value);
+  }
+
+  public data = signal([] as DropdownTag[]);
 
   protected type = signal('company');
 
@@ -117,10 +92,10 @@ export class TagDropdownComponent {
     const filter = this.filter()?.toLowerCase() || '';
     const type = this.type().toLowerCase();
     return this.data().filter((item) => {
-      return (
-        item.name.toLowerCase().includes(filter) &&
-        item.type.toLowerCase().includes(type)
-      );
+      return item.name.toLowerCase() === filter && type === 'company'
+        ? item.type.toLowerCase() === type ||
+            item.type.toLowerCase() === 'opportunity'
+        : item.type.toLowerCase() === type;
     });
   });
 

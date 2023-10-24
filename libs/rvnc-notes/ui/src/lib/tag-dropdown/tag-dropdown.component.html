@@ -1,31 +1,32 @@
 <kendo-dropdowntree
   #dropDownTree
-  kendoDropDownTreeExpandable
-  [kendoDropDownTreeFlatBinding]="filteredData()"
-  parentIdField="companyId"
-  [filterable]="true"
-  placeholder="Select tag..."
-  valueField="id"
-  textField="name"
-  [expandOnFilter]="filterExpandSettings"
-  (filterChange)="filterValue.set($event)"
-  fillMode="outline"
   (clickOutside)="dropDownTree.toggle(false)"
   (close)="$event.preventDefault()"
+  (filterChange)="filterValue.set($event)"
+  [expandOnFilter]="filterExpandSettings"
+  [filterable]="true"
+  [kendoDropDownTreeFlatBinding]="filteredData()"
+  [loading]="loading"
+  fillMode="outline"
+  kendoDropDownTreeExpandable
+  parentIdField="companyId"
+  placeholder="Select tag..."
+  textField="name"
+  valueField="id"
 >
   <ng-template kendoDropDownTreeHeaderTemplate>
     <div class="flex flex-col gap-3 px-3 pb-1 pt-2">
       <kendo-buttongroup
-        selection="single"
         class="w-full justify-between gap-1"
+        selection="single"
       >
         <button
-          *ngFor="let button of selectedButtons()"
-          size="small"
-          kendoButton
-          [toggleable]="true"
-          [selected]="button.selected!"
           (selectedChange)="selectedChange(button.id)"
+          *ngFor="let button of selectedButtons()"
+          [selected]="button.selected!"
+          [toggleable]="true"
+          kendoButton
+          size="small"
         >
           <span>
             {{ button.text }}
@@ -38,10 +39,10 @@
       >
         <p class="grow">{{ filterValue() }} (Add new tag)</p>
         <kendo-button
+          (click)="onOpenTagDialog(); dropDownTree.toggle(false)"
           class="!p-0"
           fillMode="flat"
           iconClass="fa-solid fa-plus"
-          (click)="onOpenTagDialog(); dropDownTree.toggle(false)"
         ></kendo-button>
       </div>
       <p class="font-bold">{{ type() | titlecase }}</p>
@@ -50,10 +51,10 @@
 
   <ng-template kendoDropDownTreeNodeTemplate let-dataItem let-index="index">
     <div
-      class="align-center flex px-2 py-1"
       (click)="itemClicked(dataItem); $event.stopPropagation()"
+      class="align-center flex px-2 py-1"
     >
-      <span> {{ dataItem.name }}</span>
+      <span> {{ dataItem.label || dataItem.name }}</span>
       <!--      <i class="fa-regular fa-tag ml-20"></i>-->
     </div>
   </ng-template>

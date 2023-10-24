@@ -6,6 +6,7 @@ import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { Observable } from 'rxjs';
 import { CreateNote, PatchNote } from '../domain/createNote';
 import { NotesActions } from './notes.actions';
+import { notesFeature } from './notes.reducer';
 import { notesQuery } from './notes.selectors';
 
 @Injectable()
@@ -18,6 +19,10 @@ export class NoteStoreFacade {
   );
   public isLoading$: Observable<boolean> = this.store.pipe(
     select(notesQuery.selectIsLoading),
+  );
+
+  public isCreatingNote = this.store.selectSignal(
+    notesFeature.selectIsCreatePending,
   );
 
   public noteDetails$: Observable<NoteWithRelationsData | null> =

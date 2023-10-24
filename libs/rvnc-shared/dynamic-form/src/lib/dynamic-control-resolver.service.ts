@@ -1,6 +1,7 @@
 import { Injectable, Type } from '@angular/core';
-import { DynamicControl } from '@app/rvnc-notes/util';
+
 import { Observable, from, of, tap } from 'rxjs';
+import { DynamicControl } from './dynamic-forms.model';
 
 type DynamicControlsMap = {
   [T in DynamicControl['type']]: () => Promise<Type<unknown>>;
@@ -12,11 +13,11 @@ type DynamicControlsMap = {
 export class DynamicControlResolver {
   private lazyControlComponents: DynamicControlsMap = {
     text: () =>
-      import('./dynamic-input/dynamic-input.component').then(
+      import('./inputs/dynamic-input/dynamic-input.component').then(
         (c) => c.DynamicInputComponent,
       ),
     richText: () =>
-      import('./dynamic-rich-text/dynamic-rich-text.component').then(
+      import('./inputs/dynamic-rich-text/dynamic-rich-text.component').then(
         (c) => c.DynamicRichTextComponent,
       ),
   };

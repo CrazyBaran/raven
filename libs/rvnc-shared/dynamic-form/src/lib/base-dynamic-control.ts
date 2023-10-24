@@ -27,8 +27,9 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { take } from 'rxjs';
 import { CONTROL_DATA } from './control-data.token';
 import { DynamicControlFocusHandler } from './dynamic-control-focus-handler.service';
-import { DynamicControl, validatorMapper } from './dynamic-forms.model';
+import { DynamicControl } from './dynamic-forms.model';
 import { ErrorMessagePipe } from './error-message.pipe';
+import { validatorMapper } from './validator.mapper';
 
 export const comparatorFn = (
   a: KeyValue<string, DynamicControl>,

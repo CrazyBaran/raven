@@ -9,7 +9,12 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
-import { ControlInjectorPipe, DynamicControl } from '@app/rvnc-notes/util';
+
+import {
+  ControlInjectorPipe,
+  DynamicControl,
+  DynamicControlResolver,
+} from '@app/rvnc-shared/dynamic-form';
 import {
   ButtonGroupModule,
   ButtonModule,
@@ -20,7 +25,6 @@ import {
   DialogRef,
 } from '@progress/kendo-angular-dialog';
 import { debounceTime, map, startWith } from 'rxjs';
-import { DynamicControlResolver } from '../dynamic-control-resolver.service';
 
 const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
   company: [
@@ -53,7 +57,7 @@ const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
       name: 'Industry Name (Required)',
       order: 1,
       id: 'name',
-      placeholder: '...',
+      placeholder: 'Industry Name',
       validators: {
         required: true,
       },
@@ -65,7 +69,7 @@ const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
       name: 'Investor Name (Required)',
       order: 1,
       id: 'name',
-      placeholder: '...',
+      placeholder: 'Investor Name',
       validators: {
         required: true,
       },
@@ -75,7 +79,7 @@ const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
       name: 'Investor Domain (Required)',
       order: 1,
       id: 'domain',
-      placeholder: '...',
+      placeholder: 'Investor Domain',
       validators: {
         required: true,
       },
@@ -87,7 +91,7 @@ const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
       name: 'Business Model Name (Required)',
       order: 1,
       id: 'name',
-      placeholder: '...',
+      placeholder: 'Business Model Name',
       validators: {
         required: true,
       },
@@ -118,9 +122,9 @@ export class TagFormComponent
 
   protected type = signal('company');
 
-  protected formDictioanry = TAG_FORM_DICTIOANRY;
+  protected formDictionary = TAG_FORM_DICTIOANRY;
 
-  protected dynamicData = signal(this.formDictioanry['company']);
+  protected dynamicData = signal(this.formDictionary['company']);
 
   protected tagForm = new UntypedFormGroup({});
 
@@ -157,7 +161,7 @@ export class TagFormComponent
 
   @Input() public set inputData(value: { type: string; search: string }) {
     if (value.type && value.search) {
-      this.formDictioanry = {
+      this.formDictionary = {
         ...TAG_FORM_DICTIOANRY,
         [value.type]: TAG_FORM_DICTIOANRY[value.type].map((item, index) => ({
           ...item,
@@ -166,7 +170,7 @@ export class TagFormComponent
       };
     }
     this.type.set(value.type);
-    this.dynamicData.set(this.formDictioanry[value.type]);
+    this.dynamicData.set(this.formDictionary[value.type]);
     this.buttons = this.buttons.map((btn) => ({
       ...btn,
       selected: btn.id === value.type,
@@ -177,7 +181,7 @@ export class TagFormComponent
     item.id;
 
   protected selectedChange(id: string): void {
-    this.dynamicData.set(this.formDictioanry[id]);
+    this.dynamicData.set(this.formDictionary[id]);
   }
 
   protected submit(): void {

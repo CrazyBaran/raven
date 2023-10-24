@@ -1,19 +1,19 @@
 <kendo-formfield>
   <kendo-label
-    labelCssClass="k-form-label text-secondary-900 text-sm leading-5"
     [for]="control.controlKey"
     [text]="control.config.name"
+    labelCssClass="k-form-label text-secondary-900 text-sm leading-5"
   ></kendo-label>
   <kendo-textbox
+    (focus)="setFocus()"
     [formControlName]="control.controlKey"
-    [value]="control.config.value!"
     [id]="control.controlKey"
     [placeholder]="control.config.placeholder!"
-    (focus)="setFocus()"
+    [value]="control.config.value!"
   />
   <kendo-formerror
-    class="text-danger"
     *ngFor="let error of formControl.errors ?? [] | keyvalue"
+    class="text-danger"
   >
     {{ error.key | errorMessage: error.value }}
   </kendo-formerror>

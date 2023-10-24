@@ -1,22 +1,20 @@
 <kendo-formfield class="!flex min-h-full flex-col">
   <kendo-label
-    labelCssClass="k-form-label text-secondary-900 text-sm"
     [for]="control.controlKey"
     [text]="control.config.name"
+    labelCssClass="k-form-label text-secondary-900 text-sm"
   ></kendo-label>
   <kendo-editor
-    [formControlName]="control.controlKey"
-    [value]="control.config.value!"
-    [id]="control.controlKey"
     (focus)="setFocus()"
-    class="grow-1 relative"
-    [style.height]="currentHeight()"
-    [class.mb-[50px]]="focused()"
+    [formControlName]="control.controlKey"
+    [id]="control.controlKey"
     [iframe]="false"
+    [value]="control.config.value!"
+    class="grow-1 relative"
   >
     <kendo-toolbar
-      class="space absolute -bottom-[50px] order-last flex gap-2 border-0 !bg-transparent"
-      [class.hidden]="!focused()"
+      [class.!hidden]="!focused()"
+      class="space border-top order-last !-mx-[1px] !-mb-[1px] flex gap-2 !border-b-0 !bg-white"
     >
       <kendo-toolbar-buttongroup class="space-x-2">
         <kendo-toolbar-button kendoEditorBoldButton></kendo-toolbar-button>

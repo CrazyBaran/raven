@@ -1,6 +1,6 @@
 import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
-import { createFeature, createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { NotesActions } from './notes.actions';
 
 export const notesFeatureKey = 'notes';
@@ -9,6 +9,10 @@ export interface NotesState extends EntityState<NoteData> {
   // additional entities state properties
   isLoading: boolean;
   error: string | null;
+  create: {
+    isLoading: boolean;
+    error: string | null;
+  };
   details: {
     isLoading: boolean;
     isPending: boolean;
@@ -27,6 +31,10 @@ export const initialState: NotesState = notesAdapter.getInitialState({
     isLoading: false,
     isPending: false,
     data: null,
+  },
+  create: {
+    isLoading: false,
+    error: null,
   },
 });
 
@@ -49,6 +57,34 @@ export const notesReducer = createReducer(
     error,
   })),
 
+  on(NotesActions.createNote, (state) => ({
+    ...state,
+    create: {
+      ...state.create,
+      isLoading: true,
+    },
+  })),
+
+  on(NotesActions.createNoteFailure, (state, { error }) => ({
+    ...state,
+    create: {
+      ...state.create,
+      isLoading: false,
+      error,
+    },
+  })),
+
+  on(NotesActions.createNoteSuccess, (state, { data }) =>
+    notesAdapter.addOne(data, {
+      ...state,
+      create: {
+        ...state.create,
+        isLoading: false,
+        error: null,
+      },
+    }),
+  ),
+
   on(NotesActions.clearNotes, (state) => notesAdapter.removeAll(state)),
 
   on(NotesActions.getNoteDetails, (state) => ({
@@ -58,6 +94,7 @@ export const notesReducer = createReducer(
       isLoading: true,
     },
   })),
+
   on(NotesActions.getNoteDetailsSuccess, (state, { data }) => ({
     ...state,
     details: {
@@ -81,5 +118,9 @@ export const notesFeature = createFeature({
   reducer: notesReducer,
   extraSelectors: ({ selectNotesState }) => ({
     ...notesAdapter.getSelectors(selectNotesState),
+    selectIsCreatePending: createSelector(
+      selectNotesState,
+      (state) => state.create.isLoading,
+    ),
   }),
 });

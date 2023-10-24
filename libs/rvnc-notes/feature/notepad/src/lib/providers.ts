@@ -2,25 +2,31 @@ import { importProvidersFrom, NgModule } from '@angular/core';
 import { DynamicModule } from '@app/rvnc-dynamic-renderer/data-access';
 import {
   NotesEffects,
-  notesFeatureKey,
-  notesReducer,
-  NotesService,
+  notesFeature,
   NoteStoreFacade,
 } from '@app/rvnc-notes/data-access';
+import {
+  tagsEffects,
+  tagsFeature,
+  TagsStoreFacade,
+} from '@app/rvnc-tags/state';
 import { templateFeatureProviders } from '@app/rvnc-templates/data-access';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+
 import {
   componentDataResolver,
   NotepadContentComponent,
 } from './notepad-content/notepad-content.component';
 
 export const notepadContentFeatureProviders = [
-  NotesService,
   NoteStoreFacade,
+  TagsStoreFacade,
   importProvidersFrom(
-    StoreModule.forFeature(notesFeatureKey, notesReducer),
+    StoreModule.forFeature(notesFeature),
     EffectsModule.forFeature([NotesEffects]),
+    StoreModule.forFeature(tagsFeature),
+    EffectsModule.forFeature(tagsEffects),
   ),
   templateFeatureProviders,
 ];

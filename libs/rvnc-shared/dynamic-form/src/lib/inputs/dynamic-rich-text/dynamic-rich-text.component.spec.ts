@@ -4,7 +4,8 @@ import {
   FormGroup,
   FormGroupDirective,
 } from '@angular/forms';
-import { CONTROL_DATA, ControlData } from '@app/rvnc-notes/util';
+
+import { CONTROL_DATA, ControlData } from '../../control-data.token';
 import { DynamicRichTextComponent } from './dynamic-rich-text.component';
 
 describe('DynamicRichTextComponent', () => {

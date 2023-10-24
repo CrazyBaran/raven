@@ -24,7 +24,7 @@
       [disabled]="state === 'disabled'"
       (click)="labelClick.emit($event)"
       [ngClass]="{
-        'text-primary-700': state === 'active'
+        '!text-primary-700': state === 'active'
       }"
       class="font-interstate max-w-full border-0 !p-0"
     >

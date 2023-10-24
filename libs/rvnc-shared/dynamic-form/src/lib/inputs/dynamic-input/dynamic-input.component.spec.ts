@@ -4,7 +4,7 @@ import {
   FormGroup,
   FormGroupDirective,
 } from '@angular/forms';
-import { CONTROL_DATA, ControlData } from '@app/rvnc-notes/util';
+import { CONTROL_DATA, ControlData } from '../../control-data.token';
 import { DynamicInputComponent } from './dynamic-input.component';
 
 describe('DynamicInputComponent', () => {

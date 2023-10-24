@@ -6,19 +6,16 @@ import {
 import { Routes } from '@angular/router';
 import {
   NotesEffects,
-  notesFeatureKey,
-  notesReducer,
-  NotesService,
+  notesFeature,
   NoteStoreFacade,
 } from '@app/rvnc-notes/data-access';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
 const notesProviders: Array<Provider | EnvironmentProviders> = [
-  NotesService,
   NoteStoreFacade,
   importProvidersFrom(
-    StoreModule.forFeature(notesFeatureKey, notesReducer),
+    StoreModule.forFeature(notesFeature),
     EffectsModule.forFeature([NotesEffects]),
   ),
 ];

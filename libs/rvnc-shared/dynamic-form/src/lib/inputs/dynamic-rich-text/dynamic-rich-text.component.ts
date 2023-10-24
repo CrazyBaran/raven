@@ -10,12 +10,12 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { EditorComponent, EditorModule } from '@progress/kendo-angular-editor';
 import {
   BaseDynamicControl,
   dynamicControlProvider,
   sharedDynamicControlDeps,
-} from '@app/rvnc-notes/util';
-import { EditorComponent, EditorModule } from '@progress/kendo-angular-editor';
+} from '../../base-dynamic-control';
 
 @Component({
   selector: 'app-dynamic-rich-text',
