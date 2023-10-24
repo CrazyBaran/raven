@@ -6,24 +6,33 @@ import {
   Component,
   computed,
   EventEmitter,
+  inject,
   Input,
   Output,
   signal,
+  WritableSignal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  NG_VALUE_ACCESSOR,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { ClickOutsideDirective } from '@app/rvnc-notes/util';
+import { TagType } from '@app/rvns-tags';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { FilterExpandSettings } from '@progress/kendo-angular-treeview';
-import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
-import { ClickOutsideDirective } from './click-outside.directive';
+import { startWith } from 'rxjs';
+import { ControlValueAccessor } from '../tags-button-group/control-value.accessor';
+import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
 
 export type DropdownTag = {
   id: string;
   name: string;
   companyId?: number | null;
-  type: string;
+  type: TagType;
 };
 
 @Component({
@@ -36,12 +45,26 @@ export type DropdownTag = {
     TextBoxModule,
     ClickOutsideDirective,
     ReactiveFormsModule,
+    TagsButtonGroupComponent,
   ],
   templateUrl: './tag-dropdown.component.html',
   styleUrls: ['./tag-dropdown.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: TagDropdownComponent,
+      multi: true,
+    },
+  ],
 })
-export class TagDropdownComponent {
+export class TagDropdownComponent extends ControlValueAccessor<string[]> {
+  protected value: WritableSignal<string[]> = signal([]);
+
+  public override writeValue(value: string[]): void {
+    this.value.set(value);
+  }
+
   @Output() public openTagDialog = new EventEmitter<{
     type: string;
     search: string;
@@ -52,73 +75,53 @@ export class TagDropdownComponent {
   @Input() public loading = false;
 
   @Input() public set tags(value: DropdownTag[]) {
-    this.data.set(value);
+    this.tagsSignal.set(value);
   }
 
-  public data = signal([] as DropdownTag[]);
+  @Input() public set tagType(value: TagType) {
+    this.tagTypeControl.setValue(value);
+  }
 
-  protected type = signal('company');
-
-  protected buttons = [
-    { text: 'Company', id: 'company' },
-    {
-      text: 'Industry',
-      id: 'industry',
-    },
-    { text: 'Investor', id: 'investor' },
-    { text: 'Business Model', id: 'bussinesModel' },
-  ];
-
-  protected selectedButtons = computed(() =>
-    this.buttons.map((b) => ({
-      ...b,
-      selected: b.id === this.type(),
-    })),
+  protected tagTypeControl = inject(NonNullableFormBuilder).control<TagType>(
+    'company',
   );
+
+  protected type = toSignal(
+    this.tagTypeControl.valueChanges.pipe(startWith(this.tagTypeControl.value)),
+  );
+
+  public tagsSignal = signal([] as DropdownTag[]);
 
   protected filterValue = signal('');
 
-  protected textForm = new FormControl('');
+  protected currentTypeTags = computed(() => {
+    const type = this.type()?.toLowerCase();
 
-  protected filter = toSignal(
-    this.textForm.valueChanges.pipe(
-      debounceTime(100),
-      distinctUntilChanged(),
-      startWith(this.textForm.value),
-    ),
-  );
-
-  protected filteredData = computed(() => {
-    const filter = this.filter()?.toLowerCase() || '';
-    const type = this.type().toLowerCase();
-    return this.data().filter((item) => {
-      return item.name.toLowerCase() === filter && type === 'company'
-        ? item.type.toLowerCase() === type ||
-            item.type.toLowerCase() === 'opportunity'
-        : item.type.toLowerCase() === type;
-    });
+    return this.tagsSignal().filter(
+      (item) =>
+        !this.value().includes(item.id) &&
+        (type === 'company'
+          ? ['company', 'opportunity'].includes(item.type)
+          : item.type === type),
+    );
   });
 
   protected filterExpandSettings: FilterExpandSettings = {
     maxAutoExpandResults: 4,
   };
 
-  public selectedChange(id: string): void {
-    this.type.set(id);
-  }
-
   public itemClicked(dataItem: DropdownTag): void {
     if (this.type() === 'company' && !dataItem.companyId) {
       return;
     }
     this.tagClicked.emit(dataItem);
-
-    this.data.update((data) => data.filter((item) => item.id !== dataItem.id));
+    this.value.set([...this.value(), dataItem.id]);
+    this.onChange?.(this.value());
   }
 
   public onOpenTagDialog(): void {
     this.openTagDialog.emit({
-      type: this.type(),
+      type: this.type()!,
       search: this.filterValue()!,
     });
   }

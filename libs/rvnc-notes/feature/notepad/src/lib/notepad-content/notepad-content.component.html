@@ -13,8 +13,8 @@
 
     <!--        TAGS       -->
     <app-tag-dropdown
+      formControlName="tags"
       (openTagDialog)="openTagDialog($event)"
-      (tagClicked)="addTag($event)"
       [loading]="!tagLoaded()"
       [tags]="$any(tags())"
     >
@@ -35,21 +35,21 @@
         <div
           (click)="$event.stopPropagation(); togglePerson(dataItem)"
           (keydown.enter)="$event.stopPropagation(); togglePerson(dataItem)"
-          class="-mx-2 -my-1 w-[calc(100%+1rem)] px-2 py-1"
+          class="-mx-2 -my-1 grid w-[calc(100%+1rem)] grid-cols-[auto_1fr] items-center gap-0.5 px-2 py-1"
         >
           <input [checked]="dataItem.checked" kendoCheckBox type="checkbox" />
-          <span class="ml-2">{{ dataItem.name }}</span>
+          <span class="ml-2 truncate">{{ dataItem.name }}</span>
         </div>
       </ng-template>
     </kendo-multiselect>
   </div>
 
-  <div *ngIf="addedTags.length" class="grid grid-cols-[auto_1fr] gap-2">
+  <div *ngIf="addedTags().length" class="grid grid-cols-[auto_1fr] gap-2">
     <p class="w-[72px] text-[10px] uppercase leading-5">added tags:</p>
     <div class="flex flex-wrap gap-x-0.5 gap-y-1">
       <app-tag
-        (tagRemove)="removeTag(tag)"
-        *ngFor="let tag of addedTags"
+        (tagRemove)="removeTag(tag!)"
+        *ngFor="let tag of addedTags()"
         [label]="tag.name"
         [ngClass]="{
           'text-error': tag.type === 'company' || tag.type === 'opportunity',
@@ -79,7 +79,7 @@
   </div>
 
   <div
-    *ngIf="addedTags.length || selectedPeopleTags().length"
+    *ngIf="addedTagIds.length || selectedPeopleTags().length"
     class="border-grey-400 border-t"
   ></div>
 
