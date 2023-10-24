@@ -15,13 +15,15 @@ export class AffinityCacheService {
     return this.cacheManager.store as RedisStore;
   }
 
-  public async addOrReplaceMany(data: OrganizationStageDto[]): Promise<void> {
+  public async addOrReplaceMany(
+    organisations: OrganizationStageDto[],
+  ): Promise<void> {
     const pipeline = this.store.client.pipeline();
-    for (const d of data) {
+    for (const organisation of organisations) {
       pipeline.hset(
         AFFINITY_CACHE,
-        d.organizationDto.id.toString(),
-        JSON.stringify(d),
+        organisation.organizationDto.domains.join(',').toString(),
+        JSON.stringify(organisation),
       );
     }
     await pipeline.exec();
@@ -40,25 +42,34 @@ export class AffinityCacheService {
     return data;
   }
 
-  public async get(id: string): Promise<OrganizationStageDto | null> {
-    const rawData = await this.store.client.hget(AFFINITY_CACHE, id);
+  public async getByDomains(
+    domains: string[],
+  ): Promise<OrganizationStageDto | null> {
+    const keys = await this.store.client
+      .hgetall(AFFINITY_CACHE)
+      .then((res) => Object.keys(res));
+    const matchingKey = keys.find((key) =>
+      domains.some((domain) => key.includes(domain)),
+    );
+    if (!matchingKey) return null;
+    const rawData = await this.store.client.hget(AFFINITY_CACHE, matchingKey);
     return rawData ? JSON.parse(rawData) : null;
   }
 
-  public async getByDomain(
-    domain: string,
-  ): Promise<OrganizationStageDto | null> {
-    const rawData = await this.getAll();
-    return rawData.find(
-      (item) => item?.organizationDto?.domains?.includes(domain) ?? false,
+  public async getAllByDomains(
+    domains: string[],
+  ): Promise<OrganizationStageDto[]> {
+    const items = await this.store.client.hgetall(AFFINITY_CACHE);
+    const keys = items ? Object.keys(items) : [];
+    const matchingKeys = keys.filter((key) =>
+      domains.some((domain) => key.includes(domain)),
     );
-  }
-
-  public async addOrReplace(data: OrganizationStageDto): Promise<void> {
-    await this.store.client.hset(
-      AFFINITY_CACHE,
-      data.organizationDto.id.toString(),
-      JSON.stringify(data),
+    if (matchingKeys.length === 0) return [];
+    const matchingValues = Object.values(items).filter((value) =>
+      matchingKeys.some((key) => value.includes(key)),
+    );
+    return matchingValues.map(
+      (value) => JSON.parse(value) as OrganizationStageDto,
     );
   }
 

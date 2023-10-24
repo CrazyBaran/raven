@@ -44,18 +44,17 @@ export class OpportunityService {
     const options = {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
       relations: ['organisation', 'tag'],
+      skip: skip,
+      take: take,
     };
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
-    const affinityFilter = this.getAffinityFilter(
-      defaultPipeline,
-      pipelineStageId,
-    );
 
-    const [opportunities, affinityData] = await Promise.all([
-      this.opportunityRepository.find(options),
-      this.affinityCacheService.getAll(affinityFilter),
-    ]);
+    const opportunities = await this.opportunityRepository.find(options);
+
+    const affinityData = await this.affinityCacheService.getAllByDomains(
+      opportunities.flatMap((opportunity) => opportunity.organisation.domains),
+    );
 
     const combinedData: OpportunityData[] = [];
 
@@ -105,46 +104,8 @@ export class OpportunityService {
 
       combinedData.push(result);
     }
-    for (const org of affinityData) {
-      const isAlreadyIncluded = combinedData.some((data) =>
-        data.organisation.domains.some((domain) =>
-          org.organizationDto.domains.includes(domain),
-        ),
-      );
 
-      if (!isAlreadyIncluded) {
-        const pipelineStage = await this.mapPipelineStage(
-          defaultPipeline,
-          org?.stage?.text,
-        );
-        const result: OpportunityData = {
-          id: undefined,
-          organisation: {
-            affinityInternalId: org.organizationDto.id,
-            id: undefined,
-            name: org.organizationDto.name,
-            domains: org.organizationDto.domains,
-          },
-          stage: pipelineStage,
-          fields: org.fields.map((field) => {
-            return {
-              displayName: field.displayName,
-              value: field.value,
-            };
-          }),
-        };
-
-        combinedData.push(result);
-      }
-    }
-    const filteredData = pipelineStageId
-      ? combinedData.filter(
-          (data) =>
-            data.stage.id.toLowerCase() === pipelineStageId.toLowerCase(),
-        )
-      : combinedData;
-
-    return filteredData.slice(skip, skip + take);
+    return combinedData;
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {
@@ -152,8 +113,8 @@ export class OpportunityService {
       where: { id },
       relations: ['organisation', 'pipelineDefinition', 'pipelineStage'],
     });
-    const affinityData = await this.affinityCacheService.getByDomain(
-      opportunity.organisation.domains[0],
+    const affinityData = await this.affinityCacheService.getByDomains(
+      opportunity.organisation.domains,
     );
 
     return {
@@ -307,43 +268,6 @@ export class OpportunityService {
     };
   }
 
-  // TODO check with Filip if we can delete this
-  public async createFromAffinity(
-    organisationId: string,
-    opportunityAffinityInternalId: number,
-  ): Promise<OpportunityData> {
-    const affinityData = await this.affinityCacheService.get(
-      opportunityAffinityInternalId.toString(),
-    );
-
-    const existingOpportunity = await this.opportunityRepository.findOne({
-      where: {
-        organisation: {
-          domains: Like(`%${affinityData.organizationDto.domain}%`),
-        },
-      },
-    });
-
-    if (existingOpportunity) {
-      return this.entityToData(existingOpportunity, affinityData);
-    }
-
-    const opportunity = new OpportunityEntity();
-    opportunity.organisationId = organisationId;
-
-    const pipelineDefinition = await this.getDefaultPipelineDefinition();
-    const pipelineStage = await this.mapPipelineStage(
-      pipelineDefinition,
-      affinityData.stage.text,
-    );
-    opportunity.pipelineDefinitionId = pipelineDefinition.id;
-    opportunity.pipelineStageId = pipelineStage.id;
-
-    const entity = await this.opportunityRepository.save(opportunity);
-
-    return this.entityToData(entity, affinityData);
-  }
-
   public async ensureAllAffinityEntriesAsOpportunities(): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll();
 
@@ -351,7 +275,7 @@ export class OpportunityService {
       relations: ['organisation'],
     });
 
-    const nonexitstingAffinityData = affinityData.filter((affinity) => {
+    const nonexistentAffinityData = affinityData.filter((affinity) => {
       return !existingOpportunities.some((opportunity) => {
         return opportunity.organisation.domains.some((domain) => {
           if (affinity?.organizationDto?.domains?.length === 0) return true;
@@ -362,10 +286,10 @@ export class OpportunityService {
 
     const defaultDefinition = await this.getDefaultPipelineDefinition();
 
-    for (const org of nonexitstingAffinityData) {
+    for (const org of nonexistentAffinityData) {
       const organisation =
         await this.organisationService.createFromAffinityOrGet(
-          org.organizationDto.id,
+          org.organizationDto.domains,
         );
 
       if (!organisation) {
@@ -454,19 +378,6 @@ export class OpportunityService {
       throw new Error('Pipeline stage not found! Incorrect configuration');
     }
     return pipelineStage;
-  }
-
-  private getAffinityFilter(
-    pipelineDefinition: PipelineDefinitionEntity,
-    pipelineStageId?: string,
-  ): (data: OrganizationStageDto) => boolean | undefined {
-    if (!pipelineStageId) {
-      return undefined;
-    }
-    const pipelineStage = pipelineDefinition.stages.find(
-      (s: { id: string }) => s.id === pipelineStageId,
-    );
-    return (data) => data.stage?.text === pipelineStage.mappedFrom;
   }
 
   private async getDefaultPipelineAndFirstStage(): Promise<{

@@ -95,11 +95,9 @@ export class OrganisationService {
   }
 
   public async createFromAffinityOrGet(
-    affinityInternalId: number,
+    domains: string[],
   ): Promise<OrganisationEntity> {
-    const affinityData = await this.affinityCacheService.get(
-      affinityInternalId.toString(),
-    );
+    const affinityData = await this.affinityCacheService.getByDomains(domains);
 
     if (
       !affinityData?.organizationDto?.domains ||
