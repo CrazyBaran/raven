@@ -14,7 +14,6 @@ import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { ComponentData } from '@app/rvnc-dynamic-renderer/data-access';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import {
-  DropdownTag,
   NotepadComponent,
   TagComponent,
   TagDropdownComponent,
@@ -101,6 +100,7 @@ export class NotepadContentComponent implements OnInit {
     template: [],
     notes: new FormRecord<FormControl<string | null>>({}),
     peopleTags: new FormControl([] as string[]),
+    tags: new FormControl([] as string[]),
   });
 
   protected selectedTemplateId$ =
@@ -134,7 +134,19 @@ export class NotepadContentComponent implements OnInit {
     switchMap((id) => (id ? this.templateFacade.template$(id) : of(undefined))),
   );
 
-  protected addedTags: TagData[] = [];
+  protected addedTagIds = toSignal(
+    this.notepadForm.controls.tags.valueChanges.pipe(
+      startWith(this.notepadForm.controls.tags.value),
+    ),
+  );
+
+  protected addedTags = computed(() => {
+    return (
+      this.addedTagIds()?.map(
+        (tagId) => this.tags().find((t) => t?.id === tagId) as TagData,
+      ) ?? []
+    );
+  });
 
   protected templateLoading = toSignal(this.templateFacade.isLoading$);
 
@@ -174,7 +186,7 @@ export class NotepadContentComponent implements OnInit {
   public get hasChanges(): boolean {
     return (
       _.values(this.notepadForm.controls.notes.value).some(Boolean) ||
-      this.addedTags.length > 0
+      this.addedTagIds()!.length > 0
     );
   }
 
@@ -195,8 +207,8 @@ export class NotepadContentComponent implements OnInit {
       fields: fields,
       tagIds: [
         ...(this.selectedPeopleTagsIds() ?? []),
-        ...this.addedTags
-          .map((tag) => tag.id)
+        ...this.addedTagIds()!
+          .map((tagId) => tagId)
           .map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
       ],
     };
@@ -234,12 +246,10 @@ export class NotepadContentComponent implements OnInit {
     });
   }
 
-  public addTag($event: DropdownTag): void {
-    this.addedTags.push($event);
-  }
-
-  public removeTag(tag: { name: string; type: string }): void {
-    this.addedTags = this.addedTags.filter((t) => t.name !== tag.name);
+  public removeTag(tag: TagData): void {
+    this.notepadForm.controls.tags.setValue(
+      this.addedTagIds()!.filter((t) => t !== tag.id),
+    );
   }
 
   public togglePerson(dataItem: TagData): void {

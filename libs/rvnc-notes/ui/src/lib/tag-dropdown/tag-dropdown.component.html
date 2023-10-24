@@ -5,7 +5,7 @@
   (filterChange)="filterValue.set($event)"
   [expandOnFilter]="filterExpandSettings"
   [filterable]="true"
-  [kendoDropDownTreeFlatBinding]="filteredData()"
+  [kendoDropDownTreeFlatBinding]="currentTypeTags()"
   [loading]="loading"
   fillMode="outline"
   kendoDropDownTreeExpandable
@@ -16,23 +16,10 @@
 >
   <ng-template kendoDropDownTreeHeaderTemplate>
     <div class="flex flex-col gap-3 px-3 pb-1 pt-2">
-      <kendo-buttongroup
-        class="w-full justify-between gap-1"
-        selection="single"
-      >
-        <button
-          (selectedChange)="selectedChange(button.id)"
-          *ngFor="let button of selectedButtons()"
-          [selected]="button.selected!"
-          [toggleable]="true"
-          kendoButton
-          size="small"
-        >
-          <span>
-            {{ button.text }}
-          </span>
-        </button>
-      </kendo-buttongroup>
+      <app-tags-button-group
+        class="block w-full"
+        [formControl]="tagTypeControl"
+      ></app-tags-button-group>
       <div
         *ngIf="filterValue().trim()"
         class="selected-item-shadow flex gap-2 px-1.5 py-0.5"
@@ -55,7 +42,6 @@
       class="align-center flex px-2 py-1"
     >
       <span> {{ dataItem.label || dataItem.name }}</span>
-      <!--      <i class="fa-regular fa-tag ml-20"></i>-->
     </div>
   </ng-template>
 </kendo-dropdowntree>

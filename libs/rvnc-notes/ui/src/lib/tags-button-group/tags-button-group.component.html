@@ -1,0 +1,14 @@
+<kendo-buttongroup class="w-full justify-between gap-1 py-3" selection="single">
+  <button
+    (click)="selectedChange(button.type)"
+    *rxFor="let button of buttonsSignal(); trackBy: 'type'"
+    [selected]="button.type === value()"
+    [toggleable]="true"
+    kendoButton
+    size="small"
+  >
+    <span>
+      {{ button.text }}
+    </span>
+  </button>
+</kendo-buttongroup>

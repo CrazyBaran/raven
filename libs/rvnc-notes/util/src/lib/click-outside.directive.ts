@@ -7,7 +7,23 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { fromEvent, tap } from 'rxjs';
-import { DocumentClickService } from './document-click.service';
+
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class DocumentClickService {
+  public documentClick$ = new Subject<Event>();
+
+  public constructor(private ngZone: NgZone) {
+    fromEvent(document, 'click')
+      .pipe(
+        takeUntilDestroyed(),
+        tap((event) => this.documentClick$.next(event)),
+      )
+      .subscribe();
+  }
+}
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector

@@ -8,25 +8,28 @@ import {
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  UntypedFormGroup,
+} from '@angular/forms';
 
 import {
   ControlInjectorPipe,
   DynamicControl,
   DynamicControlResolver,
 } from '@app/rvnc-shared/dynamic-form';
-import {
-  ButtonGroupModule,
-  ButtonModule,
-} from '@progress/kendo-angular-buttons';
+import { TagType } from '@app/rvns-tags';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 import {
   DialogContentBase,
   DialogModule,
   DialogRef,
 } from '@progress/kendo-angular-dialog';
 import { debounceTime, map, startWith } from 'rxjs';
+import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
 
-const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
+const TAG_FORM_DICTIOANRY: Partial<Record<TagType, DynamicControl[]>> = {
   company: [
     {
       type: 'text',
@@ -85,7 +88,7 @@ const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
       },
     },
   ],
-  businessModel: [
+  'business-model': [
     {
       type: 'text',
       name: 'Business Model Name (Required)',
@@ -106,9 +109,9 @@ const TAG_FORM_DICTIOANRY: Record<string, DynamicControl[]> = {
     CommonModule,
     ControlInjectorPipe,
     ReactiveFormsModule,
-    ButtonGroupModule,
     ButtonModule,
     DialogModule,
+    TagsButtonGroupComponent,
   ],
   templateUrl: './tag-form.component.html',
   styleUrls: ['./tag-form.component.scss'],
@@ -120,18 +123,19 @@ export class TagFormComponent
 {
   protected controlResolver = inject(DynamicControlResolver);
 
-  protected type = signal('company');
+  protected tagTypeControl = inject(NonNullableFormBuilder).control<TagType>(
+    'company',
+  );
+
+  protected type = toSignal(
+    this.tagTypeControl.valueChanges.pipe(startWith(this.tagTypeControl.value)),
+  );
 
   protected formDictionary = TAG_FORM_DICTIOANRY;
 
   protected dynamicData = signal(this.formDictionary['company']);
 
   protected tagForm = new UntypedFormGroup({});
-
-  protected value$ = this.tagForm.valueChanges.pipe(
-    startWith(this.tagForm.value),
-  );
-  protected val = toSignal(this.value$);
 
   protected name = toSignal(
     this.tagForm.valueChanges.pipe(
@@ -140,47 +144,28 @@ export class TagFormComponent
     ),
   );
 
-  protected buttons = [
-    { text: 'Company', id: 'company', selected: true },
-    {
-      text: 'Industry',
-      id: 'industry',
-      selected: false,
-    },
-    { text: 'Investor', id: 'investor', selected: false },
-    { text: 'Business Model', id: 'businessModel', selected: false },
-  ];
-
   public constructor(public override dialog: DialogRef) {
     super(dialog);
   }
 
-  protected get controlKeys(): string[] {
-    return Object.keys(this.tagForm?.controls ?? {});
-  }
-
-  @Input() public set inputData(value: { type: string; search: string }) {
+  @Input() public set inputData(value: { type: TagType; search: string }) {
     if (value.type && value.search) {
       this.formDictionary = {
         ...TAG_FORM_DICTIOANRY,
-        [value.type]: TAG_FORM_DICTIOANRY[value.type].map((item, index) => ({
+        [value.type]: TAG_FORM_DICTIOANRY[value.type]?.map((item, index) => ({
           ...item,
           value: index === 0 ? value.search : item.value,
         })),
       };
     }
-    this.type.set(value.type);
+    this.tagTypeControl.setValue(value.type);
     this.dynamicData.set(this.formDictionary[value.type]);
-    this.buttons = this.buttons.map((btn) => ({
-      ...btn,
-      selected: btn.id === value.type,
-    }));
   }
 
   protected trackByFn = (index: number, item: DynamicControl): string =>
     item.id;
 
-  protected selectedChange(id: string): void {
+  protected selectedChange(id: TagType): void {
     this.dynamicData.set(this.formDictionary[id]);
   }
 
