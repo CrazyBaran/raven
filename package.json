@@ -104,6 +104,7 @@
     "@progress/kendo-angular-l10n": "^14.0.1",
     "@progress/kendo-angular-label": "^14.0.1",
     "@progress/kendo-angular-layout": "^14.0.1",
+    "@progress/kendo-angular-notification": "^14.0.1",
     "@progress/kendo-angular-pdf-export": "^14.0.1",
     "@progress/kendo-angular-popup": "^14.0.1",
     "@progress/kendo-angular-sortable": "^14.0.1",

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
 import { NoteWithRelationsData } from '@app/rvns-notes/data-access';
-import { catchError, concatMap, map, of } from 'rxjs';
+import { NotificationService } from '@progress/kendo-angular-notification';
+import { catchError, concatMap, map, of, tap } from 'rxjs';
 import { NotesService } from '../services/notes.service';
 import { NotesActions } from './notes.actions';
 
@@ -50,8 +51,26 @@ export class NotesEffects {
     );
   });
 
+  private successNotification$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotesActions.createNoteSuccess),
+        tap(() =>
+          this.notificationService.show({
+            content: 'Note created successfully',
+            cssClass: 'success',
+            type: { style: 'success', icon: true },
+            animation: { type: 'slide', duration: 400 },
+            position: { horizontal: 'center', vertical: 'top' },
+          }),
+        ),
+      ),
+    { dispatch: false },
+  );
+
   public constructor(
     private readonly actions$: Actions,
     private readonly notesService: NotesService,
+    private notificationService: NotificationService,
   ) {}
 }
