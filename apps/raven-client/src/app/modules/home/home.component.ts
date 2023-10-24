@@ -76,13 +76,6 @@ export class HomeComponent {
           icon: 'fa-solid fa-notebook',
           exact: true,
         },
-        {
-          name: 'Notepad',
-          icon: 'fa-solid fa-notebook',
-          click: (): void => {
-            this.shelfFacade.openNotepad();
-          },
-        },
       ],
     },
     {

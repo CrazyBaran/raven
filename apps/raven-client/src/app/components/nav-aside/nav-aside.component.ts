@@ -4,10 +4,13 @@ import {
   Component,
   Input,
   signal,
+  WritableSignal,
 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { ShelfStoreFacade } from '@app/rvnc-shelf';
 import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { LoginComponent } from '../../pages/login/login.component';
 import { collapseAnimation } from './nav-aside.animation';
 import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
@@ -15,7 +18,13 @@ import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
 @Component({
   selector: 'app-nav-aside',
   standalone: true,
-  imports: [CommonModule, ButtonsModule, RouterModule, LoginComponent],
+  imports: [
+    CommonModule,
+    ButtonsModule,
+    RouterModule,
+    LoginComponent,
+    TooltipModule,
+  ],
   templateUrl: './nav-aside.component.html',
   styleUrls: ['./nav-aside.component.scss'],
   animations: [collapseAnimation],
@@ -23,18 +32,39 @@ import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
 })
 export class NavAsideComponent {
   @Input() public routes: UiNavAsideRoute[];
-  @Input() public enableToggle: boolean;
 
   public isOpen = signal(false);
-  public openRoute: UiNavAsideRoute | null = null;
+  public visibleUserDetails = signal(false);
+  public openRoute: WritableSignal<UiNavAsideRoute | null> = signal(null);
+
+  public readonly userOptions: {
+    name: string;
+    icon: string;
+    action?: () => void;
+  }[] = [
+    {
+      name: 'Support',
+      icon: 'fa-regular fa-circle-info',
+    },
+    {
+      name: 'Settings',
+      icon: 'fa-solid fa-gear',
+    },
+    {
+      name: 'Logout',
+      icon: 'fa-solid fa-arrow-right-to-line',
+      action: (): void => this.handleLogout(),
+    },
+  ];
 
   public constructor(
     private readonly msalService: MsalService,
     private readonly router: Router,
+    private readonly shelfFacade: ShelfStoreFacade,
   ) {}
 
   public get subRoutes(): UiNavAsideSubRoute[] | null {
-    return this.openRoute?.subRoutes || null;
+    return this.openRoute()?.subRoutes || null;
   }
 
   public get activeUrl(): string {
@@ -47,6 +77,18 @@ export class NavAsideComponent {
     return url;
   }
 
+  public get activeUser(): string {
+    return this.msalService.instance.getActiveAccount()?.name || '';
+  }
+
+  public get userInitials(): string {
+    return this.activeUser
+      .split(' ')
+      .slice(0, 2)
+      .map((char) => char[0])
+      .join('');
+  }
+
   public handleToggleSidebar(state?: boolean): void {
     this.isOpen.update((isOpen) =>
       typeof state === 'boolean' ? state : !isOpen,
@@ -54,30 +96,41 @@ export class NavAsideComponent {
 
     setTimeout(() => {
       if (!this.isOpen()) {
-        this.openRoute = null;
+        this.openRoute.set(null);
       }
     });
   }
 
   public handleGoBackToMainMenu(): void {
-    this.openRoute = null;
+    this.openRoute.set(null);
   }
 
-  public handleOpenSubRoute(route: UiNavAsideRoute, navigate?: boolean): void {
+  public async handleOpenSubRoute(
+    route: UiNavAsideRoute,
+    navigate?: boolean,
+  ): Promise<void> {
     if (!route.subRoutes && navigate) {
-      if (route.path) {
-        this.router.navigateByUrl(route.path);
-      }
+      await this.router.navigateByUrl(route.path);
 
       this.handleToggleSidebar(false);
       return;
     }
 
-    this.openRoute = route;
+    this.openRoute.set(route);
 
     if (!this.isOpen()) {
       this.handleToggleSidebar(true);
     }
+  }
+
+  public handleOpenNotepad(): void {
+    this.shelfFacade.openNotepad();
+  }
+
+  public handleToggleUserDetails(): void {
+    this.isOpen.set(true);
+
+    this.visibleUserDetails.update((value) => !value);
   }
 
   public handleLogout(): void {

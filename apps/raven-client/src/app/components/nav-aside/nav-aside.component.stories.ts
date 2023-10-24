@@ -9,7 +9,5 @@ export default meta;
 type Story = StoryObj<NavAsideComponent>;
 
 export const Primary: Story = {
-  args: {
-    enableToggle: false,
-  },
+  args: {},
 };
