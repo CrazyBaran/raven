@@ -1,4 +1,4 @@
-import { CommonModule, KeyValue } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,13 +16,13 @@ import {
   ControlInjectorPipe,
   DynamicControl,
   DynamicControlFocusHandler,
+  DynamicControlResolver,
   comparatorFn,
-} from '@app/rvnc-notes/util';
+} from '@app/rvnc-shared/dynamic-form';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxUnpatch } from '@rx-angular/template/unpatch';
 import { Subject, map, merge } from 'rxjs';
-import { DynamicControlResolver } from '../dynamic-control-resolver.service';
 import { NotepadTemplateComponent } from '../notepad-template/notepad-template.component';
 import {
   ScrollTabComponent,
@@ -94,8 +94,8 @@ export class NotepadComponent implements OnInit {
 
   protected visible = toSignal(
     merge(
-      this.itemsRendered.pipe(map(() => true)),
       this.startRender.pipe(map(() => false)),
+      this.itemsRendered.pipe(map(() => true)),
     ),
   );
 
@@ -138,14 +138,6 @@ export class NotepadComponent implements OnInit {
     });
   }
 
-  public onSubmit(): void {
-    //
-  }
-
-  public trackTabByFn(index: number, item: Tab): string {
-    return item.id;
-  }
-
   public toggleDisabled(tab: Tab, currentTabIndex: number): void {
     const isDisabled = this.state().disabledTabIds.includes(tab.id);
 
@@ -178,13 +170,6 @@ export class NotepadComponent implements OnInit {
         ? state.disabledTabIds.filter((id) => id !== tab.id)
         : [...state.disabledTabIds, tab.id],
     }));
-  }
-
-  public trackByFn(
-    index: number,
-    item: KeyValue<string, DynamicControl>,
-  ): string {
-    return item.key;
   }
 
   public setActiveTab(tab: { id: string }): void {

@@ -6,16 +6,16 @@
   </div>
 
   <kendo-buttongroup
-    selection="single"
     class="w-full justify-between gap-2 py-3"
+    selection="single"
   >
     <button
-      *ngFor="let button of buttons"
-      size="small"
-      kendoButton
-      [toggleable]="true"
-      [selected]="button.selected!"
       (click)="selectedChange(button.id)"
+      *ngFor="let button of buttons"
+      [selected]="button.selected!"
+      [toggleable]="true"
+      kendoButton
+      size="small"
     >
       <span>
         {{ button.text }}
@@ -23,19 +23,19 @@
     </button>
   </kendo-buttongroup>
 
-  <div class="mt-4 flex flex-col gap-4" [formGroup]="tagForm">
+  <div [formGroup]="tagForm" class="mt-4 flex flex-col gap-4">
     <ng-container *ngFor="let control of dynamicData(); trackBy: trackByFn">
       <ng-container
-        [ngComponentOutlet]="controlResolver.resolve(control.type) | async"
         [ngComponentOutletInjector]="control.id | controlInjector: control"
+        [ngComponentOutlet]="controlResolver.resolve(control.type) | async"
       ></ng-container>
     </ng-container>
   </div>
 </div>
 
 <kendo-dialog-actions>
-  <button kendoButton (click)="dialog.close()">Cancel</button>
-  <button kendoButton (click)="submit()" themeColor="primary">
+  <button (click)="dialog.close()" kendoButton>Cancel</button>
+  <button (click)="submit()" kendoButton themeColor="primary">
     <!--    [disabled]="controlKeys?.length === 0 || !tagForm.valid"-->
     Submit
   </button>

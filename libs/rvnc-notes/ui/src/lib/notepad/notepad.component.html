@@ -1,36 +1,38 @@
 <app-notepad-template [hideTabs]="hideTabs">
   <ng-container tabs>
-    <p class="mb-3 text-[10px] uppercase">quick scroll</p>
+    <p class="mb-2 text-[10px] uppercase">quick scroll</p>
     <app-scroll-tab
-      *rxFor="let tab of tabs(); trackBy: trackTabByFn; let i = index"
-      [state]="tab.state"
-      [label]="tab.label"
-      [showEye]="tab.canBeDisabled"
       (eyeClick)="toggleDisabled(tab, i)"
       (labelClick)="setActiveTab(tab)"
+      *rxFor="let tab of tabs(); trackBy: 'id'; let i = index"
+      [label]="tab.label"
+      [showEye]="tab.canBeDisabled"
+      [state]="tab.state"
     ></app-scroll-tab>
   </ng-container>
 
-  <div controls class="relative h-full">
+  <div
+    [class.opacity-10]="!visible()"
+    class="relative h-full overflow-auto"
+    controls
+  >
     <form
       [formGroup]="notepadFormGroup"
-      (ngSubmit)="onSubmit()"
-      class="ml-2 mr-1 flex min-h-full flex-col gap-4 transition-opacity duration-200 ease-in-out"
-      [class.opacity-0]="!visible()"
+      class="ml-2 mr-1 flex min-h-full flex-col gap-4 transition-opacity duration-150 ease-in-out"
     >
       <ng-container
         *rxFor="
           let control of visibleControls() | keyvalue: comparatorFn;
-          trackBy: trackByFn;
+          trackBy: 'key';
           renderCallback: itemsRendered
         "
       >
         <ng-container
-          [ngComponentOutlet]="
-            controlResolver.resolve(control.value.type) | async
-          "
           [ngComponentOutletInjector]="
             control.key | controlInjector: control.value
+          "
+          [ngComponentOutlet]="
+            controlResolver.resolve(control.value.type) | async
           "
         ></ng-container>
       </ng-container>

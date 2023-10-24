@@ -1,9 +1,9 @@
 <div
+  (click)="tagClick.emit($event)"
   [className]="
     ' group flex cursor-pointer items-center hover:text-grey-400' +
     (htmlClass ? htmlClass : '')
   "
-  (click)="tagClick.emit($event)"
 >
   <i [className]="icon + ' h-fit p-0.5 mr-1'"></i>
   <ng-container
@@ -14,11 +14,11 @@
   ></ng-container>
 
   <kendo-button
-    class="text-grey-400 invisible border-0 !p-0 group-hover:visible"
-    iconClass="fa-solid fa-trash h-4 text-xs"
-    fillMode="flat"
-    size="small"
     (click)="$event?.stopPropagation(); tagRemove.emit($event)"
+    class="text-grey-400 invisible border-0 !p-0 group-hover:visible"
+    fillMode="flat"
+    iconClass="fa-solid fa-trash h-4 text-xs"
+    size="small"
   ></kendo-button>
 </div>
 

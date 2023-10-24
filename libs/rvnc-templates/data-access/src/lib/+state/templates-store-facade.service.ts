@@ -10,7 +10,22 @@ export class TemplatesStoreFacade {
   public templates$: Observable<TemplateWithRelationsData[]> =
     this.store.select(TemplateSelectors.selectAllTemplates);
 
+  public templates = this.store.selectSignal(
+    TemplateSelectors.selectAllTemplates,
+  );
+
+  public defaultTemplate = this.store.selectSignal(
+    TemplateSelectors.selectDefaultTemplate,
+  );
+
+  public defaultTemplate$ = this.store.select(
+    TemplateSelectors.selectDefaultTemplate,
+  );
+
   public isLoading$: Observable<boolean> = this.store.select(
+    TemplateSelectors.selectTemplatesLoaded,
+  );
+  public loaded = this.store.selectSignal(
     TemplateSelectors.selectTemplatesLoaded,
   );
 

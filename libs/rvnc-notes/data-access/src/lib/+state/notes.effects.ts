@@ -42,7 +42,7 @@ export class NotesEffects {
     return this.actions$.pipe(
       ofType(NotesActions.createNote),
       concatMap(({ data }) =>
-        this.notesService.createNoteFull(data).pipe(
+        this.notesService.createNote(data).pipe(
           map(({ data }) => NotesActions.createNoteSuccess({ data: data! })),
           catchError((error) => of(NotesActions.createNoteFailure({ error }))),
         ),

@@ -49,6 +49,31 @@ export const selectTemplate = (id: string) =>
     id ? entities[id] : undefined,
   );
 
+export const selectDefaultTemplate = createSelector(
+  selectAllTemplates,
+  (templates) => {
+    const defaultTemplate =
+      templates.find((template) => template.name === 'Loose Note') ||
+      templates?.[0]; //TODO: template.isDefault,
+    return (
+      (defaultTemplate && {
+        ...defaultTemplate,
+        fieldGroups: defaultTemplate.fieldGroups.map((fg) => ({
+          ...fg,
+          fieldDefinitions: fg.fieldDefinitions.map((field) => ({
+            ...field,
+            grow: field.type === 'richText', // Set flex grow for rich editor
+          })),
+        })),
+      }) || {
+        name: 'Choose Template',
+        id: '',
+        fieldGroups: [],
+      }
+    );
+  },
+);
+
 export const TemplateSelectors = {
   selectTemplatesState,
   selectTemplatesLoaded,
@@ -58,4 +83,5 @@ export const TemplateSelectors = {
   selectSelectedId,
   selectEntity,
   selectTemplate,
+  selectDefaultTemplate,
 };

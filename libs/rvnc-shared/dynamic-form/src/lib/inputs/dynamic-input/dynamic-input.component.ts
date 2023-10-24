@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 
 import {
-  BaseDynamicControl,
-  dynamicControlProvider,
-  sharedDynamicControlDeps,
-} from '@app/rvnc-notes/util';
-import {
   TextBoxComponent,
   TextBoxModule,
 } from '@progress/kendo-angular-inputs';
+import {
+  BaseDynamicControl,
+  dynamicControlProvider,
+  sharedDynamicControlDeps,
+} from '../../base-dynamic-control';
 
 @Component({
   selector: 'app-dynamic-input',
