@@ -105,6 +105,7 @@ describe('TemplatesService', () => {
       const result = await service.createTemplate({
         name,
         type,
+        isDefault: false,
         userEntity: userEntity as UserEntity,
       });
 
@@ -153,6 +154,7 @@ describe('TemplatesService', () => {
         name: 'Field Group',
         order: 1,
         templateId: '1',
+        tab: null,
         userEntity: { id: '123', name: 'Test User' } as UserEntity,
       };
 

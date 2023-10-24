@@ -7,6 +7,7 @@ export interface TemplateData {
   readonly id: string;
   readonly name: string;
   readonly type: TemplateTypeEnum;
+  readonly isDefault: boolean;
   readonly createdById: string;
   readonly updatedAt: Date;
   readonly createdAt: Date;
