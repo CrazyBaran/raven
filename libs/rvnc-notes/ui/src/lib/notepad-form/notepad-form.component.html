@@ -8,6 +8,7 @@
       [textField]="templateDropdownConfig.textField"
       [valueField]="templateDropdownConfig.valueField"
       fillMode="outline"
+      [virtual]="true"
       formControlName="template"
     ></kendo-dropdownlist>
 
@@ -29,6 +30,7 @@
       fillMode="outline"
       placeholder="Select people..."
       textField="name"
+      [virtual]="true"
       valueField="id"
     >
       <ng-template kendoMultiSelectItemTemplate let-dataItem>

@@ -16,11 +16,14 @@ export const NotesActions = createActionGroup({
     'Get Note Details Failure': props<{ error: string }>(),
 
     'Create Note': props<{ data: CreateNote }>(),
-    'Create Note Success': props<{ data: NoteData }>(),
+    'Create Note Success': props<{ data: NoteWithRelationsData }>(),
     'Create Note Failure': props<{ error: string }>(),
 
     'Update Note': props<{ noteId: string; data: PatchNote }>(),
-    'Update Note Success': props<{ data: NoteData }>(),
+    'Update Note Success': props<{
+      data: NoteWithRelationsData;
+      originId: string;
+    }>(),
     'Update Note Failure': props<{ error: string }>(),
   },
 });

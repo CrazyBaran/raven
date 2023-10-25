@@ -12,7 +12,26 @@ export default meta;
 type Story = StoryObj<TagDropdownComponent>;
 
 export const Primary: Story = {
-  args: {},
+  args: {
+    tags: [
+      // mocked list of all type tags atleast 100
+      {
+        type: 'company',
+        id: '1',
+        name: 'company 1',
+      },
+      {
+        type: 'company',
+        id: '2',
+        name: 'company 2',
+      },
+      {
+        type: 'opportunity',
+        id: '3',
+        name: 'opportunity 1',
+      },
+    ],
+  },
 };
 
 export const Heading: Story = {

@@ -46,34 +46,13 @@ export const tagsFeature = createFeature({
     ...tagAdapter.getSelectors(selectTagsState),
     selectTagsWithCompanyRelation: createSelector(selectTagsState, (state) => {
       const tags = _.values(state.entities);
-      const companyTags = tags
-        .filter((tag) => tag?.type === 'company')
-        .slice(0, 10); //TODO: FILTERING TAGS
+      const companyTags = tags.filter((tag) => tag?.type === 'company');
       const oportunityTags = tags.filter((tag) => tag?.type === 'opportunity');
       const otherTags = tags.filter(
         (tag) => tag?.type !== 'company' && tag?.type !== 'opportunity',
       );
 
-      return [
-        ...companyTags,
-        ..._.chain(companyTags)
-          .map((companyTag) => [
-            {
-              id: companyTag?.id + '_company',
-              name: companyTag?.name,
-              label: '(No linked opportunity)',
-              type: companyTag?.type,
-              companyId: companyTag?.id,
-            },
-            ...oportunityTags.map((oportunityTag) => ({
-              ...oportunityTag,
-              companyId: companyTag?.id,
-            })),
-          ])
-          .flatMap()
-          .value(),
-        ...otherTags,
-      ];
+      return [...companyTags, ...oportunityTags, ...otherTags];
     }),
     selectPeopleTags: createSelector(
       selectTagsState,

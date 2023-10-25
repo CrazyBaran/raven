@@ -9,6 +9,8 @@ import {
   Output,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+import { Router } from '@angular/router';
 import { LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import {
@@ -84,10 +86,10 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
   public readonly isUpdating = this.noteStoreFacade.isUpdatingNote;
 
   private ngUnsubscribe = new Subject<void>();
-
   public constructor(
     private readonly noteStoreFacade: NoteStoreFacade,
     private actions$: Actions,
+    private router: Router,
   ) {}
 
   public ngOnInit(): void {
@@ -158,7 +160,12 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
         filter(({ data }) => data.name === payload.name),
         take(1),
       )
-      .subscribe(() => (this.editMode = false));
+      .subscribe((action) => {
+        this.editMode = false;
+        this.router.navigate(['notes'], {
+          queryParams: { noteId: action.data.id },
+        });
+      });
   }
 
   private prepareAllNotes(notes: NoteFieldGroupsWithFieldData[]): void {
