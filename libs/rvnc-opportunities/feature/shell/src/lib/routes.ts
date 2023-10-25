@@ -4,6 +4,7 @@ import {
   Provider,
 } from '@angular/core';
 import { Route } from '@angular/router';
+import { notesProviders } from '@app/rvnc-notes/feature/shell';
 import {
   OpportunitiesEffects,
   OpportunitiesFacade,
@@ -27,6 +28,7 @@ export const OPPORTUNITIES_ROUTES: Route[] = [
     children: [
       {
         path: ':id',
+        providers: [notesProviders],
         loadComponent: () =>
           import('@app/rvnc-opportunities/page/opportunity-details').then(
             (m) => m.OpportunityDetailsPageComponent,

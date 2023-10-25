@@ -5,7 +5,7 @@ import { CreateNote, PatchNote } from '../domain/createNote';
 export const NotesActions = createActionGroup({
   source: 'Notes/API',
   events: {
-    'Get Notes': emptyProps(),
+    'Get Notes': props<{ domain?: string; tagIds?: string }>(),
     'Get Notes Success': props<{ data: NoteData[] }>(),
     'Get Notes Failure': props<{ error: string }>(),
 

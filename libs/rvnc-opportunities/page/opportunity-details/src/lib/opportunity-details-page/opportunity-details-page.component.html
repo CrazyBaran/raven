@@ -1,1 +1,34 @@
-<p>opportunity-details-page works!</p>
+<div
+  class="flex h-full w-full"
+  *ngIf="isLoadingOpportunityInfo$ | async; else opportunityView"
+>
+  <ui-loader />
+</div>
+
+<ng-template #opportunityView>
+  <div class="opportunity-details grid max-h-screen">
+    <ui-header
+      [pageName]="(opportunityDetails$ | async)?.organisation?.name || ''"
+    />
+
+    <div class="overflow-hidden p-6">
+      <div
+        class="flex h-full w-full items-center justify-center"
+        *ngIf="isLoadingNotes$ | async; else notesView"
+      >
+        <ui-loader />
+      </div>
+
+      <ng-template #notesView>
+        <app-notes-table [notes]="(notes$ | async) || []" />
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<!-- TODO: REMOVE THAT FROM HERE -->
+<app-note-details
+  *ngIf="openNoteId()"
+  [noteId]="openNoteId()"
+  (closeWindow)="handleClosePreview()"
+/>

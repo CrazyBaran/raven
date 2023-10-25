@@ -11,8 +11,19 @@ import { CreateNote, PatchNote } from '../domain/createNote';
 export class NotesService {
   public constructor(private http: HttpClient) {}
 
-  public getNotes(): Observable<GenericResponse<NoteData[]>> {
-    return this.http.get<GenericResponse<NoteData[]>>('/api/notes');
+  public getNotes(
+    domain?: string,
+    tagIds?: string,
+  ): Observable<GenericResponse<NoteData[]>> {
+    const params: Record<string, string> = Object.fromEntries(
+      Object.entries({ domain, tagIds }).filter(
+        ([, v]) => typeof v !== 'undefined',
+      ),
+    ) as Record<string, string>;
+
+    return this.http.get<GenericResponse<NoteData[]>>('/api/notes', {
+      params,
+    });
   }
 
   public getNoteDetails(

@@ -12,7 +12,7 @@ import {
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
-const notesProviders: Array<Provider | EnvironmentProviders> = [
+export const notesProviders: Array<Provider | EnvironmentProviders> = [
   NoteStoreFacade,
   importProvidersFrom(
     StoreModule.forFeature(notesFeature),
