@@ -64,7 +64,7 @@ export class StorageAccountService {
     const attachments: NoteAttachmentData[] = [];
     for (const file of storageAccountFiles) {
       attachments.push({
-        fileName: file.originalFileName,
+        fileName: file.fileName,
         url: await this.getSasTokenForFile('default', file.fileName),
       } as NoteAttachmentData);
     }
