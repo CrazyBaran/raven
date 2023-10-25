@@ -12,7 +12,6 @@ export class OrganisationCreatedEventHandler {
   protected async createOrganisationTag(
     event: OrganisationCreatedEvent,
   ): Promise<void> {
-    console.log({ event });
     await this.tagService.createTag({
       name: event.organisationEntity.name,
       type: TagTypeEnum.Company,
