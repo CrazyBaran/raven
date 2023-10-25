@@ -38,12 +38,14 @@ export class TagsController {
   @ApiOperation({ description: 'Get all tags' })
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'type', enum: TagTypeEnum, required: false })
+  @ApiQuery({ name: 'query', type: String, required: false })
   @Get()
   public async getAllTags(
     @Query('type') type?: TagTypeEnum | null,
+    @Query('query') query?: string,
   ): Promise<TagData[]> {
     return await Promise.all(
-      (await this.tagsService.getAllTags(type)).map((tag) =>
+      (await this.tagsService.getAllTags(type, query)).map((tag) =>
         this.tagsService.tagEntityToTagData(tag),
       ),
     );
