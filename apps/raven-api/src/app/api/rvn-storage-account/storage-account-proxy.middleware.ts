@@ -1,6 +1,10 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { RequestHandler, createProxyMiddleware } from 'http-proxy-middleware';
+import {
+  Options,
+  RequestHandler,
+  createProxyMiddleware,
+} from 'http-proxy-middleware';
 import { environment } from '../../../environments/environment';
 import { StorageAccountProxyMiddlewareLogger } from './storage-account-proxy.middleware.logger';
 
@@ -13,10 +17,11 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
     const options = {
       target: `https://${environment.azureStorageAccount.name}.blob.core.windows.net`,
       secure: false,
-      proxyRewrite: {},
+      pathRewrite: {},
       on: {
         proxyReq: (proxyReq): void => {
           proxyReq.removeHeader('authorization');
+          proxyReq.removeHeader('Authorization');
           proxyReq.removeHeader('host');
           proxyReq.setHeader(
             'host',
@@ -25,8 +30,11 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
         },
       },
       logger: this.logger,
-    };
-    options.proxyRewrite[`/${environment.app.apiPrefix}/storage-account`] = '';
+    } as Options;
+    const rewriteUrl = environment.app.apiPrefix
+      ? `/${environment.app.apiPrefix}/storage-account`
+      : '/storage-account';
+    options.pathRewrite[rewriteUrl] = '';
     this.proxy = createProxyMiddleware(options);
   }
   public async use(
