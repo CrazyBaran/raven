@@ -231,6 +231,7 @@ export class NotesService {
       id: noteEntity.id,
       name: noteEntity.name,
       version: noteEntity.version,
+      rootVersionId: noteEntity.rootVersionId,
       templateName: noteEntity.template?.name,
       templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
