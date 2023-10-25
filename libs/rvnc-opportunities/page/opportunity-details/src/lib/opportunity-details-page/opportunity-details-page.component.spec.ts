@@ -1,4 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
+import { OpportunitiesFacade } from '@app/rvnc-opportunities/data-access';
+import { provideMockStore } from '@ngrx/store/testing';
 import { OpportunityDetailsPageComponent } from './opportunity-details-page.component';
 
 describe('OpportunityDetailsPageComponent', () => {
@@ -7,7 +11,8 @@ describe('OpportunityDetailsPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OpportunityDetailsPageComponent],
+      imports: [OpportunityDetailsPageComponent, RouterTestingModule],
+      providers: [provideMockStore({}), OpportunitiesFacade, NoteStoreFacade],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OpportunityDetailsPageComponent);
