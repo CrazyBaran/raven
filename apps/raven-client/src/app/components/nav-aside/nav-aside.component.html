@@ -1,4 +1,16 @@
 <aside class="nav-aside">
+  <button
+    class="nav-aside__toggle"
+    type="button"
+    aria-label="Toggle Sidebar"
+    (click)="handleToggleSidebar()"
+  >
+    <i
+      class="fa-solid fa-circle-chevron-right duration-300"
+      [ngClass]="{ 'rotate-180': isOpen() }"
+    ></i>
+  </button>
+
   <div class="nav-aside__actions">
     <div class="nav-aside__routes" kendoTooltip>
       <button
@@ -47,14 +59,6 @@
   </div>
 
   <div class="nav-aside__content content" [@collapse] *ngIf="isOpen()">
-    <button
-      class="content__toggle"
-      type="button"
-      aria-label="Toggle Sidebar"
-      (click)="handleToggleSidebar()"
-    >
-      <i class="fa-solid fa-circle-chevron-left"></i>
-    </button>
     <div class="content-info" [@collapse] *ngIf="isOpen()">
       <div class="menu" *ngIf="!!subRoutes; else mainMenu">
         <button
