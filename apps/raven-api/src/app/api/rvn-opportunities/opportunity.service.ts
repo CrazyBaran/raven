@@ -111,7 +111,7 @@ export class OpportunityService {
   public async findOne(id: string): Promise<OpportunityData | null> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id },
-      relations: ['organisation', 'pipelineDefinition', 'pipelineStage'],
+      relations: ['organisation', 'pipelineDefinition', 'pipelineStage', 'tag'],
     });
     const affinityData = await this.affinityCacheService.getByDomains(
       opportunity.organisation.domains,
@@ -128,7 +128,10 @@ export class OpportunityService {
         displayName: opportunity.pipelineStage.displayName,
         order: opportunity.pipelineStage.order,
       },
-      fields: affinityData.fields.map((field) => {
+      tag: opportunity.tag
+        ? { id: opportunity.tag.id, name: opportunity.tag.name }
+        : undefined,
+      fields: affinityData?.fields.map((field) => {
         return {
           displayName: field.displayName,
           value: field.value,
@@ -259,7 +262,7 @@ export class OpportunityService {
         id: entity.tag.id,
         name: entity.tag.name,
       },
-      fields: affinityDto.fields.map((field) => {
+      fields: affinityDto?.fields.map((field) => {
         return {
           displayName: field.displayName,
           value: field.value,
