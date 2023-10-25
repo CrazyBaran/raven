@@ -5,7 +5,7 @@ import {
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { FieldDefinitionType } from '@app/rvns-templates';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
@@ -146,6 +146,21 @@ export class NotesService {
     userEntity: UserEntity,
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
+    const latestVersion = await this.noteRepository
+      .createQueryBuilder('note')
+      .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
+        rootVersionId: noteEntity.rootVersionId,
+      })
+      .orderBy('note.version', 'DESC')
+      .getOne();
+
+    if (latestVersion.version !== noteEntity.version) {
+      throw new ConflictException({
+        message: 'Note is out of date',
+        latestVersionId: latestVersion.id,
+      });
+    }
+
     const newNoteVersion = new NoteEntity();
     newNoteVersion.name = options.name || noteEntity.name;
     newNoteVersion.rootVersionId = noteEntity.rootVersionId;
