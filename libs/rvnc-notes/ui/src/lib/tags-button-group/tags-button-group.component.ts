@@ -3,19 +3,20 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  forwardRef,
   Input,
   Output,
   signal,
   WritableSignal,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor } from '@app/rvnc-shared/util';
 import { TagType } from '@app/rvns-tags';
 import {
   ButtonGroupModule,
   ButtonModule,
 } from '@progress/kendo-angular-buttons';
 import { RxFor } from '@rx-angular/template/for';
-import { ControlValueAccessor } from './control-value.accessor';
 
 export type SelectTagButton = {
   text: string;
@@ -42,7 +43,7 @@ export const TAG_BUTTONS: SelectTagButton[] = [
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: TagsButtonGroupComponent,
+      useExisting: forwardRef(() => TagsButtonGroupComponent),
       multi: true,
     },
   ],

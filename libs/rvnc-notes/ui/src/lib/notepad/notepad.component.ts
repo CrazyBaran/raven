@@ -116,15 +116,6 @@ export class NotepadComponent implements OnInit {
   @Input() public set config(value: Record<string, DynamicControl>) {
     this.startRender.next();
     this.formConfig.set({
-      TITLE: {
-        name: 'Note Title',
-        id: 'TITLE',
-        type: 'text',
-        order: 0,
-        validators: {
-          required: true,
-        },
-      },
       ...value,
     });
   }

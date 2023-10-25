@@ -32,6 +32,10 @@ export class NoteStoreFacade {
     select(notesQuery.selectNoteDetailsIsLoading),
   );
 
+  public isUpdatingNote = this.store.selectSignal(
+    notesQuery.selectNoteUpdateIsLoading,
+  );
+
   public constructor(private store: Store) {}
 
   public getNotes(): void {
@@ -46,6 +50,15 @@ export class NoteStoreFacade {
     this.store.dispatch(
       NotesActions.createNote({
         data,
+      }),
+    );
+  }
+
+  public updateNote(noteId: string, data: PatchNote): void {
+    this.store.dispatch(
+      NotesActions.updateNote({
+        data,
+        noteId,
       }),
     );
   }
