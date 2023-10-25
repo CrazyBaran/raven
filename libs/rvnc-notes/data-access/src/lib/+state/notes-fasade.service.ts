@@ -38,8 +38,8 @@ export class NoteStoreFacade {
 
   public constructor(private store: Store) {}
 
-  public getNotes(): void {
-    this.store.dispatch(NotesActions.getNotes());
+  public getNotes(domain?: string, tagIds?: string): void {
+    this.store.dispatch(NotesActions.getNotes({ domain, tagIds }));
   }
 
   public getNoteDetails(id: string): void {

@@ -1,0 +1,8 @@
+:host {
+  height: 100%;
+  display: grid;
+}
+
+.opportunity-details {
+  grid-template-rows: auto 1fr;
+}
