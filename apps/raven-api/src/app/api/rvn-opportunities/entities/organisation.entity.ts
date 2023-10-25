@@ -22,6 +22,6 @@ export class OrganisationEntity {
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
-    this.id = this.id?.toLowerCase();
+    this.id = this.id.toLowerCase();
   }
 }
