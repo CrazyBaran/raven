@@ -13,10 +13,13 @@ export class ParseTagsPipe
   public async transform(
     tagIds: string[] | string | null,
   ): Promise<TagEntity[]> {
+    if (!tagIds) {
+      return [];
+    }
     if (typeof tagIds === 'string') {
       tagIds = tagIds.split(',');
     }
-    if (!tagIds || tagIds.length === 0) {
+    if (tagIds.length === 0) {
       return [];
     }
     return await this.entityManager.find(TagEntity, {
