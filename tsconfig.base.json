@@ -18,6 +18,9 @@
     "baseUrl": ".",
     "paths": {
       "@app/core-ui": ["libs/core-ui/src/index.ts"],
+      "@app/page/opportunity-details-page": [
+        "libs/page/opportunity-details-page/src/index.ts"
+      ],
       "@app/rvnb-crypto": ["libs/rvnb-crypto/src/index.ts"],
       "@app/rvnb-platform": ["libs/rvnb-platform/src/index.ts"],
       "@app/rvnc-acl": ["libs/rvnc-acl/src/index.ts"],
@@ -46,6 +49,19 @@
       "@app/rvnc-notes/ui": ["libs/rvnc-notes/ui/src/index.ts"],
       "@app/rvnc-notes/util": ["libs/rvnc-notes/util/src/index.ts"],
       "@app/rvnc-opportunities": ["libs/rvnc-opportunities/src/index.ts"],
+      "@app/rvnc-opportunities/data-access": [
+        "libs/rvnc-opportunities/data-access/src/index.ts"
+      ],
+      "@app/rvnc-opportunities/feature/shell": [
+        "libs/rvnc-opportunities/feature/shell/src/index.ts"
+      ],
+      "@app/rvnc-opportunities/page/opportunity-details": [
+        "libs/rvnc-opportunities/page/opportunity-details/src/index.ts"
+      ],
+      "@app/rvnc-opportunities/page/opportunity-details-page": [
+        "libs/rvnc-opportunities/page/opportunity-details-page/src/index.ts"
+      ],
+      "@app/rvnc-opportunities/ui": ["libs/rvnc-opportunities/ui/src/index.ts"],
       "@app/rvnc-pipelines": ["libs/rvnc-pipelines/src/index.ts"],
       "@app/rvnc-shared/dynamic-form": [
         "libs/rvnc-shared/dynamic-form/src/index.ts"

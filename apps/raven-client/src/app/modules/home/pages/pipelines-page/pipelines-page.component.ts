@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  OpportunitiesActions,
-  selectAllOpportunities,
-  selectIsLoading as selectIsLoadingOpportunities,
-} from '@app/rvnc-opportunities';
+
+import { OpportunitiesFacade } from '@app/rvnc-opportunities/data-access';
+import { KanbanBoardComponent } from '@app/rvnc-opportunities/ui';
 import {
   PipelinesActions,
   selectAllPipelines,
@@ -13,7 +11,6 @@ import {
 import { Store } from '@ngrx/store';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { PageLayoutComponent } from '../../../../components/page-layout/page-layout.component';
-import { KanbanBoardComponent } from '../../components/kanban-board/kanban-board.component';
 
 @Component({
   selector: 'app-pipelines-page',
@@ -29,10 +26,8 @@ import { KanbanBoardComponent } from '../../components/kanban-board/kanban-board
 })
 export class PipelinesPageComponent implements OnInit {
   // Opportunities
-  public readonly isLoadingOpportunities$ = this.store.select(
-    selectIsLoadingOpportunities,
-  );
-  public readonly opportunities$ = this.store.select(selectAllOpportunities);
+  public readonly isLoadingOpportunities$ = this.opportunitiesFacade.isLoading$;
+  public readonly opportunities$ = this.opportunitiesFacade.opportunities$;
 
   // Pipelines
   public readonly isLoadingPipelines$ = this.store.select(
@@ -40,12 +35,13 @@ export class PipelinesPageComponent implements OnInit {
   );
   public readonly pipelines$ = this.store.select(selectAllPipelines);
 
-  public constructor(private readonly store: Store) {}
+  public constructor(
+    private readonly store: Store,
+    private readonly opportunitiesFacade: OpportunitiesFacade,
+  ) {}
 
   public ngOnInit(): void {
-    this.store.dispatch(
-      OpportunitiesActions.getOpportunities({ take: 5000, skip: 0 }),
-    );
+    this.opportunitiesFacade.getOpportunities(500, 0);
 
     this.store.dispatch(PipelinesActions.getPipelines());
   }

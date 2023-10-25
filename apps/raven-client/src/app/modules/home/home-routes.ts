@@ -1,10 +1,11 @@
 import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
+
 import {
-  OPPORTUNITIES_ROUTES,
   OpportunitiesEffects,
+  OpportunitiesFacade,
   opportunitiesReducer,
-} from '@app/rvnc-opportunities';
+} from '@app/rvnc-opportunities/data-access';
 import { PipelinesEffects, pipelinesReducer } from '@app/rvnc-pipelines';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -37,6 +38,7 @@ export const HOME_ROUTES: Routes = [
           {
             path: 'pipeline',
             providers: [
+              OpportunitiesFacade,
               importProvidersFrom(
                 StoreModule.forFeature('opportunities', opportunitiesReducer),
                 EffectsModule.forFeature([OpportunitiesEffects]),
@@ -51,13 +53,10 @@ export const HOME_ROUTES: Routes = [
           },
           {
             path: 'opportunities',
-            providers: [
-              importProvidersFrom(
-                StoreModule.forFeature('opportunities', opportunitiesReducer),
-                EffectsModule.forFeature([OpportunitiesEffects]),
+            loadChildren: () =>
+              import('@app/rvnc-opportunities/feature/shell').then(
+                (m) => m.OPPORTUNITIES_ROUTES,
               ),
-            ],
-            children: OPPORTUNITIES_ROUTES,
           },
         ],
       },
