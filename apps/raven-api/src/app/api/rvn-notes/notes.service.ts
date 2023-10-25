@@ -114,6 +114,7 @@ export class NotesService {
         options.tags,
         options.templateEntity,
         options.userEntity,
+        options.rootVersionId,
       );
     }
 
@@ -134,7 +135,9 @@ export class NotesService {
     const note = new NoteEntity();
     note.name = options.name;
     note.version = 1;
-    note.rootVersionId = options.rootVersionId;
+    if (options.rootVersionId) {
+      note.rootVersionId = options.rootVersionId;
+    }
     note.tags = options.tags;
     note.createdBy = options.userEntity;
     note.updatedBy = options.userEntity;
@@ -339,6 +342,7 @@ export class NotesService {
     tags: TagEntity[],
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
+    rootVersionId?: string,
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
@@ -347,6 +351,9 @@ export class NotesService {
     note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
+    if (rootVersionId) {
+      note.rootVersionId = rootVersionId;
+    }
     note.noteTabs = templateEntity.tabs.map((tab) => {
       const noteTab = new NoteTabEntity();
       noteTab.name = tab.name;
