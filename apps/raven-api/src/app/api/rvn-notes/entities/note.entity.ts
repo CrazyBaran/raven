@@ -30,6 +30,7 @@ export class NoteEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
+  @Index()
   @Column({ default: () => 'NEWID()' })
   public rootVersionId: string;
 
@@ -117,6 +118,7 @@ export class NoteEntity implements AuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.previousVersionId = this.previousVersionId?.toLowerCase();
+    this.rootVersionId = this.rootVersionId.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
     this.updatedById = this.updatedById.toLowerCase();
   }
