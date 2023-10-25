@@ -7,11 +7,12 @@
       [loading]="!templateLoaded()!"
       [textField]="templateDropdownConfig.textField"
       [valueField]="templateDropdownConfig.valueField"
+      (valueChange)="handleValueChange($event)"
       fillMode="outline"
       [virtual]="true"
-      formControlName="template"
-    ></kendo-dropdownlist>
-
+      [formControl]="standaloneTemplateForm"
+    >
+    </kendo-dropdownlist>
     <!--        TAGS       -->
     <app-tag-dropdown
       formControlName="tags"

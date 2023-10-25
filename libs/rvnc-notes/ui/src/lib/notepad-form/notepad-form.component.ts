@@ -25,7 +25,7 @@ import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
 import { TagData } from '@app/rvns-tags';
 import { TemplateWithRelationsData } from '@app/rvns-templates';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { DialogService } from '@progress/kendo-angular-dialog';
+import { DialogResult, DialogService } from '@progress/kendo-angular-dialog';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { CheckBoxModule } from '@progress/kendo-angular-inputs';
@@ -87,6 +87,7 @@ export class NotepadFormComponent
 {
   public override writeValue(value: NotepadForm): void {
     this.notepadForm.patchValue(value, { onlySelf: true });
+    this.standaloneTemplateForm.setValue(value.template, { emitEvent: false });
   }
 
   public constructor() {
@@ -118,6 +119,10 @@ export class NotepadFormComponent
       ({ id }) => id !== this.defaultTemplate()?.id,
     );
   });
+
+  //todo move it to standlone component
+  protected standaloneTemplateForm =
+    new FormControl<TemplateWithRelationsData | null>(null);
 
   protected templateDropdownConfig = {
     textField: 'name',
@@ -279,5 +284,42 @@ export class NotepadFormComponent
     this.notepadForm.controls.peopleTags.setValue(
       addedPeople.filter((t) => t !== tag.id),
     );
+  }
+
+  public handleValueChange(value: TemplateWithRelationsData): void {
+    const notes = this.notepadForm.controls.notes.value;
+
+    if (Object.keys(notes).some((key) => notes[key])) {
+      this.dialogService
+        .open({
+          appendTo: this.containerRef,
+          title: 'Change template?',
+          width: 350,
+          content:
+            'If you switch template, any progress you have made will be lost. Are you sure you want to continue?',
+          actions: [
+            { text: 'No' },
+            {
+              text: 'Yes, switch template',
+              primary: true,
+              themeColor: 'primary',
+            },
+          ],
+        })
+        .result.subscribe((res: DialogResult) => {
+          if ('text' in res && res.text === 'Yes, switch template') {
+            this.notepadForm.controls.template.setValue(value);
+            this.standaloneTemplateForm.setValue(value, { emitEvent: false });
+          }
+        });
+
+      this.standaloneTemplateForm.setValue(
+        this.notepadForm.controls.template.value,
+        { emitEvent: false },
+      );
+      return;
+    }
+
+    this.notepadForm.controls.template.setValue(value);
   }
 }

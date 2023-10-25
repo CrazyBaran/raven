@@ -164,7 +164,7 @@ export class TagDropdownComponent extends ControlValueAccessor<string[]> {
         .filter((item) =>
           item.name.toLowerCase().includes(this.filterValue().toLowerCase()),
         )
-        .slice(0, 50)
+        .slice(0, 15)
         .map((item) => ({
           ...item,
           type: 'company_root',
