@@ -39,9 +39,9 @@
   <ng-template kendoDropDownTreeNodeTemplate let-dataItem let-index="index">
     <div
       (click)="itemClicked(dataItem); $event.stopPropagation()"
-      class="align-center flex px-2 py-1"
+      class="align-center flex w-full px-2 py-1"
     >
-      <span> {{ dataItem.label || dataItem.name }}</span>
+      <span class="truncate"> {{ dataItem.label || dataItem.name }}</span>
     </div>
   </ng-template>
 </kendo-dropdowntree>

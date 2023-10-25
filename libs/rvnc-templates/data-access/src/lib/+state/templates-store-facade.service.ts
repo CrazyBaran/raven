@@ -18,6 +18,10 @@ export class TemplatesStoreFacade {
     TemplateSelectors.selectDefaultTemplate,
   );
 
+  public notesTemplates = this.store.selectSignal(
+    TemplateSelectors.selectAllNoteTemplates,
+  );
+
   public defaultTemplate$ = this.store.select(
     TemplateSelectors.selectDefaultTemplate,
   );

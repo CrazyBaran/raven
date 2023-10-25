@@ -8,6 +8,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import {
@@ -15,10 +16,18 @@ import {
   NoteFieldGroupsWithFieldData,
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
+import { TemplateWithRelationsData } from '@app/rvns-templates';
+import { Actions, ofType } from '@ngrx/effects';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { WindowModule } from '@progress/kendo-angular-dialog';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
-import { Subject, filter, takeUntil } from 'rxjs';
+import { Subject, filter, take, takeUntil } from 'rxjs';
+import { NotesActions } from '../../../../data-access/src/lib/+state/notes.actions';
+import {
+  NotepadForm,
+  NotepadFormComponent,
+  TITLE_FIELD,
+} from '../notepad-form/notepad-form.component';
 
 @Component({
   selector: 'app-note-details',
@@ -29,6 +38,8 @@ import { Subject, filter, takeUntil } from 'rxjs';
     LoaderComponent,
     ExpansionPanelModule,
     ButtonsModule,
+    NotepadFormComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './note-details.component.html',
   styleUrls: ['./note-details.component.scss'],
@@ -37,6 +48,14 @@ import { Subject, filter, takeUntil } from 'rxjs';
 export class NoteDetailsComponent implements OnInit, OnDestroy {
   @Input() public noteId: string | null;
   @Output() public closeWindow = new EventEmitter();
+
+  public notepadForm = new FormControl<NotepadForm>({
+    template: null,
+    notes: {},
+    peopleTags: [],
+    tags: [],
+    title: '',
+  });
 
   public readonly mockedTags: { name: string; color: string }[] = [
     {
@@ -59,13 +78,17 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
 
   public noteDetails: NoteWithRelationsData | null = null;
   public noteFields: NoteFieldData[] = [];
-
+  public editMode = false;
   public readonly noteDetails$ = this.noteStoreFacade.noteDetails$;
   public readonly isLoading$ = this.noteStoreFacade.isLoadingNoteDetails$;
+  public readonly isUpdating = this.noteStoreFacade.isUpdatingNote;
 
   private ngUnsubscribe = new Subject<void>();
 
-  public constructor(private readonly noteStoreFacade: NoteStoreFacade) {}
+  public constructor(
+    private readonly noteStoreFacade: NoteStoreFacade,
+    private actions$: Actions,
+  ) {}
 
   public ngOnInit(): void {
     if (this.noteId) {
@@ -79,6 +102,26 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
       )
       .subscribe((noteDetails) => {
         this.noteDetails = noteDetails;
+
+        this.notepadForm.setValue({
+          template: {
+            ...noteDetails,
+            fieldGroups: noteDetails?.noteFieldGroups.map((group) => ({
+              ...group,
+              fieldDefinitions: group.noteFields,
+            })),
+          } as unknown as TemplateWithRelationsData,
+          notes: {},
+          peopleTags:
+            noteDetails?.tags
+              ?.filter((tag) => tag.type === 'people')
+              .map((tag) => tag.id) || [],
+          tags:
+            noteDetails?.tags
+              ?.filter((tag) => tag.type !== 'people')
+              .map((tag) => tag.id) || [],
+          title: noteDetails?.name,
+        });
         this.prepareAllNotes(noteDetails?.noteFieldGroups || []);
       });
   }
@@ -90,6 +133,32 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+  public updateNote(): void {
+    const fields = Object.entries(this.notepadForm.value?.notes ?? {})
+      .filter(([key, value]) => key !== 'TITLE')
+      .map(([id, value]) => ({ id, value: value || '' }));
+
+    const { template, notes, tags, peopleTags } = this.notepadForm.value!;
+    const payload = {
+      name: notes[TITLE_FIELD.id] || '',
+      templateId: template?.id,
+      fields: fields,
+      tagIds: [
+        ...(peopleTags ?? []),
+        ...(tags ?? []).map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
+      ],
+    };
+
+    this.noteStoreFacade.updateNote(this.noteDetails!.id, payload);
+
+    this.actions$
+      .pipe(
+        ofType(NotesActions.updateNoteSuccess),
+        filter(({ data }) => data.name === payload.name),
+        take(1),
+      )
+      .subscribe(() => (this.editMode = false));
   }
 
   private prepareAllNotes(notes: NoteFieldGroupsWithFieldData[]): void {
