@@ -29,6 +29,7 @@ interface CreateNoteOptions {
   templateEntity: TemplateEntity | null;
   tags: TagEntity[];
   fields: FieldUpdate[];
+  rootVersionId?: string;
 }
 
 interface UpdateNoteFieldOptions {
@@ -133,6 +134,7 @@ export class NotesService {
     const note = new NoteEntity();
     note.name = options.name;
     note.version = 1;
+    note.rootVersionId = options.rootVersionId;
     note.tags = options.tags;
     note.createdBy = options.userEntity;
     note.updatedBy = options.userEntity;
@@ -229,6 +231,7 @@ export class NotesService {
       id: noteEntity.id,
       name: noteEntity.name,
       version: noteEntity.version,
+      rootVersionId: noteEntity.rootVersionId,
       templateName: noteEntity.template?.name,
       templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
