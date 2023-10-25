@@ -3,7 +3,11 @@ import {
   GenericCreateResponseSchema,
   GenericResponseSchema,
 } from '@app/rvns-api';
-import { NoteData, NoteFieldData } from '@app/rvns-notes/data-access';
+import {
+  NoteAttachmentData,
+  NoteData,
+  NoteFieldData,
+} from '@app/rvns-notes/data-access';
 import {
   Body,
   Controller,
@@ -124,6 +128,17 @@ export class NotesController {
       );
     }
     return this.notesService.noteEntityToNoteData(noteEntity);
+  }
+
+  @ApiOperation({ description: 'Get note attachments' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'id', type: String })
+  @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
+  @Get(':id/attachments')
+  public async getNoteAttachments(
+    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+  ): Promise<NoteAttachmentData[]> {
+    return this.notesService.getNoteAttachments(noteEntity);
   }
 
   @ApiOperation({

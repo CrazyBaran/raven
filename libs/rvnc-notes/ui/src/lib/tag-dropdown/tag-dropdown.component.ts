@@ -6,6 +6,7 @@ import {
   Component,
   computed,
   EventEmitter,
+  forwardRef,
   inject,
   Input,
   Output,
@@ -19,13 +20,13 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ClickOutsideDirective } from '@app/rvnc-notes/util';
+import { ControlValueAccessor } from '@app/rvnc-shared/util';
 import { TagType } from '@app/rvns-tags';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { FilterExpandSettings } from '@progress/kendo-angular-treeview';
 import { startWith } from 'rxjs';
-import { ControlValueAccessor } from '../tags-button-group/control-value.accessor';
 import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
 
 export type DropdownTag = {
@@ -53,7 +54,7 @@ export type DropdownTag = {
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: TagDropdownComponent,
+      useExisting: forwardRef(() => TagDropdownComponent),
       multi: true,
     },
   ],

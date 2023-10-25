@@ -27,6 +27,11 @@ export const selectAllTemplates = createSelector(
   (state: TemplatesState) => selectAll(state),
 );
 
+export const selectAllNoteTemplates = createSelector(
+  selectAllTemplates,
+  (templates) => templates.filter((template) => template.type === 'note'),
+);
+
 export const selectTemplatesEntities = createSelector(
   selectTemplatesState,
   (state: TemplatesState) => selectEntities(state),
@@ -50,11 +55,10 @@ export const selectTemplate = (id: string) =>
   );
 
 export const selectDefaultTemplate = createSelector(
-  selectAllTemplates,
+  selectAllNoteTemplates,
   (templates) => {
     const defaultTemplate =
-      templates.find((template) => template.name === 'Loose Note') ||
-      templates?.[0]; //TODO: template.isDefault,
+      templates.find((template) => template.isDefault) || templates?.[0];
     return (
       (defaultTemplate && {
         ...defaultTemplate,
@@ -84,4 +88,5 @@ export const TemplateSelectors = {
   selectEntity,
   selectTemplate,
   selectDefaultTemplate,
+  selectAllNoteTemplates,
 };

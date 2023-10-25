@@ -30,10 +30,16 @@ export const selectNoteDetailsIsLoading = createSelector(
   (state: NotesState) => state.details.isLoading,
 );
 
+export const selectNoteUpdateIsLoading = createSelector(
+  selectNotesState,
+  (state: NotesState) => state.update.isLoading,
+);
+
 export const notesQuery = {
   selectAllNotes,
   selectIsLoading,
   selectError,
   selectNoteDetails,
   selectNoteDetailsIsLoading,
+  selectNoteUpdateIsLoading,
 };

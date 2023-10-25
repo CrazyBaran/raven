@@ -31,5 +31,18 @@ import { StorageAccountServiceLogger } from './storage-account.service.logger';
     },
   ],
   controllers: [StorageAccountController],
+  exports: [
+    StorageAccountService,
+    StorageAccountClientLogger,
+    StorageAccountClient,
+    {
+      provide: BlobServiceClient,
+      useFactory: (): BlobServiceClient => {
+        return BlobServiceClient.fromConnectionString(
+          environment.azureStorageAccount.connectionString,
+        );
+      },
+    },
+  ],
 })
 export class StorageAccountModule {}

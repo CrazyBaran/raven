@@ -45,3 +45,8 @@ export interface NoteWithRelationsData extends NoteData {
   noteTabs: NoteTabWithFieldGroupsData[];
   noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
+
+export interface NoteAttachmentData {
+  readonly fileName: string;
+  readonly url: string;
+}

@@ -13,6 +13,10 @@ export interface NotesState extends EntityState<NoteData> {
     isLoading: boolean;
     error: string | null;
   };
+  update: {
+    isLoading: boolean;
+    error: string | null;
+  };
   details: {
     isLoading: boolean;
     isPending: boolean;
@@ -33,6 +37,10 @@ export const initialState: NotesState = notesAdapter.getInitialState({
     data: null,
   },
   create: {
+    isLoading: false,
+    error: null,
+  },
+  update: {
     isLoading: false,
     error: null,
   },
@@ -109,6 +117,34 @@ export const notesReducer = createReducer(
     details: {
       ...state.details,
       isLoading: false,
+    },
+  })),
+  on(NotesActions.updateNote, (state) => ({
+    ...state,
+    update: {
+      ...state.update,
+      isLoading: true,
+    },
+  })),
+  on(NotesActions.updateNoteSuccess, (state, { data }) =>
+    notesAdapter.updateOne(
+      { id: data.id, changes: data },
+      {
+        ...state,
+        update: {
+          ...state.update,
+          isLoading: false,
+          error: null,
+        },
+      },
+    ),
+  ),
+  on(NotesActions.updateNoteFailure, (state, { error }) => ({
+    ...state,
+    update: {
+      ...state.update,
+      isLoading: false,
+      error,
     },
   })),
 );

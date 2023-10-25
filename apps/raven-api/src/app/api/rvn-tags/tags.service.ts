@@ -1,7 +1,7 @@
 import { TagData, TagTypeEnum } from '@app/rvns-tags';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
@@ -28,8 +28,14 @@ export class TagsService {
     private readonly tagsRepository: Repository<TagEntity>,
   ) {}
 
-  public async getAllTags(type?: TagTypeEnum): Promise<TagEntity[]> {
-    const where = type ? { type } : undefined;
+  public async getAllTags(
+    type: TagTypeEnum | null,
+    query: string,
+  ): Promise<TagEntity[]> {
+    const where = type ? { type } : {};
+    if (query) {
+      where['name'] = ILike(`%${query}%`);
+    }
     return this.tagsRepository.find({ where });
   }
 
