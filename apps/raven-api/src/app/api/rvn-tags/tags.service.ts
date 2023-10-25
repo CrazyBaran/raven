@@ -2,7 +2,11 @@ import { TagData, TagTypeEnum } from '@app/rvns-tags';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TagEntity } from './entities/tag.entity';
+import {
+  OrganisationTagEntity,
+  PeopleTagEntity,
+  TagEntity,
+} from './entities/tag.entity';
 import { TagEntityFactory } from './tag-entity.factory';
 
 export interface CreateTagOptions {
@@ -47,11 +51,15 @@ export class TagsService {
     await this.tagsRepository.remove(tagEntity);
   }
 
-  public tagEntityToTagData(tag: TagEntity): TagData {
+  public tagEntityToTagData(
+    tag: TagEntity | PeopleTagEntity | OrganisationTagEntity,
+  ): TagData {
     return {
       id: tag.id,
       name: tag.name,
       type: tag.type,
+      userId: (tag as PeopleTagEntity).userId,
+      organisationId: (tag as OrganisationTagEntity).organisationId,
     };
   }
 }
