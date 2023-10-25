@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganisationEntity } from './entities/organisation.entity';
+import { OrganisationCreatedEvent } from './events/organisation-created.event';
 
 interface CreateOrganisationOptions {
   name: string;
@@ -78,7 +79,10 @@ export class OrganisationService {
     organisation.domains = [options.domain];
     const organisationEntity =
       await this.organisationRepository.save(organisation);
-    this.eventEmitter.emit('organisation-created', organisationEntity);
+    this.eventEmitter.emit(
+      'organisation-created',
+      new OrganisationCreatedEvent(organisationEntity),
+    );
     return organisationEntity;
   }
 
