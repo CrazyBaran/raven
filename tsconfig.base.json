@@ -66,6 +66,7 @@
       "@app/rvnc-shared/dynamic-form": [
         "libs/rvnc-shared/dynamic-form/src/index.ts"
       ],
+      "@app/rvnc-shared/util": ["libs/rvnc-shared/util/src/index.ts"],
       "@app/rvnc-shelf": ["libs/rvnc-shelf/src/index.ts"],
       "@app/rvnc-tags/data-access": ["libs/rvnc-tags/data-access/src/index.ts"],
       "@app/rvnc-tags/state": ["libs/rvnc-tags/state/src/index.ts"],

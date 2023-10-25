@@ -1,4 +1,5 @@
 import {
+  NoteAttachmentData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
   NoteWithRelationsData,
@@ -7,6 +8,7 @@ import { FieldDefinitionType } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
@@ -51,6 +53,7 @@ export class NotesService {
     private readonly noteRepository: Repository<NoteEntity>,
     @InjectRepository(NoteFieldEntity)
     private readonly noteFieldRepository: Repository<NoteFieldEntity>,
+    private readonly storageAccountService: StorageAccountService,
   ) {}
 
   public async getAllNotes(
@@ -196,6 +199,14 @@ export class NotesService {
         await tem.save(noteEntity);
       }
     });
+  }
+
+  public async getNoteAttachments(
+    noteEntity: NoteEntity,
+  ): Promise<NoteAttachmentData[]> {
+    return await this.storageAccountService.getStorageAccountFiles(
+      noteEntity.rootVersionId,
+    );
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {

@@ -51,6 +51,18 @@ export class NotesEffects {
     );
   });
 
+  private updateNote$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(NotesActions.updateNote),
+      concatMap(({ noteId, data }) =>
+        this.notesService.patchNote(noteId, data).pipe(
+          map(({ data }) => NotesActions.updateNoteSuccess({ data: data! })),
+          catchError((error) => of(NotesActions.updateNoteFailure({ error }))),
+        ),
+      ),
+    );
+  });
+
   private successNotification$ = createEffect(
     () =>
       this.actions$.pipe(

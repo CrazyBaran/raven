@@ -9,4 +9,8 @@ export class CreateSasTokenDto {
   @ApiProperty()
   @IsNotEmpty()
   public readonly permission: 'read' | 'write';
+
+  @ApiProperty()
+  @IsNotEmpty()
+  public readonly noteRootVersionId: string;
 }

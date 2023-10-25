@@ -1,0 +1,96 @@
+<form [formGroup]="notepadForm" class="flex h-full flex-col gap-4">
+  <div class="grid grid-cols-[1fr_360px_1fr] gap-2">
+    <!--        TEMPLATES       -->
+    <kendo-dropdownlist
+      [data]="dropdownTemplates()"
+      [defaultItem]="defaultTemplate()"
+      [loading]="!templateLoaded()!"
+      [textField]="templateDropdownConfig.textField"
+      [valueField]="templateDropdownConfig.valueField"
+      fillMode="outline"
+      formControlName="template"
+    ></kendo-dropdownlist>
+
+    <!--        TAGS       -->
+    <app-tag-dropdown
+      formControlName="tags"
+      (openTagDialog)="openTagDialog($event)"
+      [loading]="!tagLoaded()"
+      [tags]="$any(tags())"
+    >
+    </app-tag-dropdown>
+
+    <!--        SHARE       -->
+    <kendo-multiselect
+      [data]="peopleTagsWithoutSelected()"
+      [filterable]="true"
+      [kendoDropDownFilter]="{ caseSensitive: false, operator: 'contains' }"
+      [loading]="!tagLoaded()"
+      fillMode="outline"
+      placeholder="Select people..."
+      textField="name"
+      valueField="id"
+    >
+      <ng-template kendoMultiSelectItemTemplate let-dataItem>
+        <div
+          (click)="$event.stopPropagation(); togglePerson(dataItem)"
+          (keydown.enter)="$event.stopPropagation(); togglePerson(dataItem)"
+          class="-mx-2 -my-1 grid w-[calc(100%+1rem)] grid-cols-[auto_1fr] items-center gap-0.5 px-2 py-1"
+        >
+          <input [checked]="dataItem.checked" kendoCheckBox type="checkbox" />
+          <span class="ml-2 truncate">{{ dataItem.name }}</span>
+        </div>
+      </ng-template>
+    </kendo-multiselect>
+  </div>
+
+  <div *ngIf="addedTags().length" class="grid grid-cols-[auto_1fr] gap-2">
+    <p class="w-[72px] text-[10px] uppercase leading-5">added tags:</p>
+    <div class="flex flex-wrap gap-x-0.5 gap-y-1">
+      <app-tag
+        (tagRemove)="removeTag(tag!)"
+        *ngFor="let tag of addedTags()"
+        [label]="tag.name"
+        [ngClass]="{
+          'text-error': tag.type === 'company' || tag.type === 'opportunity',
+          'text-success': tag.type === 'industry',
+          'text-warning': tag.type === 'investor',
+          'text-primary-900': tag.type === 'businessModel'
+        }"
+        icon="fa-solid fa-tag"
+      ></app-tag>
+    </div>
+  </div>
+
+  <div
+    *ngIf="selectedPeopleTags().length"
+    class="grid grid-cols-[auto_1fr] gap-2"
+  >
+    <p class="w-[72px] text-[10px] uppercase leading-5">people:</p>
+    <div class="flex flex-wrap gap-x-0.5 gap-y-1">
+      <app-tag
+        (tagRemove)="removePeople(tag)"
+        *ngFor="let tag of selectedPeopleTags()"
+        [label]="tag.name"
+        class="text-info"
+        icon="fa-solid fa-circle-user"
+      ></app-tag>
+    </div>
+  </div>
+
+  <div
+    *ngIf="addedTagIds.length || selectedPeopleTags().length"
+    class="border-grey-400 border-t"
+  ></div>
+
+  <div class="grow overflow-hidden">
+    <app-notepad
+      *ngIf="templateLoaded()"
+      [config]="config()"
+      [hideTabs]="isDefaultTemplate()"
+      [notepadFormGroup]="notepadForm.controls.notes"
+    ></app-notepad>
+  </div>
+</form>
+
+<ng-container #container></ng-container>

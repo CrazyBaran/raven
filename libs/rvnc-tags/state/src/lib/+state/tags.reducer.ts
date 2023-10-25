@@ -46,7 +46,9 @@ export const tagsFeature = createFeature({
     ...tagAdapter.getSelectors(selectTagsState),
     selectTagsWithCompanyRelation: createSelector(selectTagsState, (state) => {
       const tags = _.values(state.entities);
-      const companyTags = tags.filter((tag) => tag?.type === 'company');
+      const companyTags = tags
+        .filter((tag) => tag?.type === 'company')
+        .slice(0, 10); //TODO: FILTERING TAGS
       const oportunityTags = tags.filter((tag) => tag?.type === 'opportunity');
       const otherTags = tags.filter(
         (tag) => tag?.type !== 'company' && tag?.type !== 'opportunity',

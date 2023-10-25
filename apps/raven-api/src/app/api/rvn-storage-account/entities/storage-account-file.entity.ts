@@ -19,7 +19,10 @@ export class StorageAccountFileEntity {
   public id: string;
 
   @Column({ type: 'nvarchar', length: '256', nullable: false })
-  public fileName: string;
+  public originalFileName: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  public noteRootVersionId: string;
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
@@ -34,7 +37,7 @@ export class StorageAccountFileEntity {
   public createdAt: Date;
 
   @Index()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ nullable: true })
   public updatedAt: Date;
 
   @Index()
@@ -42,15 +45,19 @@ export class StorageAccountFileEntity {
   @JoinColumn({ name: 'updated_by_id' })
   public updatedBy: UserEntity;
 
-  @Column()
+  @Column({ nullable: true })
   @RelationId((t: StorageAccountFileEntity) => t.updatedBy)
   public updatedById: string;
+
+  public get fileName(): string {
+    return `${this.id}--${this.originalFileName}`;
+  }
 
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
-    this.updatedById = this.updatedById.toLowerCase();
+    if (this.updatedById) this.updatedById = this.updatedById.toLowerCase();
   }
 }
