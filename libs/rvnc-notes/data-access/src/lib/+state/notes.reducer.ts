@@ -126,15 +126,19 @@ export const notesReducer = createReducer(
       isLoading: true,
     },
   })),
-  on(NotesActions.updateNoteSuccess, (state, { data }) =>
+  on(NotesActions.updateNoteSuccess, (state, { data, originId }) =>
     notesAdapter.updateOne(
-      { id: data.id, changes: data },
+      { id: originId, changes: data },
       {
         ...state,
         update: {
           ...state.update,
           isLoading: false,
           error: null,
+        },
+        details: {
+          ...state.details,
+          data: data,
         },
       },
     ),

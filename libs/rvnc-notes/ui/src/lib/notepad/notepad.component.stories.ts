@@ -4,8 +4,8 @@ import { NotepadComponent } from './notepad.component';
 import { componentWrapperDecorator } from '@storybook/angular';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
+import { DynamicControl } from '../../../../../rvnc-shared/dynamic-form/src';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { DynamicControl } from '../../../../util/src';
 
 const meta: Meta<NotepadComponent> = {
   component: NotepadComponent,

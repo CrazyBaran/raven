@@ -56,7 +56,9 @@ export class NotesEffects {
       ofType(NotesActions.updateNote),
       concatMap(({ noteId, data }) =>
         this.notesService.patchNote(noteId, data).pipe(
-          map(({ data }) => NotesActions.updateNoteSuccess({ data: data! })),
+          map(({ data }) =>
+            NotesActions.updateNoteSuccess({ data: data!, originId: noteId }),
+          ),
           catchError((error) => of(NotesActions.updateNoteFailure({ error }))),
         ),
       ),

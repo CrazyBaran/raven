@@ -36,15 +36,18 @@ export class NotesService {
 
   public createNote(
     createNote: CreateNote,
-  ): Observable<GenericResponse<NoteData>> {
-    return this.http.post<GenericResponse<NoteData>>('/api/notes', createNote);
+  ): Observable<GenericResponse<NoteWithRelationsData>> {
+    return this.http.post<GenericResponse<NoteWithRelationsData>>(
+      '/api/notes',
+      createNote,
+    );
   }
 
   public patchNote(
     noteId: string,
     patchNote: PatchNote,
-  ): Observable<GenericResponse<NoteData>> {
-    return this.http.patch<GenericResponse<NoteData>>(
+  ): Observable<GenericResponse<NoteWithRelationsData>> {
+    return this.http.patch<GenericResponse<NoteWithRelationsData>>(
       `/api/notes/${noteId}`,
       patchNote,
     );
