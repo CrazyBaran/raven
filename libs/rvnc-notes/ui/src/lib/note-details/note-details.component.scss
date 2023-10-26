@@ -1,0 +1,22 @@
+.k-expander + .k-expander.k-expanded,
+.k-expander.k-expanded + .k-expander {
+  @apply mt-0;
+}
+
+.k-expander.k-focus {
+  @apply shadow-none;
+}
+
+.k-expander {
+  &:not(:last-of-type) {
+    @apply mb-1;
+  }
+
+  &:not(:first-of-type) {
+    @apply border-t;
+  }
+}
+
+.k-dialog-wrapper {
+  @apply z-[999999];
+}
