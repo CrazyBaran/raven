@@ -1,4 +1,5 @@
 export * from '../../../rvnc-shared/dynamic-form/src/lib/dynamic-control-resolver.service';
+export * from './lib/delete-note/delete-note.component';
 export * from './lib/note-details/note-details.component';
 export * from './lib/notepad-form/notepad-form.component';
 export * from './lib/notepad-template/notepad-template.component';

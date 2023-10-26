@@ -62,4 +62,12 @@ export class NoteStoreFacade {
       }),
     );
   }
+
+  public deleteNote(noteId: string): void {
+    this.store.dispatch(
+      NotesActions.deleteNote({
+        noteId,
+      }),
+    );
+  }
 }

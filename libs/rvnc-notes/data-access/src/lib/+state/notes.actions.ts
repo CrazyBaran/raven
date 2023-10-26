@@ -25,5 +25,9 @@ export const NotesActions = createActionGroup({
       originId: string;
     }>(),
     'Update Note Failure': props<{ error: string }>(),
+
+    'Delete Note': props<{ noteId: string }>(),
+    'Delete Note Success': props<{ noteId: string }>(),
+    'Delete Note Failure': props<{ error: string }>(),
   },
 });
