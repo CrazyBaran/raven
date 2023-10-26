@@ -21,7 +21,6 @@ import {
 import {
   DynamicControl,
   getSchemaWithCrossorigin,
-  imageUploader,
 } from '@app/rvnc-shared/dynamic-form';
 import { ControlValueAccessor } from '@app/rvnc-shared/util';
 import { TagsStoreFacade } from '@app/rvnc-tags/state';
@@ -41,7 +40,7 @@ import { TagComponent } from '../tag/tag.component';
 
 import { UploadFileService } from '@app/rvnc-storage/data-access';
 import { EditorView } from '@progress/kendo-angular-editor';
-
+import { imageUploader } from 'prosemirror-image-uploader';
 import { firstValueFrom, map, startWith } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ProvideProseMirrorSettingsDirective } from '../../../../../rvnc-shared/dynamic-form/src/lib/inputs/dynamic-rich-text/provide-prose-mirror-settings.directive';

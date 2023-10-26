@@ -17,9 +17,9 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from '@angular/router';
 import { LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
-import { TagFilterPipe } from '@app/rvnc-notes/util';
 import { SafeHtmlPipe } from '@app/rvnc-shared/pipes';
 import { ImagePathDictionaryService } from '@app/rvnc-storage/data-access';
+import { TagFilterPipe } from '@app/rvnc-notes/util';
 import {
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
