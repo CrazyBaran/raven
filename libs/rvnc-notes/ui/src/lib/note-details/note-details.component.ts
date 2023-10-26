@@ -7,12 +7,17 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
+  ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
+import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from '@angular/router';
 import { LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
+import { TagFilterPipe } from '@app/rvnc-notes/util';
 import {
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
@@ -21,15 +26,18 @@ import {
 import { TemplateWithRelationsData } from '@app/rvns-templates';
 import { Actions, ofType } from '@ngrx/effects';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
-import { WindowModule } from '@progress/kendo-angular-dialog';
+import { DialogService, WindowModule } from '@progress/kendo-angular-dialog';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
+import { sortBy } from 'lodash';
 import { Subject, filter, take, takeUntil } from 'rxjs';
 import { NotesActions } from '../../../../data-access/src/lib/+state/notes.actions';
+import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 import {
   NotepadForm,
   NotepadFormComponent,
   TITLE_FIELD,
 } from '../notepad-form/notepad-form.component';
+import { TagComponent } from '../tag/tag.component';
 
 @Component({
   selector: 'app-note-details',
@@ -42,14 +50,20 @@ import {
     ButtonsModule,
     NotepadFormComponent,
     ReactiveFormsModule,
+    TagFilterPipe,
+    TagComponent,
   ],
   templateUrl: './note-details.component.html',
   styleUrls: ['./note-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 export class NoteDetailsComponent implements OnInit, OnDestroy {
   @Input() public noteId: string | null;
   @Output() public closeWindow = new EventEmitter();
+
+  @ViewChild('container', { read: ViewContainerRef })
+  public containerRef: ViewContainerRef;
 
   public notepadForm = new FormControl<NotepadForm>({
     template: null,
@@ -59,28 +73,10 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
     title: '',
   });
 
-  public readonly mockedTags: { name: string; color: string }[] = [
-    {
-      name: 'Company tag',
-      color: 'text-error',
-    },
-    {
-      name: 'Industry tag',
-      color: 'text-grey-500',
-    },
-    {
-      name: 'Investor tag',
-      color: 'text-warning',
-    },
-    {
-      name: 'Business model tag',
-      color: 'text-primary-500',
-    },
-  ];
-
   public noteDetails: NoteWithRelationsData | null = null;
   public noteFields: NoteFieldData[] = [];
   public editMode = false;
+  public fields: { id: string; name: string }[] = [];
   public readonly noteDetails$ = this.noteStoreFacade.noteDetails$;
   public readonly isLoading$ = this.noteStoreFacade.isLoadingNoteDetails$;
   public readonly isUpdating = this.noteStoreFacade.isUpdatingNote;
@@ -88,8 +84,10 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
   public constructor(
     private readonly noteStoreFacade: NoteStoreFacade,
-    private actions$: Actions,
-    private router: Router,
+    private readonly actions$: Actions,
+    private readonly router: Router,
+    private readonly clipBoard: Clipboard,
+    private readonly dialogService: DialogService,
   ) {}
 
   public ngOnInit(): void {
@@ -168,12 +166,45 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
+  public handleCopyLink(): void {
+    this.clipBoard.copy(window.location.href);
+  }
+
+  public handleScrollToField(fieldId: string): void {
+    document.getElementById(fieldId)?.scrollIntoView({
+      behavior: 'smooth',
+    });
+  }
+
+  public handleDeleteNote(noteId: string): void {
+    const dialogRef = this.dialogService.open({
+      width: 350,
+      content: DeleteNoteComponent,
+      appendTo: this.containerRef,
+    });
+
+    dialogRef.result.subscribe((result) => {
+      if ('submit' in result) {
+        this.noteStoreFacade.deleteNote(noteId);
+        this.closeWindow.emit();
+      }
+    });
+  }
+
   private prepareAllNotes(notes: NoteFieldGroupsWithFieldData[]): void {
-    this.noteFields = notes.reduce((res, curr) => {
+    const noteFields = notes.reduce((res, curr) => {
       if (curr.noteFields.length) {
         return [...res, ...curr.noteFields];
       }
       return res;
     }, [] as NoteFieldData[]);
+
+    const sortedFields = sortBy(noteFields, 'order');
+
+    this.noteFields = sortedFields;
+    this.fields = sortedFields.map((field) => ({
+      name: field.name,
+      id: field.id,
+    }));
   }
 }

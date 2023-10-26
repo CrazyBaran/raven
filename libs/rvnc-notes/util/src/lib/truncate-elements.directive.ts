@@ -35,6 +35,10 @@ export class TruncateElementsDirective implements AfterViewInit {
         availableWidth,
       );
 
+      if (visibleItems === childElements.length) {
+        return;
+      }
+
       this.hiddenItemsText = `+${childElements.length - visibleItems} ${
         this.suffixInfo
       }`;
@@ -72,7 +76,7 @@ export class TruncateElementsDirective implements AfterViewInit {
       totalWidth += element.offsetWidth + (idx !== 0 ? this.gap : 0);
 
       if (totalWidth > availableWidth) {
-        return idx;
+        return idx > 0 ? idx : 1;
       }
     }
 
