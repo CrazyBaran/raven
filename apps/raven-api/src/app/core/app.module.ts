@@ -24,6 +24,7 @@ import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 import { AuthModule } from '../api/rvn-auth/auth.module';
 import { CommModule } from '../api/rvn-comm/comm.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
+import { OnBehalfOfModule } from '../api/rvn-on-behalf-of/on-behalf-of.module';
 import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import { PipelineModule } from '../api/rvn-pipeline/pipeline.module';
 import { StorageAccountModule } from '../api/rvn-storage-account/storage-account.module';
@@ -80,6 +81,7 @@ import { TransformInterceptor } from './transform.interceptor';
     TagsModule,
     PipelineModule,
     StorageAccountModule,
+    OnBehalfOfModule,
   ],
   providers: [
     // core

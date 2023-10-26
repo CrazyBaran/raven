@@ -188,6 +188,7 @@ export const environment = {
       )
       .asString(),
     clientId: env.get('AD_CLIENT_ID').asString(),
+    clientSecret: env.get('AD_CLIENT_SECRET').asString(),
     issuer: env
       .get('AD_ISSUER')
       .default(`https://sts.windows.net/${env.get('AD_TENANT_ID').asString()}/`)
