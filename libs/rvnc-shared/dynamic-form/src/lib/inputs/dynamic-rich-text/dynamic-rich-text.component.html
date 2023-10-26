@@ -6,11 +6,13 @@
   ></kendo-label>
   <kendo-editor
     (focus)="setFocus()"
-    [formControlName]="control.controlKey"
     [id]="control.controlKey"
     [iframe]="false"
     [value]="control.config.value!"
+    [schema]="mySchema"
     class="grow-1 relative"
+    [formControlName]="control.controlKey"
+    [plugins]="myPlugins"
   >
     <kendo-toolbar
       [class.!hidden]="!focused()"

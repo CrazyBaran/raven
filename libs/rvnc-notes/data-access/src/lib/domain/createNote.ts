@@ -8,4 +8,7 @@ export type PatchNote = {
   tagIds: string[];
 };
 
-export type CreateNote = Pick<NoteData, 'templateId' | 'name'> & PatchNote;
+export type CreateNote = Pick<NoteData, 'templateId' | 'name'> &
+  PatchNote & {
+    rootVersionId?: string;
+  };

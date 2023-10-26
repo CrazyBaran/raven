@@ -18,7 +18,10 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { DynamicControl } from '@app/rvnc-shared/dynamic-form';
+import {
+  DynamicControl,
+  getSchemaWithCrossorigin,
+} from '@app/rvnc-shared/dynamic-form';
 import { ControlValueAccessor } from '@app/rvnc-shared/util';
 import { TagsStoreFacade } from '@app/rvnc-tags/state';
 import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
@@ -35,15 +38,20 @@ import { NotepadComponent } from '../notepad/notepad.component';
 import { TagDropdownComponent } from '../tag-dropdown/tag-dropdown.component';
 import { TagComponent } from '../tag/tag.component';
 
-import { map, startWith } from 'rxjs';
+import { UploadFileService } from '@app/rvnc-storage/data-access';
+import { EditorView } from '@progress/kendo-angular-editor';
+import { imageUploader } from 'prosemirror-image-uploader';
+import { firstValueFrom, map, startWith } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+import { ProvideProseMirrorSettingsDirective } from '../../../../../rvnc-shared/dynamic-form/src/lib/inputs/dynamic-rich-text/provide-prose-mirror-settings.directive';
 import { TagFormComponent } from '../tag-form/tag-form.component';
-
 export interface NotepadForm {
   template: TemplateWithRelationsData | null;
   notes: Dictionary<string | null>;
   peopleTags: string[];
   tags: string[];
   title?: string;
+  rootVersionId?: string;
 }
 
 export const TITLE_FIELD: DynamicControl = {
@@ -69,6 +77,7 @@ export const TITLE_FIELD: DynamicControl = {
     ReactiveFormsModule,
     ButtonModule,
     CheckBoxModule,
+    ProvideProseMirrorSettingsDirective,
   ],
   templateUrl: './notepad-form.component.html',
   styleUrls: ['./notepad-form.component.scss'],
@@ -85,6 +94,8 @@ export class NotepadFormComponent
   extends ControlValueAccessor<NotepadForm>
   implements OnInit
 {
+  public defaultOriginId = uuidv4();
+
   public override writeValue(value: NotepadForm): void {
     this.notepadForm.patchValue(value, { onlySelf: true });
     this.standaloneTemplateForm.setValue(value.template, { emitEvent: false });
@@ -104,6 +115,7 @@ export class NotepadFormComponent
 
   protected templateFacade = inject(TemplatesStoreFacade);
   protected tagFacade = inject(TagsStoreFacade);
+  protected uploadFileService = inject(UploadFileService);
 
   //TODO: MOVE TO COMPONENT STORE
   protected noteTemplates = this.templateFacade.notesTemplates;
@@ -137,6 +149,7 @@ export class NotepadFormComponent
     peopleTags: new FormControl([] as string[]),
     tags: new FormControl([] as string[]),
     title: new FormControl(''),
+    rootVersionId: new FormControl(this.defaultOriginId),
   });
 
   protected selectedTemplateId$ =
@@ -168,9 +181,23 @@ export class NotepadFormComponent
 
   protected selectedTemplateId = toSignal(this.selectedTemplateId$);
 
-  // protected selectedTemplate$ = this.selectedTemplateId$.pipe(
-  //   switchMap((id) => (id ? this.templateFacade.template$(id) : of(undefined))),
-  // );
+  protected proseMirrorSettings = {
+    schema: getSchemaWithCrossorigin(),
+    plugins: [
+      imageUploader({
+        upload: async (fileOrUrl: File | string, view: EditorView) => {
+          return await firstValueFrom(
+            this.uploadFileService
+              .uploadFile(
+                fileOrUrl as File,
+                this.notepadForm.controls.rootVersionId.value!,
+              )
+              .pipe(map((res) => res.data!.sasToken)),
+          );
+        },
+      }),
+    ],
+  };
 
   protected selectedTemplate$ =
     this.notepadForm.controls.template.valueChanges.pipe(

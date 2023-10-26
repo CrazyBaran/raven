@@ -93,7 +93,7 @@
               Note is empty
             </div>
             <ng-template #noteView>
-              <div [innerHTML]="note.value"></div>
+              <div [innerHTML]="note.value | safeHtml"></div>
             </ng-template>
           </kendo-expansionpanel>
         </div>
