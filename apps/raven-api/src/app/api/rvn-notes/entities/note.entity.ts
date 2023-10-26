@@ -18,6 +18,7 @@ import {
 
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
 
+import { ComplexTagEntity } from '../../rvn-tags/entities/complex-tag.entity';
 import { TagEntity } from '../../rvn-tags/entities/tag.entity';
 import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
@@ -74,6 +75,14 @@ export class NoteEntity implements AuditableEntity {
     inverseJoinColumn: { name: 'tag_id' },
   })
   public tags: TagEntity[];
+
+  @ManyToMany(() => ComplexTagEntity, { eager: true })
+  @JoinTable({
+    name: 'note_complex_tags',
+    joinColumn: { name: 'note_id' },
+    inverseJoinColumn: { name: 'complex_tag_id' },
+  })
+  public complexTags: ComplexTagEntity[];
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })

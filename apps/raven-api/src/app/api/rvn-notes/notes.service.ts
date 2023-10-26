@@ -9,6 +9,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
+import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
@@ -22,6 +23,7 @@ import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
+import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
 
 interface CreateNoteOptions {
   name: string;
@@ -30,6 +32,7 @@ interface CreateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
   rootVersionId?: string;
+  companyOpportunityTags?: CompanyOpportunityTag[];
 }
 
 interface UpdateNoteFieldOptions {
@@ -115,6 +118,7 @@ export class NotesService {
         options.templateEntity,
         options.userEntity,
         options.rootVersionId,
+        options.companyOpportunityTags,
       );
     }
 
@@ -139,6 +143,8 @@ export class NotesService {
       note.rootVersionId = options.rootVersionId;
     }
     note.tags = options.tags;
+    // TODO add entities in transaction? or check if eager works
+    note.complexTags = this.getComplexNoteTags(options.companyOpportunityTags);
     note.createdBy = options.userEntity;
     note.updatedBy = options.userEntity;
     note.noteFieldGroups = [noteFieldGroup];
@@ -256,15 +262,11 @@ export class NotesService {
             email: noteEntity.deletedBy.email,
           }
         : undefined,
-      tags: noteEntity.tags?.map(
-        (tag: TagEntity | OrganisationTagEntity | PeopleTagEntity) => ({
-          name: tag.name,
-          type: tag.type,
-          id: tag.id,
-          organisationId: (tag as OrganisationTagEntity).organisationId,
-          userId: (tag as PeopleTagEntity).userId,
-        }),
-      ),
+      tags: noteEntity.tags?.map(this.mapTag.bind(this)),
+      complexTags: noteEntity.complexTags?.map((complexTag) => ({
+        id: complexTag.id,
+        tags: complexTag.tags.map(this.mapTag.bind(this)),
+      })),
       noteTabs: noteEntity.noteTabs?.map((noteTab) => {
         return {
           id: noteTab.id,
@@ -298,6 +300,16 @@ export class NotesService {
             ),
           };
         }),
+    };
+  }
+
+  private mapTag(tag: TagEntity | OrganisationTagEntity | PeopleTagEntity) {
+    return {
+      name: tag.name,
+      type: tag.type,
+      id: tag.id,
+      organisationId: (tag as OrganisationTagEntity).organisationId,
+      userId: (tag as PeopleTagEntity).userId,
     };
   }
 
@@ -343,11 +355,14 @@ export class NotesService {
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
     rootVersionId?: string,
+    companyOpportunityTags?: CompanyOpportunityTag[],
   ): Promise<NoteEntity> {
+    // TODO add logic for complex tags here!!!
     const note = new NoteEntity();
     note.name = name;
     note.version = 1;
     note.tags = tags;
+    note.complexTags = this.getComplexNoteTags(companyOpportunityTags);
     note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
@@ -440,5 +455,16 @@ export class NotesService {
       ? (fieldEntity as NoteFieldEntity).value
       : null;
     return fieldUpdate ? fieldUpdate.value : defaultValue;
+  }
+
+  private getComplexNoteTags(companyOpportunityTags?: CompanyOpportunityTag[]) {
+    return companyOpportunityTags?.map((companyOpportunityTag) => {
+      const complexTag = new ComplexTagEntity();
+      complexTag.tags = [
+        companyOpportunityTag.companyTag,
+        companyOpportunityTag.opportunityTag,
+      ];
+      return complexTag;
+    });
   }
 }

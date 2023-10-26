@@ -16,12 +16,18 @@ export interface NoteTagData {
   readonly organisationId?: string;
 }
 
+export interface ComplexTagData {
+  readonly id: string;
+  readonly tags: NoteTagData[];
+}
+
 export interface NoteData {
   readonly id: string;
   readonly name: string;
   readonly version: number;
   readonly rootVersionId: string;
   readonly tags: NoteTagData[];
+  readonly complexTags?: ComplexTagData[];
   readonly templateId?: string;
   readonly templateName?: string;
   readonly createdById: string;
