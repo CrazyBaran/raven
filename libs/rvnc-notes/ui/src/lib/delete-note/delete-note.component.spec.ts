@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DialogRef } from '@progress/kendo-angular-dialog';
 import { DeleteNoteComponent } from './delete-note.component';
 
 describe('DeleteNoteComponent', () => {
@@ -8,6 +9,12 @@ describe('DeleteNoteComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DeleteNoteComponent],
+      providers: [
+        {
+          provide: DialogRef,
+          useValue: {},
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteNoteComponent);
