@@ -43,8 +43,6 @@ export class NotesTableComponent {
   ) {}
 
   public handleDeleteNote(note: NoteData): void {
-    // this.notesFacade.openDeleteNoteDialog(note.id);
-
     const dialogRef = this.dialogService.open({
       width: 350,
       content: DeleteNoteComponent,
