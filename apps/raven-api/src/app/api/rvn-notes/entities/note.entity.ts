@@ -76,7 +76,7 @@ export class NoteEntity implements AuditableEntity {
   })
   public tags: TagEntity[];
 
-  @ManyToMany(() => ComplexTagEntity, { eager: true })
+  @ManyToMany(() => ComplexTagEntity, { eager: true, cascade: ['insert'] })
   @JoinTable({
     name: 'note_complex_tags',
     joinColumn: { name: 'note_id' },

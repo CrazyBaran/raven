@@ -27,6 +27,7 @@ export class ParseAllNoteVersionsPipe
         'updatedBy',
         'deletedBy',
         'tags',
+        'complexTags',
         'template',
         'noteTabs',
         'noteTabs.noteFieldGroups',

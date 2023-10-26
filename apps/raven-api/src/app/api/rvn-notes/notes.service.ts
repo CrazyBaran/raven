@@ -80,6 +80,7 @@ export class NotesService {
       .leftJoinAndMapOne('note.createdBy', 'note.createdBy', 'createdBy')
       .leftJoinAndMapOne('note.updatedBy', 'note.updatedBy', 'updatedBy')
       .leftJoinAndMapMany('note.tags', 'note.tags', 'tags')
+      .leftJoinAndMapMany('note.complexTags', 'note.complexTags', 'complexTags')
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
       .where(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL');
@@ -265,7 +266,7 @@ export class NotesService {
       tags: noteEntity.tags?.map(this.mapTag.bind(this)),
       complexTags: noteEntity.complexTags?.map((complexTag) => ({
         id: complexTag.id,
-        tags: complexTag.tags.map(this.mapTag.bind(this)),
+        tags: complexTag.tags?.map(this.mapTag.bind(this)),
       })),
       noteTabs: noteEntity.noteTabs?.map((noteTab) => {
         return {

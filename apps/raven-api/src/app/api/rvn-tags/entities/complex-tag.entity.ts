@@ -15,7 +15,7 @@ export class ComplexTagEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @ManyToMany(() => TagEntity)
+  @ManyToMany(() => TagEntity, { eager: true })
   @JoinTable({
     name: 'complex_tag_tags',
     joinColumn: { name: 'complex_tag_id' },

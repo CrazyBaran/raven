@@ -9,6 +9,7 @@ export class ParseNotePipe extends AbstractEntityPipe<NoteEntity> {
     'updatedBy',
     'deletedBy',
     'tags',
+    'complexTags',
     'template',
     'noteTabs',
     'noteTabs.noteFieldGroups',
