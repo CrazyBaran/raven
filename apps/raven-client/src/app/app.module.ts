@@ -19,7 +19,7 @@ import { ENVIRONMENT } from '@app/rvnc-environment';
 
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { WindowModule } from '@progress/kendo-angular-dialog';
+import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
 import { NotificationModule } from '@progress/kendo-angular-notification';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -77,6 +77,7 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
       maxAge: 25,
       logOnly: environment.production,
     }),
+    DialogModule,
   ],
   providers: [
     AppRoutingModule,

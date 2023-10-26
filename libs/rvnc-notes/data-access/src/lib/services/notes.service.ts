@@ -52,4 +52,12 @@ export class NotesService {
       patchNote,
     );
   }
+
+  public deleteNote(
+    noteId: string,
+  ): Observable<GenericResponse<NoteWithRelationsData>> {
+    return this.http.delete<GenericResponse<NoteWithRelationsData>>(
+      `/api/notes/${noteId}`,
+    );
+  }
 }
