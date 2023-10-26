@@ -100,7 +100,7 @@ export class NotesEffects {
         ofType(NotesActions.deleteNoteSuccess),
         tap(() =>
           this.notificationService.show({
-            content: 'Note deleted successfully',
+            content: 'Note Deletedgit ',
             cssClass: 'success',
             type: { style: 'success', icon: true },
             animation: { type: 'slide', duration: 400 },
