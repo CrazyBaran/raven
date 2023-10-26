@@ -18,7 +18,7 @@ export class UploadFileService {
   ): Observable<GenericResponse<StoragePostResponse>> {
     return this.storageService
       .post({
-        fileName: 'test.png',
+        fileName: file.name,
         permission: 'write',
         noteRootVersionId: rootId!,
       })
