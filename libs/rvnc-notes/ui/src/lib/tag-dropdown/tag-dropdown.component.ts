@@ -174,7 +174,8 @@ export class TagDropdownComponent extends ControlValueAccessor<string[]> {
     return this.tagsSignal().filter((item) => {
       return (
         item.type === type &&
-        item.name.toLowerCase().includes(this.filterValue().toLowerCase())
+        item.name.toLowerCase().includes(this.filterValue().toLowerCase()) &&
+        !this.value().includes(item.id)
       );
     });
   });

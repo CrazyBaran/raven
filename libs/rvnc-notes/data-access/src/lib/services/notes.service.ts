@@ -1,15 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ImagePathDictionaryService } from '@app/rvnc-storage/data-access';
 import { GenericResponse } from '@app/rvns-api';
-import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
-import { Observable } from 'rxjs';
+import {
+  NoteAttachmentData,
+  NoteData,
+  NoteWithRelationsData,
+} from '@app/rvns-notes/data-access';
+import { Observable, map, switchMap, tap } from 'rxjs';
 import { CreateNote, PatchNote } from '../domain/createNote';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotesService {
-  public constructor(private http: HttpClient) {}
+  public constructor(
+    private http: HttpClient,
+    private imagePathDictionaryService: ImagePathDictionaryService,
+  ) {}
 
   public getNotes(
     domain?: string,
@@ -29,9 +37,22 @@ export class NotesService {
   public getNoteDetails(
     id: string,
   ): Observable<GenericResponse<NoteWithRelationsData>> {
-    return this.http.get<GenericResponse<NoteWithRelationsData>>(
-      `/api/notes/${id}`,
-    );
+    return this.http
+      .get<GenericResponse<NoteWithRelationsData>>(`/api/notes/${id}`)
+      .pipe(
+        switchMap((note) => {
+          return this.getNoteAttachments(id).pipe(
+            tap((response) => {
+              this.imagePathDictionaryService.addImagesToDictionary(
+                response.data ?? [],
+              );
+            }),
+            map((attachmentResponse) => ({
+              ...note,
+            })),
+          );
+        }),
+      );
   }
 
   public createNote(
@@ -50,6 +71,14 @@ export class NotesService {
     return this.http.patch<GenericResponse<NoteWithRelationsData>>(
       `/api/notes/${noteId}`,
       patchNote,
+    );
+  }
+
+  public getNoteAttachments(
+    id: string,
+  ): Observable<GenericResponse<NoteAttachmentData[]>> {
+    return this.http.get<GenericResponse<NoteAttachmentData[]>>(
+      `/api/notes/${id}/attachments`,
     );
   }
 

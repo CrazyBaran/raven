@@ -2,25 +2,30 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  computed,
   HostBinding,
-  Input,
+  inject,
   OnInit,
-  signal,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { EditorComponent, EditorModule } from '@progress/kendo-angular-editor';
+import {
+  EditorComponent,
+  EditorModule,
+  Plugin,
+  schema,
+} from '@progress/kendo-angular-editor';
+import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import {
   BaseDynamicControl,
   dynamicControlProvider,
   sharedDynamicControlDeps,
 } from '../../base-dynamic-control';
+import { DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS } from './provide-prose-mirror-settings.directive';
 
 @Component({
   selector: 'app-dynamic-rich-text',
   standalone: true,
-  imports: [sharedDynamicControlDeps, EditorModule],
+  imports: [sharedDynamicControlDeps, EditorModule, TextBoxModule],
   templateUrl: './dynamic-rich-text.component.html',
   styleUrls: ['./dynamic-rich-text.component.scss'],
   viewProviders: [dynamicControlProvider],
@@ -31,33 +36,24 @@ export class DynamicRichTextComponent
   extends BaseDynamicControl
   implements OnInit, AfterViewInit
 {
-  // setup observer for elementRef
-
   @HostBinding('class.rich-text-full') public grow: boolean | undefined;
 
   @ViewChild(EditorComponent) protected editor: EditorComponent;
 
-  protected heightSignal = signal(0);
-
-  protected currentHeight = computed(() => {
-    if (this.grow) {
-      return `calc(100% - ${this.focused() ? 50 : 0}px)`;
-    }
-    return `${this.heightSignal() - (this.focused() ? 50 : 0) - 20}px`;
+  public proseSettings = inject(DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS, {
+    optional: true,
   });
 
-  @Input() protected set height(value: number) {
-    this.heightSignal.set(value);
-  }
+  public mySchema = this.proseSettings?.proseMirrorSettings?.schema ?? schema;
+
+  public myPlugins = (args: Plugin[]): Plugin[] => [
+    ...args,
+    ...(this.proseSettings?.proseMirrorSettings?.plugins ?? []),
+  ];
 
   public override ngOnInit(): void {
     super.ngOnInit();
     this.grow = this.control.config.grow;
-  }
-
-  public override ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-    this.heightSignal.set(this.elementRef.nativeElement.offsetHeight);
   }
 
   protected setFocus(): void {

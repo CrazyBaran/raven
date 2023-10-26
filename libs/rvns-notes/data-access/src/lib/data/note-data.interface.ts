@@ -32,6 +32,7 @@ export interface NoteData {
   readonly updatedById: string;
   readonly deletedAt?: Date;
   readonly deletedBy?: UserData;
+  readonly rootVersionId?: string;
 }
 
 export interface NoteFieldGroupsWithFieldData extends NoteFieldGroupData {
