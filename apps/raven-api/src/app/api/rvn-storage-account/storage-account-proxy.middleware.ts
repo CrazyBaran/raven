@@ -28,6 +28,9 @@ export class StorageAccountProxyMiddleware implements NestMiddleware {
             `${environment.azureStorageAccount.name}.blob.core.windows.net`,
           );
         },
+        proxyRes: (proxyRes): void => {
+          proxyRes.headers['Cache-Control'] = 'private, max-age=31536000';
+        },
       },
       logger: this.logger,
     } as Options;
