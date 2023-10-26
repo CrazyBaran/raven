@@ -7,10 +7,10 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent, LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import { NoteDetailsComponent, NotesTableComponent } from '@app/rvnc-notes/ui';
 import { OpportunitiesFacade } from '@app/rvnc-opportunities/data-access';
+import { HeaderComponent, LoaderComponent } from '@app/rvnc-shared/ui';
 import { Subject, filter, takeUntil } from 'rxjs';
 
 @Component({

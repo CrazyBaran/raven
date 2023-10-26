@@ -15,9 +15,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from '@angular/router';
-import { LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import { SafeHtmlPipe } from '@app/rvnc-shared/pipes';
+import { LoaderComponent } from '@app/rvnc-shared/ui';
 import { ImagePathDictionaryService } from '@app/rvnc-storage/data-access';
 import { TagFilterPipe } from '@app/rvnc-notes/util';
 import {

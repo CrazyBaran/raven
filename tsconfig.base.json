@@ -25,7 +25,6 @@
       "@app/rvnb-platform": ["libs/rvnb-platform/src/index.ts"],
       "@app/rvnc-acl": ["libs/rvnc-acl/src/index.ts"],
       "@app/rvnc-auth": ["libs/rvnc-auth/src/index.ts"],
-      "@app/rvnc-core-ui": ["libs/rvnc-core-ui/src/index.ts"],
       "@app/rvnc-environment": ["libs/rvnc-environment/index.ts"],
       "@app/rvnc-notes/data-access": [
         "libs/rvnc-notes/data-access/src/index.ts"
@@ -67,6 +66,7 @@
         "libs/rvnc-shared/dynamic-renderer/feature/src/index.ts"
       ],
       "@app/rvnc-shared/pipes": ["libs/rvnc-shared/pipes/src/index.ts"],
+      "@app/rvnc-shared/ui": ["libs/rvnc-shared/ui/src/index.ts"],
       "@app/rvnc-shared/util": ["libs/rvnc-shared/util/src/index.ts"],
       "@app/rvnc-shelf": ["libs/rvnc-shelf/src/index.ts"],
       "@app/rvnc-storage/data-access": [

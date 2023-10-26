@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormRecord, ReactiveFormsModule } from '@angular/forms';
-import { LoaderComponent } from '@app/rvnc-core-ui';
 import {
   ControlInjectorPipe,
   DynamicControl,
@@ -19,6 +18,7 @@ import {
   DynamicControlResolver,
   comparatorFn,
 } from '@app/rvnc-shared/dynamic-form';
+import { LoaderComponent } from '@app/rvnc-shared/ui';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxUnpatch } from '@rx-angular/template/unpatch';

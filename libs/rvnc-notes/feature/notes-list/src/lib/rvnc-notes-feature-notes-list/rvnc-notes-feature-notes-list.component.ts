@@ -7,13 +7,13 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent, LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import {
   NoteDetailsComponent,
   NotesTableComponent,
   QuickFiltersComponent,
 } from '@app/rvnc-notes/ui';
+import { HeaderComponent, LoaderComponent } from '@app/rvnc-shared/ui';
 import { ShelfModule, ShelfStoreFacade } from '@app/rvnc-shelf';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
 import { FilterMenuModule } from '@progress/kendo-angular-grid';

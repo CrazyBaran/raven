@@ -11,12 +11,12 @@ import {
 } from '@angular/core';
 
 import { NgIf } from '@angular/common';
-import { LoaderComponent } from '@app/rvnc-core-ui';
 import {
   ComponentTemplate,
   DynamicComponentsService,
   LoadedRenderItems,
 } from '@app/rvnc-shared/dynamic-renderer/data-access';
+import { LoaderComponent } from '@app/rvnc-shared/ui';
 
 @Component({
   selector: 'app-render-template',
