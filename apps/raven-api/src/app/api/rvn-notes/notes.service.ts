@@ -70,7 +70,7 @@ export class NotesService {
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
       .select('MAX(note_sub.version)', 'maxVersion')
-      .where('note_sub.rootVersionId = note.rootVersionId');
+      .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
 
     const queryBuilder = this.noteRepository
       .createQueryBuilder('note')
