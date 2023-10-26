@@ -1,9 +1,10 @@
 /* eslint-disable */
 export default {
-  displayName: 'rvnc-dynamic-renderer-feature',
-  preset: '../../../jest.preset.js',
+  displayName: 'rvnc-shared-dynamic-renderer-data-access',
+  preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../../coverage/libs/rvnc-dynamic-renderer/feature',
+  coverageDirectory:
+    '../../../../coverage/libs/rvnc-shared/dynamic-renderer/data-access',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

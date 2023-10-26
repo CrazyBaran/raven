@@ -8,8 +8,8 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ComponentData } from '@app/rvnc-dynamic-renderer/data-access';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
+import { ComponentData } from '@app/rvnc-shared/dynamic-renderer/data-access';
 
 import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';

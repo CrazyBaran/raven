@@ -16,7 +16,7 @@ import {
   ComponentTemplate,
   DynamicComponentsService,
   LoadedRenderItems,
-} from '@app/rvnc-dynamic-renderer/data-access';
+} from '@app/rvnc-shared/dynamic-renderer/data-access';
 
 @Component({
   selector: 'app-render-template',

@@ -1,10 +1,10 @@
 import { importProvidersFrom, NgModule } from '@angular/core';
-import { DynamicModule } from '@app/rvnc-dynamic-renderer/data-access';
 import {
   NotesEffects,
   notesFeature,
   NoteStoreFacade,
 } from '@app/rvnc-notes/data-access';
+import { DynamicModule } from '@app/rvnc-shared/dynamic-renderer/data-access';
 import {
   tagsEffects,
   tagsFeature,

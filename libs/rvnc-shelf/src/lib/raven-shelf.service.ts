@@ -1,6 +1,6 @@
 import { effect, Injectable, signal } from '@angular/core';
-import { ComponentTemplate } from '@app/rvnc-dynamic-renderer/data-access';
-import { RenderTemplateComponent } from '@app/rvnc-dynamic-renderer/feature';
+import { ComponentTemplate } from '@app/rvnc-shared/dynamic-renderer/data-access';
+import { RenderTemplateComponent } from '@app/rvnc-shared/dynamic-renderer/feature';
 import {
   WindowRef,
   WindowService,
