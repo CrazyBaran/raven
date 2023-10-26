@@ -66,8 +66,12 @@
       "@app/rvnc-shared/dynamic-form": [
         "libs/rvnc-shared/dynamic-form/src/index.ts"
       ],
+      "@app/rvnc-shared/pipes": ["libs/rvnc-shared/pipes/src/index.ts"],
       "@app/rvnc-shared/util": ["libs/rvnc-shared/util/src/index.ts"],
       "@app/rvnc-shelf": ["libs/rvnc-shelf/src/index.ts"],
+      "@app/rvnc-storage/data-access": [
+        "libs/rvnc-storage/data-access/src/index.ts"
+      ],
       "@app/rvnc-tags/data-access": ["libs/rvnc-tags/data-access/src/index.ts"],
       "@app/rvnc-tags/state": ["libs/rvnc-tags/state/src/index.ts"],
       "@app/rvnc-teams": ["libs/rvnc-teams/src/index.ts"],

@@ -15,7 +15,12 @@ import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import { WindowRef } from '@progress/kendo-angular-dialog';
 
-import { NotepadForm, NotepadFormComponent } from '@app/rvnc-notes/ui';
+import {
+  NotepadForm,
+  NotepadFormComponent,
+  TITLE_FIELD,
+} from '@app/rvnc-notes/ui';
+import { ImagePathDictionaryService } from '@app/rvnc-storage/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { filter, take } from 'rxjs';
@@ -44,6 +49,7 @@ export class NotepadContentComponent {
   protected noteFacade = inject(NoteStoreFacade);
   protected actions$ = inject(Actions);
   protected windowRef = inject(WindowRef);
+  protected imagePathDictionaryService = inject(ImagePathDictionaryService);
 
   //TODO: MOVE TO COMPONENT STORE
   protected defaultTemplate = this.templateFacade.defaultTemplate;
@@ -58,11 +64,24 @@ export class NotepadContentComponent {
   });
 
   public submit(): void {
+    const imageDictionary =
+      this.imagePathDictionaryService.getImageDictionary();
     const fields = Object.entries(this.notepadForm.value?.notes ?? {})
-      .filter(([key, value]) => key !== 'TITLE')
-      .map(([id, value]) => ({ id, value: value || '' }));
+      .filter(([key, value]) => key !== TITLE_FIELD.id)
+      .map(([id, value]) => {
+        const clearedValue = Object.entries(imageDictionary).reduce(
+          (acc, [fileName, sasUrl]) => {
+            return acc
+              .replace(new RegExp('&amp;', 'g'), '&')
+              .replace(sasUrl, fileName);
+          },
+          value ?? '',
+        );
+        return { id, value: clearedValue || '' };
+      });
 
-    const { template, notes, tags, peopleTags } = this.notepadForm.value!;
+    const { template, notes, tags, peopleTags, rootVersionId } =
+      this.notepadForm.value!;
     const payload = {
       name: notes['TITLE'] || '',
       templateId: template?.id || this.defaultTemplate().id,
@@ -71,6 +90,7 @@ export class NotepadContentComponent {
         ...(peopleTags ?? []),
         ...(tags ?? []).map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
       ],
+      rootVersionId,
     };
 
     this.noteFacade.createNote(payload);

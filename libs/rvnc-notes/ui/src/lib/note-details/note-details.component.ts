@@ -17,6 +17,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from '@angular/router';
 import { LoaderComponent } from '@app/rvnc-core-ui';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
+import { SafeHtmlPipe } from '@app/rvnc-shared/pipes';
+import { ImagePathDictionaryService } from '@app/rvnc-storage/data-access';
 import { TagFilterPipe } from '@app/rvnc-notes/util';
 import {
   NoteFieldData,
@@ -44,6 +46,7 @@ import { TagComponent } from '../tag/tag.component';
   standalone: true,
   imports: [
     CommonModule,
+    SafeHtmlPipe,
     WindowModule,
     LoaderComponent,
     ExpansionPanelModule,
@@ -84,8 +87,9 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
   public constructor(
     private readonly noteStoreFacade: NoteStoreFacade,
-    private readonly actions$: Actions,
-    private readonly router: Router,
+    private actions$: Actions,
+    private router: Router,
+    private imagePathDictionaryService: ImagePathDictionaryService,
     private readonly clipBoard: Clipboard,
     private readonly dialogService: DialogService,
   ) {}
@@ -121,6 +125,7 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
               ?.filter((tag) => tag.type !== 'people')
               .map((tag) => tag.id) || [],
           title: noteDetails?.name,
+          rootVersionId: noteDetails?.rootVersionId,
         });
         this.prepareAllNotes(noteDetails?.noteFieldGroups || []);
       });
@@ -136,8 +141,17 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
   }
   public updateNote(): void {
     const fields = Object.entries(this.notepadForm.value?.notes ?? {})
-      .filter(([key, value]) => key !== 'TITLE')
-      .map(([id, value]) => ({ id, value: value || '' }));
+      .filter(([key, value]) => key !== TITLE_FIELD.id)
+      .map(([id, value]) => {
+        const clearedValue = Object.entries(
+          this.imagePathDictionaryService.getImageDictionary(),
+        ).reduce((acc, [fileName, sasUrl]) => {
+          return acc
+            .replace(new RegExp('&amp;', 'g'), '&')
+            .replace(sasUrl, fileName);
+        }, value ?? '');
+        return { id, value: clearedValue || '' };
+      });
 
     const { template, notes, tags, peopleTags } = this.notepadForm.value!;
     const payload = {
