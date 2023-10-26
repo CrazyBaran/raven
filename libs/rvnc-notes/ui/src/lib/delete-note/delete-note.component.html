@@ -1,0 +1,16 @@
+<kendo-dialog-titlebar> Delete Note? </kendo-dialog-titlebar>
+
+<div class="text-center">
+  <p class="mb-6">
+    Deleting this note will permanently remove all information contained from
+    the platform entirely.
+  </p>
+  <p>Are you sure you want to continue?</p>
+</div>
+
+<kendo-dialog-actions>
+  <button (click)="dialog.close()" kendoButton>No</button>
+  <button (click)="handleDelete()" kendoButton themeColor="primary">
+    Yes, Delete
+  </button>
+</kendo-dialog-actions>

@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,12 +21,13 @@ export class ParseAllNoteVersionsPipe
     }
 
     return await this.noteRepository.find({
-      where: { rootVersionId: note.rootVersionId },
+      where: { rootVersionId: ILike(note.rootVersionId.toLowerCase()) }, // TODO remove all notes so all have consistent casing after this PR is merged, then remove this ILike part...
       relations: [
         'createdBy',
         'updatedBy',
         'deletedBy',
         'tags',
+        'template',
         'noteTabs',
         'noteTabs.noteFieldGroups',
         'noteTabs.noteFieldGroups.noteFields',

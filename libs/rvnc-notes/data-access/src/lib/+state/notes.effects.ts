@@ -82,9 +82,38 @@ export class NotesEffects {
     { dispatch: false },
   );
 
+  private deleteNote$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(NotesActions.deleteNote),
+      concatMap(({ noteId }) =>
+        this.notesService.deleteNote(noteId).pipe(
+          map(() => NotesActions.deleteNoteSuccess({ noteId: noteId })),
+          catchError((error) => of(NotesActions.deleteNoteFailure({ error }))),
+        ),
+      ),
+    );
+  });
+
+  private deleteSuccessNotification$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotesActions.deleteNoteSuccess),
+        tap(() =>
+          this.notificationService.show({
+            content: 'Note Deleted ',
+            cssClass: 'success',
+            type: { style: 'success', icon: true },
+            animation: { type: 'slide', duration: 400 },
+            position: { horizontal: 'center', vertical: 'top' },
+          }),
+        ),
+      ),
+    { dispatch: false },
+  );
+
   public constructor(
     private readonly actions$: Actions,
     private readonly notesService: NotesService,
-    private notificationService: NotificationService,
+    private readonly notificationService: NotificationService,
   ) {}
 }

@@ -17,6 +17,10 @@ export interface NotesState extends EntityState<NoteData> {
     isLoading: boolean;
     error: string | null;
   };
+  delete: {
+    isPending: boolean;
+    error: string | null;
+  };
   details: {
     isLoading: boolean;
     isPending: boolean;
@@ -42,6 +46,10 @@ export const initialState: NotesState = notesAdapter.getInitialState({
   },
   update: {
     isLoading: false,
+    error: null,
+  },
+  delete: {
+    isPending: false,
     error: null,
   },
 });
@@ -148,6 +156,32 @@ export const notesReducer = createReducer(
     update: {
       ...state.update,
       isLoading: false,
+      error,
+    },
+  })),
+
+  on(NotesActions.deleteNote, (state) => ({
+    ...state,
+    delete: {
+      ...state.delete,
+      isPending: true,
+    },
+  })),
+  on(NotesActions.deleteNoteSuccess, (state, { noteId }) =>
+    notesAdapter.removeOne(noteId, {
+      ...state,
+      delete: {
+        ...state.delete,
+        isPending: false,
+        error: null,
+      },
+    }),
+  ),
+  on(NotesActions.deleteNoteFailure, (state, { error }) => ({
+    ...state,
+    delete: {
+      ...state.delete,
+      isPending: false,
       error,
     },
   })),

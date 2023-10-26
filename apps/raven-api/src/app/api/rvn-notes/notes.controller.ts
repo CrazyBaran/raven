@@ -80,7 +80,7 @@ export class NotesController {
         templateEntity: templateEntity as TemplateEntity,
         tags,
         fields: dto.fields,
-        rootVersionId: dto.rootVersionId,
+        rootVersionId: dto.rootVersionId.toLowerCase(),
         companyOpportunityTags,
       }),
     );
