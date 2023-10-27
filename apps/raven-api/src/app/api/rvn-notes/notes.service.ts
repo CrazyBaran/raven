@@ -384,7 +384,6 @@ export class NotesService {
     rootVersionId?: string,
     companyOpportunityTags?: CompanyOpportunityTag[],
   ): Promise<NoteEntity> {
-    // TODO add logic for complex tags here!!!
     const note = new NoteEntity();
     note.name = name;
     note.version = 1;
