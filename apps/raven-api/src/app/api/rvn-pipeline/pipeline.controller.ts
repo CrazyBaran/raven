@@ -4,6 +4,8 @@ import {
   GenericResponseSchema,
 } from '@app/rvns-api';
 import { PipelineDefinitionData, PipelineStageData } from '@app/rvns-pipelines';
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import {
   Body,
   Controller,
@@ -43,6 +45,7 @@ export class PipelineController {
   @ApiResponse(GenericCreateResponseSchema())
   @ApiBody({ type: CreatePipelineDto })
   @Post()
+  @Roles(RoleEnum.SuperAdmin)
   public async createPipeline(
     @Body() dto: CreatePipelineDto,
   ): Promise<PipelineDefinitionData> {
@@ -58,6 +61,7 @@ export class PipelineController {
   @ApiOperation({ description: 'Get all pipelines' })
   @ApiResponse(GenericResponseSchema())
   @Get()
+  @Roles(RoleEnum.User)
   public async getAllPipelines(): Promise<PipelineDefinitionData[]> {
     return (await this.pipelineService.getAllPipelines()).map((pipeline) =>
       this.pipelineService.pipelineEntityToData(pipeline),
@@ -68,6 +72,7 @@ export class PipelineController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: 'string' })
   @Get(':id')
+  @Roles(RoleEnum.User)
   public async getPipeline(
     @Param('id', ParseUUIDPipe, ParsePipelineWithStagesPipe)
     pipelineEntity: PipelineDefinitionEntity,
@@ -79,6 +84,7 @@ export class PipelineController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: 'string' })
   @Patch(':id')
+  @Roles(RoleEnum.SuperAdmin)
   public async editPipeline(
     @Param('id', ParseUUIDPipe, ParsePipelinePipe)
     pipelineEntity: PipelineDefinitionEntity,
@@ -97,6 +103,7 @@ export class PipelineController {
   @ApiParam({ name: 'pipelineId', type: 'string' })
   @ApiParam({ name: 'pipelineStageId', type: 'string' })
   @Patch(':pipelineId/stages/:pipelineStageId')
+  @Roles(RoleEnum.SuperAdmin)
   public async editPipelineStage(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelinePipe)
     pipelineEntity: PipelineDefinitionEntity,
@@ -118,6 +125,7 @@ export class PipelineController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'pipelineId', type: 'string' })
   @Post(':pipelineId/stages')
+  @Roles(RoleEnum.SuperAdmin)
   public async createPipelineStage(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelinePipe)
     pipelineEntity: PipelineDefinitionEntity,
@@ -138,6 +146,7 @@ export class PipelineController {
   @ApiParam({ name: 'pipelineId', type: 'string' })
   @ApiParam({ name: 'pipelineStageId', type: 'string' })
   @Delete(':pipelineId/stages/:pipelineStageId')
+  @Roles(RoleEnum.SuperAdmin)
   public async deletePipelineStage(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelinePipe)
     pipelineEntity: PipelineDefinitionEntity,
@@ -151,6 +160,7 @@ export class PipelineController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'pipelineId', type: 'string' })
   @Delete(':pipelineId')
+  @Roles(RoleEnum.SuperAdmin)
   public async deletePipeline(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelinePipe)
     pipelineEntity: PipelineDefinitionEntity,
