@@ -4,6 +4,7 @@ import {
   NoteFieldGroupsWithFieldData,
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
+import { TagData } from '@app/rvns-tags';
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -48,6 +49,7 @@ interface UpdateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
   name: string;
+  companyOpportunityTags?: CompanyOpportunityTag[];
 }
 
 @Injectable()
@@ -144,7 +146,6 @@ export class NotesService {
       note.rootVersionId = options.rootVersionId;
     }
     note.tags = options.tags;
-    // TODO add entities in transaction? or check if eager works
     note.complexTags = this.getComplexNoteTags(options.companyOpportunityTags);
     note.createdBy = options.userEntity;
     note.updatedBy = options.userEntity;
@@ -178,6 +179,9 @@ export class NotesService {
     newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;
+    newNoteVersion.complexTags = this.getComplexNoteTags(
+      options.companyOpportunityTags,
+    );
     newNoteVersion.previousVersion = noteEntity;
     newNoteVersion.createdBy = noteEntity.createdBy;
     newNoteVersion.updatedBy = userEntity;
@@ -304,16 +308,6 @@ export class NotesService {
     };
   }
 
-  private mapTag(tag: TagEntity | OrganisationTagEntity | PeopleTagEntity) {
-    return {
-      name: tag.name,
-      type: tag.type,
-      id: tag.id,
-      organisationId: (tag as OrganisationTagEntity).organisationId,
-      userId: (tag as PeopleTagEntity).userId,
-    };
-  }
-
   public noteFieldEntityToNoteFieldData(
     noteFieldEntity: NoteFieldEntity,
   ): NoteFieldData {
@@ -328,6 +322,18 @@ export class NotesService {
       updatedById: noteFieldEntity.updatedById,
       updatedAt: noteFieldEntity.updatedAt,
       createdAt: noteFieldEntity.createdAt,
+    };
+  }
+
+  private mapTag(
+    tag: TagEntity | OrganisationTagEntity | PeopleTagEntity,
+  ): TagData {
+    return {
+      name: tag.name,
+      type: tag.type,
+      id: tag.id,
+      organisationId: (tag as OrganisationTagEntity).organisationId,
+      userId: (tag as PeopleTagEntity).userId,
     };
   }
 
@@ -458,7 +464,9 @@ export class NotesService {
     return fieldUpdate ? fieldUpdate.value : defaultValue;
   }
 
-  private getComplexNoteTags(companyOpportunityTags?: CompanyOpportunityTag[]) {
+  private getComplexNoteTags(
+    companyOpportunityTags?: CompanyOpportunityTag[],
+  ): ComplexTagEntity[] {
     return companyOpportunityTags?.map((companyOpportunityTag) => {
       const complexTag = new ComplexTagEntity();
       complexTag.tags = [

@@ -182,6 +182,8 @@ export class NotesController {
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+    @Body('companyOpportunityTags', ParseCompanyOpportunityTagsPipe)
+    companyOpportunityTags: CompanyOpportunityTag[],
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
     @Body() dto: UpdateNoteDto,
   ): Promise<NoteData> {
@@ -190,6 +192,7 @@ export class NotesController {
         tags,
         fields: dto.fields,
         name: dto.name,
+        companyOpportunityTags,
       }),
     );
   }
