@@ -4,6 +4,8 @@ import {
   Public,
 } from '@app/rvns-api';
 
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
 import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlatformService } from './platform.service';
@@ -17,6 +19,7 @@ export class PlatformController {
   @ApiResponse(GenericResponseSchema())
   @Get('health')
   @Public()
+  @Roles(RoleEnum.SuperAdmin)
   public async healthCheck(): Promise<EmptyResponseData> {
     // database connection test
     if (!(await this.platformService.testDb())) {

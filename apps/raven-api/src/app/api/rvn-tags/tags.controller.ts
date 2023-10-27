@@ -3,6 +3,8 @@ import {
   GenericCreateResponseSchema,
   GenericResponseSchema,
 } from '@app/rvns-api';
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import { TagData, TagTypeEnum } from '@app/rvns-tags';
 import {
   Body,
@@ -40,6 +42,7 @@ export class TagsController {
   @ApiQuery({ name: 'type', enum: TagTypeEnum, required: false })
   @ApiQuery({ name: 'query', type: String, required: false })
   @Get()
+  @Roles(RoleEnum.User)
   public async getAllTags(
     @Query('type') type?: TagTypeEnum | null,
     @Query('query') query?: string,
@@ -54,6 +57,7 @@ export class TagsController {
   @ApiOperation({ description: 'Create tag' })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()
+  @Roles(RoleEnum.User)
   public async createTag(@Body() createTagDto: CreateTagDto): Promise<TagData> {
     return this.tagsService.tagEntityToTagData(
       await this.tagsService.createTag(createTagDto),
@@ -64,6 +68,7 @@ export class TagsController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: String })
   @Patch(':id')
+  @Roles(RoleEnum.User)
   public async updateTag(
     @Param('id', ParseUUIDPipe, ParseTagPipe) tagEntity: TagEntity,
     @Body() updateTagDto: UpdateTagDto,
@@ -77,6 +82,7 @@ export class TagsController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: String })
   @Get(':id')
+  @Roles(RoleEnum.User)
   public async getTag(
     @Param('id', ParseUUIDPipe, ParseTagPipe) tagEntity: TagEntity,
   ): Promise<TagData> {
@@ -87,6 +93,7 @@ export class TagsController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: String })
   @Delete(':id')
+  @Roles(RoleEnum.User)
   public async deleteTag(
     @Param('id', ParseUUIDPipe, ParseTagPipe) tagEntity: TagEntity,
   ): Promise<EmptyResponseData> {

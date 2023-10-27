@@ -8,7 +8,7 @@ import { TagData } from '@app/rvns-tags';
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
@@ -110,6 +110,26 @@ export class NotesService {
     queryBuilder.orderBy('note.createdAt', 'ASC');
 
     return await queryBuilder.getMany();
+  }
+
+  public async getAllNoteVersions(
+    noteEntity: NoteEntity,
+  ): Promise<NoteEntity[]> {
+    return await this.noteRepository.find({
+      where: { rootVersionId: ILike(noteEntity.rootVersionId.toLowerCase()) }, // TODO remove all notes so all have consistent casing after this PR is merged, then remove this ILike part...
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'deletedBy',
+        'tags',
+        'template',
+        'noteTabs',
+        'noteTabs.noteFieldGroups',
+        'noteTabs.noteFieldGroups.noteFields',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
+    });
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
