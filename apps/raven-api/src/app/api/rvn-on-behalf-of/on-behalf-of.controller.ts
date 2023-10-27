@@ -5,7 +5,8 @@ import {
   OnBehalfOfRequest,
 } from '@azure/msal-node';
 import { Controller, Get, Headers } from '@nestjs/common';
-import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
+
+import { ApiOAuth2, ApiParam, ApiTags } from '@nestjs/swagger';
 import { environment } from '../../../environments/environment';
 
 @ApiTags('On Behalf Of Management')
@@ -22,8 +23,13 @@ export class OnBehalfOfController {
       .getTokenCache()
       .getAllAccounts();
   }
-
+  t;
   @Get('TestHit')
+  @ApiParam({
+    name: 'Authorization',
+    required: false,
+    description: '(Leave empty. Use lock icon on the top-right to authorize)',
+  })
   public async testHit(
     @Headers('Authorization') authorization: string,
   ): Promise<AuthenticationResult> {

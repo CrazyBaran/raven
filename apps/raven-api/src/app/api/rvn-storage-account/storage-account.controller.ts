@@ -9,7 +9,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { NextFunction, Request, Response } from 'express';
 import { CreateSasTokenDto } from './dto/create-sas-token.dto';
 import { SasTokenDto } from './dto/sas-token.dto';
@@ -24,6 +24,8 @@ export class StorageAccountController {
     private readonly storageAccountService: StorageAccountService,
     private readonly storageAccountProxyMiddleware: StorageAccountProxyMiddleware,
   ) {}
+
+  @ApiConsumes('multipart/form-data')
   @Put('*')
   public async proxyForUpload(
     @Req() req: Request,
