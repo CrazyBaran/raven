@@ -1,4 +1,6 @@
 import { Public } from '@app/rvns-api';
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import {
   Body,
   Controller,
@@ -11,6 +13,9 @@ import {
 } from '@nestjs/common';
 import { ApiConsumes, ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { NextFunction, Request, Response } from 'express';
+import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
+import { Identity } from '../rvn-users/decorators/identity.decorator';
+import { UserEntity } from '../rvn-users/entities/user.entity';
 import { CreateSasTokenDto } from './dto/create-sas-token.dto';
 import { SasTokenDto } from './dto/sas-token.dto';
 import { StorageAccountProxyMiddleware } from './storage-account-proxy.middleware';
@@ -27,6 +32,7 @@ export class StorageAccountController {
 
   @ApiConsumes('multipart/form-data')
   @Put('*')
+  @Roles(RoleEnum.User)
   public async proxyForUpload(
     @Req() req: Request,
     @Res() res: Response,
@@ -46,7 +52,9 @@ export class StorageAccountController {
   }
 
   @Post()
+  @Roles(RoleEnum.User)
   public async createSasToken(
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Body() dto: CreateSasTokenDto,
   ): Promise<SasTokenDto> {
     if (dto.permission === 'write') {
@@ -54,6 +62,8 @@ export class StorageAccountController {
         await this.storageAccountService.createStorageAccountFile(
           'default',
           dto.fileName,
+          dto.noteRootVersionId,
+          userEntity.id,
         );
       return {
         sasToken: sasToken.sasToken,

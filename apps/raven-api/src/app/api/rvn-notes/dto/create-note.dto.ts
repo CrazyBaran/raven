@@ -28,6 +28,11 @@ export class CreateNoteDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsUUID()
+  public readonly rootVersionId?: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => FieldUpdateDto)

@@ -151,6 +151,7 @@
     "passport-jwt": "4.0.1",
     "passport-local": "1.0.0",
     "prismjs": "1.29.0",
+    "prosemirror-image-uploader": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reflect-metadata": "0.1.13",

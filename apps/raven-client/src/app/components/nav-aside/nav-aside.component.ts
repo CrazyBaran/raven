@@ -7,7 +7,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { ShelfStoreFacade } from '@app/rvnc-shelf';
+import { ShelfStoreFacade } from '@app/client/shared/shelf';
 import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';

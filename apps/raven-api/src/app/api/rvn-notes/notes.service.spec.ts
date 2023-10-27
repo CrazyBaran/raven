@@ -3,6 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
@@ -33,6 +34,10 @@ describe('NotesService', () => {
           useValue: {
             save: jest.fn(),
           },
+        },
+        {
+          provide: StorageAccountService,
+          useValue: {},
         },
         {
           provide: EventEmitter2,

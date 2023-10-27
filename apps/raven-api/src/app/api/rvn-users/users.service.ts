@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserData } from '@app/rvns-api';
 import { EnqueueJobEvent } from '@app/rvns-bull';
 
+import { UserRegisteredEvent } from '@app/rvns-auth';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -96,6 +97,10 @@ export class UsersService {
       user = await em.save(user);
       return user;
     });
+    this.eventEmitter.emit(
+      'user-registered',
+      new UserRegisteredEvent(user.id, user.name),
+    );
     await this.enqueueWelcomeEmail(user);
     return user;
   }

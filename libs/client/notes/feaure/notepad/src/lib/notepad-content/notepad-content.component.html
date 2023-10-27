@@ -1,0 +1,30 @@
+<form class="k-form flex h-full flex-col gap-4">
+  <app-notepad-form
+    class="block grow overflow-hidden"
+    [formControl]="notepadForm"
+  ></app-notepad-form>
+
+  <div class="k-actions k-actions-end">
+    <button kendoButton size="large" type="button" (click)="close()">
+      Cancel
+    </button>
+    <button
+      (click)="submit()"
+      [disabled]="!notepadForm.valid || isCreatePending()"
+      [iconClass]="isCreatePending() ? '' : 'fa-solid fa-plus'"
+      kendoButton
+      size="large"
+      themeColor="primary"
+    >
+      <kendo-loader
+        *ngIf="isCreatePending()"
+        class="!text-secondary-100 mr-1"
+        size="small"
+      >
+      </kendo-loader>
+      Publish Note
+    </button>
+  </div>
+</form>
+
+<ng-container #container></ng-container>

@@ -7,7 +7,7 @@
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
         "@nx/enforce-module-boundaries": [
-          1,
+          "error",
           {
             "enforceBuildableLibDependency": true,
             "allow": [],
@@ -15,6 +15,63 @@
               {
                 "sourceTag": "*",
                 "onlyDependOnLibsWithTags": ["*"]
+              },
+              {
+                "sourceTag": "type:app",
+                "onlyDependOnLibsWithTags":
+                ["type:api","type:feature", "type:routes", "type:ui", "type:state", "type:util"]
+              },
+              {
+                "sourceTag": "type:api",
+                "onlyDependOnLibsWithTags": [
+                  "type:ui",
+                  "type:data-access",
+                  "type:util",
+                  "type:state"
+                ]
+              },
+              {
+                "sourceTag": "type:shell",
+                "onlyDependOnLibsWithTags": ["type:feature", "type:util", "type:state"]
+              },
+              {
+                "sourceTag": "type:feature",
+                "onlyDependOnLibsWithTags": ["type:ui", "type:state", "type:util"]
+              },
+              {
+                "sourceTag": "type:ui",
+                "onlyDependOnLibsWithTags": ["type:util"]
+              },
+              {
+                "sourceTag": "type:util",
+                "onlyDependOnLibsWithTags": []
+              },
+              {
+                "sourceTag": "type:state",
+                "onlyDependOnLibsWithTags": ["type:util", "type:data-access"]
+              },
+              {
+                "sourceTag": "type:data-access",
+                "onlyDependOnLibsWithTags": ["type:util", "type:dtos"]
+              },
+              {
+                "sourceTag": "type:dtos",
+                "onlyDependOnLibsWithTags": []
+              },
+              {
+                "sourceTag": "scope:rvnc-shared",
+                "onlyDependOnLibsWithTags": [
+                  "scope:rvnc-shared"
+                ]
+              },
+              {
+                "sourceTag": "scope:rvnc-tags",
+                "onlyDependOnLibsWithTags": [
+                  "scope:rvnc-tags",
+                  "scope:rvns-tags",
+                  "scope:rvns-api",
+                  "scope:rvnc-shared"
+                ]
               }
             ]
           }

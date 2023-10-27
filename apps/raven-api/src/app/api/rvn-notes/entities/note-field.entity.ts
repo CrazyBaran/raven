@@ -31,7 +31,7 @@ export class NoteFieldEntity implements AuditableEntity {
   @Column()
   public order: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public value: string | null;
 
   @ManyToOne(() => NoteFieldGroupEntity, {

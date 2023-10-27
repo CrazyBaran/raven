@@ -20,6 +20,7 @@ export interface NoteData {
   readonly id: string;
   readonly name: string;
   readonly version: number;
+  readonly rootVersionId: string;
   readonly tags: NoteTagData[];
   readonly templateId?: string;
   readonly templateName?: string;
@@ -44,4 +45,9 @@ interface NoteTabWithFieldGroupsData extends NoteTabData {
 export interface NoteWithRelationsData extends NoteData {
   noteTabs: NoteTabWithFieldGroupsData[];
   noteFieldGroups: NoteFieldGroupsWithFieldData[];
+}
+
+export interface NoteAttachmentData {
+  readonly fileName: string;
+  readonly url: string;
 }

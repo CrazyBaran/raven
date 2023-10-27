@@ -1,11 +1,12 @@
 import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
+
 import {
-  OPPORTUNITIES_ROUTES,
   OpportunitiesEffects,
+  OpportunitiesFacade,
   opportunitiesReducer,
-} from '@app/rvnc-opportunities';
-import { PipelinesEffects, pipelinesReducer } from '@app/rvnc-pipelines';
+} from '@app/client/opportunities/data-access';
+import { PipelinesEffects, pipelinesReducer } from '@app/client/pipelines';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { HomeComponent } from './home.component';
@@ -37,6 +38,7 @@ export const HOME_ROUTES: Routes = [
           {
             path: 'pipeline',
             providers: [
+              OpportunitiesFacade,
               importProvidersFrom(
                 StoreModule.forFeature('opportunities', opportunitiesReducer),
                 EffectsModule.forFeature([OpportunitiesEffects]),
@@ -51,20 +53,17 @@ export const HOME_ROUTES: Routes = [
           },
           {
             path: 'opportunities',
-            providers: [
-              importProvidersFrom(
-                StoreModule.forFeature('opportunities', opportunitiesReducer),
-                EffectsModule.forFeature([OpportunitiesEffects]),
+            loadChildren: () =>
+              import('@app/client/opportunities/feature/shell').then(
+                (m) => m.OPPORTUNITIES_ROUTES,
               ),
-            ],
-            children: OPPORTUNITIES_ROUTES,
           },
         ],
       },
       {
         path: 'notes',
         loadChildren: () =>
-          import('@app/rvnc-notes/feature/shell').then((m) => m.NOTES_ROUTES),
+          import('@app/client/notes/feaure/shell').then((m) => m.NOTES_ROUTES),
       },
       {
         path: 'templates',

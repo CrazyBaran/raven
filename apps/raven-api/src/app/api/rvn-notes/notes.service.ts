@@ -1,12 +1,14 @@
 import {
+  NoteAttachmentData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { FieldDefinitionType } from '@app/rvns-templates';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
+import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
@@ -27,6 +29,7 @@ interface CreateNoteOptions {
   templateEntity: TemplateEntity | null;
   tags: TagEntity[];
   fields: FieldUpdate[];
+  rootVersionId?: string;
 }
 
 interface UpdateNoteFieldOptions {
@@ -41,6 +44,7 @@ interface FieldUpdate {
 interface UpdateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
+  name: string;
 }
 
 @Injectable()
@@ -50,6 +54,7 @@ export class NotesService {
     private readonly noteRepository: Repository<NoteEntity>,
     @InjectRepository(NoteFieldEntity)
     private readonly noteFieldRepository: Repository<NoteFieldEntity>,
+    private readonly storageAccountService: StorageAccountService,
   ) {}
 
   public async getAllNotes(
@@ -60,12 +65,12 @@ export class NotesService {
       .createQueryBuilder('note_with_tag')
       .select('note_with_tag.id')
       .innerJoin('note_with_tag.tags', 'tag')
-      .where('tag.id = :tagId');
+      .where('tag.id = :orgTagId');
 
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
       .select('MAX(note_sub.version)', 'maxVersion')
-      .where('note_sub.rootVersionId = note.rootVersionId');
+      .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
 
     const queryBuilder = this.noteRepository
       .createQueryBuilder('note')
@@ -79,7 +84,7 @@ export class NotesService {
     if (organisationTagEntity) {
       queryBuilder
         .andWhere(`note.id IN (${orgTagSubQuery.getQuery()})`)
-        .setParameter('tagId', organisationTagEntity.id);
+        .setParameter('orgTagId', organisationTagEntity.id);
     }
 
     if (tagEntities) {
@@ -101,6 +106,26 @@ export class NotesService {
     return await queryBuilder.getMany();
   }
 
+  public async getAllNoteVersions(
+    noteEntity: NoteEntity,
+  ): Promise<NoteEntity[]> {
+    return await this.noteRepository.find({
+      where: { rootVersionId: ILike(noteEntity.rootVersionId.toLowerCase()) }, // TODO remove all notes so all have consistent casing after this PR is merged, then remove this ILike part...
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'deletedBy',
+        'tags',
+        'template',
+        'noteTabs',
+        'noteTabs.noteFieldGroups',
+        'noteTabs.noteFieldGroups.noteFields',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
+    });
+  }
+
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {
       return await this.createNoteFromTemplate(
@@ -109,6 +134,7 @@ export class NotesService {
         options.tags,
         options.templateEntity,
         options.userEntity,
+        options.rootVersionId,
       );
     }
 
@@ -129,6 +155,9 @@ export class NotesService {
     const note = new NoteEntity();
     note.name = options.name;
     note.version = 1;
+    if (options.rootVersionId) {
+      note.rootVersionId = options.rootVersionId;
+    }
     note.tags = options.tags;
     note.createdBy = options.userEntity;
     note.updatedBy = options.userEntity;
@@ -142,8 +171,23 @@ export class NotesService {
     userEntity: UserEntity,
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
+    const latestVersion = await this.noteRepository
+      .createQueryBuilder('note')
+      .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
+        rootVersionId: noteEntity.rootVersionId,
+      })
+      .orderBy('note.version', 'DESC')
+      .getOne();
+
+    if (latestVersion.version !== noteEntity.version) {
+      throw new ConflictException({
+        message: 'Note is out of date',
+        latestVersionId: latestVersion.id,
+      });
+    }
+
     const newNoteVersion = new NoteEntity();
-    newNoteVersion.name = noteEntity.name;
+    newNoteVersion.name = options.name || noteEntity.name;
     newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;
@@ -197,11 +241,20 @@ export class NotesService {
     });
   }
 
+  public async getNoteAttachments(
+    noteEntity: NoteEntity,
+  ): Promise<NoteAttachmentData[]> {
+    return await this.storageAccountService.getStorageAccountFiles(
+      noteEntity.rootVersionId,
+    );
+  }
+
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
     return {
       id: noteEntity.id,
       name: noteEntity.name,
       version: noteEntity.version,
+      rootVersionId: noteEntity.rootVersionId,
       templateName: noteEntity.template?.name,
       templateId: noteEntity.templateId,
       createdById: noteEntity.createdById,
@@ -309,6 +362,7 @@ export class NotesService {
     tags: TagEntity[],
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
+    rootVersionId?: string,
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
@@ -317,6 +371,9 @@ export class NotesService {
     note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
+    if (rootVersionId) {
+      note.rootVersionId = rootVersionId;
+    }
     note.noteTabs = templateEntity.tabs.map((tab) => {
       const noteTab = new NoteTabEntity();
       noteTab.name = tab.name;

@@ -3,7 +3,11 @@ import {
   GenericCreateResponseSchema,
   GenericResponseSchema,
 } from '@app/rvns-api';
-import { NoteData, NoteFieldData } from '@app/rvns-notes/data-access';
+import {
+  NoteAttachmentData,
+  NoteData,
+  NoteFieldData,
+} from '@app/rvns-notes/data-access';
 import {
   Body,
   Controller,
@@ -29,6 +33,8 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import {
   OrganisationTagEntity,
@@ -42,7 +48,6 @@ import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
 import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe';
-import { ParseAllNoteVersionsPipe } from './pipes/parse-all-note-versions.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
@@ -58,6 +63,7 @@ export class NotesController {
   @ApiOperation({ description: 'Create note' })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()
+  @Roles(RoleEnum.User)
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
     templateEntity: string | TemplateEntity | null,
@@ -72,6 +78,7 @@ export class NotesController {
         templateEntity: templateEntity as TemplateEntity,
         tags,
         fields: dto.fields,
+        rootVersionId: dto.rootVersionId?.toLowerCase(),
       }),
     );
   }
@@ -86,6 +93,7 @@ export class NotesController {
     description: 'Comma separated list of tag ids',
   })
   @Get()
+  @Roles(RoleEnum.User)
   public async getAllNotes(
     @Query('domain')
     domain: string,
@@ -112,18 +120,31 @@ export class NotesController {
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
   @Get(':id')
+  @Roles(RoleEnum.User)
   public async getNote(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
-    @Param('id', ParseUUIDPipe, ParseAllNoteVersionsPipe)
-    noteEntites: NoteEntity[],
     @Query('showHistory') showHistory: boolean,
   ): Promise<NoteData | NoteData[]> {
     if (showHistory) {
-      return noteEntites.map((noteEntity) =>
+      const noteEntities =
+        await this.notesService.getAllNoteVersions(noteEntity);
+      return noteEntities.map((noteEntity) =>
         this.notesService.noteEntityToNoteData(noteEntity),
       );
     }
     return this.notesService.noteEntityToNoteData(noteEntity);
+  }
+
+  @ApiOperation({ description: 'Get note attachments' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'id', type: String })
+  @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
+  @Get(':id/attachments')
+  @Roles(RoleEnum.User)
+  public async getNoteAttachments(
+    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+  ): Promise<NoteAttachmentData[]> {
+    return this.notesService.getNoteAttachments(noteEntity);
   }
 
   @ApiOperation({
@@ -136,6 +157,7 @@ export class NotesController {
   @ApiParam({ name: 'noteFieldGroupId', type: String })
   @ApiParam({ name: 'noteFieldId', type: String })
   @Put(':noteId/fields-groups/:noteFieldGroupId/fields/:noteFieldId')
+  @Roles(RoleEnum.User)
   public async updateNoteField(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -158,6 +180,7 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
   @Patch(':noteId')
+  @Roles(RoleEnum.User)
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -168,6 +191,7 @@ export class NotesController {
       await this.notesService.updateNote(noteEntity, userEntity, {
         tags,
         fields: dto.fields,
+        name: dto.name,
       }),
     );
   }
@@ -176,11 +200,13 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
   @Delete(':noteId')
+  @Roles(RoleEnum.User)
   public async deleteNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-    @Param('noteId', ParseUUIDPipe, ParseAllNoteVersionsPipe)
-    noteEntities: NoteEntity[],
+    @Param('noteId', ParseUUIDPipe, ParseNotePipe)
+    noteEntity: NoteEntity,
   ): Promise<EmptyResponseData> {
+    const noteEntities = await this.notesService.getAllNoteVersions(noteEntity);
     return await this.notesService.deleteNotes(noteEntities, userEntity);
   }
 }
