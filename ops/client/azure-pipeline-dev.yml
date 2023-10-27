@@ -5,9 +5,8 @@ trigger:
       - main
   paths:
     include:
-      - ops/client
+      - libs/client
       - apps/raven-client
-      - libs/rvnc-*
       - libs/rnvs-*
 
 pr:
@@ -16,8 +15,8 @@ pr:
       - main
   paths:
     include:
+      - libs/client
       - apps/raven-client
-      - libs/rvnc-*
       - libs/rnvs-*
 
 pool:
