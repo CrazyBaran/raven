@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 
-import { OpportunitiesFacade } from '@app/rvnc-opportunities/data-access';
-import { KanbanBoardComponent } from '@app/rvnc-opportunities/ui';
+import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
+import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import {
   PipelinesActions,
   selectAllPipelines,
   selectIsLoading as selectIsLoadingPipelines,
-} from '@app/rvnc-pipelines';
+} from '@app/client/pipelines';
 import { Store } from '@ngrx/store';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { PageLayoutComponent } from '../../../../components/page-layout/page-layout.component';

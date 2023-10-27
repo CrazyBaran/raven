@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { OpportunitiesFacade } from '@app/rvnc-opportunities/data-access';
+import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
 import { PipelinesPageComponent } from './pipelines-page.component';
 

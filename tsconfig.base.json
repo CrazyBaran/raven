@@ -17,69 +17,76 @@
     "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
+      "@app/client/core/acl": ["libs/client/core/acl/src/index.ts"],
+      "@app/client/core/auth": ["libs/client/core/auth/src/index.ts"],
+      "@app/client/core/environment": [
+        "libs/client/core/environment/src/index.ts"
+      ],
+      "@app/client/notes/api-tags": ["libs/client/notes/api-tags/src/index.ts"],
+      "@app/client/notes/data-access": [
+        "libs/client/notes/data-access/src/index.ts"
+      ],
+      "@app/client/notes/feaure/list": [
+        "libs/client/notes/feaure/list/src/index.ts"
+      ],
+      "@app/client/notes/feaure/notepad": [
+        "libs/client/notes/feaure/notepad/src/index.ts"
+      ],
+      "@app/client/notes/feaure/shell": [
+        "libs/client/notes/feaure/shell/src/index.ts"
+      ],
+      "@app/client/notes/ui": ["libs/client/notes/ui/src/index.ts"],
+      "@app/client/notes/util": ["libs/client/notes/util/src/index.ts"],
+      "@app/client/opportunities/data-access": [
+        "libs/client/opportunities/data-access/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/shell": [
+        "libs/client/opportunities/feature/shell/src/index.ts"
+      ],
+      "@app/client/opportunities/page/opportunity-details": [
+        "libs/client/opportunities/page/opportunity-details/src/index.ts"
+      ],
+      "@app/client/opportunities/ui": [
+        "libs/client/opportunities/ui/src/index.ts"
+      ],
+      "@app/client/pipelines": ["libs/client/pipelines/src/index.ts"],
+      "@app/client/shared/dynamic-form-util": [
+        "libs/client/shared/dynamic-form-util/src/index.ts"
+      ],
+      "@app/client/shared/dynamic-renderer/data-access": [
+        "libs/client/shared/dynamic-renderer/data-access/src/index.ts"
+      ],
+      "@app/client/shared/dynamic-renderer/feature": [
+        "libs/client/shared/dynamic-renderer/feature/src/index.ts"
+      ],
+      "@app/client/shared/pipes": ["libs/client/shared/pipes/src/index.ts"],
+      "@app/client/shared/shelf": ["libs/client/shared/shelf/src/index.ts"],
+      "@app/client/shared/storage/data-access": [
+        "libs/client/shared/storage/data-access/src/index.ts"
+      ],
+      "@app/client/shared/ui": ["libs/client/shared/ui/src/index.ts"],
+      "@app/client/shared/util": ["libs/client/shared/util/src/index.ts"],
+      "@app/client/tags/data-access": [
+        "libs/client/tags/data-access/src/index.ts"
+      ],
+      "@app/client/tags/state": ["libs/client/tags/state/src/index.ts"],
+      "@app/client/tags/ui": ["libs/client/tags/ui/src/index.ts"],
+      "@app/client/templates/data-access": [
+        "libs/client/templates/data-access/src/index.ts"
+      ],
       "@app/core-ui": ["libs/core-ui/src/index.ts"],
       "@app/page/opportunity-details-page": [
         "libs/page/opportunity-details-page/src/index.ts"
       ],
       "@app/rvnb-crypto": ["libs/rvnb-crypto/src/index.ts"],
       "@app/rvnb-platform": ["libs/rvnb-platform/src/index.ts"],
-      "@app/rvnc-acl": ["libs/rvnc-acl/src/index.ts"],
-      "@app/rvnc-auth": ["libs/rvnc-auth/src/index.ts"],
       "@app/rvnc-environment": ["libs/rvnc-environment/index.ts"],
-      "@app/rvnc-notes/api-tags": ["libs/rvnc-notes/api-tags/src/index.ts"],
-      "@app/rvnc-notes/data-access": [
-        "libs/rvnc-notes/data-access/src/index.ts"
-      ],
       "@app/rvnc-notes/feature": ["libs/rvnc-notes/feature/src/index.ts"],
-      "@app/rvnc-notes/feature/notepad": [
-        "libs/rvnc-notes/feature/notepad/src/index.ts"
-      ],
-      "@app/rvnc-notes/feature/notes-list": [
-        "libs/rvnc-notes/feature/notes-list/src/index.ts"
-      ],
-      "@app/rvnc-notes/feature/shell": [
-        "libs/rvnc-notes/feature/shell/src/index.ts"
-      ],
-      "@app/rvnc-notes/ui": ["libs/rvnc-notes/ui/src/index.ts"],
-      "@app/rvnc-notes/util": ["libs/rvnc-notes/util/src/index.ts"],
       "@app/rvnc-opportunities": ["libs/rvnc-opportunities/src/index.ts"],
-      "@app/rvnc-opportunities/data-access": [
-        "libs/rvnc-opportunities/data-access/src/index.ts"
-      ],
-      "@app/rvnc-opportunities/feature/shell": [
-        "libs/rvnc-opportunities/feature/shell/src/index.ts"
-      ],
-      "@app/rvnc-opportunities/page/opportunity-details": [
-        "libs/rvnc-opportunities/page/opportunity-details/src/index.ts"
-      ],
       "@app/rvnc-opportunities/page/opportunity-details-page": [
         "libs/rvnc-opportunities/page/opportunity-details-page/src/index.ts"
       ],
-      "@app/rvnc-opportunities/ui": ["libs/rvnc-opportunities/ui/src/index.ts"],
-      "@app/rvnc-pipelines": ["libs/rvnc-pipelines/src/index.ts"],
-      "@app/rvnc-shared/dynamic-form": [
-        "libs/rvnc-shared/dynamic-form/src/index.ts"
-      ],
-      "@app/rvnc-shared/dynamic-renderer/data-access": [
-        "libs/rvnc-shared/dynamic-renderer/data-access/src/index.ts"
-      ],
-      "@app/rvnc-shared/dynamic-renderer/feature": [
-        "libs/rvnc-shared/dynamic-renderer/feature/src/index.ts"
-      ],
-      "@app/rvnc-shared/pipes": ["libs/rvnc-shared/pipes/src/index.ts"],
-      "@app/rvnc-shared/ui": ["libs/rvnc-shared/ui/src/index.ts"],
-      "@app/rvnc-shared/util": ["libs/rvnc-shared/util/src/index.ts"],
-      "@app/rvnc-shelf": ["libs/rvnc-shelf/src/index.ts"],
-      "@app/rvnc-storage/data-access": [
-        "libs/rvnc-storage/data-access/src/index.ts"
-      ],
-      "@app/rvnc-tags/data-access": ["libs/rvnc-tags/data-access/src/index.ts"],
-      "@app/rvnc-tags/state": ["libs/rvnc-tags/state/src/index.ts"],
-      "@app/rvnc-tags/ui": ["libs/rvnc-tags/ui/src/index.ts"],
       "@app/rvnc-teams": ["libs/rvnc-teams/src/index.ts"],
-      "@app/rvnc-templates/data-access": [
-        "libs/rvnc-templates/data-access/src/index.ts"
-      ],
       "@app/rvnc-users": ["libs/rvnc-users/src/index.ts"],
       "@app/rvns-acl": ["libs/rvns-acl/src/index.ts"],
       "@app/rvns-api": ["libs/rvns-api/src/index.ts"],

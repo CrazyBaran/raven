@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ShelfModule, ShelfStoreFacade } from '@app/rvnc-shelf';
+import { ShelfModule, ShelfStoreFacade } from '@app/client/shared/shelf';
 import { WindowModule } from '@progress/kendo-angular-dialog';
 import { NavAsideComponent } from '../../components/nav-aside/nav-aside.component';
 import { UiNavAsideRoute } from '../../components/nav-aside/nav-aside.interface';
