@@ -46,7 +46,6 @@ import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
 import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe';
-import { ParseAllNoteVersionsPipe } from './pipes/parse-all-note-versions.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
@@ -119,12 +118,12 @@ export class NotesController {
   @Get(':id')
   public async getNote(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
-    @Param('id', ParseUUIDPipe, ParseAllNoteVersionsPipe)
-    noteEntites: NoteEntity[],
     @Query('showHistory') showHistory: boolean,
   ): Promise<NoteData | NoteData[]> {
     if (showHistory) {
-      return noteEntites.map((noteEntity) =>
+      const noteEntities =
+        await this.notesService.getAllNoteVersions(noteEntity);
+      return noteEntities.map((noteEntity) =>
         this.notesService.noteEntityToNoteData(noteEntity),
       );
     }
@@ -195,9 +194,10 @@ export class NotesController {
   @Delete(':noteId')
   public async deleteNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-    @Param('noteId', ParseUUIDPipe, ParseAllNoteVersionsPipe)
-    noteEntities: NoteEntity[],
+    @Param('noteId', ParseUUIDPipe, ParseNotePipe)
+    noteEntity: NoteEntity,
   ): Promise<EmptyResponseData> {
+    const noteEntities = await this.notesService.getAllNoteVersions(noteEntity);
     return await this.notesService.deleteNotes(noteEntities, userEntity);
   }
 }
