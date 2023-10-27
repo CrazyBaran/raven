@@ -15,6 +15,7 @@ import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import { WindowRef } from '@progress/kendo-angular-dialog';
 
+import { NotesActions } from '@app/rvnc-notes/data-access';
 import {
   NotepadForm,
   NotepadFormComponent,
@@ -24,7 +25,6 @@ import { ImagePathDictionaryService } from '@app/rvnc-storage/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { filter, take } from 'rxjs';
-import { NotesActions } from '../../../../../data-access/src/lib/+state/notes.actions';
 
 @Component({
   selector: 'app-notepad-content',

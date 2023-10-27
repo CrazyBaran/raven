@@ -1,16 +1,16 @@
 {
-  "name": "rvnc-shared-dynamic-form",
+  "name": "rvnc-tags-ui",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/rvnc-shared/dynamic-form/src",
+  "sourceRoot": "libs/rvnc-tags/ui/src",
   "prefix": "app",
-  "tags": ["scope:rvnc-shared", "type:util"],
+  "tags": ["scope:rvnc-tags", "type:ui"],
   "projectType": "library",
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/rvnc-shared/dynamic-form/jest.config.ts",
+        "jestConfig": "libs/rvnc-tags/ui/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -25,8 +25,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/rvnc-shared/dynamic-form/**/*.ts",
-          "libs/rvnc-shared/dynamic-form/**/*.html"
+          "libs/rvnc-tags/ui/**/*.ts",
+          "libs/rvnc-tags/ui/**/*.html"
         ]
       }
     }

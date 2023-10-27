@@ -1,3 +1,3 @@
-import { TagData } from '@app/rvns-tags';
+import { Tag } from '@app/rvnc-tags/data-access';
 
-export type TagEntity = TagData;
+export type TagEntity = Tag;

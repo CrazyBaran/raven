@@ -7,14 +7,15 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TagComponent } from '@app/rvnc-notes/api-tags';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
-import { TagFilterPipe, TruncateElementsDirective } from '@app/rvnc-notes/util';
+import { TagFilterPipe } from '@app/rvnc-notes/util';
+import { TruncateElementsDirective } from '@app/rvnc-shared/util';
 import { NoteData } from '@app/rvns-notes/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
-import { TagComponent } from '../tag/tag.component';
 
 @Component({
   selector: 'app-notes-table',

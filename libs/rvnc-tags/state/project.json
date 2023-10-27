@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/rvnc-tags/state/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["scope:rvnc-tags", "type:state"],
   "projectType": "library",
   "targets": {
     "test": {

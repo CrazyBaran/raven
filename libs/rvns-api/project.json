@@ -4,7 +4,7 @@
   "sourceRoot": "libs/rvns-api/src",
   "projectType": "library",
   "generators": {},
-  "tags": ["client", "api"],
+  "tags": ["client", "api","scope:rvns-api", "type:dtos"],
   "targets": {
     "lint": {
       "executor": "@nx/linter:eslint",

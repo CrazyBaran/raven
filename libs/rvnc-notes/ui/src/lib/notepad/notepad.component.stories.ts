@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { NotepadComponent } from './notepad.component';
 
+import { DynamicControl } from '@app/rvnc-shared/dynamic-form';
 import { componentWrapperDecorator } from '@storybook/angular';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
-import { DynamicControl } from '../../../../../rvnc-shared/dynamic-form/src';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 
 const meta: Meta<NotepadComponent> = {

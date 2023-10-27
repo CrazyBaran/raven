@@ -8,6 +8,7 @@ import { Roles } from '@app/rvns-roles-api';
 import {
   FieldDefinitionData,
   FieldGroupData,
+  TabData,
   TabWithFieldGroupsData,
   TemplateData,
   TemplateTypeEnum,
@@ -32,7 +33,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { TabData } from '../../../../../../libs/rvns-templates/src/lib/data/tab-data.interface';
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { Identity } from '../rvn-users/decorators/identity.decorator';

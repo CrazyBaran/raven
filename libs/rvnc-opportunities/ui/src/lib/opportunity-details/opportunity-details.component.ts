@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import {
+  OpportunitiesActions,
+  selectDetails,
+  selectIsLoading,
+} from '@app/rvnc-opportunities/data-access';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { Store } from '@ngrx/store';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { Subject, filter, takeUntil } from 'rxjs';
-import { OpportunitiesActions } from '../../../../data-access/src/lib/+state/opportunities.actions';
-import {
-  selectDetails,
-  selectIsLoading,
-} from '../../../../data-access/src/lib/+state/opportunities.selectors';
 import { OpportunityDealLeadFieldData } from './opportunitiy-details.interface';
 
 @Component({

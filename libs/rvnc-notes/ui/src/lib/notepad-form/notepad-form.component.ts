@@ -19,11 +19,16 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {
+  TagComponent,
+  TagDropdownComponent,
+  TagFormComponent,
+  TagsStoreFacade,
+} from '@app/rvnc-notes/api-tags';
+import {
   DynamicControl,
   getSchemaWithCrossorigin,
 } from '@app/rvnc-shared/dynamic-form';
 import { ControlValueAccessor } from '@app/rvnc-shared/util';
-import { TagsStoreFacade } from '@app/rvnc-tags/state';
 import { TemplatesStoreFacade } from '@app/rvnc-templates/data-access';
 import { TagData } from '@app/rvns-tags';
 import { TemplateWithRelationsData } from '@app/rvns-templates';
@@ -35,16 +40,14 @@ import { CheckBoxModule } from '@progress/kendo-angular-inputs';
 import * as _ from 'lodash';
 import { Dictionary } from 'lodash';
 import { NotepadComponent } from '../notepad/notepad.component';
-import { TagDropdownComponent } from '../tag-dropdown/tag-dropdown.component';
-import { TagComponent } from '../tag/tag.component';
 
 import { UploadFileService } from '@app/rvnc-storage/data-access';
 import { EditorView } from '@progress/kendo-angular-editor';
 import { imageUploader } from 'prosemirror-image-uploader';
+
+import { ProvideProseMirrorSettingsDirective } from '@app/rvnc-shared/dynamic-form';
 import { firstValueFrom, map, startWith } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import { ProvideProseMirrorSettingsDirective } from '../../../../../rvnc-shared/dynamic-form/src/lib/inputs/dynamic-rich-text/provide-prose-mirror-settings.directive';
-import { TagFormComponent } from '../tag-form/tag-form.component';
 export interface NotepadForm {
   template: TemplateWithRelationsData | null;
   notes: Dictionary<string | null>;

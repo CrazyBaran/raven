@@ -8,7 +8,8 @@ import { moduleMetadata } from '@storybook/angular';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { CONTROL_DATA, ControlData } from '@app/rvnc-notes/util';
+import { CONTROL_DATA } from '../../base-dynamic-control';
+import { ControlData } from '../../control-data.token';
 import { DynamicInputComponent } from './dynamic-input.component';
 
 const meta: Meta<DynamicInputComponent> = {

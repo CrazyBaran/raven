@@ -140,3 +140,5 @@ export abstract class BaseDynamicControl
       });
   }
 }
+
+export { CONTROL_DATA };

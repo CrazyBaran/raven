@@ -19,7 +19,7 @@ import {
   DynamicControl,
   DynamicControlResolver,
 } from '@app/rvnc-shared/dynamic-form';
-import { TagType } from '@app/rvns-tags';
+
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import {
   DialogContentBase,
@@ -28,6 +28,8 @@ import {
 } from '@progress/kendo-angular-dialog';
 import { debounceTime, map, startWith } from 'rxjs';
 import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
+
+export type TagType = 'company' | 'industry' | 'investor' | 'business-model';
 
 const TAG_FORM_DICTIOANRY: Partial<Record<TagType, DynamicControl[]>> = {
   company: [

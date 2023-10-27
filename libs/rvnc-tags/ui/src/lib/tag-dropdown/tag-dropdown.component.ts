@@ -20,9 +20,10 @@ import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ClickOutsideDirective } from '@app/rvnc-notes/util';
-import { ControlValueAccessor } from '@app/rvnc-shared/util';
-import { TagType } from '@app/rvns-tags';
+import {
+  ClickOutsideDirective,
+  ControlValueAccessor,
+} from '@app/rvnc-shared/util';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
@@ -43,7 +44,13 @@ export type DropdownTag = {
   id: string;
   name: string;
   companyId?: number | null;
-  type: TagType | 'company_root';
+  type:
+    | 'company'
+    | 'opportunity'
+    | 'industry'
+    | 'investor'
+    | 'business-model'
+    | 'company_root';
 };
 
 @Component({

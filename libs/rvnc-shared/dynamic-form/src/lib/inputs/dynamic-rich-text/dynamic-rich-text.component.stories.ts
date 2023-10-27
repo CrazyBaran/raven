@@ -1,9 +1,11 @@
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { CONTROL_DATA, ControlData } from '@app/rvnc-notes/util';
+
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
+import { CONTROL_DATA } from '../../base-dynamic-control';
+import { ControlData } from '../../control-data.token';
 import { DynamicRichTextComponent } from './dynamic-rich-text.component';
 
 const meta: Meta<DynamicRichTextComponent> = {

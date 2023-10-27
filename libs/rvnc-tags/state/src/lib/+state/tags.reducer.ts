@@ -1,4 +1,3 @@
-import { TagData } from '@app/rvns-tags';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import * as _ from 'lodash';
@@ -59,7 +58,7 @@ export const tagsFeature = createFeature({
       (state) =>
         _.values(state.entities).filter(
           (tag) => tag && tag?.type === 'people',
-        ) as TagData[],
+        ) as TagEntity[],
     ),
   }),
 });

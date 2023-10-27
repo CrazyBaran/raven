@@ -15,6 +15,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from '@angular/router';
+import { TagComponent } from '@app/rvnc-notes/api-tags';
+import { NoteStoreFacade, NotesActions } from '@app/rvnc-notes/data-access';
+import { TagFilterPipe } from '@app/rvnc-notes/util';
 import { NoteStoreFacade } from '@app/rvnc-notes/data-access';
 import { SafeHtmlPipe } from '@app/rvnc-shared/pipes';
 import { LoaderComponent } from '@app/rvnc-shared/ui';
@@ -32,14 +35,12 @@ import { DialogService, WindowModule } from '@progress/kendo-angular-dialog';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { sortBy } from 'lodash';
 import { Subject, filter, take, takeUntil } from 'rxjs';
-import { NotesActions } from '../../../../data-access/src/lib/+state/notes.actions';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 import {
   NotepadForm,
   NotepadFormComponent,
   TITLE_FIELD,
 } from '../notepad-form/notepad-form.component';
-import { TagComponent } from '../tag/tag.component';
 
 @Component({
   selector: 'app-note-details',

@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/rvnc-shared/util/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["scope:rvnc-shared", "type:util"],
   "projectType": "library",
   "targets": {
     "test": {

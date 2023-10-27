@@ -26,6 +26,7 @@
       "@app/rvnc-acl": ["libs/rvnc-acl/src/index.ts"],
       "@app/rvnc-auth": ["libs/rvnc-auth/src/index.ts"],
       "@app/rvnc-environment": ["libs/rvnc-environment/index.ts"],
+      "@app/rvnc-notes/api-tags": ["libs/rvnc-notes/api-tags/src/index.ts"],
       "@app/rvnc-notes/data-access": [
         "libs/rvnc-notes/data-access/src/index.ts"
       ],
@@ -74,6 +75,7 @@
       ],
       "@app/rvnc-tags/data-access": ["libs/rvnc-tags/data-access/src/index.ts"],
       "@app/rvnc-tags/state": ["libs/rvnc-tags/state/src/index.ts"],
+      "@app/rvnc-tags/ui": ["libs/rvnc-tags/ui/src/index.ts"],
       "@app/rvnc-teams": ["libs/rvnc-teams/src/index.ts"],
       "@app/rvnc-templates/data-access": [
         "libs/rvnc-templates/data-access/src/index.ts"

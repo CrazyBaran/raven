@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { CreateTagData } from '@app/rvns-tags';
+import { CreateTagData } from '@app/rvnc-tags/data-access';
 import { TagsActions } from './tags.actions';
 import { tagsFeature } from './tags.reducer';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class TagsStoreFacade {
   public loaded$ = this.store.select(tagsFeature.selectLoaded);
   public loaded = this.store.selectSignal(tagsFeature.selectLoaded);

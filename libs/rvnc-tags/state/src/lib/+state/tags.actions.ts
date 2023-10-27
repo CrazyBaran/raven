@@ -1,4 +1,5 @@
-import { CreateTagData, CreateTagResponse } from '@app/rvns-tags';
+import { CreateTagData, CreateTagResponse } from '@app/rvnc-tags/data-access';
+
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { TagEntity } from './tags.model';
 
@@ -8,8 +9,6 @@ export const TagsActions = createActionGroup({
     'Get Tags': emptyProps(),
     'Get Tags Success': props<{ data: TagEntity[] }>(),
     'Get Tags Failure': props<{ error: string }>(),
-
-    'Clear Tags': emptyProps(),
 
     'Create Tag': props<{ data: CreateTagData }>(),
     'Create Tag Success': props<{ data: CreateTagResponse }>(),

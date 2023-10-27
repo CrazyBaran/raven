@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
-import { CreateTagData, CreateTagResponse, TagData } from '@app/rvns-tags';
+import { TagData } from '@app/rvns-tags';
 import { Observable } from 'rxjs';
+import { CreateTagData } from './models/create-tag-data.model';
+
+import { CreateTagResponse } from './models/create-tag-response';
 
 @Injectable({
   providedIn: 'root',

@@ -11,16 +11,22 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@app/rvnc-shared/util';
-import { TagType } from '@app/rvns-tags';
+
 import {
   ButtonGroupModule,
   ButtonModule,
 } from '@progress/kendo-angular-buttons';
 import { RxFor } from '@rx-angular/template/for';
 
+export type SelectTagButtonType =
+  | 'company'
+  | 'industry'
+  | 'investor'
+  | 'business-model';
+
 export type SelectTagButton = {
   text: string;
-  type: TagType;
+  type: SelectTagButtonType;
 };
 
 export const TAG_BUTTONS: SelectTagButton[] = [
@@ -48,10 +54,10 @@ export const TAG_BUTTONS: SelectTagButton[] = [
     },
   ],
 })
-export class TagsButtonGroupComponent extends ControlValueAccessor<TagType> {
-  @Output() public tagSelected = new EventEmitter<TagType>();
+export class TagsButtonGroupComponent extends ControlValueAccessor<SelectTagButtonType> {
+  @Output() public tagSelected = new EventEmitter<SelectTagButtonType>();
 
-  protected value: WritableSignal<TagType> = signal('company');
+  protected value: WritableSignal<SelectTagButtonType> = signal('company');
 
   protected buttonsSignal: WritableSignal<SelectTagButton[]> =
     signal(TAG_BUTTONS);
@@ -60,11 +66,11 @@ export class TagsButtonGroupComponent extends ControlValueAccessor<TagType> {
     this.buttonsSignal.set(value);
   }
 
-  public override writeValue(value: TagType): void {
+  public override writeValue(value: SelectTagButtonType): void {
     this.value.set(value);
   }
 
-  protected selectedChange(type: TagType): void {
+  protected selectedChange(type: SelectTagButtonType): void {
     this.value.set(type);
     this.tagSelected.emit(type);
     this.onChange?.(type);

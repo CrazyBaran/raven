@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/rvnc-tags/data-access/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["scope:rvnc-tags", "type:data-access"],
   "projectType": "library",
   "targets": {
     "test": {
