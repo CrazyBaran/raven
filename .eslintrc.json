@@ -72,6 +72,15 @@
                   "scope:rvns-api",
                   "scope:rvnc-shared"
                 ]
+              },
+              {
+                "sourceTag": "scope:organisations",
+                "onlyDependOnLibsWithTags": [
+                  "scope:organisations",
+                  "scope:rvns-organisations",
+                  "scope:rvns-api",
+                  "scope:rvnc-shared"
+                ]
               }
             ]
           }
