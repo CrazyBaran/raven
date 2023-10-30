@@ -11,7 +11,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { NextFunction, Request, Response } from 'express';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
@@ -29,6 +29,8 @@ export class StorageAccountController {
     private readonly storageAccountService: StorageAccountService,
     private readonly storageAccountProxyMiddleware: StorageAccountProxyMiddleware,
   ) {}
+
+  @ApiConsumes('multipart/form-data')
   @Put('*')
   @Roles(RoleEnum.User)
   public async proxyForUpload(
