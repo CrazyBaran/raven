@@ -5,9 +5,9 @@ import { TagData } from '@app/rvns-tags';
 
 import { CreateTagData } from './models/create-tag-data.model';
 
-import { OrganisationsService } from '@app/client/organisations/data-access';
+import { retryWithDelay } from '@app/client/shared/util-rxjs';
+import { OrganisationsService } from '@app/client/tags/api-organisations';
 import { Observable, map, switchMap } from 'rxjs';
-import { retryWithDelay } from '../../../../shared/util-rxjs/src/lib/retry-with-delay.operator';
 import { CreateTagResponse } from './models/create-tag-response';
 
 @Injectable({

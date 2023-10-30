@@ -52,11 +52,11 @@
               },
               {
                 "sourceTag": "type:data-access",
-                "onlyDependOnLibsWithTags": ["type:util", "type:dtos"]
+                "onlyDependOnLibsWithTags": ["type:util", "type:dtos", "type:api"]
               },
               {
                 "sourceTag": "type:dtos",
-                "onlyDependOnLibsWithTags": []
+                "onlyDependOnLibsWithTags": ["type:dtos"]
               },
               {
                 "sourceTag": "scope:rvnc-shared",
@@ -70,7 +70,9 @@
                   "scope:rvnc-tags",
                   "scope:rvns-tags",
                   "scope:rvns-api",
-                  "scope:rvnc-shared"
+                  "scope:rvnc-shared",
+                  "scope:shared",
+                  "scope:tags"
                 ]
               },
               {
@@ -79,7 +81,9 @@
                   "scope:organisations",
                   "scope:rvns-organisations",
                   "scope:rvns-api",
-                  "scope:rvnc-shared"
+                  "scope:rvnc-shared",
+                  "scope:shared",
+                  "scope:tags/api-organisations"
                 ]
               }
             ]
