@@ -4,8 +4,10 @@ import { AzureAdPayload, UserRegisterEvent } from '@app/rvns-auth';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PassportStrategy } from '@nestjs/passport';
+import { ClsService } from 'nestjs-cls';
 import { environment } from '../../../../environments/environment';
 import { UsersCacheService } from '../../rvn-users/users-cache.service';
+import { AuthClsStore } from '../auth-cls.store';
 
 @Injectable()
 export class AzureADStrategy extends PassportStrategy(
@@ -15,6 +17,7 @@ export class AzureADStrategy extends PassportStrategy(
   public constructor(
     private readonly usersCacheService: UsersCacheService,
     protected readonly eventEmitter: EventEmitter2,
+    private readonly cls: ClsService<AuthClsStore>,
   ) {
     super({
       identityMetadata: environment.azureAd.identityMetadata,
@@ -41,6 +44,8 @@ export class AzureADStrategy extends PassportStrategy(
         ),
       );
     }
+
+    this.cls.set('localAccountId', response.oid);
     return response;
   }
 }
