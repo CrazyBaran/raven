@@ -191,6 +191,8 @@ export class NotesService {
     newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;
+    newNoteVersion.template = noteEntity.template;
+    newNoteVersion.templateId = noteEntity.templateId;
     newNoteVersion.previousVersion = noteEntity;
     newNoteVersion.createdBy = noteEntity.createdBy;
     newNoteVersion.updatedBy = userEntity;
