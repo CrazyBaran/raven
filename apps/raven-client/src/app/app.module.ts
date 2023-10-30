@@ -14,9 +14,9 @@ import {
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
-import { ErrorInterceptor, RvncAuthModule } from '@app/rvnc-auth';
-import { ENVIRONMENT } from '@app/rvnc-environment';
+import { ErrorInterceptor, RvncAuthModule } from '@app/client/core/auth';
 
+import { ENVIRONMENT } from '@app/client/core/environment';
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';

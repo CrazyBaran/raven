@@ -7,7 +7,7 @@ import {
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import {
   OrganisationTagEntity,
@@ -70,7 +70,7 @@ export class NotesService {
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
       .select('MAX(note_sub.version)', 'maxVersion')
-      .where('note_sub.rootVersionId = note.rootVersionId');
+      .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
 
     const queryBuilder = this.noteRepository
       .createQueryBuilder('note')
@@ -104,6 +104,26 @@ export class NotesService {
     queryBuilder.orderBy('note.createdAt', 'ASC');
 
     return await queryBuilder.getMany();
+  }
+
+  public async getAllNoteVersions(
+    noteEntity: NoteEntity,
+  ): Promise<NoteEntity[]> {
+    return await this.noteRepository.find({
+      where: { rootVersionId: ILike(noteEntity.rootVersionId.toLowerCase()) }, // TODO remove all notes so all have consistent casing after this PR is merged, then remove this ILike part...
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'deletedBy',
+        'tags',
+        'template',
+        'noteTabs',
+        'noteTabs.noteFieldGroups',
+        'noteTabs.noteFieldGroups.noteFields',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
+    });
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
@@ -171,6 +191,8 @@ export class NotesService {
     newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;
+    newNoteVersion.template = noteEntity.template;
+    newNoteVersion.templateId = noteEntity.templateId;
     newNoteVersion.previousVersion = noteEntity;
     newNoteVersion.createdBy = noteEntity.createdBy;
     newNoteVersion.updatedBy = userEntity;
