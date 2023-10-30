@@ -13,10 +13,10 @@ export class ChangeRootVersionIdType1698312002148
       `ALTER TABLE "rvn_notes" DROP CONSTRAINT "DF_ca6c3778dbbed393aa909f5f94c"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "rvn_notes" DROP COLUMN "root_version_id"`,
+      `ALTER TABLE "rvn_notes" ALTER COLUMN "root_version_id" uniqueidentifier NOT NULL`,
     );
     await queryRunner.query(
-      `ALTER TABLE "rvn_notes" ADD "root_version_id" uniqueidentifier NOT NULL CONSTRAINT "DF_ca6c3778dbbed393aa909f5f94c" DEFAULT NEWID()`,
+      `ALTER TABLE "rvn_notes" ADD CONSTRAINT "DF_ca6c3778dbbed393aa909f5f94c" DEFAULT newid() FOR "root_version_id"`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_ca6c3778dbbed393aa909f5f94" ON "rvn_notes" ("root_version_id") `,
@@ -31,10 +31,7 @@ export class ChangeRootVersionIdType1698312002148
       `ALTER TABLE "rvn_notes" DROP CONSTRAINT "DF_ca6c3778dbbed393aa909f5f94c"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "rvn_notes" DROP COLUMN "root_version_id"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "rvn_notes" ADD "root_version_id" nvarchar(255) NOT NULL`,
+      `ALTER TABLE "rvn_notes" ALTER COLUMN "root_version_id" nvarchar(255) NOT NULL`,
     );
     await queryRunner.query(
       `ALTER TABLE "rvn_notes" ADD CONSTRAINT "DF_ca6c3778dbbed393aa909f5f94c" DEFAULT newid() FOR "root_version_id"`,
