@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { UnderConstructionComponent } from '../under-construction/under-construction.component';
+import { LogoComponent } from '../under-construction/logo.component';
 
 @Component({
   selector: 'app-notes-page',
   standalone: true,
-  imports: [CommonModule, UnderConstructionComponent],
+  imports: [CommonModule, LogoComponent],
   templateUrl: './notes-page.component.html',
   styleUrls: ['./notes-page.component.scss'],
 })

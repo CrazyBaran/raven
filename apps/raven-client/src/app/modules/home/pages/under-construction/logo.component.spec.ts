@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UnderConstructionComponent } from './under-construction.component';
+import { LogoComponent } from './logo.component';
 
 describe('UnderConstructionComponent', () => {
-  let component: UnderConstructionComponent;
-  let fixture: ComponentFixture<UnderConstructionComponent>;
+  let component: LogoComponent;
+  let fixture: ComponentFixture<LogoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UnderConstructionComponent],
+      imports: [LogoComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UnderConstructionComponent);
+    fixture = TestBed.createComponent(LogoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
