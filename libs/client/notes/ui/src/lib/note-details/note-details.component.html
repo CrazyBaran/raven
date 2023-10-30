@@ -93,7 +93,10 @@
               Note is empty
             </div>
             <ng-template #noteView>
-              <div [innerHTML]="note.value | safeHtml"></div>
+              <div
+                class="ProseMirror"
+                [innerHTML]="note.value | safeHtml"
+              ></div>
             </ng-template>
           </kendo-expansionpanel>
         </div>
