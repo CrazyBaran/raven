@@ -7,6 +7,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
+import { ComplexTagDto } from './complex-tag.dto';
 import { FieldUpdateDto } from './field-update.dto';
 
 export class UpdateNoteDto {
@@ -31,4 +32,11 @@ export class UpdateNoteDto {
   @IsOptional()
   @IsUUID()
   public readonly templateId?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ComplexTagDto)
+  public readonly companyOpportunityTags?: ComplexTagDto[];
 }

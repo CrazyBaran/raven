@@ -113,6 +113,7 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
               ...group,
               fieldDefinitions: group.noteFields,
             })),
+            name: noteDetails?.templateName,
           } as unknown as TemplateWithRelationsData,
           notes: {},
           peopleTags:
