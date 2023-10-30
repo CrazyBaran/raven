@@ -5,6 +5,7 @@
     themeColor="primary"
     [width]="860"
     [height]="800"
+    class="max-h-full"
   >
     <div class="flex py-20" *ngIf="isLoading$ | async; else noteDetailsView">
       <ui-loader />
