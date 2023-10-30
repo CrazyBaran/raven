@@ -16,7 +16,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Sentry from '@sentry/node';
 import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
-import { ClsModule } from 'nestjs-cls';
 import { environment } from '../../environments/environment';
 import { AclModule } from '../api/rvn-acl/acl.module';
 import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affinity-integration.module';
@@ -25,7 +24,6 @@ import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 import { AuthModule } from '../api/rvn-auth/auth.module';
 import { CommModule } from '../api/rvn-comm/comm.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
-import { OnBehalfOfModule } from '../api/rvn-on-behalf-of/on-behalf-of.module';
 import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import { PipelineModule } from '../api/rvn-pipeline/pipeline.module';
 import { StorageAccountModule } from '../api/rvn-storage-account/storage-account.module';
@@ -66,11 +64,6 @@ import { TransformInterceptor } from './transform.interceptor';
     PlatformModule.register({
       redisOptions: environment.database.redis.options,
     }),
-    ClsModule.forRoot({
-      middleware: {
-        mount: true,
-      },
-    }),
     AuditLogsModule,
     // api
     AuthModule,
@@ -87,7 +80,6 @@ import { TransformInterceptor } from './transform.interceptor';
     TagsModule,
     PipelineModule,
     StorageAccountModule,
-    OnBehalfOfModule,
   ],
   providers: [
     // core

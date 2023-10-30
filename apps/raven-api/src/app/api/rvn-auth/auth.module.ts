@@ -5,7 +5,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClsModule } from 'nestjs-cls';
 import { environment } from '../../../environments/environment';
 import { PeopleTagEntity } from '../rvn-tags/entities/tag.entity';
 import { UsersSessionsModule } from '../rvn-users-sessions/users-sessions.module';
@@ -27,7 +26,6 @@ import { AzureADStrategy } from './strategies/azure-ad.strategy';
     UsersModule,
     UsersSessionsModule,
     TypeOrmModule.forFeature([PeopleTagEntity]),
-    ClsModule.forFeature(),
   ],
   providers: [
     AuthService,
