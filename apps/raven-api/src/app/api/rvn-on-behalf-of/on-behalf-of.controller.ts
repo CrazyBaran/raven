@@ -23,8 +23,7 @@ export class OnBehalfOfController {
       .getTokenCache()
       .getAllAccounts();
   }
-  t;
-  @Get('TestHit')
+  @Get('test-hit')
   @ApiParam({
     name: 'Authorization',
     required: false,

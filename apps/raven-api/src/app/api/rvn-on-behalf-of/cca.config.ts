@@ -1,10 +1,14 @@
 import { Configuration, LogLevel } from '@azure/msal-node';
 import { environment } from '../../../environments/environment';
 import { ConfidentialClientApplicationLogger } from './confidential-client-application.logger';
+import { PartitionManager } from './partition.manager';
+import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
 
 export const CCA_CONFIG = 'CCA_CONFIG';
 
 export const ccaConfig = (
+  cacheClient: TypeOrmTokenCacheClient,
+  partitionManager: PartitionManager,
   logger: ConfidentialClientApplicationLogger,
 ): Configuration => {
   return {
@@ -13,6 +17,9 @@ export const ccaConfig = (
       authority: environment.azureAd.authority,
       clientSecret: environment.azureAd.clientSecret,
     },
+    //cache: {
+    //  cachePlugin: new DistributedCachePlugin(cacheClient, partitionManager),
+    //},
     system: {
       loggerOptions: {
         loggerCallback(loglevel, message): void {
