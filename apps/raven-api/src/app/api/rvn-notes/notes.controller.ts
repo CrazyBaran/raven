@@ -186,6 +186,8 @@ export class NotesController {
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
+    @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
+    templateEntity: string | TemplateEntity | null,
     @Body() dto: UpdateNoteDto,
   ): Promise<NoteData> {
     return this.notesService.noteEntityToNoteData(
@@ -193,6 +195,7 @@ export class NotesController {
         tags,
         fields: dto.fields,
         name: dto.name,
+        templateEntity: templateEntity as TemplateEntity,
       }),
     );
   }

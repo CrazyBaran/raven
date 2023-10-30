@@ -26,4 +26,9 @@ export class UpdateNoteDto {
   @IsOptional()
   @IsString()
   public readonly name?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID()
+  public readonly templateId?: string;
 }

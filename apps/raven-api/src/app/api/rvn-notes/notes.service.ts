@@ -45,6 +45,7 @@ interface UpdateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
   name: string;
+  templateEntity: TemplateEntity | null;
 }
 
 @Injectable()
@@ -134,6 +135,7 @@ export class NotesService {
         options.tags,
         options.templateEntity,
         options.userEntity,
+        null,
         options.rootVersionId,
       );
     }
@@ -184,6 +186,17 @@ export class NotesService {
         message: 'Note is out of date',
         latestVersionId: latestVersion.id,
       });
+    }
+    if (options.templateEntity) {
+      return await this.createNoteFromTemplate(
+        options.name,
+        options.fields,
+        options.tags,
+        options.templateEntity,
+        userEntity,
+        noteEntity.createdBy,
+        noteEntity.rootVersionId,
+      );
     }
 
     const newNoteVersion = new NoteEntity();
@@ -364,14 +377,16 @@ export class NotesService {
     tags: TagEntity[],
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
+    originalCreator: UserEntity | null,
     rootVersionId?: string,
+    version: number = 1,
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
-    note.version = 1;
+    note.version = version;
     note.tags = tags;
     note.template = templateEntity;
-    note.createdBy = userEntity;
+    note.createdBy = originalCreator ? originalCreator : userEntity;
     note.updatedBy = userEntity;
     if (rootVersionId) {
       note.rootVersionId = rootVersionId;
