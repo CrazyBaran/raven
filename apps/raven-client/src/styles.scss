@@ -4,6 +4,7 @@
 
 @import 'assets/styles/variables';
 @import 'assets/styles/kendo-theme';
+@import 'assets/styles/shelf';
 
 // When you are finished with your customization, import the theme
 @import '@progress/kendo-theme-default/dist/all.scss';
@@ -34,26 +35,4 @@ body {
   font-style: normal;
   font-weight: 100;
   min-height: 100vh;
-}
-
-.kendo-window {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  height: 100%;
-  transform: rotate(180deg);
-}
-
-.shelf-window:not(.k-window-maximized) {
-  width: var(--shelf-window-width) !important;
-  height: var(--shelf-window-height) !important;
-  transform: rotate(180deg) var(--shelf-window-transform) !important;
-}
-
-.k-window-maximized {
-  top: 75px !important;
-  left: 75px !important;
-  width: calc(100dvw - 150px) !important;
-  height: calc(100dvh - 150px) !important;
-  box-shadow: 22px 0px 0px 147px rgba(0, 0, 0, 0.28) !important;
 }
