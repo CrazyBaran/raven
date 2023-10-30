@@ -16,7 +16,8 @@ const routes: Routes = [
   },
   {
     path: 'auth',
-    loadChildren: () => import('@app/rvnc-auth').then((m) => m.RvncAuthModule),
+    loadChildren: () =>
+      import('@app/client/core/auth').then((m) => m.RvncAuthModule),
   },
 ];
 

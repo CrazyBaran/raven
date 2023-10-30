@@ -31,10 +31,14 @@ export class TagsService {
   public async getAllTags(
     type: TagTypeEnum | null,
     query: string,
+    organisationId?: string,
   ): Promise<TagEntity[]> {
     const where = type ? { type } : {};
     if (query) {
       where['name'] = ILike(`%${query}%`);
+    }
+    if (organisationId) {
+      where['organisationId'] = organisationId;
     }
     return this.tagsRepository.find({ where });
   }
