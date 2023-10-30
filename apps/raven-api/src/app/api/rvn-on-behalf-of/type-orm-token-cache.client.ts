@@ -11,7 +11,13 @@ export class TypeOrmTokenCacheClient implements ICacheClient {
     private readonly tokenCacheRepository: Repository<CcaTokenCacheEntity>,
   ) {}
   public async get(key: string): Promise<string> {
-    const tokenCache = await this.tokenCacheRepository.findOneBy({ key });
+    const tokenCache = await this.tokenCacheRepository.findOne({
+      where: { key },
+      cache: {
+        id: `token-cache-${key}`,
+        milliseconds: 30 * 60 * 1000, // 30 minutes * 60 seconds * 1000 milliseconds
+      },
+    });
 
     return tokenCache ? tokenCache.value : '';
   }
@@ -21,6 +27,10 @@ export class TypeOrmTokenCacheClient implements ICacheClient {
       key,
       value,
     });
+    await this.tokenCacheRepository.manager.connection.queryResultCache.remove([
+      `token-cache-${key}`,
+    ]);
+
     return tokenCache.value;
   }
 }

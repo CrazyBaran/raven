@@ -16,6 +16,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Sentry from '@sentry/node';
 import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
+import { ClsModule } from 'nestjs-cls';
 import { environment } from '../../environments/environment';
 import { AclModule } from '../api/rvn-acl/acl.module';
 import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affinity-integration.module';
@@ -64,6 +65,11 @@ import { TransformInterceptor } from './transform.interceptor';
     EventEmitterModule.forRoot(),
     PlatformModule.register({
       redisOptions: environment.database.redis.options,
+    }),
+    ClsModule.forRoot({
+      middleware: {
+        mount: true,
+      },
     }),
     AuditLogsModule,
     // api

@@ -2,6 +2,7 @@ import { ConfidentialClientApplication, Configuration } from '@azure/msal-node';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ClsModule } from 'nestjs-cls';
 import { CCA_CONFIG, ccaConfig } from './cca.config';
 import { ConfidentialClientApplicationLogger } from './confidential-client-application.logger';
 import { CcaTokenCacheEntity } from './entities/cca-token-cache.entity';
@@ -10,7 +11,11 @@ import { PartitionManager } from './partition.manager';
 import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CcaTokenCacheEntity]), ConfigModule],
+  imports: [
+    TypeOrmModule.forFeature([CcaTokenCacheEntity]),
+    ConfigModule,
+    ClsModule.forFeature(),
+  ],
   providers: [
     TypeOrmTokenCacheClient,
     PartitionManager,
