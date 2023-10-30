@@ -12,6 +12,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseUUIDPipe,
@@ -207,6 +208,9 @@ export class NotesController {
     noteEntity: NoteEntity,
   ): Promise<EmptyResponseData> {
     const noteEntities = await this.notesService.getAllNoteVersions(noteEntity);
+    if (noteEntity.createdById !== userEntity.id) {
+      throw new ForbiddenException('Note can be deleted only by its creator.');
+    }
     return await this.notesService.deleteNotes(noteEntities, userEntity);
   }
 }
