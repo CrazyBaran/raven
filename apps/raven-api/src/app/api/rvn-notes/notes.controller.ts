@@ -12,6 +12,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseUUIDPipe,
@@ -46,8 +47,10 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
+import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
 import { NotesService } from './notes.service';
 import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe';
+import { ParseCompanyOpportunityTagsPipe } from './pipes/parse-company-opportunity-tags.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
@@ -68,6 +71,8 @@ export class NotesController {
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
     templateEntity: string | TemplateEntity | null,
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
+    @Body('companyOpportunityTags', ParseCompanyOpportunityTagsPipe)
+    companyOpportunityTags: CompanyOpportunityTag[],
     @Body() dto: CreateNoteDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<NoteData> {
@@ -79,6 +84,7 @@ export class NotesController {
         tags,
         fields: dto.fields,
         rootVersionId: dto.rootVersionId?.toLowerCase(),
+        companyOpportunityTags,
       }),
     );
   }
@@ -184,6 +190,8 @@ export class NotesController {
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+    @Body('companyOpportunityTags', ParseCompanyOpportunityTagsPipe)
+    companyOpportunityTags: CompanyOpportunityTag[],
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
     @Body() dto: UpdateNoteDto,
   ): Promise<NoteData> {
@@ -192,6 +200,7 @@ export class NotesController {
         tags,
         fields: dto.fields,
         name: dto.name,
+        companyOpportunityTags,
       }),
     );
   }
@@ -207,6 +216,9 @@ export class NotesController {
     noteEntity: NoteEntity,
   ): Promise<EmptyResponseData> {
     const noteEntities = await this.notesService.getAllNoteVersions(noteEntity);
+    if (noteEntity.createdById !== userEntity.id) {
+      throw new ForbiddenException('Note can be deleted only by its creator.');
+    }
     return await this.notesService.deleteNotes(noteEntities, userEntity);
   }
 }

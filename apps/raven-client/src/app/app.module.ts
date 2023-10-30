@@ -17,6 +17,7 @@ import { StoreModule } from '@ngrx/store';
 import { ErrorInterceptor, RvncAuthModule } from '@app/client/core/auth';
 
 import { ENVIRONMENT } from '@app/client/core/environment';
+import { provideNotifications } from '@app/client/shared/util-notifications';
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
@@ -90,6 +91,7 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
       multi: true,
     },
     { provide: ENVIRONMENT, useValue: environment },
+    provideNotifications(),
   ],
   bootstrap: [AppComponent, MsalRedirectComponent],
 })

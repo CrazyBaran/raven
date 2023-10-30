@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
+import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { NoteWithRelationsData } from '@app/rvns-notes/data-access';
-import { NotificationService } from '@progress/kendo-angular-notification';
-import { catchError, concatMap, map, of, tap } from 'rxjs';
+import { catchError, concatMap, map, of, switchMap } from 'rxjs';
 import { NotesService } from '../services/notes.service';
 import { NotesActions } from './notes.actions';
 
@@ -44,7 +44,12 @@ export class NotesEffects {
       ofType(NotesActions.createNote),
       concatMap(({ data }) =>
         this.notesService.createNote(data).pipe(
-          map(({ data }) => NotesActions.createNoteSuccess({ data: data! })),
+          switchMap(({ data }) => [
+            NotesActions.createNoteSuccess({ data: data! }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Note created successfully',
+            }),
+          ]),
           catchError((error) => of(NotesActions.createNoteFailure({ error }))),
         ),
       ),
@@ -65,55 +70,25 @@ export class NotesEffects {
     );
   });
 
-  private successNotification$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(NotesActions.createNoteSuccess),
-        tap(() =>
-          this.notificationService.show({
-            content: 'Note created successfully',
-            cssClass: 'success',
-            type: { style: 'success', icon: true },
-            animation: { type: 'slide', duration: 400 },
-            position: { horizontal: 'center', vertical: 'top' },
-          }),
-        ),
-      ),
-    { dispatch: false },
-  );
-
   private deleteNote$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(NotesActions.deleteNote),
       concatMap(({ noteId }) =>
         this.notesService.deleteNote(noteId).pipe(
-          map(() => NotesActions.deleteNoteSuccess({ noteId: noteId })),
+          switchMap(() => [
+            NotesActions.deleteNoteSuccess({ noteId: noteId }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Note Deleted.',
+            }),
+          ]),
           catchError((error) => of(NotesActions.deleteNoteFailure({ error }))),
         ),
       ),
     );
   });
 
-  private deleteSuccessNotification$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(NotesActions.deleteNoteSuccess),
-        tap(() =>
-          this.notificationService.show({
-            content: 'Note Deleted ',
-            cssClass: 'success',
-            type: { style: 'success', icon: true },
-            animation: { type: 'slide', duration: 400 },
-            position: { horizontal: 'center', vertical: 'top' },
-          }),
-        ),
-      ),
-    { dispatch: false },
-  );
-
   public constructor(
     private readonly actions$: Actions,
     private readonly notesService: NotesService,
-    private readonly notificationService: NotificationService,
   ) {}
 }

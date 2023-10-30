@@ -46,6 +46,7 @@ import { UploadFileService } from '@app/client/shared/storage/data-access';
 import { EditorView } from '@progress/kendo-angular-editor';
 
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
+import { Store } from '@ngrx/store';
 import { firstValueFrom, map, startWith } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 export interface NotepadForm {
@@ -119,6 +120,7 @@ export class NotepadFormComponent
   protected templateFacade = inject(TemplatesStoreFacade);
   protected tagFacade = inject(TagsStoreFacade);
   protected uploadFileService = inject(UploadFileService);
+  protected store = inject(Store);
 
   //TODO: MOVE TO COMPONENT STORE
   protected noteTemplates = this.templateFacade.notesTemplates;
@@ -279,12 +281,14 @@ export class NotepadFormComponent
       if ('submitted' in result) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const tag = result.submitted as any;
-        const x = {
+
+        const form = {
           type: 'type' in tag ? tag.type : '',
           name: 'name' in tag ? tag.name : '',
+          domain: 'domain' in tag ? tag.domain : '',
         };
 
-        this.tagFacade.createTag(x);
+        this.tagFacade.createTag(form);
       }
     });
   }

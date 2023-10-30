@@ -4,11 +4,13 @@ import {
   NoteFieldGroupsWithFieldData,
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
+import { TagData } from '@app/rvns-tags';
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
+import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
@@ -22,6 +24,7 @@ import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
+import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
 
 interface CreateNoteOptions {
   name: string;
@@ -30,6 +33,7 @@ interface CreateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
   rootVersionId?: string;
+  companyOpportunityTags?: CompanyOpportunityTag[];
 }
 
 interface UpdateNoteFieldOptions {
@@ -45,6 +49,7 @@ interface UpdateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
   name: string;
+  companyOpportunityTags?: CompanyOpportunityTag[];
 }
 
 @Injectable()
@@ -77,6 +82,7 @@ export class NotesService {
       .leftJoinAndMapOne('note.createdBy', 'note.createdBy', 'createdBy')
       .leftJoinAndMapOne('note.updatedBy', 'note.updatedBy', 'updatedBy')
       .leftJoinAndMapMany('note.tags', 'note.tags', 'tags')
+      .leftJoinAndMapMany('note.complexTags', 'note.complexTags', 'complexTags')
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
       .where(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL');
@@ -110,7 +116,7 @@ export class NotesService {
     noteEntity: NoteEntity,
   ): Promise<NoteEntity[]> {
     return await this.noteRepository.find({
-      where: { rootVersionId: ILike(noteEntity.rootVersionId.toLowerCase()) }, // TODO remove all notes so all have consistent casing after this PR is merged, then remove this ILike part...
+      where: { rootVersionId: noteEntity.rootVersionId },
       relations: [
         'createdBy',
         'updatedBy',
@@ -135,6 +141,7 @@ export class NotesService {
         options.templateEntity,
         options.userEntity,
         options.rootVersionId,
+        options.companyOpportunityTags,
       );
     }
 
@@ -159,6 +166,7 @@ export class NotesService {
       note.rootVersionId = options.rootVersionId;
     }
     note.tags = options.tags;
+    note.complexTags = this.getComplexNoteTags(options.companyOpportunityTags);
     note.createdBy = options.userEntity;
     note.updatedBy = options.userEntity;
     note.noteFieldGroups = [noteFieldGroup];
@@ -191,6 +199,9 @@ export class NotesService {
     newNoteVersion.rootVersionId = noteEntity.rootVersionId;
     newNoteVersion.version = noteEntity.version + 1;
     newNoteVersion.tags = options.tags;
+    newNoteVersion.complexTags = this.getComplexNoteTags(
+      options.companyOpportunityTags,
+    );
     newNoteVersion.template = noteEntity.template;
     newNoteVersion.templateId = noteEntity.templateId;
     newNoteVersion.previousVersion = noteEntity;
@@ -278,15 +289,11 @@ export class NotesService {
             email: noteEntity.deletedBy.email,
           }
         : undefined,
-      tags: noteEntity.tags?.map(
-        (tag: TagEntity | OrganisationTagEntity | PeopleTagEntity) => ({
-          name: tag.name,
-          type: tag.type,
-          id: tag.id,
-          organisationId: (tag as OrganisationTagEntity).organisationId,
-          userId: (tag as PeopleTagEntity).userId,
-        }),
-      ),
+      tags: noteEntity.tags?.map(this.mapTag.bind(this)),
+      complexTags: noteEntity.complexTags?.map((complexTag) => ({
+        id: complexTag.id,
+        tags: complexTag.tags?.map(this.mapTag.bind(this)),
+      })),
       noteTabs: noteEntity.noteTabs?.map((noteTab) => {
         return {
           id: noteTab.id,
@@ -340,6 +347,18 @@ export class NotesService {
     };
   }
 
+  private mapTag(
+    tag: TagEntity | OrganisationTagEntity | PeopleTagEntity,
+  ): TagData {
+    return {
+      name: tag.name,
+      type: tag.type,
+      id: tag.id,
+      organisationId: (tag as OrganisationTagEntity).organisationId,
+      userId: (tag as PeopleTagEntity).userId,
+    };
+  }
+
   private mapNoteFieldGroupEntityToFieldGroupData(
     noteFieldGroup: NoteFieldGroupEntity,
   ): NoteFieldGroupsWithFieldData {
@@ -365,11 +384,13 @@ export class NotesService {
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
     rootVersionId?: string,
+    companyOpportunityTags?: CompanyOpportunityTag[],
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
     note.version = 1;
     note.tags = tags;
+    note.complexTags = this.getComplexNoteTags(companyOpportunityTags);
     note.template = templateEntity;
     note.createdBy = userEntity;
     note.updatedBy = userEntity;
@@ -462,5 +483,18 @@ export class NotesService {
       ? (fieldEntity as NoteFieldEntity).value
       : null;
     return fieldUpdate ? fieldUpdate.value : defaultValue;
+  }
+
+  private getComplexNoteTags(
+    companyOpportunityTags?: CompanyOpportunityTag[],
+  ): ComplexTagEntity[] {
+    return companyOpportunityTags?.map((companyOpportunityTag) => {
+      const complexTag = new ComplexTagEntity();
+      complexTag.tags = [
+        companyOpportunityTag.companyTag,
+        companyOpportunityTag.opportunityTag,
+      ];
+      return complexTag;
+    });
   }
 }

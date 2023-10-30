@@ -9,10 +9,7 @@ import { tagsFeature } from './tags.reducer';
   providedIn: 'root',
 })
 export class TagsStoreFacade {
-  public loaded$ = this.store.select(tagsFeature.selectLoaded);
   public loaded = this.store.selectSignal(tagsFeature.selectLoaded);
-
-  public allTags$ = this.store.select(tagsFeature.selectAll);
 
   public allTagsWithCompanyRelation = this.store.selectSignal(
     tagsFeature.selectTagsWithCompanyRelation,

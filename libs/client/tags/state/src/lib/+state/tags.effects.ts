@@ -1,4 +1,5 @@
 import { inject } from '@angular/core';
+import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { TagsService } from '@app/client/tags/data-access';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
@@ -9,7 +10,7 @@ export const loadTags = createEffect(
     return actions$.pipe(
       ofType(TagsActions.getTags),
       switchMap(() =>
-        tagsService.getNotes().pipe(
+        tagsService.getTags().pipe(
           map((response) => {
             return TagsActions.getTagsSuccess({ data: response.data || [] });
           }),
@@ -32,8 +33,13 @@ export const createTag = createEffect(
       ofType(TagsActions.createTag),
       switchMap((action) =>
         tagsService.createTag(action.data).pipe(
-          map((response) => {
-            return TagsActions.createTagSuccess({ data: response.data! });
+          switchMap((response) => {
+            return [
+              NotificationsActions.showSuccessNotification({
+                content: 'Tag Created.',
+              }),
+              TagsActions.createTagSuccess({ data: response.data! }),
+            ];
           }),
           catchError((error) => {
             console.error('Error', error);
