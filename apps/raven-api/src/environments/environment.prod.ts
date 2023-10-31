@@ -209,6 +209,14 @@ export const environment = {
       email: env.get('AD_TOKEN_KEYS_EMAIL').default('unique_name').asString(),
       roles: env.get('AD_TOKEN_KEYS_ROLES').default('roles').asString(),
     },
+    shouldEncryptCcaCache: env
+      .get('AD_SHOULD_ENCRYPT_CCA_CACHE')
+      .default('true')
+      .asBoolStrict(),
+    ccaCacheEncryptionKey: env.get('AD_CCA_CACHE_ENCRYPTION_KEY').asString(),
+    ccaCacheEncryptionInitVector: env
+      .get('AD_CCA_CACHE_ENCRYPTION_INIT_VECTOR')
+      .asString(),
   },
   scopes: {
     apiAccess: env.get('SCOPES_API_ACCESS').asString(),

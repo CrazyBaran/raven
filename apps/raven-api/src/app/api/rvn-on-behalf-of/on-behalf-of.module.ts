@@ -1,8 +1,10 @@
+import { CryptoModule } from '@app/rvnb-crypto';
 import { ConfidentialClientApplication, Configuration } from '@azure/msal-node';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
+import { environment } from '../../../environments/environment';
 import { CCA_CONFIG, ccaConfig } from './cca.config';
 import { ConfidentialClientApplicationLogger } from './confidential-client-application.logger';
 import { CcaTokenCacheEntity } from './entities/cca-token-cache.entity';
@@ -15,6 +17,10 @@ import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
     TypeOrmModule.forFeature([CcaTokenCacheEntity]),
     ConfigModule,
     ClsModule.forFeature(),
+    CryptoModule.register({
+      key: environment.azureAd.ccaCacheEncryptionKey,
+      initVector: environment.azureAd.ccaCacheEncryptionInitVector,
+    }),
   ],
   providers: [
     TypeOrmTokenCacheClient,
