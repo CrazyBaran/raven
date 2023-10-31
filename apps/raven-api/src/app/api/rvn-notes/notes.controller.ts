@@ -34,8 +34,6 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 
-import { RoleEnum } from '@app/rvns-roles';
-import { Roles } from '@app/rvns-roles-api';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import {
   OrganisationTagEntity,
@@ -66,7 +64,6 @@ export class NotesController {
   @ApiOperation({ description: 'Create note' })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()
-  @Roles(RoleEnum.User)
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
     templateEntity: string | TemplateEntity | null,
@@ -99,7 +96,6 @@ export class NotesController {
     description: 'Comma separated list of tag ids',
   })
   @Get()
-  @Roles(RoleEnum.User)
   public async getAllNotes(
     @Query('domain')
     domain: string,
@@ -126,7 +122,6 @@ export class NotesController {
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
   @Get(':id')
-  @Roles(RoleEnum.User)
   public async getNote(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
     @Query('showHistory') showHistory: boolean,
@@ -146,7 +141,6 @@ export class NotesController {
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
   @Get(':id/attachments')
-  @Roles(RoleEnum.User)
   public async getNoteAttachments(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
   ): Promise<NoteAttachmentData[]> {
@@ -163,7 +157,6 @@ export class NotesController {
   @ApiParam({ name: 'noteFieldGroupId', type: String })
   @ApiParam({ name: 'noteFieldId', type: String })
   @Put(':noteId/fields-groups/:noteFieldGroupId/fields/:noteFieldId')
-  @Roles(RoleEnum.User)
   public async updateNoteField(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -186,7 +179,6 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
   @Patch(':noteId')
-  @Roles(RoleEnum.User)
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -212,7 +204,6 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
   @Delete(':noteId')
-  @Roles(RoleEnum.User)
   public async deleteNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Param('noteId', ParseUUIDPipe, ParseNotePipe)
