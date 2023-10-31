@@ -14,6 +14,9 @@ export class CcaTokenCacheEntity {
   @Column({ type: 'nvarchar', length: 'max', nullable: false })
   public value: string;
 
+  @Column({ default: false, nullable: false })
+  public isEncrypted: boolean;
+
   @CreateDateColumn()
   public createdAt: Date;
 
