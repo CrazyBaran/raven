@@ -239,13 +239,9 @@ export const environment = {
       .get('AD_SHOULD_ENCRYPT_CCA_CACHE')
       .default('false')
       .asBoolStrict(),
-    ccaCacheEncryptionKey: env
-      .get('AD_CCA_CACHE_ENCRYPTION_KEY')
-      .required()
-      .asString(),
+    ccaCacheEncryptionKey: env.get('AD_CCA_CACHE_ENCRYPTION_KEY').asString(),
     ccaCacheEncryptionInitVector: env
       .get('AD_CCA_CACHE_ENCRYPTION_INIT_VECTOR')
-      .required()
       .asString(),
   },
   scopes: {
