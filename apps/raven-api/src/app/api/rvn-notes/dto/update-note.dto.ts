@@ -30,6 +30,11 @@ export class UpdateNoteDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsUUID()
+  public readonly templateId?: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ComplexTagDto)

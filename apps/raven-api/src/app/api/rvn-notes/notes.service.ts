@@ -49,6 +49,7 @@ interface UpdateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
   name: string;
+  templateEntity: TemplateEntity | null;
   companyOpportunityTags?: CompanyOpportunityTag[];
 }
 
@@ -140,6 +141,7 @@ export class NotesService {
         options.tags,
         options.templateEntity,
         options.userEntity,
+        null,
         options.rootVersionId,
         options.companyOpportunityTags,
       );
@@ -192,6 +194,19 @@ export class NotesService {
         message: 'Note is out of date',
         latestVersionId: latestVersion.id,
       });
+    }
+    if (options.templateEntity) {
+      return await this.createNoteFromTemplate(
+        options.name,
+        options.fields,
+        options.tags,
+        options.templateEntity,
+        userEntity,
+        noteEntity.createdBy,
+        noteEntity.rootVersionId,
+        options.companyOpportunityTags,
+        noteEntity.version + 1,
+      );
     }
 
     const newNoteVersion = new NoteEntity();
@@ -383,16 +398,18 @@ export class NotesService {
     tags: TagEntity[],
     templateEntity: TemplateEntity,
     userEntity: UserEntity,
+    originalCreator: UserEntity | null,
     rootVersionId?: string,
     companyOpportunityTags?: CompanyOpportunityTag[],
+    version: number = 1,
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
-    note.version = 1;
+    note.version = version;
     note.tags = tags;
     note.complexTags = this.getComplexNoteTags(companyOpportunityTags);
     note.template = templateEntity;
-    note.createdBy = userEntity;
+    note.createdBy = originalCreator ? originalCreator : userEntity;
     note.updatedBy = userEntity;
     if (rootVersionId) {
       note.rootVersionId = rootVersionId;

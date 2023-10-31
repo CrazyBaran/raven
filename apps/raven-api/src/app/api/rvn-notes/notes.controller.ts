@@ -193,14 +193,17 @@ export class NotesController {
     @Body('companyOpportunityTags', ParseCompanyOpportunityTagsPipe)
     companyOpportunityTags: CompanyOpportunityTag[],
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
+    @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
+    templateEntity: string | TemplateEntity | null,
     @Body() dto: UpdateNoteDto,
   ): Promise<NoteData> {
     return this.notesService.noteEntityToNoteData(
       await this.notesService.updateNote(noteEntity, userEntity, {
         tags,
+        companyOpportunityTags,
         fields: dto.fields,
         name: dto.name,
-        companyOpportunityTags,
+        templateEntity: templateEntity as TemplateEntity,
       }),
     );
   }
