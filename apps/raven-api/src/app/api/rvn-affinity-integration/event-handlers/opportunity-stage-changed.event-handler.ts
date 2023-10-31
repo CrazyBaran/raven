@@ -4,16 +4,26 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { AffinitySettingsService } from '../affinity-settings.service';
 import { AffinityApiService } from '../api/affinity-api.service';
 import { FieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-dropdown.dto';
+import { AffinityCacheService } from '../cache/affinity-cache.service';
 
 @Injectable()
 export class OpportunityStageChangedEventHandler {
   public constructor(
     private readonly affinityApiService: AffinityApiService,
     private readonly affinitySettingsService: AffinitySettingsService,
+    private readonly affinityCacheService: AffinityCacheService,
   ) {}
 
   @OnEvent('opportunity-stage-changed')
   protected async process(event: OpportunityStageChangedEvent): Promise<void> {
+    const company = await this.affinityCacheService.getByDomains(
+      event.organisationDomains,
+    );
+    if (!company) {
+      // if there is no company in cache, we can't update it in Affinity, so we return early
+      return;
+    }
+
     const { defaultListId, statusFieldId } =
       this.affinitySettingsService.getListSettings();
     const listDetails =
@@ -40,7 +50,12 @@ export class OpportunityStageChangedEventHandler {
         `Incorrect Affinity configuration - cannot find stage option with text ${event.targetPipelineMappedFrom}`,
       );
     }
-    // TODO find in cache company with given domains joined by coma, find field_id to update (this must be held in cache - to be changed)
-    // await this.affinityApiService.updateFieldValue();
+
+    await this.affinityApiService.updateFieldValue(company.stageFieldId, {
+      value: stageOption,
+    });
+
+    company.stage = stageOption;
+    await this.affinityCacheService.addOrReplaceMany([company]);
   }
 }
