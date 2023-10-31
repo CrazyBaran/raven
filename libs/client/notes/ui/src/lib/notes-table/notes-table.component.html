@@ -2,6 +2,7 @@
   [kendoGridBinding]="notes"
   [sortable]="true"
   scrollable="scrollable"
+  [sort]="sort"
 >
   <kendo-grid-column
     field="name"
@@ -26,8 +27,8 @@
   </kendo-grid-column>
 
   <kendo-grid-column
-    field="createdAt"
-    title="Created"
+    field="updatedAt"
+    title="Updated"
     [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
@@ -38,7 +39,7 @@
         </span>
 
         <span class="text-xs">
-          Updated: {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy' }}
+          Updated: {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy hh:mm' }}
         </span>
       </div>
     </ng-template>
