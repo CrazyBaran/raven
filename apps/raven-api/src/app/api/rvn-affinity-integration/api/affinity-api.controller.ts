@@ -167,11 +167,14 @@ export class AffinityApiController {
   @ApiBody({ type: WebhookUpdateDto })
   @ApiResponse({ status: 200, type: WebhookDto })
   @Put('webhook/:webhookId')
-  public updateWebhook(
+  public async updateWebhook(
     @Param('webhookId') webhookId: number,
-    @Body() dto: WebhookUpdateDto,
+    @Body() dto: unknown,
   ): Promise<WebhookDto> {
-    return this.affinityApiService.updateWebhook(webhookId, dto);
+    return this.affinityApiService.updateWebhook(
+      webhookId,
+      dto as WebhookUpdateDto,
+    );
   }
 
   @ApiOAuth2(['openid'])

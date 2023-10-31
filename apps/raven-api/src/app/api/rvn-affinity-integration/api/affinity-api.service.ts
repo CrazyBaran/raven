@@ -164,6 +164,7 @@ export class AffinityApiService {
     webhookId: number,
     dto: WebhookUpdateDto,
   ): Promise<WebhookDto> {
+    console.log({ dto });
     return await this.httpService
       .put<WebhookDto>(`/webhook/${webhookId}`, dto, {
         baseURL: this.baseURL,
