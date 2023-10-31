@@ -1,3 +1,4 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -12,8 +13,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-
-import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from '@angular/router';
 import { TagComponent } from '@app/client/notes/api-tags';
 import { NoteStoreFacade, NotesActions } from '@app/client/notes/data-access';
@@ -29,8 +28,15 @@ import {
 import { TemplateWithRelationsData } from '@app/rvns-templates';
 import { Actions, ofType } from '@ngrx/effects';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
-import { DialogService, WindowModule } from '@progress/kendo-angular-dialog';
+import {
+  DialogResult,
+  DialogService,
+  WindowComponent,
+  WindowModule,
+} from '@progress/kendo-angular-dialog';
+import { IconModule } from '@progress/kendo-angular-icons';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
+import { xIcon } from '@progress/kendo-svg-icons';
 import { sortBy } from 'lodash';
 import { Subject, filter, take, takeUntil } from 'rxjs';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
@@ -39,7 +45,6 @@ import {
   NotepadFormComponent,
   TITLE_FIELD,
 } from '../notepad-form/notepad-form.component';
-
 @Component({
   selector: 'app-note-details',
   standalone: true,
@@ -54,6 +59,7 @@ import {
     ReactiveFormsModule,
     TagFilterPipe,
     TagComponent,
+    IconModule,
   ],
   templateUrl: './note-details.component.html',
   styleUrls: ['./note-details.component.scss'],
@@ -67,6 +73,12 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('container', { read: ViewContainerRef })
   public containerRef: ViewContainerRef;
 
+  @ViewChild(NotepadFormComponent)
+  public notepadFormComponent: NotepadFormComponent;
+
+  @ViewChild(WindowComponent)
+  public kendoWindowComponent: WindowComponent;
+
   public notepadForm = new FormControl<NotepadForm>({
     template: null,
     notes: {},
@@ -79,6 +91,7 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
   public noteFields: NoteFieldData[] = [];
   public editMode = false;
   public fields: { id: string; name: string }[] = [];
+  public icon = xIcon;
   public readonly noteDetails$ = this.noteStoreFacade.noteDetails$;
   public readonly isLoading$ = this.noteStoreFacade.isLoadingNoteDetails$;
   public readonly isUpdating = this.noteStoreFacade.isUpdatingNote;
@@ -131,38 +144,12 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  public handleCloseWindow(): void {
-    this.closeWindow.emit();
-  }
-
   public ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
   public updateNote(): void {
-    const fields = Object.entries(this.notepadForm.value?.notes ?? {})
-      .filter(([key, value]) => key !== TITLE_FIELD.id)
-      .map(([id, value]) => {
-        const clearedValue = Object.entries(
-          this.imagePathDictionaryService.getImageDictionary(),
-        ).reduce((acc, [fileName, sasUrl]) => {
-          return acc
-            .replace(new RegExp('&amp;', 'g'), '&')
-            .replace(sasUrl, fileName);
-        }, value ?? '');
-        return { id, value: clearedValue || '' };
-      });
-
-    const { template, notes, tags, peopleTags } = this.notepadForm.value!;
-    const payload = {
-      name: notes[TITLE_FIELD.id] || '',
-      templateId: template?.id,
-      fields: fields,
-      tagIds: [
-        ...(peopleTags ?? []),
-        ...(tags ?? []).map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
-      ],
-    };
+    const payload = this.getPayload();
 
     this.noteStoreFacade.updateNote(this.noteDetails!.id, payload);
 
@@ -205,6 +192,35 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  public hasChanged(): boolean {
+    return this.notepadFormComponent?.notepadForm?.dirty;
+  }
+
+  public closeEdit(): void {
+    if (this.hasChanged()) {
+      this._showUnsavedChangesWarning(() => {
+        this.editMode = false;
+      });
+    } else {
+      this.editMode = false;
+    }
+  }
+
+  public onClose($event: Event): void {
+    if (this.editMode && this.hasChanged()) {
+      $event.preventDefault();
+      this._showUnsavedChangesWarning(() => {
+        this.closeWindow.emit();
+      });
+    } else {
+      this.closeWindow.emit();
+    }
+  }
+
+  public handleCloseWindow(): void {
+    this.closeWindow.emit();
+  }
+
   private prepareAllNotes(notes: NoteFieldGroupsWithFieldData[]): void {
     const noteFields = notes.reduce((res, curr) => {
       if (curr.noteFields.length) {
@@ -220,5 +236,60 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
       name: field.name,
       id: field.id,
     }));
+  }
+
+  private getPayload(): {
+    name: string;
+    templateId: string | undefined;
+    fields: { id: string; value: string }[];
+    tagIds: string[];
+  } {
+    const fields = Object.entries(this.notepadForm.value?.notes ?? {})
+      .filter(([key, value]) => key !== TITLE_FIELD.id)
+      .map(([id, value]) => {
+        const clearedValue = Object.entries(
+          this.imagePathDictionaryService.getImageDictionary(),
+        ).reduce((acc, [fileName, sasUrl]) => {
+          return acc
+            .replace(new RegExp('&amp;', 'g'), '&')
+            .replace(sasUrl, fileName);
+        }, value ?? '');
+        return { id, value: clearedValue || '' };
+      });
+
+    const { template, notes, tags, peopleTags } = this.notepadForm.value!;
+    return {
+      name: notes[TITLE_FIELD.id] || '',
+      templateId: template?.id,
+      fields: fields,
+      tagIds: [
+        ...(peopleTags ?? []),
+        ...(tags ?? []).map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
+      ],
+    };
+  }
+
+  private _showUnsavedChangesWarning(callbackFn: () => void): void {
+    this.dialogService
+      .open({
+        appendTo: this.containerRef,
+        title: 'Leave without publishing?',
+        width: 350,
+        content:
+          'Any progress will be lost without publishing first. Are you sure you want to continue?',
+        actions: [
+          { text: 'No' },
+          {
+            text: 'Yes, leave without publishing',
+            primary: true,
+            themeColor: 'primary',
+          },
+        ],
+      })
+      .result.subscribe((res: DialogResult) => {
+        if ('text' in res && res.text === 'Yes, leave without publishing') {
+          callbackFn?.();
+        }
+      });
   }
 }

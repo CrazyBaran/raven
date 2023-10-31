@@ -1,12 +1,24 @@
 <div class="absolute left-0 top-0 h-screen w-screen overflow-hidden">
   <kendo-window
-    (close)="handleCloseWindow()"
     title="Note"
     themeColor="primary"
     [width]="860"
     [height]="800"
     class="max-h-full"
   >
+    <kendo-window-titlebar>
+      <span class="k-window-title">Note</span>
+      <button kendoWindowMinimizeAction></button>
+      <button kendoWindowRestoreAction></button>
+      <button kendoWindowMaximizeAction></button>
+      <button
+        kendoButton
+        (click)="onClose($event)"
+        [svgIcon]="icon"
+        fillMode="flat"
+      ></button>
+    </kendo-window-titlebar>
+
     <div class="flex py-20" *ngIf="isLoading$ | async; else noteDetailsView">
       <ui-loader />
     </div>
@@ -165,7 +177,7 @@
       iconClass="fa-regular fa-pen"
       size="large"
       class="ml-auto"
-      (click)="editMode = false"
+      (click)="closeEdit()"
       >Cancel</kendo-button
     >
     <kendo-button
