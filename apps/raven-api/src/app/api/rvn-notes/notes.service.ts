@@ -401,7 +401,7 @@ export class NotesService {
     originalCreator: UserEntity | null,
     rootVersionId?: string,
     companyOpportunityTags?: CompanyOpportunityTag[],
-    version: number = 1,
+    version = 1,
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
