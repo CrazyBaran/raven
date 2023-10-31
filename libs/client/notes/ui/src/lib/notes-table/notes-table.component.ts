@@ -15,6 +15,7 @@ import { NoteData } from '@app/rvns-notes/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { SortDescriptor } from '@progress/kendo-data-query';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 
 @Component({
@@ -36,6 +37,13 @@ import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 })
 export class NotesTableComponent {
   @Input({ required: true }) public notes: NoteData[] = [];
+
+  public sort: SortDescriptor[] = [
+    {
+      field: 'updatedAt',
+      dir: 'desc',
+    },
+  ];
 
   public constructor(
     private readonly dialogService: DialogService,
