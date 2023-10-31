@@ -24,6 +24,7 @@ import {
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
+import * as _ from 'lodash';
 import { filter, take } from 'rxjs';
 
 @Component({
@@ -48,7 +49,7 @@ export class NotepadContentComponent {
   protected templateFacade = inject(TemplatesStoreFacade);
   protected noteFacade = inject(NoteStoreFacade);
   protected actions$ = inject(Actions);
-  protected windowRef = inject(WindowRef);
+  protected windowRef = inject(WindowRef, { optional: true });
   protected imagePathDictionaryService = inject(ImagePathDictionaryService);
 
   //TODO: MOVE TO COMPONENT STORE
@@ -62,6 +63,16 @@ export class NotepadContentComponent {
     peopleTags: [],
     tags: [],
   });
+
+  public get hasChanges(): boolean {
+    const { notes, template, tags, peopleTags } = this.notepadForm.value ?? {};
+    return !!(
+      tags?.length ||
+      peopleTags?.length ||
+      template?.id ||
+      _.values(notes)?.filter(Boolean)?.length
+    );
+  }
 
   public submit(): void {
     const imageDictionary =

@@ -297,6 +297,7 @@ export class NotepadFormComponent
     this.notepadForm.controls.tags.setValue(
       this.addedTagIds()?.filter((t) => t !== tag.id) ?? [],
     );
+    this.notepadForm.controls.tags.markAsDirty();
   }
 
   public togglePerson(dataItem: TagData): void {
@@ -318,6 +319,7 @@ export class NotepadFormComponent
     this.notepadForm.controls.peopleTags.setValue(
       addedPeople.filter((t) => t !== tag.id),
     );
+    this.notepadForm.controls.peopleTags.markAsDirty();
   }
 
   public handleValueChange(value: TemplateWithRelationsData): void {
