@@ -5,6 +5,7 @@ export class OrganizationStageDto {
   public entryId: number;
   public entryAdded: Date;
   public organizationDto: OrganizationDto;
+  public stageFieldId: number;
   public stage?: FieldValueRankedDropdownDto;
   public fields: { displayName: string; value: string }[];
 }
