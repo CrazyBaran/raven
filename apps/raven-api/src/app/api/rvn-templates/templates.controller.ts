@@ -3,8 +3,6 @@ import {
   GenericCreateResponseSchema,
   GenericResponseSchema,
 } from '@app/rvns-api';
-import { RoleEnum } from '@app/rvns-roles';
-import { Roles } from '@app/rvns-roles-api';
 import {
   FieldDefinitionData,
   FieldGroupData,
@@ -67,7 +65,6 @@ export class TemplatesController {
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'type', enum: TemplateTypeEnum, required: false })
   @Get()
-  @Roles(RoleEnum.User)
   public async listTemplates(
     @Query('type', ValidateTemplateTypePipe)
     type?: string | TemplateTypeEnum | null, // workaround for passing string to pipe
@@ -82,7 +79,6 @@ export class TemplatesController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Get(':id')
-  @Roles(RoleEnum.User)
   public async getTemplate(
     @Param('id', ParseUUIDPipe, ParseTemplateWithGroupsAndFieldsPipe)
     templateEntity: TemplateEntity,
@@ -95,7 +91,6 @@ export class TemplatesController {
   @ApiOperation({ description: 'Create template' })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()
-  @Roles(RoleEnum.SuperAdmin)
   public async createTemplate(
     @Body() dto: CreateTemplateDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
@@ -115,7 +110,6 @@ export class TemplatesController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Patch(':id')
-  @Roles(RoleEnum.SuperAdmin)
   public async updateTemplate(
     @Param('id', ParseUUIDPipe, ParseTemplatePipe)
     templateEntity: TemplateEntity,
@@ -130,7 +124,6 @@ export class TemplatesController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Delete(':id')
-  @Roles(RoleEnum.SuperAdmin)
   public async removeTemplate(
     @Param('id', ParseUUIDPipe, ParseTemplatePipe)
     templateEntity: TemplateEntity,
@@ -142,7 +135,6 @@ export class TemplatesController {
   @ApiParam({ name: 'templateId', type: String })
   @ApiResponse(GenericCreateResponseSchema())
   @Post(':templateId/tabs')
-  @Roles(RoleEnum.SuperAdmin)
   public async createTab(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -164,7 +156,6 @@ export class TemplatesController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Patch(':templateId/tabs/:id')
-  @Roles(RoleEnum.SuperAdmin)
   public async updateTab(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -185,7 +176,6 @@ export class TemplatesController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Delete(':templateId/tabs/:id')
-  @Roles(RoleEnum.SuperAdmin)
   public async removeTab(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -199,7 +189,6 @@ export class TemplatesController {
   @ApiParam({ name: 'templateId', type: String })
   @ApiResponse(GenericCreateResponseSchema())
   @Post(':templateId/field-groups')
-  @Roles(RoleEnum.SuperAdmin)
   public async createGroup(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -223,7 +212,6 @@ export class TemplatesController {
   @ApiParam({ name: 'groupId', type: String })
   @ApiResponse(GenericResponseSchema())
   @Patch(':templateId/field-groups/:groupId')
-  @Roles(RoleEnum.SuperAdmin)
   public async updateGroup(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -241,7 +229,6 @@ export class TemplatesController {
   @ApiParam({ name: 'groupId', type: String })
   @ApiResponse(GenericResponseSchema())
   @Delete(':templateId/field-groups/:groupId')
-  @Roles(RoleEnum.SuperAdmin)
   public async removeGroup(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -256,7 +243,6 @@ export class TemplatesController {
   @ApiParam({ name: 'groupId', type: String })
   @ApiResponse(GenericCreateResponseSchema())
   @Post(':templateId/field-groups/:groupId/field-definitions')
-  @Roles(RoleEnum.SuperAdmin)
   public async createFieldDefinition(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -282,7 +268,6 @@ export class TemplatesController {
   @ApiParam({ name: 'fieldId', type: String })
   @ApiResponse(GenericResponseSchema())
   @Patch(':templateId/field-groups/:groupId/field-definitions/:fieldId')
-  @Roles(RoleEnum.SuperAdmin)
   public async updateFieldDefinition(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
@@ -307,7 +292,6 @@ export class TemplatesController {
   @ApiParam({ name: 'fieldId', type: String })
   @ApiResponse(GenericResponseSchema())
   @Delete(':templateId/field-groups/:groupId/field-definitions/:fieldId')
-  @Roles(RoleEnum.SuperAdmin)
   public async removeFieldDefinition(
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
