@@ -213,7 +213,9 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
       return res;
     }, [] as NoteFieldData[]);
 
-    const sortedFields = sortBy(noteFields, 'order');
+    const sortedFields = sortBy(noteFields, 'order').filter((note) =>
+      note.value.trim(),
+    );
 
     this.noteFields = sortedFields;
     this.fields = sortedFields.map((field) => ({

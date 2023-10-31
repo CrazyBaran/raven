@@ -89,6 +89,7 @@
             [title]="note.name"
             *ngFor="let note of noteFields"
             [id]="note.id"
+            [expanded]="true"
           >
             <div *ngIf="!note.value; else noteView" class="text-sm italic">
               Note is empty
