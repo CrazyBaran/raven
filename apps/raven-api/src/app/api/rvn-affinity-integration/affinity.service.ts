@@ -78,6 +78,7 @@ export class AffinityService {
       }`,
     );
 
+    // TODO why we do this differently for deal leads and statuses??????????????
     const requiredFields = [{ displayName: 'Deal Lead', mappedFrom: 'Owners' }];
     const fields = await this.affinityApiService.getFields(defaultListId);
 
@@ -120,7 +121,9 @@ export class AffinityService {
     this.logger.debug('Stored data in cache');
   }
 
+  // TODO move to separate service
   public async handleWebhookPayload(body: WebhookPayloadDto): Promise<void> {
+    // TODO it won't work this way
     switch ((typeof body).toString()) {
       case 'WebhookPayloadPersonDto': {
         const person = body as WebhookPayloadPersonDto;
@@ -176,12 +179,20 @@ export class AffinityService {
       const fieldChange = fieldChanges.find(
         (change) => change.list_entry_id === entry.id,
       );
-
+      const matchedFieldChanges = fieldChanges.filter(
+        (change) => change.list_entry_id === entry.id,
+      );
+      // TODO more than one field change possible!!!!!!!!!!!!!!!!!!!!!!! sort by date and get latest by fieldid?
+      if (matchedFieldChanges.length > 3) {
+        this.logger.debug(
+          `Matched ${matchedFieldChanges.length} field changes for entry ${entry.id}`,
+        );
+        this.logger.debug({ matchedFieldChanges });
+      }
       matchedData.push({
         entryId: entry.id,
         entryAdded: new Date(entry.created_at),
         organizationDto: entry.entity as OrganizationDto,
-        stageFieldId: fieldChange?.id,
         stage: fieldChange?.value as FieldValueRankedDropdownDto,
         fields: [],
       });

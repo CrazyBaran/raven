@@ -24,6 +24,7 @@ export class OpportunityStageChangedEventHandler {
       return;
     }
 
+    // TODO maybe we can store stage options in cache as well? - recreated at app start?
     const { defaultListId, statusFieldId } =
       this.affinitySettingsService.getListSettings();
     const listDetails =
@@ -51,9 +52,25 @@ export class OpportunityStageChangedEventHandler {
       );
     }
 
-    await this.affinityApiService.updateFieldValue(company.stageFieldId, {
-      value: stageOption,
-    });
+    const fieldValues = await this.affinityApiService.getFieldValues(
+      company.entryId,
+    );
+
+    console.log({ fieldValues });
+
+    const statusValue = fieldValues.find(
+      (fieldValue) => fieldValue.field_id === statusFieldId,
+    );
+
+    const changedField = await this.affinityApiService.updateFieldValue(
+      statusValue.id,
+      {
+        value: stageOption.id,
+      },
+    );
+
+    // TODO consider updating stageFieldId in cache each time here, and on webhook change
+    console.log({ changedField });
 
     company.stage = stageOption;
     await this.affinityCacheService.addOrReplaceMany([company]);

@@ -10,6 +10,7 @@ import { AffinityServiceLogger } from './affinity.service.logger';
 import { AffinityApiController } from './api/affinity-api.controller';
 import { AffinityApiService } from './api/affinity-api.service';
 import { AffinityCacheService } from './cache/affinity-cache.service';
+import { OpportunityStageChangedEventHandler } from './event-handlers/opportunity-stage-changed.event-handler';
 import { AffinityProcessor } from './queues/affinity.processor';
 import { AffinityProcessorLogger } from './queues/affinity.processor.logger';
 import { AffinityProducer } from './queues/affinity.producer';
@@ -42,6 +43,7 @@ import { AffinityProducerLogger } from './queues/affinity.producer.logger';
     AffinityProducerLogger,
     AffinityServiceLogger,
     AffinityCacheService,
+    OpportunityStageChangedEventHandler,
   ],
   controllers: [AffinityApiController, AffinityController],
 })
