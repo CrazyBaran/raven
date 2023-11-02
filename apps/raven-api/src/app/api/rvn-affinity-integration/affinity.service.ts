@@ -97,6 +97,7 @@ export class AffinityService {
             ) === index
           );
         });
+      // TODO handle field changes properly (idea - mini state machine to ensure last state)
       for (const fieldValueChange of distinctFieldValues) {
         matchedData
           .find((data) => data.entryId === fieldValueChange.list_entry_id)
