@@ -90,7 +90,7 @@ export class AffinityCacheService {
   }
 
   public async getListFields(): Promise<FieldDto[]> {
-    const rawData = await this.store.client.hgetall(AFFINITY_CACHE);
+    const rawData = await this.store.client.hgetall(AFFINITY_FIELDS_CACHE);
     return Object.values(rawData).map((item) => JSON.parse(item));
   }
 }

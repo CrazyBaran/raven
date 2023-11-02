@@ -10,6 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBody,
   ApiOAuth2,
   ApiOperation,
   ApiQuery,
@@ -39,15 +40,18 @@ export class AffinityController {
   @ApiOperation({ summary: 'Webhook endpoint ' })
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'token', type: String, required: true })
+  @ApiBody({ type: Object })
   @Post('webhook')
   public webhook(
     @Query('token') token: string,
-    @Body() body: WebhookPayloadDto,
+    @Body() body: unknown,
   ): Promise<void> {
     if (token !== environment.affinity.webhookToken) {
       throw new HttpException('Invalid token', 401);
     }
 
-    return this.affinityProducer.enqueueHandleWebhook(body);
+    return this.affinityProducer.enqueueHandleWebhook(
+      body as WebhookPayloadDto,
+    );
   }
 }
