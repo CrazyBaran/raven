@@ -1,4 +1,4 @@
-import { GenericResponseSchema } from '@app/rvns-api';
+import { GenericResponseSchema, Public } from '@app/rvns-api';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import {
@@ -35,6 +35,7 @@ export class AffinityController {
     return this.affinityProducer.enqueueRegenerateAffinityData();
   }
 
+  @Public()
   @ApiOperation({ summary: 'Webhook endpoint ' })
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'token', type: String, required: true })
