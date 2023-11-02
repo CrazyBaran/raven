@@ -2,8 +2,8 @@ import { OpportunityStageChangedEvent } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AffinitySettingsService } from '../affinity-settings.service';
+import { STATUS_FIELD_NAME } from '../affinity.const';
 import { AffinityApiService } from '../api/affinity-api.service';
-import { FieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-dropdown.dto';
 import { AffinityCacheService } from '../cache/affinity-cache.service';
 
 @Injectable()
@@ -24,24 +24,18 @@ export class OpportunityStageChangedEventHandler {
       return;
     }
 
-    // TODO maybe we can store stage options in cache as well? - recreated at app start?
     const { defaultListId, statusFieldId } =
       this.affinitySettingsService.getListSettings();
-    const listDetails =
-      await this.affinityApiService.getListDetails(defaultListId);
 
-    if (
-      !listDetails ||
-      !listDetails.fields.some((field) => field.id === statusFieldId)
-    ) {
+    const listFields = await this.affinityCacheService.getListFields();
+    if (!listFields.some((field) => field.name === STATUS_FIELD_NAME)) {
       throw new Error(
-        `Incorrect Affinity configuration - cannot find list with ID ${defaultListId} or field with ID ${statusFieldId}`,
+        `Incorrect Affinity configuration - cannot find field with name ${STATUS_FIELD_NAME}`,
       );
     }
-
-    const stageOptions = listDetails.fields.find(
-      (field) => field.id === statusFieldId,
-    ).dropdown_options as FieldValueRankedDropdownDto[];
+    const stageOptions = listFields.find(
+      (field) => field.name === STATUS_FIELD_NAME,
+    )?.dropdown_options;
 
     const stageOption = stageOptions.find(
       (option) => option.text === event.targetPipelineMappedFrom,
@@ -56,21 +50,13 @@ export class OpportunityStageChangedEventHandler {
       company.entryId,
     );
 
-    console.log({ fieldValues });
-
     const statusValue = fieldValues.find(
       (fieldValue) => fieldValue.field_id === statusFieldId,
     );
 
-    const changedField = await this.affinityApiService.updateFieldValue(
-      statusValue.id,
-      {
-        value: stageOption.id,
-      },
-    );
-
-    // TODO consider updating stageFieldId in cache each time here, and on webhook change
-    console.log({ changedField });
+    await this.affinityApiService.updateFieldValue(statusValue.id, {
+      value: stageOption.id,
+    });
 
     company.stage = stageOption;
     await this.affinityCacheService.addOrReplaceMany([company]);

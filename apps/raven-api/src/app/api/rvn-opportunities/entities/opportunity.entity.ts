@@ -2,6 +2,7 @@ import {
   AfterInsert,
   AfterLoad,
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -61,6 +62,9 @@ export class OpportunityEntity {
   })
   @RelationId((opportunity: OpportunityEntity) => opportunity.tag)
   public tagId: string | null;
+
+  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
+  public createdAt: Date;
 
   @AfterInsert()
   @AfterLoad()
