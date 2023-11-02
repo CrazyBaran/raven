@@ -59,7 +59,6 @@ export class AffinityWebhookService {
       webhook_url: `${environment.app.apiUrl}/affinity/webhook?token=${environment.affinity.webhookToken}`,
       subscriptions: [
         WebhookSubscriptions.LIST_ENTRY_CREATED,
-        WebhookSubscriptions.LIST_ENTRY_DELETED,
         WebhookSubscriptions.FIELD_VALUE_CREATED,
         WebhookSubscriptions.FIELD_VALUE_DELETED,
         WebhookSubscriptions.FIELD_VALUE_UPDATED,
