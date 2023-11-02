@@ -1,7 +1,9 @@
 import { OpportunityData } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { OpportunityStageChangedEvent } from '@app/rvns-opportunities';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
@@ -34,6 +36,8 @@ export class OpportunityService {
     private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly organisationService: OrganisationService,
+
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async findAll(
@@ -233,7 +237,20 @@ export class OpportunityService {
     if (options.tag) {
       opportunity.tag = options.tag;
     }
-    return await this.opportunityRepository.save(opportunity);
+    const opportunityEntity =
+      await this.opportunityRepository.save(opportunity);
+
+    // if pipeline stage was changed, emit event
+    if (options.pipelineStage) {
+      this.eventEmitter.emit(
+        'opportunity-stage-changed',
+        new OpportunityStageChangedEvent(
+          opportunityEntity.organisation.domains,
+          options.pipelineStage.mappedFrom,
+        ),
+      );
+    }
+    return opportunityEntity;
   }
 
   public async remove(id: string): Promise<void> {

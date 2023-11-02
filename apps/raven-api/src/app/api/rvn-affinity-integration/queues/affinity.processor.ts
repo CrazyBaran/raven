@@ -2,6 +2,7 @@ import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
+import { AffinityWebhookService } from '../affinity-webhook.service';
 import {
   AFFINITY_QUEUE,
   AFFINITY_QUEUE__HANDLE_WEBHOOK,
@@ -23,16 +24,14 @@ export interface AffinityJobData<EncryptedType = Record<string, string>> {
 export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobData> {
   public constructor(
     private readonly affinityService: AffinityService,
+    private readonly affinityWebhookService: AffinityWebhookService,
     public readonly logger: AffinityProcessorLogger,
     private readonly eventEmitter: EventEmitter2,
   ) {
     super(logger);
   }
 
-  public async process(
-    job: JobPro,
-    token: string | undefined,
-  ): Promise<boolean> {
+  public async process(job: JobPro): Promise<boolean> {
     switch (job.name) {
       case AFFINITY_QUEUE__REGENERATE: {
         await this.affinityService.regenerateAffinityData();
@@ -40,11 +39,11 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
         return true;
       }
       case AFFINITY_QUEUE__HANDLE_WEBHOOK: {
-        await this.affinityService.handleWebhookPayload(job.data.body);
+        await this.affinityWebhookService.handleWebhookPayload(job.data.body);
         return true;
       }
       case AFFINITY_QUEUE__SETUP_WEBHOOK: {
-        await this.affinityService.setupWebhook();
+        await this.affinityWebhookService.setupWebhook();
         return true;
       }
       default: {

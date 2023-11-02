@@ -96,6 +96,9 @@
       "@app/rvnb-crypto": ["libs/rvnb-crypto/src/index.ts"],
       "@app/rvnb-platform": ["libs/rvnb-platform/src/index.ts"],
       "@app/rvns-acl": ["libs/rvns-acl/src/index.ts"],
+      "@app/rvns-affinity-integration": [
+        "libs/rvns-affinity-integration/src/index.ts"
+      ],
       "@app/rvns-api": ["libs/rvns-api/src/index.ts"],
       "@app/rvns-auth": ["libs/rvns-auth/src/index.ts"],
       "@app/rvns-bull": ["libs/rvns-bull/src/index.ts"],

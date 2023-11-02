@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BullService } from '../../core/bull.service';
 import { AffinitySettingsService } from './affinity-settings.service';
+import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
+import { AffinityWebhookService } from './affinity-webhook.service';
 import { AFFINITY_QUEUE } from './affinity.const';
 import { AffinityController } from './affinity.controller';
 import { AffinityService } from './affinity.service';
@@ -10,6 +12,7 @@ import { AffinityServiceLogger } from './affinity.service.logger';
 import { AffinityApiController } from './api/affinity-api.controller';
 import { AffinityApiService } from './api/affinity-api.service';
 import { AffinityCacheService } from './cache/affinity-cache.service';
+import { OpportunityStageChangedEventHandler } from './event-handlers/opportunity-stage-changed.event-handler';
 import { AffinityProcessor } from './queues/affinity.processor';
 import { AffinityProcessorLogger } from './queues/affinity.processor.logger';
 import { AffinityProducer } from './queues/affinity.producer';
@@ -42,6 +45,9 @@ import { AffinityProducerLogger } from './queues/affinity.producer.logger';
     AffinityProducerLogger,
     AffinityServiceLogger,
     AffinityCacheService,
+    OpportunityStageChangedEventHandler,
+    AffinityWebhookService,
+    AffinityWebhookServiceLogger,
   ],
   controllers: [AffinityApiController, AffinityController],
 })

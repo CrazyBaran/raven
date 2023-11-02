@@ -4,5 +4,5 @@ import { OpportunityEntity } from '../entities/opportunity.entity';
 export class ParseOpportunityPipe extends AbstractEntityPipe<OpportunityEntity> {
   public readonly entityClass = OpportunityEntity;
   public readonly resource = 'opportunity';
-  public relations = ['tag', 'pipelineStage'];
+  public relations = ['tag', 'pipelineStage', 'organisation'];
 }

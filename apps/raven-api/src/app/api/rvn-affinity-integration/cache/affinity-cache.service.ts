@@ -2,7 +2,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { RedisStore } from 'cache-manager-ioredis-yet';
-import { AFFINITY_CACHE } from '../affinity.const';
+import { AFFINITY_CACHE, AFFINITY_FIELDS_CACHE } from '../affinity.const';
+import { FieldDto } from '../api/dtos/field.dto';
 import { OrganizationStageDto } from '../dtos/organisation-stage.dto';
 
 @Injectable()
@@ -77,5 +78,19 @@ export class AffinityCacheService {
     if (await this.store.client.exists(AFFINITY_CACHE)) {
       await this.store.client.del(AFFINITY_CACHE);
     }
+  }
+
+  public async setListFields(fields: FieldDto[]): Promise<void> {
+    const pipeline = this.store.client.pipeline();
+
+    for (const field of fields) {
+      pipeline.hset(AFFINITY_FIELDS_CACHE, field.name, JSON.stringify(field));
+    }
+    await pipeline.exec();
+  }
+
+  public async getListFields(): Promise<FieldDto[]> {
+    const rawData = await this.store.client.hgetall(AFFINITY_CACHE);
+    return Object.values(rawData).map((item) => JSON.parse(item));
   }
 }

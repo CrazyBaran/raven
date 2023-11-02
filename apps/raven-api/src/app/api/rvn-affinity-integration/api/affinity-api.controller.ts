@@ -100,10 +100,8 @@ export class AffinityApiController {
   @Post('field-values')
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public createFieldValue(
-    @Body() dto: CreateFieldValueDto,
-  ): Promise<FieldValueDto> {
-    return this.affinityApiService.createFieldValue(dto);
+  public createFieldValue(@Body() dto: unknown): Promise<FieldValueDto> {
+    return this.affinityApiService.createFieldValue(dto as CreateFieldValueDto);
   }
 
   @ApiOperation({ summary: 'Update a field value' })
@@ -114,9 +112,12 @@ export class AffinityApiController {
   @Roles(RoleEnum.User)
   public updateFieldValue(
     @Param('fieldValueId') fieldValueId: number,
-    @Body() dto: UpdateFieldValueDto,
+    @Body() dto: unknown,
   ): Promise<FieldValueDto> {
-    return this.affinityApiService.updateFieldValue(fieldValueId, dto);
+    return this.affinityApiService.updateFieldValue(
+      fieldValueId,
+      dto as UpdateFieldValueDto,
+    );
   }
 
   @ApiOperation({ summary: 'Get field value changes' })
@@ -155,10 +156,8 @@ export class AffinityApiController {
   @ApiBody({ type: WebhookSubscribeDto })
   @ApiResponse({ status: 201, type: WebhookDto })
   @Post('webhook/subscribe')
-  public subscribeWebhook(
-    @Body() dto: WebhookSubscribeDto,
-  ): Promise<WebhookDto> {
-    return this.affinityApiService.subscribeWebhook(dto);
+  public subscribeWebhook(@Body() dto: unknown): Promise<WebhookDto> {
+    return this.affinityApiService.subscribeWebhook(dto as WebhookSubscribeDto);
   }
 
   @ApiOAuth2(['openid'])
@@ -167,11 +166,14 @@ export class AffinityApiController {
   @ApiBody({ type: WebhookUpdateDto })
   @ApiResponse({ status: 200, type: WebhookDto })
   @Put('webhook/:webhookId')
-  public updateWebhook(
+  public async updateWebhook(
     @Param('webhookId') webhookId: number,
-    @Body() dto: WebhookUpdateDto,
+    @Body() dto: unknown,
   ): Promise<WebhookDto> {
-    return this.affinityApiService.updateWebhook(webhookId, dto);
+    return this.affinityApiService.updateWebhook(
+      webhookId,
+      dto as WebhookUpdateDto,
+    );
   }
 
   @ApiOAuth2(['openid'])
