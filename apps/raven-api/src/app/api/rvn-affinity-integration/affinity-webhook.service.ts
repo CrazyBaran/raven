@@ -30,11 +30,13 @@ export class AffinityWebhookService {
   public async handleWebhookPayload(payload: WebhookPayloadDto): Promise<void> {
     switch (payload.type) {
       case WebhookSubscriptions.LIST_ENTRY_CREATED:
+        this.logger.debug('Handling list entry created');
         await this.handleListEntryCreated(payload);
         break;
       case WebhookSubscriptions.FIELD_VALUE_CREATED:
       case WebhookSubscriptions.FIELD_VALUE_DELETED:
       case WebhookSubscriptions.FIELD_VALUE_UPDATED:
+        this.logger.debug('Handling field value change');
         await this.handleFieldValueUpdated(payload);
         break;
     }
@@ -87,9 +89,11 @@ export class AffinityWebhookService {
       (field) => field.id === payload.body.field_id,
     )?.name;
     if (!HANDLED_FIELDS.includes(handledFieldName)) {
+      this.logger.debug(`Field ${handledFieldName} is not handled, skipping`);
       return;
     }
     if (handledFieldName === STATUS_FIELD_NAME) {
+      this.logger.debug(`Got matching field: ${handledFieldName}`);
       return await this.handleStatusFieldChange(payload);
     }
     // TODO handle other fields
@@ -111,6 +115,7 @@ export class AffinityWebhookService {
     const value = payload.body.value as FieldValueRankedDropdownDto;
     company.stage = value;
     await this.affinityCacheService.addOrReplaceMany([company]);
+    this.logger.debug('Emitting affinity status changed event');
     this.eventEmitter.emit(
       'affinity-status-changed',
       new AffinityStatusChangedEvent(

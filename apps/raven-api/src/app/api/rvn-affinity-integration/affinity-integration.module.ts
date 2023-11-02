@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BullService } from '../../core/bull.service';
+import { AffinityStatusChangedEventHandlerLogger } from '../rvn-opportunities/event-handlers/affinity-status-changed.event-handler.logger';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
 import { AffinityWebhookService } from './affinity-webhook.service';
@@ -48,6 +49,7 @@ import { AffinityProducerLogger } from './queues/affinity.producer.logger';
     OpportunityStageChangedEventHandler,
     AffinityWebhookService,
     AffinityWebhookServiceLogger,
+    AffinityStatusChangedEventHandlerLogger,
   ],
   controllers: [AffinityApiController, AffinityController],
 })

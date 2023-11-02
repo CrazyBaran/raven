@@ -39,6 +39,8 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
         return true;
       }
       case AFFINITY_QUEUE__HANDLE_WEBHOOK: {
+        this.logger.debug('Handling webhook payload');
+        this.logger.debug(job.data.body);
         await this.affinityWebhookService.handleWebhookPayload(job.data.body);
         return true;
       }
