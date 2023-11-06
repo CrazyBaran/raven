@@ -1,4 +1,5 @@
 import {
+  AffinityOrganizationCreatedEvent,
   AffinityStatusChangedEvent,
   AffinityValueType,
 } from '@app/rvns-affinity-integration';
@@ -79,14 +80,21 @@ export class AffinityWebhookService {
   private async handleListEntryCreated(
     payload: WebhookPayloadListEntryDto,
   ): Promise<void> {
-    const companyEntity = payload.body.entity as OrganizationDto;
-    const companyData: OrganizationStageDto = {
+    const organizationDto = payload.body.entity as OrganizationDto;
+    const organizationData: OrganizationStageDto = {
       entryId: payload.body.id,
       entryAdded: new Date(payload.body.created_at),
-      organizationDto: companyEntity,
+      organizationDto: organizationDto,
       fields: [],
     };
-    await this.affinityCacheService.addOrReplaceMany([companyData]);
+    await this.affinityCacheService.addOrReplaceMany([organizationData]);
+    await this.eventEmitter.emit(
+      'affinity-organization-created',
+      new AffinityOrganizationCreatedEvent(
+        organizationDto.name,
+        organizationDto.domains,
+      ),
+    );
   }
 
   private async handleFieldValueUpdated(

@@ -139,4 +139,12 @@ export class OrganisationService {
       domains: entity.domains,
     };
   }
+
+  public async exists(domains: string[]): Promise<boolean> {
+    const existingOrganisation = await this.organisationRepository.findOne({
+      where: { domains: Like(`%${domains[0]}%`) },
+    });
+
+    return !!existingOrganisation;
+  }
 }
