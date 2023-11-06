@@ -1,3 +1,4 @@
+import { FieldValueEntityDto } from '../api/dtos/field-value-entity.dto';
 import { FieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-dropdown.dto';
 import { OrganizationDto } from '../api/dtos/organization.dto';
 
@@ -6,5 +7,8 @@ export class OrganizationStageDto {
   public entryAdded: Date;
   public organizationDto: OrganizationDto;
   public stage?: FieldValueRankedDropdownDto;
-  public fields: { displayName: string; value: string }[];
+  public fields: {
+    displayName: string;
+    value: FieldValueEntityDto | FieldValueEntityDto[];
+  }[];
 }
