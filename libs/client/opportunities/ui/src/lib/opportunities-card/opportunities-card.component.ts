@@ -21,9 +21,6 @@ export class OpportunitiesCardComponent {
       (field) => field.displayName === 'Deal Lead',
     )?.value as OpportunityDealLeadFieldData[];
 
-    if (dealLeads?.length > 1) {
-      console.log({ dealLeads });
-    }
     if (!dealLeads || dealLeads?.length === 0) {
       return '';
     }
