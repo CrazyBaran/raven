@@ -89,7 +89,10 @@ export class AffinityApiService {
       .get<FieldValueDto[]>(`/field-values`, {
         baseURL: this.baseURL,
         headers: this.headers,
-        params: { list_entry_id: listEntryId, person_id: personId },
+        params: {
+          list_entry_id: listEntryId,
+          person_id: personId,
+        },
       })
       .pipe(map((response) => response.data))
       .toPromise();

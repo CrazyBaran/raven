@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { environment } from '../../../environments/environment';
+import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
 import { FIELD_MAPPING, STATUS_FIELD_NAME } from './affinity.const';
@@ -31,6 +32,7 @@ const HANDLED_FIELDS = [STATUS_FIELD_NAME, 'Owners'];
 export class AffinityWebhookService {
   public constructor(
     private readonly affinityApiService: AffinityApiService,
+    private readonly affinitySettingsService: AffinitySettingsService,
     private readonly logger: AffinityWebhookServiceLogger,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly eventEmitter: EventEmitter2,
@@ -85,8 +87,21 @@ export class AffinityWebhookService {
       entryId: payload.body.id,
       entryAdded: new Date(payload.body.created_at),
       organizationDto: organizationDto,
+      stage: undefined,
       fields: [],
     };
+
+    const statusFieldId =
+      this.affinitySettingsService.getListSettings().statusFieldId;
+
+    const fieldValues = await this.affinityApiService.getFieldValues(
+      payload.body.entity_id,
+    );
+
+    organizationData.stage = fieldValues.find((fieldValue) => {
+      return fieldValue.field_id === statusFieldId;
+    }).value as FieldValueRankedDropdownDto;
+
     await this.affinityCacheService.addOrReplaceMany([organizationData]);
     await this.eventEmitter.emit(
       'affinity-organization-created',
