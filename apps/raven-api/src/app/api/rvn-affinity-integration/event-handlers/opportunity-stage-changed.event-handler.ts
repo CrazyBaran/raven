@@ -16,13 +16,14 @@ export class OpportunityStageChangedEventHandler {
 
   @OnEvent('opportunity-stage-changed')
   protected async process(event: OpportunityStageChangedEvent): Promise<void> {
-    const company = await this.affinityCacheService.getByDomains(
+    const companies = await this.affinityCacheService.getByDomains(
       event.organisationDomains,
     );
-    if (!company) {
+    if (!companies || companies.length === 0) {
       // if there is no company in cache, we can't update it in Affinity, so we return early
       return;
     }
+    const company = companies[0];
 
     const { defaultListId, statusFieldId } =
       this.affinitySettingsService.getListSettings();
