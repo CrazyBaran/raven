@@ -1,9 +1,11 @@
-import { OpportunityData } from '@app/rvns-opportunities';
+import {
+  OpportunityData,
+  OpportunityStageChangedEvent,
+} from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { OpportunityStageChangedEvent } from '@app/rvns-opportunities';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';

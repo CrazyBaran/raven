@@ -25,6 +25,7 @@ import { FieldValueChangeDto } from './dtos/field-value-change.dto';
 import { FieldValueDto } from './dtos/field-value.dto';
 import { ListDto } from './dtos/list.dto';
 import { PaginatedListEntriesDto } from './dtos/paginated-list-entries.dto';
+import { PersonDto } from './dtos/person.dto';
 import { UpdateFieldValueDto } from './dtos/update-field-value.dto';
 import { WebhookDeleteResponseDto } from './dtos/webhook-delete.dto';
 import { WebhookSubscribeDto } from './dtos/webhook-subscribe.dto';
@@ -82,16 +83,27 @@ export class AffinityApiController {
     return this.affinityApiService.getListEntries(listId, pageSize, pageToken);
   }
 
+  @ApiOperation({ summary: 'Get person' })
+  @Get('persons/:personId')
+  @ApiResponse({ status: 200, type: PersonDto })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User)
+  public getPerson(@Param('personId') personId: number): Promise<PersonDto> {
+    return this.affinityApiService.getPerson(personId);
+  }
+
   @ApiOperation({ summary: 'Get field values' })
-  @ApiQuery({ name: 'list_entry_id', required: true, type: Number })
+  @ApiQuery({ name: 'list_entry_id', required: false, type: Number })
+  @ApiQuery({ name: 'person_id', required: false, type: Number })
   @ApiResponse({ status: 200, type: [FieldValueDto] })
   @Get('field-values')
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public getFieldValues(
-    @Query('list_entry_id') listEntryId: number,
+    @Query('list_entry_id') listEntryId?: number,
+    @Query('person_id') personId?: number,
   ): Promise<FieldValueDto[]> {
-    return this.affinityApiService.getFieldValues(listEntryId);
+    return this.affinityApiService.getFieldValues(listEntryId, personId);
   }
 
   @ApiOperation({ summary: 'Create a field value' })

@@ -63,25 +63,18 @@ export class OpportunityDetailsComponent implements OnInit, OnDestroy {
   }
 
   protected prepareDetailsArr(details: OpportunityData): void {
+    console.log(details);
     const name = details.organisation.name;
     const domain = details.organisation.domains.join(', ');
-    const dealLead = details.fields.find(
+    const dealLeads = details.fields.find(
       (field) => field.displayName === 'Deal Lead',
     );
+    const dealLead = (dealLeads?.value as OpportunityDealLeadFieldData[])?.[0];
 
-    const dealLeadValue = `${
-      (dealLead?.value as unknown as OpportunityDealLeadFieldData)[
-        'first_name'
-      ] || ''
-    } ${
-      (dealLead?.value as unknown as OpportunityDealLeadFieldData)[
-        'last_name'
-      ] || ''
+    const dealLeadValue = `${dealLead?.first_name || ''} ${
+      dealLead?.last_name || ''
     }`;
-    const dealLeadEmail =
-      (dealLead?.value as unknown as OpportunityDealLeadFieldData)[
-        'primary_email'
-      ] || '';
+    const dealLeadEmail = dealLead?.primary_email || '';
 
     this.details = [
       {

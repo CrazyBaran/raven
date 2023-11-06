@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { AffinitySettingsService } from './affinity-settings.service';
+import { AffinityValueResolverService } from './affinity-value-resolver.service';
+import { FIELD_MAPPING } from './affinity.const';
 import { AffinityServiceLogger } from './affinity.service.logger';
 import { AffinityApiService } from './api/affinity-api.service';
-import { ActionType } from './api/dtos/action-type.dto';
 import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
 import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
 import { ListEntryDto } from './api/dtos/list-entry.dto';
@@ -63,7 +64,7 @@ export class AffinityService {
       `Fetched ${fieldChanges.length} field value changes from Affinity`,
     );
 
-    const matchedData = this.matchFieldChangesWithEntries(
+    const matchedData = this.matchListEntriesWithStages(
       allEntries,
       fieldChanges,
     );
@@ -73,10 +74,9 @@ export class AffinityService {
       }`,
     );
 
-    const requiredFields = [{ displayName: 'Deal Lead', mappedFrom: 'Owners' }];
     const fields = await this.affinityApiService.getFields(defaultListId);
 
-    const mappedFields = requiredFields.map((requiredField) => {
+    const mappedFields = FIELD_MAPPING.map((requiredField) => {
       return {
         ...requiredField,
         field: fields.find((field) => field.name === requiredField.mappedFrom),
@@ -86,28 +86,37 @@ export class AffinityService {
       const fieldValueChanges =
         await this.affinityApiService.getFieldValueChanges(field.field?.id);
 
-      const distinctFieldValues = fieldValueChanges
-        .sort((a, b) =>
-          new Date(a.changed_at) > new Date(b.changed_at) ? 1 : -1,
-        )
-        .filter((obj, index) => {
-          return (
-            fieldValueChanges.findIndex(
-              (item) => item.list_entry_id === obj.list_entry_id,
-            ) === index
+      const fieldValueChangesByEntryId: {
+        [key: string]: FieldValueChangeDto[];
+      } = fieldValueChanges.reduce((acc, change) => {
+        if (!acc[change.list_entry_id]) {
+          acc[change.list_entry_id] = [];
+        }
+        acc[change.list_entry_id].push(change);
+        return acc;
+      }, {});
+      for (const [entryIdKey, fieldValueChanges] of Object.entries(
+        fieldValueChangesByEntryId,
+      )) {
+        if (entryIdKey === '142137210') {
+          console.log({ fieldValueChanges: JSON.stringify(fieldValueChanges) });
+        }
+        if (fieldValueChanges?.length !== 0) {
+          const finalValue = AffinityValueResolverService.resolveValue(
+            field.field,
+            fieldValueChanges.sort(
+              (a, b) =>
+                new Date(a.changed_at).getTime() -
+                new Date(b.changed_at).getTime(),
+            ),
           );
-        });
-      // TODO handle field changes properly (idea - mini state machine to ensure last state)
-      for (const fieldValueChange of distinctFieldValues) {
-        matchedData
-          .find((data) => data.entryId === fieldValueChange.list_entry_id)
-          .fields.push({
-            displayName: field.displayName,
-            value:
-              fieldValueChange.action_type === ActionType.Delete
-                ? null
-                : (fieldValueChange.value as string),
-          });
+          matchedData
+            .find((data) => data.entryId.toString() === entryIdKey)
+            .fields.push({
+              displayName: field.displayName,
+              value: finalValue,
+            });
+        }
       }
     }
     this.logger.debug('Reset data in cache');
@@ -119,7 +128,7 @@ export class AffinityService {
     this.logger.debug('Stored data in cache');
   }
 
-  private matchFieldChangesWithEntries(
+  private matchListEntriesWithStages(
     entries: ListEntryDto[],
     fieldChanges: FieldValueChangeDto[],
   ): OrganizationStageDto[] {

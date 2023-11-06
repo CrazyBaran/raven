@@ -9,6 +9,7 @@ import { FieldValueDto } from './dtos/field-value.dto';
 import { FieldDto } from './dtos/field.dto';
 import { ListDto } from './dtos/list.dto';
 import { PaginatedListEntriesDto } from './dtos/paginated-list-entries.dto';
+import { PersonDto } from './dtos/person.dto';
 import { UpdateFieldValueDto } from './dtos/update-field-value.dto';
 import { WebhookDeleteResponseDto } from './dtos/webhook-delete.dto';
 import { WebhookSubscribeDto } from './dtos/webhook-subscribe.dto';
@@ -70,12 +71,25 @@ export class AffinityApiService {
       .toPromise();
   }
 
-  public async getFieldValues(listEntryId: number): Promise<FieldValueDto[]> {
+  public async getPerson(personId: number): Promise<PersonDto> {
+    return await this.httpService
+      .get<PersonDto>(`/persons/${personId}`, {
+        baseURL: this.baseURL,
+        headers: this.headers,
+      })
+      .pipe(map((response) => response.data))
+      .toPromise();
+  }
+
+  public async getFieldValues(
+    listEntryId?: number,
+    personId?: number,
+  ): Promise<FieldValueDto[]> {
     return await this.httpService
       .get<FieldValueDto[]>(`/field-values`, {
         baseURL: this.baseURL,
         headers: this.headers,
-        params: { list_entry_id: listEntryId },
+        params: { list_entry_id: listEntryId, person_id: personId },
       })
       .pipe(map((response) => response.data))
       .toPromise();

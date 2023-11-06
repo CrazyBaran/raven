@@ -1,12 +1,20 @@
-import { AffinityStatusChangedEvent } from '@app/rvns-affinity-integration';
+import {
+  AffinityStatusChangedEvent,
+  AffinityValueType,
+} from '@app/rvns-affinity-integration';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { environment } from '../../../environments/environment';
+import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
-import { STATUS_FIELD_NAME } from './affinity.const';
+import { FIELD_MAPPING, STATUS_FIELD_NAME } from './affinity.const';
 import { AffinityApiService } from './api/affinity-api.service';
+import { ActionType } from './api/dtos/action-type.dto';
+import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
+import { FieldValueEntityDto } from './api/dtos/field-value-entity.dto';
 import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
 import { OrganizationDto } from './api/dtos/organization.dto';
+import { PersonDto } from './api/dtos/person.dto';
 import {
   WebhookPayloadDto,
   WebhookPayloadFieldValueDto,
@@ -85,9 +93,10 @@ export class AffinityWebhookService {
     payload: WebhookPayloadFieldValueDto,
   ): Promise<void> {
     const fields = await this.affinityCacheService.getListFields();
-    const handledFieldName = fields.find(
+    const handledField = fields.find(
       (field) => field.id === payload.body.field_id,
-    )?.name;
+    );
+    const handledFieldName = handledField?.name;
     if (!HANDLED_FIELDS.includes(handledFieldName)) {
       this.logger.debug(`Field ${handledFieldName} is not handled, skipping`);
       return;
@@ -96,7 +105,52 @@ export class AffinityWebhookService {
       this.logger.debug(`Got matching field: ${handledFieldName}`);
       return await this.handleStatusFieldChange(payload);
     }
-    // TODO handle other fields
+    if (
+      handledField.value_type === AffinityValueType.Person &&
+      handledField.allows_multiple
+    ) {
+      const companies = await this.affinityCacheService.getAll(
+        (entry) => entry.entryId === payload.body.list_entry_id,
+      );
+      const company = companies[0];
+      const cacheFieldName = FIELD_MAPPING.find(
+        (fm) => fm.mappedFrom === handledFieldName,
+      )?.displayName;
+      const initialValue = company.fields.find(
+        (field) => field.displayName === cacheFieldName,
+      )?.value;
+      const update = {
+        ...payload.body,
+        value: {
+          id: payload.body.value,
+        },
+        action_type:
+          (payload.body.action_type as unknown as string) ===
+          'field_value.deleted'
+            ? ActionType.Delete
+            : ActionType.Create,
+      };
+
+      const finalValue = AffinityValueResolverService.resolveValue(
+        handledField,
+        [update as FieldValueChangeDto],
+        initialValue,
+      );
+      const persons = [];
+      for (const person of finalValue as FieldValueEntityDto[]) {
+        if (!(person as PersonDto).first_name) {
+          // we fetch for value as we have only id here
+          const personEntity = await this.affinityApiService.getPerson(
+            (person as PersonDto).id,
+          );
+          persons.push(personEntity);
+        } else {
+          persons.push(person);
+        }
+      }
+      company.fields = [{ displayName: cacheFieldName, value: persons }];
+      await this.affinityCacheService.addOrReplaceMany([company]);
+    }
   }
 
   private async handleStatusFieldChange(

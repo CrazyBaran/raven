@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BullService } from '../../core/bull.service';
 import { AffinitySettingsService } from './affinity-settings.service';
+import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
 import { AffinityWebhookService } from './affinity-webhook.service';
 import { AFFINITY_QUEUE } from './affinity.const';
@@ -48,6 +49,7 @@ import { AffinityProducerLogger } from './queues/affinity.producer.logger';
     OpportunityStageChangedEventHandler,
     AffinityWebhookService,
     AffinityWebhookServiceLogger,
+    AffinityValueResolverService,
   ],
   controllers: [AffinityApiController, AffinityController],
 })

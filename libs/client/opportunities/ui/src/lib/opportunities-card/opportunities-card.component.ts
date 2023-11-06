@@ -17,18 +17,23 @@ export class OpportunitiesCardComponent {
   public constructor(private readonly router: Router) {}
 
   public get dealLead(): string {
-    const dealLead = this.data.fields.find(
+    const dealLeads = this.data.fields.find(
       (field) => field.displayName === 'Deal Lead',
-    );
+    )?.value as OpportunityDealLeadFieldData[];
 
-    if (!dealLead) {
+    if (dealLeads?.length > 1) {
+      console.log({ dealLeads });
+    }
+    if (!dealLeads || dealLeads?.length === 0) {
       return '';
     }
 
-    const dealLeadValue =
-      dealLead.value as unknown as OpportunityDealLeadFieldData;
-
-    return `${dealLeadValue?.first_name} ${dealLeadValue?.last_name}`;
+    return dealLeads
+      .map(
+        (dealLeadValue) =>
+          `${dealLeadValue?.first_name} ${dealLeadValue?.last_name}`,
+      )
+      .join(', ');
   }
 
   public get dateAdded(): string {
