@@ -95,7 +95,7 @@ export class AffinityWebhookService {
       this.affinitySettingsService.getListSettings().statusFieldId;
 
     const fieldValues = await this.affinityApiService.getFieldValues(
-      payload.body.entity_id,
+      payload.body.id,
     );
 
     organizationData.stage = fieldValues.find((fieldValue) => {
