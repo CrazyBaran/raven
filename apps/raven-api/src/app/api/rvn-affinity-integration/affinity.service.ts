@@ -98,9 +98,6 @@ export class AffinityService {
       for (const [entryIdKey, fieldValueChanges] of Object.entries(
         fieldValueChangesByEntryId,
       )) {
-        if (entryIdKey === '142137210') {
-          console.log({ fieldValueChanges: JSON.stringify(fieldValueChanges) });
-        }
         if (fieldValueChanges?.length !== 0) {
           const finalValue = AffinityValueResolverService.resolveValue(
             field.field,
