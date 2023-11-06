@@ -43,6 +43,13 @@ export const NOTES_ROUTES: Routes = [
             (m) => m.RvncNotesFeatureNotesListComponent,
           ),
       },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('@app/client/notes/feaure/notepad').then(
+            (m) => m.NotepadContentComponent,
+          ),
+      },
     ],
   },
 ];

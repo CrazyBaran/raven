@@ -1,0 +1,113 @@
+<kendo-tilelayout
+  [columns]="12"
+  [draggable]="true"
+  [gap]="24"
+  rowHeight="auto"
+  class="!p-0"
+>
+  <!--  DETAILS   -->
+  <kendo-tilelayout-item [rowSpan]="3" [colSpan]="4" class="h-full">
+    <kendo-tilelayout-item-header>
+      <div class="flex items-center justify-between gap-2">
+        <h5 class="k-card-title">Opportunity detauls</h5>
+        <kendo-button iconClass="fa-sharp fa-solid fa-pen" size="small"
+          >Edit</kendo-button
+        >
+      </div>
+    </kendo-tilelayout-item-header>
+    <kendo-tilelayout-item-body>
+      <div class="bg-grey-100 flex flex-col gap-3 bg-opacity-50 px-6 py-5">
+        <div
+          class="px-2 py-3"
+          *rxFor="let detail of vm().details; trackBy: 'label'"
+        >
+          <h1 class="text-lg">{{ detail.label }}</h1>
+          <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
+        </div>
+      </div>
+    </kendo-tilelayout-item-body>
+  </kendo-tilelayout-item>
+
+  <!--  DEAL TEAM   -->
+  <kendo-tilelayout-item [colSpan]="9">
+    <kendo-tilelayout-item-header>
+      <div class="flex items-center justify-between gap-2">
+        <h5 class="k-card-title">Deal Team</h5>
+        <kendo-button iconClass="fa-sharp fa-solid fa-pen" size="small"
+          >Edit</kendo-button
+        >
+      </div>
+    </kendo-tilelayout-item-header>
+    <kendo-tilelayout-item-body>
+      <kendo-grid [data]="vm().team" class="grid-borderless">
+        <kendo-grid-column
+          field="dealLead"
+          title="Deal Lead"
+          [width]="1"
+          headerClass="!font-bold"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <ui-tag
+              [label]="dataItem.dealLead.name"
+              [removable]="false"
+              class="block w-fit"
+              icon="fa-solid fa-circle-user "
+            >
+            </ui-tag>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column
+          field="dealTeam"
+          title="Deal Team"
+          [width]="3"
+          headerClass="!font-bold"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="flex flex-wrap gap-x-6 gap-y-1">
+              <ui-tag
+                icon="fa-solid fa-circle-user"
+                *rxFor="let user of dataItem.dealTeam; trackBy: 'name'"
+                [removable]="false"
+                [label]="user.name"
+              ></ui-tag>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+    </kendo-tilelayout-item-body>
+  </kendo-tilelayout-item>
+
+  <!--  MISSING DD DETAILS-->
+  <kendo-tilelayout-item [colSpan]="9">
+    <kendo-tilelayout-item-header>
+      <div class="flex items-center justify-between gap-2">
+        <h5 class="k-card-title">Missing DD Details</h5>
+        <kendo-button iconClass="fa-sharp fa-solid fa-pen" size="small"
+          >Edit</kendo-button
+        >
+      </div>
+    </kendo-tilelayout-item-header>
+    <kendo-tilelayout-item-body>
+      <kendo-grid [data]="vm().missingDetails" class="grid-borderless">
+        <kendo-grid-column [width]="40">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i class="fa-light fa-circle-exclamation text-warning"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="tab" title="Tab" headerClass="!font-bold">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="field" title="Field" headerClass="!font-bold">
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="action"
+          title="Action"
+          headerClass="!font-bold"
+        >
+        </kendo-grid-column>
+      </kendo-grid>
+    </kendo-tilelayout-item-body>
+  </kendo-tilelayout-item>
+</kendo-tilelayout>

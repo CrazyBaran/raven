@@ -22,9 +22,15 @@
       "@app/client/core/environment": [
         "libs/client/core/environment/src/index.ts"
       ],
+      "@app/client/files/feature/files-table": [
+        "libs/client/files/feature/files-table/src/index.ts"
+      ],
       "@app/client/notes/api-tags": ["libs/client/notes/api-tags/src/index.ts"],
       "@app/client/notes/data-access": [
         "libs/client/notes/data-access/src/index.ts"
+      ],
+      "@app/client/notes/feature/notes-table": [
+        "libs/client/notes/feature/notes-table/src/index.ts"
       ],
       "@app/client/notes/feaure/list": [
         "libs/client/notes/feaure/list/src/index.ts"
@@ -37,8 +43,26 @@
       ],
       "@app/client/notes/ui": ["libs/client/notes/ui/src/index.ts"],
       "@app/client/notes/util": ["libs/client/notes/util/src/index.ts"],
+      "@app/client/opportunities/api-notes": [
+        "libs/client/opportunities/api-notes/src/index.ts"
+      ],
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/files": [
+        "libs/client/opportunities/feature/files/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/finacials": [
+        "libs/client/opportunities/feature/finacials/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/opportunity-notes": [
+        "libs/client/opportunities/feature/opportunity-notes/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/overview": [
+        "libs/client/opportunities/feature/overview/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/related-notes": [
+        "libs/client/opportunities/feature/related-notes/src/index.ts"
       ],
       "@app/client/opportunities/feature/shell": [
         "libs/client/opportunities/feature/shell/src/index.ts"
@@ -74,6 +98,9 @@
       "@app/client/shared/util": ["libs/client/shared/util/src/index.ts"],
       "@app/client/shared/util-notifications": [
         "libs/client/shared/util-notifications/src/index.ts"
+      ],
+      "@app/client/shared/util-router": [
+        "libs/client/shared/util-router/src/index.ts"
       ],
       "@app/client/shared/util-rxjs": [
         "libs/client/shared/util-rxjs/src/index.ts"

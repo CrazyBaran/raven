@@ -3,8 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   OpportunitiesActions,
-  selectDetails,
   selectIsLoading,
+  selectRouteOpportunityDetails,
 } from '@app/client/opportunities/data-access';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { Store } from '@ngrx/store';
@@ -21,7 +21,7 @@ import { OpportunityDealLeadFieldData } from './opportunitiy-details.interface';
 })
 export class OpportunityDetailsComponent implements OnInit, OnDestroy {
   public readonly isLoading$ = this.store.select(selectIsLoading);
-  public readonly details$ = this.store.select(selectDetails);
+  public readonly details$ = this.store.select(selectRouteOpportunityDetails);
 
   public details: {
     field: string;
@@ -50,7 +50,7 @@ export class OpportunityDetailsComponent implements OnInit, OnDestroy {
       )
       .subscribe((details) => {
         if (details) {
-          this.prepareDetailsArr(details);
+          // this.prepareDetailsArr(details);
         }
       });
   }

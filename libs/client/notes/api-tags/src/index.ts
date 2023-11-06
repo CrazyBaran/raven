@@ -3,8 +3,4 @@ export {
   tagsEffects,
   tagsFeature,
 } from '@app/client/tags/state';
-export {
-  TagComponent,
-  TagDropdownComponent,
-  TagFormComponent,
-} from '@app/client/tags/ui';
+export { TagDropdownComponent, TagFormComponent } from '@app/client/tags/ui';

@@ -7,9 +7,10 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TagComponent } from '@app/client/notes/api-tags';
+
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { TagFilterPipe } from '@app/client/notes/util';
+import { TagComponent } from '@app/client/shared/ui';
 import { TruncateElementsDirective } from '@app/client/shared/util';
 import { NoteData } from '@app/rvns-notes/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';

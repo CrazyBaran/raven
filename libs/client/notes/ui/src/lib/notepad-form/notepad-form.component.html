@@ -50,7 +50,7 @@
   <div *ngIf="addedTags().length" class="grid grid-cols-[auto_1fr] gap-2">
     <p class="w-[72px] text-[10px] uppercase leading-5">added tags:</p>
     <div class="flex flex-wrap gap-x-0.5 gap-y-1">
-      <app-tag
+      <ui-tag
         (tagRemove)="removeTag(tag!)"
         *ngFor="let tag of addedTags()"
         [label]="tag.name"
@@ -61,7 +61,7 @@
           'text-primary-900': tag.type === 'businessModel'
         }"
         icon="fa-solid fa-tag"
-      ></app-tag>
+      ></ui-tag>
     </div>
   </div>
 
@@ -71,13 +71,13 @@
   >
     <p class="w-[72px] text-[10px] uppercase leading-5">people:</p>
     <div class="flex flex-wrap gap-x-0.5 gap-y-1">
-      <app-tag
+      <ui-tag
         (tagRemove)="removePeople(tag)"
         *ngFor="let tag of selectedPeopleTags()"
         [label]="tag.name"
         class="text-info"
         icon="fa-solid fa-circle-user"
-      ></app-tag>
+      ></ui-tag>
     </div>
   </div>
 

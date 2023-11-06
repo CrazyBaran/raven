@@ -1,0 +1,50 @@
+<kendo-grid [data]="data" class="grid-borderless">
+  <kendo-grid-column title="File Name" headerClass="!font-bold">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex items-center gap-2">
+        <i class="fa-regular fa-file"></i>
+        <p>{{ dataItem.name }}</p>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column title="File Type" headerClass="!font-bold">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div
+        [ngClass]="{
+          'bg-series-a-lighten-50': dataItem.type === 'Company Material',
+          'bg-series-e-lighten-50': dataItem.type === 'Notes & Analysis',
+          'bg-series-g-lighten-50': dataItem.type === 'Market Research'
+        }"
+        class="bg-series-a-lighten-50 w-fit rounded p-1.5"
+      >
+        {{ dataItem.type }}
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column title="Added by" headerClass="!font-bold">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-1">
+        <span>
+          <i class="fa-solid fa-circle-user mr-1"></i>
+          {{ dataItem?.createdBy || '' }}
+        </span>
+
+        <span class="text-xs">
+          Updated: {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
+        </span>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column title="">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="mr-20 flex justify-end gap-1">
+        <kendo-button
+          themeColor="primary"
+          iconClass="fa-regular fa-arrow-down-to-line"
+        ></kendo-button>
+        <kendo-button
+          iconClass="fa-sharp fa-solid fa-trash-can"
+        ></kendo-button></div
+    ></ng-template>
+  </kendo-grid-column>
+</kendo-grid>

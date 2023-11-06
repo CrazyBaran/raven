@@ -6,6 +6,7 @@ export * from './lib/dynamic-control-resolver.service';
 export * from './lib/dynamic-forms.model';
 export * from './lib/error-message.pipe';
 export * from './lib/inputs/dynamic-rich-text/provide-prose-mirror-settings.directive';
+export * from './lib/inputs/rich-text/rich-text.component';
 export * from './lib/utils/get-schema-with-crossorigin';
 export * from './lib/utils/imageUploaderPlugin';
 export * from './lib/validation-error-messages.token';

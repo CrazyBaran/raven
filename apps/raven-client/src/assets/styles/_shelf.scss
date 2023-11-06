@@ -22,3 +22,17 @@ $shelf-window-padding: 15px;
   height: calc(100dvh - ($shelf-window-padding * 2)) !important;
   box-shadow: 22px 0px 0px 147px rgba(0, 0, 0, 0.28) !important;
 }
+
+.grid-borderless {
+  .k-table-th {
+    border: none !important;
+  }
+  .k-table-td {
+    border: none !important;
+  }
+
+  &.k-grid {
+    border-inline: none !important;
+    border-top: none !important;
+  }
+}

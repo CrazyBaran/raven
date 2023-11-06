@@ -39,6 +39,20 @@ export class RavenShelfService {
     });
   }
 
+  public openLazyWindow(
+    settings: Omit<WindowSettings, 'content'> & { template: ComponentTemplate },
+  ): WindowRef {
+    const windowRef = this.windowService.open({
+      content: RenderTemplateComponent,
+      ...settings,
+    });
+
+    windowRef.content.instance.component = settings.template;
+    windowRef.window.instance.themeColor = 'primary';
+
+    return windowRef;
+  }
+
   public openLazyShelf(
     settings: Omit<WindowSettings, 'content'> & { template: ComponentTemplate },
   ): WindowRef {

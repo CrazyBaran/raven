@@ -111,6 +111,17 @@ export const notesReducer = createReducer(
     },
   })),
 
+  on(NotesActions.getNoteDetailsSuccess, (state, { data }) =>
+    notesAdapter.upsertOne(data, {
+      ...state,
+      details: {
+        ...state.details,
+        isLoading: false,
+        data,
+      },
+    }),
+  ),
+
   on(NotesActions.getNoteDetailsSuccess, (state, { data }) => ({
     ...state,
     details: {

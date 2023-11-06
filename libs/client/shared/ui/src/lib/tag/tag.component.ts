@@ -10,7 +10,7 @@ import {
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 
 @Component({
-  selector: 'app-tag',
+  selector: 'ui-tag',
   standalone: true,
   imports: [CommonModule, ButtonModule],
   templateUrl: './tag.component.html',
@@ -23,6 +23,8 @@ export class TagComponent {
   @Input() public icon?: string;
   @Input() public label?: string;
   @Input() public htmlClass?: string;
+
+  @Input() public removable?: boolean = true;
 
   @Output() public tagClick = new EventEmitter<MouseEvent>();
   @Output() public tagRemove = new EventEmitter<void>();

@@ -7,7 +7,14 @@
     <div class="header__info">
       <div class="header__name">
         {{ data.organisation.name }}
-        <button (click)="handleGoToDetails(data.id)">
+        <button
+          [routerLink]="[
+            '/companies',
+            data.organisation.id,
+            'opportunities',
+            data.id
+          ]"
+        >
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </button>
       </div>

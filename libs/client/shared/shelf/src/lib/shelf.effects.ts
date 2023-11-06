@@ -36,6 +36,43 @@ export class ShelfEffects {
     { dispatch: false },
   );
 
+  // (close)="handleCloseWindow($event)"
+  //   title="Note"
+  //   themeColor="primary"
+  //     [width]="860"
+  //     [height]="800"
+  //   class="max-h-full"
+
+  // private openNoteDetails$ = createEffect(
+  //   () => {
+  //     return this.actions$.pipe(
+  //       ofType(ShelfActions.openNoteDetails),
+  //       tap(async (a) =>
+  //         this.shelfService.openLazyWindow({
+  //           template: {
+  //             name: 'note details',
+  //             load: () =>
+  //               import('@app/client/notes/ui').then(
+  //                 (m) => m.NoteDetailDialogModule,
+  //               ),
+  //             showLoading: true,
+  //             componentData: {
+  //               noteId: a.noteId,
+  //             },
+  //           },
+  //           width: 860,
+  //           height: 800,
+  //           cssClass: 'max-h-full',
+  //           title: 'Note',
+  //           preventClose: (ev: unknown, widowRef): boolean =>
+  //             this._notepadShelfPreventHandler(ev, widowRef),
+  //         }),
+  //       ),
+  //     );
+  //   },
+  //   { dispatch: false },
+  // );
+
   public constructor(
     private actions$: Actions,
     private shelfService: RavenShelfService,

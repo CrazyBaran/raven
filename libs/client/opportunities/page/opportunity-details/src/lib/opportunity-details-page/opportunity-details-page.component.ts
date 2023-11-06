@@ -1,95 +1,60 @@
-import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit,
-  signal,
-} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NoteStoreFacade } from '@app/client/notes/data-access';
-import {
-  NoteDetailsComponent,
-  NotesTableComponent,
-} from '@app/client/notes/ui';
-import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
-import { HeaderComponent, LoaderComponent } from '@app/client/shared/ui';
-import { Subject, filter, takeUntil } from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+
+import { JsonPipe } from '@angular/common';
+import { OpportunitiesActions } from '@app/client/opportunities/data-access';
+import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
+import { OrganisationsActions } from '@app/client/organisations/state';
+import { Store } from '@ngrx/store';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { RxFor } from '@rx-angular/template/for';
+import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
 
 @Component({
   selector: 'app-opportunity-details-page',
   standalone: true,
   imports: [
-    CommonModule,
-    HeaderComponent,
-    LoaderComponent,
-    NotesTableComponent,
-    NoteDetailsComponent,
+    RouterOutlet,
+    RouterLink,
+    ButtonsModule,
+    StatusIndicatorComponent,
+    RxFor,
+    JsonPipe,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OpportunityDetailsPageComponent implements OnInit, OnDestroy {
-  // TODO: REMOVE THAT PART TO A SEPARATE SERVICE
-  public openNoteId = signal(null);
+export class OpportunityDetailsPageComponent {
+  protected store = inject(Store);
 
-  // OPPORTUNITY INFO
-  public readonly isLoadingOpportunityInfo$ =
-    this.opportunitiesFacade.isLoading$;
-  public readonly opportunityDetails$ = this.opportunitiesFacade.details$;
+  protected vm = this.store.selectSignal(selectOpportunityDetailViewModel);
 
-  // NOTES INFO
-  public readonly notes$ = this.noteStoreFacade.notes$;
-  public readonly isLoadingNotes$ = this.noteStoreFacade.isLoading$;
+  public constructor() {
+    const opportunityId = this.vm().opportunityId;
 
-  private _ngUnsubscribe = new Subject<void>();
+    if (!opportunityId) {
+      throw new Error(
+        'Opportunity ID is required for Opportunity Details Page',
+      );
+    }
 
-  public constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly opportunitiesFacade: OpportunitiesFacade,
-    private readonly noteStoreFacade: NoteStoreFacade,
-  ) {}
+    this.store.dispatch(
+      OpportunitiesActions.getOpportunityDetails({
+        id: opportunityId,
+      }),
+    );
 
-  public ngOnInit(): void {
-    this.route.params
-      .pipe(takeUntil(this._ngUnsubscribe))
-      .subscribe(({ id }) => {
-        if (id) {
-          this.opportunitiesFacade.getOpportunityDetails(id);
-        }
-      });
+    const organizationId = this.vm().currentOrganisationId;
 
-    this.route.queryParams
-      .pipe(takeUntil(this._ngUnsubscribe))
-      .subscribe(({ noteId }) => {
-        this.openNoteId.set(noteId);
-      });
+    if (!organizationId) {
+      throw new Error(
+        'Organization ID is required for Opportunity Details Page',
+      );
+    }
 
-    this.opportunityDetails$
-      .pipe(
-        takeUntil(this._ngUnsubscribe),
-        filter((details) => !!details),
-      )
-      .subscribe((details) => {
-        const tagIds = details?.tag?.id || '';
-        const domain = details?.organisation?.domains?.[0] || '';
-
-        this.noteStoreFacade.getNotes(domain, tagIds);
-      });
-  }
-
-  public handleClosePreview(): void {
-    this.router.navigate([], {
-      queryParams: {
-        noteId: null,
-      },
-    });
-  }
-
-  public ngOnDestroy(): void {
-    this._ngUnsubscribe.next();
-    this._ngUnsubscribe.complete();
+    this.store.dispatch(
+      OrganisationsActions.getOrganisation({ id: organizationId }),
+    );
   }
 }

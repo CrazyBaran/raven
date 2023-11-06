@@ -6,3 +6,7 @@
 .opportunity-details {
   grid-template-rows: auto 1fr;
 }
+
+::ng-deep .k-tilelayout {
+  background: transparent !important;
+}

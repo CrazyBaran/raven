@@ -10,7 +10,9 @@ export class OpportunitiesFacade {
     opportunitiesQuery.selectAllOpportunities,
   );
   public isLoading$ = this.store.select(opportunitiesQuery.selectIsLoading);
-  public details$ = this.store.select(opportunitiesQuery.selectDetails);
+  public details$ = this.store.select(
+    opportunitiesQuery.selectRouteOpportunityDetails,
+  );
 
   public constructor(private store: Store) {}
 

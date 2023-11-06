@@ -9,6 +9,12 @@ import { OrganisationEntity } from './organisations.model';
 export const OrganisationsActions = createActionGroup({
   source: 'Organisations/API',
   events: {
+    'Get Organisation': props<{ id: OrganisationEntity['id'] }>(),
+    'Get Organisation Success': props<{
+      data: OrganisationEntity | undefined;
+    }>(),
+    'Get Organisation Failure': props<{ error: string }>(),
+
     'Get Organisations': emptyProps(),
     'Get Organisations Success': props<{ data: OrganisationEntity[] }>(),
     'Get Organisations Failure': props<{ error: string }>(),

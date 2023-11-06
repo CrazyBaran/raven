@@ -16,9 +16,11 @@ import { StoreModule } from '@ngrx/store';
 
 import { ErrorInterceptor, RvncAuthModule } from '@app/client/core/auth';
 
+import { RouterModule } from '@angular/router';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import { provideNotifications } from '@app/client/shared/util-notifications';
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
+import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
 import { NotificationModule } from '@progress/kendo-angular-notification';
@@ -71,8 +73,14 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
         ]),
       },
     ),
-    StoreModule.forRoot({}),
+    StoreModule.forRoot({
+      router: routerReducer,
+    }),
+    RouterModule.forRoot([], {
+      paramsInheritanceStrategy: 'always',
+    }),
     EffectsModule.forRoot([]),
+    StoreRouterConnectingModule.forRoot(),
     WindowModule,
     StoreDevtoolsModule.instrument({
       maxAge: 25,
