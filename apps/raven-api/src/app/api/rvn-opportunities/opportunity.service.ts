@@ -1,9 +1,11 @@
-import { OpportunityData } from '@app/rvns-opportunities';
+import {
+  OpportunityData,
+  OpportunityStageChangedEvent,
+} from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { OpportunityStageChangedEvent } from '@app/rvns-opportunities';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
@@ -56,7 +58,7 @@ export class OpportunityService {
 
     const opportunities = await this.opportunityRepository.find(options);
 
-    const affinityData = await this.affinityCacheService.getAllByDomains(
+    const affinityData = await this.affinityCacheService.getByDomains(
       opportunities.flatMap((opportunity) => opportunity.organisation.domains),
     );
 
@@ -121,6 +123,10 @@ export class OpportunityService {
       opportunity.organisation.domains,
     );
 
+    if (affinityData.length === 0) {
+      return null;
+    }
+
     return {
       id: opportunity.id,
       organisation: {
@@ -135,7 +141,7 @@ export class OpportunityService {
       tag: opportunity.tag
         ? { id: opportunity.tag.id, name: opportunity.tag.name }
         : undefined,
-      fields: affinityData?.fields.map((field) => {
+      fields: affinityData[0].fields.map((field) => {
         return {
           displayName: field.displayName,
           value: field.value,

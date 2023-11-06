@@ -109,13 +109,14 @@ export class OrganisationService {
     const affinityData = await this.affinityCacheService.getByDomains(domains);
 
     if (
-      !affinityData?.organizationDto?.domains ||
-      affinityData.organizationDto.domains.length === 0
+      affinityData.length === 0 ||
+      !affinityData[0]?.organizationDto?.domains ||
+      affinityData[0].organizationDto.domains.length === 0
     ) {
       return null;
     }
     const existingOrganisation = await this.organisationRepository.findOne({
-      where: { domains: Like(`%${affinityData.organizationDto.domain}%`) },
+      where: { domains: Like(`%${affinityData[0].organizationDto.domain}%`) },
     });
 
     if (existingOrganisation) {
@@ -123,8 +124,8 @@ export class OrganisationService {
     }
 
     const organisation = new OrganisationEntity();
-    organisation.name = affinityData.organizationDto.name;
-    organisation.domains = affinityData.organizationDto.domains;
+    organisation.name = affinityData[0].organizationDto.name;
+    organisation.domains = affinityData[0].organizationDto.domains;
 
     return await this.organisationRepository.save(organisation);
   }

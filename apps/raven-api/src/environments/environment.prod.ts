@@ -23,15 +23,6 @@ export const environment = {
     apiPrefix: env.get('API_PREFIX').default('').asString(),
     enableSwagger: env.get('SWAGGER_ENABLE').default('false').asBoolStrict(),
     sentryDsn: env.get('SENTRY_DSN').asUrlString(),
-    di: {
-      semanticSearch: {
-        minThresholdFix: env
-          .get('APP_DI_SEMANTIC_SEARCH_MIN_THRESHOLD_FIX')
-          .default('0.15')
-          .asFloat(),
-      },
-      logPrompts: env.get('APP_DI_LOG_PROMPTS').default('false').asBoolStrict(),
-    },
   },
   logs: {
     audit: {

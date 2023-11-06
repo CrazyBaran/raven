@@ -34,7 +34,9 @@ export class AffinityCacheService {
     filters?: (data: OrganizationStageDto) => boolean,
   ): Promise<OrganizationStageDto[]> {
     const rawData = await this.store.client.hgetall(AFFINITY_CACHE);
-    let data = Object.values(rawData).map((item) => JSON.parse(item));
+    let data = Object.values(rawData).map((item) =>
+      this.parseOrganisationStageDto(item),
+    );
 
     // Apply filters if provided
     if (filters) {
@@ -45,20 +47,6 @@ export class AffinityCacheService {
 
   public async getByDomains(
     domains: string[],
-  ): Promise<OrganizationStageDto | null> {
-    const keys = await this.store.client
-      .hgetall(AFFINITY_CACHE)
-      .then((res) => Object.keys(res));
-    const matchingKey = keys.find((key) =>
-      domains.some((domain) => key.includes(domain)),
-    );
-    if (!matchingKey) return null;
-    const rawData = await this.store.client.hget(AFFINITY_CACHE, matchingKey);
-    return rawData ? JSON.parse(rawData) : null;
-  }
-
-  public async getAllByDomains(
-    domains: string[],
   ): Promise<OrganizationStageDto[]> {
     const items = await this.store.client.hgetall(AFFINITY_CACHE);
     const keys = items ? Object.keys(items) : [];
@@ -66,11 +54,11 @@ export class AffinityCacheService {
       domains.some((domain) => key.includes(domain)),
     );
     if (matchingKeys.length === 0) return [];
-    const matchingValues = Object.values(items).filter((value) =>
-      matchingKeys.some((key) => value.includes(key)),
+    const matchingItems = Object.entries(items).filter(([key]) =>
+      matchingKeys.some((matchingKey) => matchingKey === key),
     );
-    return matchingValues.map(
-      (value) => JSON.parse(value) as OrganizationStageDto,
+    return matchingItems.map(([_, value]) =>
+      this.parseOrganisationStageDto(value),
     );
   }
 
@@ -92,5 +80,13 @@ export class AffinityCacheService {
   public async getListFields(): Promise<FieldDto[]> {
     const rawData = await this.store.client.hgetall(AFFINITY_FIELDS_CACHE);
     return Object.values(rawData).map((item) => JSON.parse(item));
+  }
+
+  private parseOrganisationStageDto(item): OrganizationStageDto {
+    const parsedItem = JSON.parse(item) as OrganizationStageDto;
+    return {
+      ...parsedItem,
+      entryAdded: new Date(parsedItem.entryAdded),
+    };
   }
 }
