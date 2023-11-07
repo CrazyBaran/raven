@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { environment } from '../../../environments/environment';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
@@ -91,6 +92,9 @@ export class OpportunityService {
           domains: matchedOrganization
             ? matchedOrganization.organizationDto.domains
             : opportunity.organisation.domains,
+          affinityUrl: matchedOrganization
+            ? `${environment.affinity.affinityUrl}companies/${matchedOrganization.organizationDto.id}`
+            : undefined,
         },
         stage: {
           id: opportunity.pipelineStageId,
@@ -133,6 +137,7 @@ export class OpportunityService {
         id: opportunity.organisationId,
         name: opportunity.organisation?.name,
         domains: opportunity.organisation?.domains,
+        affinityUrl: `${environment.affinity.affinityUrl}companies/${affinityData[0].organizationDto.id}`,
       },
       stage: {
         displayName: opportunity.pipelineStage.displayName,
@@ -184,6 +189,7 @@ export class OpportunityService {
             id: undefined, // Adjust this if there's a relevant ID
             name: matchedOrganization.organizationDto.name,
             domains: matchedOrganization.organizationDto.domains,
+            affinityUrl: `${environment.affinity.affinityUrl}companies/${matchedOrganization.organizationDto.id}`,
           },
           stage: pipelineStage,
           fields: matchedOrganization.fields.map((field) => {
@@ -286,6 +292,7 @@ export class OpportunityService {
         id: entity?.organisationId,
         name: affinityDto?.organizationDto?.name,
         domains: affinityDto?.organizationDto?.domains,
+        affinityUrl: `${environment.affinity.affinityUrl}companies/${affinityDto.organizationDto.id}`,
       },
       stage: {
         id: entity?.pipelineStage?.id,

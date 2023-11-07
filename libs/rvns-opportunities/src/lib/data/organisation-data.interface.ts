@@ -5,6 +5,7 @@ export interface OrganisationData {
   readonly affinityInternalId?: number;
   readonly name: string;
   readonly domains: string[];
+  readonly affinityUrl?: string;
 }
 
 export interface OrganisationDataWithOpportunities extends OrganisationData {

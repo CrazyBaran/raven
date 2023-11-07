@@ -25,7 +25,7 @@ export class AzureADStrategy extends PassportStrategy(
       passReqToCallback: false,
       issuer: [environment.azureAd.issuer],
       audience: [environment.azureAd.audience],
-      loggingLevel: 'info',
+      loggingLevel: 'error',
     });
   }
 
