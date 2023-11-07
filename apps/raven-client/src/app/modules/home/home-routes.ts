@@ -6,7 +6,12 @@ import {
   OpportunitiesFacade,
   opportunitiesReducer,
 } from '@app/client/opportunities/data-access';
+import {
+  OrganisationsEffects,
+  OrganisationsFeature,
+} from '@app/client/organisations/state';
 import { PipelinesEffects, pipelinesReducer } from '@app/client/pipelines';
+
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { HomeComponent } from './home.component';
@@ -26,6 +31,12 @@ export const HOME_ROUTES: Routes = [
       },
       {
         path: 'companies',
+        providers: [
+          importProvidersFrom(
+            StoreModule.forFeature(OrganisationsFeature),
+            EffectsModule.forFeature([OrganisationsEffects]),
+          ),
+        ],
         children: [
           {
             path: '',
@@ -52,11 +63,16 @@ export const HOME_ROUTES: Routes = [
               ),
           },
           {
-            path: 'opportunities',
-            loadChildren: () =>
-              import('@app/client/opportunities/feature/shell').then(
-                (m) => m.OPPORTUNITIES_ROUTES,
-              ),
+            path: ':companyId',
+            children: [
+              {
+                path: 'opportunities',
+                loadChildren: () =>
+                  import('@app/client/opportunities/feature/shell').then(
+                    (m) => m.OPPORTUNITIES_ROUTES,
+                  ),
+              },
+            ],
           },
         ],
       },

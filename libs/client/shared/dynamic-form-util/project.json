@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/shared/dynamic-form-util/src",
   "prefix": "app",
-  "tags": ["scope:rvnc-shared", "type:util"],
+  "tags": ["scope:rvnc-shared", "type:ui"],
   "projectType": "library",
   "targets": {
     "test": {

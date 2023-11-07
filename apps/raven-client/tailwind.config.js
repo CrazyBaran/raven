@@ -48,12 +48,39 @@ module.exports = {
       text: '#252525',
       success: '#3C672D',
       warning: '#EB8C00',
-      error: '#D62929',
+      error: '#C52A1A',
       info: '#5A74D8',
+      link: {
+        hover: `#008077`,
+      },
+      'series-a': {
+        'lighten-50': '#77B8E480',
+      },
+      'series-g': {
+        'lighten-50': '#D281D980',
+      },
+      'series-e': {
+        'lighten-50': '#F0882D80',
+      },
+      component: {
+        border: '#EBEBEB',
+        text: '#FFFFFF',
+        borderHover: '#D6D6D6',
+      },
+      base: {
+        background: '#FAFAFA',
+        hover: '#EBEBEB',
+      },
     },
     extend: {
       fontFamily: {
         interstate: ['Interstate'],
+      },
+      opacity: {
+        4: '0.04',
+        8: '0.08',
+        12: '0.12',
+        16: '0.16',
       },
     },
     fontSize: {
@@ -71,6 +98,9 @@ module.exports = {
       '7xl': ['4.5rem', 1], // 72px
       '8xl': ['6rem', 1], // 96px
       '9xl': ['8rem', 1], // 128px
+    },
+    minWidth: {
+      dropdown: '11rem',
     },
   },
   plugins: [

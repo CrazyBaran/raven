@@ -1,2 +1,3 @@
 export * from './lib/retry-with-delay.operator';
+export * from './lib/take-after-view-init';
 export * from './lib/throw-if';

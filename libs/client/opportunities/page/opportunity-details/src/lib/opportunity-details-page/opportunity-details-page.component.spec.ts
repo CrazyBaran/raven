@@ -4,6 +4,7 @@ import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
 import { OpportunityDetailsPageComponent } from './opportunity-details-page.component';
+import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
 
 describe('OpportunityDetailsPageComponent', () => {
   let component: OpportunityDetailsPageComponent;
@@ -12,7 +13,21 @@ describe('OpportunityDetailsPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OpportunityDetailsPageComponent, RouterTestingModule],
-      providers: [provideMockStore({}), OpportunitiesFacade, NoteStoreFacade],
+      providers: [
+        provideMockStore({
+          selectors: [
+            {
+              selector: selectOpportunityDetailViewModel,
+              value: {
+                opportunityId: '1',
+                currentOrganisationId: '1',
+              },
+            },
+          ],
+        }),
+        OpportunitiesFacade,
+        NoteStoreFacade,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OpportunityDetailsPageComponent);

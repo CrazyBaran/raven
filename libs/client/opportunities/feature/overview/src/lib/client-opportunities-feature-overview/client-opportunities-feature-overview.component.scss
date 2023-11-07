@@ -1,0 +1,13 @@
+::ng-deep .grid-borderless {
+  .k-table-th {
+    border: none !important;
+  }
+  .k-table-td {
+    border: none !important;
+  }
+
+  &.k-grid {
+    border-inline: none !important;
+    border-top: none !important;
+  }
+}

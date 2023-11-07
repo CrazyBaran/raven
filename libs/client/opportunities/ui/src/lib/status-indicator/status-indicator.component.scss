@@ -1,0 +1,47 @@
+@use 'sass:list';
+
+$colorDictionary: (
+  'blue': (
+    hsla(204, 67%, 68%, 1),
+    rgba(119, 184, 228, 0.3),
+  ),
+  'orange': (
+    hsla(28, 87%, 56%, 1),
+    rgba(240, 136, 45, 0.3),
+  ),
+  'red': (
+    hsla(349, 65%, 56%, 1),
+    rgba(216, 70, 97, 0.3),
+  ),
+  'yellow': (
+    hsla(49, 98%, 64%, 1),
+    rgba(253, 220, 73, 0.3),
+  ),
+  'purple': (
+    hsla(295, 54%, 68%, 1),
+    rgba(210, 129, 217, 0.3),
+  ),
+);
+
+@each $color, $value in $colorDictionary {
+  .status-indicator--#{$color} {
+    --status-indicator-color: #{list.nth($value, 1)};
+    --status-indicator-hover-color: #{list.nth($value, 2)};
+  }
+}
+
+.indicator-btn {
+  @apply bg-white;
+
+  &:hover {
+    background: var(--status-indicator-hover-color);
+  }
+
+  .status-circle {
+    background: var(--status-indicator-color);
+  }
+}
+
+.status-indicator--active button {
+  background: var(--status-indicator-hover-color);
+}

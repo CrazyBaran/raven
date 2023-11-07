@@ -4,6 +4,33 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { OrganisationsActions } from './organisations.actions';
 
+export const loadOrganisation = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsActions.getOrganisation),
+      switchMap(({ id }) =>
+        organisationsService.getOrganisation(id ?? '').pipe(
+          map((response) => {
+            return OrganisationsActions.getOrganisationSuccess({
+              data: response.data,
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(OrganisationsActions.getOrganisationFailure({ error }));
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
 export const loadOrganisations = createEffect(
   (
     actions$ = inject(Actions),

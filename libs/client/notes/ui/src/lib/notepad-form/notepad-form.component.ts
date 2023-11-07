@@ -19,7 +19,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {
-  TagComponent,
   TagDropdownComponent,
   TagFormComponent,
   TagsStoreFacade,
@@ -46,6 +45,7 @@ import { UploadFileService } from '@app/client/shared/storage/data-access';
 import { EditorView } from '@progress/kendo-angular-editor';
 
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
+import { TagComponent } from '@app/client/shared/ui';
 import { Store } from '@ngrx/store';
 import { firstValueFrom, map, startWith } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { from } from 'rxjs';
 import { OpportunitiesCardComponent } from './opportunities-card.component';
 
 describe('OpportunitiesCardComponent', () => {
@@ -8,6 +10,14 @@ describe('OpportunitiesCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OpportunitiesCardComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OpportunitiesCardComponent);

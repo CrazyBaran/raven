@@ -41,7 +41,8 @@
     "pre-commit": "nx workspace-lint && nx lint raven-api --with-deps --fix && nx lint raven-client --with-deps --fix && nx lint raven-client-e2e --with-deps --fix",
     "pre-push": "npm run test",
     "postinstall": "husky install",
-    "license-checker": "bash ./utils/license-check.sh"
+    "license-checker": "bash ./utils/license-check.sh",
+    "storybook": "nx run raven-client:storybook"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,html,scss}": [
