@@ -206,10 +206,22 @@ export class OpportunityService {
   ): Promise<OpportunityEntity> {
     const { pipeline, pipelineStage } =
       await this.getDefaultPipelineAndFirstStage();
+
+    const affinityOrganisation = this.affinityCacheService.getByDomains(
+      options.organisation.domains,
+    );
+
+    const affinityPipelineStage = await this.mapPipelineStage(
+      pipeline,
+      affinityOrganisation[0]?.stage?.text,
+    );
+
     const opportunity = new OpportunityEntity();
     opportunity.organisation = options.organisation;
     opportunity.pipelineDefinition = pipeline;
-    opportunity.pipelineStage = pipelineStage;
+    opportunity.pipelineStage = affinityPipelineStage
+      ? affinityPipelineStage
+      : pipelineStage;
 
     return this.opportunityRepository.save(opportunity);
   }

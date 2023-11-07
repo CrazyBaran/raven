@@ -85,11 +85,18 @@ export class AffinityApiService {
     listEntryId?: number,
     personId?: number,
   ): Promise<FieldValueDto[]> {
+    const params = {};
+    if (listEntryId) {
+      params['list_entry_id'] = listEntryId;
+    }
+    if (personId) {
+      params['person_id'] = personId;
+    }
     return await this.httpService
       .get<FieldValueDto[]>(`/field-values`, {
         baseURL: this.baseURL,
         headers: this.headers,
-        params: { list_entry_id: listEntryId, person_id: personId },
+        params: params,
       })
       .pipe(map((response) => response.data))
       .toPromise();

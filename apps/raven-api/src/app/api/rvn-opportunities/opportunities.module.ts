@@ -12,7 +12,11 @@ import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-defi
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { PipelineModule } from '../rvn-pipeline/pipeline.module';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
+
 import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
+
+import { AffinityOrganisationCreatedEventHandler } from './event-handlers/affinity-organization-created.event-handler';
+
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
 import { AffinityStatusChangedEventHandlerLogger } from './event-handlers/affinity-status-changed.event-handler.logger';
@@ -62,6 +66,7 @@ import { OpportunityProducerLogger } from './queues/opportunity.producer.logger'
     OpportunityProcessorLogger,
     OpportunityProcessor,
     AffinityRegenerationFinishedEventHandler,
+    AffinityOrganisationCreatedEventHandler,
     OrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,
     AffinityStatusChangedEventHandlerLogger,
