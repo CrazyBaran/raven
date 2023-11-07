@@ -11,6 +11,7 @@ import {
 import { Store } from '@ngrx/store';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { PageLayoutComponent } from '../../../../components/page-layout/page-layout.component';
+import { WebsocketService } from '../../services/websocket.service';
 
 @Component({
   selector: 'app-pipelines-page',
@@ -38,11 +39,17 @@ export class PipelinesPageComponent implements OnInit {
   public constructor(
     private readonly store: Store,
     private readonly opportunitiesFacade: OpportunitiesFacade,
+    private readonly websocketService: WebsocketService,
   ) {}
 
   public ngOnInit(): void {
     this.opportunitiesFacade.getOpportunities(500, 0);
 
     this.store.dispatch(PipelinesActions.getPipelines());
+    this.websocketService.connect();
+    setTimeout(() => {
+      console.log('joining pipelines');
+      this.websocketService.joinResourceEvents('pipelines');
+    }, 2000);
   }
 }

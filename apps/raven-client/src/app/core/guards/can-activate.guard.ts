@@ -28,6 +28,7 @@ export class CanActivateGuard {
         }
 
         console.log(state);
+        console.log('dupa');
         this.router.navigate(['/login'], {
           queryParams: { redirectUrl: state.url },
         });
