@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { OpportunityDealLeadFieldData } from '../opportunity-details/opportunitiy-details.interface';
@@ -10,11 +11,23 @@ import { OpportunityDealLeadFieldData } from '../opportunity-details/opportuniti
   imports: [CommonModule, RouterLink],
   templateUrl: './opportunities-card.component.html',
   styleUrls: ['./opportunities-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpportunitiesCardComponent {
-  @Input() public data: OpportunityData;
+  private _data: OpportunityData;
 
-  public get dealLead(): string {
+  @Input() public set data(value: OpportunityData) {
+    this._data = value;
+    this.dealLead = this.getDealLead();
+  }
+
+  public get data(): OpportunityData {
+    return this._data;
+  }
+
+  public dealLead = '';
+
+  public getDealLead(): string {
     const dealLeads = this.data.fields.find(
       (field) => field.displayName === 'Deal Lead',
     )?.value as OpportunityDealLeadFieldData[];

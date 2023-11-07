@@ -1,21 +1,53 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { PipelineDefinitionData } from '@app/rvns-pipelines';
-import { SortableModule } from '@progress/kendo-angular-sortable';
+
+import { RxFor } from '@rx-angular/template/for';
+
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  CdkDropListGroup,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
+import { RxIf } from '@rx-angular/template/if';
 import { OpportunitiesCardComponent } from '../opportunities-card/opportunities-card.component';
 import { ColumnData } from './kanban-board.interface';
 
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [CommonModule, SortableModule, OpportunitiesCardComponent],
+  imports: [
+    CommonModule,
+    OpportunitiesCardComponent,
+    RxFor,
+    RxIf,
+    CdkDropList,
+    CdkDropListGroup,
+    CdkDrag,
+  ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanBoardComponent implements OnChanges {
   @Input({ required: true }) public opportunities: OpportunityData[] = [];
   @Input({ required: true }) public pipelines: PipelineDefinitionData[] = [];
+
+  @Output() public dragEndEvent = new EventEmitter<{
+    pipelineStageId: string;
+    opportunityId: string;
+  }>();
 
   public kanbanColumns: ColumnData[] = [];
 
@@ -39,4 +71,27 @@ export class KanbanBoardComponent implements OnChanges {
       this.kanbanColumns = columns;
     }
   }
+
+  public drop(event: CdkDragDrop<ColumnData>): void {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    } else {
+      const opportunityId = event.item.data.id;
+      const pipelineStageId = event.container.data.id;
+      this.dragEndEvent.emit({ pipelineStageId, opportunityId });
+
+      transferArrayItem(
+        event.previousContainer.data.data,
+        event.container.data.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
+  }
+
+  public trackBy = (index: number, item: OpportunityData): string => item.id;
 }

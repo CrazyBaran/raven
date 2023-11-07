@@ -19,6 +19,7 @@
         <app-kanban-board
           [opportunities]="(opportunities$ | async) || []"
           [pipelines]="(pipelines$ | async) || []"
+          (dragEndEvent)="onDragEvent($event)"
         />
       </ng-template>
     </div>

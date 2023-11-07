@@ -4,6 +4,11 @@ import { GenericResponse } from '@app/rvns-api';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { Observable } from 'rxjs';
 
+export type OpportunityChanges = {
+  pipelineStageId?: string;
+  tagId?: string;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -25,6 +30,16 @@ export class OpportunitiesService {
   ): Observable<GenericResponse<OpportunityData>> {
     return this.http.get<GenericResponse<OpportunityData>>(
       `/api/opportunities/${id}`,
+    );
+  }
+
+  public patchOpportunity(
+    opportunityId: string,
+    changes: OpportunityChanges,
+  ): Observable<GenericResponse<OpportunityData>> {
+    return this.http.patch<GenericResponse<OpportunityData>>(
+      `/api/opportunities/${opportunityId}`,
+      changes,
     );
   }
 }
