@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 
 import { WebsocketEvent } from '@app/rvns-web-sockets';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -20,19 +19,15 @@ export class WebsocketService {
   );
 
   public connect(token?: string): void {
-    this.socket = io(
-      environment.apiUrl.endsWith('/api')
-        ? environment.apiUrl.slice(0, -4)
-        : environment.apiUrl,
-      {
-        transports: ['websocket', 'polling'],
-        query: {
-          auth: 'token', // TODO handle auth later
-        },
+    this.socket = io('https://as-wa-mc-raven-dev.azurewebsites.net/', {
+      transports: ['websocket', 'polling'],
+      query: {
+        auth: 'token', // TODO handle auth later
       },
-    );
+    });
 
     this.socket.on('Unauthorized access, disconnecting...', () => {
+      console.log('Unauthorized access');
       this.authErrorEvents$.next(true);
     });
 
@@ -42,11 +37,13 @@ export class WebsocketService {
     });
 
     this.socket.on('connect', () => {
+      console.log('connected');
       this.reconnectEvents$.next(false);
       this.authErrorEvents$.next(false);
     });
 
     this.socket.on('disconnect', async (message: Socket.DisconnectReason) => {
+      console.log('disconnected', message);
       const reconnectMessages = [
         'ping timeout',
         'transport close',
