@@ -7,10 +7,9 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { environment } from '../../../environments/environment';
 
-import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
-
 import { AffinitySettingsService } from './affinity-settings.service';
 
+import { AffinityFieldChangedEvent } from '@app/rvns-affinity-integration';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
 import { FIELD_MAPPING, STATUS_FIELD_NAME } from './affinity.const';
@@ -40,7 +39,6 @@ export class AffinityWebhookService {
     private readonly logger: AffinityWebhookServiceLogger,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly eventEmitter: EventEmitter2,
-    private readonly gatewayEventService: GatewayEventService,
   ) {}
 
   public async handleWebhookPayload(payload: WebhookPayloadDto): Promise<void> {
@@ -179,13 +177,12 @@ export class AffinityWebhookService {
       company.fields = [{ displayName: cacheFieldName, value: persons }];
       await this.affinityCacheService.addOrReplaceMany([company]);
 
-      this.gatewayEventService.emit(`resource-pipelines`, {
-        eventType: 'opportunity-field-changed',
-        data: {
-          companyId: company.entryId,
-          fields: [{ displayName: cacheFieldName, value: persons }],
-        },
-      });
+      this.eventEmitter.emit(
+        'affinity-field-changed',
+        new AffinityFieldChangedEvent(company.organizationDto.domains, [
+          { displayName: cacheFieldName, value: persons },
+        ]),
+      );
     }
   }
 
