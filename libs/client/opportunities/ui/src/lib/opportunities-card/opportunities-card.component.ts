@@ -14,18 +14,17 @@ import { OpportunityDealLeadFieldData } from '../opportunity-details/opportuniti
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpportunitiesCardComponent {
+  public dealLead = '';
   private _data: OpportunityData;
-
-  @Input() public set data(value: OpportunityData) {
-    this._data = value;
-    this.dealLead = this.getDealLead();
-  }
 
   public get data(): OpportunityData {
     return this._data;
   }
 
-  public dealLead = '';
+  @Input() public set data(value: OpportunityData) {
+    this._data = value;
+    this.dealLead = this.getDealLead();
+  }
 
   public getDealLead(): string {
     const dealLeads = this.data.fields.find(
@@ -42,9 +41,5 @@ export class OpportunitiesCardComponent {
           `${dealLeadValue?.first_name} ${dealLeadValue?.last_name}`,
       )
       .join(', ');
-  }
-
-  public get dateAdded(): string {
-    return '';
   }
 }
