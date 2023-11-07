@@ -127,12 +127,12 @@
         <div class="flex flex-row gap-3">
           <div class="flex items-center justify-center gap-3 text-xs">
             <span>
-              Created:{{ noteDetails.createdAt | date: 'dd/MM/yyyy' }}
+              Created:{{ noteDetails.createdAt | date: 'dd/MM/yyyy hh:mm a' }}
             </span>
             <span>
               Updated:{{
                 noteDetails.updatedAt
-                  ? (noteDetails.updatedAt | date: 'dd/MM/yyyy')
+                  ? (noteDetails.updatedAt | date: 'dd/MM/yyyy hh:mm a')
                   : '-'
               }}
             </span>
