@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
-import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
+import {
+  OpportunitiesActions,
+  OpportunitiesFacade,
+} from '@app/client/opportunities/data-access';
 import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import {
   PipelinesActions,
@@ -24,6 +27,7 @@ import { WebsocketService } from '../../services/websocket.service';
   ],
   templateUrl: './pipelines-page.component.html',
   styleUrls: ['./pipelines-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PipelinesPageComponent implements OnInit {
   // Opportunities
@@ -50,5 +54,17 @@ export class PipelinesPageComponent implements OnInit {
     setTimeout(() => {
       this.websocketService.joinResourceEvents('pipelines');
     }, 2000);
+  }
+
+  public onDragEvent($event: {
+    pipelineStageId: string;
+    opportunityId: string;
+  }): void {
+    this.store.dispatch(
+      OpportunitiesActions.changeOpportunityPipelineStage({
+        id: $event.opportunityId,
+        pipelineStageId: $event.pipelineStageId,
+      }),
+    );
   }
 }

@@ -15,6 +15,15 @@ export const OpportunitiesActions = createActionGroup({
     }>(),
     'Get Opportunity Details Failure': props<{ error: string }>(),
 
+    'Change Opportunity Pipeline Stage': props<{
+      id: string;
+      pipelineStageId: string;
+    }>(),
+    'Change Opportunity Pipeline Stage Success': props<{
+      data: OpportunityData | null;
+    }>(),
+    'Change Opportunity Pipeline Stage Failure': props<{ error: string }>(),
+
     'Clear Opportunities': emptyProps(),
     'Clear Opportunity Details': emptyProps(),
   },

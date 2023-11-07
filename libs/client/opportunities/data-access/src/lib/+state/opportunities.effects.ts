@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
 import { OpportunitiesService } from '../services/opportunities.service';
 import { OpportunitiesActions } from './opportunities.actions';
@@ -19,6 +20,33 @@ export class OpportunitiesEffects {
             of(OpportunitiesActions.getOpportunitiesFailure({ error })),
           ),
         ),
+      ),
+    );
+  });
+
+  private updateOpportunityPipeline$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OpportunitiesActions.changeOpportunityPipelineStage),
+      concatMap(({ id, pipelineStageId }) =>
+        this.opportunitiesService
+          .patchOpportunity(id, { pipelineStageId })
+          .pipe(
+            switchMap(({ data }) => [
+              OpportunitiesActions.changeOpportunityPipelineStageSuccess({
+                data: data || null,
+              }),
+              NotificationsActions.showSuccessNotification({
+                content: 'Opportunity pipeline stage changed successfully',
+              }),
+            ]),
+            catchError((error) =>
+              of(
+                OpportunitiesActions.changeOpportunityPipelineStageFailure({
+                  error,
+                }),
+              ),
+            ),
+          ),
       ),
     );
   });
