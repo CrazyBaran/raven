@@ -1,6 +1,5 @@
 import { Server, Socket } from 'socket.io';
 
-import { UseGuards } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   ConnectedSocket,
@@ -11,8 +10,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { AuthService } from '../../rvn-auth/auth.service';
-import { WsJoinResourceGuard } from '../../rvn-auth/guards/ws-join-resource.guard';
 import { SocketProvider } from '../socket/socket.provider';
 import { GatewayServiceLogger } from './gateway-service.logger';
 
@@ -24,11 +21,10 @@ export class GatewayService implements OnGatewayInit, OnGatewayConnection {
   public constructor(
     private readonly appSocketProvider: SocketProvider,
     private readonly eventEmitter: EventEmitter2,
-    private readonly authService: AuthService,
     private readonly logger: GatewayServiceLogger,
   ) {}
 
-  @UseGuards(WsJoinResourceGuard)
+  // @UseGuards(WsJoinResourceGuard)
   @SubscribeMessage('ws.join.resource')
   public async joinResource(
     @MessageBody() resourceId: string,
@@ -47,15 +43,6 @@ export class GatewayService implements OnGatewayInit, OnGatewayConnection {
       client,
       resourceId,
     });
-    // user private resource room
-    const jwtToken = (client.handshake.query['auth'] as string).toString();
-    const userData = this.authService.decodeToken(jwtToken);
-    if (userData) {
-      await client.join(`resource-${resourceId}-user-${userData['id']}`);
-      this.logger.debug(
-        `Client joined private resource room: ${resourceId}#${userData['id']}`,
-      );
-    }
   }
 
   @SubscribeMessage('ws.leave.resource')
@@ -66,31 +53,25 @@ export class GatewayService implements OnGatewayInit, OnGatewayConnection {
     // resource room
     await client.leave(`resource-${resourceId}`);
     this.logger.debug(`Client left resource room: ${resourceId}`);
-    // user private resource room
-    const jwtToken = (client.handshake.query['auth'] as string).toString();
-    const userData = this.authService.decodeToken(jwtToken);
-    if (userData) {
-      await client.leave(`resource-${resourceId}-user-${userData['id']}`);
-      this.logger.debug(
-        `Client left private resource room: ${resourceId}#${userData['id']}`,
-      );
-    }
   }
 
   public afterInit(server: Server): void {
+    this.logger.debug(`Socket server initialized`);
     this.appSocketProvider.setSocket(server);
   }
 
   public async handleConnection(client: Socket): Promise<void> {
     const jwtToken = client.handshake.query['auth'];
     if (typeof jwtToken === 'string') {
-      try {
-        this.authService.verifyJwt(jwtToken);
-        this.logger.debug(`Client connected with id: ${client.id}`);
-        return;
-      } catch (err) {
-        // it doesn't make sense to log anything here - the error might spam
-      }
+      // TODO add authentication!!!
+      return;
+      // try {
+      //   this.authService.verifyJwt(jwtToken);
+      //   this.logger.debug(`Client connected with id: ${client.id}`);
+      //   return;
+      // } catch (err) {
+      //   // it doesn't make sense to log anything here - the error might spam
+      // }
     }
     // disconnect the client (unauthorized)
     client.emit('Unauthorized access, disconnecting...');

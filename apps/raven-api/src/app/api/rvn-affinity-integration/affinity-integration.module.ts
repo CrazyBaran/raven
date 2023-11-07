@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BullService } from '../../core/bull.service';
+import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
@@ -35,6 +36,7 @@ import { AffinityProducerLogger } from './queues/affinity.producer.logger';
     ]),
     HttpModule,
     ConfigModule,
+    WebSocketsModule,
   ],
   providers: [
     AffinityApiService,

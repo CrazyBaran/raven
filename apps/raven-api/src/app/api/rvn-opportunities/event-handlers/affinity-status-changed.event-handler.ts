@@ -4,6 +4,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
+import { GatewayEventService } from '../../rvn-web-sockets/gateway/gateway-event.service';
 import { OpportunityEntity } from '../entities/opportunity.entity';
 import { AffinityStatusChangedEventHandlerLogger } from './affinity-status-changed.event-handler.logger';
 
@@ -15,6 +16,7 @@ export class AffinityStatusChangedEventHandler {
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
     private readonly logger: AffinityStatusChangedEventHandlerLogger,
+    private readonly gatewayEventService: GatewayEventService,
   ) {}
 
   @OnEvent('affinity-status-changed')
@@ -53,5 +55,10 @@ export class AffinityStatusChangedEventHandler {
     opportunity.pipelineStage = stage;
     opportunity.pipelineStageId = stage.id;
     await this.opportunityRepository.save(opportunity);
+
+    this.gatewayEventService.emit(`resource-pipelines`, {
+      eventType: 'pipeline-stage-changed',
+      data: { opportunityId: opportunity.id, stageId: stage.id },
+    });
   }
 }
