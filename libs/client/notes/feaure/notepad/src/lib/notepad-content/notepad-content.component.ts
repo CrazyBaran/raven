@@ -13,7 +13,11 @@ import { ComponentData } from '@app/client/shared/dynamic-renderer/data-access';
 
 import { TemplatesStoreFacade } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
-import { WindowRef } from '@progress/kendo-angular-dialog';
+import {
+  DialogResult,
+  DialogService,
+  WindowRef,
+} from '@progress/kendo-angular-dialog';
 
 import { NotesActions } from '@app/client/notes/data-access';
 import {
@@ -50,6 +54,7 @@ export class NotepadContentComponent {
   protected noteFacade = inject(NoteStoreFacade);
   protected actions$ = inject(Actions);
   protected windowRef = inject(WindowRef, { optional: true });
+  protected dialogService = inject(DialogService);
   protected imagePathDictionaryService = inject(ImagePathDictionaryService);
 
   //TODO: MOVE TO COMPONENT STORE
@@ -116,7 +121,31 @@ export class NotepadContentComponent {
   }
 
   public close(): void {
-    this.windowRef?.close();
+    if (this.hasChanges) {
+      this.dialogService
+        .open({
+          appendTo: this.containerRef,
+          title: 'Leave without publishing?',
+          width: 350,
+          content:
+            'Any progress will be lost without publishing first. Are you sure you want to continue?',
+          actions: [
+            { text: 'No' },
+            {
+              text: 'Yes, leave without publishing',
+              primary: true,
+              themeColor: 'primary',
+            },
+          ],
+        })
+        .result.subscribe((res: DialogResult) => {
+          if ('text' in res && res.text === 'Yes, leave without publishing') {
+            this.windowRef?.close();
+          }
+        });
+    } else {
+      this.windowRef?.close();
+    }
   }
 }
 
