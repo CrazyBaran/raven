@@ -19,11 +19,7 @@ export class WebsocketService {
     false,
   );
 
-  public constructor() {}
-
   public connect(token?: string): void {
-    console.log('connecting.....');
-
     this.socket = io(
       environment.apiUrl.endsWith('/api')
         ? environment.apiUrl.slice(0, -4)
@@ -31,14 +27,13 @@ export class WebsocketService {
       {
         transports: ['websocket', 'polling'],
         query: {
-          auth: 'token',
+          auth: 'token', // TODO handle auth later
         },
       },
     );
 
     this.socket.on('Unauthorized access, disconnecting...', () => {
       this.authErrorEvents$.next(true);
-      console.log('disconnected');
     });
 
     this.socket.on('events', (message: string) => {
@@ -47,7 +42,6 @@ export class WebsocketService {
     });
 
     this.socket.on('connect', () => {
-      console.log('connected');
       this.reconnectEvents$.next(false);
       this.authErrorEvents$.next(false);
     });
@@ -75,7 +69,6 @@ export class WebsocketService {
   }
 
   public joinResourceEvents(resourceId: string): void {
-    console.log({ resourceId });
     this.socket.emit('ws.join.resource', resourceId);
   }
 

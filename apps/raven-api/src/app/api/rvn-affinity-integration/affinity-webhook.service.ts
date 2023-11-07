@@ -108,7 +108,7 @@ export class AffinityWebhookService {
     }).value as FieldValueRankedDropdownDto;
 
     await this.affinityCacheService.addOrReplaceMany([organizationData]);
-    await this.eventEmitter.emit(
+    this.eventEmitter.emit(
       'affinity-organization-created',
       new AffinityOrganizationCreatedEvent(
         organizationDto.name,

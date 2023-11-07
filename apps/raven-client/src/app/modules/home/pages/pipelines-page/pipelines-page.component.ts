@@ -48,7 +48,6 @@ export class PipelinesPageComponent implements OnInit {
     this.store.dispatch(PipelinesActions.getPipelines());
     this.websocketService.connect();
     setTimeout(() => {
-      console.log('joining pipelines');
       this.websocketService.joinResourceEvents('pipelines');
     }, 2000);
   }

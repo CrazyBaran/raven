@@ -30,8 +30,6 @@ export class GatewayService implements OnGatewayInit, OnGatewayConnection {
     @MessageBody() resourceId: string,
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
-    console.log('joined!');
-    console.log({ resourceId });
     const rooms = Array.from(client.rooms);
     for (const room of rooms) {
       if (room !== client.id) {
@@ -66,7 +64,6 @@ export class GatewayService implements OnGatewayInit, OnGatewayConnection {
     const jwtToken = client.handshake.query['auth'];
     if (typeof jwtToken === 'string') {
       // TODO add authentication!!!
-      console.log({ jwtToken });
       return;
       // try {
       //   this.authService.verifyJwt(jwtToken);
