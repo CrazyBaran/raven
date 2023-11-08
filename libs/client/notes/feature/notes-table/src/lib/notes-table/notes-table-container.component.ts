@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotesActions, notesQuery } from '@app/client/notes/data-access';
 import { NotesTableComponent } from '@app/client/notes/ui';
+import { selectRouteOpportunityDetails } from '@app/client/opportunities/data-access';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { Store, createSelector } from '@ngrx/store';
 
@@ -24,9 +25,34 @@ export const selectNotesByRouteParams = createSelector(
 export const selectNotesTableViewModel = createSelector(
   selectNotesTableParams,
   selectNotesByRouteParams,
-  (params, notes) => ({
+  selectRouteOpportunityDetails,
+  (params, notes, opportunity) => ({
     params,
-    notes,
+    notes: notes.filter((n) => {
+      if (
+        params['companyId'] &&
+        !n.tags.some((t) => t.organisationId === params['companyId'])
+      ) {
+        return false;
+      }
+
+      if (
+        params['noteType'] &&
+        n.templateName?.toLowerCase() !== params['noteType']?.toLowerCase()
+      ) {
+        return false;
+      }
+
+      // if (
+      //   params['opportunityId'] &&
+      //   n.tags.some((t) => t.type === 'opportunity' && t.name === '')
+      // ) {
+      //   todo: fix this
+      //
+      // return true;
+      // }
+      return true;
+    }),
   }),
 );
 

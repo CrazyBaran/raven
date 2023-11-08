@@ -35,6 +35,23 @@ export const opportunitiesReducer = createReducer(
     isLoading: false,
   })),
 
+  on(
+    OpportunitiesActions.liveChangeOpportunityPipelineStage,
+    (state, { pipelineStageId, id }) =>
+      opportunitiesAdapter.updateOne(
+        {
+          id,
+          changes: {
+            stage: {
+              ...state.entities[id]!.stage,
+              id: pipelineStageId,
+            },
+          },
+        },
+        { ...state, isLoading: false },
+      ),
+  ),
+
   on(OpportunitiesActions.clearOpportunities, (state) =>
     opportunitiesAdapter.removeAll({ ...state, isLoading: false }),
   ),

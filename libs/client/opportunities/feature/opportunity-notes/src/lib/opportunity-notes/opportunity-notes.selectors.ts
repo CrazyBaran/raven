@@ -1,4 +1,5 @@
 import { notesQuery } from '@app/client/notes/data-access';
+import { routerQuery } from '@app/client/shared/util-router';
 import {
   selectAllNoteTemplates,
   selectTemplatesLoaded,
@@ -30,7 +31,7 @@ const selectNoteTypesDropdown = createSelector(
   (templates, templateLoaded, templateId) => ({
     data: templates.map((t) => ({
       name: t.name,
-      id: t.id,
+      id: t.name,
     })),
     textField: 'name',
     valueField: 'id',
@@ -56,9 +57,11 @@ export const selectOpportunityNotesViewModel = createSelector(
   selectNoteTypesDropdown,
   notesQuery.selectAllNotes,
   selectNoteFilters,
-  (noteTypesDropdown, notes, filters) => ({
+  routerQuery.selectActiveNoteId,
+  (noteTypesDropdown, notes, filters, noteId) => ({
     filters,
     noteTypesDropdown,
     notes,
+    noteId,
   }),
 );

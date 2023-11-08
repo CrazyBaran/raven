@@ -13,6 +13,7 @@ import {
 } from '@app/client/pipelines';
 import { Store } from '@ngrx/store';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { distinctUntilChanged } from 'rxjs';
 import { PageLayoutComponent } from '../../../../components/page-layout/page-layout.component';
 import { WebsocketService } from '../../services/websocket.service';
 
@@ -54,6 +55,21 @@ export class PipelinesPageComponent implements OnInit {
     setTimeout(() => {
       this.websocketService.joinResourceEvents('pipelines');
     }, 2000);
+    this.websocketService
+      .events()
+      .pipe(distinctUntilChanged())
+      .subscribe((event) => {
+        if (event.eventType === 'pipeline-stage-changed') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { opportunityId, stageId } = event.data as any;
+          this.store.dispatch(
+            OpportunitiesActions.liveChangeOpportunityPipelineStage({
+              id: opportunityId,
+              pipelineStageId: stageId,
+            }),
+          );
+        }
+      });
   }
 
   public onDragEvent($event: {
