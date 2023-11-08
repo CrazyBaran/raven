@@ -67,12 +67,4 @@ export class OpportunityNotesComponent implements OnInit {
       queryParamsHandling: 'merge',
     });
   }
-
-  public handleClosePreview(): void {
-    this.router.navigate([], {
-      queryParams: {
-        noteId: null,
-      },
-    });
-  }
 }

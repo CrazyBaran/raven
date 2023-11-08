@@ -70,3 +70,10 @@
     </div>
   </div>
 </div>
+
+<app-note-details
+  class="absolute"
+  *ngIf="vm().noteId"
+  [noteId]="vm().noteId!"
+  (closeWindow)="handleClosePreview()"
+/>
