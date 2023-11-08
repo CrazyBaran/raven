@@ -94,7 +94,13 @@
 
           <!--        ACTION ICON       -->
           <div class="p-3">
-            <kendo-button themeColor="primary" iconClass="fa-solid fa-eye">
+            <kendo-button
+              [routerLink]="['./']"
+              [queryParams]="{ noteId: vm().relatedNote.id }"
+              queryParamsHandling="merge"
+              themeColor="primary"
+              iconClass="fa-solid fa-eye"
+            >
             </kendo-button>
           </div>
         </div>

@@ -53,12 +53,24 @@ export class KanbanBoardComponent implements OnChanges {
 
   public kanbanColumns: ColumnData[] = [];
 
-  public ngOnChanges(): void {
-    this.prepareKanbanData();
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public itemsRendered = new Subject<any[]>();
+
+  public startRender = new Subject<void>();
+
+  public visible = toSignal(
+    merge(
+      this.startRender.pipe(map(() => false)),
+      this.itemsRendered.pipe(map(() => true)),
+    ),
+  );
 
   public constructor() {
     this.startRender.next();
+  }
+
+  public ngOnChanges(): void {
+    this.prepareKanbanData();
   }
 
   public prepareKanbanData(): void {
@@ -100,14 +112,4 @@ export class KanbanBoardComponent implements OnChanges {
   }
 
   public trackBy = (index: number, item: OpportunityData): string => item.id;
-
-  protected itemsRendered = new Subject<any[]>();
-  protected startRender = new Subject<void>();
-
-  protected visible = toSignal(
-    merge(
-      this.startRender.pipe(map(() => false)),
-      this.itemsRendered.pipe(map(() => true)),
-    ),
-  );
 }
