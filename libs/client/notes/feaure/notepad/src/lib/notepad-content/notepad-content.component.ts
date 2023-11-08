@@ -117,7 +117,7 @@ export class NotepadContentComponent {
         filter(({ data }) => data.name === payload.name),
         take(1),
       )
-      .subscribe(() => this.close());
+      .subscribe(() => this.windowRef?.close());
   }
 
   public close(): void {

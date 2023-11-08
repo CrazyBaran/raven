@@ -30,7 +30,7 @@ const selectNoteTypesDropdown = createSelector(
   (templates, templateLoaded, templateId) => ({
     data: templates.map((t) => ({
       name: t.name,
-      id: t.id,
+      id: t.name,
     })),
     textField: 'name',
     valueField: 'id',
