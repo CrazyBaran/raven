@@ -16,12 +16,13 @@ import { PipelineStageEntity } from '../../rvn-pipeline/entities/pipeline-stage.
 import { FieldDefinitionEntity } from './field-definition.entity';
 import { TabEntity } from './tab.entity';
 
-@Entity({ name: 'template-mapping' })
-@Index(['id', 'tab', 'fieldDefinition', 'pipelineStages'], { unique: true })
+@Entity({ name: 'template_mapping' })
+@Index(['id'], { unique: true })
 export class TemplateMappingEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
+  @Index()
   @ManyToOne(() => TabEntity)
   @JoinColumn({ name: 'tab_id' })
   public tab: TabEntity;
@@ -30,6 +31,7 @@ export class TemplateMappingEntity {
   @RelationId((t: TemplateMappingEntity) => t.tab)
   public tabId: string;
 
+  @Index()
   @ManyToOne(() => TabEntity)
   @JoinColumn({ name: 'field_definition_id' })
   public fieldDefinition: FieldDefinitionEntity;
@@ -44,7 +46,7 @@ export class TemplateMappingEntity {
     joinColumn: { name: 'template_mapping_id' },
     inverseJoinColumn: { name: 'pipeline_stage_id' },
   })
-  public pipelineStages: PipelineStageEntity[]; // TODO or pipelineStageId so we can construct index?
+  public pipelineStages: PipelineStageEntity[];
 
   @AfterInsert()
   @AfterLoad()
