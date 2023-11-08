@@ -22,6 +22,6 @@ setup('authenticate', async ({ page }) => {
   await page.getByRole('button', { name: 'Yes' }).click();
 
   console.log('done');
-  await page.getByText('Mubadala').click();
+  // await page.getByText('Raven').click();
   await page.context().storageState({ path: authFile });
 });
