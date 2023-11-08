@@ -20,7 +20,9 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RxIf } from '@rx-angular/template/if';
+import { Subject, map, merge } from 'rxjs';
 import { OpportunitiesCardComponent } from '../opportunities-card/opportunities-card.component';
 import { ColumnData } from './kanban-board.interface';
 
@@ -53,6 +55,10 @@ export class KanbanBoardComponent implements OnChanges {
 
   public ngOnChanges(): void {
     this.prepareKanbanData();
+  }
+
+  public constructor() {
+    this.startRender.next();
   }
 
   public prepareKanbanData(): void {
@@ -94,4 +100,14 @@ export class KanbanBoardComponent implements OnChanges {
   }
 
   public trackBy = (index: number, item: OpportunityData): string => item.id;
+
+  protected itemsRendered = new Subject<any[]>();
+  protected startRender = new Subject<void>();
+
+  protected visible = toSignal(
+    merge(
+      this.startRender.pipe(map(() => false)),
+      this.itemsRendered.pipe(map(() => true)),
+    ),
+  );
 }
