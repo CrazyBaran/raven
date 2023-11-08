@@ -8,13 +8,24 @@
     field="name"
     title="Note Title"
     [headerStyle]="{ 'font-weight': '700' }"
-  />
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <kendo-button
+        fillMode="link"
+        [routerLink]="['./']"
+        [queryParams]="{ noteId: dataItem.id }"
+      >
+        {{ dataItem?.name }}
+      </kendo-button>
+    </ng-template>
+  </kendo-grid-column>
 
   <kendo-grid-column
     field="templateName"
     title="Note Type"
     [sortable]="false"
     [headerStyle]="{ 'font-weight': '700' }"
+    [width]="150"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div

@@ -32,3 +32,9 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<app-note-details
+  *ngIf="vm().noteId"
+  [noteId]="vm().noteId!"
+  (closeWindow)="handleClosePreview()"
+/>
