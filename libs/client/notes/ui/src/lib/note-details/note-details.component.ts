@@ -161,9 +161,7 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
       )
       .subscribe((action) => {
         this.editMode = false;
-        this.router.navigate(['notes'], {
-          queryParams: { noteId: action.data.id },
-        });
+        this.closeWindow.emit();
       });
   }
 
