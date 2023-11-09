@@ -6,6 +6,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,7 +16,9 @@ import {
 } from 'typeorm';
 
 import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
+import { PipelineStageEntity } from '../../rvn-pipeline/entities/pipeline-stage.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
+import { FieldDefinitionEntity } from './field-definition.entity';
 import { FieldGroupEntity } from './field-group.entity';
 import { TemplateEntity } from './template.entity';
 
@@ -40,6 +44,31 @@ export class TabEntity implements AuditableEntity {
   @Column()
   @RelationId((t: TabEntity) => t.template)
   public templateId: string;
+
+  @ManyToMany(() => PipelineStageEntity, {
+    eager: true,
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinTable({
+    name: 'tab_pipeline_stage',
+    joinColumn: { name: 'tab_id' },
+    inverseJoinColumn: { name: 'pipeline_stage_id' },
+  })
+  public pipelineStages: PipelineStageEntity[];
+
+  // these are not field definitions from same template, rather than fields from other templates used for mapping due diligence
+  @ManyToMany(() => FieldDefinitionEntity, {
+    eager: true,
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinTable({
+    name: 'tab_related_field',
+    joinColumn: { name: 'tab_id' },
+    inverseJoinColumn: { name: 'field_definition_id' },
+  })
+  public relatedFields: FieldDefinitionEntity[];
 
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })

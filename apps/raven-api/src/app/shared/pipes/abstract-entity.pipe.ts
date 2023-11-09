@@ -1,4 +1,4 @@
-import { EntityManager, FindOptionsWhere } from 'typeorm';
+import { EntityManager, FindOptionsWhere, In } from 'typeorm';
 
 import {
   Inject,
@@ -11,7 +11,7 @@ import { EntityTarget } from 'typeorm/common/EntityTarget';
 
 @Injectable()
 export abstract class AbstractEntityPipe<E>
-  implements PipeTransform<string, Promise<E>>
+  implements PipeTransform<string | string[], Promise<E | E[]>>
 {
   /**
    * Resource name in singular form used in exception messages.
@@ -24,8 +24,11 @@ export abstract class AbstractEntityPipe<E>
   protected abstract entityClass: EntityTarget<E>;
   protected abstract resource: string;
 
-  public async transform(id: string, metadata: ArgumentMetadata): Promise<E> {
-    if (id) {
+  public async transform(
+    id: string | string[],
+    metadata: ArgumentMetadata,
+  ): Promise<E | E[]> {
+    if (id && typeof id === 'string') {
       const entity = await this.entityManager.findOne(this.entityClass, {
         where: {
           [this.entityField]: id,
@@ -38,6 +41,25 @@ export abstract class AbstractEntityPipe<E>
       throw new NotFoundException(
         `Unable to find "${this.resource}" with id: "${id}"`,
       );
+    }
+    if (id && Array.isArray(id)) {
+      const entities = await this.entityManager.find(this.entityClass, {
+        where: {
+          [this.entityField]: In(id),
+        } as FindOptionsWhere<E>,
+        relations: this.relations,
+      });
+      if (entities.length !== id.length) {
+        const missingIds = id.filter(
+          (id) => !entities.some((entity) => entity[this.entityField] === id),
+        );
+        throw new NotFoundException(
+          `Unable to find "${this.resource}" with ids: "${missingIds.join(
+            ', ',
+          )}"`,
+        );
+      }
+      return entities;
     }
     if (this.optional) {
       return null;

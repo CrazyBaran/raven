@@ -34,8 +34,9 @@ export class NoteFieldEntity implements AuditableEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public value: string | null;
 
-  @Column()
-  public templateFieldId: string | null; // TODO nullable or set some kind of default for pre-existing data? generated UUID won't be even caught when filtering so it's not an issue
+  @Index()
+  @Column({ default: () => 'NEWID()', type: 'uniqueidentifier' }) // default will be used only for preexisting data, this field will be always set by the application
+  public templateFieldId: string;
 
   @ManyToOne(() => NoteFieldGroupEntity, {
     nullable: false,
