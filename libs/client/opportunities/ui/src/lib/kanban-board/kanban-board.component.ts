@@ -20,7 +20,9 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RxIf } from '@rx-angular/template/if';
+import { Subject, map, merge } from 'rxjs';
 import { OpportunitiesCardComponent } from '../opportunities-card/opportunities-card.component';
 import { ColumnData } from './kanban-board.interface';
 
@@ -50,6 +52,22 @@ export class KanbanBoardComponent implements OnChanges {
   }>();
 
   public kanbanColumns: ColumnData[] = [];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public itemsRendered = new Subject<any[]>();
+
+  public startRender = new Subject<void>();
+
+  public visible = toSignal(
+    merge(
+      this.startRender.pipe(map(() => false)),
+      this.itemsRendered.pipe(map(() => true)),
+    ),
+  );
+
+  public constructor() {
+    this.startRender.next();
+  }
 
   public ngOnChanges(): void {
     this.prepareKanbanData();

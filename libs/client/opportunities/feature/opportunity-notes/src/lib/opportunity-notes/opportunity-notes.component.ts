@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,7 +12,10 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { NotesActions } from '@app/client/notes/data-access';
-import { NotesTableComponent } from '@app/client/notes/ui';
+import {
+  NoteDetailsComponent,
+  NotesTableComponent,
+} from '@app/client/notes/ui';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Store } from '@ngrx/store';
 import {
@@ -37,6 +41,8 @@ import { selectOpportunityNotesViewModel } from './opportunity-notes.selectors';
     NotesTableComponent,
     RouterLink,
     RouterOutlet,
+    NgIf,
+    NoteDetailsComponent,
   ],
   templateUrl: './opportunity-notes.component.html',
   styleUrls: ['./opportunity-notes.component.scss'],

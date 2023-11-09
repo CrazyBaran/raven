@@ -1,8 +1,16 @@
 <div class="kendo-ui-kanban">
-  <div class="kendo-ui-kanban__container" cdkDropListGroup>
+  <div
+    class="kendo-ui-kanban__container"
+    [class.opacity-10]="!visible()"
+    cdkDropListGroup
+  >
     <div
       class="kendo-ui-kanban__column"
-      *rxFor="let column of kanbanColumns; trackBy: 'id'"
+      *rxFor="
+        let column of kanbanColumns;
+        trackBy: 'id';
+        renderCallback: itemsRendered
+      "
     >
       <div class="kendo-ui-kanban__title title {{ column }}">
         <div class="title__name">

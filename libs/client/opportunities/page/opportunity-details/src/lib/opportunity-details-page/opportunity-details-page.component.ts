@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
+import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
@@ -20,6 +21,8 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     StatusIndicatorComponent,
     RxFor,
     JsonPipe,
+    NgIf,
+    NoteDetailsComponent,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
@@ -27,6 +30,7 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
 })
 export class OpportunityDetailsPageComponent {
   protected store = inject(Store);
+  protected router = inject(Router);
 
   protected vm = this.store.selectSignal(selectOpportunityDetailViewModel);
 
@@ -56,5 +60,14 @@ export class OpportunityDetailsPageComponent {
     this.store.dispatch(
       OrganisationsActions.getOrganisation({ id: organizationId }),
     );
+  }
+
+  public handleClosePreview(): void {
+    this.router.navigate([], {
+      queryParams: {
+        noteId: null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 }

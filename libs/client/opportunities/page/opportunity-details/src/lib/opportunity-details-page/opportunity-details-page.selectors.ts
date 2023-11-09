@@ -96,6 +96,7 @@ export const selectOpportunityDetailViewModel = createSelector(
   routerQuery.selectCurrentOrganisationId,
   selectOpportunityPipelines,
   selectOpportunityPageNavigation,
+  routerQuery.selectActiveNoteId,
   (
     opportunityId,
     opportunityDetails,
@@ -103,6 +104,7 @@ export const selectOpportunityDetailViewModel = createSelector(
     currentOrganisationId,
     lines,
     navigations,
+    noteId,
   ) => {
     return {
       opportunityId,
@@ -129,6 +131,7 @@ export const selectOpportunityDetailViewModel = createSelector(
         },
       ],
       navigations,
+      noteId,
     };
   },
 );
