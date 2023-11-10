@@ -1,46 +1,107 @@
-<div class="kendo-ui-kanban">
-  <div
-    class="kendo-ui-kanban__container"
-    [class.opacity-10]="!visible()"
+<div class="kendo-ui-kanban h-full pb-2">
+  <cdk-virtual-scroll-viewport
+    [appendOnly]="true"
+    [itemSize]="312 + 16"
     cdkDropListGroup
+    class="kendo-ui-kanban__container | flex h-full"
+    orientation="horizontal"
+    style="width: 100%"
   >
-    <div
-      class="kendo-ui-kanban__column"
-      *rxFor="
-        let column of kanbanColumns;
-        trackBy: 'id';
-        renderCallback: itemsRendered
-      "
-    >
-      <div class="kendo-ui-kanban__title title {{ column }}">
-        <div class="title__name">
-          <i class="fa-solid fa-circle"></i>
-          {{ column.name }}
-        </div>
-
-        <span class="title__summary"> - {{ column.data.length }} </span>
-      </div>
-
-      <div>
+    <ng-container *cdkVirtualFor="let column of columns(); let index = index">
+      <div
+        *rxLet="
+          column.onceRendered$;
+          let onceRendered;
+          strategy: 'immediate';
+          patchZone: false;
+          parent: false
+        "
+        [class.opacity-25]="!onceRendered"
+        [style.background]="column.color.palette"
+        class="mr-4 flex h-fit max-h-full w-[312px] shrink-0 flex-col rounded-3xl p-4"
+      >
         <div
-          cdkDropList
-          [cdkDropListData]="column"
-          class="relative flex min-h-[100px] flex-col gap-2"
-          (cdkDropListDropped)="drop($event)"
+          class="kendo-ui-kanban__title title {{ column }}
+         mb-4 flex justify-between gap-4 rounded-md bg-white p-2 px-4 text-lg shadow-md
+"
         >
-          <div *rxIf="!column.data.length" class="absolute -z-10">
-            <p>Empty</p>
-          </div>
           <div
-            *ngFor="let item of column.data; trackBy: trackBy"
-            cdkDrag
-            [cdkDragData]="item"
-            class="card bg-white"
+            class="flex flex-1 items-center gap-4 overflow-hidden whitespace-nowrap text-lg"
           >
-            <app-opportunities-card [data]="item" />
+            <i
+              class="fa-solid fa-circle text-xs"
+              [style.color]="column.color.color"
+            ></i>
+            <p class="flex-1 truncate text-black">{{ column.name }}</p>
           </div>
+
+          <span
+            class="title__summary"
+            *rxLet="column.length$; let length; patchZone: false; parent: false"
+          >
+            {{ length }}
+          </span>
+        </div>
+
+        <div
+          (scrolled)="onInfinityScroll(column.id)"
+          [infiniteScrollDistance]="0"
+          [infiniteScrollThrottle]="50"
+          [scrollWindow]="false"
+          class="custom-container | flex-1 overflow-y-auto"
+          infiniteScroll
+        >
+          <ng-container
+            *rxLet="column.data$; let data; patchZone: false; parent: false"
+          >
+            <div
+              (cdkDropListDropped)="drop($any($event))"
+              [cdkDropListAutoScrollStep]="15"
+              [cdkDropListData]="{
+                id: column.id,
+                data: data
+              }"
+              cdkDropList
+              class="card-list | relative flex min-h-[100px] flex-col gap-2"
+            >
+              <div *rxIf="!column.length$" class="absolute -z-10">
+                <p>Empty</p>
+              </div>
+
+              <ng-container
+                *rxFor="
+                  let row of $any(data);
+                  strategy: onceRendered ? 'native' : 'low';
+                  trackBy: 'id';
+                  renderCallback: column.renderSubject;
+                  patchZone: false;
+                  parent: false
+                "
+              >
+                <div
+                  cdkDrag
+                  *rxLet="
+                    $any(row).source;
+                    let item;
+                    strategy: 'native';
+                    patchZone: false;
+                    parent: false
+                  "
+                  [cdkDragData]="item"
+                  class="card bg-white"
+                >
+                  <app-opportunities-card
+                    [@simpleFadeAnimation]="'in'"
+                    [@.disabled]="$any(item).state !== 'updated'"
+                    class="block"
+                    [data]="$any(item)"
+                  />
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
         </div>
       </div>
-    </div>
-  </div>
+    </ng-container>
+  </cdk-virtual-scroll-viewport>
 </div>

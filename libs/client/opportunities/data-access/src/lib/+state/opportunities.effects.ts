@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
+import { pipelinesQuery } from '@app/client/pipelines/state';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, switchMap } from 'rxjs';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { combineLatest, filter, mergeMap, of, switchMap } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
 import { OpportunitiesService } from '../services/opportunities.service';
 import { OpportunitiesActions } from './opportunities.actions';
+import { opportunitiesQuery } from './opportunities.selectors';
 
 @Injectable()
 export class OpportunitiesEffects {
@@ -51,6 +54,34 @@ export class OpportunitiesEffects {
     );
   });
 
+  private liveUpdateOpportunityPipeline$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OpportunitiesActions.liveChangeOpportunityPipelineStage),
+      concatLatestFrom(({ id, pipelineStageId }) =>
+        combineLatest({
+          opportunity: this.store.select(
+            opportunitiesQuery.selectOpportunityById(id),
+          ),
+          pipelineStage: this.store.select(
+            pipelinesQuery.selectPipelineById(pipelineStageId),
+          ),
+        }),
+      ),
+      filter(([{ pipelineStageId }, { opportunity }]) => {
+        return opportunity?.stage.id !== pipelineStageId;
+      }),
+      mergeMap(([{ id, pipelineStageId }, { opportunity, pipelineStage }]) => [
+        NotificationsActions.showSuccessNotification({
+          content: `Opportunity ${opportunity?.organisation.name} pipeline stage changed to ${pipelineStage?.name}`,
+        }),
+        OpportunitiesActions.liveChangeOpportunityPipelineStageUpdated({
+          id,
+          pipelineStageId,
+        }),
+      ]),
+    );
+  });
+
   private loadOpportunityDetails$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.getOpportunityDetails),
@@ -72,5 +103,6 @@ export class OpportunitiesEffects {
   public constructor(
     private readonly actions$: Actions,
     private readonly opportunitiesService: OpportunitiesService,
+    private readonly store: Store,
   ) {}
 }

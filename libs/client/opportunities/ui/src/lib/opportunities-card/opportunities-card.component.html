@@ -1,38 +1,27 @@
-<div class="opportunity-card">
-  <div class="opportunity-card__header header">
-    <div class="header__icon">
-      <i class="header__icon fa-regular fa-buildings"></i>
-    </div>
-
-    <div class="header__info">
-      <div class="header__name">
+<div class="flex flex-col">
+  <div class="text-base-text mb-7 flex justify-between gap-2 overflow-hidden">
+    <div class="flex-1 overflow-hidden">
+      <h1 class="mb-1 truncate text-lg">
         {{ data.organisation.name }}
-        <button
-          [routerLink]="[
-            '/companies',
-            data.organisation.id,
-            'opportunities',
-            data.id
-          ]"
-        >
-          <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        </button>
-      </div>
-      <span class="header__page">{{
-        data.organisation.domains.join(', ')
-      }}</span>
+      </h1>
+      <p class="truncate text-sm">
+        {{ data.organisation.domains.join(', ') }}
+      </p>
+    </div>
+    <div>
+      <i class="fa-regular fa-buildings" style="font-size: 27px"></i>
     </div>
   </div>
 
-  <div class="opportunity-card__details details">
-    <div class="details__item item" *ngIf="dealLead">
-      <div class="item__title">Deal lead</div>
-      <p>{{ dealLead }}</p>
+  <div class="text-component-text overflow-hidden">
+    <div class="flex items-center gap-2" *ngIf="dealLead">
+      <p class="w-20 text-sm">Deal Lead:</p>
+      <p class="flex-1 overflow-hidden truncate text-lg">{{ dealLead }}</p>
     </div>
-
-    <!--    <div class="details__item item" *ngIf="dateAdded">-->
-    <!--      <div class="item__title">Date added</div>-->
-    <!--      <p>{{ dateAdded }}</p>-->
+    <!--    TODO: include date when api ready     -->
+    <!--    <div class="flex items-center gap-2">-->
+    <!--      <p class="w-20 text-sm">Date Added:</p>-->
+    <!--      <p class="flex-1 overflow-hidden truncate text-lg">March-13, 2023</p>-->
     <!--    </div>-->
   </div>
 </div>

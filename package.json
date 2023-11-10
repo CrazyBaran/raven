@@ -147,6 +147,7 @@
     "morgan": "1.10.0",
     "mssql": "^9.2.0",
     "nestjs-cls": "^3.6.0",
+    "ngx-infinite-scroll": "^16.0.0",
     "otp-generator": "^4.0.1",
     "passport": "0.6.0",
     "passport-azure-ad": "^4.3.5",

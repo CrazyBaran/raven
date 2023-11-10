@@ -1,0 +1,74 @@
+<div class="pipeline-page">
+  <app-page-template pageIcon="fa-regular fa-fire" pageName="Pipeline">
+    <div class="flex gap-3" page-header-actions>
+      <kendo-textbox
+        [formControl]="searchPipelinesForm"
+        placeholder="Search Pipelines"
+      ></kendo-textbox>
+      <kendo-button
+        fillMode="flat"
+        iconClass="fa-solid fa-square-plus"
+        size="large"
+        themeColor="secondary"
+        >Add New</kendo-button
+      >
+      <kendo-button
+        fillMode="flat"
+        iconClass="fa-solid fa-filter"
+        size="large"
+        themeColor="secondary"
+        >Filters</kendo-button
+      >
+    </div>
+
+    <div class="flex h-full flex-col gap-10" page-content>
+      <app-quick-filters-template>
+        <div class="flex gap-6">
+          <kendo-buttongroup class="flex gap-0.5" selection="single">
+            <kendo-button
+              *rxFor="let filter of vm2().filters; trackBy: 'id'"
+              [queryParams]="{ filter: filter.id }"
+              [routerLink]="[]"
+              [selected]="filter.selected"
+              [toggleable]="true"
+              queryParamsHandling="merge"
+            >
+              {{ filter.name }}
+            </kendo-button>
+          </kendo-buttongroup>
+
+          <app-dropdown-navigation
+            *rxFor="let dropdown of vm2().dropdowns"
+            [model]="dropdown"
+          >
+          </app-dropdown-navigation>
+        </div>
+      </app-quick-filters-template>
+
+      <div class="flex-1 shrink-0">
+        <div
+          class="flex h-full w-full flex-col items-center justify-center"
+          *rxIf="vm2().isLoading"
+        >
+          <kendo-loader
+            class="mb-4"
+            themeColor="primary"
+            type="infinite-spinner"
+          />
+          Loading...
+        </div>
+
+        <app-kanban-board
+          *rxIf="!vm2().isLoading"
+          (dragEndEvent)="onDragEvent($event)"
+          [pipelines]="vm2().pipelines"
+          [opportunitiesStageDictionary]="
+            (vm().opportunitiesStageDictionary$ | async)!
+          "
+          [opportunitiesDictionary$]="vm().opportunitiesDictionary$"
+          [searchQuery]="vm2().pipelineQuery!"
+        />
+      </div>
+    </div>
+  </app-page-template>
+</div>

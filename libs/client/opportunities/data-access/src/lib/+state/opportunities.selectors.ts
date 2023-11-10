@@ -27,6 +27,10 @@ export const selectOpportunitiesDictionary = createSelector(
   (state: OpportunitiesState) => selectEntities(state),
 );
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const selectOpportunityById = (id: string) =>
+  createSelector(selectOpportunitiesDictionary, (dictionary) => dictionary[id]);
+
 export const selectRouteOpportunityDetails = createSelector(
   selectOpportunitiesDictionary,
   routerQuery.selectCurrentOpportunityId,
@@ -141,4 +145,5 @@ export const opportunitiesQuery = {
   selectIsLoading,
   selectOpportunitiesDictionary,
   selectRouteOpportunityDetails,
+  selectOpportunityById,
 };
