@@ -19,11 +19,11 @@ pr:
 pool: Raven - Prod
 
 variables:
-  APP_SERVICE_NAME: as-wa-mub-raven-api-prod
+  APP_SERVICE_NAME: app-raven-prod-uks # as-wa-mub-raven-api-prod
   APP_STARTUP_CMD: 'node /app/main.js'
-  RESOURCE_MANAGER_CONN: rm-mub-raven-prod
-  CONTAINER_REGISTRY_CONN: cruksmcravenprod
-  CONTAINER_REGISTRY_SERVER: cruksmcravenprod.azurecr.io
+  RESOURCE_MANAGER_CONN: 'Raven DevOps for Production' # rm-mub-raven-prod
+  CONTAINER_REGISTRY_CONN: acrravenproduks
+  CONTAINER_REGISTRY_SERVER: acrravenproduks.azurecr.io
   DOCKER_REPOSITORY: wa/api
   SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/prod')]
   # workaround for Azure docker job warnings when new version of Docker is used in the self-hosted agent
