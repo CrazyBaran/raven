@@ -16,7 +16,8 @@ pr:
     include:
       - apps/raven-api
 
-pool: Raven - Prod
+pool:
+  vmImage: ubuntu-22.04
 
 variables:
   APP_SERVICE_NAME: app-raven-prod-uks # as-wa-mub-raven-api-prod
