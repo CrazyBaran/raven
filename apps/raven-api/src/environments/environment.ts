@@ -1,7 +1,6 @@
 import * as env from 'env-var';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { JwtModuleOptions } from '@nestjs/jwt/dist/interfaces/jwt-module-options.interface';
 import * as Bull from '@taskforcesh/bullmq-pro';
 import { RedisOptions } from 'ioredis/built/redis/RedisOptions';
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
@@ -40,52 +39,6 @@ export const environment = {
       excludedEndpoints: ['platform/health'],
     },
   },
-  communication: {
-    email: {
-      connectionString: env
-        .get('COMM_EMAIL_CONN_STRING')
-        .default('endpoint=azure_comm_endpoint')
-        .asString(),
-      senders: {
-        noReply: {
-          address: env
-            .get('COMM_EMAIL_SENDERS_NO_REPLY_ADDRESS')
-            .default('noreply@curvestone.io')
-            .asString(),
-          replyTo: {
-            address: env
-              .get('COMM_EMAIL_SENDERS_NOREPLY_REPLY_TO_ADDRESS')
-              .default('replyto@curvestone.io')
-              .asString(),
-            displayName: env
-              .get('COMM_EMAIL_SENDERS_NOREPLY_REPLY_TO_DISPLAY_NAME')
-              .default('John Doe')
-              .asString(),
-          },
-        },
-      },
-      crypto: {
-        key: env
-          .get('COMM_EMAIL_CRYPTO_KEY')
-          .default('Xw9AmgeKjF0FfUk4MBtwj9JG9Zj1Nj3K')
-          .asString(),
-        initVector: env
-          .get('COMM_EMAIL_CRYPTO_IV')
-          .default('UY4i4iNzn2LQFijc')
-          .asString(),
-      },
-    },
-  },
-  upload: {
-    maxFileSize: env
-      .get('UPLOAD_MAX_FILE_SIZE')
-      .default('1048576000') // 100MB
-      .asIntPositive(),
-    maxFilenameLength: env
-      .get('UPLOAD_MAX_FILENAME_LENGTH')
-      .default('40')
-      .asIntPositive(),
-  },
   cache: {
     store: {
       redis: {
@@ -105,36 +58,10 @@ export const environment = {
         },
       },
     },
-    auth: {
-      saml: {
-        forceDomain: env.get('SECURITY_AUTH_SAML_FORCE_DOMAIN').asString(),
-        emailsBypass: env
-          .get('SECURITY_AUTH_SAML_EMAILS_BYPASS')
-          .default('')
-          .asArray(),
-      },
-    },
-    jwt: {
-      secret: env.get('JWT_SECRET').default('jwtSecret').asString(),
-      signOptions: { expiresIn: '2m' },
-      verifyOptions: {
-        algorithms: ['HS256'],
-      },
-    } as JwtModuleOptions,
     cookies: {
       secret: env
         .get('SECURITY_COOKIES_SECRET')
         .default('cookieSecret')
-        .asString(),
-    },
-    crypto: {
-      key: env
-        .get('SECURITY_CRYPTO_KEY')
-        .default('YWXglebFVPROr2wnDseQ9X80YS48c4FT')
-        .asString(),
-      initVector: env
-        .get('SECURITY_CRYPTO_IV')
-        .default('JgvqXV8ot7xrKlv1')
         .asString(),
     },
     rateLimiting: {

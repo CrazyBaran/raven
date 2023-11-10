@@ -1,7 +1,6 @@
 import * as env from 'env-var';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { JwtModuleOptions } from '@nestjs/jwt/dist/interfaces/jwt-module-options.interface';
 import * as Bull from '@taskforcesh/bullmq-pro';
 import { RedisOptions } from 'ioredis/built/redis/RedisOptions';
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
@@ -32,43 +31,6 @@ export const environment = {
       excludedEndpoints: ['platform/health'],
     },
   },
-  communication: {
-    email: {
-      connectionString: env.get('COMM_EMAIL_CONN_STRING').required().asString(),
-      senders: {
-        noReply: {
-          address: env
-            .get('COMM_EMAIL_SENDERS_NO_REPLY_ADDRESS')
-            .required()
-            .asString(),
-          replyTo: {
-            address: env
-              .get('COMM_EMAIL_SENDERS_NOREPLY_REPLY_TO_ADDRESS')
-              .required()
-              .asString(),
-            displayName: env
-              .get('COMM_EMAIL_SENDERS_NOREPLY_REPLY_TO_DISPLAY_NAME')
-              .required()
-              .asString(),
-          },
-        },
-      },
-      crypto: {
-        key: env.get('COMM_EMAIL_CRYPTO_KEY').required().asString(),
-        initVector: env.get('COMM_EMAIL_CRYPTO_IV').required().asString(),
-      },
-    },
-  },
-  upload: {
-    maxFileSize: env
-      .get('UPLOAD_MAX_FILE_SIZE')
-      .default('1073741824') // 1GB
-      .asIntPositive(),
-    maxFilenameLength: env
-      .get('UPLOAD_MAX_FILENAME_LENGTH')
-      .default('40')
-      .asIntPositive(),
-  },
   cache: {
     store: {
       redis: {
@@ -88,28 +50,8 @@ export const environment = {
         },
       },
     },
-    auth: {
-      saml: {
-        forceDomain: env.get('SECURITY_AUTH_SAML_FORCE_DOMAIN').asString(),
-        emailsBypass: env
-          .get('SECURITY_AUTH_SAML_EMAILS_BYPASS')
-          .default('')
-          .asArray(),
-      },
-    },
-    jwt: {
-      secret: env.get('JWT_SECRET').required().asString(),
-      signOptions: { expiresIn: '2m' },
-      verifyOptions: {
-        algorithms: ['HS256'],
-      },
-    } as JwtModuleOptions,
     cookies: {
       secret: env.get('SECURITY_COOKIES_SECRET').required().asString(),
-    },
-    crypto: {
-      key: env.get('SECURITY_CRYPTO_KEY').required().asString(),
-      initVector: env.get('SECURITY_CRYPTO_IV').required().asString(),
     },
     rateLimiting: {
       ttl: env.get('API_RATE_LIMITING_TTL').default('1').asInt(),

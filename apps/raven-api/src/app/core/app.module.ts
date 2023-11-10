@@ -23,7 +23,6 @@ import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affin
 import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware';
 import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 import { AuthModule } from '../api/rvn-auth/auth.module';
-import { CommModule } from '../api/rvn-comm/comm.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
 import { OnBehalfOfModule } from '../api/rvn-on-behalf-of/on-behalf-of.module';
 import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
@@ -32,7 +31,6 @@ import { StorageAccountModule } from '../api/rvn-storage-account/storage-account
 import { TagsModule } from '../api/rvn-tags/tags.module';
 import { TeamsModule } from '../api/rvn-teams/teams.module';
 import { TemplatesModule } from '../api/rvn-templates/templates.module';
-import { UsersSessionsModule } from '../api/rvn-users-sessions/users-sessions.module';
 import { UsersModule } from '../api/rvn-users/users.module';
 import { WebSocketsModule } from '../api/rvn-web-sockets/web-sockets.module';
 import { BullService } from './bull.service';
@@ -77,8 +75,6 @@ import { TransformInterceptor } from './transform.interceptor';
     AclModule,
     TeamsModule,
     UsersModule,
-    UsersSessionsModule,
-    CommModule,
     WebSocketsModule,
     OpportunitiesModule,
     AffinityIntegrationModule,

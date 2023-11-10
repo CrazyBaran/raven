@@ -1,8 +1,6 @@
 import { Brackets, Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 
 import { UserData } from '@app/rvns-api';
-import { EnqueueJobEvent } from '@app/rvns-bull';
 
 import { UserRegisteredEvent } from '@app/rvns-auth';
 import { Injectable } from '@nestjs/common';
@@ -10,11 +8,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AclService } from '../rvn-acl/acl.service';
 import { ShareTeamEntity } from '../rvn-acl/entities/share-team.entity';
-import {
-  COMM_SEND_EMAIL_QUEUE__SEND,
-  CommSendEmailJobData,
-} from '../rvn-comm/queues/comm-send-email/comm-send-email.processor';
-import { CommEmailTemplatesEnum } from '../rvn-comm/templates/comm-email-templates.enum';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { UserEntity } from './entities/user.entity';
 
@@ -101,7 +94,6 @@ export class UsersService {
       'user-registered',
       new UserRegisteredEvent(user.id, user.name),
     );
-    await this.enqueueWelcomeEmail(user);
     return user;
   }
 
@@ -115,27 +107,5 @@ export class UsersService {
       email: user.email,
       teamId: team ? team.id : null,
     };
-  }
-
-  protected async enqueueWelcomeEmail(user: UserEntity): Promise<void> {
-    const team = await this.getUserTeam(user);
-    const jobId = `jid:${uuidv4()}`;
-    this.eventEmitter.emit(
-      `ms.bg.enqueue.${COMM_SEND_EMAIL_QUEUE__SEND}`,
-      new EnqueueJobEvent<CommSendEmailJobData>(
-        {
-          template: CommEmailTemplatesEnum.WELCOME_ACTIVATE,
-          templateArgs: {},
-          subject: 'Welcome to the Platform! Start Your Journey Right Away!',
-          recipients: {
-            to: [{ address: user.email, displayName: user.name }],
-          },
-        },
-        {
-          jobId,
-          group: { id: team?.id },
-        },
-      ),
-    );
   }
 }
