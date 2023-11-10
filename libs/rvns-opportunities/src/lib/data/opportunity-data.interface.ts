@@ -16,4 +16,5 @@ export interface OpportunityDataWithoutOrganisation {
   readonly stage: PipelineStageData;
   readonly fields: FieldData[];
   readonly tag?: TagData;
+  readonly createdAt?: Date;
 }

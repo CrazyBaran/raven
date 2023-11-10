@@ -102,6 +102,7 @@ export class OpportunityService {
           order: pipelineStage.order,
           mappedFrom: pipelineStage.mappedFrom,
         },
+        createdAt: opportunity.createdAt,
         tag: opportunity.tag,
         fields:
           matchedOrganization?.fields.map((field) => {
@@ -191,6 +192,7 @@ export class OpportunityService {
             domains: matchedOrganization.organizationDto.domains,
             affinityUrl: `${environment.affinity.affinityUrl}companies/${matchedOrganization.organizationDto.id}`,
           },
+          createdAt: undefined, // Adjust this if there's a relevant ID
           stage: pipelineStage,
           fields: matchedOrganization.fields.map((field) => {
             return {
@@ -304,6 +306,7 @@ export class OpportunityService {
         id: entity.tag.id,
         name: entity.tag.name,
       },
+      createdAt: entity?.createdAt,
       fields: affinityDto?.fields.map((field) => {
         return {
           displayName: field.displayName,
@@ -384,6 +387,7 @@ export class OpportunityService {
         ? { id: entity.tag.id, name: entity.tag.name }
         : undefined,
       fields: [],
+      createdAt: entity.createdAt,
     };
   }
 
