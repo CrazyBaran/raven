@@ -1,17 +1,15 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
-import { ShareData } from '@app/rvns-acl';
-import { UserData } from '@app/rvns-api';
 import { AuthActions } from './auth.actions';
 
 export const AUTH_FEATURE_KEY = 'auth';
 
 export interface AuthState {
-  isLoading: boolean;
-  isPending: boolean;
-  user: Partial<UserData> | null;
-  acl: ShareData[] | null;
-  error?: string | null;
+  // isLoading: boolean;
+  // isPending: boolean;
+  user: Partial<{ email: string; name: string }> | null;
+  // acl: ShareData[] | null;
+  // error?: string | null;
 }
 
 export interface AuthPartialState {
@@ -20,10 +18,10 @@ export interface AuthPartialState {
 
 export const initialAuthState: AuthState = {
   user: {},
-  isLoading: false,
-  isPending: false,
-  acl: null,
-  error: null,
+  // isLoading: false,
+  // isPending: false,
+  // acl: null,
+  // error: null,
 };
 
 const reducer = createReducer(
