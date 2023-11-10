@@ -1,0 +1,11 @@
+<kendo-dropdownlist
+  *ngIf="model"
+  (valueChange)="valueChange($event)"
+  [data]="model.data"
+  [defaultItem]="model.defaultItem"
+  [loading]="model.loading ?? false"
+  textField="name"
+  valueField="id"
+  [value]="model.value"
+>
+</kendo-dropdownlist>

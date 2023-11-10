@@ -2,15 +2,9 @@ import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import {
-  OpportunitiesEffects,
-  OpportunitiesFacade,
-  opportunitiesReducer,
-} from '@app/client/opportunities/data-access';
-import {
   OrganisationsEffects,
   OrganisationsFeature,
 } from '@app/client/organisations/state';
-import { PipelinesEffects, pipelinesReducer } from '@app/client/pipelines';
 
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -48,18 +42,9 @@ export const HOME_ROUTES: Routes = [
           },
           {
             path: 'pipeline',
-            providers: [
-              OpportunitiesFacade,
-              importProvidersFrom(
-                StoreModule.forFeature('opportunities', opportunitiesReducer),
-                EffectsModule.forFeature([OpportunitiesEffects]),
-                StoreModule.forFeature('pipelines', pipelinesReducer),
-                EffectsModule.forFeature([PipelinesEffects]),
-              ),
-            ],
-            loadComponent: () =>
-              import('./pages/pipelines-page/pipelines-page.component').then(
-                (c) => c.PipelinesPageComponent,
+            loadChildren: () =>
+              import('@app/client/pipelines/feature/shell').then(
+                (c) => c.PIPELINES_ROUTES,
               ),
           },
           {

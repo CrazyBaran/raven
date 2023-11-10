@@ -22,6 +22,9 @@
       "@app/client/core/environment": [
         "libs/client/core/environment/src/index.ts"
       ],
+      "@app/client/core/websockets": [
+        "libs/client/core/websockets/src/index.ts"
+      ],
       "@app/client/files/feature/files-table": [
         "libs/client/files/feature/files-table/src/index.ts"
       ],
@@ -79,7 +82,18 @@
       "@app/client/organisations/state": [
         "libs/client/organisations/state/src/index.ts"
       ],
-      "@app/client/pipelines": ["libs/client/pipelines/src/index.ts"],
+      "@app/client/pipelines/data-access": [
+        "libs/client/pipelines/data-access/src/index.ts"
+      ],
+      "@app/client/pipelines/feature/pipelines-board": [
+        "libs/client/pipelines/feature/pipelines-board/src/index.ts"
+      ],
+      "@app/client/pipelines/feature/shell": [
+        "libs/client/pipelines/feature/shell/src/index.ts"
+      ],
+      "@app/client/pipelines/state": [
+        "libs/client/pipelines/state/src/index.ts"
+      ],
       "@app/client/shared/dynamic-form-util": [
         "libs/client/shared/dynamic-form-util/src/index.ts"
       ],
@@ -95,6 +109,12 @@
         "libs/client/shared/storage/data-access/src/index.ts"
       ],
       "@app/client/shared/ui": ["libs/client/shared/ui/src/index.ts"],
+      "@app/client/shared/ui-router": [
+        "libs/client/shared/ui-router/src/index.ts"
+      ],
+      "@app/client/shared/ui-templates": [
+        "libs/client/shared/ui-templates/src/index.ts"
+      ],
       "@app/client/shared/util": ["libs/client/shared/util/src/index.ts"],
       "@app/client/shared/util-notifications": [
         "libs/client/shared/util-notifications/src/index.ts"
