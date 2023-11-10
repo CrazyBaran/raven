@@ -450,6 +450,7 @@ export class NotesService {
           noteField.name = fieldDefinition.name;
           noteField.order = fieldDefinition.order;
           noteField.type = fieldDefinition.type;
+          noteField.templateFieldId = fieldDefinition.id;
           noteField.createdBy = userEntity;
           noteField.updatedBy = userEntity;
           noteField.value = this.findFieldValue(fieldDefinition, fields);
@@ -479,6 +480,7 @@ export class NotesService {
           newNoteField.name = noteField.name;
           newNoteField.order = noteField.order;
           newNoteField.type = noteField.type;
+          newNoteField.templateFieldId = noteField.templateFieldId;
           newNoteField.createdBy = noteField.createdBy;
           newNoteField.createdById = noteField.createdById;
           newNoteField.updatedBy = userEntity;

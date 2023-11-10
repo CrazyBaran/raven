@@ -148,13 +148,14 @@ export class TemplatesController {
     fieldDefinitions: FieldDefinitionEntity[],
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<TabData> {
-    // TODO test new pipes if work as expected
     return this.service.tabEntityToTabData(
       await this.service.createTab({
         name: dto.name,
         templateId: template.id,
         order: dto.order,
         userEntity,
+        pipelineStages,
+        fieldDefinitions,
       }),
     );
   }
@@ -175,12 +176,12 @@ export class TemplatesController {
     fieldDefinitions: FieldDefinitionEntity[],
     @Body() dto: UpdateTabDto,
   ): Promise<TabWithFieldGroupsData> {
-    // TODO test new pipes if work as expected
-    // TODO add validation - only tabs of workflow templates can have those fields - how to enforce it in a lean way
     return this.service.tabEntityToTabData(
       await this.service.updateTab(tabEntity, {
         name: dto.name,
         order: dto.order,
+        pipelineStages,
+        fieldDefinitions,
       }),
     );
   }

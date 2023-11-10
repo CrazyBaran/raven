@@ -10,6 +10,7 @@ import {
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
@@ -41,6 +42,8 @@ interface CreateTabOptions {
   order: number;
   templateId: string;
   userEntity: UserEntity;
+  pipelineStages: PipelineStageEntity[] | null;
+  fieldDefinitions: FieldDefinitionEntity[] | null;
 }
 
 interface UpdateFieldGroupOptions {
@@ -51,6 +54,8 @@ interface UpdateFieldGroupOptions {
 interface UpdateTabOptions {
   name?: string;
   order?: number;
+  pipelineStages: PipelineStageEntity[] | null;
+  fieldDefinitions: FieldDefinitionEntity[] | null;
 }
 
 interface CreateFieldDefinitionOptions {
@@ -176,6 +181,8 @@ export class TemplatesService {
     tab.name = options.name;
     tab.order = options.order;
     tab.template = { id: options.templateId } as TemplateEntity;
+    tab.pipelineStages = options.pipelineStages;
+    tab.relatedFields = options.fieldDefinitions;
     tab.createdBy = options.userEntity;
     return this.tabsRepository.save(tab);
   }
@@ -184,14 +191,40 @@ export class TemplatesService {
     tab: TabEntity,
     options: UpdateTabOptions,
   ): Promise<TabEntity> {
-    delete tab.fieldGroups;
-    if (options.name) {
-      tab.name = options.name;
-    }
-    if (options.order) {
-      tab.order = options.order;
-    }
-    return this.tabsRepository.save(tab);
+    return await this.tabsRepository.manager.transaction(async (tem) => {
+      delete tab.fieldGroups;
+
+      if (options.name) {
+        tab.name = options.name;
+      }
+      if (options.order) {
+        tab.order = options.order;
+      }
+      if (options.pipelineStages) {
+        await tem
+          .createQueryBuilder()
+          .relation(TabEntity, 'pipelineStages')
+          .of(tab)
+          .addAndRemove(options.pipelineStages, tab.pipelineStages);
+      }
+      if (options.fieldDefinitions) {
+        await tem
+          .createQueryBuilder()
+          .relation(TabEntity, 'relatedFields')
+          .of(tab)
+          .addAndRemove(options.fieldDefinitions, tab.relatedFields);
+      }
+      const oldRelatedFields = tab.relatedFields;
+      const oldPipelineStages = tab.pipelineStages;
+      delete tab.relatedFields;
+      delete tab.pipelineStages;
+      await tem.save(tab);
+
+      // we reassign those here because of the way TypeORM handles relations
+      tab.pipelineStages = options.pipelineStages || oldPipelineStages;
+      tab.relatedFields = options.fieldDefinitions || oldRelatedFields;
+      return tab;
+    });
   }
 
   public async removeTab(tab: TabEntity): Promise<void> {
@@ -282,6 +315,14 @@ export class TemplatesService {
       fieldGroups: entity.fieldGroups?.map(
         this.fieldGroupEntityToFieldGroupData.bind(this),
       ),
+      pipelineStages: entity.pipelineStages?.map((ps) => ({
+        id: ps.id,
+        displayName: ps.displayName,
+      })),
+      relatedFields: entity.relatedFields?.map((rf) => ({
+        id: rf.id,
+        name: rf.name,
+      })),
       templateId: entity.templateId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
