@@ -16,7 +16,8 @@ pr:
     include:
       - apps/raven-client
 
-pool: Raven - Prod
+pool:
+  vmImage: ubuntu-22.04
 
 variables:
   RESOURCE_MANAGER_CONN: rm-mub-raven-prod
