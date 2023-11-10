@@ -20,12 +20,12 @@ pool: Raven - Prod
 
 variables:
   RESOURCE_MANAGER_CONN: rm-mub-raven-prod
-  RESOURCE_GROUP: rg-mub-raven-prod
+  RESOURCE_GROUP: Raven_Staging
   FRONT_CONFIGURATION: production
-  FRONT_CDN_STORAGE_ACCOUNT_NAME: stmubravenprodcdn
-  FRONT_CDN_ENDPOINT_NAME: mub-raven-prod
-  FRONT_CDN_PROFILE_NAME: cdn-mub-raven-prod
-  PUBLICLY_AVAILABLE: true
+  FRONT_CDN_STORAGE_ACCOUNT_NAME: sauksmcravenwwwprod
+  FRONT_CDN_ENDPOINT_NAME: fd-ep-as-wa-mc-raven-staging
+  FRONT_CDN_PROFILE_NAME: feazfdmcat
+  PUBLICLY_AVAILABLE: false
   SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/prod')]
 
 steps:
