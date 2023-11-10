@@ -26,7 +26,7 @@ variables:
   FRONT_CDN_ENDPOINT_NAME: fd-ep-as-wa-mc-raven-staging
   FRONT_CDN_PROFILE_NAME: feazfdmcat
   PUBLICLY_AVAILABLE: false
-  SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/prod')]
+  SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
 
 steps:
   - template: tpl/steps.template.yml
