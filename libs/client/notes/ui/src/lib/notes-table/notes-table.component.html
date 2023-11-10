@@ -1,19 +1,19 @@
 <kendo-grid
   [kendoGridBinding]="notes"
+  [sort]="sort"
   [sortable]="true"
   scrollable="scrollable"
-  [sort]="sort"
 >
   <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
     field="name"
     title="Note Title"
-    [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <kendo-button
-        fillMode="link"
-        [routerLink]="['./']"
         [queryParams]="{ noteId: dataItem.id }"
+        [routerLink]="['./']"
+        fillMode="link"
         queryParamsHandling="merge"
       >
         {{ dataItem?.name }}
@@ -22,11 +22,11 @@
   </kendo-grid-column>
 
   <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
+    [sortable]="false"
+    [width]="150"
     field="templateName"
     title="Note Type"
-    [sortable]="false"
-    [headerStyle]="{ 'font-weight': '700' }"
-    [width]="150"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div
@@ -39,9 +39,9 @@
   </kendo-grid-column>
 
   <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
     field="updatedAt"
     title="Updated"
-    [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-1">
@@ -58,20 +58,20 @@
   </kendo-grid-column>
 
   <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
+    [sortable]="false"
     field="people"
     title="People"
-    [sortable]="false"
-    [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div
+        [gap]="12"
         class="flex h-[2.5rem] flex-row flex-wrap items-center gap-[0_0.75rem] overflow-hidden text-base"
         truncateElements
-        [gap]="12"
       >
         <div
-          class="flex items-center gap-1 whitespace-nowrap"
           *ngFor="let tag of dataItem?.tags | tagFilter: ['people']"
+          class="flex items-center gap-1 whitespace-nowrap"
         >
           <i class="fa-solid fa-circle-user"></i>
           {{ tag.name }}
@@ -81,20 +81,19 @@
   </kendo-grid-column>
 
   <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
+    [sortable]="false"
     field="tags"
     title="Tags"
-    [sortable]="false"
-    [headerStyle]="{ 'font-weight': '700' }"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div
-        class="flex h-[2.5rem] flex-row flex-wrap items-center gap-[0_0.75rem] overflow-hidden text-sm"
-        truncateElements
         [gap]="12"
+        class="flex h-[2.5rem] flex-row flex-wrap items-center gap-[0_0.75rem] overflow-hidden text-sm"
         suffixInfo="more"
+        truncateElements
       >
         <div
-          class="lex items-center gap-1"
           *ngFor="let tag of dataItem?.tags | tagFilter: ['people'] : false"
           [ngClass]="{
             'text-error': tag.type === 'company' || tag.type === 'opportunity',
@@ -102,6 +101,7 @@
             'text-warning': tag.type === 'investor',
             'text-primary-900': tag.type === 'businessModel'
           }"
+          class="lex items-center gap-1"
         >
           <i class="fa-regular fa-tag"></i>
 
@@ -113,23 +113,27 @@
 
   <kendo-grid-column [width]="135">
     <ng-template kendoGridCellTemplate let-dataItem>
-      <div class="flex flex-row gap-1">
+      <div class="flex flex-row gap-1" kendoTooltip>
         <kendo-button
-          themeColor="primary"
-          iconClass="fa-solid fa-eye"
-          [routerLink]="['./']"
           [queryParams]="{ noteId: dataItem.id }"
+          [routerLink]="['./']"
+          iconClass="fa-solid fa-eye"
+          themeColor="primary"
         />
         <kendo-button
-          themeColor="light"
-          iconClass="fa-solid fa-link"
           (click)="handleCopyLink(dataItem.id)"
-        />
-        <kendo-button
+          iconClass="fa-solid fa-link"
           themeColor="light"
-          iconClass="fa-solid fa-trash-can"
-          (click)="handleDeleteNote(dataItem)"
         />
+        <div [title]="dataItem.deleteButtonSettings?.tooltip">
+          <kendo-button
+            (click)="handleDeleteNote(dataItem)"
+            [class.!opacity-20]="dataItem.deleteButtonSettings?.disabled"
+            [disabled]="dataItem.deleteButtonSettings?.disabled"
+            iconClass="fa-solid fa-trash-can"
+            themeColor="light"
+          />
+        </div>
       </div>
     </ng-template>
   </kendo-grid-column>
