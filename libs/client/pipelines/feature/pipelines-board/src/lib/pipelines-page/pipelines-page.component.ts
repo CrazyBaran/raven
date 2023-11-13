@@ -247,4 +247,8 @@ export class PipelinesPageComponent implements OnInit {
       }),
     );
   }
+
+  public openOpportunityDialog(): void {
+    this.store.dispatch(OpportunitiesActions.openOpportunityDialogForm());
+  }
 }

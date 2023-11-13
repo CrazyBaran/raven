@@ -36,3 +36,9 @@ $shelf-window-padding: 15px;
     border-top: none !important;
   }
 }
+
+.raven-custom-dialog {
+  .k-window-content {
+    padding: 0 !important;
+  }
+}

@@ -1,0 +1,68 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Add New Opportunity</span>
+</kendo-dialog-titlebar>
+
+<form [formGroup]="opportunityForm" class="flex flex-col gap-4 p-10">
+  <kendo-formfield>
+    <kendo-label text="Company Name" />
+    <kendo-textbox formControlName="companyName" />
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Funding Round" />
+    <kendo-dropdownlist
+      [defaultItem]="defaultFundingRound"
+      textField="text"
+      valueField="id"
+      formControlName="fundingRound"
+    />
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Round Size" />
+    <kendo-textbox formControlName="roundSize" />
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Valuation" />
+    <kendo-textbox formControlName="valuation" />
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Proposed Investment" />
+    <kendo-textbox formControlName="proposedInvestment" />
+  </kendo-formfield>
+  <kendo-formfield orientation="horizontal">
+    <kendo-label text="Positioning" />
+    <ul class="k-radio-list k-list-horizontal">
+      <li class="k-radio-item">
+        <input
+          type="radio"
+          #lead
+          value="lead"
+          kendoRadioButton
+          formControlName="positioning"
+        />
+        <kendo-label [for]="lead" text="Lead"></kendo-label>
+      </li>
+
+      <li class="k-radio-item">
+        <input
+          type="radio"
+          #follower
+          value="follower"
+          kendoRadioButton
+          formControlName="positioning"
+        />
+        <kendo-label [for]="follower" text="Follower"></kendo-label>
+      </li>
+    </ul>
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Timing" />
+    <kendo-textbox />
+  </kendo-formfield>
+</form>
+
+<kendo-dialog-actions>
+  <kendo-button class="w-40" (click)="onDialogClose()">Cancel</kendo-button>
+  <kendo-button (click)="onCreate()" themeColor="primary">
+    Add New Opportunity
+  </kendo-button>
+</kendo-dialog-actions>

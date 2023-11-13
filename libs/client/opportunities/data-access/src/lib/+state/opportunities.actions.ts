@@ -36,5 +36,7 @@ export const OpportunitiesActions = createActionGroup({
 
     'Clear Opportunities': emptyProps(),
     'Clear Opportunity Details': emptyProps(),
+
+    'Open Opportunity Dialog Form': emptyProps,
   },
 });

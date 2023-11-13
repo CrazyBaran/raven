@@ -52,6 +52,9 @@
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
+      "@app/client/opportunities/feature/create-dialog": [
+        "libs/client/opportunities/feature/create-dialog/src/index.ts"
+      ],
       "@app/client/opportunities/feature/files": [
         "libs/client/opportunities/feature/files/src/index.ts"
       ],

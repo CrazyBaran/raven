@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core';
 import { pipelinesQuery } from '@app/client/pipelines/state';
+import { DynamicDialogService } from '@app/client/shared/shelf';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { combineLatest, filter, mergeMap, of, switchMap } from 'rxjs';
+import {
+  combineLatest,
+  exhaustMap,
+  filter,
+  mergeMap,
+  of,
+  switchMap,
+} from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
 import { OpportunitiesService } from '../services/opportunities.service';
 import { OpportunitiesActions } from './opportunities.actions';
@@ -100,9 +108,34 @@ export class OpportunitiesEffects {
     );
   });
 
+  private openOpportunityDialogForm = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(OpportunitiesActions.openOpportunityDialogForm),
+        exhaustMap(
+          () =>
+            this.dynamicDialogService.openDynamicDialog({
+              width: 480,
+              cssClass: 'raven-custom-dialog',
+              template: {
+                name: 'opportunity dialog form',
+                load: () =>
+                  import(
+                    '@app/client/opportunities/feature/create-dialog'
+                  ).then((m) => m.CreateOpportunityDialogModule),
+                showLoading: true,
+              },
+            }).result,
+        ),
+      );
+    },
+    { dispatch: false },
+  );
+
   public constructor(
     private readonly actions$: Actions,
     private readonly opportunitiesService: OpportunitiesService,
     private readonly store: Store,
+    private readonly dynamicDialogService: DynamicDialogService,
   ) {}
 }
