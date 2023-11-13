@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoteStoreFacade } from '@app/client/notes/data-access';
+import { authQuery } from '@app/client/core/auth';
+import { NoteStoreFacade, notesQuery } from '@app/client/notes/data-access';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -18,7 +19,21 @@ describe('RvncNotesFeatureNotesListComponent', () => {
         EffectsModule.forRoot([]),
         RouterTestingModule,
       ],
-      providers: [NoteStoreFacade, provideMockStore({})],
+      providers: [
+        NoteStoreFacade,
+        provideMockStore({
+          selectors: [
+            {
+              selector: notesQuery.selectAllNotes,
+              value: [],
+            },
+            {
+              selector: authQuery.selectUserData,
+              value: {},
+            },
+          ],
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RvncNotesFeatureNotesListComponent);
