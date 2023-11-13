@@ -1,10 +1,12 @@
 <div class="pipeline-page">
   <app-page-template pageIcon="fa-regular fa-fire" pageName="Pipeline">
-    <div class="flex gap-3" page-header-actions>
-      <kendo-textbox
-        [formControl]="searchPipelinesForm"
+    <div class="flex items-center gap-3" page-header-actions>
+      <app-text-box-navigation
+        queryParamName="pipelineQuery"
         placeholder="Search Pipelines"
-      ></kendo-textbox>
+        [urlValue]="vm2().pipelineQuery!"
+      />
+
       <kendo-button
         fillMode="flat"
         iconClass="fa-solid fa-square-plus"
@@ -25,18 +27,8 @@
     <div class="flex h-full flex-col gap-10" page-content>
       <app-quick-filters-template>
         <div class="flex gap-6">
-          <kendo-buttongroup class="flex gap-0.5" selection="single">
-            <kendo-button
-              *rxFor="let filter of vm2().filters; trackBy: 'id'"
-              [queryParams]="{ filter: filter.id }"
-              [routerLink]="[]"
-              [selected]="filter.selected"
-              [toggleable]="true"
-              queryParamsHandling="merge"
-            >
-              {{ filter.name }}
-            </kendo-button>
-          </kendo-buttongroup>
+          <app-buttongroup-navigation [model]="vm2().buttonGroups">
+          </app-buttongroup-navigation>
 
           <app-dropdown-navigation
             *rxFor="let dropdown of vm2().dropdowns"
