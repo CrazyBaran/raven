@@ -195,7 +195,14 @@ export class NotesService {
   }
 
   // TODO make private and move?
-  public async getWorkflowNote() {}
+  public async transformNotesToNoteWithRelatedData(
+    workflowNote: NoteEntity,
+    relatedNotes: NoteEntity[],
+  ): Promise<NoteWithRelatedNotesData> {
+    const workflowNoteData = this.noteEntityToNoteData(workflowNote);
+
+    return workflowNote;
+  }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {
