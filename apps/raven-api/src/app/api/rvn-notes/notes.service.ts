@@ -150,7 +150,7 @@ export class NotesService {
   ): Promise<NoteWithRelatedNotesData> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
-      relations: ['organisation'],
+      relations: ['organisation', 'workflowNote'],
     });
     if (!opportunity) {
       throw new BadRequestException(
@@ -168,7 +168,6 @@ export class NotesService {
 
     const qb = this.noteRepository
       .createQueryBuilder('note')
-      .leftJoinAndSelect('note.template', 'template')
       .leftJoinAndSelect('note.tags', 'tag')
       .where('tag.id = :organisationTagId', {
         organisationTagId: organisationTag.id,
@@ -183,6 +182,7 @@ export class NotesService {
 
     console.log({ relatedNotes });
 
+    // TODO take from opportunity!!!!
     const workflowNote = relatedNotes.find(
       (note) => note.template.type === TemplateTypeEnum.Workflow,
     );
@@ -190,17 +190,22 @@ export class NotesService {
     // TODO first filter by templateFieldId? or when transforming?
     // TODO transform data
     console.log({ relatedNotes });
-
+    const transformed = this.transformNotesToNoteWithRelatedData(
+      workflowNote,
+      relatedNotes,
+    );
+    console.log({ transformed });
     return workflowNote;
   }
 
   // TODO make private and move?
-  public async transformNotesToNoteWithRelatedData(
+  public transformNotesToNoteWithRelatedData(
     workflowNote: NoteEntity,
     relatedNotes: NoteEntity[],
-  ): Promise<NoteWithRelatedNotesData> {
-    const workflowNoteData = this.noteEntityToNoteData(workflowNote);
-
+  ): NoteWithRelatedNotesData {
+    for (let tab of workflowNote.template.tabs) {
+      console.log({ tab });
+    }
     return workflowNote;
   }
 
