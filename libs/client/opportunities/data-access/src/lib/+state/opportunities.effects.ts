@@ -104,6 +104,5 @@ export class OpportunitiesEffects {
     private readonly actions$: Actions,
     private readonly opportunitiesService: OpportunitiesService,
     private readonly store: Store,
-    private readonly dynamicDialogService: DynamicDialogService,
   ) {}
 }
