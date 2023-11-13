@@ -36,7 +36,8 @@ export const opportunitiesReducer = createReducer(
   })),
 
   on(
-    OpportunitiesActions.liveChangeOpportunityPipelineStage,
+    OpportunitiesActions.liveChangeOpportunityPipelineStageUpdated,
+    OpportunitiesActions.changeOpportunityPipelineStage,
     (state, { pipelineStageId, id }) =>
       opportunitiesAdapter.updateOne(
         {

@@ -1,3 +1,4 @@
 import { InjectionToken } from '@angular/core';
+import { Environment } from './environment.interface';
 
-export const ENVIRONMENT = new InjectionToken('ENVIRONMENT');
+export const ENVIRONMENT = new InjectionToken<Environment>('ENVIRONMENT');

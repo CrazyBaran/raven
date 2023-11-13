@@ -1,9 +1,7 @@
-import { CryptoModule } from '@app/rvnb-crypto';
 import { RolesNestModule } from '@app/rvns-roles-api';
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { environment } from '../../../environments/environment';
 import { PeopleTagEntity } from '../rvn-tags/entities/tag.entity';
 import { TeamsModule } from '../rvn-teams/teams.module';
 import { UserEntity } from './entities/user.entity';
@@ -16,10 +14,6 @@ import { UsersServiceLogger } from './users.service.logger';
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, PeopleTagEntity]),
-    CryptoModule.register({
-      key: environment.security.crypto.key,
-      initVector: environment.security.crypto.initVector,
-    }),
     TeamsModule,
     RolesNestModule,
   ],

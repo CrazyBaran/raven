@@ -11,6 +11,14 @@ module.exports = {
   theme: {
     colors: {
       primary: {
+        4: '#00a59b0a',
+        8: 'rgba(0, 165, 155, 0.08)',
+        12: 'rgba(0, 165, 155, 0.12)',
+        16: 'rgba(0, 165, 155, 0.16)',
+        20: 'rgba(0, 165, 155, 0.2)',
+        25: 'rgba(0, 165, 155, 0.25)',
+        30: 'rgba(0, 165, 155, 0.3)',
+        50: 'rgba(0, 165, 155, 0.5)',
         100: '#E1F3F1',
         200: '#C3E7E3',
         300: '#A5DCD4',
@@ -64,12 +72,16 @@ module.exports = {
       },
       component: {
         border: '#EBEBEB',
-        text: '#FFFFFF',
+        text: '#424242',
         borderHover: '#D6D6D6',
+      },
+      buttons: {
+        'button-text-50': '#002c3c80',
       },
       base: {
         background: '#FAFAFA',
         hover: '#EBEBEB',
+        text: '#424242',
       },
     },
     extend: {

@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OpportunityData } from '@app/rvns-opportunities';
+import { RxIf } from '@rx-angular/template/if';
 import { OpportunityDealLeadFieldData } from '../opportunity-details/opportunitiy-details.interface';
 
 @Component({
   selector: 'app-opportunities-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RxIf],
   templateUrl: './opportunities-card.component.html',
   styleUrls: ['./opportunities-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
