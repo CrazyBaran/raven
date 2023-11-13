@@ -7,6 +7,7 @@ import {
   NoteAttachmentData,
   NoteData,
   NoteFieldData,
+  NoteWithRelatedNotesData,
 } from '@app/rvns-notes/data-access';
 import {
   Body,
@@ -89,6 +90,7 @@ export class NotesController {
   @ApiOperation({ description: 'Get all notes' })
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'domain', type: String, required: false })
+  @ApiQuery({ name: 'opportunityId', type: String, required: false })
   @ApiQuery({
     name: 'tagIds',
     type: String,
@@ -99,11 +101,17 @@ export class NotesController {
   public async getAllNotes(
     @Query('domain')
     domain: string,
+
     @Query('domain', FindOrganizationByDomainPipe, FindTagByOgranisationPipe)
     organisationTagEntity: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
     @Query('tagIds', ParseTagsPipe)
     tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
-  ): Promise<NoteData[]> {
+
+    @Query('opportunityId') opportunityId: string,
+  ): Promise<NoteData[] | NoteWithRelatedNotesData> {
+    if (opportunityId) {
+      return await this.notesService.getNoteWithRelatedNotes(opportunityId);
+    }
     if (domain && organisationTagEntity === null) {
       return [];
     }

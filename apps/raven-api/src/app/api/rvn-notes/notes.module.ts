@@ -5,11 +5,15 @@ import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-t
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { StorageAccountModule } from '../rvn-storage-account/storage-account.module';
-import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import {
+  OrganisationTagEntity,
+  TagEntity,
+} from '../rvn-tags/entities/tag.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
+import { NotesServiceLogger } from './notes-service.logger';
 import { NotesController } from './notes.controller';
 import { NotesService } from './notes.service';
 
@@ -21,6 +25,7 @@ import { NotesService } from './notes.service';
       NoteFieldGroupEntity,
       NoteFieldEntity,
       TagEntity,
+      OrganisationTagEntity,
       OpportunityEntity,
       OrganisationEntity,
     ]),
@@ -30,6 +35,7 @@ import { NotesService } from './notes.service';
   controllers: [NotesController],
   providers: [
     NotesService,
+    NotesServiceLogger,
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,
   ],

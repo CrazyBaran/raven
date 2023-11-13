@@ -41,17 +41,34 @@ export interface NoteData {
 }
 
 export interface NoteFieldGroupsWithFieldData extends NoteFieldGroupData {
-  noteFields: NoteFieldData[];
+  readonly noteFields: NoteFieldData[];
 }
 
 interface NoteTabWithFieldGroupsData extends NoteTabData {
-  noteFieldGroups: NoteFieldGroupsWithFieldData[];
+  readonly noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 
-export interface NoteWithRelationsData extends NoteData {
-  noteTabs: NoteTabWithFieldGroupsData[];
-  noteFieldGroups: NoteFieldGroupsWithFieldData[];
+export interface RelatedNote {
+  readonly id: string;
+  readonly name: string;
+  readonly createdById: string;
+  readonly createdBy: UserData;
+  readonly fields: NoteFieldData[];
 }
+
+export interface NoteTabsWithRelatedNotesData
+  extends NoteTabWithFieldGroupsData {
+  readonly relatedNotes?: RelatedNote[];
+}
+
+export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
+  extends NoteData {
+  readonly noteTabs: T[];
+  readonly noteFieldGroups: NoteFieldGroupsWithFieldData[];
+}
+
+export interface NoteWithRelatedNotesData
+  extends NoteWithRelationsData<NoteTabsWithRelatedNotesData> {}
 
 export interface NoteAttachmentData {
   readonly fileName: string;

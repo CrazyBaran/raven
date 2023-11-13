@@ -2,13 +2,19 @@ import {
   NoteAttachmentData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
+  NoteWithRelatedNotesData,
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
-import { FieldDefinitionType } from '@app/rvns-templates';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
@@ -25,6 +31,7 @@ import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
+import { NotesServiceLogger } from './notes-service.logger';
 
 interface CreateNoteOptions {
   name: string;
@@ -60,7 +67,12 @@ export class NotesService {
     private readonly noteRepository: Repository<NoteEntity>,
     @InjectRepository(NoteFieldEntity)
     private readonly noteFieldRepository: Repository<NoteFieldEntity>,
+    @InjectRepository(OpportunityEntity)
+    private readonly opportunityRepository: Repository<OpportunityEntity>,
+    @InjectRepository(OrganisationTagEntity)
+    private readonly organisationTagRepository: Repository<OrganisationTagEntity>,
     private readonly storageAccountService: StorageAccountService,
+    private readonly logger: NotesServiceLogger,
   ) {}
 
   public async getAllNotes(
@@ -132,6 +144,58 @@ export class NotesService {
       ],
     });
   }
+
+  public async getNoteWithRelatedNotes(
+    opportunityId: string,
+  ): Promise<NoteWithRelatedNotesData> {
+    const opportunity = await this.opportunityRepository.findOne({
+      where: { id: opportunityId },
+      relations: ['organisation'],
+    });
+    if (!opportunity) {
+      throw new BadRequestException(
+        `Opportunity with id ${opportunityId} not found`,
+      );
+    }
+    const organisationTag = await this.organisationTagRepository.findOne({
+      where: { organisationId: opportunity.organisation.id },
+    });
+    if (!organisationTag) {
+      this.logger.warn(
+        `Organisation tag for opportunity with id ${opportunityId} not found`,
+      );
+    }
+
+    const qb = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.template', 'template')
+      .leftJoinAndSelect('note.tags', 'tag')
+      .where('tag.id = :organisationTagId', {
+        organisationTagId: organisationTag.id,
+      });
+
+    if (opportunity.tag) {
+      qb.andWhere('tag.id = :opportunityTagId', {
+        opportunityTagId: opportunity.tag.id,
+      });
+    }
+    const relatedNotes = await qb.getMany();
+
+    console.log({ relatedNotes });
+
+    const workflowNote = relatedNotes.find(
+      (note) => note.template.type === TemplateTypeEnum.Workflow,
+    );
+
+    // TODO first filter by templateFieldId? or when transforming?
+    // TODO transform data
+    console.log({ relatedNotes });
+
+    return workflowNote;
+  }
+
+  // TODO make private and move?
+  public async getWorkflowNote() {}
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {

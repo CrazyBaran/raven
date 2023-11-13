@@ -294,7 +294,9 @@ export class OpportunityService {
         id: entity?.organisationId,
         name: affinityDto?.organizationDto?.name,
         domains: affinityDto?.organizationDto?.domains,
-        affinityUrl: `${environment.affinity.affinityUrl}companies/${affinityDto.organizationDto.id}`,
+        affinityUrl: affinityDto?.organizationDto
+          ? `${environment.affinity.affinityUrl}companies/${affinityDto.organizationDto.id}`
+          : '',
       },
       stage: {
         id: entity?.pipelineStage?.id,
