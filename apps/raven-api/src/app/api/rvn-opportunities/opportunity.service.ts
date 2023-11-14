@@ -243,9 +243,9 @@ export class OpportunityService {
     this.eventEmitter.emit(
       'opportunity-created',
       new OpportunityCreatedEvent(
-        savedOpportunity,
-        options.workflowTemplate,
-        options.userEntity,
+        savedOpportunity.id,
+        options.workflowTemplate.id,
+        options.userEntity.id,
       ),
     );
 
@@ -273,9 +273,9 @@ export class OpportunityService {
     this.eventEmitter.emit(
       'opportunity-created',
       new OpportunityCreatedEvent(
-        savedOpportunity,
-        options.workflowTemplate,
-        options.userEntity,
+        savedOpportunity.id,
+        options.workflowTemplate.id,
+        options.userEntity.id,
       ),
     );
 
