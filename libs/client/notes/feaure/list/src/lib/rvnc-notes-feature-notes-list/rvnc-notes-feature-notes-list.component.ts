@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NoteStoreFacade } from '@app/client/notes/data-access';
+import { NoteStoreFacade, notesQuery } from '@app/client/notes/data-access';
 import {
   NoteDetailsComponent,
   NotesTableComponent,
@@ -15,6 +15,7 @@ import {
 } from '@app/client/notes/ui';
 import { ShelfModule, ShelfStoreFacade } from '@app/client/shared/shelf';
 import { HeaderComponent, LoaderComponent } from '@app/client/shared/ui';
+import { Store } from '@ngrx/store';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
 import { FilterMenuModule } from '@progress/kendo-angular-grid';
 import { Subject, takeUntil } from 'rxjs';
@@ -40,7 +41,9 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class RvncNotesFeatureNotesListComponent implements OnInit, OnDestroy {
   public readonly isLoading$ = this.noteStoreFacadeService.isLoading$;
-  public readonly notes$ = this.noteStoreFacadeService.notes$;
+  public readonly notes = this.store.selectSignal(
+    notesQuery.selectAllNotesTableRows,
+  );
 
   public openNoteId = signal(null);
 
@@ -50,6 +53,7 @@ export class RvncNotesFeatureNotesListComponent implements OnInit, OnDestroy {
     private readonly noteStoreFacadeService: NoteStoreFacade,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
+    private readonly store: Store,
     private readonly shelfFacade: ShelfStoreFacade,
   ) {}
 

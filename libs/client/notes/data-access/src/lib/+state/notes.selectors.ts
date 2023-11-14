@@ -1,3 +1,4 @@
+import { authQuery } from '@app/client/core/auth';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { NotesState, notesAdapter, notesFeatureKey } from './notes.reducer';
 
@@ -35,6 +36,22 @@ export const selectNoteUpdateIsLoading = createSelector(
   (state: NotesState) => state.update.isLoading,
 );
 
+export const selectAllNotesTableRows = createSelector(
+  selectAllNotes,
+  authQuery.selectUserEmail,
+  (notes, userEmail) =>
+    notes.map((note) => ({
+      ...note,
+      deleteButtonSettings: {
+        disabled: note.createdBy?.email !== userEmail,
+        tooltip:
+          note.createdBy?.email !== userEmail
+            ? 'You can only delete your own notes'
+            : '',
+      },
+    })),
+);
+
 export const notesQuery = {
   selectAllNotes,
   selectIsLoading,
@@ -42,4 +59,5 @@ export const notesQuery = {
   selectNoteDetails,
   selectNoteDetailsIsLoading,
   selectNoteUpdateIsLoading,
+  selectAllNotesTableRows,
 };

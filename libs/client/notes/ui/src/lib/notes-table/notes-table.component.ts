@@ -12,12 +12,22 @@ import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { TagFilterPipe } from '@app/client/notes/util';
 import { TagComponent } from '@app/client/shared/ui';
 import { TruncateElementsDirective } from '@app/client/shared/util';
+import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { NoteData } from '@app/rvns-notes/data-access';
+import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
+
+export type NoteTableRow = NoteData & {
+  deleteButtonSettings?: {
+    disabled?: boolean;
+    tooltip?: string;
+  };
+};
 
 @Component({
   selector: 'app-notes-table',
@@ -30,6 +40,7 @@ import { DeleteNoteComponent } from '../delete-note/delete-note.component';
     TagFilterPipe,
     TruncateElementsDirective,
     TagComponent,
+    TooltipModule,
   ],
   templateUrl: './notes-table.component.html',
   styleUrls: ['./notes-table.component.scss'],
@@ -37,7 +48,7 @@ import { DeleteNoteComponent } from '../delete-note/delete-note.component';
   encapsulation: ViewEncapsulation.None,
 })
 export class NotesTableComponent {
-  @Input({ required: true }) public notes: NoteData[] = [];
+  @Input({ required: true }) public notes: NoteTableRow[] = [];
 
   public sort: SortDescriptor[] = [
     {
@@ -50,6 +61,7 @@ export class NotesTableComponent {
     private readonly dialogService: DialogService,
     private readonly noteFacade: NoteStoreFacade,
     private readonly clipBoard: Clipboard,
+    private readonly store: Store,
   ) {}
 
   public handleDeleteNote(note: NoteData): void {
@@ -67,5 +79,10 @@ export class NotesTableComponent {
 
   public handleCopyLink(noteId: string): void {
     this.clipBoard.copy(`${window.location.href}?noteId=${noteId}`);
+    this.store.dispatch(
+      NotificationsActions.showSuccessNotification({
+        content: 'Link copied to clipboard.',
+      }),
+    );
   }
 }

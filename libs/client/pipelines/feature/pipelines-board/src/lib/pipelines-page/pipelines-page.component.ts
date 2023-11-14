@@ -198,7 +198,7 @@ export class PipelinesPageComponent implements OnInit {
     private readonly activedRoute: ActivatedRoute,
   ) {
     this.searchPipelinesForm.valueChanges
-      .pipe(takeUntilDestroyed(), debounceTime(500), distinctUntilChanged())
+      .pipe(takeUntilDestroyed(), debounceTime(200), distinctUntilChanged())
       .subscribe((value) => {
         this.router.navigate([], {
           relativeTo: this.activedRoute,

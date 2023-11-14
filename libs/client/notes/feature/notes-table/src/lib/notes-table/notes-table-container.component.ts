@@ -18,7 +18,7 @@ export const selectNotesTableParams = createSelector(
 
 export const selectNotesByRouteParams = createSelector(
   selectNotesTableParams,
-  notesQuery.selectAllNotes,
+  notesQuery.selectAllNotesTableRows,
   (params, notes) => notes,
 );
 

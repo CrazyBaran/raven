@@ -31,7 +31,7 @@
       <app-quick-filters />
 
       <div class="flex overflow-hidden">
-        <app-notes-table [notes]="(notes$ | async) || []" />
+        <app-notes-table [notes]="notes() || []" />
       </div>
     </ng-template>
   </div>
