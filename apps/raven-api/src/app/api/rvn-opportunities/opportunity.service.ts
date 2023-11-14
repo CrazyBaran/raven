@@ -19,22 +19,36 @@ import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
 
-interface CreateOpportunityForNonExistingOrganisationOptions {
+interface CreateOpportunityForNonExistingOrganisationOptions
+  extends CommonCreateOpportunityOptions {
   domain: string;
   name: string;
-  workflowTemplate: TemplateEntity;
-  userEntity: UserEntity;
 }
 
-interface CreateOpportunityForOrganisationOptions {
+interface CreateOpportunityForOrganisationOptions
+  extends CommonCreateOpportunityOptions {
   organisation: OrganisationEntity;
-  workflowTemplate: TemplateEntity;
-  userEntity: UserEntity;
 }
 
-interface UpdateOpportunityOptions {
+interface CommonCreateOpportunityOptions extends CommonCreateAndUpdateOptions {
+  workflowTemplateEntity: TemplateEntity;
+  userEntity: UserEntity;
+  tagEntity: TagEntity;
+}
+
+interface UpdateOpportunityOptions extends CommonCreateAndUpdateOptions {
   pipelineStage?: PipelineStageEntity;
-  tag?: TagEntity;
+  tagEntity?: TagEntity;
+}
+
+interface CommonCreateAndUpdateOptions {
+  roundSize?: string;
+  valuation?: string;
+  proposedInvestment?: string;
+  positioning?: string;
+  timing?: string;
+  underNda?: string;
+  ndaTerminationDate?: Date;
 }
 
 @Injectable()
@@ -231,25 +245,12 @@ export class OpportunityService {
       affinityOrganisation[0]?.stage?.text,
     );
 
-    const opportunity = new OpportunityEntity();
-    opportunity.organisation = options.organisation;
-    opportunity.pipelineDefinition = pipeline;
-    opportunity.pipelineStage = affinityPipelineStage
-      ? affinityPipelineStage
-      : pipelineStage;
-
-    const savedOpportunity = await this.opportunityRepository.save(opportunity);
-
-    this.eventEmitter.emit(
-      'opportunity-created',
-      new OpportunityCreatedEvent(
-        savedOpportunity.id,
-        options.workflowTemplate.id,
-        options.userEntity.id,
-      ),
+    return await this.createOpportunity(
+      options.organisation,
+      pipeline,
+      affinityPipelineStage ? affinityPipelineStage : pipelineStage,
+      options,
     );
-
-    return savedOpportunity;
   }
 
   public async createForNonExistingOrganisation(
@@ -263,23 +264,12 @@ export class OpportunityService {
       name: options.name,
     });
 
-    const opportunity = new OpportunityEntity();
-    opportunity.organisation = organisation;
-    opportunity.pipelineDefinition = pipeline;
-    opportunity.pipelineStage = pipelineStage;
-
-    const savedOpportunity = await this.opportunityRepository.save(opportunity);
-
-    this.eventEmitter.emit(
-      'opportunity-created',
-      new OpportunityCreatedEvent(
-        savedOpportunity.id,
-        options.workflowTemplate.id,
-        options.userEntity.id,
-      ),
+    return await this.createOpportunity(
+      organisation,
+      pipeline,
+      pipelineStage,
+      options,
     );
-
-    return this.opportunityRepository.save(savedOpportunity);
   }
 
   public async update(
@@ -289,9 +279,11 @@ export class OpportunityService {
     if (options.pipelineStage) {
       opportunity.pipelineStage = options.pipelineStage;
     }
-    if (options.tag) {
-      opportunity.tag = options.tag;
+    if (options.tagEntity) {
+      opportunity.tag = options.tagEntity;
     }
+    this.assignOpportunityProperties(opportunity, options);
+
     const opportunityEntity =
       await this.opportunityRepository.save(opportunity);
 
@@ -419,6 +411,13 @@ export class OpportunityService {
         : undefined,
       fields: [],
       createdAt: entity.createdAt,
+      roundSize: entity.roundSize,
+      valuation: entity.valuation,
+      proposedInvestment: entity.proposedInvestment,
+      positioning: entity.positioning,
+      timing: entity.timing,
+      underNda: entity.underNda,
+      ndaTerminationDate: entity.ndaTerminationDate,
     };
   }
 
@@ -474,5 +473,59 @@ export class OpportunityService {
       );
     }
     return { pipeline, pipelineStage };
+  }
+
+  private assignOpportunityProperties(
+    opportunity: OpportunityEntity,
+    options: CommonCreateAndUpdateOptions,
+  ): void {
+    if (options.roundSize !== undefined) {
+      opportunity.roundSize = options.roundSize;
+    }
+    if (options.valuation !== undefined) {
+      opportunity.valuation = options.valuation;
+    }
+    if (options.proposedInvestment !== undefined) {
+      opportunity.proposedInvestment = options.proposedInvestment;
+    }
+    if (options.positioning !== undefined) {
+      opportunity.positioning = options.positioning;
+    }
+    if (options.timing !== undefined) {
+      opportunity.timing = options.timing;
+    }
+    if (options.underNda !== undefined) {
+      opportunity.underNda = options.underNda;
+    }
+    if (options.ndaTerminationDate !== undefined) {
+      opportunity.ndaTerminationDate = options.ndaTerminationDate;
+    }
+  }
+
+  private async createOpportunity(
+    organisation: OrganisationEntity,
+    pipeline: PipelineDefinitionEntity,
+    pipelineStage: PipelineStageEntity,
+    options: CommonCreateOpportunityOptions,
+  ): Promise<OpportunityEntity> {
+    const opportunity = new OpportunityEntity();
+    opportunity.organisation = organisation;
+    opportunity.pipelineDefinition = pipeline;
+    opportunity.pipelineStage = pipelineStage;
+
+    this.assignOpportunityProperties(opportunity, options);
+
+    const savedOpportunity = await this.opportunityRepository.save(opportunity);
+
+    this.eventEmitter.emit(
+      'opportunity-created',
+      new OpportunityCreatedEvent(
+        savedOpportunity.id,
+        options.workflowTemplateEntity.id,
+        options.userEntity.id,
+      ),
+    );
+
+    return savedOpportunity;
   }
 }
