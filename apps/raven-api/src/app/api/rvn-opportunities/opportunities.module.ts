@@ -17,12 +17,12 @@ import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 
 import { AffinityOrganisationCreatedEventHandler } from './event-handlers/affinity-organization-created.event-handler';
 
+import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
 import { AffinityFieldChangedEventHandlerLogger } from './event-handlers/affinity-field-changed.event-handler.logger';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
 import { AffinityStatusChangedEventHandlerLogger } from './event-handlers/affinity-status-changed.event-handler.logger';
-import { OrganisationCreatedEventHandler } from './event-handlers/organisation-created.event-handler';
 import { OPPORTUNITY_QUEUE } from './opportunities.const';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
@@ -53,6 +53,7 @@ import { OpportunityProducerLogger } from './queues/opportunity.producer.logger'
       PipelineDefinitionEntity,
       PipelineStageEntity,
       TagEntity,
+      TemplateEntity,
     ]),
     AffinityIntegrationModule,
     EventEmitterModule,
@@ -69,7 +70,6 @@ import { OpportunityProducerLogger } from './queues/opportunity.producer.logger'
     OpportunityProcessor,
     AffinityRegenerationFinishedEventHandler,
     AffinityOrganisationCreatedEventHandler,
-    OrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,
     AffinityStatusChangedEventHandlerLogger,
     AffinityFieldChangedEventHandler,

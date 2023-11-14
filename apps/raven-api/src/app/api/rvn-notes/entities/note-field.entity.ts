@@ -81,5 +81,6 @@ export class NoteFieldEntity implements AuditableEntity {
     this.noteGroupId = this.noteGroupId.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
     this.updatedById = this.updatedById.toLowerCase();
+    this.templateFieldId = this.templateFieldId.toLowerCase();
   }
 }

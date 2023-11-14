@@ -109,6 +109,7 @@ export class NotesController {
 
     @Query('opportunityId') opportunityId: string,
   ): Promise<NoteData[] | NoteWithRelatedNotesData> {
+    // TODO move to opportunity controller
     if (opportunityId) {
       return await this.notesService.getNoteWithRelatedNotes(opportunityId);
     }

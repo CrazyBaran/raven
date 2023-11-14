@@ -2,11 +2,13 @@ import {
   NoteAttachmentData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
+  NoteTabsWithRelatedNotesData,
   NoteWithRelatedNotesData,
   NoteWithRelationsData,
+  RelatedNote,
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
-import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
+import { FieldDefinitionType } from '@app/rvns-templates';
 import {
   BadRequestException,
   ConflictException,
@@ -24,6 +26,7 @@ import {
 } from '../rvn-tags/entities/tag.entity';
 import { FieldDefinitionEntity } from '../rvn-templates/entities/field-definition.entity';
 import { FieldGroupEntity } from '../rvn-templates/entities/field-group.entity';
+import { TabEntity } from '../rvn-templates/entities/tab.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
@@ -75,6 +78,7 @@ export class NotesService {
     private readonly logger: NotesServiceLogger,
   ) {}
 
+  // TODO filter out workflow notes???
   public async getAllNotes(
     organisationTagEntity?: OrganisationTagEntity,
     tagEntities?: TagEntity[],
@@ -150,13 +154,28 @@ export class NotesService {
   ): Promise<NoteWithRelatedNotesData> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
-      relations: ['organisation', 'workflowNote'],
+      relations: [
+        'organisation',
+        'note',
+        'note.createdBy',
+        'note.updatedBy',
+        'note.deletedBy',
+        'note.tags',
+        'note.template',
+        'note.template.tabs',
+        'note.noteTabs',
+        'note.noteTabs.noteFieldGroups',
+        'note.noteTabs.noteFieldGroups.noteFields',
+        'note.noteFieldGroups',
+        'note.noteFieldGroups.noteFields',
+      ],
     });
     if (!opportunity) {
       throw new BadRequestException(
         `Opportunity with id ${opportunityId} not found`,
       );
     }
+
     const organisationTag = await this.organisationTagRepository.findOne({
       where: { organisationId: opportunity.organisation.id },
     });
@@ -168,6 +187,9 @@ export class NotesService {
 
     const qb = this.noteRepository
       .createQueryBuilder('note')
+      .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
+      .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
       .leftJoinAndSelect('note.tags', 'tag')
       .where('tag.id = :organisationTagId', {
         organisationTagId: organisationTag.id,
@@ -180,22 +202,10 @@ export class NotesService {
     }
     const relatedNotes = await qb.getMany();
 
-    console.log({ relatedNotes });
-
-    // TODO take from opportunity!!!!
-    const workflowNote = relatedNotes.find(
-      (note) => note.template.type === TemplateTypeEnum.Workflow,
-    );
-
-    // TODO first filter by templateFieldId? or when transforming?
-    // TODO transform data
-    console.log({ relatedNotes });
-    const transformed = this.transformNotesToNoteWithRelatedData(
-      workflowNote,
+    return this.transformNotesToNoteWithRelatedData(
+      opportunity.note,
       relatedNotes,
     );
-    console.log({ transformed });
-    return workflowNote;
   }
 
   // TODO make private and move?
@@ -203,12 +213,63 @@ export class NotesService {
     workflowNote: NoteEntity,
     relatedNotes: NoteEntity[],
   ): NoteWithRelatedNotesData {
-    for (let tab of workflowNote.template.tabs) {
-      console.log({ tab });
+    const mappedNote = this.noteEntityToNoteData(workflowNote);
+    // we assume there is only one tab with given name and it won't change after being created from template
+    for (const tab of workflowNote.template.tabs) {
+      (
+        mappedNote.noteTabs.find(
+          (nt) => nt.name === tab.name,
+        ) as NoteTabsWithRelatedNotesData
+      ).relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
     }
-    return workflowNote;
+    return mappedNote;
   }
 
+  public getRelatedNotesForTab(
+    tab: TabEntity,
+    relatedNotes: NoteEntity[],
+  ): RelatedNote[] {
+    const relatedFieldsIds = tab.relatedFields.map((rf) => rf.id);
+
+    const filteredRelatedNotes = relatedNotes.filter((rn) => {
+      const noteFieldIds = rn.noteFieldGroups
+        .map((nfg) =>
+          nfg.noteFields
+            .filter(
+              (nf) => nf.value && relatedFieldsIds.includes(nf.templateFieldId),
+            )
+            .map((nf) => nf.templateFieldId.toLowerCase()),
+        )
+        .flat();
+      return noteFieldIds.length > 0;
+    });
+    filteredRelatedNotes.forEach((rn) => {
+      rn.noteFieldGroups = rn.noteFieldGroups.filter((nfg) => {
+        nfg.noteFields = nfg.noteFields.filter((nf) => {
+          return nf.value && relatedFieldsIds.includes(nf.templateFieldId);
+        });
+        return nfg.noteFields.length > 0;
+      });
+    });
+
+    return filteredRelatedNotes.map(this.mapNoteToRelatedNoteData.bind(this));
+  }
+
+  public mapNoteToRelatedNoteData(note: NoteEntity): RelatedNote {
+    return {
+      id: note.id,
+      name: note.name,
+      createdById: note.createdBy.id,
+      createdBy: {
+        name: note.createdBy.name,
+        email: note.createdBy.email,
+      },
+      fields: note.noteFieldGroups
+        .map((nfg) => nfg.noteFields)
+        .flat()
+        .map(this.noteFieldEntityToNoteFieldData.bind(this)),
+    };
+  }
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {
       return await this.createNoteFromTemplate(

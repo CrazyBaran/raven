@@ -64,7 +64,7 @@ export class PeopleTagEntity extends TagEntity {
 
   @AfterInsert()
   @AfterLoad()
-  public lifecycleUuidLowerCase(): void {
+  public override lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.userId = this.userId.toLowerCase();
   }
@@ -82,7 +82,7 @@ export class OrganisationTagEntity extends TagEntity {
 
   @AfterInsert()
   @AfterLoad()
-  public lifecycleUuidLowerCase(): void {
+  public override lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.organisationId = this.organisationId.toLowerCase();
   }

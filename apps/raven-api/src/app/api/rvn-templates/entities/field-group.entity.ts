@@ -71,7 +71,7 @@ export class FieldGroupEntity implements AuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.templateId = this.templateId.toLowerCase();
-    this.tabId = this.tabId?.toLowerCase();
+    this.tabId = this.tabId?.toLowerCase() || null;
     this.createdById = this.createdById.toLowerCase();
   }
 }

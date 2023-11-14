@@ -58,7 +58,7 @@ export interface RelatedNote {
 
 export interface NoteTabsWithRelatedNotesData
   extends NoteTabWithFieldGroupsData {
-  readonly relatedNotes?: RelatedNote[];
+  relatedNotes?: RelatedNote[];
 }
 
 export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
