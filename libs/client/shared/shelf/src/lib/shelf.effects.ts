@@ -5,9 +5,9 @@ import {
   DialogService,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
-import { tap } from 'rxjs';
+import { exhaustMap, tap } from 'rxjs';
 import { ShelfActions } from './actions/shelf.actions';
-import { RavenShelfService } from './raven-shelf.service';
+import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
 
 @Injectable()
 export class ShelfEffects {
@@ -30,6 +30,30 @@ export class ShelfEffects {
             preventClose: (ev: unknown, widowRef): boolean =>
               this._notepadShelfPreventHandler(ev, widowRef),
           }),
+        ),
+      );
+    },
+    { dispatch: false },
+  );
+
+  private openOpportunityDialogForm = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ShelfActions.openOpportunityForm),
+        exhaustMap(
+          () =>
+            this.dynamicDialogService.openDynamicDialog({
+              width: 480,
+              cssClass: 'raven-custom-dialog',
+              template: {
+                name: 'opportunity dialog form',
+                load: () =>
+                  import(
+                    '@app/client/opportunities/feature/create-dialog'
+                  ).then((m) => m.CreateOpportunityDialogModule),
+                showLoading: true,
+              },
+            }).result,
         ),
       );
     },
@@ -77,6 +101,7 @@ export class ShelfEffects {
     private actions$: Actions,
     private shelfService: RavenShelfService,
     private dialogService: DialogService,
+    private dynamicDialogService: DynamicDialogService,
   ) {}
 
   private _notepadShelfPreventHandler(

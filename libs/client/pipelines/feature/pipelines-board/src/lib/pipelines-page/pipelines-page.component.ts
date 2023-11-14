@@ -24,6 +24,7 @@ import {
   pipelinesQuery,
   selectAllPipelines,
 } from '@app/client/pipelines/state';
+import { ShelfActions } from '@app/client/shared/shelf';
 import {
   DropdownNavigationComponent,
   DropdownNavigationModel,
@@ -246,5 +247,9 @@ export class PipelinesPageComponent implements OnInit {
         pipelineStageId: $event.pipelineStageId,
       }),
     );
+  }
+
+  public openOpportunityDialog(): void {
+    this.store.dispatch(ShelfActions.openOpportunityForm());
   }
 }

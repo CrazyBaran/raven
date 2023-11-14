@@ -1,7 +1,10 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
 import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';
 import {
+  DialogRef,
+  DialogService,
+  DialogSettings,
   WindowRef,
   WindowService,
   WindowSettings,
@@ -13,6 +16,27 @@ const DYNAMIC_SHELF_VARIABLES = {
   height: '--shelf-window-height',
   transform: '--shelf-window-transform',
 };
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DynamicDialogService {
+  protected dialogService = inject(DialogService);
+
+  public openDynamicDialog(
+    settings: Omit<DialogSettings, 'content'> & { template: ComponentTemplate },
+  ): DialogRef {
+    const dialogRef = this.dialogService.open({
+      content: RenderTemplateComponent,
+      ...settings,
+    });
+
+    dialogRef.content.instance.component = settings.template;
+    dialogRef.dialog.instance.themeColor = 'primary';
+
+    return dialogRef;
+  }
+}
 
 @Injectable()
 export class RavenShelfService {
