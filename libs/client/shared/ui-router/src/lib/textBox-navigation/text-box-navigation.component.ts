@@ -41,7 +41,7 @@ export class TextBoxNavigationComponent {
       .subscribe((value) => {
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { [this.queryParamName]: value ?? null },
+          queryParams: { [this.queryParamName]: value || null },
           queryParamsHandling: this.queryParamsHandling,
         });
       });

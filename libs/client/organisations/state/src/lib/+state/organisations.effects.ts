@@ -2,7 +2,42 @@ import { inject } from '@angular/core';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { OrganisationsActions } from './organisations.actions';
+import {
+  OrganisationsActions,
+  OrganisationsUrlActions,
+} from './organisations.actions';
+
+export const loadOrganisationOnUrlEvent = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsUrlActions.queryParamsChanged),
+      switchMap(({ params }) =>
+        organisationsService.getOrganisations(params).pipe(
+          switchMap((response) => {
+            return [
+              OrganisationsActions.getOrganisationsSuccess({
+                data: response.data || [],
+              }),
+              OrganisationsUrlActions.fetchedTableItems({
+                ids: response.data?.map((d) => d.id!).filter(Boolean) || [],
+              }),
+            ];
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(OrganisationsActions.getOrganisationFailure({ error }));
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
 
 export const loadOrganisation = createEffect(
   (

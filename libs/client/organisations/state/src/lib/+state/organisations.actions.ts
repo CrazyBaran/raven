@@ -26,3 +26,13 @@ export const OrganisationsActions = createActionGroup({
     'Create Organisation Failure': props<{ error: string }>(),
   },
 });
+
+export const OrganisationsUrlActions = createActionGroup({
+  source: 'Organisations/URL',
+  events: {
+    'Query Params Changed': props<{
+      params: Record<string, string | string[]>;
+    }>(),
+    'Fetched Table items': props<{ ids: string[] }>(),
+  },
+});

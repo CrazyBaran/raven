@@ -82,8 +82,20 @@
       "@app/client/organisations/data-access": [
         "libs/client/organisations/data-access/src/index.ts"
       ],
+      "@app/client/organisations/feature/companies-table-container": [
+        "libs/client/organisations/feature/companies-table-container/src/index.ts"
+      ],
+      "@app/client/organisations/feature/organisations-table": [
+        "libs/client/organisations/feature/organisations-table/src/index.ts"
+      ],
+      "@app/client/organisations/feature/shell": [
+        "libs/client/organisations/feature/shell/src/index.ts"
+      ],
       "@app/client/organisations/state": [
         "libs/client/organisations/state/src/index.ts"
+      ],
+      "@app/client/organisations/ui": [
+        "libs/client/organisations/ui/src/index.ts"
       ],
       "@app/client/pipelines/data-access": [
         "libs/client/pipelines/data-access/src/index.ts"

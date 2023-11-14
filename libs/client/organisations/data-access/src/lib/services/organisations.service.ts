@@ -13,8 +13,10 @@ export class OrganisationsService {
 
   public constructor(private http: HttpClient) {}
 
-  public getOrganisations(): Observable<GenericResponse<Organisation[]>> {
-    return this.http.get<GenericResponse<Organisation[]>>(this.url);
+  public getOrganisations(
+    params?: Record<string, string | string[]>,
+  ): Observable<GenericResponse<Organisation[]>> {
+    return this.http.get<GenericResponse<Organisation[]>>(this.url, { params });
   }
 
   public getOrganisation(

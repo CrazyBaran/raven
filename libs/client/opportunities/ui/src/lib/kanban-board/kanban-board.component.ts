@@ -9,7 +9,6 @@ import {
   Output,
   signal,
 } from '@angular/core';
-import { PipelineDefinitionData } from '@app/rvns-pipelines';
 
 import { RxFor } from '@rx-angular/template/for';
 
@@ -51,12 +50,12 @@ import {
 } from '@angular/animations';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 
+import { PipelineDefinition } from '@app/client/pipelines/state';
 import { concatLatestFrom } from '@ngrx/effects';
 import { RxLet } from '@rx-angular/template/let';
 import { RxPush } from '@rx-angular/template/push';
 import * as _ from 'lodash';
 import { OpportunitiesCardComponent } from '../opportunities-card/opportunities-card.component';
-import { colorDictionary } from './color.dictionary';
 import {
   ColumnData,
   OpportunityDetails,
@@ -134,7 +133,7 @@ export class KanbanBoardComponent {
     BehaviorSubject<{ ids: string[]; withoutEmission?: boolean }>
   >;
 
-  public pipelines = signal<PipelineDefinitionData[]>([], {
+  public pipelines = signal<PipelineDefinition[]>([], {
     equal: _.isEqual,
   });
 
@@ -159,7 +158,10 @@ export class KanbanBoardComponent {
       return {
         name: item.displayName,
         id: item.id,
-        color: colorDictionary[index] ?? colorDictionary[0],
+        color: {
+          color: item.primaryColor,
+          palette: item.secondaryColor,
+        },
         length$: this.opportunitiesStageSubjectDictioanry[item.id].pipe(
           map((o) => o?.ids.length),
           distinctUntilChanged(),
@@ -234,7 +236,7 @@ export class KanbanBoardComponent {
   }
 
   @Input({ required: true, alias: 'pipelines' })
-  public set _pipelines(value: PipelineDefinitionData[]) {
+  public set _pipelines(value: PipelineDefinition[]) {
     this.pipelines.set(value);
   }
 

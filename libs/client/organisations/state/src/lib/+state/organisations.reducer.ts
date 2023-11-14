@@ -2,7 +2,10 @@ import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 
 import { routerQuery } from '@app/client/shared/util-router';
-import { OrganisationsActions } from './organisations.actions';
+import {
+  OrganisationsActions,
+  OrganisationsUrlActions,
+} from './organisations.actions';
 import { OrganisationEntity } from './organisations.model';
 
 export interface OrganisationsState extends EntityState<OrganisationEntity> {
@@ -46,11 +49,15 @@ export const OrganisationsFeature = createFeature({
       loadingOrganisation: false,
     })),
 
-    on(OrganisationsActions.getOrganisations, (state) => ({
-      ...state,
-      loaded: false,
-      error: null,
-    })),
+    on(
+      OrganisationsActions.getOrganisations,
+      OrganisationsUrlActions.queryParamsChanged,
+      (state) => ({
+        ...state,
+        loaded: false,
+        error: null,
+      }),
+    ),
     on(OrganisationsActions.getOrganisationsSuccess, (state, { data }) =>
       OrganisationAdapter.setAll([...data], { ...state, loaded: true }),
     ),
