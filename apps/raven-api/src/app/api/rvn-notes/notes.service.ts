@@ -8,7 +8,7 @@ import {
   RelatedNote,
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
-import { FieldDefinitionType } from '@app/rvns-templates';
+import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import {
   BadRequestException,
   ConflictException,
@@ -82,6 +82,7 @@ export class NotesService {
   public async getAllNotes(
     organisationTagEntity?: OrganisationTagEntity,
     tagEntities?: TagEntity[],
+    type?: TemplateTypeEnum,
   ): Promise<NoteEntity[]> {
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
@@ -103,6 +104,10 @@ export class NotesService {
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
       .where(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL');
+
+    if (type) {
+      queryBuilder.andWhere('template.type = :type', { type });
+    }
 
     if (organisationTagEntity) {
       queryBuilder
