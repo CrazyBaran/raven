@@ -2,6 +2,7 @@ import { OpportunityData } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -87,17 +88,30 @@ export class OpportunityController {
     @Body('domain', FindOrganizationByDomainPipe)
     organisation: OrganisationEntity | null,
     @Body('workflowTemplateId', ParseUUIDPipe, ParseWorkflowTemplatePipe)
-    workflowTemplate: TemplateEntity,
+    workflowTemplateEntity: TemplateEntity,
+    @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
+    tagEntity: string | TagEntity | null,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<OpportunityData> {
+    if (!tagEntity) {
+      throw new BadRequestException('Tag is required for opportunity creation');
+    }
     if (organisation) {
       // TODO - find previous opportunity, check if is at last stage? remove or soft delete? confirm logic for that
       // TODO - current logic should be one opportunity for given organisation is in active stages...
       return this.opportunityService.opportunityEntityToData(
         await this.opportunityService.createFromOrganisation({
           organisation,
-          workflowTemplate,
+          workflowTemplateEntity,
           userEntity,
+          tagEntity: tagEntity as TagEntity,
+          roundSize: dto.roundSize,
+          valuation: dto.valuation,
+          proposedInvestment: dto.proposedInvestment,
+          positioning: dto.positioning,
+          timing: dto.timing,
+          underNda: dto.underNda,
+          ndaTerminationDate: dto.ndaTerminationDate,
         }),
       );
     }
@@ -106,8 +120,16 @@ export class OpportunityController {
       await this.opportunityService.createForNonExistingOrganisation({
         name: dto.name,
         domain: dto.domain,
-        workflowTemplate,
+        workflowTemplateEntity,
         userEntity,
+        tagEntity: tagEntity as TagEntity,
+        roundSize: dto.roundSize,
+        valuation: dto.valuation,
+        proposedInvestment: dto.proposedInvestment,
+        positioning: dto.positioning,
+        timing: dto.timing,
+        underNda: dto.underNda,
+        ndaTerminationDate: dto.ndaTerminationDate,
       }),
     );
   }
@@ -127,13 +149,20 @@ export class OpportunityController {
     @Body() dto: UpdateOpportunityDto,
     @Body('pipelineStageId', ParseOptionalPipelineStagePipe)
     pipelineStage: string | PipelineStageEntity | null,
-    @Body('tagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
+    @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
     tag: string | TagEntity | null,
   ): Promise<OpportunityData> {
     return this.opportunityService.opportunityEntityToData(
       await this.opportunityService.update(opportunity, {
         pipelineStage: pipelineStage as PipelineStageEntity,
-        tag: tag as TagEntity,
+        tagEntity: tag as TagEntity,
+        roundSize: dto.roundSize,
+        valuation: dto.valuation,
+        proposedInvestment: dto.proposedInvestment,
+        positioning: dto.positioning,
+        timing: dto.timing,
+        underNda: dto.underNda,
+        ndaTerminationDate: dto.ndaTerminationDate,
       }),
     );
   }

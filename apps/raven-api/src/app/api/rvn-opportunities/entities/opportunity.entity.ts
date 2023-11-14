@@ -80,6 +80,27 @@ export class OpportunityEntity {
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   public createdAt: Date;
 
+  @Column({ nullable: true })
+  public roundSize: string | null;
+
+  @Column({ nullable: true })
+  public valuation: string | null;
+
+  @Column({ nullable: true })
+  public proposedInvestment: string | null;
+
+  @Column({ nullable: true })
+  public positioning: string | null;
+
+  @Column({ nullable: true })
+  public timing: string | null;
+
+  @Column({ nullable: true })
+  public underNda: string | null;
+
+  @Column({ nullable: true, type: 'date' })
+  public ndaTerminationDate: Date | null;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {

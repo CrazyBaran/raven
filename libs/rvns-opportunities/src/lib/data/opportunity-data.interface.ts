@@ -17,4 +17,11 @@ export interface OpportunityDataWithoutOrganisation {
   readonly fields: FieldData[];
   readonly tag?: TagData;
   readonly createdAt?: Date;
+  readonly roundSize?: string;
+  readonly valuation?: string;
+  readonly proposedInvestment?: string;
+  readonly positioning?: string;
+  readonly timing?: string;
+  readonly underNda?: string;
+  readonly ndaTerminationDate?: Date;
 }
