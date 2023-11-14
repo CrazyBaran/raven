@@ -78,7 +78,6 @@ export class NotesService {
     private readonly logger: NotesServiceLogger,
   ) {}
 
-  // TODO filter out workflow notes???
   public async getAllNotes(
     organisationTagEntity?: OrganisationTagEntity,
     tagEntities?: TagEntity[],
@@ -213,68 +212,6 @@ export class NotesService {
     );
   }
 
-  // TODO make private and move?
-  public transformNotesToNoteWithRelatedData(
-    workflowNote: NoteEntity,
-    relatedNotes: NoteEntity[],
-  ): NoteWithRelatedNotesData {
-    const mappedNote = this.noteEntityToNoteData(workflowNote);
-    // we assume there is only one tab with given name and it won't change after being created from template
-    for (const tab of workflowNote.template.tabs) {
-      (
-        mappedNote.noteTabs.find(
-          (nt) => nt.name === tab.name,
-        ) as NoteTabsWithRelatedNotesData
-      ).relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
-    }
-    return mappedNote;
-  }
-
-  public getRelatedNotesForTab(
-    tab: TabEntity,
-    relatedNotes: NoteEntity[],
-  ): RelatedNote[] {
-    const relatedFieldsIds = tab.relatedFields.map((rf) => rf.id);
-
-    const filteredRelatedNotes = relatedNotes.filter((rn) => {
-      const noteFieldIds = rn.noteFieldGroups
-        .map((nfg) =>
-          nfg.noteFields
-            .filter(
-              (nf) => nf.value && relatedFieldsIds.includes(nf.templateFieldId),
-            )
-            .map((nf) => nf.templateFieldId.toLowerCase()),
-        )
-        .flat();
-      return noteFieldIds.length > 0;
-    });
-    filteredRelatedNotes.forEach((rn) => {
-      rn.noteFieldGroups = rn.noteFieldGroups.filter((nfg) => {
-        nfg.noteFields = nfg.noteFields.filter((nf) => {
-          return nf.value && relatedFieldsIds.includes(nf.templateFieldId);
-        });
-        return nfg.noteFields.length > 0;
-      });
-    });
-
-    return filteredRelatedNotes.map(this.mapNoteToRelatedNoteData.bind(this));
-  }
-
-  public mapNoteToRelatedNoteData(note: NoteEntity): RelatedNote {
-    return {
-      id: note.id,
-      name: note.name,
-      createdById: note.createdBy.id,
-      createdBy: {
-        name: note.createdBy.name,
-        email: note.createdBy.email,
-      },
-      fields: note.noteFieldGroups
-        .map((nfg) => nfg.noteFields)
-        .flat()
-        .map(this.noteFieldEntityToNoteFieldData.bind(this)),
-    };
-  }
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {
       return await this.createNoteFromTemplate(
@@ -657,5 +594,67 @@ export class NotesService {
       ];
       return complexTag;
     });
+  }
+
+  private transformNotesToNoteWithRelatedData(
+    workflowNote: NoteEntity,
+    relatedNotes: NoteEntity[],
+  ): NoteWithRelatedNotesData {
+    const mappedNote = this.noteEntityToNoteData(workflowNote);
+    // we assume there is only one tab with given name and it won't change after being created from template
+    for (const tab of workflowNote.template.tabs) {
+      (
+        mappedNote.noteTabs.find(
+          (nt) => nt.name === tab.name,
+        ) as NoteTabsWithRelatedNotesData
+      ).relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
+    }
+    return mappedNote;
+  }
+
+  private getRelatedNotesForTab(
+    tab: TabEntity,
+    relatedNotes: NoteEntity[],
+  ): RelatedNote[] {
+    const relatedFieldsIds = tab.relatedFields.map((rf) => rf.id);
+
+    const filteredRelatedNotes = relatedNotes.filter((rn) => {
+      const noteFieldIds = rn.noteFieldGroups
+        .map((nfg) =>
+          nfg.noteFields
+            .filter(
+              (nf) => nf.value && relatedFieldsIds.includes(nf.templateFieldId),
+            )
+            .map((nf) => nf.templateFieldId.toLowerCase()),
+        )
+        .flat();
+      return noteFieldIds.length > 0;
+    });
+    filteredRelatedNotes.forEach((rn) => {
+      rn.noteFieldGroups = rn.noteFieldGroups.filter((nfg) => {
+        nfg.noteFields = nfg.noteFields.filter((nf) => {
+          return nf.value && relatedFieldsIds.includes(nf.templateFieldId);
+        });
+        return nfg.noteFields.length > 0;
+      });
+    });
+
+    return filteredRelatedNotes.map(this.mapNoteToRelatedNoteData.bind(this));
+  }
+
+  private mapNoteToRelatedNoteData(note: NoteEntity): RelatedNote {
+    return {
+      id: note.id,
+      name: note.name,
+      createdById: note.createdBy.id,
+      createdBy: {
+        name: note.createdBy.name,
+        email: note.createdBy.email,
+      },
+      fields: note.noteFieldGroups
+        .map((nfg) => nfg.noteFields)
+        .flat()
+        .map(this.noteFieldEntityToNoteFieldData.bind(this)),
+    };
   }
 }
