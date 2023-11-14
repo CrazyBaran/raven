@@ -1,4 +1,5 @@
 import {
+  OpportunityCreatedEvent,
   OpportunityData,
   OpportunityStageChangedEvent,
 } from '@app/rvns-opportunities';
@@ -12,6 +13,8 @@ import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisat
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { TemplateEntity } from '../rvn-templates/entities/template.entity';
+import { UserEntity } from '../rvn-users/entities/user.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
@@ -19,10 +22,14 @@ import { OrganisationService } from './organisation.service';
 interface CreateOpportunityForNonExistingOrganisationOptions {
   domain: string;
   name: string;
+  workflowTemplate: TemplateEntity;
+  userEntity: UserEntity;
 }
 
 interface CreateOpportunityForOrganisationOptions {
   organisation: OrganisationEntity;
+  workflowTemplate: TemplateEntity;
+  userEntity: UserEntity;
 }
 
 interface UpdateOpportunityOptions {
@@ -102,6 +109,7 @@ export class OpportunityService {
           order: pipelineStage.order,
           mappedFrom: pipelineStage.mappedFrom,
         },
+        createdAt: opportunity.createdAt,
         tag: opportunity.tag,
         fields:
           matchedOrganization?.fields.map((field) => {
@@ -191,6 +199,7 @@ export class OpportunityService {
             domains: matchedOrganization.organizationDto.domains,
             affinityUrl: `${environment.affinity.affinityUrl}companies/${matchedOrganization.organizationDto.id}`,
           },
+          createdAt: undefined, // Adjust this if there's a relevant ID
           stage: pipelineStage,
           fields: matchedOrganization.fields.map((field) => {
             return {
@@ -229,7 +238,18 @@ export class OpportunityService {
       ? affinityPipelineStage
       : pipelineStage;
 
-    return this.opportunityRepository.save(opportunity);
+    const savedOpportunity = await this.opportunityRepository.save(opportunity);
+
+    this.eventEmitter.emit(
+      'opportunity-created',
+      new OpportunityCreatedEvent(
+        savedOpportunity.id,
+        options.workflowTemplate.id,
+        options.userEntity.id,
+      ),
+    );
+
+    return savedOpportunity;
   }
 
   public async createForNonExistingOrganisation(
@@ -248,7 +268,18 @@ export class OpportunityService {
     opportunity.pipelineDefinition = pipeline;
     opportunity.pipelineStage = pipelineStage;
 
-    return this.opportunityRepository.save(opportunity);
+    const savedOpportunity = await this.opportunityRepository.save(opportunity);
+
+    this.eventEmitter.emit(
+      'opportunity-created',
+      new OpportunityCreatedEvent(
+        savedOpportunity.id,
+        options.workflowTemplate.id,
+        options.userEntity.id,
+      ),
+    );
+
+    return this.opportunityRepository.save(savedOpportunity);
   }
 
   public async update(
@@ -292,7 +323,9 @@ export class OpportunityService {
         id: entity?.organisationId,
         name: affinityDto?.organizationDto?.name,
         domains: affinityDto?.organizationDto?.domains,
-        affinityUrl: `${environment.affinity.affinityUrl}companies/${affinityDto.organizationDto.id}`,
+        affinityUrl: affinityDto?.organizationDto
+          ? `${environment.affinity.affinityUrl}companies/${affinityDto.organizationDto.id}`
+          : '',
       },
       stage: {
         id: entity?.pipelineStage?.id,
@@ -304,6 +337,7 @@ export class OpportunityService {
         id: entity.tag.id,
         name: entity.tag.name,
       },
+      createdAt: entity?.createdAt,
       fields: affinityDto?.fields.map((field) => {
         return {
           displayName: field.displayName,
@@ -384,6 +418,7 @@ export class OpportunityService {
         ? { id: entity.tag.id, name: entity.tag.name }
         : undefined,
       fields: [],
+      createdAt: entity.createdAt,
     };
   }
 

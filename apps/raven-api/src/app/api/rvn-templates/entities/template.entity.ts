@@ -71,7 +71,7 @@ export class TemplateEntity implements AuditableEntity {
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
-    this.previousVersionId = this.previousVersionId?.toLowerCase();
+    this.previousVersionId = this.previousVersionId?.toLowerCase() || null;
     this.createdById = this.createdById.toLowerCase();
   }
 }

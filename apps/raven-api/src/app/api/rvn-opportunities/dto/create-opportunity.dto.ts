@@ -1,4 +1,10 @@
-import { IsDefined, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsDefined,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+} from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -7,6 +13,11 @@ export class CreateOpportunityDto {
   @IsDefined()
   @IsUrl()
   public readonly domain: string;
+
+  @ApiProperty()
+  @IsDefined()
+  @IsUUID()
+  public readonly workflowTemplateId: string;
 
   @ApiProperty()
   @IsOptional()

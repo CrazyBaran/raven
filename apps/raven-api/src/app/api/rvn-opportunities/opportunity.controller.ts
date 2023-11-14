@@ -21,8 +21,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
+import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { TemplateEntity } from '../rvn-templates/entities/template.entity';
+import { Identity } from '../rvn-users/decorators/identity.decorator';
+import { UserEntity } from '../rvn-users/entities/user.entity';
 import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { UpdateOpportunityDto } from './dto/update-opportunity.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
@@ -31,6 +35,7 @@ import { OpportunityService } from './opportunity.service';
 import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
 import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-stage.pipe';
 import { ParseOptionalTagPipe } from './pipes/parse-optional-tag.pipe';
+import { ParseWorkflowTemplatePipe } from './pipes/parse-workflow-template.pipe';
 import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pipe';
 
 @ApiTags('Opportunities')
@@ -81,12 +86,19 @@ export class OpportunityController {
     @Body() dto: CreateOpportunityDto,
     @Body('domain', FindOrganizationByDomainPipe)
     organisation: OrganisationEntity | null,
+    @Body('workflowTemplateId', ParseUUIDPipe, ParseWorkflowTemplatePipe)
+    workflowTemplate: TemplateEntity,
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<OpportunityData> {
     if (organisation) {
       // TODO - find previous opportunity, check if is at last stage? remove or soft delete? confirm logic for that
       // TODO - current logic should be one opportunity for given organisation is in active stages...
       return this.opportunityService.opportunityEntityToData(
-        await this.opportunityService.createFromOrganisation({ organisation }),
+        await this.opportunityService.createFromOrganisation({
+          organisation,
+          workflowTemplate,
+          userEntity,
+        }),
       );
     }
 
@@ -94,6 +106,8 @@ export class OpportunityController {
       await this.opportunityService.createForNonExistingOrganisation({
         name: dto.name,
         domain: dto.domain,
+        workflowTemplate,
+        userEntity,
       }),
     );
   }

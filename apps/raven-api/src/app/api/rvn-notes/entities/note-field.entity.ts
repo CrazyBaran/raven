@@ -34,6 +34,10 @@ export class NoteFieldEntity implements AuditableEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public value: string | null;
 
+  @Index()
+  @Column({ default: () => 'NEWID()', type: 'uniqueidentifier' }) // default will be used only for preexisting data, this field will be always set by the application
+  public templateFieldId: string;
+
   @ManyToOne(() => NoteFieldGroupEntity, {
     nullable: false,
     onDelete: 'CASCADE',
@@ -77,5 +81,6 @@ export class NoteFieldEntity implements AuditableEntity {
     this.noteGroupId = this.noteGroupId.toLowerCase();
     this.createdById = this.createdById.toLowerCase();
     this.updatedById = this.updatedById.toLowerCase();
+    this.templateFieldId = this.templateFieldId.toLowerCase();
   }
 }

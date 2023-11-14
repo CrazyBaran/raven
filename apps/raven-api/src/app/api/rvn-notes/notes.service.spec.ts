@@ -3,11 +3,14 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
+import { OrganisationTagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
+import { NotesServiceLogger } from './notes-service.logger';
 import { NotesService } from './notes.service';
 
 describe('NotesService', () => {
@@ -30,6 +33,18 @@ describe('NotesService', () => {
           },
         },
         {
+          provide: getRepositoryToken(OpportunityEntity),
+          useValue: {
+            find: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(OrganisationTagEntity),
+          useValue: {
+            find: jest.fn(),
+          },
+        },
+        {
           provide: getRepositoryToken(NoteFieldEntity),
           useValue: {
             save: jest.fn(),
@@ -37,6 +52,10 @@ describe('NotesService', () => {
         },
         {
           provide: StorageAccountService,
+          useValue: {},
+        },
+        {
+          provide: NotesServiceLogger,
           useValue: {},
         },
         {

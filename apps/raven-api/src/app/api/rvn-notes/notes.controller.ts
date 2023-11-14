@@ -7,6 +7,7 @@ import {
   NoteAttachmentData,
   NoteData,
   NoteFieldData,
+  NoteWithRelatedNotesData,
 } from '@app/rvns-notes/data-access';
 import {
   Body,
@@ -34,6 +35,7 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 
+import { TemplateTypeEnum } from '@app/rvns-templates';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import {
   OrganisationTagEntity,
@@ -89,6 +91,8 @@ export class NotesController {
   @ApiOperation({ description: 'Get all notes' })
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'domain', type: String, required: false })
+  @ApiQuery({ name: 'opportunityId', type: String, required: false })
+  @ApiQuery({ name: 'type', enum: TemplateTypeEnum, required: false })
   @ApiQuery({
     name: 'tagIds',
     type: String,
@@ -103,7 +107,13 @@ export class NotesController {
     organisationTagEntity: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
     @Query('tagIds', ParseTagsPipe)
     tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
-  ): Promise<NoteData[]> {
+
+    @Query('opportunityId') opportunityId: string,
+    @Query('type') type?: TemplateTypeEnum,
+  ): Promise<NoteData[] | NoteWithRelatedNotesData> {
+    if (opportunityId) {
+      return await this.notesService.getNoteWithRelatedNotes(opportunityId);
+    }
     if (domain && organisationTagEntity === null) {
       return [];
     }
@@ -112,6 +122,7 @@ export class NotesController {
         await this.notesService.getAllNotes(
           organisationTagEntity as OrganisationTagEntity,
           tagEntities as TagEntity[],
+          type,
         )
       ).map((note) => this.notesService.noteEntityToNoteData(note)),
     );

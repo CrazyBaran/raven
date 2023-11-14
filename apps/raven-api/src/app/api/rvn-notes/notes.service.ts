@@ -2,13 +2,21 @@ import {
   NoteAttachmentData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
+  NoteTabsWithRelatedNotesData,
+  NoteWithRelatedNotesData,
   NoteWithRelationsData,
+  RelatedNote,
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
-import { FieldDefinitionType } from '@app/rvns-templates';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
@@ -18,6 +26,7 @@ import {
 } from '../rvn-tags/entities/tag.entity';
 import { FieldDefinitionEntity } from '../rvn-templates/entities/field-definition.entity';
 import { FieldGroupEntity } from '../rvn-templates/entities/field-group.entity';
+import { TabEntity } from '../rvn-templates/entities/tab.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
@@ -25,6 +34,7 @@ import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
+import { NotesServiceLogger } from './notes-service.logger';
 
 interface CreateNoteOptions {
   name: string;
@@ -60,12 +70,18 @@ export class NotesService {
     private readonly noteRepository: Repository<NoteEntity>,
     @InjectRepository(NoteFieldEntity)
     private readonly noteFieldRepository: Repository<NoteFieldEntity>,
+    @InjectRepository(OpportunityEntity)
+    private readonly opportunityRepository: Repository<OpportunityEntity>,
+    @InjectRepository(OrganisationTagEntity)
+    private readonly organisationTagRepository: Repository<OrganisationTagEntity>,
     private readonly storageAccountService: StorageAccountService,
+    private readonly logger: NotesServiceLogger,
   ) {}
 
   public async getAllNotes(
     organisationTagEntity?: OrganisationTagEntity,
     tagEntities?: TagEntity[],
+    type?: TemplateTypeEnum,
   ): Promise<NoteEntity[]> {
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
@@ -87,6 +103,10 @@ export class NotesService {
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
       .where(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL');
+
+    if (type) {
+      queryBuilder.andWhere('template.type = :type', { type });
+    }
 
     if (organisationTagEntity) {
       queryBuilder
@@ -131,6 +151,65 @@ export class NotesService {
         'noteFieldGroups.noteFields',
       ],
     });
+  }
+
+  public async getNoteWithRelatedNotes(
+    opportunityId: string,
+  ): Promise<NoteWithRelatedNotesData> {
+    const opportunity = await this.opportunityRepository.findOne({
+      where: { id: opportunityId },
+      relations: [
+        'organisation',
+        'note',
+        'note.createdBy',
+        'note.updatedBy',
+        'note.deletedBy',
+        'note.tags',
+        'note.template',
+        'note.template.tabs',
+        'note.noteTabs',
+        'note.noteTabs.noteFieldGroups',
+        'note.noteTabs.noteFieldGroups.noteFields',
+        'note.noteFieldGroups',
+        'note.noteFieldGroups.noteFields',
+      ],
+    });
+    if (!opportunity) {
+      throw new BadRequestException(
+        `Opportunity with id ${opportunityId} not found`,
+      );
+    }
+
+    const organisationTag = await this.organisationTagRepository.findOne({
+      where: { organisationId: opportunity.organisation.id },
+    });
+    if (!organisationTag) {
+      this.logger.warn(
+        `Organisation tag for opportunity with id ${opportunityId} not found`,
+      );
+    }
+
+    const qb = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
+      .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
+      .leftJoinAndSelect('note.tags', 'tag')
+      .where('tag.id = :organisationTagId', {
+        organisationTagId: organisationTag.id,
+      });
+
+    if (opportunity.tag) {
+      qb.andWhere('tag.id = :opportunityTagId', {
+        opportunityTagId: opportunity.tag.id,
+      });
+    }
+    const relatedNotes = await qb.getMany();
+
+    return this.transformNotesToNoteWithRelatedData(
+      opportunity.note,
+      relatedNotes,
+    );
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
@@ -450,6 +529,7 @@ export class NotesService {
           noteField.name = fieldDefinition.name;
           noteField.order = fieldDefinition.order;
           noteField.type = fieldDefinition.type;
+          noteField.templateFieldId = fieldDefinition.id;
           noteField.createdBy = userEntity;
           noteField.updatedBy = userEntity;
           noteField.value = this.findFieldValue(fieldDefinition, fields);
@@ -479,6 +559,7 @@ export class NotesService {
           newNoteField.name = noteField.name;
           newNoteField.order = noteField.order;
           newNoteField.type = noteField.type;
+          newNoteField.templateFieldId = noteField.templateFieldId;
           newNoteField.createdBy = noteField.createdBy;
           newNoteField.createdById = noteField.createdById;
           newNoteField.updatedBy = userEntity;
@@ -513,5 +594,67 @@ export class NotesService {
       ];
       return complexTag;
     });
+  }
+
+  private transformNotesToNoteWithRelatedData(
+    workflowNote: NoteEntity,
+    relatedNotes: NoteEntity[],
+  ): NoteWithRelatedNotesData {
+    const mappedNote = this.noteEntityToNoteData(workflowNote);
+    // we assume there is only one tab with given name and it won't change after being created from template
+    for (const tab of workflowNote.template.tabs) {
+      (
+        mappedNote.noteTabs.find(
+          (nt) => nt.name === tab.name,
+        ) as NoteTabsWithRelatedNotesData
+      ).relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
+    }
+    return mappedNote;
+  }
+
+  private getRelatedNotesForTab(
+    tab: TabEntity,
+    relatedNotes: NoteEntity[],
+  ): RelatedNote[] {
+    const relatedFieldsIds = tab.relatedFields.map((rf) => rf.id);
+
+    const filteredRelatedNotes = relatedNotes.filter((rn) => {
+      const noteFieldIds = rn.noteFieldGroups
+        .map((nfg) =>
+          nfg.noteFields
+            .filter(
+              (nf) => nf.value && relatedFieldsIds.includes(nf.templateFieldId),
+            )
+            .map((nf) => nf.templateFieldId.toLowerCase()),
+        )
+        .flat();
+      return noteFieldIds.length > 0;
+    });
+    filteredRelatedNotes.forEach((rn) => {
+      rn.noteFieldGroups = rn.noteFieldGroups.filter((nfg) => {
+        nfg.noteFields = nfg.noteFields.filter((nf) => {
+          return nf.value && relatedFieldsIds.includes(nf.templateFieldId);
+        });
+        return nfg.noteFields.length > 0;
+      });
+    });
+
+    return filteredRelatedNotes.map(this.mapNoteToRelatedNoteData.bind(this));
+  }
+
+  private mapNoteToRelatedNoteData(note: NoteEntity): RelatedNote {
+    return {
+      id: note.id,
+      name: note.name,
+      createdById: note.createdBy.id,
+      createdBy: {
+        name: note.createdBy.name,
+        email: note.createdBy.email,
+      },
+      fields: note.noteFieldGroups
+        .map((nfg) => nfg.noteFields)
+        .flat()
+        .map(this.noteFieldEntityToNoteFieldData.bind(this)),
+    };
   }
 }

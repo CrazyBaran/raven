@@ -7,9 +7,11 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
+import { NoteEntity } from '../../rvn-notes/entities/note.entity';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../../rvn-tags/entities/tag.entity';
@@ -63,6 +65,18 @@ export class OpportunityEntity {
   @RelationId((opportunity: OpportunityEntity) => opportunity.tag)
   public tagId: string | null;
 
+  @OneToOne(() => NoteEntity, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'note_id' })
+  public note: NoteEntity | null;
+
+  @Column({
+    nullable: true,
+  })
+  @RelationId((opportunity: OpportunityEntity) => opportunity.note)
+  public noteId: string | null;
+
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   public createdAt: Date;
 
@@ -73,5 +87,6 @@ export class OpportunityEntity {
     this.organisationId = this.organisationId.toLowerCase();
     this.pipelineDefinitionId = this.pipelineDefinitionId.toLowerCase();
     this.pipelineStageId = this.pipelineStageId.toLowerCase();
+    this.noteId = this.noteId?.toLowerCase() || null;
   }
 }

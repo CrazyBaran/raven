@@ -33,6 +33,7 @@ import {
 } from '@nestjs/swagger';
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
+import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { CreateFieldDefinitionDto } from './dto/create-field-definition.dto';
@@ -49,6 +50,8 @@ import { TabEntity } from './entities/tab.entity';
 import { TemplateEntity } from './entities/template.entity';
 import { ParseFieldDefinitionPipe } from './pipes/parse-field-definition.pipe';
 import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
+import { ParseOptionalFieldDefinitionPipe } from './pipes/parse-optional-field-definition.pipe';
+import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-stage.pipe';
 import { ParseOptionalTab } from './pipes/parse-optional-tab';
 import { ParseTabPipe } from './pipes/parse-tab.pipe';
 import { ParseTemplatePipe } from './pipes/parse-template.pipe';
@@ -139,6 +142,10 @@ export class TemplatesController {
     @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
     template: TemplateEntity,
     @Body() dto: CreateTabDto,
+    @Body('pipelineStageIds', ParseOptionalPipelineStagePipe)
+    pipelineStages: PipelineStageEntity[],
+    @Body('fieldIds', ParseOptionalFieldDefinitionPipe)
+    fieldDefinitions: FieldDefinitionEntity[],
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<TabData> {
     return this.service.tabEntityToTabData(
@@ -147,6 +154,8 @@ export class TemplatesController {
         templateId: template.id,
         order: dto.order,
         userEntity,
+        pipelineStages,
+        fieldDefinitions,
       }),
     );
   }
@@ -161,12 +170,18 @@ export class TemplatesController {
     template: TemplateEntity,
     @Param('id', ParseUUIDPipe, ParseTabPipe)
     tabEntity: TabEntity,
+    @Body('pipelineStageIds', ParseOptionalPipelineStagePipe)
+    pipelineStages: PipelineStageEntity[],
+    @Body('fieldIds', ParseOptionalFieldDefinitionPipe)
+    fieldDefinitions: FieldDefinitionEntity[],
     @Body() dto: UpdateTabDto,
   ): Promise<TabWithFieldGroupsData> {
     return this.service.tabEntityToTabData(
       await this.service.updateTab(tabEntity, {
         name: dto.name,
         order: dto.order,
+        pipelineStages,
+        fieldDefinitions,
       }),
     );
   }

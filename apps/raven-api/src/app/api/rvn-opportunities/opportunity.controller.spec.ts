@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
+import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
@@ -27,6 +28,12 @@ describe('OpportunityController', () => {
         },
         {
           provide: getRepositoryToken(OrganisationEntity),
+          useValue: {
+            find: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(TemplateEntity),
           useValue: {
             find: jest.fn(),
           },

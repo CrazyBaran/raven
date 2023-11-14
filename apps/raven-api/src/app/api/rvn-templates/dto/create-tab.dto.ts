@@ -1,4 +1,11 @@
-import { IsDefined, IsNumber, IsString, Length } from 'class-validator';
+import {
+  IsDefined,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -13,4 +20,14 @@ export class CreateTabDto {
   @IsDefined()
   @IsNumber()
   public readonly order: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID(undefined, { each: true })
+  public readonly fieldIds?: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID(undefined, { each: true })
+  public readonly pipelineStageIds?: string[];
 }
