@@ -33,7 +33,7 @@ export const opportunitiesReducer = createReducer(
 
   on(OrganisationsActions.getOrganisationsSuccess, (state, { data }) =>
     opportunitiesAdapter.upsertMany(
-      _.chain(data)
+      _.chain(data.items)
         .map((d) => d.opportunities.map((o) => ({ ...o, organisation: d })))
         .flatMap()
         .value(),

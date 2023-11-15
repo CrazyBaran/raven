@@ -19,7 +19,7 @@ export const loadOrganisationOnUrlEvent = createEffect(
           switchMap((response) => {
             return [
               OrganisationsActions.getOrganisationsSuccess({
-                data: response.data?.items || [],
+                data: response.data || { items: [], total: 0 },
               }),
               OrganisationsUrlActions.fetchedTableItems({
                 ids:
@@ -78,7 +78,7 @@ export const loadOrganisations = createEffect(
         organisationsService.getOrganisations().pipe(
           map((response) => {
             return OrganisationsActions.getOrganisationsSuccess({
-              data: response.data?.items || [],
+              data: response.data || { items: [], total: 0 },
             });
           }),
           catchError((error) => {

@@ -9,6 +9,7 @@ import {
 import { OrganisationEntity } from './organisations.model';
 
 export interface OrganisationsState extends EntityState<OrganisationEntity> {
+  totalRows: number;
   loaded: boolean | null;
   error: string | null;
   loadingOrganisation: boolean;
@@ -23,6 +24,7 @@ export const initialOrganisationState: OrganisationsState =
     loadingOrganisation: false,
     error: null,
     selectedId: null,
+    totalRows: 0,
   });
 
 export const OrganisationsFeature = createFeature({
@@ -59,7 +61,11 @@ export const OrganisationsFeature = createFeature({
       }),
     ),
     on(OrganisationsActions.getOrganisationsSuccess, (state, { data }) =>
-      OrganisationAdapter.setAll([...data], { ...state, loaded: true }),
+      OrganisationAdapter.setAll([...data.items], {
+        ...state,
+        loaded: true,
+        totalRows: data.total,
+      }),
     ),
     on(OrganisationsActions.getOrganisationsFailure, (state, { error }) => ({
       ...state,

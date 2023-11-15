@@ -15,18 +15,32 @@ export const organisationsQueryParams = [
   'round',
   'industry',
   'geography',
+  'skip',
+  'take',
+  'field',
+  'dir',
 ] as const;
 
 export type OrganisationQueryParam = (typeof organisationsQueryParams)[number];
+export type OrganisationQueryParams = Partial<
+  Record<OrganisationQueryParam, string>
+>;
+
+export const defaultOrganisationQuery: OrganisationQueryParams = {
+  skip: '0',
+  take: '10',
+};
 
 export const selectOrganisationsTableParams = createSelector(
   selectQueryParams,
-  (params): Record<Partial<OrganisationQueryParam>, string> =>
-    _.chain(organisationsQueryParams)
+  (params): Record<Partial<OrganisationQueryParam>, string> => ({
+    ...defaultOrganisationQuery,
+    ...(_.chain(organisationsQueryParams)
       .keyBy((x) => x)
       .mapValues((key) => params[key])
       .pickBy(Boolean)
-      .value() as Record<Partial<OrganisationQueryParam>, string>,
+      .value() as Record<Partial<OrganisationQueryParam>, string>),
+  }),
 );
 
 export const buildButtonGroupNavigation = <T>(
@@ -140,6 +154,7 @@ export const selectOrganisationsTableViewModel = createSelector(
   selectOrganisationRows,
   selectOrganisationTableQueryModel,
   selectOrganisationsTableParams,
+  OrganisationsFeature.selectTotalRows,
   (
     buttonGroupNavigation,
     navigationDropdowns,
@@ -147,6 +162,7 @@ export const selectOrganisationsTableViewModel = createSelector(
     organisations,
     queryModel,
     query,
+    total,
   ) => ({
     buttonGroupNavigation,
     navigationDropdowns,
@@ -154,5 +170,6 @@ export const selectOrganisationsTableViewModel = createSelector(
     organisations,
     queryModel,
     query,
+    total,
   }),
 );

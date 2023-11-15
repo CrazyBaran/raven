@@ -2,17 +2,17 @@
   <app-page-template pageIcon="fa-regular fa-fire" pageName="All Companies">
     <div class="flex items-center gap-3" page-header-actions>
       <app-text-box-navigation
-        [queryParamName]="vm().queryModel.queryParamName"
         [placeholder]="vm().queryModel.placeholder"
+        [queryParamName]="vm().queryModel.queryParamName"
         [urlValue]="vm().queryModel.urlValue!"
       />
 
       <kendo-button
+        (click)="openOrganisationDialog()"
         fillMode="flat"
         iconClass="fa-solid fa-square-plus"
         size="large"
         themeColor="secondary"
-        (click)="openOrganisationDialog()"
         >Add New</kendo-button
       >
       <kendo-button
@@ -43,17 +43,16 @@
 
       <div class="flex-1 shrink-0 overflow-hidden">
         <app-organisations-table-view
-          class="block h-full"
-          [organisations]="$any(vm().organisations)"
           [isLoading]="vm().isLoading"
+          [organisations]="$any(vm().organisations)"
+          [skip]="vm().query.skip"
+          [take]="vm().query.take"
+          [total]="vm().total"
+          [field]="vm().query.field"
+          [dir]="vm().query.dir"
+          class="block h-full"
         ></app-organisations-table-view>
       </div>
     </div>
   </app-page-template>
 </div>
-
-<!--<ng-template #table>-->
-<!--  <app-organisations-table-view-->
-<!--    [organisations]="vm().organisations"-->
-<!--  ></app-organisations-table-view>-->
-<!--</ng-template>-->

@@ -3,12 +3,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  numberAttribute,
   Pipe,
   PipeTransform,
   signal,
 } from '@angular/core';
+import {
+  KendoUrlPagingDirective,
+  KendoUrlSortingDirective,
+} from '@app/client/shared/ui';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { GridModule } from '@progress/kendo-angular-grid';
+import { GridDataResult, GridModule } from '@progress/kendo-angular-grid';
+import { SortDescriptor } from '@progress/kendo-data-query';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 
@@ -69,6 +75,8 @@ export class ExpandableListPipe implements PipeTransform {
     RxFor,
     ExpandableListPipe,
     StageColorPipe,
+    KendoUrlPagingDirective,
+    KendoUrlSortingDirective,
   ],
   templateUrl: './organisations-table-view.component.html',
   styleUrls: ['./organisations-table-view.component.scss'],
@@ -77,18 +85,37 @@ export class ExpandableListPipe implements PipeTransform {
 export class OrganisationsTableViewComponent {
   @Input() public organisations: OrganisationRow[];
   @Input() public isLoading: boolean;
+  @Input({ transform: numberAttribute }) public total: number;
+  @Input({ transform: numberAttribute }) public take: number;
+  @Input({ transform: numberAttribute }) public skip: number;
+
+  @Input() public field: string;
+  @Input() public dir = 'asc';
 
   public collapsedRows = signal<string[]>([]);
 
+  public get data(): GridDataResult {
+    return {
+      data: this.organisations,
+      total: this.total,
+    };
+  }
+
+  public get sort(): SortDescriptor[] {
+    return this.field
+      ? [{ field: this.field, dir: this.dir as 'asc' | 'desc' }]
+      : [];
+  }
+
   public toggleRow(id: string): void {
-    if (this.isRowColapsed(id)) {
+    if (this.isRowCollapsed(id)) {
       this.collapsedRows.update((value) => value.filter((id) => id !== id));
     } else {
       this.collapsedRows.update((value) => [...value, id]);
     }
   }
 
-  public isRowColapsed(id: string): boolean {
+  public isRowCollapsed(id: string): boolean {
     return this.collapsedRows().includes(id);
   }
 }
