@@ -11,7 +11,7 @@ export class UpdateOpportunityDto {
   @ApiProperty()
   @IsOptional()
   @IsUUID()
-  public readonly tagId?: string;
+  public readonly opportunityTagId?: string;
 
   @ApiProperty()
   @IsOptional()
