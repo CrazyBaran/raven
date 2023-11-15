@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/pipelines/state/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["scope:pipelines", "type:state"],
   "projectType": "library",
   "targets": {
     "test": {

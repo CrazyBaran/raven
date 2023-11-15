@@ -1,4 +1,11 @@
-<kendo-grid [data]="organisations" class="grid-borderless">
+<kendo-grid
+  [loading]="isLoading"
+  [data]="organisations"
+  class="grid-borderless h-full"
+  [pageable]="true"
+  [pageSize]="10"
+  scrollable="scrollable"
+>
   <kendo-grid-column
     title="Company"
     headerClass="!font-bold"
@@ -7,16 +14,17 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex items-center gap-3">
         <i class="fa-regular fa-image text-xl"></i>
-        <div class="grow">
-          <p>{{ dataItem.name }}</p>
-          <p class="text-xs" *rxIf="dataItem.domains[0]">
-            {{ dataItem.domains[0] }}
-          </p>
+        <div
+          class="hover:text-primary-600 group flex grow items-center gap-3 overflow-hidden transition-all duration-100 hover:cursor-pointer"
+        >
+          <div class="grow overflow-hidden">
+            <p class="truncate group-hover:font-bold">{{ dataItem.name }}</p>
+            <p class="truncate text-xs" *rxIf="dataItem.domains[0]">
+              {{ dataItem.domains[0] }}
+            </p>
+          </div>
+          <i class="fa-solid fa-share"></i>
         </div>
-        <kendo-button
-          fillMode="link"
-          iconClass="fa-solid fa-share"
-        ></kendo-button>
       </div>
     </ng-template>
   </kendo-grid-column>
@@ -25,7 +33,10 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
-          *rxFor="let opportunity of dataItem | expandableList: collapsedRows()"
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
         >
           <p>{{ opportunity.tag?.name ?? 'Unknown' }}</p>
           <p>{{ $any(opportunity).updated ?? 'Updated: dd/mm/yyyy' }}</p>
@@ -38,7 +49,10 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
-          *rxFor="let opportunity of dataItem | expandableList: collapsedRows()"
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
           class="flex h-10 items-center gap-3"
         >
           <i
@@ -57,7 +71,10 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
-          *rxFor="let opportunity of dataItem | expandableList: collapsedRows()"
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
           class="flex h-10 items-center gap-1"
         >
           <i class="fa-solid fa-circle-user mr-1"></i>
@@ -73,7 +90,10 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
-          *rxFor="let opportunity of dataItem | expandableList: collapsedRows()"
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
           class="flex h-10 items-center gap-1"
         >
           <i class="fa-solid fa-circle-user mr-1"></i>
@@ -89,7 +109,10 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
-          *rxFor="let opportunity of dataItem | expandableList: collapsedRows()"
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
           class="flex h-10 items-center gap-1"
         >
           <i class="fa-solid fa-circle-user mr-1"></i>

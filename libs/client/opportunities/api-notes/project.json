@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/opportunities/api-notes/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["type:api"],
   "projectType": "library",
   "targets": {
     "test": {

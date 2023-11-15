@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/rvns-notes/data-access/src",
   "prefix": "app",
-  "tags": ["client", "api"],
+  "tags": ["client", "api", "type:dtos"],
   "projectType": "library",
   "targets": {
     "test": {

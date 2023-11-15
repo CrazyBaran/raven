@@ -5,6 +5,23 @@ import { catchError, concatMap, map, of } from 'rxjs';
 import { colorDictionary } from './pipeline-colors.constants';
 import { PipelinesActions } from './pipelines.actions';
 
+export const getPipelineColors = (
+  stage: { displayName: string },
+  index: number,
+): {
+  primaryColor: string;
+  secondaryColor: string;
+} => {
+  const name = stage.displayName.toLowerCase();
+  if (['passed', 'lost'].some((n) => name.includes(n))) {
+    return {
+      primaryColor: '#D9D9D6',
+      secondaryColor: '#D9D9D6',
+    };
+  }
+  return colorDictionary[index % colorDictionary.length];
+};
+
 @Injectable()
 export class PipelinesEffects {
   private loadPipelines$ = createEffect(() => {
@@ -19,7 +36,7 @@ export class PipelinesEffects {
                   ...d,
                   stages: d.stages?.map((s, index) => ({
                     ...s,
-                    ...colorDictionary[index % colorDictionary.length],
+                    ...getPipelineColors(s, index),
                   })),
                 })) || [],
             }),

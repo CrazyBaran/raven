@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OpportunitiesActions } from '@app/client/opportunities/data-access';
+import { PipelinesActions } from '@app/client/organisations/api-pipelines';
 import { OrganisationsUrlActions } from '@app/client/organisations/state';
 import { OrganisationsTableViewComponent } from '@app/client/organisations/ui';
-import { PipelinesActions } from '@app/client/pipelines/state';
 import {
   ButtongroupNavigationComponent,
   DropdownNavigationComponent,
@@ -50,10 +49,6 @@ export class OrganisationsTableComponent {
   protected vm = this.store.selectSignal(selectOrganisationsTableViewModel);
 
   public constructor() {
-    this.store.dispatch(
-      OpportunitiesActions.getOpportunities({ take: 500, skip: 0 }),
-    );
-
     this.store.dispatch(PipelinesActions.getPipelines());
 
     this.vm$
@@ -69,5 +64,7 @@ export class OrganisationsTableComponent {
       });
   }
 
-  public openOrganisationDialog(): void {}
+  public openOrganisationDialog(): void {
+    //todo: implement
+  }
 }

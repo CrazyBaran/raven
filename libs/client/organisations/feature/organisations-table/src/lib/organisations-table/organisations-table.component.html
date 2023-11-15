@@ -41,25 +41,19 @@
         </div>
       </app-quick-filters-template>
 
-      <div class="flex-1 shrink-0">
-        <div
-          class="flex h-full w-full flex-col items-center justify-center"
-          *rxIf="vm().isLoading; else table"
-        >
-          <kendo-loader
-            class="mb-4"
-            themeColor="primary"
-            type="infinite-spinner"
-          />
-          Loading...
-        </div>
+      <div class="flex-1 shrink-0 overflow-hidden">
+        <app-organisations-table-view
+          class="block h-full"
+          [organisations]="$any(vm().organisations)"
+          [isLoading]="vm().isLoading"
+        ></app-organisations-table-view>
       </div>
     </div>
   </app-page-template>
 </div>
 
-<ng-template #table>
-  <app-organisations-table-view
-    [organisations]="vm().organisations"
-  ></app-organisations-table-view>
-</ng-template>
+<!--<ng-template #table>-->
+<!--  <app-organisations-table-view-->
+<!--    [organisations]="vm().organisations"-->
+<!--  ></app-organisations-table-view>-->
+<!--</ng-template>-->

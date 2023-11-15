@@ -107,7 +107,8 @@ export const selectOportunitiesStageDictionary = createSelector(
           o.fields?.some(
             (f) =>
               f.displayName === 'Deal Lead' &&
-              (f as any)['primary_email'] === userEmail,
+              'primary_email' in f &&
+              f['primary_email'] === userEmail,
           ),
       );
     }

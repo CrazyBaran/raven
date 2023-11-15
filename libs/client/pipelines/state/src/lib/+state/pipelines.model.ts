@@ -1,7 +1,7 @@
-import { PipelineDefinitionData, PipelineStageData } from '@app/rvns-pipelines';
+import { PipelineDefinition } from '@app/client/pipelines/data-access';
 
-export type PipelineDefinition = Omit<PipelineDefinitionData, 'stages'> & {
-  readonly stages: (PipelineStageData & {
+export type PipelineDefinitionModel = Omit<PipelineDefinition, 'stages'> & {
+  stages: (PipelineDefinition['stages'][number] & {
     primaryColor: string;
     secondaryColor: string;
   })[];

@@ -7,17 +7,29 @@ import {
   PipeTransform,
   signal,
 } from '@angular/core';
-import { OrganisationEntity } from '@app/client/organisations/state';
-import { OpportunityData } from '@app/rvns-opportunities';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 
-export type OrganisationRow = OrganisationEntity & {
-  opportunities: (OpportunityData & { stageColor: string })[];
-
-  // id: string;
+//TODO: move to model library and reuse shared models
+export type OrganisationRow = {
+  id?: string;
+  name: string;
+  domains: string[];
+  opportunities: {
+    tag: { name: string };
+    id: string;
+    stageColor: string;
+    stage: {
+      id: string;
+      displayName: string;
+    };
+    fields: {
+      displayName: string;
+      value: string | number | object | object[];
+    }[];
+  }[];
 };
 
 @Pipe({
@@ -64,6 +76,7 @@ export class ExpandableListPipe implements PipeTransform {
 })
 export class OrganisationsTableViewComponent {
   @Input() public organisations: OrganisationRow[];
+  @Input() public isLoading: boolean;
 
   public collapsedRows = signal<string[]>([]);
 

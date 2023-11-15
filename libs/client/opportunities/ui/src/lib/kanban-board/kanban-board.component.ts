@@ -1,4 +1,6 @@
-/* eslint-disable @angular-eslint/no-input-rename */
+/* eslint-disable @angular-eslint/no-input-rename,@nx/enforce-module-boundaries */
+//TODO: create model library
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -50,7 +52,7 @@ import {
 } from '@angular/animations';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 
-import { PipelineDefinition } from '@app/client/pipelines/state';
+import { PipelineDefinitionModel } from '@app/client/pipelines/state';
 import { concatLatestFrom } from '@ngrx/effects';
 import { RxLet } from '@rx-angular/template/let';
 import { RxPush } from '@rx-angular/template/push';
@@ -133,7 +135,7 @@ export class KanbanBoardComponent {
     BehaviorSubject<{ ids: string[]; withoutEmission?: boolean }>
   >;
 
-  public pipelines = signal<PipelineDefinition[]>([], {
+  public pipelines = signal<PipelineDefinitionModel[]>([], {
     equal: _.isEqual,
   });
 
@@ -180,7 +182,7 @@ export class KanbanBoardComponent {
   @Input() public set opportunitiesStageDictionary(
     value: _.Dictionary<string[]>,
   ) {
-    this.pipelines()[0].stages.forEach((stage) => {
+    this.pipelines()[0]?.stages.forEach((stage) => {
       const key = stage.id;
       const ids = value[key] ?? [];
       let subject = this.opportunitiesStageSubjectDictioanry[key];
@@ -236,7 +238,7 @@ export class KanbanBoardComponent {
   }
 
   @Input({ required: true, alias: 'pipelines' })
-  public set _pipelines(value: PipelineDefinition[]) {
+  public set _pipelines(value: PipelineDefinitionModel[]) {
     this.pipelines.set(value);
   }
 

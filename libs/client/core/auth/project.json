@@ -23,5 +23,5 @@
       }
     }
   },
-  "tags": ["client"]
+  "tags": ["client", "type:util"]
 }

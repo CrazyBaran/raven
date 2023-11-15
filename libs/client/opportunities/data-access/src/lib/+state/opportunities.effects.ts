@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { pipelinesQuery } from '@app/client/pipelines/state';
+import { pipelinesQuery } from '@app/client/opportunities/api-pipelines';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';

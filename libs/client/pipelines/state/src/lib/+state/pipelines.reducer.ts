@@ -1,18 +1,18 @@
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { PipelinesActions } from './pipelines.actions';
-import { PipelineDefinition } from './pipelines.model';
+import { PipelineDefinitionModel } from './pipelines.model';
 
 export const pipelinesFeatureKey = 'pipelines';
 
-export interface PipelinesState extends EntityState<PipelineDefinition> {
+export interface PipelinesState extends EntityState<PipelineDefinitionModel> {
   // additional entities state properties
   isLoading: boolean;
   error: string | null;
 }
 
-export const pipelinesAdapter: EntityAdapter<PipelineDefinition> =
-  createEntityAdapter<PipelineDefinition>();
+export const pipelinesAdapter: EntityAdapter<PipelineDefinitionModel> =
+  createEntityAdapter<PipelineDefinitionModel>();
 
 export const initialState: PipelinesState = pipelinesAdapter.getInitialState({
   // additional entity state properties

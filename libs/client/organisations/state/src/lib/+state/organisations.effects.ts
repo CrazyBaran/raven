@@ -19,10 +19,11 @@ export const loadOrganisationOnUrlEvent = createEffect(
           switchMap((response) => {
             return [
               OrganisationsActions.getOrganisationsSuccess({
-                data: response.data || [],
+                data: response.data?.items || [],
               }),
               OrganisationsUrlActions.fetchedTableItems({
-                ids: response.data?.map((d) => d.id!).filter(Boolean) || [],
+                ids:
+                  response.data?.items.map((d) => d.id!).filter(Boolean) || [],
               }),
             ];
           }),
@@ -77,7 +78,7 @@ export const loadOrganisations = createEffect(
         organisationsService.getOrganisations().pipe(
           map((response) => {
             return OrganisationsActions.getOrganisationsSuccess({
-              data: response.data || [],
+              data: response.data?.items || [],
             });
           }),
           catchError((error) => {

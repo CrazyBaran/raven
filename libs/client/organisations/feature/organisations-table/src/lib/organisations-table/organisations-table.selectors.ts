@@ -1,6 +1,6 @@
-import { opportunitiesQuery } from '@app/client/opportunities/data-access';
+import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
+import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { OrganisationsFeature } from '@app/client/organisations/state';
-import { pipelinesQuery } from '@app/client/pipelines/state';
 import {
   ButtongroupNavigationModel,
   DropdownNavigationModel,
@@ -117,15 +117,18 @@ export const selectIsLoadingOrganisationsTable = createSelector(
 
 export const selectOrganisationRows = createSelector(
   OrganisationsFeature.selectAll,
-  opportunitiesQuery.selectOpportunitiesGroupedByOrganisation,
+  opportunitiesQuery.selectOpportunitiesDictionary,
   pipelinesQuery.selectStagePrimaryColorDictionary,
   (organisations, groupedDictionary, stageColorDictionary) => {
     return organisations.map((o) => ({
       ...o,
-      opportunities: (groupedDictionary[o.id!] ?? []).map((opportunity) => ({
-        ...opportunity,
-        stageColor: stageColorDictionary[opportunity.stage?.id] ?? '#000',
-      })),
+      opportunities: o.opportunities
+        .map(({ id }) => groupedDictionary[id])
+        .map((opportunity) => ({
+          ...opportunity,
+          stageColor: stageColorDictionary[opportunity!.stage?.id] ?? '#000',
+          tag: null,
+        })),
     }));
   },
 );

@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/organisations/ui/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["type:ui", "scope:organisations"],
   "projectType": "library",
   "targets": {
     "test": {

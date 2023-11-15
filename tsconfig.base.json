@@ -49,6 +49,12 @@
       "@app/client/opportunities/api-notes": [
         "libs/client/opportunities/api-notes/src/index.ts"
       ],
+      "@app/client/opportunities/api-organisations": [
+        "libs/client/opportunities/api-organisations/src/index.ts"
+      ],
+      "@app/client/opportunities/api-pipelines": [
+        "libs/client/opportunities/api-pipelines/src/index.ts"
+      ],
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
@@ -78,6 +84,12 @@
       ],
       "@app/client/opportunities/ui": [
         "libs/client/opportunities/ui/src/index.ts"
+      ],
+      "@app/client/organisations/api-opportunities": [
+        "libs/client/organisations/api-opportunities/src/index.ts"
+      ],
+      "@app/client/organisations/api-pipelines": [
+        "libs/client/organisations/api-pipelines/src/index.ts"
       ],
       "@app/client/organisations/data-access": [
         "libs/client/organisations/data-access/src/index.ts"

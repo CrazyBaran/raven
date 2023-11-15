@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+// TODO: refactor storage lib
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import { GenericResponse } from '@app/rvns-api';
 import {

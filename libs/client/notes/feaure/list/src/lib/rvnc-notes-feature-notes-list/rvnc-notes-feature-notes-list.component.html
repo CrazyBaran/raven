@@ -25,15 +25,14 @@
   </ui-header>
 
   <div class="notes-list__content overflow-hidden p-6">
-    <ui-loader *ngIf="isLoading$ | async; else notesListView" />
+    <app-quick-filters />
 
-    <ng-template #notesListView>
-      <app-quick-filters />
-
-      <div class="flex overflow-hidden">
-        <app-notes-table [notes]="notes() || []" />
-      </div>
-    </ng-template>
+    <div class="flex overflow-hidden">
+      <app-notes-table
+        [notes]="notes() || []"
+        [isLoading]="(isLoading$ | async)!"
+      />
+    </div>
   </div>
 </div>
 

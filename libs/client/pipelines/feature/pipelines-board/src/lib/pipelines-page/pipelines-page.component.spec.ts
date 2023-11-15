@@ -5,12 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
 import { from } from 'rxjs';
+import { PipelinesPageComponent } from './pipelines-page.component';
 import {
-  PipelinesPageComponent,
   selectAllOpportunitiesDictionary,
   selectOportunitiesStageDictionary,
   selectPipelinesPageViewModel,
-} from './pipelines-page.component';
+} from './pipelines-page.selectors';
 
 describe('PipelinesPageComponent', () => {
   let component: PipelinesPageComponent;

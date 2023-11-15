@@ -21,9 +21,11 @@ export class ButtongroupNavigationComponent {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public get filters() {
-    return this.model.filters.map((f) => ({
-      ...f,
-      queryParams: { [this.model.paramName]: f.id },
-    }));
+    return (
+      this.model?.filters.map((f) => ({
+        ...f,
+        queryParams: { [this.model.paramName]: f.id },
+      })) ?? []
+    );
   }
 }
