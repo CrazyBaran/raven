@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { from } from 'rxjs';
@@ -13,6 +14,7 @@ describe('ClientOrganisationsFeatureOrganisationsTableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [OrganisationsTableComponent],
       providers: [
+        provideAnimations(),
         {
           provide: ActivatedRoute,
           useValue: {
