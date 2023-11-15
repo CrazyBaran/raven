@@ -1,3 +1,6 @@
+/* eslint-disable @nx/enforce-module-boundaries */
+//TODO: create model library
+
 import { OpportunityData } from '@app/rvns-opportunities';
 import { Observable, Subject } from 'rxjs';
 

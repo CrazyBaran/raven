@@ -1,3 +1,6 @@
+/* eslint-disable @nx/enforce-module-boundaries */
+//TODO: refactor notes table
+
 import type { Meta, StoryObj } from '@storybook/angular';
 import { NoteDetailsComponent } from './note-details.component';
 

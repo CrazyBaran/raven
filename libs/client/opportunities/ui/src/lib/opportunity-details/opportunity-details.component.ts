@@ -1,3 +1,6 @@
+/* eslint-disable @nx/enforce-module-boundaries */
+//TODO: Refactor opportunity details
+
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';

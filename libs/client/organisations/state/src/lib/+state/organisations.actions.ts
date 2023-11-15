@@ -1,6 +1,7 @@
 import {
   CreateOrganisation,
   Organisation,
+  OrganisationsResponse,
 } from '@app/client/organisations/data-access';
 
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
@@ -16,7 +17,7 @@ export const OrganisationsActions = createActionGroup({
     'Get Organisation Failure': props<{ error: string }>(),
 
     'Get Organisations': emptyProps(),
-    'Get Organisations Success': props<{ data: OrganisationEntity[] }>(),
+    'Get Organisations Success': props<{ data: OrganisationsResponse }>(),
     'Get Organisations Failure': props<{ error: string }>(),
 
     'Create Organisation': props<{ data: CreateOrganisation }>(),
@@ -24,5 +25,15 @@ export const OrganisationsActions = createActionGroup({
       data: Organisation;
     }>(),
     'Create Organisation Failure': props<{ error: string }>(),
+  },
+});
+
+export const OrganisationsUrlActions = createActionGroup({
+  source: 'Organisations/URL',
+  events: {
+    'Query Params Changed': props<{
+      params: Record<string, string | string[]>;
+    }>(),
+    'Fetched Table items': props<{ ids: string[] }>(),
   },
 });

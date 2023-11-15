@@ -14,7 +14,7 @@ export const selectOpportunitiesState =
 
 export const selectAllOpportunities = createSelector(
   selectOpportunitiesState,
-  (state: OpportunitiesState) => selectAll(state),
+  (state: OpportunitiesState) => (state ? selectAll(state) : []),
 );
 
 export const selectIsLoading = createSelector(
@@ -24,9 +24,16 @@ export const selectIsLoading = createSelector(
 
 export const selectOpportunitiesDictionary = createSelector(
   selectOpportunitiesState,
-  (state: OpportunitiesState) => selectEntities(state),
+  (state: OpportunitiesState) => (state ? selectEntities(state) : {}),
 );
 
+export const selectOpportunitiesGroupedByOrganisation = createSelector(
+  selectAllOpportunities,
+  (opportunities) =>
+    _.groupBy(opportunities ?? [], ({ organisation }) => organisation.id),
+);
+
+import * as _ from 'lodash';
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectOpportunityById = (id: string) =>
   createSelector(selectOpportunitiesDictionary, (dictionary) => dictionary[id]);
@@ -146,4 +153,5 @@ export const opportunitiesQuery = {
   selectOpportunitiesDictionary,
   selectRouteOpportunityDetails,
   selectOpportunityById,
+  selectOpportunitiesGroupedByOrganisation,
 };

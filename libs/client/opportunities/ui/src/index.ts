@@ -1,4 +1,3 @@
-export { colorDictionary } from './lib/kanban-board/color.dictionary';
 export * from './lib/kanban-board/kanban-board.component';
 export * from './lib/kanban-board/kanban-board.interface';
 export * from './lib/opportunities-card/opportunities-card.component';

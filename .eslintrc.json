@@ -27,7 +27,8 @@
                   "type:ui",
                   "type:data-access",
                   "type:util",
-                  "type:state"
+                  "type:state",
+                  "type:data-access"//remove when all ngrx features moved to state libraries
                 ]
               },
               {
@@ -36,7 +37,9 @@
               },
               {
                 "sourceTag": "type:feature",
-                "onlyDependOnLibsWithTags": ["type:ui", "type:state", "type:util"]
+                "onlyDependOnLibsWithTags": ["type:ui", "type:state", "type:util", "type:api",
+                  "type:data-access"//remove when all ngrx features moved to state libraries
+                ]
               },
               {
                 "sourceTag": "type:ui",
@@ -44,7 +47,7 @@
               },
               {
                 "sourceTag": "type:util",
-                "onlyDependOnLibsWithTags": []
+                "onlyDependOnLibsWithTags": ["type:util"]
               },
               {
                 "sourceTag": "type:state",
@@ -83,7 +86,19 @@
                   "scope:rvns-api",
                   "scope:rvnc-shared",
                   "scope:shared",
-                  "scope:tags/api-organisations"
+                  "scope:tags/api-organisations",
+                  "scope:organisations/api-pipelines",
+                  "scope:organisations/api-opportunities"
+                ]
+              },
+              {
+                "sourceTag": "scope:pipelines",
+                "onlyDependOnLibsWithTags": [
+                  "scope:pipelines",
+                  "scope:rvns-api",
+                  "scope:rvnc-shared",
+                  "scope:shared",
+                  "scope:organisations/api-pipelines"
                 ]
               }
             ]

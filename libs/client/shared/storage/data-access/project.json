@@ -3,7 +3,7 @@
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/shared/storage/data-access/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["type:util"],
   "projectType": "library",
   "targets": {
     "test": {

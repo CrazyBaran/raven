@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/shared/ui-router/src",
   "prefix": "app",
-  "tags": [],
+  "tags": ["type:ui", "scope:shared"],
   "projectType": "library",
   "targets": {
     "test": {

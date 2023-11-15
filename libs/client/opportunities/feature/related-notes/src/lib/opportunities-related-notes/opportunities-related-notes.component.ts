@@ -20,7 +20,6 @@ import { RichTextComponent } from '@app/client/shared/dynamic-form-util';
 import { SafeHtmlPipe } from '@app/client/shared/pipes';
 import { LoaderComponent } from '@app/client/shared/ui';
 import { routerQuery } from '@app/client/shared/util-router';
-import { NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { Store, createSelector } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -56,11 +55,13 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
       relatedNotes,
       relatedNote: relatedNote,
       relatedNoteFields: _.chain(
-        (relatedNote as NoteWithRelationsData)?.noteFieldGroups ?? [],
+        ('noteFieldGroups' in relatedNote && relatedNote.noteFieldGroups) ?? [],
       )
-        .map((x) => x.noteFields)
+        // todo: Fix type when api ready
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .map((x) => 'noteFields' in x && (x['noteFields'] as any))
         .flatMap()
-        .filter(({ value }) => Boolean(value?.trim()))
+        .filter((f) => 'value' in f && Boolean(f.value?.trim()))
         .value(),
       nextQueryParam: { noteIndex: index + 1 },
       disabledNext: index + 1 >= relatedNotes.length,

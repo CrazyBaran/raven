@@ -1,4 +1,6 @@
-import { Clipboard } from '@angular/cdk/clipboard';
+/* eslint-disable @nx/enforce-module-boundaries */
+//TODO: refactor notes table
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -7,16 +9,20 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { TagFilterPipe } from '@app/client/notes/util';
-import { TagComponent } from '@app/client/shared/ui';
+import {
+  KendoDynamicPagingDirective,
+  TagComponent,
+} from '@app/client/shared/ui';
 import { TruncateElementsDirective } from '@app/client/shared/util';
-import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { NoteData } from '@app/rvns-notes/data-access';
-import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
+
+import { Clipboard } from '@angular/cdk/clipboard';
+import { NotificationsActions } from '@app/client/shared/util-notifications';
+import { Store } from '@ngrx/store';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { SortDescriptor } from '@progress/kendo-data-query';
@@ -28,7 +34,6 @@ export type NoteTableRow = NoteData & {
     tooltip?: string;
   };
 };
-
 @Component({
   selector: 'app-notes-table',
   standalone: true,
@@ -41,6 +46,7 @@ export type NoteTableRow = NoteData & {
     TruncateElementsDirective,
     TagComponent,
     TooltipModule,
+    KendoDynamicPagingDirective,
   ],
   templateUrl: './notes-table.component.html',
   styleUrls: ['./notes-table.component.scss'],
@@ -49,6 +55,7 @@ export type NoteTableRow = NoteData & {
 })
 export class NotesTableComponent {
   @Input({ required: true }) public notes: NoteTableRow[] = [];
+  @Input() public isLoading = false;
 
   public sort: SortDescriptor[] = [
     {

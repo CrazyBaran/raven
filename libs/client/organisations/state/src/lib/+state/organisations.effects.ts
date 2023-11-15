@@ -2,7 +2,43 @@ import { inject } from '@angular/core';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { OrganisationsActions } from './organisations.actions';
+import {
+  OrganisationsActions,
+  OrganisationsUrlActions,
+} from './organisations.actions';
+
+export const loadOrganisationOnUrlEvent = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsUrlActions.queryParamsChanged),
+      switchMap(({ params }) =>
+        organisationsService.getOrganisations(params).pipe(
+          switchMap((response) => {
+            return [
+              OrganisationsActions.getOrganisationsSuccess({
+                data: response.data || { items: [], total: 0 },
+              }),
+              OrganisationsUrlActions.fetchedTableItems({
+                ids:
+                  response.data?.items.map((d) => d.id!).filter(Boolean) || [],
+              }),
+            ];
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(OrganisationsActions.getOrganisationFailure({ error }));
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
 
 export const loadOrganisation = createEffect(
   (
@@ -42,7 +78,7 @@ export const loadOrganisations = createEffect(
         organisationsService.getOrganisations().pipe(
           map((response) => {
             return OrganisationsActions.getOrganisationsSuccess({
-              data: response.data || [],
+              data: response.data || { items: [], total: 0 },
             });
           }),
           catchError((error) => {

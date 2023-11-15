@@ -49,6 +49,12 @@
       "@app/client/opportunities/api-notes": [
         "libs/client/opportunities/api-notes/src/index.ts"
       ],
+      "@app/client/opportunities/api-organisations": [
+        "libs/client/opportunities/api-organisations/src/index.ts"
+      ],
+      "@app/client/opportunities/api-pipelines": [
+        "libs/client/opportunities/api-pipelines/src/index.ts"
+      ],
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
@@ -79,11 +85,29 @@
       "@app/client/opportunities/ui": [
         "libs/client/opportunities/ui/src/index.ts"
       ],
+      "@app/client/organisations/api-opportunities": [
+        "libs/client/organisations/api-opportunities/src/index.ts"
+      ],
+      "@app/client/organisations/api-pipelines": [
+        "libs/client/organisations/api-pipelines/src/index.ts"
+      ],
       "@app/client/organisations/data-access": [
         "libs/client/organisations/data-access/src/index.ts"
       ],
+      "@app/client/organisations/feature/companies-table-container": [
+        "libs/client/organisations/feature/companies-table-container/src/index.ts"
+      ],
+      "@app/client/organisations/feature/organisations-table": [
+        "libs/client/organisations/feature/organisations-table/src/index.ts"
+      ],
+      "@app/client/organisations/feature/shell": [
+        "libs/client/organisations/feature/shell/src/index.ts"
+      ],
       "@app/client/organisations/state": [
         "libs/client/organisations/state/src/index.ts"
+      ],
+      "@app/client/organisations/ui": [
+        "libs/client/organisations/ui/src/index.ts"
       ],
       "@app/client/pipelines/data-access": [
         "libs/client/pipelines/data-access/src/index.ts"

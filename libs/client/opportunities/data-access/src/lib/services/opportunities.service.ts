@@ -1,12 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
-import { OpportunityData, PagedOpportunityData } from '@app/rvns-opportunities';
+import { OpportunityData } from '@app/rvns-opportunities';
 import { Observable } from 'rxjs';
 
 export type OpportunityChanges = {
   pipelineStageId?: string;
   tagId?: string;
+};
+
+export type OpportunitiesResponse = {
+  items: OpportunityData[];
+  total: number;
 };
 
 @Injectable({
@@ -18,8 +23,8 @@ export class OpportunitiesService {
   public getOpportunities(
     take: number,
     skip: number,
-  ): Observable<GenericResponse<PagedOpportunityData>> {
-    return this.http.get<GenericResponse<PagedOpportunityData>>(
+  ): Observable<GenericResponse<OpportunitiesResponse>> {
+    return this.http.get<GenericResponse<OpportunitiesResponse>>(
       '/api/opportunities',
       { params: { take, skip } },
     );

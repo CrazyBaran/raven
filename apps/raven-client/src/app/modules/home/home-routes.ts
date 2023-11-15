@@ -1,13 +1,5 @@
-import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
 
-import {
-  OrganisationsEffects,
-  OrganisationsFeature,
-} from '@app/client/organisations/state';
-
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
 import { HomeComponent } from './home.component';
 
 export const HOME_ROUTES: Routes = [
@@ -25,19 +17,13 @@ export const HOME_ROUTES: Routes = [
       },
       {
         path: 'companies',
-        providers: [
-          importProvidersFrom(
-            StoreModule.forFeature(OrganisationsFeature),
-            EffectsModule.forFeature([OrganisationsEffects]),
-          ),
-        ],
         children: [
           {
             path: '',
             pathMatch: 'full',
-            loadComponent: () =>
-              import('./pages/companies-page/companies-page.component').then(
-                (c) => c.CompaniesPageComponent,
+            loadChildren: () =>
+              import('@app/client/organisations/feature/shell').then(
+                (c) => c.ORGANISATION_ROUTES,
               ),
           },
           {
