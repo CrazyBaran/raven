@@ -13,7 +13,7 @@ interface TagData {
 
 export interface OpportunityDataWithoutOrganisation {
   readonly id: string;
-  readonly stage: PipelineStageData;
+  stage: PipelineStageData;
   readonly fields: FieldData[];
   readonly tag?: TagData;
   readonly createdAt?: Date;

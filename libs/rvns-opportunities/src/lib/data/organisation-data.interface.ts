@@ -1,5 +1,10 @@
 import { OpportunityDataWithoutOrganisation } from './opportunity-data.interface';
 
+export interface PagedOrganisationData {
+  readonly items: OrganisationDataWithOpportunities[];
+  readonly total: number;
+}
+
 export interface OrganisationData {
   readonly id?: string;
   readonly affinityInternalId?: number;

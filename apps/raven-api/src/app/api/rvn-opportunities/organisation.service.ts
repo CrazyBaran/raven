@@ -1,9 +1,15 @@
-import { OrganisationData } from '@app/rvns-opportunities';
+import {
+  OrganisationData,
+  PagedOrganisationData,
+} from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
+import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
+import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
+import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
 
@@ -22,49 +28,52 @@ export class OrganisationService {
   public constructor(
     @InjectRepository(OrganisationEntity)
     private readonly organisationRepository: Repository<OrganisationEntity>,
+    @InjectRepository(PipelineDefinitionEntity)
+    private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     private readonly affinityCacheService: AffinityCacheService,
+    private readonly affinityEnricher: AffinityEnricher,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async findAll(skip = 0, take = 10): Promise<OrganisationData[]> {
-    const organisations = await this.organisationRepository.find();
-    const affinityData = await this.affinityCacheService.getAll();
+  public async findAll(skip = 0, take = 10): Promise<PagedOrganisationData> {
+    const organisations = await this.organisationRepository.find({
+      skip: skip ? skip : 0,
+      take: take ? take : 10,
+      relations: [
+        'opportunities',
+        'opportunities.pipelineStage',
+        'opportunities.pipelineDefinition',
+      ],
+    });
+    const count = await this.organisationRepository.count();
 
-    const combinedData: OrganisationData[] = [];
+    const defaultPipeline = await this.getDefaultPipelineDefinition();
 
-    for (const organisation of organisations) {
-      const matchedOrganization = affinityData.find((org) =>
-        org.organizationDto.domains.includes(organisation.domains[0]),
-      );
+    const enrichedData = await this.affinityEnricher.enrichOrganisations(
+      organisations,
+      (entity, data) => {
+        for (const opportunity of data.opportunities) {
+          const pipelineStage = this.getPipelineStage(
+            defaultPipeline,
+            opportunity.stage.id,
+          );
 
-      const result: OrganisationData = {
-        ...organisation,
-        affinityInternalId: matchedOrganization?.organizationDto?.id,
-      };
+          opportunity.stage = {
+            ...opportunity.stage,
+            displayName: pipelineStage.displayName,
+            order: pipelineStage.order,
+            mappedFrom: pipelineStage.mappedFrom,
+          };
+        }
 
-      combinedData.push(result);
-    }
+        return data;
+      },
+    );
 
-    for (const org of affinityData) {
-      const isAlreadyIncluded = combinedData.some((data) =>
-        data.domains.some((domain) =>
-          org.organizationDto.domains.includes(domain),
-        ),
-      );
-
-      if (!isAlreadyIncluded) {
-        const result: OrganisationData = {
-          affinityInternalId: org.organizationDto.id,
-          id: undefined,
-          name: org.organizationDto.name,
-          domains: org.organizationDto.domains,
-        };
-
-        combinedData.push(result);
-      }
-    }
-
-    return combinedData.slice(skip, skip + take);
+    return {
+      items: enrichedData,
+      total: count,
+    } as PagedOrganisationData;
   }
 
   public async findOne(id: string): Promise<OrganisationEntity> {
@@ -146,5 +155,29 @@ export class OrganisationService {
     });
 
     return !!existingOrganisation;
+  }
+
+  private getPipelineStage(
+    pipelineDefinition: PipelineDefinitionEntity,
+    id: string,
+  ): PipelineStageEntity {
+    const pipelineStage = pipelineDefinition.stages.find(
+      (s: { id: string }) => s.id === id,
+    );
+    if (!pipelineStage) {
+      throw new Error('Pipeline stage not found! Incorrect configuration');
+    }
+    return pipelineStage;
+  }
+
+  // TODO using this might cause problem in the future if we would switch to use multiple pipelines
+  private async getDefaultPipelineDefinition(): Promise<PipelineDefinitionEntity> {
+    const pipelineDefinitions = await this.pipelineRepository.find({
+      relations: ['stages'],
+    });
+    if (pipelineDefinitions.length !== 1) {
+      throw new Error('There should be only one pipeline definition!');
+    }
+    return pipelineDefinitions[0];
   }
 }

@@ -4,8 +4,10 @@ import {
   Column,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { OpportunityEntity } from './opportunity.entity';
 
 @Entity('organisations')
 @Index(['id'], { unique: true })
@@ -18,6 +20,12 @@ export class OrganisationEntity {
 
   @Column('simple-array')
   public domains: string[];
+
+  @OneToMany(
+    (type) => OpportunityEntity,
+    (opportunity) => opportunity.organisation,
+  )
+  public opportunities: OpportunityEntity[];
 
   @AfterInsert()
   @AfterLoad()

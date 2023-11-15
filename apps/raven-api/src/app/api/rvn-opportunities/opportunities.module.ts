@@ -7,7 +7,6 @@ import { OrganisationEntity } from './entities/organisation.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullService } from '../../core/bull.service';
 import { AffinityIntegrationModule } from '../rvn-affinity-integration/affinity-integration.module';
-import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { PipelineModule } from '../rvn-pipeline/pipeline.module';
@@ -63,7 +62,6 @@ import { OpportunityProducerLogger } from './queues/opportunity.producer.logger'
   providers: [
     OrganisationService,
     OpportunityService,
-    AffinityCacheService,
     OpportunityProducer,
     OpportunityProducerLogger,
     OpportunityProcessorLogger,

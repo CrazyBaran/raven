@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
+import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityService } from './opportunity.service';
@@ -21,6 +22,10 @@ describe('OpportunityService', () => {
         },
         {
           provide: EntityManager,
+          useValue: {},
+        },
+        {
+          provide: AffinityEnricher,
           useValue: {},
         },
         {

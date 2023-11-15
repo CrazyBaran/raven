@@ -1,4 +1,7 @@
-import { OrganisationData } from '@app/rvns-opportunities';
+import {
+  OrganisationData,
+  PagedOrganisationData,
+} from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import {
@@ -10,11 +13,13 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiOAuth2,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -33,11 +38,16 @@ export class OrganisationController {
 
   @Get()
   @ApiOperation({ summary: 'Get all organisations' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public async findAll(): Promise<OrganisationData[]> {
-    return await this.organisationService.findAll();
+  public async findAll(
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ): Promise<PagedOrganisationData> {
+    return await this.organisationService.findAll(skip, take);
   }
 
   @Get(':id')
@@ -46,7 +56,7 @@ export class OrganisationController {
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public async findOne(@Param('id') id: string): Promise<OrganisationEntity> {
+  public async findOne(@Param('id') id: string): Promise<OrganisationData> {
     return await this.organisationService.findOne(id);
   }
 
