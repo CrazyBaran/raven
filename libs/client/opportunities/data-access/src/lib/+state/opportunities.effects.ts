@@ -17,7 +17,9 @@ export class OpportunitiesEffects {
       concatMap(({ take, skip }) =>
         this.opportunitiesService.getOpportunities(take, skip).pipe(
           map(({ data }) =>
-            OpportunitiesActions.getOpportunitiesSuccess({ data: data || [] }),
+            OpportunitiesActions.getOpportunitiesSuccess({
+              data: data?.items || [],
+            }),
           ),
           catchError((error) =>
             of(OpportunitiesActions.getOpportunitiesFailure({ error })),

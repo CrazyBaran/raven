@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
-import { OpportunityData } from '@app/rvns-opportunities';
+import { OpportunityData, PagedOpportunityData } from '@app/rvns-opportunities';
 import { Observable } from 'rxjs';
 
 export type OpportunityChanges = {
@@ -18,8 +18,8 @@ export class OpportunitiesService {
   public getOpportunities(
     take: number,
     skip: number,
-  ): Observable<GenericResponse<OpportunityData[]>> {
-    return this.http.get<GenericResponse<OpportunityData[]>>(
+  ): Observable<GenericResponse<PagedOpportunityData>> {
+    return this.http.get<GenericResponse<PagedOpportunityData>>(
       '/api/opportunities',
       { params: { take, skip } },
     );
