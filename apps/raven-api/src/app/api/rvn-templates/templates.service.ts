@@ -43,7 +43,8 @@ interface CreateTabOptions {
   templateId: string;
   userEntity: UserEntity;
   pipelineStages: PipelineStageEntity[] | null;
-  fieldDefinitions: FieldDefinitionEntity[] | null;
+  relatedFieldDefinitions: FieldDefinitionEntity[] | null;
+  relatedTemplates: TemplateEntity[] | null;
 }
 
 interface UpdateFieldGroupOptions {
@@ -55,7 +56,8 @@ interface UpdateTabOptions {
   name?: string;
   order?: number;
   pipelineStages: PipelineStageEntity[] | null;
-  fieldDefinitions: FieldDefinitionEntity[] | null;
+  relatedFieldDefinitions: FieldDefinitionEntity[] | null;
+  relatedTemplates: TemplateEntity[] | null;
 }
 
 interface CreateFieldDefinitionOptions {
@@ -182,7 +184,8 @@ export class TemplatesService {
     tab.order = options.order;
     tab.template = { id: options.templateId } as TemplateEntity;
     tab.pipelineStages = options.pipelineStages;
-    tab.relatedFields = options.fieldDefinitions;
+    tab.relatedFields = options.relatedFieldDefinitions;
+    tab.relatedTemplates = options.relatedTemplates;
     tab.createdBy = options.userEntity;
     return this.tabsRepository.save(tab);
   }
@@ -207,22 +210,33 @@ export class TemplatesService {
           .of(tab)
           .addAndRemove(options.pipelineStages, tab.pipelineStages);
       }
-      if (options.fieldDefinitions) {
+      if (options.relatedFieldDefinitions) {
         await tem
           .createQueryBuilder()
           .relation(TabEntity, 'relatedFields')
           .of(tab)
-          .addAndRemove(options.fieldDefinitions, tab.relatedFields);
+          .addAndRemove(options.relatedFieldDefinitions, tab.relatedFields);
+      }
+      if (options.relatedTemplates) {
+        await tem
+          .createQueryBuilder()
+          .relation(TabEntity, 'relatedTemplates')
+          .of(tab)
+          .addAndRemove(options.relatedTemplates, tab.relatedTemplates);
       }
       const oldRelatedFields = tab.relatedFields;
       const oldPipelineStages = tab.pipelineStages;
+      const oldRelatedTemplates = tab.relatedTemplates;
       delete tab.relatedFields;
       delete tab.pipelineStages;
+      delete tab.relatedTemplates;
+
       await tem.save(tab);
 
       // we reassign those here because of the way TypeORM handles relations
       tab.pipelineStages = options.pipelineStages || oldPipelineStages;
-      tab.relatedFields = options.fieldDefinitions || oldRelatedFields;
+      tab.relatedFields = options.relatedFieldDefinitions || oldRelatedFields;
+      tab.relatedTemplates = options.relatedTemplates || oldRelatedTemplates;
       return tab;
     });
   }
@@ -320,6 +334,10 @@ export class TemplatesService {
         displayName: ps.displayName,
       })),
       relatedFields: entity.relatedFields?.map((rf) => ({
+        id: rf.id,
+        name: rf.name,
+      })),
+      relatedTemplates: entity.relatedTemplates?.map((rf) => ({
         id: rf.id,
         name: rf.name,
       })),

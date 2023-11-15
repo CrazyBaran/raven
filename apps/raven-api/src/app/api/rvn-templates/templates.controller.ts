@@ -53,6 +53,7 @@ import { ParseFieldGroupPipe } from './pipes/parse-field-group.pipe';
 import { ParseOptionalFieldDefinitionPipe } from './pipes/parse-optional-field-definition.pipe';
 import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-stage.pipe';
 import { ParseOptionalTab } from './pipes/parse-optional-tab';
+import { ParseOptionalTemplatePipe } from './pipes/parse-optional-template.pipe';
 import { ParseTabPipe } from './pipes/parse-tab.pipe';
 import { ParseTemplatePipe } from './pipes/parse-template.pipe';
 import { ValidateTemplateTypePipe } from './pipes/validate-template-type.pipe';
@@ -144,8 +145,10 @@ export class TemplatesController {
     @Body() dto: CreateTabDto,
     @Body('pipelineStageIds', ParseOptionalPipelineStagePipe)
     pipelineStages: PipelineStageEntity[],
-    @Body('fieldIds', ParseOptionalFieldDefinitionPipe)
-    fieldDefinitions: FieldDefinitionEntity[],
+    @Body('relatedFieldIds', ParseOptionalFieldDefinitionPipe)
+    relatedFieldDefinitions: FieldDefinitionEntity[],
+    @Body('relatedTemplateIds', ParseOptionalTemplatePipe)
+    relatedTemplates: TemplateEntity[],
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<TabData> {
     return this.service.tabEntityToTabData(
@@ -155,7 +158,8 @@ export class TemplatesController {
         order: dto.order,
         userEntity,
         pipelineStages,
-        fieldDefinitions,
+        relatedFieldDefinitions,
+        relatedTemplates,
       }),
     );
   }
@@ -172,8 +176,10 @@ export class TemplatesController {
     tabEntity: TabEntity,
     @Body('pipelineStageIds', ParseOptionalPipelineStagePipe)
     pipelineStages: PipelineStageEntity[],
-    @Body('fieldIds', ParseOptionalFieldDefinitionPipe)
-    fieldDefinitions: FieldDefinitionEntity[],
+    @Body('relatedFieldIds', ParseOptionalFieldDefinitionPipe)
+    relatedFieldDefinitions: FieldDefinitionEntity[],
+    @Body('relatedTemplateIds', ParseOptionalTemplatePipe)
+    relatedTemplates: TemplateEntity[],
     @Body() dto: UpdateTabDto,
   ): Promise<TabWithFieldGroupsData> {
     return this.service.tabEntityToTabData(
@@ -181,7 +187,8 @@ export class TemplatesController {
         name: dto.name,
         order: dto.order,
         pipelineStages,
-        fieldDefinitions,
+        relatedFieldDefinitions,
+        relatedTemplates,
       }),
     );
   }

@@ -153,9 +153,9 @@ export class NotesService {
     });
   }
 
-  public async getNoteWithRelatedNotes(
+  public async getNotesForOpportunity(
     opportunityId: string,
-  ): Promise<NoteWithRelatedNotesData> {
+  ): Promise<(NoteWithRelatedNotesData | NoteWithRelationsData)[]> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
       relations: [
@@ -189,13 +189,22 @@ export class NotesService {
       );
     }
 
+    const res = await this.noteRepository.find({
+      where: { tags: { id: organisationTag.id } },
+      relations: ['tags', 'template'],
+    });
+
+    console.log({ res });
+
     const qb = this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.createdBy', 'createdBy')
       .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
       .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
+      .leftJoinAndSelect('note.template', 'template')
       .leftJoinAndSelect('note.tags', 'tag')
-      .where('tag.id = :organisationTagId', {
+      .where('template.type = :type', { type: TemplateTypeEnum.Note })
+      .andWhere('tag.id = :organisationTagId', {
         organisationTagId: organisationTag.id,
       });
 
@@ -206,10 +215,11 @@ export class NotesService {
     }
     const relatedNotes = await qb.getMany();
 
-    return this.transformNotesToNoteWithRelatedData(
+    const workflowNote = this.transformNotesToNoteWithRelatedData(
       opportunity.note,
       relatedNotes,
     );
+    return [workflowNote, ...relatedNotes.map(this.noteEntityToNoteData)];
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
