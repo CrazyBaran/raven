@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
+import { from } from 'rxjs';
 import { OrganisationsTableComponent } from './organisations-table.component';
 import { selectOrganisationsTableViewModel } from './organisations-table.selectors';
 
@@ -11,11 +13,20 @@ describe('ClientOrganisationsFeatureOrganisationsTableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [OrganisationsTableComponent],
       providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
         provideMockStore({
           selectors: [
             {
               selector: selectOrganisationsTableViewModel,
-              value: {},
+              value: {
+                queryModel: {},
+                query: {},
+              },
             },
           ],
         }),
