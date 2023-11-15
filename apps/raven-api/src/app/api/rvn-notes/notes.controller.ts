@@ -109,7 +109,7 @@ export class NotesController {
     tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
 
     @Query('opportunityId') opportunityId: string,
-    @Query('type') type?: TemplateTypeEnum,
+    @Query('type') type: TemplateTypeEnum = TemplateTypeEnum.Note,
   ): Promise<NoteData[] | NoteWithRelatedNotesData> {
     if (opportunityId) {
       return await this.notesService.getNoteWithRelatedNotes(opportunityId);
