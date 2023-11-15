@@ -8,9 +8,12 @@ import {
   PipeTransform,
   signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
+  ClipboardDirective,
   KendoUrlPagingDirective,
   KendoUrlSortingDirective,
+  ToUrlPipe,
 } from '@app/client/shared/ui';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridDataResult, GridModule } from '@progress/kendo-angular-grid';
@@ -77,6 +80,9 @@ export class ExpandableListPipe implements PipeTransform {
     StageColorPipe,
     KendoUrlPagingDirective,
     KendoUrlSortingDirective,
+    RouterLink,
+    ClipboardDirective,
+    ToUrlPipe,
   ],
   templateUrl: './organisations-table-view.component.html',
   styleUrls: ['./organisations-table-view.component.scss'],
@@ -85,10 +91,10 @@ export class ExpandableListPipe implements PipeTransform {
 export class OrganisationsTableViewComponent {
   @Input() public organisations: OrganisationRow[];
   @Input() public isLoading: boolean;
+
   @Input({ transform: numberAttribute }) public total: number;
   @Input({ transform: numberAttribute }) public take: number;
   @Input({ transform: numberAttribute }) public skip: number;
-
   @Input() public field: string;
   @Input() public dir = 'asc';
 
