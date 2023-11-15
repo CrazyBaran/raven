@@ -2,6 +2,11 @@ import { PipelineStageData } from '@app/rvns-pipelines';
 import { FieldData } from './field-data.interface';
 import { OrganisationData } from './organisation-data.interface';
 
+export interface PagedOpportunityData {
+  readonly items: OpportunityData[];
+  readonly total: number;
+}
+
 export interface OpportunityData extends OpportunityDataWithoutOrganisation {
   readonly organisation: OrganisationData;
 }

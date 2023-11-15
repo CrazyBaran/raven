@@ -2,6 +2,7 @@ import {
   OpportunityCreatedEvent,
   OpportunityData,
   OpportunityStageChangedEvent,
+  PagedOpportunityData,
 } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -70,7 +71,7 @@ export class OpportunityService {
     skip = 0,
     take = 10,
     pipelineStageId?: string,
-  ): Promise<OpportunityData[]> {
+  ): Promise<PagedOpportunityData> {
     const options = {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
       relations: ['organisation', 'tag'],
@@ -82,7 +83,9 @@ export class OpportunityService {
 
     const opportunities = await this.opportunityRepository.find(options);
 
-    return await this.affinityEnricher.enrichOpportunities(
+    const total = await this.opportunityRepository.count(options);
+
+    const items = await this.affinityEnricher.enrichOpportunities(
       opportunities,
       (entity, data) => {
         const pipelineStage = this.getPipelineStage(
@@ -102,6 +105,8 @@ export class OpportunityService {
         return data;
       },
     );
+
+    return { items, total } as PagedOpportunityData;
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {
@@ -134,14 +139,14 @@ export class OpportunityService {
     );
   }
 
-  public async findByDomain(domain: string): Promise<OpportunityData[]> {
+  public async findByDomain(domain: string): Promise<PagedOpportunityData> {
     const opportunities = await this.opportunityRepository.find({
       where: { organisation: { domains: Like(`%${domain}%`) } },
       relations: ['organisation', 'tag'],
     });
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
-    return await this.affinityEnricher.enrichOpportunities(
+    const items = await this.affinityEnricher.enrichOpportunities(
       opportunities,
       (entity, data) => {
         const pipelineStage = this.getPipelineStage(
@@ -161,6 +166,8 @@ export class OpportunityService {
         return data;
       },
     );
+
+    return { items, total: items.length } as PagedOpportunityData;
   }
 
   public async createFromOrganisation(

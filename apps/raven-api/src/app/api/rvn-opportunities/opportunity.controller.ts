@@ -1,4 +1,4 @@
-import { OpportunityData } from '@app/rvns-opportunities';
+import { OpportunityData, PagedOpportunityData } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import {
@@ -58,7 +58,7 @@ export class OpportunityController {
     @Query('take') take?: number,
     @Query('domain') domain?: string,
     @Query('pipelineStageId') pipelineStageId?: string,
-  ): Promise<OpportunityData[]> {
+  ): Promise<PagedOpportunityData> {
     if (skip || take) {
       return await this.opportunityService.findAll(skip, take, pipelineStageId);
     } else if (domain) {
