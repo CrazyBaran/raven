@@ -59,10 +59,10 @@ export class OpportunityController {
     @Query('domain') domain?: string,
     @Query('pipelineStageId') pipelineStageId?: string,
   ): Promise<PagedOpportunityData> {
-    if (skip || take) {
-      return await this.opportunityService.findAll(skip, take, pipelineStageId);
-    } else if (domain) {
+    if (domain) {
       return await this.opportunityService.findByDomain(domain);
+    } else {
+      return await this.opportunityService.findAll(skip, take, pipelineStageId);
     }
   }
 

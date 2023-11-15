@@ -1,5 +1,6 @@
 import {
   OrganisationData,
+  OrganisationDataWithOpportunities,
   PagedOrganisationData,
 } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
@@ -56,7 +57,9 @@ export class OrganisationController {
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
-  public async findOne(@Param('id') id: string): Promise<OrganisationData> {
+  public async findOne(
+    @Param('id') id: string,
+  ): Promise<OrganisationDataWithOpportunities> {
     return await this.organisationService.findOne(id);
   }
 
