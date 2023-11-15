@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
+import { from } from 'rxjs';
 import { OrganisationsTableViewComponent } from './organisations-table-view.component';
 
 describe('ClientOrganisationsUiComponent', () => {
@@ -8,6 +11,15 @@ describe('ClientOrganisationsUiComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OrganisationsTableViewComponent],
+      providers: [
+        provideAnimations(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OrganisationsTableViewComponent);
