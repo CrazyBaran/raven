@@ -94,6 +94,8 @@ export class TemplatesService {
         'tabs',
         'tabs.fieldGroups',
         'tabs.fieldGroups.fieldDefinitions',
+        'tabs.relatedFields',
+        'tabs.relatedTemplates',
         'fieldGroups',
         'fieldGroups.fieldDefinitions',
       ],
