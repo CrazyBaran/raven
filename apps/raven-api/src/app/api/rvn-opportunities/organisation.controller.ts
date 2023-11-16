@@ -41,14 +41,28 @@ export class OrganisationController {
   @ApiOperation({ summary: 'Get all organisations' })
   @ApiQuery({ name: 'skip', type: Number, required: false })
   @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiQuery({ name: 'dir', type: String, required: false })
+  @ApiQuery({ name: 'field', type: String, required: false })
+  @ApiQuery({ name: 'query', type: String, required: false })
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User)
   public async findAll(
     @Query('skip') skip?: number,
     @Query('take') take?: number,
+    @Query('dir') dir?: 'asc' | 'desc',
+    @Query('field') field?: 'name' | 'id',
+    @Query('query') query?: string,
   ): Promise<PagedOrganisationData> {
-    return await this.organisationService.findAll(skip, take);
+    const options = {
+      skip: skip ?? 0,
+      take: take ?? 10,
+      dir: (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
+      field: field ?? 'name',
+      query: query ?? '',
+    };
+
+    return await this.organisationService.findAll(options);
   }
 
   @Get(':id')

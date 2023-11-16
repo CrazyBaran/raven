@@ -36,17 +36,48 @@ export class OrganisationService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async findAll(skip = 0, take = 10): Promise<PagedOrganisationData> {
-    const organisations = await this.organisationRepository.find({
-      skip: skip ? skip : 0,
-      take: take ? take : 10,
-      relations: [
-        'opportunities',
-        'opportunities.pipelineStage',
+  public async findAll(
+    options: {
+      skip?: number;
+      take?: number;
+      dir?: 'ASC' | 'DESC';
+      field?: 'name' | 'id';
+      query?: string;
+    } = {},
+  ): Promise<PagedOrganisationData> {
+    const queryBuilder =
+      this.organisationRepository.createQueryBuilder('organisations');
+    if (options.query) {
+      queryBuilder.where([
+        {
+          name: Like(`%${options.query}%`),
+        },
+        {
+          domains: Like(`%${options.query}%`),
+        },
+      ]);
+    }
+
+    queryBuilder
+      .leftJoinAndSelect('organisations.opportunities', 'opportunities')
+      .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
+      .leftJoinAndSelect(
         'opportunities.pipelineDefinition',
-      ],
-    });
-    const count = await this.organisationRepository.count();
+        'pipelineDefinition',
+      );
+
+    queryBuilder.skip(options.skip).take(options.take);
+
+    if (options.field) {
+      queryBuilder.addOrderBy(
+        `organisations.${options.field}`,
+        options.dir || 'DESC',
+      );
+    } else {
+      queryBuilder.addOrderBy('organisations.name', 'DESC');
+    }
+
+    const [organisations, count] = await queryBuilder.getManyAndCount();
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
