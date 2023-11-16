@@ -293,65 +293,87 @@ export class NotesService {
     userEntity: UserEntity,
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
-    const latestVersion = await this.noteRepository
-      .createQueryBuilder('note')
-      .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
-        rootVersionId: noteEntity.rootVersionId,
-      })
-      .orderBy('note.version', 'DESC')
-      .getOne();
+    return await this.noteRepository.manager.transaction(async (tem) => {
+      const latestVersion = await this.noteRepository
+        .createQueryBuilder('note')
+        .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
+          rootVersionId: noteEntity.rootVersionId,
+        })
+        .orderBy('note.version', 'DESC')
+        .getOne();
 
-    if (latestVersion.version !== noteEntity.version) {
-      throw new ConflictException({
-        message: 'Note is out of date',
-        latestVersionId: latestVersion.id,
-      });
-    }
-    if (options.templateEntity) {
-      return await this.createNoteFromTemplate(
-        options.name,
-        options.fields,
-        options.tags,
-        options.templateEntity,
-        userEntity,
-        noteEntity.createdBy,
-        noteEntity.rootVersionId,
+      if (latestVersion.version !== noteEntity.version) {
+        throw new ConflictException({
+          message: 'Note is out of date',
+          latestVersionId: latestVersion.id,
+        });
+      }
+      if (options.templateEntity) {
+        return await this.createNoteFromTemplate(
+          options.name,
+          options.fields,
+          options.tags,
+          options.templateEntity,
+          userEntity,
+          noteEntity.createdBy,
+          noteEntity.rootVersionId,
+          options.companyOpportunityTags,
+          noteEntity.version + 1,
+        );
+      }
+
+      const newNoteVersion = new NoteEntity();
+      newNoteVersion.name = options.name || noteEntity.name;
+      newNoteVersion.rootVersionId = noteEntity.rootVersionId;
+      newNoteVersion.version = noteEntity.version + 1;
+      newNoteVersion.tags = options.tags;
+      newNoteVersion.complexTags = this.getComplexNoteTags(
         options.companyOpportunityTags,
-        noteEntity.version + 1,
       );
-    }
+      newNoteVersion.template = noteEntity.template;
+      newNoteVersion.templateId = noteEntity.templateId;
+      newNoteVersion.previousVersion = noteEntity;
+      newNoteVersion.createdBy = noteEntity.createdBy;
+      newNoteVersion.updatedBy = userEntity;
+      newNoteVersion.noteTabs = noteEntity.noteTabs.map((noteTab) => {
+        const newNoteTab = new NoteTabEntity();
+        newNoteTab.name = noteTab.name;
+        newNoteTab.order = noteTab.order;
+        newNoteTab.createdBy = noteTab.createdBy;
+        newNoteTab.createdById = noteTab.createdById;
+        newNoteTab.updatedBy = userEntity;
+        newNoteTab.noteFieldGroups = noteTab.noteFieldGroups.map(
+          this.getNewGroupsAndFieldsMapping(
+            userEntity,
+            newNoteVersion,
+            options,
+          ),
+        );
+        return newNoteTab;
+      });
+      newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
+        .filter((nfg) => !nfg.noteTabId)
+        .map(
+          this.getNewGroupsAndFieldsMapping(
+            userEntity,
+            newNoteVersion,
+            options,
+          ),
+        );
 
-    const newNoteVersion = new NoteEntity();
-    newNoteVersion.name = options.name || noteEntity.name;
-    newNoteVersion.rootVersionId = noteEntity.rootVersionId;
-    newNoteVersion.version = noteEntity.version + 1;
-    newNoteVersion.tags = options.tags;
-    newNoteVersion.complexTags = this.getComplexNoteTags(
-      options.companyOpportunityTags,
-    );
-    newNoteVersion.template = noteEntity.template;
-    newNoteVersion.templateId = noteEntity.templateId;
-    newNoteVersion.previousVersion = noteEntity;
-    newNoteVersion.createdBy = noteEntity.createdBy;
-    newNoteVersion.updatedBy = userEntity;
-    newNoteVersion.noteTabs = noteEntity.noteTabs.map((noteTab) => {
-      const newNoteTab = new NoteTabEntity();
-      newNoteTab.name = noteTab.name;
-      newNoteTab.order = noteTab.order;
-      newNoteTab.createdBy = noteTab.createdBy;
-      newNoteTab.createdById = noteTab.createdById;
-      newNoteTab.updatedBy = userEntity;
-      newNoteTab.noteFieldGroups = noteTab.noteFieldGroups.map(
-        this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
-      );
-      return newNoteTab;
+      const savedNewNoteVersion = await tem.save(newNoteVersion);
+
+      if (noteEntity.template.type === TemplateTypeEnum.Workflow) {
+        const opportunity = await this.opportunityRepository.findOne({
+          where: { noteId: noteEntity.id },
+        });
+        if (opportunity) {
+          opportunity.noteId = savedNewNoteVersion.id;
+          await tem.save(opportunity);
+        }
+      }
+      return savedNewNoteVersion;
     });
-    newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
-      .filter((nfg) => !nfg.noteTabId)
-      .map(
-        this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
-      );
-    return await this.noteRepository.save(newNoteVersion);
   }
 
   public async updateNoteField(
