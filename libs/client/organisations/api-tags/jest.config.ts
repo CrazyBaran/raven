@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'client-shared-pipes',
+  displayName: 'client-organisations-api-tags',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../../../coverage/libs/client/shared/pipes',
+  coverageDirectory: '../../../../coverage/libs/client/organisations/api-tags',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

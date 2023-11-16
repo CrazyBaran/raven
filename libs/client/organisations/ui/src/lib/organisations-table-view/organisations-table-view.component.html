@@ -3,7 +3,7 @@
   [loading]="isLoading"
   [pageSize]="take"
   [pageable]="{
-    pageSizes: [10, 20, 50, 100]
+    pageSizes: [15, 25, 50, 100]
   }"
   [skip]="skip"
   [sort]="sort"
@@ -16,9 +16,9 @@
   <kendo-grid-column
     [sortable]="true"
     class="!align-text-top"
+    field="company"
     headerClass="!font-bold"
     title="Company"
-    field="company"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex items-center gap-3">
@@ -47,17 +47,17 @@
             strategy: 'immediate'
           "
         >
-          <p>{{ opportunity.tag?.name ?? 'Unknown' }}</p>
-          <p>{{ $any(opportunity).updated ?? 'Updated: dd/mm/yyyy' }}</p>
+          <p>{{ opportunity.tag?.name }}</p>
+          <!--          <p>{{ opportunity ?? 'Updated: dd/mm/yyyy' }}</p>-->
         </div>
       </div>
     </ng-template>
   </kendo-grid-column>
 
   <kendo-grid-column
+    field="status"
     headerClass="!font-bold"
     title="Pipeline Status"
-    field="status"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
@@ -81,9 +81,9 @@
   </kendo-grid-column>
 
   <kendo-grid-column
+    field="dealLead"
     headerClass="!font-bold"
     title="Deal Lead"
-    field="dealLead"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
@@ -94,10 +94,15 @@
           "
           class="flex h-10 items-center gap-1"
         >
-          <i class="fa-solid fa-circle-user mr-1"></i>
-          <p class="flex-1 truncate text-black">
-            {{ 'Shaun Lee' }}
-          </p>
+          <ui-tag
+            *rxFor="
+              let lead of opportunity.fields | dealLeads;
+              strategy: 'immediate'
+            "
+            [label]="lead"
+            class="shrink-0"
+            uiUserTag
+          ></ui-tag>
         </div>
       </div>
     </ng-template>
@@ -109,37 +114,44 @@
         <div
           *rxFor="
             let opportunity of dataItem | expandableList: collapsedRows();
-            strategy: 'immediate'
+            strategy: 'immediate';
+            trackBy: 'id'
           "
           class="flex h-10 items-center gap-1"
         >
-          <i class="fa-solid fa-circle-user mr-1"></i>
-          <p class="flex-1 truncate text-black">
-            {{ 'Shaun Lee' }}
-          </p>
+          <ui-tag
+            *rxFor="
+              let lead of opportunity.fields | dealTeam;
+              strategy: 'immediate'
+            "
+            [label]="lead"
+            class="shrink-0"
+            uiUserTag
+          ></ui-tag>
         </div>
       </div>
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column headerClass="!font-bold" title="Tags">
-    <ng-template kendoGridCellTemplate let-dataItem>
-      <div class="flex flex-col gap-4">
-        <div
-          *rxFor="
-            let opportunity of dataItem | expandableList: collapsedRows();
-            strategy: 'immediate'
-          "
-          class="flex h-10 items-center gap-1"
-        >
-          <i class="fa-solid fa-circle-user mr-1"></i>
-          <p class="flex-1 truncate text-black">
-            {{ 'Shaun Lee' }}
-          </p>
-        </div>
-      </div>
-    </ng-template>
-  </kendo-grid-column>
+  <!--  TODO: Implement when company tags ready -->
+  <!--  <kendo-grid-column headerClass="!font-bold" title="Tags">-->
+  <!--    <ng-template kendoGridCellTemplate let-dataItem>-->
+  <!--      <div class="flex flex-col gap-4">-->
+  <!--        <div-->
+  <!--          *rxFor="-->
+  <!--            let opportunity of dataItem | expandableList: collapsedRows();-->
+  <!--            strategy: 'immediate'-->
+  <!--          "-->
+  <!--          class="flex h-10 items-center gap-1"-->
+  <!--        >-->
+  <!--          <i class="fa-solid fa-circle-user mr-1"></i>-->
+  <!--          <p class="flex-1 truncate text-black">-->
+  <!--            {{ 'Shaun Lee' }}-->
+  <!--          </p>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </ng-template>-->
+  <!--  </kendo-grid-column>-->
 
   <kendo-grid-column [width]="90" class="!align-text-top" title="">
     <ng-template kendoGridCellTemplate let-dataItem>
@@ -153,14 +165,14 @@
         >
           <div class="flex gap-1">
             <kendo-button
-              iconClass="fa-solid fa-eye"
-              themeColor="primary"
               [routerLink]="[
                 '/companies',
                 dataItem.id,
                 'opportunities',
                 opportunity.id
               ]"
+              iconClass="fa-solid fa-eye"
+              themeColor="primary"
             ></kendo-button>
             <kendo-button
               [uiClipboard]="

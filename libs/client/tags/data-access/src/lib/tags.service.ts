@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
-import { TagData } from '@app/rvns-tags';
 
 import { CreateTagData } from './models/create-tag-data.model';
 
@@ -9,6 +8,7 @@ import { retryWithDelay } from '@app/client/shared/util-rxjs';
 import { OrganisationsService } from '@app/client/tags/api-organisations';
 import { Observable, map, switchMap } from 'rxjs';
 import { CreateTagResponse } from './models/create-tag-response';
+import { Tag } from './models/tag.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +25,8 @@ export class TagsService {
     query?: string;
     type?: string;
     organisationId?: string;
-  }): Observable<GenericResponse<TagData[]>> {
-    return this.http.get<GenericResponse<TagData[]>>(this.url, {
+  }): Observable<GenericResponse<Tag[]>> {
+    return this.http.get<GenericResponse<Tag[]>>(this.url, {
       params: {
         ...params,
       },

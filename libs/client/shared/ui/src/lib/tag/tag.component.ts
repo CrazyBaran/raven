@@ -25,6 +25,7 @@ export class TagComponent {
   @Input() public htmlClass?: string;
 
   @Input() public removable?: boolean = true;
+  @Input() public clickable?: boolean = true;
 
   @Output() public tagClick = new EventEmitter<MouseEvent>();
   @Output() public tagRemove = new EventEmitter<void>();

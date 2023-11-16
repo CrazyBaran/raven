@@ -9,6 +9,8 @@ export interface TagsState extends EntityState<TagEntity> {
   selectedId: string | number | null;
   loaded: boolean;
   error: string | null;
+  loadedTags: Partial<Record<TagEntity['type'], boolean>>;
+  loadingTags: Partial<Record<TagEntity['type'], boolean>>;
 }
 
 export const tagAdapter: EntityAdapter<TagEntity> =
@@ -18,8 +20,9 @@ export const initialTagState: TagsState = tagAdapter.getInitialState({
   loaded: false,
   error: null,
   selectedId: null,
+  loadedTags: {},
+  loadingTags: {},
 });
-
 export const tagsFeature = createFeature({
   name: 'tags',
   reducer: createReducer(
@@ -30,11 +33,44 @@ export const tagsFeature = createFeature({
       error: null,
     })),
     on(TagsActions.getTagsSuccess, (state, { data }) =>
-      tagAdapter.setAll([...data], { ...state, loaded: true }),
+      tagAdapter.upsertMany([...data], { ...state, loaded: true }),
     ),
     on(TagsActions.getTagsFailure, (state, { error }) => ({
       ...state,
       error,
+    })),
+
+    on(TagsActions.getTagsByTypes, (state, { tagTypes }) => ({
+      ...state,
+      loadingTags: {
+        ...state.loadingTags,
+        ..._.chain(tagTypes)
+          .keyBy((x) => x)
+          .mapValues(() => true)
+          .value(),
+      },
+    })),
+    on(TagsActions.getTagsByTypesSuccess, (state, { data, tagTypes }) =>
+      tagAdapter.upsertMany([...data], {
+        ...state,
+        loadingTags: {
+          ...state.loadingTags,
+          ..._.chain(tagTypes)
+            .keyBy((x) => x)
+            .mapValues(() => false)
+            .value(),
+        },
+      }),
+    ),
+    on(TagsActions.getTagsByTypesFailure, (state, { error, tagTypes }) => ({
+      ...state,
+      loadingTags: {
+        ...state.loadingTags,
+        ..._.chain(tagTypes)
+          .keyBy((x) => x)
+          .mapValues(() => false)
+          .value(),
+      },
     })),
 
     on(TagsActions.createTagSuccess, (state, { data }) =>
@@ -58,6 +94,13 @@ export const tagsFeature = createFeature({
       (state) =>
         _.values(state.entities).filter(
           (tag) => tag && tag?.type === 'people',
+        ) as TagEntity[],
+    ),
+    selectOpportunityTags: createSelector(
+      selectTagsState,
+      (state) =>
+        _.values(state.entities).filter(
+          (tag) => tag && tag?.type === 'opportunity',
         ) as TagEntity[],
     ),
   }),

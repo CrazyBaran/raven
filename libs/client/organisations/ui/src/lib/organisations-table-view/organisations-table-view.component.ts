@@ -13,8 +13,14 @@ import {
   ClipboardDirective,
   KendoUrlPagingDirective,
   KendoUrlSortingDirective,
-  ToUrlPipe,
+  TagComponent,
+  UserTagDirective,
 } from '@app/client/shared/ui';
+import {
+  DealLeadsPipe,
+  DealTeamPipe,
+  ToUrlPipe,
+} from '@app/client/shared/ui-pipes';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridDataResult, GridModule } from '@progress/kendo-angular-grid';
 import { SortDescriptor } from '@progress/kendo-data-query';
@@ -42,17 +48,6 @@ export type OrganisationRow = {
 };
 
 @Pipe({
-  name: 'stageColor',
-  standalone: true,
-})
-export class StageColorPipe implements PipeTransform {
-  public transform(stageId: string): string {
-    // return random color
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  }
-}
-
-@Pipe({
   name: 'expandableList',
   standalone: true,
 })
@@ -77,12 +72,15 @@ export class ExpandableListPipe implements PipeTransform {
     RxIf,
     RxFor,
     ExpandableListPipe,
-    StageColorPipe,
     KendoUrlPagingDirective,
     KendoUrlSortingDirective,
     RouterLink,
     ClipboardDirective,
     ToUrlPipe,
+    TagComponent,
+    UserTagDirective,
+    DealLeadsPipe,
+    DealTeamPipe,
   ],
   templateUrl: './organisations-table-view.component.html',
   styleUrls: ['./organisations-table-view.component.scss'],

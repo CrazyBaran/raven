@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PipelinesActions } from '@app/client/organisations/api-pipelines';
+import { TagsActions } from '@app/client/organisations/api-tags';
 import { OrganisationsUrlActions } from '@app/client/organisations/state';
 import { OrganisationsTableViewComponent } from '@app/client/organisations/ui';
 import {
@@ -50,6 +51,11 @@ export class OrganisationsTableComponent {
 
   public constructor() {
     this.store.dispatch(PipelinesActions.getPipelines());
+    this.store.dispatch(
+      TagsActions.getTagsByTypesIfNotLoaded({
+        tagTypes: ['opportunity', 'people'],
+      }),
+    );
 
     this.vm$
       .pipe(

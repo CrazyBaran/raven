@@ -1,16 +1,16 @@
 {
-  "name": "client-shared-pipes",
+  "name": "client-organisations-api-tags",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/client/shared/pipes/src",
+  "sourceRoot": "libs/client/organisations/api-tags/src",
   "prefix": "app",
-  "tags": ["scope:shared", "type:ui"],
+  "tags": ["type:api", "scope:organisations/api-tags" ],
   "projectType": "library",
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/client/shared/pipes/jest.config.ts",
+        "jestConfig": "libs/client/organisations/api-tags/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -25,8 +25,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/client/shared/pipes/**/*.ts",
-          "libs/client/shared/pipes/**/*.html"
+          "libs/client/organisations/api-tags/**/*.ts",
+          "libs/client/organisations/api-tags/**/*.html"
         ]
       }
     }

@@ -20,9 +20,9 @@ import { Router } from '@angular/router';
 
 import { NoteStoreFacade, NotesActions } from '@app/client/notes/data-access';
 import { TagFilterPipe } from '@app/client/notes/util';
-import { SafeHtmlPipe } from '@app/client/shared/pipes';
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import { LoaderComponent, TagComponent } from '@app/client/shared/ui';
+import { SafeHtmlPipe } from '@app/client/shared/ui-pipes';
 import {
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
