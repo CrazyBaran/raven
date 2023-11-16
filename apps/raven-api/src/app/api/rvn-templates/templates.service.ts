@@ -140,7 +140,6 @@ export class TemplatesService {
       if (defaultTemplate && options.isDefault) {
         throw new BadRequestException('Only one default template is allowed');
       }
-      console.log({ templateEntity });
       templateEntity.isDefault = options.isDefault;
     }
     return this.templatesRepository.save(templateEntity);
