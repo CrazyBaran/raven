@@ -6,86 +6,43 @@ import {
   ButtongroupNavigationModel,
   DropdownNavigationModel,
 } from '@app/client/shared/ui-router';
-import { selectQueryParams } from '@app/client/shared/util-router';
+import {
+  buildButtonGroupNavigation,
+  buildDropdownNavigation,
+  buildInputNavigation,
+  buildPageParamsSelector,
+} from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
-import * as _ from 'lodash';
+import {
+  defaultOrganisationQuery,
+  organisationTableNavigationButtons,
+  organisationsQueryParams,
+} from './organisations-table.models';
 
-export const organisationsQueryParams = [
-  'query',
-  'my',
-  'opportunity',
-  'lead',
-  'skip',
-  'take',
-  'field',
-  'dir',
-] as const;
-
-export type OrganisationQueryParam = (typeof organisationsQueryParams)[number];
-export type OrganisationQueryParams = Partial<
-  Record<OrganisationQueryParam, string>
->;
-
-export const defaultOrganisationQuery: OrganisationQueryParams = {
-  skip: '0',
-  take: '15',
-};
-
-export const selectOrganisationsTableParams = createSelector(
-  selectQueryParams,
-  (params): Record<Partial<OrganisationQueryParam>, string> => ({
-    ...defaultOrganisationQuery,
-    ...(_.chain(organisationsQueryParams)
-      .keyBy((x) => x)
-      .mapValues((key) => params[key])
-      .pickBy(Boolean)
-      .value() as Record<Partial<OrganisationQueryParam>, string>),
-  }),
+export const selectOrganisationsTableParams = buildPageParamsSelector(
+  organisationsQueryParams,
+  defaultOrganisationQuery,
 );
-
-export const buildButtonGroupNavigation = <T>(
-  paramName: T,
-  buttons: { id: string | null; name: string }[],
-  value: string | null,
-): ButtongroupNavigationModel => ({
-  paramName: paramName as string,
-  filters: buttons.map(({ id, name }) => ({
-    id: id,
-    name: name,
-    selected: id == value,
-  })),
-});
 
 export const selectOrganisationsTableButtonGroupNavigation = createSelector(
   selectOrganisationsTableParams,
   (params): ButtongroupNavigationModel => {
-    return buildButtonGroupNavigation<OrganisationQueryParam>(
-      'my',
-      [
-        {
-          id: null,
-          name: 'All deals',
-        },
-        {
-          id: 'true',
-          name: 'My deals',
-        },
-      ],
-      params.my,
-    );
+    return buildButtonGroupNavigation({
+      params,
+      name: 'my',
+      buttons: organisationTableNavigationButtons,
+    });
   },
 );
 
 export const selectOrganisationTableQueryModel = createSelector(
   selectOrganisationsTableParams,
-  (params) => {
-    const param: OrganisationQueryParam = 'query';
-    return {
-      queryParamName: param,
+  (params) =>
+    buildInputNavigation({
+      params,
+      name: 'query',
       placeholder: 'Search Companies',
-      urlValue: params[param] ?? '',
-    };
-  },
+    }),
 );
 
 export const selectOrganisationsTableNavigationDropdowns = createSelector(
@@ -98,9 +55,7 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
     opportunityTags,
     peopleTags,
     loadingTags,
-  ): (DropdownNavigationModel & {
-    queryParamName: OrganisationQueryParam;
-  })[] => {
+  ): DropdownNavigationModel[] => {
     const opportunityData = opportunityTags.map((t) => ({
       name: t.name,
       id: t.id,
@@ -112,26 +67,27 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
     }));
 
     return [
-      {
-        queryParamName: 'opportunity',
+      buildDropdownNavigation({
+        params,
+        name: 'opportunity',
         data: opportunityData,
         defaultItem: {
           id: null,
           name: 'Any Opportunity',
         },
-        value: opportunityData.find(({ id }) => id === params.opportunity),
         loading: loadingTags.opportunity,
-      },
-      {
-        queryParamName: 'lead',
+      }),
+
+      buildDropdownNavigation({
+        params,
+        name: 'lead',
         data: peopleData,
         defaultItem: {
-          name: 'Any Deal Lead',
           id: null,
+          name: 'Any Deal Lead',
         },
-        value: peopleData.find(({ id }) => id === params.lead),
         loading: loadingTags.people,
-      },
+      }),
     ];
   },
 );
@@ -152,7 +108,7 @@ export const selectOrganisationRows = createSelector(
         .map(({ id }) => groupedDictionary[id])
         .map((opportunity) => ({
           ...opportunity,
-          stageColor: stageColorDictionary[opportunity!.stage?.id] ?? '#000',
+          stageColor: stageColorDictionary?.[opportunity!.stage?.id] ?? '#000',
           tag: null,
         })),
     }));
