@@ -1,11 +1,12 @@
 import {
   NoteAttachmentData,
+  NoteData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
   NoteTabsWithRelatedNotesData,
   NoteWithRelatedNotesData,
   NoteWithRelationsData,
-  RelatedNote,
+  RelatedNoteWithFields,
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
 import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
@@ -153,20 +154,22 @@ export class NotesService {
     });
   }
 
-  public async getNoteWithRelatedNotes(
+  public async getNotesForOpportunity(
     opportunityId: string,
-  ): Promise<NoteWithRelatedNotesData> {
+  ): Promise<(NoteWithRelatedNotesData | NoteWithRelationsData)[]> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
       relations: [
         'organisation',
         'note',
+        'tag',
         'note.createdBy',
         'note.updatedBy',
         'note.deletedBy',
         'note.tags',
         'note.template',
         'note.template.tabs',
+        'note.template.tabs.relatedTemplates',
         'note.noteTabs',
         'note.noteTabs.noteFieldGroups',
         'note.noteTabs.noteFieldGroups.noteFields',
@@ -189,27 +192,59 @@ export class NotesService {
       );
     }
 
+    const subQuery = this.noteRepository
+      .createQueryBuilder('note_sub')
+      .select('MAX(note_sub.version)', 'maxVersion')
+      .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
+
     const qb = this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.deletedBy', 'deletedBy')
+      .leftJoinAndSelect('note.updatedBy', 'updatedBy')
+      .leftJoinAndSelect('note.complexTags', 'complexTags')
       .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
       .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
-      .leftJoinAndSelect('note.tags', 'tag')
-      .where('tag.id = :organisationTagId', {
-        organisationTagId: organisationTag.id,
-      });
+      .leftJoinAndSelect('note.template', 'template')
+      .leftJoinAndSelect(
+        'note.tags',
+        'opportunityTag',
+        'opportunityTag.id = :opportunityTagId',
+        { opportunityTagId: opportunity.tag.id },
+      )
+      .leftJoinAndSelect(
+        'note.tags',
+        'organisationTag',
+        'organisationTag.id = :organisationTagId',
+        {
+          organisationTagId: organisationTag.id,
+        },
+      )
+      .leftJoinAndSelect('note.tags', 'allTags')
+      .where(
+        opportunity.tag
+          ? 'organisationTag.id IS NOT NULL AND opportunityTag.id IS NOT NULL'
+          : 'organisationTag.id IS NOT NULL',
+      )
+      .andWhere(`note.version = (${subQuery.getQuery()})`)
+      .andWhere('note.deletedAt IS NULL')
+      .andWhere('template.type = :type', { type: TemplateTypeEnum.Note });
 
-    if (opportunity.tag) {
-      qb.andWhere('tag.id = :opportunityTagId', {
-        opportunityTagId: opportunity.tag.id,
-      });
-    }
     const relatedNotes = await qb.getMany();
 
-    return this.transformNotesToNoteWithRelatedData(
+    const workflowNote = this.transformNotesToNoteWithRelatedData(
       opportunity.note,
       relatedNotes,
     );
+
+    const mappedRelatedNotes: NoteWithRelationsData[] = relatedNotes
+      .map((rn) => {
+        delete rn.noteFieldGroups;
+        delete rn.noteTabs;
+        return rn; // we remove note fields data to make response smaller
+      })
+      .map(this.noteEntityToNoteData.bind(this));
+    return [workflowNote, ...mappedRelatedNotes];
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
@@ -260,65 +295,87 @@ export class NotesService {
     userEntity: UserEntity,
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
-    const latestVersion = await this.noteRepository
-      .createQueryBuilder('note')
-      .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
-        rootVersionId: noteEntity.rootVersionId,
-      })
-      .orderBy('note.version', 'DESC')
-      .getOne();
+    return await this.noteRepository.manager.transaction(async (tem) => {
+      const latestVersion = await this.noteRepository
+        .createQueryBuilder('note')
+        .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
+          rootVersionId: noteEntity.rootVersionId,
+        })
+        .orderBy('note.version', 'DESC')
+        .getOne();
 
-    if (latestVersion.version !== noteEntity.version) {
-      throw new ConflictException({
-        message: 'Note is out of date',
-        latestVersionId: latestVersion.id,
-      });
-    }
-    if (options.templateEntity) {
-      return await this.createNoteFromTemplate(
-        options.name,
-        options.fields,
-        options.tags,
-        options.templateEntity,
-        userEntity,
-        noteEntity.createdBy,
-        noteEntity.rootVersionId,
+      if (latestVersion.version !== noteEntity.version) {
+        throw new ConflictException({
+          message: 'Note is out of date',
+          latestVersionId: latestVersion.id,
+        });
+      }
+      if (options.templateEntity) {
+        return await this.createNoteFromTemplate(
+          options.name,
+          options.fields,
+          options.tags,
+          options.templateEntity,
+          userEntity,
+          noteEntity.createdBy,
+          noteEntity.rootVersionId,
+          options.companyOpportunityTags,
+          noteEntity.version + 1,
+        );
+      }
+
+      const newNoteVersion = new NoteEntity();
+      newNoteVersion.name = options.name || noteEntity.name;
+      newNoteVersion.rootVersionId = noteEntity.rootVersionId;
+      newNoteVersion.version = noteEntity.version + 1;
+      newNoteVersion.tags = options.tags;
+      newNoteVersion.complexTags = this.getComplexNoteTags(
         options.companyOpportunityTags,
-        noteEntity.version + 1,
       );
-    }
+      newNoteVersion.template = noteEntity.template;
+      newNoteVersion.templateId = noteEntity.templateId;
+      newNoteVersion.previousVersion = noteEntity;
+      newNoteVersion.createdBy = noteEntity.createdBy;
+      newNoteVersion.updatedBy = userEntity;
+      newNoteVersion.noteTabs = noteEntity.noteTabs.map((noteTab) => {
+        const newNoteTab = new NoteTabEntity();
+        newNoteTab.name = noteTab.name;
+        newNoteTab.order = noteTab.order;
+        newNoteTab.createdBy = noteTab.createdBy;
+        newNoteTab.createdById = noteTab.createdById;
+        newNoteTab.updatedBy = userEntity;
+        newNoteTab.noteFieldGroups = noteTab.noteFieldGroups.map(
+          this.getNewGroupsAndFieldsMapping(
+            userEntity,
+            newNoteVersion,
+            options,
+          ),
+        );
+        return newNoteTab;
+      });
+      newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
+        .filter((nfg) => !nfg.noteTabId)
+        .map(
+          this.getNewGroupsAndFieldsMapping(
+            userEntity,
+            newNoteVersion,
+            options,
+          ),
+        );
 
-    const newNoteVersion = new NoteEntity();
-    newNoteVersion.name = options.name || noteEntity.name;
-    newNoteVersion.rootVersionId = noteEntity.rootVersionId;
-    newNoteVersion.version = noteEntity.version + 1;
-    newNoteVersion.tags = options.tags;
-    newNoteVersion.complexTags = this.getComplexNoteTags(
-      options.companyOpportunityTags,
-    );
-    newNoteVersion.template = noteEntity.template;
-    newNoteVersion.templateId = noteEntity.templateId;
-    newNoteVersion.previousVersion = noteEntity;
-    newNoteVersion.createdBy = noteEntity.createdBy;
-    newNoteVersion.updatedBy = userEntity;
-    newNoteVersion.noteTabs = noteEntity.noteTabs.map((noteTab) => {
-      const newNoteTab = new NoteTabEntity();
-      newNoteTab.name = noteTab.name;
-      newNoteTab.order = noteTab.order;
-      newNoteTab.createdBy = noteTab.createdBy;
-      newNoteTab.createdById = noteTab.createdById;
-      newNoteTab.updatedBy = userEntity;
-      newNoteTab.noteFieldGroups = noteTab.noteFieldGroups.map(
-        this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
-      );
-      return newNoteTab;
+      const savedNewNoteVersion = await tem.save(newNoteVersion);
+
+      if (noteEntity.template.type === TemplateTypeEnum.Workflow) {
+        const opportunity = await this.opportunityRepository.findOne({
+          where: { noteId: noteEntity.id },
+        });
+        if (opportunity) {
+          opportunity.noteId = savedNewNoteVersion.id;
+          await tem.save(opportunity);
+        }
+      }
+      return savedNewNoteVersion;
     });
-    newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
-      .filter((nfg) => !nfg.noteTabId)
-      .map(
-        this.getNewGroupsAndFieldsMapping(userEntity, newNoteVersion, options),
-      );
-    return await this.noteRepository.save(newNoteVersion);
   }
 
   public async updateNoteField(
@@ -364,6 +421,7 @@ export class NotesService {
       rootVersionId: noteEntity.rootVersionId,
       templateName: noteEntity.template?.name,
       templateId: noteEntity.templateId,
+      templateType: noteEntity.template?.type as TemplateTypeEnum,
       createdById: noteEntity.createdById,
       createdBy: {
         name: noteEntity.createdBy.name,
@@ -603,11 +661,14 @@ export class NotesService {
     const mappedNote = this.noteEntityToNoteData(workflowNote);
     // we assume there is only one tab with given name and it won't change after being created from template
     for (const tab of workflowNote.template.tabs) {
-      (
-        mappedNote.noteTabs.find(
-          (nt) => nt.name === tab.name,
-        ) as NoteTabsWithRelatedNotesData
-      ).relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
+      const foundTab = mappedNote.noteTabs.find(
+        (nt) => nt.name === tab.name,
+      ) as NoteTabsWithRelatedNotesData;
+      foundTab.relatedNotesWithFields = this.getRelatedNotesWithFieldsForTab(
+        tab,
+        relatedNotes,
+      );
+      foundTab.relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
     }
     return mappedNote;
   }
@@ -615,7 +676,27 @@ export class NotesService {
   private getRelatedNotesForTab(
     tab: TabEntity,
     relatedNotes: NoteEntity[],
-  ): RelatedNote[] {
+  ): NoteData[] {
+    const relatedTemplateIds = tab.relatedTemplates.map((rt) =>
+      rt.id.toLowerCase(),
+    );
+
+    return relatedNotes
+      .filter((rn) => {
+        return relatedTemplateIds.includes(rn.templateId.toLowerCase());
+      })
+      .map((rn) => {
+        delete rn.noteFieldGroups;
+        delete rn.noteTabs;
+        return rn; // we remove note fields data to make response smaller
+      })
+      .map(this.noteEntityToNoteData.bind(this));
+  }
+
+  private getRelatedNotesWithFieldsForTab(
+    tab: TabEntity,
+    relatedNotes: NoteEntity[],
+  ): RelatedNoteWithFields[] {
     const relatedFieldsIds = tab.relatedFields.map((rf) => rf.id);
 
     const filteredRelatedNotes = relatedNotes.filter((rn) => {
@@ -642,7 +723,7 @@ export class NotesService {
     return filteredRelatedNotes.map(this.mapNoteToRelatedNoteData.bind(this));
   }
 
-  private mapNoteToRelatedNoteData(note: NoteEntity): RelatedNote {
+  private mapNoteToRelatedNoteData(note: NoteEntity): RelatedNoteWithFields {
     return {
       id: note.id,
       name: note.name,

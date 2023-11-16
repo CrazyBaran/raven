@@ -70,6 +70,18 @@ export class TabEntity implements AuditableEntity {
   })
   public relatedFields: FieldDefinitionEntity[];
 
+  @ManyToMany(() => TemplateEntity, {
+    eager: false, // cannot set this to true because of circular reference
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinTable({
+    name: 'tab_related_template',
+    joinColumn: { name: 'tab_id' },
+    inverseJoinColumn: { name: 'template_id' },
+  })
+  public relatedTemplates: TemplateEntity[];
+
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
   @JoinColumn({ name: 'created_by_id' })

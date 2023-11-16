@@ -110,9 +110,9 @@ export class NotesController {
 
     @Query('opportunityId') opportunityId: string,
     @Query('type') type: TemplateTypeEnum = TemplateTypeEnum.Note,
-  ): Promise<NoteData[] | NoteWithRelatedNotesData> {
+  ): Promise<NoteData[] | (NoteWithRelatedNotesData | NoteData)[]> {
     if (opportunityId) {
-      return await this.notesService.getNoteWithRelatedNotes(opportunityId);
+      return await this.notesService.getNotesForOpportunity(opportunityId);
     }
     if (domain && organisationTagEntity === null) {
       return [];

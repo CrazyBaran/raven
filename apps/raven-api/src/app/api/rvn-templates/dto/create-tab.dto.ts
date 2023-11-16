@@ -24,7 +24,12 @@ export class CreateTabDto {
   @ApiProperty()
   @IsOptional()
   @IsUUID(undefined, { each: true })
-  public readonly fieldIds?: string[];
+  public readonly relatedFieldIds?: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID(undefined, { each: true })
+  public readonly relatedTemplateIds?: string[];
 
   @ApiProperty()
   @IsOptional()

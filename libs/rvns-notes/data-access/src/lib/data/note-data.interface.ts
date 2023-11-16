@@ -1,3 +1,4 @@
+import { TemplateTypeEnum } from '@app/rvns-templates';
 import { NoteFieldData } from './note-field-data.interface';
 import { NoteFieldGroupData } from './note-field-group-data.interface';
 import { NoteTabData } from './note-tab-data.interface';
@@ -30,6 +31,7 @@ export interface NoteData {
   readonly complexTags?: ComplexTagData[];
   readonly templateId?: string;
   readonly templateName?: string;
+  readonly templateType?: TemplateTypeEnum;
   readonly createdById: string;
   readonly createdBy: UserData;
   readonly updatedAt: Date;
@@ -48,7 +50,7 @@ interface NoteTabWithFieldGroupsData extends NoteTabData {
   readonly noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 
-export interface RelatedNote {
+export interface RelatedNoteWithFields {
   readonly id: string;
   readonly name: string;
   readonly createdById: string;
@@ -58,13 +60,14 @@ export interface RelatedNote {
 
 export interface NoteTabsWithRelatedNotesData
   extends NoteTabWithFieldGroupsData {
-  relatedNotes?: RelatedNote[];
+  relatedNotesWithFields?: RelatedNoteWithFields[];
+  relatedNotes?: NoteData[];
 }
 
 export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
   extends NoteData {
-  readonly noteTabs: T[];
-  readonly noteFieldGroups: NoteFieldGroupsWithFieldData[];
+  noteTabs: T[];
+  noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 
 export type NoteWithRelatedNotesData =
