@@ -9,6 +9,11 @@ export type OpportunityChanges = {
   tagId?: string;
 };
 
+export type OpportunitiesResponse = {
+  items: OpportunityData[];
+  total: number;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -18,8 +23,8 @@ export class OpportunitiesService {
   public getOpportunities(
     take: number,
     skip: number,
-  ): Observable<GenericResponse<OpportunityData[]>> {
-    return this.http.get<GenericResponse<OpportunityData[]>>(
+  ): Observable<GenericResponse<OpportunitiesResponse>> {
+    return this.http.get<GenericResponse<OpportunitiesResponse>>(
       '/api/opportunities',
       { params: { take, skip } },
     );

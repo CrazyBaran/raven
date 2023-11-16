@@ -6,21 +6,6 @@ import { OrganisationsFeature } from '@app/client/organisations/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
 
-const opportunity = {
-  team: {
-    dealLead: {},
-    dealTeam: [],
-  },
-  details: {} as Record<string, unknown>,
-  missingDetails: [
-    {
-      tab: 'team',
-      field: 'risks',
-      action: 'Please fill this field to advance',
-    },
-  ],
-};
-
 const LINES: {
   label: string;
   theme: StatusIndicatorComponent['theme'];

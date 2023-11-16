@@ -1,3 +1,6 @@
+/* eslint-disable @nx/enforce-module-boundaries */
+//TODO: refactor notes table
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { provideMockStore } from '@ngrx/store/testing';

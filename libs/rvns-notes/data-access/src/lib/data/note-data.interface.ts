@@ -69,8 +69,8 @@ export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
   readonly noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 
-export interface NoteWithRelatedNotesData
-  extends NoteWithRelationsData<NoteTabsWithRelatedNotesData> {}
+export type NoteWithRelatedNotesData =
+  NoteWithRelationsData<NoteTabsWithRelatedNotesData>;
 
 export interface NoteAttachmentData {
   readonly fileName: string;

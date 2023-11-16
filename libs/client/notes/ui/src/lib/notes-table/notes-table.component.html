@@ -3,6 +3,11 @@
   [sort]="sort"
   [sortable]="true"
   scrollable="scrollable"
+  [pageable]="true"
+  [pageSize]="dynamicPaging.size()!"
+  #dynamicPaging="uiKendoDynamicPaging"
+  [uiKendoDynamicPaging]="56"
+  [loading]="isLoading"
 >
   <kendo-grid-column
     [headerStyle]="{ 'font-weight': '700' }"

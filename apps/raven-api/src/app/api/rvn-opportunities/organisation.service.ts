@@ -1,5 +1,6 @@
 import {
   OrganisationData,
+  OrganisationDataWithOpportunities,
   PagedOrganisationData,
 } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
@@ -76,8 +77,38 @@ export class OrganisationService {
     } as PagedOrganisationData;
   }
 
-  public async findOne(id: string): Promise<OrganisationEntity> {
-    return this.organisationRepository.findOne({ where: { id } });
+  public async findOne(id: string): Promise<OrganisationDataWithOpportunities> {
+    const organisation = await this.organisationRepository.findOne({
+      where: { id },
+      relations: [
+        'opportunities',
+        'opportunities.pipelineStage',
+        'opportunities.pipelineDefinition',
+      ],
+    });
+
+    const defaultPipeline = await this.getDefaultPipelineDefinition();
+
+    return await this.affinityEnricher.enrichOrganisation(
+      organisation,
+      (entity, data) => {
+        for (const opportunity of data.opportunities) {
+          const pipelineStage = this.getPipelineStage(
+            defaultPipeline,
+            opportunity.stage.id,
+          );
+
+          opportunity.stage = {
+            ...opportunity.stage,
+            displayName: pipelineStage.displayName,
+            order: pipelineStage.order,
+            mappedFrom: pipelineStage.mappedFrom,
+          };
+        }
+
+        return data;
+      },
+    );
   }
 
   public async create(

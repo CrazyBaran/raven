@@ -75,7 +75,7 @@ export class OpportunityService {
     const options = {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
       relations: ['organisation', 'tag'],
-      skip: skip,
+      skip: skip ? skip : 0,
       take: take > 500 ? 500 : take,
     };
 

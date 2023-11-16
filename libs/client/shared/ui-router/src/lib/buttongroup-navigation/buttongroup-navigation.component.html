@@ -1,0 +1,13 @@
+<kendo-buttongroup class="flex gap-0.5" selection="single">
+  <kendo-button
+    *rxFor="let filter of filters; trackBy: 'id'; strategy: 'immediate'"
+    [queryParamsHandling]="model.queryParamsHandling ?? 'merge'"
+    [queryParams]="filter.queryParams"
+    [routerLink]="[]"
+    [selected]="filter.selected"
+    [toggleable]="true"
+    [size]="model.size ?? 'medium'"
+  >
+    {{ filter.name }}
+  </kendo-button>
+</kendo-buttongroup>

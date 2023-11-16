@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { pipelinesQuery } from '@app/client/pipelines/state';
+import { pipelinesQuery } from '@app/client/opportunities/api-pipelines';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -17,7 +17,9 @@ export class OpportunitiesEffects {
       concatMap(({ take, skip }) =>
         this.opportunitiesService.getOpportunities(take, skip).pipe(
           map(({ data }) =>
-            OpportunitiesActions.getOpportunitiesSuccess({ data: data || [] }),
+            OpportunitiesActions.getOpportunitiesSuccess({
+              data: data?.items || [],
+            }),
           ),
           catchError((error) =>
             of(OpportunitiesActions.getOpportunitiesFailure({ error })),

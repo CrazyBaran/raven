@@ -1,4 +1,6 @@
 import { inject, Injectable } from '@angular/core';
+//TODO: refactor
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { GenericResponse } from '@app/rvns-api';
 import { last, mergeMap, Observable, tap } from 'rxjs';
 import { ImagePathDictionaryService } from './image-path-dictionary.service';

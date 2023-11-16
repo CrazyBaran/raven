@@ -20,5 +20,5 @@
       }
     }
   },
-  "tags": ["client", "api", "type:dtos"]
+  "tags": ["client", "api", "type:dtos", "scope:shared"]
 }

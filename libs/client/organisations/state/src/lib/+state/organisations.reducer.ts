@@ -2,10 +2,14 @@ import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 
 import { routerQuery } from '@app/client/shared/util-router';
-import { OrganisationsActions } from './organisations.actions';
+import {
+  OrganisationsActions,
+  OrganisationsUrlActions,
+} from './organisations.actions';
 import { OrganisationEntity } from './organisations.model';
 
 export interface OrganisationsState extends EntityState<OrganisationEntity> {
+  totalRows: number;
   loaded: boolean | null;
   error: string | null;
   loadingOrganisation: boolean;
@@ -20,6 +24,7 @@ export const initialOrganisationState: OrganisationsState =
     loadingOrganisation: false,
     error: null,
     selectedId: null,
+    totalRows: 0,
   });
 
 export const OrganisationsFeature = createFeature({
@@ -46,13 +51,21 @@ export const OrganisationsFeature = createFeature({
       loadingOrganisation: false,
     })),
 
-    on(OrganisationsActions.getOrganisations, (state) => ({
-      ...state,
-      loaded: false,
-      error: null,
-    })),
+    on(
+      OrganisationsActions.getOrganisations,
+      OrganisationsUrlActions.queryParamsChanged,
+      (state) => ({
+        ...state,
+        loaded: false,
+        error: null,
+      }),
+    ),
     on(OrganisationsActions.getOrganisationsSuccess, (state, { data }) =>
-      OrganisationAdapter.setAll([...data], { ...state, loaded: true }),
+      OrganisationAdapter.setAll([...data.items], {
+        ...state,
+        loaded: true,
+        totalRows: data.total,
+      }),
     ),
     on(OrganisationsActions.getOrganisationsFailure, (state, { error }) => ({
       ...state,

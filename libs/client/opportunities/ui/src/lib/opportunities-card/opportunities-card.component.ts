@@ -1,3 +1,6 @@
+/* eslint-disable @nx/enforce-module-boundaries */
+//TODO: create model library
+
 import { CommonModule } from '@angular/common';
 
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';

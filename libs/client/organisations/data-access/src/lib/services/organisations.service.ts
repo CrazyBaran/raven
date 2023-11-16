@@ -5,6 +5,11 @@ import { Observable } from 'rxjs';
 import { CreateOrganisation } from '../models/create-organisation.model';
 import { Organisation } from '../models/organisation.model';
 
+export type OrganisationsResponse = {
+  items: Organisation[];
+  total: number;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,8 +18,12 @@ export class OrganisationsService {
 
   public constructor(private http: HttpClient) {}
 
-  public getOrganisations(): Observable<GenericResponse<Organisation[]>> {
-    return this.http.get<GenericResponse<Organisation[]>>(this.url);
+  public getOrganisations(
+    params?: Record<string, string | string[]>,
+  ): Observable<GenericResponse<OrganisationsResponse>> {
+    return this.http.get<GenericResponse<OrganisationsResponse>>(this.url, {
+      params,
+    });
   }
 
   public getOrganisation(

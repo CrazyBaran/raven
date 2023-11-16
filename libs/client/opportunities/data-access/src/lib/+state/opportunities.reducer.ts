@@ -1,6 +1,8 @@
+import { OrganisationsActions } from '@app/client/opportunities/api-organisations';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, on } from '@ngrx/store';
+import * as _ from 'lodash';
 import { OpportunitiesActions } from './opportunities.actions';
 
 export const opportunitiesFeatureKey = 'opportunities';
@@ -19,7 +21,6 @@ export const initialState: OpportunitiesState =
     isLoading: false,
     error: null,
   });
-
 export const opportunitiesReducer = createReducer(
   initialState,
   on(OpportunitiesActions.getOpportunities, (state) => ({
@@ -28,6 +29,16 @@ export const opportunitiesReducer = createReducer(
   })),
   on(OpportunitiesActions.getOpportunitiesSuccess, (state, { data }) =>
     opportunitiesAdapter.setAll(data, { ...state, isLoading: false }),
+  ),
+
+  on(OrganisationsActions.getOrganisationsSuccess, (state, { data }) =>
+    opportunitiesAdapter.upsertMany(
+      _.chain(data.items)
+        .map((d) => d.opportunities.map((o) => ({ ...o, organisation: d })))
+        .flatMap()
+        .value(),
+      { ...state },
+    ),
   ),
   on(OpportunitiesActions.getOpportunitiesFailure, (state, { error }) => ({
     ...state,
