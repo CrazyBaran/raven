@@ -129,6 +129,7 @@ export class TemplatesService {
     options: UpdateTemplateOptions,
   ): Promise<TemplateEntity> {
     delete templateEntity.fieldGroups;
+    delete templateEntity.tabs;
     if (options.name) {
       templateEntity.name = options.name;
     }
