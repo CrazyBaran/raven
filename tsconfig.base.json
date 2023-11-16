@@ -91,6 +91,9 @@
       "@app/client/organisations/api-pipelines": [
         "libs/client/organisations/api-pipelines/src/index.ts"
       ],
+      "@app/client/organisations/api-tags": [
+        "libs/client/organisations/api-tags/src/index.ts"
+      ],
       "@app/client/organisations/data-access": [
         "libs/client/organisations/data-access/src/index.ts"
       ],
@@ -130,12 +133,17 @@
       "@app/client/shared/dynamic-renderer/feature": [
         "libs/client/shared/dynamic-renderer/feature/src/index.ts"
       ],
-      "@app/client/shared/pipes": ["libs/client/shared/pipes/src/index.ts"],
       "@app/client/shared/shelf": ["libs/client/shared/shelf/src/index.ts"],
       "@app/client/shared/storage/data-access": [
         "libs/client/shared/storage/data-access/src/index.ts"
       ],
       "@app/client/shared/ui": ["libs/client/shared/ui/src/index.ts"],
+      "@app/client/shared/ui-directives": [
+        "libs/client/shared/ui-directives/src/index.ts"
+      ],
+      "@app/client/shared/ui-pipes": [
+        "libs/client/shared/ui-pipes/src/index.ts"
+      ],
       "@app/client/shared/ui-router": [
         "libs/client/shared/ui-router/src/index.ts"
       ],

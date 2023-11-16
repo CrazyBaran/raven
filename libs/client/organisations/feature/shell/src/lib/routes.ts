@@ -16,6 +16,8 @@ import {
   PipelinesEffects,
   pipelinesReducer,
 } from '@app/client/pipelines/state';
+
+import { tagsEffects, tagsFeature } from '@app/client/tags/state';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
@@ -27,6 +29,8 @@ export const organisationProviders: Array<Provider | EnvironmentProviders> = [
     EffectsModule.forFeature([OpportunitiesEffects]),
     StoreModule.forFeature('pipelines', pipelinesReducer),
     EffectsModule.forFeature([PipelinesEffects]),
+    StoreModule.forFeature(tagsFeature),
+    EffectsModule.forFeature([tagsEffects]),
   ),
 ];
 

@@ -75,7 +75,8 @@
                   "scope:rvns-api",
                   "scope:rvnc-shared",
                   "scope:shared",
-                  "scope:tags"
+                  "scope:tags",
+                  "scope:organisations/api-tags"
                 ]
               },
               {
@@ -88,7 +89,8 @@
                   "scope:shared",
                   "scope:tags/api-organisations",
                   "scope:organisations/api-pipelines",
-                  "scope:organisations/api-opportunities"
+                  "scope:organisations/api-opportunities",
+                  "scope:organisations/api-tags"
                 ]
               },
               {

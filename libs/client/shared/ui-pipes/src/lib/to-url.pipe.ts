@@ -8,12 +8,14 @@ import { RouterLink } from '@angular/router';
 export class ToUrlPipe implements PipeTransform {
   public transform(routerLinkDirective: RouterLink | string[]): string {
     if (Array.isArray(routerLinkDirective)) {
-      return `${window.location.origin + routerLinkDirective.join('/')}`;
+      return `${window.location.origin + '/' + routerLinkDirective.join('/')}`;
     }
 
     if (!routerLinkDirective.urlTree)
       throw new Error('RouterLinkDirective does not have a urlTree');
 
-    return `${window.location.origin + routerLinkDirective.urlTree.toString()}`;
+    return `${
+      window.location.origin + '/' + routerLinkDirective.urlTree.toString()
+    }`;
   }
 }

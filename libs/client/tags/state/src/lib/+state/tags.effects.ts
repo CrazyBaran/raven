@@ -1,9 +1,12 @@
 import { inject } from '@angular/core';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { TagsService } from '@app/client/tags/data-access';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
+import { catchError, filter, forkJoin, map, of, switchMap } from 'rxjs';
 import { TagsActions } from './tags.actions';
+import { tagsFeature } from './tags.reducer';
 
 export const loadTags = createEffect(
   (actions$ = inject(Actions), tagsService = inject(TagsService)) => {
@@ -17,6 +20,48 @@ export const loadTags = createEffect(
           catchError((error) => {
             console.error('Error', error);
             return of(TagsActions.getTagsFailure({ error }));
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const getTagsByTypeIfNotLoaded = createEffect(
+  (actions$ = inject(Actions), store = inject(Store)) => {
+    return actions$.pipe(
+      ofType(TagsActions.getTagsByTypesIfNotLoaded),
+      concatLatestFrom(() => store.select(tagsFeature.selectLoadedTags)),
+      map(([{ tagTypes }, loadedTagTypes]) =>
+        tagTypes.filter((tagType) => !loadedTagTypes[tagType]),
+      ),
+      filter((tagTypes) => tagTypes.length > 0),
+      map((tagTypes) => TagsActions.getTagsByTypes({ tagTypes: tagTypes })),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const getTagsByTypes = createEffect(
+  (actions$ = inject(Actions), tagsService = inject(TagsService)) => {
+    return actions$.pipe(
+      ofType(TagsActions.getTagsByTypes),
+      switchMap(({ tagTypes }) =>
+        forkJoin(tagTypes.map((type) => tagsService.getTags({ type }))).pipe(
+          map((responses) => {
+            return TagsActions.getTagsByTypesSuccess({
+              data: _.flatten(responses.map((response) => response.data || [])),
+              tagTypes,
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(TagsActions.getTagsByTypesFailure({ error, tagTypes }));
           }),
         ),
       ),
