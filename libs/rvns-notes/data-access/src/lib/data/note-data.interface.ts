@@ -50,7 +50,7 @@ interface NoteTabWithFieldGroupsData extends NoteTabData {
   readonly noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 
-export interface RelatedNote {
+export interface RelatedNoteWithFields {
   readonly id: string;
   readonly name: string;
   readonly createdById: string;
@@ -60,13 +60,14 @@ export interface RelatedNote {
 
 export interface NoteTabsWithRelatedNotesData
   extends NoteTabWithFieldGroupsData {
-  relatedNotes?: RelatedNote[];
+  relatedNotesWithFields?: RelatedNoteWithFields[];
+  relatedNotes?: NoteData[];
 }
 
 export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
   extends NoteData {
-  readonly noteTabs: T[];
-  readonly noteFieldGroups: NoteFieldGroupsWithFieldData[];
+  noteTabs: T[];
+  noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 
 export type NoteWithRelatedNotesData =

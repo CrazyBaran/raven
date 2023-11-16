@@ -1,11 +1,12 @@
 import {
   NoteAttachmentData,
+  NoteData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
   NoteTabsWithRelatedNotesData,
   NoteWithRelatedNotesData,
   NoteWithRelationsData,
-  RelatedNote,
+  RelatedNoteWithFields,
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
 import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
@@ -168,6 +169,7 @@ export class NotesService {
         'note.tags',
         'note.template',
         'note.template.tabs',
+        'note.template.tabs.relatedTemplates',
         'note.noteTabs',
         'note.noteTabs.noteFieldGroups',
         'note.noteTabs.noteFieldGroups.noteFields',
@@ -659,11 +661,14 @@ export class NotesService {
     const mappedNote = this.noteEntityToNoteData(workflowNote);
     // we assume there is only one tab with given name and it won't change after being created from template
     for (const tab of workflowNote.template.tabs) {
-      (
-        mappedNote.noteTabs.find(
-          (nt) => nt.name === tab.name,
-        ) as NoteTabsWithRelatedNotesData
-      ).relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
+      const foundTab = mappedNote.noteTabs.find(
+        (nt) => nt.name === tab.name,
+      ) as NoteTabsWithRelatedNotesData;
+      foundTab.relatedNotesWithFields = this.getRelatedNotesWithFieldsForTab(
+        tab,
+        relatedNotes,
+      );
+      foundTab.relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
     }
     return mappedNote;
   }
@@ -671,7 +676,27 @@ export class NotesService {
   private getRelatedNotesForTab(
     tab: TabEntity,
     relatedNotes: NoteEntity[],
-  ): RelatedNote[] {
+  ): NoteData[] {
+    const relatedTemplateIds = tab.relatedTemplates.map((rt) =>
+      rt.id.toLowerCase(),
+    );
+
+    return relatedNotes
+      .filter((rn) => {
+        return relatedTemplateIds.includes(rn.templateId.toLowerCase());
+      })
+      .map((rn) => {
+        delete rn.noteFieldGroups;
+        delete rn.noteTabs;
+        return rn; // we remove note fields data to make response smaller
+      })
+      .map(this.noteEntityToNoteData.bind(this));
+  }
+
+  private getRelatedNotesWithFieldsForTab(
+    tab: TabEntity,
+    relatedNotes: NoteEntity[],
+  ): RelatedNoteWithFields[] {
     const relatedFieldsIds = tab.relatedFields.map((rf) => rf.id);
 
     const filteredRelatedNotes = relatedNotes.filter((rn) => {
@@ -698,7 +723,7 @@ export class NotesService {
     return filteredRelatedNotes.map(this.mapNoteToRelatedNoteData.bind(this));
   }
 
-  private mapNoteToRelatedNoteData(note: NoteEntity): RelatedNote {
+  private mapNoteToRelatedNoteData(note: NoteEntity): RelatedNoteWithFields {
     return {
       id: note.id,
       name: note.name,
