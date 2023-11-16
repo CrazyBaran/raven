@@ -134,7 +134,7 @@ export class TemplatesService {
     }
     if (Object.prototype.hasOwnProperty.call(options, 'isDefault')) {
       const defaultTemplate = await this.templatesRepository.findOne({
-        where: { isDefault: true },
+        where: { isDefault: true, type: templateEntity.type },
       });
       if (defaultTemplate && options.isDefault) {
         throw new BadRequestException('Only one default template is allowed');
