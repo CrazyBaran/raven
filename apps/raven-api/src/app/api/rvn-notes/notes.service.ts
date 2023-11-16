@@ -204,36 +204,44 @@ export class NotesService {
       .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
       .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
       .leftJoinAndSelect('note.template', 'template')
-      .leftJoinAndSelect('note.tags', 'opportunityTag') // TODO how to handle it better? select all tags and only last version of each...
-      .leftJoinAndSelect('note.tags', 'orgTag')
-      .where(`note.version = (${subQuery.getQuery()})`)
+      .leftJoinAndSelect(
+        'note.tags',
+        'opportunityTag',
+        'opportunityTag.id = :opportunityTagId',
+        { opportunityTagId: opportunity.tag.id },
+      )
+      .leftJoinAndSelect(
+        'note.tags',
+        'organisationTag',
+        'organisationTag.id = :organisationTagId',
+        {
+          organisationTagId: organisationTag.id,
+        },
+      )
+      .leftJoinAndSelect('note.tags', 'allTags')
+      .where(
+        opportunity.tag
+          ? 'organisationTag.id IS NOT NULL AND opportunityTag.id IS NOT NULL'
+          : 'organisationTag.id IS NOT NULL',
+      )
+      .andWhere(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL')
-      .andWhere('template.type = :type', { type: TemplateTypeEnum.Note })
-      .andWhere('orgTag.id = :organisationTagId', {
-        organisationTagId: organisationTag.id,
-      });
-    // TODO why it does not work?????
-    if (opportunity.tag) {
-      qb.andWhere('opportunityTag.id = :opportunityTagId', {
-        opportunityTagId: opportunity.tag.id,
-      });
-    }
-    qb.leftJoinAndSelect('note.tags', 'tags');
-    const relatedNotes = await qb.getMany();
+      .andWhere('template.type = :type', { type: TemplateTypeEnum.Note });
 
-    console.log({
-      rn: relatedNotes.map((rn) => rn.tags.map((t) => t.name)),
-      relatedNotes,
-      tags: [organisationTag.name, opportunity.tag.name],
-    });
+    const relatedNotes = await qb.getMany();
 
     const workflowNote = this.transformNotesToNoteWithRelatedData(
       opportunity.note,
       relatedNotes,
     );
-    const mappedRelatedNotes: NoteWithRelationsData[] = relatedNotes.map(
-      this.noteEntityToNoteData.bind(this),
-    );
+
+    const mappedRelatedNotes: NoteWithRelationsData[] = relatedNotes
+      .map((rn) => {
+        delete rn.noteFieldGroups;
+        delete rn.noteTabs;
+        return rn; // we remove note fields data to make response smaller
+      })
+      .map(this.noteEntityToNoteData.bind(this));
     return [workflowNote, ...mappedRelatedNotes];
   }
 
