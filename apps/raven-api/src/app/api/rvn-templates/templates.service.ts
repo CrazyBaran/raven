@@ -105,10 +105,12 @@ export class TemplatesService {
   ): Promise<TemplateEntity> {
     if (options.isDefault) {
       const defaultTemplate = await this.templatesRepository.findOne({
-        where: { isDefault: true },
+        where: { isDefault: true, type: options.type },
       });
       if (defaultTemplate) {
-        throw new BadRequestException('Only one default template is allowed');
+        throw new BadRequestException(
+          'Only one default template per type is allowed',
+        );
       }
     }
     const templateEntity = new TemplateEntity();
