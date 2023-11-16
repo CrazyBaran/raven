@@ -161,6 +161,7 @@ export class NotesService {
       relations: [
         'organisation',
         'note',
+        'tag',
         'note.createdBy',
         'note.updatedBy',
         'note.deletedBy',
@@ -189,37 +190,51 @@ export class NotesService {
       );
     }
 
-    const res = await this.noteRepository.find({
-      where: { tags: { id: organisationTag.id } },
-      relations: ['tags', 'template'],
-    });
-
-    console.log({ res });
+    const subQuery = this.noteRepository
+      .createQueryBuilder('note_sub')
+      .select('MAX(note_sub.version)', 'maxVersion')
+      .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
 
     const qb = this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.deletedBy', 'deletedBy')
+      .leftJoinAndSelect('note.updatedBy', 'updatedBy')
+      .leftJoinAndSelect('note.complexTags', 'complexTags')
       .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
       .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
       .leftJoinAndSelect('note.template', 'template')
-      .leftJoinAndSelect('note.tags', 'tag')
-      .where('template.type = :type', { type: TemplateTypeEnum.Note })
-      .andWhere('tag.id = :organisationTagId', {
+      .leftJoinAndSelect('note.tags', 'opportunityTag') // TODO how to handle it better? select all tags and only last version of each...
+      .leftJoinAndSelect('note.tags', 'orgTag')
+      .where(`note.version = (${subQuery.getQuery()})`)
+      .andWhere('note.deletedAt IS NULL')
+      .andWhere('template.type = :type', { type: TemplateTypeEnum.Note })
+      .andWhere('orgTag.id = :organisationTagId', {
         organisationTagId: organisationTag.id,
       });
-
+    // TODO why it does not work?????
     if (opportunity.tag) {
-      qb.andWhere('tag.id = :opportunityTagId', {
+      qb.andWhere('opportunityTag.id = :opportunityTagId', {
         opportunityTagId: opportunity.tag.id,
       });
     }
+    qb.leftJoinAndSelect('note.tags', 'tags');
     const relatedNotes = await qb.getMany();
+
+    console.log({
+      rn: relatedNotes.map((rn) => rn.tags.map((t) => t.name)),
+      relatedNotes,
+      tags: [organisationTag.name, opportunity.tag.name],
+    });
 
     const workflowNote = this.transformNotesToNoteWithRelatedData(
       opportunity.note,
       relatedNotes,
     );
-    return [workflowNote, ...relatedNotes.map(this.noteEntityToNoteData)];
+    const mappedRelatedNotes: NoteWithRelationsData[] = relatedNotes.map(
+      this.noteEntityToNoteData.bind(this),
+    );
+    return [workflowNote, ...mappedRelatedNotes];
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
@@ -374,6 +389,7 @@ export class NotesService {
       rootVersionId: noteEntity.rootVersionId,
       templateName: noteEntity.template?.name,
       templateId: noteEntity.templateId,
+      templateType: noteEntity.template?.type as TemplateTypeEnum,
       createdById: noteEntity.createdById,
       createdBy: {
         name: noteEntity.createdBy.name,

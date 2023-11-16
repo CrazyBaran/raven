@@ -1,3 +1,4 @@
+import { TemplateTypeEnum } from '@app/rvns-templates';
 import { NoteFieldData } from './note-field-data.interface';
 import { NoteFieldGroupData } from './note-field-group-data.interface';
 import { NoteTabData } from './note-tab-data.interface';
@@ -30,6 +31,7 @@ export interface NoteData {
   readonly complexTags?: ComplexTagData[];
   readonly templateId?: string;
   readonly templateName?: string;
+  readonly templateType?: TemplateTypeEnum;
   readonly createdById: string;
   readonly createdBy: UserData;
   readonly updatedAt: Date;
