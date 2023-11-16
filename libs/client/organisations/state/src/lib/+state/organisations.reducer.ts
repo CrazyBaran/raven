@@ -70,6 +70,7 @@ export const OrganisationsFeature = createFeature({
     on(OrganisationsActions.getOrganisationsFailure, (state, { error }) => ({
       ...state,
       error,
+      loaded: true,
     })),
 
     on(OrganisationsActions.createOrganisationSuccess, (state, { data }) =>

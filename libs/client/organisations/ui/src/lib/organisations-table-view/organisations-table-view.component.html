@@ -16,7 +16,7 @@
   <kendo-grid-column
     [sortable]="true"
     class="!align-text-top"
-    field="company"
+    field="name"
     headerClass="!font-bold"
     title="Company"
   >
@@ -38,7 +38,12 @@
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column headerClass="!font-bold" title="Opportunity">
+  <kendo-grid-column
+    headerClass="!font-bold"
+    title="Opportunity"
+    field="opportunities"
+    [sortable]="true"
+  >
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
@@ -80,11 +85,7 @@
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column
-    field="dealLead"
-    headerClass="!font-bold"
-    title="Deal Lead"
-  >
+  <kendo-grid-column headerClass="!font-bold" title="Deal Lead">
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
