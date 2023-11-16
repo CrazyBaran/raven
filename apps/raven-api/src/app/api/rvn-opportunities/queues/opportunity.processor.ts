@@ -5,7 +5,7 @@ import {
   OPPORTUNITY_QUEUE,
   OPPORTUNITY_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_OPPORTUNITIES,
 } from '../opportunities.const';
-import { OpportunityService } from '../opportunity.service';
+import { OrganisationService } from '../organisation.service';
 import { OpportunityProcessorLogger } from './opportunity.processor.logger';
 
 export interface AffinityJobData<EncryptedType = Record<string, string>> {
@@ -19,7 +19,7 @@ export interface AffinityJobData<EncryptedType = Record<string, string>> {
 })
 export class OpportunityProcessor extends AbstractSimpleQueueProcessor<AffinityJobData> {
   public constructor(
-    private readonly opportunityService: OpportunityService,
+    private readonly organisationService: OrganisationService,
     public readonly logger: OpportunityProcessorLogger,
   ) {
     super(logger);
@@ -30,8 +30,9 @@ export class OpportunityProcessor extends AbstractSimpleQueueProcessor<AffinityJ
     token: string | undefined,
   ): Promise<boolean> {
     switch (job.name) {
+      // TODO rename everything in this queue
       case OPPORTUNITY_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_OPPORTUNITIES: {
-        await this.opportunityService.ensureAllAffinityEntriesAsOpportunities();
+        await this.organisationService.ensureAllAffinityEntriesAsOrganisations();
         return true;
       }
       default: {

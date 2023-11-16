@@ -7,8 +7,10 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { OrganizationDto } from '../rvn-affinity-integration/api/dtos/organization.dto';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
+import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
@@ -174,29 +176,39 @@ export class OrganisationService {
     await this.organisationRepository.delete(id);
   }
 
-  public async createFromAffinityOrGet(
-    domains: string[],
-  ): Promise<OrganisationEntity> {
-    const affinityData = await this.affinityCacheService.getByDomains(domains);
+  public async ensureAllAffinityEntriesAsOrganisations(): Promise<void> {
+    const affinityData = await this.affinityCacheService.getAll();
+    const existingOrganisations = await this.organisationRepository.find();
+    const nonExistentAffinityData = this.getNonExistentAffinityData(
+      affinityData,
+      existingOrganisations,
+    );
 
-    if (
-      affinityData.length === 0 ||
-      !affinityData[0]?.organizationDto?.domains ||
-      affinityData[0].organizationDto.domains.length === 0
-    ) {
-      return null;
+    for (const organisation of nonExistentAffinityData) {
+      await this.createFromAffinity(organisation.organizationDto);
     }
-    const existingOrganisation = await this.organisationRepository.findOne({
-      where: { domains: Like(`%${affinityData[0].organizationDto.domain}%`) },
+  }
+
+  public getNonExistentAffinityData(
+    affinityData: OrganizationStageDto[],
+    existingOrganisations: OrganisationEntity[],
+  ): OrganizationStageDto[] {
+    return affinityData.filter((affinity) => {
+      return !existingOrganisations.some((opportunity) => {
+        return opportunity.domains.some((domain) => {
+          if (affinity?.organizationDto?.domains?.length === 0) return true;
+          return affinity.organizationDto.domains.includes(domain);
+        });
+      });
     });
+  }
 
-    if (existingOrganisation) {
-      return existingOrganisation;
-    }
-
+  public async createFromAffinity(
+    organizationDto: OrganizationDto,
+  ): Promise<OrganisationEntity> {
     const organisation = new OrganisationEntity();
-    organisation.name = affinityData[0].organizationDto.name;
-    organisation.domains = affinityData[0].organizationDto.domains;
+    organisation.name = organizationDto.name;
+    organisation.domains = organizationDto.domains;
 
     return await this.organisationRepository.save(organisation);
   }
