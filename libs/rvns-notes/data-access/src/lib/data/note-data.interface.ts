@@ -62,6 +62,7 @@ export interface NoteTabsWithRelatedNotesData
   extends NoteTabWithFieldGroupsData {
   relatedNotesWithFields?: RelatedNoteWithFields[];
   relatedNotes?: NoteData[];
+  pipelineStages?: unknown[];
 }
 
 export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
