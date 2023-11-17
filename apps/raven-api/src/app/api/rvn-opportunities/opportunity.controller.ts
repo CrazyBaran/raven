@@ -34,6 +34,7 @@ import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityService } from './opportunity.service';
 import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
+import { ParseOptionalOrganisationPipe } from './pipes/parse-optional-organisation.pipe';
 import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-stage.pipe';
 import { ParseOptionalTagPipe } from './pipes/parse-optional-tag.pipe';
 import { ParseWorkflowTemplatePipe } from './pipes/parse-workflow-template.pipe';
@@ -86,7 +87,9 @@ export class OpportunityController {
   public async create(
     @Body() dto: CreateOpportunityDto,
     @Body('domain', FindOrganizationByDomainPipe)
-    organisation: OrganisationEntity | null,
+    organisationFromDomain: string | OrganisationEntity | null,
+    @Body('organisationId', ParseOptionalOrganisationPipe)
+    organisationFromId: string | OrganisationEntity | null,
     @Body('workflowTemplateId', ParseUUIDPipe, ParseWorkflowTemplatePipe)
     workflowTemplateEntity: TemplateEntity,
     @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
@@ -96,6 +99,9 @@ export class OpportunityController {
     if (!tagEntity) {
       throw new BadRequestException('Tag is required for opportunity creation');
     }
+    const organisation =
+      (organisationFromDomain as OrganisationEntity) ||
+      (organisationFromId as OrganisationEntity);
     if (organisation) {
       // TODO - find previous opportunity, check if is at last stage? remove or soft delete? confirm logic for that
       // TODO - current logic should be one opportunity for given organisation is in active stages...
