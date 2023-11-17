@@ -722,14 +722,17 @@ export class NotesService {
 
     const filteredRelatedNotes = relatedNotes.filter((rn) => {
       const noteFieldIds = rn.noteFieldGroups
-        .map((nfg) =>
-          nfg.noteFields
-            .filter(
-              (nf) => nf.value && relatedFieldsIds.includes(nf.templateFieldId),
+        ? rn.noteFieldGroups
+            .map((nfg) =>
+              nfg.noteFields
+                .filter(
+                  (nf) =>
+                    nf.value && relatedFieldsIds.includes(nf.templateFieldId),
+                )
+                .map((nf) => nf.templateFieldId.toLowerCase()),
             )
-            .map((nf) => nf.templateFieldId.toLowerCase()),
-        )
-        .flat();
+            .flat()
+        : [];
       return noteFieldIds.length > 0;
     });
     filteredRelatedNotes.forEach((rn) => {
