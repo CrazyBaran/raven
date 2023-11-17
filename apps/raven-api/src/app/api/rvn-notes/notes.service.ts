@@ -160,6 +160,7 @@ export class NotesService {
 
   public async getNotesForOpportunity(
     opportunityId: string,
+    type: TemplateTypeEnum,
   ): Promise<(NoteWithRelatedNotesData | NoteWithRelationsData)[]> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
@@ -252,6 +253,10 @@ export class NotesService {
       opportunity.note,
       relatedNotes,
     );
+
+    if (type === TemplateTypeEnum.Workflow) {
+      return [workflowNote];
+    }
 
     const mappedRelatedNotes: NoteWithRelationsData[] = relatedNotes
       .map((rn) => {
