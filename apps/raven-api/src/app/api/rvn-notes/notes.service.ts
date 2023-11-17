@@ -75,6 +75,8 @@ export class NotesService {
     private readonly opportunityRepository: Repository<OpportunityEntity>,
     @InjectRepository(OrganisationTagEntity)
     private readonly organisationTagRepository: Repository<OrganisationTagEntity>,
+    @InjectRepository(TemplateEntity)
+    private readonly templateRepository: Repository<TemplateEntity>,
     private readonly storageAccountService: StorageAccountService,
     private readonly logger: RavenLogger,
   ) {
@@ -161,29 +163,38 @@ export class NotesService {
   ): Promise<(NoteWithRelatedNotesData | NoteWithRelationsData)[]> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
-      relations: [
-        'organisation',
-        'note',
-        'tag',
-        'note.createdBy',
-        'note.updatedBy',
-        'note.deletedBy',
-        'note.tags',
-        'note.template',
-        'note.template.tabs',
-        'note.template.tabs.relatedTemplates',
-        'note.noteTabs',
-        'note.noteTabs.noteFieldGroups',
-        'note.noteTabs.noteFieldGroups.noteFields',
-        'note.noteFieldGroups',
-        'note.noteFieldGroups.noteFields',
-      ],
+      relations: ['organisation', 'tag'],
     });
     if (!opportunity) {
       throw new BadRequestException(
         `Opportunity with id ${opportunityId} not found`,
       );
     }
+    const opportunityNote = await this.noteRepository.findOne({
+      where: { id: opportunity.noteId },
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'deletedBy',
+        'tags',
+        'noteTabs',
+        'noteTabs.noteFieldGroups',
+        'noteTabs.noteFieldGroups.noteFields',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
+    });
+
+    const opportunityNoteTemplate = await this.templateRepository.findOne({
+      where: {
+        id: opportunityNote.templateId,
+      },
+      relations: ['tabs', 'tabs.relatedTemplates'],
+    });
+
+    // we resolve these relations manually because typeorm lacks performance in doing so...
+    opportunityNote.template = opportunityNoteTemplate;
+    opportunity.note = opportunityNote;
 
     const organisationTag = await this.organisationTagRepository.findOne({
       where: { organisationId: opportunity.organisation.id },
@@ -207,21 +218,24 @@ export class NotesService {
       .leftJoinAndSelect('note.complexTags', 'complexTags')
       .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
       .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
-      .leftJoinAndSelect('note.template', 'template')
-      .leftJoinAndSelect(
+      .leftJoinAndSelect('note.template', 'template');
+
+    if (opportunity.tag) {
+      qb.leftJoinAndSelect(
         'note.tags',
         'opportunityTag',
         'opportunityTag.id = :opportunityTagId',
         { opportunityTagId: opportunity.tag.id },
-      )
-      .leftJoinAndSelect(
-        'note.tags',
-        'organisationTag',
-        'organisationTag.id = :organisationTagId',
-        {
-          organisationTagId: organisationTag.id,
-        },
-      )
+      );
+    }
+    qb.leftJoinAndSelect(
+      'note.tags',
+      'organisationTag',
+      'organisationTag.id = :organisationTagId',
+      {
+        organisationTagId: organisationTag.id,
+      },
+    )
       .leftJoinAndSelect('note.tags', 'allTags')
       .where(
         opportunity.tag

@@ -7,6 +7,7 @@ import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { OrganisationTagEntity } from '../rvn-tags/entities/tag.entity';
+import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
@@ -63,6 +64,12 @@ describe('NotesService', () => {
         {
           provide: EventEmitter2,
           useValue: {},
+        },
+        {
+          provide: getRepositoryToken(TemplateEntity),
+          useValue: {
+            find: jest.fn(),
+          },
         },
       ],
     }).compile();
