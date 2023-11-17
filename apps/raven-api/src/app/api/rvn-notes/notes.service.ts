@@ -190,7 +190,12 @@ export class NotesService {
       where: {
         id: opportunityNote.templateId,
       },
-      relations: ['tabs', 'tabs.relatedTemplates'],
+      relations: [
+        'tabs',
+        'tabs.relatedTemplates',
+        'tabs.pipelineStages',
+        'tabs.relatedFields',
+      ],
     });
 
     // we resolve these relations manually because typeorm lacks performance in doing so...
@@ -690,6 +695,7 @@ export class NotesService {
         relatedNotes,
       );
       foundTab.relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
+      foundTab.pipelineStages = tab.pipelineStages;
     }
     return mappedNote;
   }
