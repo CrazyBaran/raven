@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { AffinityRegenerationFinishedEvent } from '../../rvn-affinity-integration/events/affinity-regeneration-finished.event';
-import { OpportunityProducer } from '../queues/opportunity.producer';
+import { OrganisationProducer } from '../queues/organisation.producer';
 
 @Injectable()
 export class AffinityRegenerationFinishedEventHandler {
   public constructor(
-    private readonly opportunityProducer: OpportunityProducer,
+    private readonly organisationProducer: OrganisationProducer,
   ) {}
 
-  @OnEvent(`affinity.regeneration.finished`)
-  protected async process(
-    event: AffinityRegenerationFinishedEvent,
-  ): Promise<void> {
-    await this.opportunityProducer.ensureAllAffinityEntriesAsOpportunities();
+  @OnEvent('affinity.regeneration.finished')
+  protected async process(): Promise<void> {
+    await this.organisationProducer.ensureAllAffinityEntriesAsOrganisations();
   }
 }

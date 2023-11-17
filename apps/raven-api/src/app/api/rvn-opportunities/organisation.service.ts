@@ -11,6 +11,7 @@ import { OrganizationDto } from '../rvn-affinity-integration/api/dtos/organizati
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
@@ -36,7 +37,10 @@ export class OrganisationService {
     private readonly affinityCacheService: AffinityCacheService,
     private readonly affinityEnricher: AffinityEnricher,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(OrganisationService.name);
+  }
 
   public async findAll(
     options: {
@@ -184,9 +188,13 @@ export class OrganisationService {
       existingOrganisations,
     );
 
+    this.logger.log(
+      `Found ${nonExistentAffinityData.length} non-existent organisations`,
+    );
     for (const organisation of nonExistentAffinityData) {
       await this.createFromAffinity(organisation.organizationDto);
     }
+    this.logger.log(`Found non-existent organisations synced`);
   }
 
   public getNonExistentAffinityData(

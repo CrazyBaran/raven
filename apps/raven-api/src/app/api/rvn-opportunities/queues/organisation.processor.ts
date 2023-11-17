@@ -1,37 +1,34 @@
 import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import {
-  OPPORTUNITY_QUEUE,
-  OPPORTUNITY_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_OPPORTUNITIES,
+  ORGANISATION_QUEUE,
+  ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS,
 } from '../opportunities.const';
 import { OrganisationService } from '../organisation.service';
-import { OpportunityProcessorLogger } from './opportunity.processor.logger';
 
 export interface AffinityJobData<EncryptedType = Record<string, string>> {
   body: EncryptedType;
 }
 
-@Processor(OPPORTUNITY_QUEUE, {
+@Processor(ORGANISATION_QUEUE, {
   concurrency: 1,
   group: { concurrency: 1 },
   removeOnComplete: { age: 2592000 },
 })
-export class OpportunityProcessor extends AbstractSimpleQueueProcessor<AffinityJobData> {
+export class OrganisationProcessor extends AbstractSimpleQueueProcessor<AffinityJobData> {
   public constructor(
     private readonly organisationService: OrganisationService,
-    public readonly logger: OpportunityProcessorLogger,
+    public readonly logger: RavenLogger,
   ) {
     super(logger);
+    this.logger.setContext(OrganisationProcessor.name);
   }
 
-  public async process(
-    job: JobPro,
-    token: string | undefined,
-  ): Promise<boolean> {
+  public async process(job: JobPro): Promise<boolean> {
     switch (job.name) {
-      // TODO rename everything in this queue
-      case OPPORTUNITY_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_OPPORTUNITIES: {
+      case ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS: {
         await this.organisationService.ensureAllAffinityEntriesAsOrganisations();
         return true;
       }
