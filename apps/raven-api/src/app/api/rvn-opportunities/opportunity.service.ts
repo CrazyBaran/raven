@@ -399,7 +399,7 @@ export class OpportunityService {
     opportunity.organisation = organisation;
     opportunity.pipelineDefinition = pipeline;
     opportunity.pipelineStage = pipelineStage;
-
+    opportunity.tag = options.tagEntity;
     this.assignOpportunityProperties(opportunity, options);
 
     const savedOpportunity = await this.opportunityRepository.save(opportunity);
