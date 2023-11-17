@@ -10,8 +10,8 @@ import { environment } from '../../../environments/environment';
 import { AffinitySettingsService } from './affinity-settings.service';
 
 import { AffinityFieldChangedEvent } from '@app/rvns-affinity-integration';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
-import { AffinityWebhookServiceLogger } from './affinity-webhook-service.logger';
 import { FIELD_MAPPING, STATUS_FIELD_NAME } from './affinity.const';
 import { AffinityApiService } from './api/affinity-api.service';
 import { ActionType } from './api/dtos/action-type.dto';
@@ -36,10 +36,12 @@ export class AffinityWebhookService {
   public constructor(
     private readonly affinityApiService: AffinityApiService,
     private readonly affinitySettingsService: AffinitySettingsService,
-    private readonly logger: AffinityWebhookServiceLogger,
+    private readonly logger: RavenLogger,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    this.logger.setContext(AffinityWebhookService.name);
+  }
 
   public async handleWebhookPayload(payload: WebhookPayloadDto): Promise<void> {
     switch (payload.type) {

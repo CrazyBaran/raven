@@ -2,6 +2,7 @@ import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { AffinityWebhookService } from '../affinity-webhook.service';
 import {
   AFFINITY_QUEUE,
@@ -10,7 +11,6 @@ import {
   AFFINITY_QUEUE__SETUP_WEBHOOK,
 } from '../affinity.const';
 import { AffinityService } from '../affinity.service';
-import { AffinityProcessorLogger } from './affinity.processor.logger';
 
 export interface AffinityJobData<EncryptedType = Record<string, string>> {
   body: EncryptedType;
@@ -25,9 +25,10 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
   public constructor(
     private readonly affinityService: AffinityService,
     private readonly affinityWebhookService: AffinityWebhookService,
-    public readonly logger: AffinityProcessorLogger,
+    public readonly logger: RavenLogger,
     private readonly eventEmitter: EventEmitter2,
   ) {
+    logger.setContext(AffinityProcessor.name);
     super(logger);
   }
 

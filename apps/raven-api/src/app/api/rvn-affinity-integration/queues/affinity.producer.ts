@@ -2,6 +2,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 import { environment } from '../../../../environments/environment';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import {
   AFFINITY_QUEUE,
   AFFINITY_QUEUE__HANDLE_WEBHOOK,
@@ -9,14 +10,15 @@ import {
   AFFINITY_QUEUE__SETUP_WEBHOOK,
 } from '../affinity.const';
 import { WebhookPayloadDto } from '../api/dtos/webhook-payload.dto';
-import { AffinityProducerLogger } from './affinity.producer.logger';
 
 @Injectable()
 export class AffinityProducer implements OnModuleInit {
   public constructor(
     @InjectQueue(AFFINITY_QUEUE) private readonly affinityQueue: Queue,
-    private readonly affinityProducerLogger: AffinityProducerLogger,
-  ) {}
+    private readonly affinityProducerLogger: RavenLogger,
+  ) {
+    this.affinityProducerLogger.setContext(AffinityProducer.name);
+  }
 
   public async enqueueRegenerateAffinityData(): Promise<void> {
     await this.affinityQueue.add(AFFINITY_QUEUE__REGENERATE, {});

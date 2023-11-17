@@ -17,6 +17,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
@@ -35,7 +36,6 @@ import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
-import { NotesServiceLogger } from './notes-service.logger';
 
 interface CreateNoteOptions {
   name: string;
@@ -76,8 +76,10 @@ export class NotesService {
     @InjectRepository(OrganisationTagEntity)
     private readonly organisationTagRepository: Repository<OrganisationTagEntity>,
     private readonly storageAccountService: StorageAccountService,
-    private readonly logger: NotesServiceLogger,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(NotesService.name);
+  }
 
   public async getAllNotes(
     organisationTagEntity?: OrganisationTagEntity,

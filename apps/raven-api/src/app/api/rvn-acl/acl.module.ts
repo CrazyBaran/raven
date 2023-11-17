@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from '../rvn-users/users.module';
 import { AclController } from './acl.controller';
 import { AclService } from './acl.service';
-import { AclServiceLogger } from './acl.service.logger';
 import { AuthorizationService } from './authorization.service';
 import { AbilityCache } from './casl/ability.cache';
 import { AbilityFactory } from './casl/ability.factory';
@@ -24,7 +23,6 @@ import { SharePolicyGuard } from './permissions/share-policy.guard';
       provide: APP_GUARD,
       useClass: SharePolicyGuard,
     },
-    AclServiceLogger,
   ],
   exports: [AclService, AbilityFactory, AuthorizationService],
 })

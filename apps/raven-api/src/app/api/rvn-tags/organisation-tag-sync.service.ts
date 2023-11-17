@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { TagTypeEnum } from '@app/rvns-tags';
 import { Repository } from 'typeorm';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { OrganisationTagEntity, TagEntity } from './entities/tag.entity';
-import { OrganisationTagSyncServiceLogger } from './organisation-tag-sync-service.logger';
 
 @Injectable()
 export class OrganisationTagSyncService implements OnModuleInit {
@@ -14,8 +14,10 @@ export class OrganisationTagSyncService implements OnModuleInit {
     private readonly organisationRepository: Repository<OrganisationEntity>,
     @InjectRepository(OrganisationTagEntity)
     private readonly tagsRepository: Repository<OrganisationTagEntity>,
-    private readonly logger: OrganisationTagSyncServiceLogger,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(OrganisationTagSyncService.name);
+  }
 
   public async onModuleInit(): Promise<void> {
     await this.ensureTagsForOrganisations();

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { FIELD_MAPPING } from './affinity.const';
-import { AffinityServiceLogger } from './affinity.service.logger';
 import { AffinityApiService } from './api/affinity-api.service';
 import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
 import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
@@ -16,9 +16,12 @@ export class AffinityService {
   public constructor(
     private readonly affinitySettingsService: AffinitySettingsService,
     private readonly affinityApiService: AffinityApiService,
-    private readonly logger: AffinityServiceLogger,
+    private readonly logger: RavenLogger,
     private readonly affinityCacheService: AffinityCacheService,
-  ) {}
+  ) {
+    this.logger.setContext(AffinityService.name);
+  }
+
   public async regenerateAffinityData(): Promise<void> {
     this.logger.debug('Fetching for list and field from Affinity settings');
     const { defaultListId, statusFieldId } =

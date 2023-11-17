@@ -7,14 +7,16 @@ import {
 } from '@azure/storage-blob';
 import { Injectable } from '@nestjs/common';
 import { environment } from '../../../environments/environment';
-import { StorageAccountClientLogger } from './storage-account.client.logger';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 
 @Injectable()
 export class StorageAccountClient {
   public constructor(
     private readonly blobServiceClient: BlobServiceClient,
-    private readonly logger: StorageAccountClientLogger,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(StorageAccountClient.name);
+  }
   public async generateSASUrl(
     containerName: string,
     fileName: string,

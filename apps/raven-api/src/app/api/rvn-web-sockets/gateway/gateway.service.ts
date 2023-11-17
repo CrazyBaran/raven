@@ -10,8 +10,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { SocketProvider } from '../socket/socket.provider';
-import { GatewayServiceLogger } from './gateway-service.logger';
 
 @WebSocketGateway()
 export class GatewayService implements OnGatewayInit, OnGatewayConnection {
@@ -21,8 +21,10 @@ export class GatewayService implements OnGatewayInit, OnGatewayConnection {
   public constructor(
     private readonly appSocketProvider: SocketProvider,
     private readonly eventEmitter: EventEmitter2,
-    private readonly logger: GatewayServiceLogger,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(GatewayService.name);
+  }
 
   // @UseGuards(WsJoinResourceGuard)
   @SubscribeMessage('ws.join.resource')

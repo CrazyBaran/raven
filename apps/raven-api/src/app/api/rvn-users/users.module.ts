@@ -9,7 +9,6 @@ import { RegisterUserEventHandler } from './event-handlers/register-user.event-h
 import { UsersCacheService } from './users-cache.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { UsersServiceLogger } from './users.service.logger';
 
 @Module({
   imports: [
@@ -17,12 +16,7 @@ import { UsersServiceLogger } from './users.service.logger';
     TeamsModule,
     RolesNestModule,
   ],
-  providers: [
-    UsersService,
-    UsersServiceLogger,
-    UsersCacheService,
-    RegisterUserEventHandler,
-  ],
+  providers: [UsersService, UsersCacheService, RegisterUserEventHandler],
   exports: [UsersService],
   controllers: [UsersController],
 })

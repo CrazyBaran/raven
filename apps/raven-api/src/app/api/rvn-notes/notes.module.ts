@@ -14,7 +14,6 @@ import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
 import { OpportunityCreatedEventHandler } from './event-handlers/opportunity-created.event-handler';
-import { NotesServiceLogger } from './notes-service.logger';
 import { NotesController } from './notes.controller';
 import { NotesService } from './notes.service';
 
@@ -36,7 +35,6 @@ import { NotesService } from './notes.service';
   controllers: [NotesController],
   providers: [
     NotesService,
-    NotesServiceLogger,
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,
     OpportunityCreatedEventHandler,
