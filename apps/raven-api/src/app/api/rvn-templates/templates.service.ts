@@ -146,7 +146,16 @@ export class TemplatesService {
   }
 
   public async removeTemplate(templateEntity: TemplateEntity): Promise<void> {
-    await this.templatesRepository.remove(templateEntity);
+    await this.templatesRepository.manager.transaction(async (manager) => {
+      for (const tab of templateEntity.tabs) {
+        tab.pipelineStages = [];
+        tab.relatedFields = [];
+        tab.relatedTemplates = [];
+
+        await manager.save(tab);
+      }
+      await manager.remove(templateEntity);
+    });
   }
 
   public async createFieldGroup(
