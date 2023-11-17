@@ -10,6 +10,9 @@ export const opportunitiesFeatureKey = 'opportunities';
 export interface OpportunitiesState extends EntityState<OpportunityData> {
   isLoading: boolean;
   error: string | null;
+  create: {
+    isLoading: boolean;
+  };
 }
 
 export const opportunitiesAdapter: EntityAdapter<OpportunityData> =
@@ -20,6 +23,9 @@ export const initialState: OpportunitiesState =
     // additional entity state properties
     isLoading: false,
     error: null,
+    create: {
+      isLoading: false,
+    },
   });
 export const opportunitiesReducer = createReducer(
   initialState,
@@ -40,6 +46,7 @@ export const opportunitiesReducer = createReducer(
       { ...state },
     ),
   ),
+
   on(OpportunitiesActions.getOpportunitiesFailure, (state, { error }) => ({
     ...state,
     error,
@@ -92,6 +99,30 @@ export const opportunitiesReducer = createReducer(
     ...state,
     details: null,
   })),
+
+  on(OpportunitiesActions.createOpportunity, (state) => ({
+    ...state,
+    create: {
+      ...state.create,
+      isLoading: true,
+    },
+  })),
+
+  on(OpportunitiesActions.createOpportunityFailure, (state, { error }) => ({
+    ...state,
+    create: {
+      isLoading: false,
+    },
+  })),
+
+  on(OpportunitiesActions.createOpportunitySuccess, (state, { data }) =>
+    opportunitiesAdapter.addOne(data, {
+      ...state,
+      create: {
+        isLoading: false,
+      },
+    }),
+  ),
 );
 
 export const opportunitiesFeature = createFeature({

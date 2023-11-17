@@ -102,6 +102,25 @@ export class OpportunitiesEffects {
     );
   });
 
+  private createOpportunity$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OpportunitiesActions.createOpportunity),
+      concatMap(({ payload }) =>
+        this.opportunitiesService.createOpportunityDraft(payload).pipe(
+          switchMap(({ data }) => [
+            OpportunitiesActions.createOpportunitySuccess({ data: data! }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Opportunity created successfully',
+            }),
+          ]),
+          catchError((error) =>
+            of(OpportunitiesActions.createOpportunityFailure({ error })),
+          ),
+        ),
+      ),
+    );
+  });
+
   public constructor(
     private readonly actions$: Actions,
     private readonly opportunitiesService: OpportunitiesService,

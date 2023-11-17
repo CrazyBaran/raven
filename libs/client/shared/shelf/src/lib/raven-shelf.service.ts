@@ -1,3 +1,5 @@
+// TODO: fix boundaries
+/* eslint-disable @nx/enforce-module-boundaries */
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
 import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';

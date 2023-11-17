@@ -76,6 +76,32 @@ export const OrganisationsFeature = createFeature({
     on(OrganisationsActions.createOrganisationSuccess, (state, { data }) =>
       OrganisationAdapter.addOne(data, { ...state, loaded: true }),
     ),
+
+    on(
+      OrganisationsActions.addOpportunityToOrganisation,
+      (state, { id, opportunityId }) =>
+        id && state.entities[id]
+          ? OrganisationAdapter.updateOne(
+              {
+                id: id,
+                changes: {
+                  opportunities: [
+                    ...(state.entities[id]?.opportunities || []),
+                    {
+                      id: opportunityId,
+                    } as OrganisationEntity['opportunities'][number],
+                  ],
+                },
+              },
+              {
+                ...state,
+                create: {
+                  isLoading: false,
+                },
+              },
+            )
+          : state,
+    ),
   ),
   extraSelectors: ({ selectOrganisationsState }) => ({
     ...OrganisationAdapter.getSelectors(selectOrganisationsState),

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { catchError, concatMap, filter, map, of } from 'rxjs';
 import { TemplateService } from '../template.service';
 import { TemplateActions } from './templates.actions';
-import { TemplateSelectors } from './templates.selectors';
+import { templateQueries } from './templates.selectors';
 
 @Injectable()
 export class TemplatesEffects {
@@ -15,7 +15,7 @@ export class TemplatesEffects {
     this.actions$.pipe(
       ofType(TemplateActions.getTemplateIfNotLoaded),
       concatLatestFrom(() =>
-        this.store.select(TemplateSelectors.selectAllTemplates),
+        this.store.select(templateQueries.selectAllTemplates),
       ),
       filter(([, templates]) => !templates.length),
       map(() => TemplateActions.getTemplates()),
