@@ -1,0 +1,33 @@
+<ul
+  (appOnResize)="onContainerWidthChange($event)"
+  #placeholder
+  class="m-0 flex list-none items-start justify-start overflow-hidden p-0"
+>
+  <ng-container *ngFor="let tile of tilesSignal(); let i = index">
+    <li
+      (appOnResize)="onTileListWidthChange()"
+      class="p-1 first:pl-0 last:pr-0"
+      [ngClass]="{
+        'invisible order-last': i > maxIndexSignal()!
+      }"
+    >
+      <ng-container
+        [ngTemplateOutlet]="itemTemplate"
+        [ngTemplateOutletContext]="{ $implicit: tile }"
+      ></ng-container>
+    </li>
+  </ng-container>
+
+  <li
+    [ngClass]="{
+      'invisible order-last': hiddenTilesLengthSignal() < 1
+    }"
+    class="p-1 first:pl-0 last:pr-0"
+    (appOnResize)="onTooltipTileWidthChange($event)"
+  >
+    <ng-container
+      [ngTemplateOutlet]="tooltipTemplate"
+      [ngTemplateOutletContext]="{ $implicit: hiddenTilesLengthSignal() }"
+    ></ng-container>
+  </li>
+</ul>

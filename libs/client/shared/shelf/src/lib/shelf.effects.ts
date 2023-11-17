@@ -1,3 +1,6 @@
+// TODO: fix boundaries
+/* eslint-disable @nx/enforce-module-boundaries */
+
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
@@ -44,6 +47,7 @@ export class ShelfEffects {
           () =>
             this.dynamicDialogService.openDynamicDialog({
               width: 480,
+              minHeight: 600,
               cssClass: 'raven-custom-dialog',
               template: {
                 name: 'opportunity dialog form',

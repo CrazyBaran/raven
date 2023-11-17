@@ -25,6 +25,11 @@ export const OrganisationsActions = createActionGroup({
       data: Organisation;
     }>(),
     'Create Organisation Failure': props<{ error: string }>(),
+
+    'Add Opportunity to Organisation': props<{
+      id: string;
+      opportunityId: string;
+    }>(),
   },
 });
 

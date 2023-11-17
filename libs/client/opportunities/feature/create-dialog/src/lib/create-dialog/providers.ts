@@ -11,13 +11,18 @@ import {
   OpportunitiesEffects,
   opportunitiesFeature,
 } from '@app/client/opportunities/data-access';
+import { tagsEffects, tagsFeature } from '@app/client/tags/state';
+import { templateFeatureProviders } from '@app/client/templates/data-access';
 import { CreateDialogComponent } from './create-dialog.component';
 
 export const createOpportunityDialogProviders = [
   importProvidersFrom(
     StoreModule.forFeature(opportunitiesFeature),
     EffectsModule.forFeature([OpportunitiesEffects]),
+    StoreModule.forFeature(tagsFeature),
+    EffectsModule.forFeature([tagsEffects]),
   ),
+  templateFeatureProviders,
 ];
 
 @NgModule({

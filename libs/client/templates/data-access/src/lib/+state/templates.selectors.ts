@@ -32,6 +32,11 @@ export const selectAllNoteTemplates = createSelector(
   (templates) => templates.filter((template) => template.type === 'note'),
 );
 
+export const selectAllWorkflowTemplates = createSelector(
+  selectAllTemplates,
+  (templates) => templates.filter((template) => template.type === 'workflow'),
+);
+
 export const selectTemplatesEntities = createSelector(
   selectTemplatesState,
   (state: TemplatesState) => selectEntities(state),
@@ -78,7 +83,7 @@ export const selectDefaultTemplate = createSelector(
   },
 );
 
-export const TemplateSelectors = {
+export const templateQueries = {
   selectTemplatesState,
   selectTemplatesLoaded,
   selectTemplatesError,
@@ -89,4 +94,5 @@ export const TemplateSelectors = {
   selectTemplate,
   selectDefaultTemplate,
   selectAllNoteTemplates,
+  selectAllWorkflowTemplates,
 };

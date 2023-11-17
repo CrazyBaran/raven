@@ -3,34 +3,34 @@ import { TemplateWithRelationsData } from '@app/rvns-templates';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TemplateActions } from './templates.actions';
-import { TemplateSelectors } from './templates.selectors';
+import { templateQueries } from './templates.selectors';
 
 @Injectable()
 export class TemplatesStoreFacade {
   public templates$: Observable<TemplateWithRelationsData[]> =
-    this.store.select(TemplateSelectors.selectAllTemplates);
+    this.store.select(templateQueries.selectAllTemplates);
 
   public templates = this.store.selectSignal(
-    TemplateSelectors.selectAllTemplates,
+    templateQueries.selectAllTemplates,
   );
 
   public defaultTemplate = this.store.selectSignal(
-    TemplateSelectors.selectDefaultTemplate,
+    templateQueries.selectDefaultTemplate,
   );
 
   public notesTemplates = this.store.selectSignal(
-    TemplateSelectors.selectAllNoteTemplates,
+    templateQueries.selectAllNoteTemplates,
   );
 
   public defaultTemplate$ = this.store.select(
-    TemplateSelectors.selectDefaultTemplate,
+    templateQueries.selectDefaultTemplate,
   );
 
   public isLoading$: Observable<boolean> = this.store.select(
-    TemplateSelectors.selectTemplatesLoaded,
+    templateQueries.selectTemplatesLoaded,
   );
   public loaded = this.store.selectSignal(
-    TemplateSelectors.selectTemplatesLoaded,
+    templateQueries.selectTemplatesLoaded,
   );
 
   public constructor(private store: Store) {}
@@ -38,7 +38,7 @@ export class TemplatesStoreFacade {
   public template$ = (
     id: string,
   ): Observable<TemplateWithRelationsData | undefined> =>
-    this.store.select(TemplateSelectors.selectTemplate(id));
+    this.store.select(templateQueries.selectTemplate(id));
 
   public getTemplates(): void {
     this.store.dispatch(TemplateActions.getTemplates());

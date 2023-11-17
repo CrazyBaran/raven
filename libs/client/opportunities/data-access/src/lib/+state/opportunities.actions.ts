@@ -1,6 +1,7 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
 import { OpportunityData } from '@app/rvns-opportunities';
+import { CreateOpportunity } from '../services/opportunities.service';
 
 export const OpportunitiesActions = createActionGroup({
   source: 'Opportunities/API',
@@ -8,6 +9,8 @@ export const OpportunitiesActions = createActionGroup({
     'Get Opportunities': props<{ take: number; skip: number }>(),
     'Get Opportunities Success': props<{ data: OpportunityData[] }>(),
     'Get Opportunities Failure': props<{ error: string }>(),
+
+    'Update Opportunity Success': props<{ data: OpportunityData[] }>(),
 
     'Get Opportunity Details': props<{ id: string }>(),
     'Get Opportunity Details Success': props<{
@@ -38,5 +41,9 @@ export const OpportunitiesActions = createActionGroup({
     'Clear Opportunity Details': emptyProps(),
 
     'Open Opportunity Dialog Form': emptyProps,
+
+    'Create Opportunity': props<{ payload: CreateOpportunity }>(),
+    'Create Opportunity Success': props<{ data: OpportunityData }>(),
+    'Create Opportunity Failure': props<{ error: string }>(),
   },
 });

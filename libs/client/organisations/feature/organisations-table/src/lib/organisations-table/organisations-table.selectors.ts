@@ -108,7 +108,9 @@ export const selectOrganisationRows = createSelector(
         .map(({ id }) => groupedDictionary[id])
         .map((opportunity) => ({
           ...opportunity,
-          stageColor: stageColorDictionary?.[opportunity!.stage?.id] ?? '#000',
+          stageColor: opportunity
+            ? stageColorDictionary?.[opportunity.stage?.id] ?? '#000'
+            : '#000',
           tag: null,
         })),
     }));

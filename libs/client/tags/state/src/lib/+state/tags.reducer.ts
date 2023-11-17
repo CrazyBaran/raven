@@ -49,6 +49,13 @@ export const tagsFeature = createFeature({
           .mapValues(() => true)
           .value(),
       },
+      loadedTags: {
+        ...state.loadedTags,
+        ..._.chain(tagTypes)
+          .keyBy((x) => x)
+          .mapValues(() => true)
+          .value(),
+      },
     })),
     on(TagsActions.getTagsByTypesSuccess, (state, { data, tagTypes }) =>
       tagAdapter.upsertMany([...data], {
@@ -101,6 +108,13 @@ export const tagsFeature = createFeature({
       (state) =>
         _.values(state.entities).filter(
           (tag) => tag && tag?.type === 'opportunity',
+        ) as TagEntity[],
+    ),
+    selectOrganisationTags: createSelector(
+      selectTagsState,
+      (state) =>
+        _.values(state.entities).filter(
+          (tag) => tag && tag?.type === 'company',
         ) as TagEntity[],
     ),
   }),

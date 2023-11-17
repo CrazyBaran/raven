@@ -5,6 +5,7 @@ import { PipelinesActions } from '@app/client/organisations/api-pipelines';
 import { TagsActions } from '@app/client/organisations/api-tags';
 import { OrganisationsUrlActions } from '@app/client/organisations/state';
 import { OrganisationsTableViewComponent } from '@app/client/organisations/ui';
+import { ShelfActions } from '@app/client/shared/shelf';
 import {
   ButtongroupNavigationComponent,
   DropdownNavigationComponent,
@@ -71,6 +72,6 @@ export class OrganisationsTableComponent {
   }
 
   public openOrganisationDialog(): void {
-    //todo: implement
+    this.store.dispatch(ShelfActions.openOpportunityForm());
   }
 }
