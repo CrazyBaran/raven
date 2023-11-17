@@ -3,18 +3,20 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { GatewayEventService } from '../../rvn-web-sockets/gateway/gateway-event.service';
 import { OpportunityEntity } from '../entities/opportunity.entity';
-import { AffinityFieldChangedEventHandlerLogger } from './affinity-field-changed.event-handler.logger';
 
 @Injectable()
 export class AffinityFieldChangedEventHandler {
   public constructor(
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
-    private readonly logger: AffinityFieldChangedEventHandlerLogger,
+    private readonly logger: RavenLogger,
     private readonly gatewayEventService: GatewayEventService,
-  ) {}
+  ) {
+    this.logger.setContext(AffinityFieldChangedEventHandler.name);
+  }
 
   @OnEvent('affinity-field-changed')
   protected async process(event: AffinityFieldChangedEvent): Promise<void> {

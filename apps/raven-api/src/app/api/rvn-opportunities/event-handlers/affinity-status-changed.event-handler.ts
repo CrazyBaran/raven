@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
 import { GatewayEventService } from '../../rvn-web-sockets/gateway/gateway-event.service';
 import { OpportunityEntity } from '../entities/opportunity.entity';
-import { AffinityStatusChangedEventHandlerLogger } from './affinity-status-changed.event-handler.logger';
 
 @Injectable()
 export class AffinityStatusChangedEventHandler {
@@ -15,9 +15,11 @@ export class AffinityStatusChangedEventHandler {
     private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
-    private readonly logger: AffinityStatusChangedEventHandlerLogger,
+    private readonly logger: RavenLogger,
     private readonly gatewayEventService: GatewayEventService,
-  ) {}
+  ) {
+    this.logger.setContext(AffinityStatusChangedEventHandler.name);
+  }
 
   @OnEvent('affinity-status-changed')
   protected async process(event: AffinityStatusChangedEvent): Promise<void> {

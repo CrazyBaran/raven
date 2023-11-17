@@ -6,14 +6,13 @@ import {
   createProxyMiddleware,
 } from 'http-proxy-middleware';
 import { environment } from '../../../environments/environment';
-import { StorageAccountProxyMiddlewareLogger } from './storage-account-proxy.middleware.logger';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 
 @Injectable()
 export class StorageAccountProxyMiddleware implements NestMiddleware {
   private readonly proxy: RequestHandler<Request, Response, NextFunction>;
-  public constructor(
-    private readonly logger: StorageAccountProxyMiddlewareLogger,
-  ) {
+  public constructor(private readonly logger: RavenLogger) {
+    this.logger.setContext(StorageAccountProxyMiddleware.name);
     const options = {
       target: `https://${environment.azureStorageAccount.name}.blob.core.windows.net`,
       secure: false,

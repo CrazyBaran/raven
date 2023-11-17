@@ -4,9 +4,9 @@ import { ShareData, ShareRole } from '@app/rvns-acl';
 import { UserData } from '@app/rvns-api';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
-import { AclServiceLogger } from './acl.service.logger';
 import { AbilityCache } from './casl/ability.cache';
 import { ShareResourceId } from './contracts/share-resource-id.interface';
 import { ShareResource } from './contracts/share-resource.interface';
@@ -34,8 +34,10 @@ export class AclService {
   public constructor(
     private readonly entityManager: EntityManager,
     private readonly cache: AbilityCache,
-    private readonly logger: AclServiceLogger,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(AclService.name);
+  }
 
   public async getByActor(
     actorId: string,

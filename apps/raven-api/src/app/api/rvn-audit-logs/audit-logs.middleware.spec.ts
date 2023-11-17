@@ -3,9 +3,9 @@ import { Request } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpMethodEnum } from '../../shared/enum/http-method.enum';
 import { AuthService } from '../rvn-auth/auth.service';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { AuditLogsMiddleware } from './audit-logs.middleware';
 import { AuditLogsService } from './audit-logs.service';
-import { AuditLogsLogger } from './loggers/audit-logs.logger';
 
 describe('AuditLogsMiddleware', () => {
   let middleware: AuditLogsMiddleware;
@@ -27,8 +27,10 @@ describe('AuditLogsMiddleware', () => {
           },
         },
         {
-          provide: AuditLogsLogger,
-          useValue: {},
+          provide: RavenLogger,
+          useValue: {
+            setContext: jest.fn(),
+          },
         },
       ],
     }).compile();

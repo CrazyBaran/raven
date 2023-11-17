@@ -1,7 +1,7 @@
 import { BlobServiceClient } from '@azure/storage-blob';
 import { Test } from '@nestjs/testing';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { StorageAccountClient } from './storage-account.client';
-import { StorageAccountClientLogger } from './storage-account.client.logger';
 
 describe('StorageAccountClient', () => {
   let client: StorageAccountClient;
@@ -15,8 +15,10 @@ describe('StorageAccountClient', () => {
           useValue: {},
         },
         {
-          provide: StorageAccountClientLogger,
-          useValue: {},
+          provide: RavenLogger,
+          useValue: {
+            setContext: jest.fn(),
+          },
         },
       ],
     }).compile();

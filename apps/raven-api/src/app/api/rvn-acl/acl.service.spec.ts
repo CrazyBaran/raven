@@ -1,9 +1,9 @@
 import { EntityManager } from 'typeorm';
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { AclService } from './acl.service';
-import { AclServiceLogger } from './acl.service.logger';
 import { AbilityCache } from './casl/ability.cache';
 import { AbstractShareEntity } from './entities/abstract-share.entity';
 import { ShareTeamEntity } from './entities/share-team.entity';
@@ -27,8 +27,10 @@ describe('AclService', () => {
           useValue: {},
         },
         {
-          provide: AclServiceLogger,
-          useValue: {},
+          provide: RavenLogger,
+          useValue: {
+            setContext: jest.fn(),
+          },
         },
       ],
     }).compile();

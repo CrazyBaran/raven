@@ -18,10 +18,8 @@ import { AffinityOrganisationCreatedEventHandler } from './event-handlers/affini
 
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
-import { AffinityFieldChangedEventHandlerLogger } from './event-handlers/affinity-field-changed.event-handler.logger';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
-import { AffinityStatusChangedEventHandlerLogger } from './event-handlers/affinity-status-changed.event-handler.logger';
 import { ORGANISATION_QUEUE } from './opportunities.const';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
@@ -65,9 +63,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
     AffinityRegenerationFinishedEventHandler,
     AffinityOrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,
-    AffinityStatusChangedEventHandlerLogger,
     AffinityFieldChangedEventHandler,
-    AffinityFieldChangedEventHandlerLogger,
   ],
   controllers: [OrganisationController, OpportunityController],
 })

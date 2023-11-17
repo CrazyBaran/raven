@@ -5,11 +5,11 @@ import { HttpMethodEnum } from '../../shared/enum/http-method.enum';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../rvn-auth/auth.service';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { AuditLogsService } from './audit-logs.service';
 import { ActionTypeEnum } from './enums/action-type.enum';
 import { AuditLog } from './interfaces/audit-log.interface';
 import { ParsedRequest } from './interfaces/parsed-request.interface';
-import { AuditLogsLogger } from './loggers/audit-logs.logger';
 
 @Injectable()
 export class AuditLogsMiddleware implements NestMiddleware {
@@ -21,8 +21,10 @@ export class AuditLogsMiddleware implements NestMiddleware {
   public constructor(
     private readonly logsService: AuditLogsService,
     private readonly authService: AuthService,
-    private readonly logger: AuditLogsLogger,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(AuditLogsMiddleware.name);
+  }
 
   public use(req: Request, res: Response, next: NextFunction): void {
     if (this.verifyRequest(req)) {

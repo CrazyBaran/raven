@@ -4,10 +4,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AclService } from '../rvn-acl/acl.service';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { TeamsService } from '../rvn-teams/teams.service';
 import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { UsersServiceLogger } from './users.service.logger';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -37,8 +37,10 @@ describe('UsersService', () => {
           useValue: {},
         },
         {
-          provide: UsersServiceLogger,
-          useValue: {},
+          provide: RavenLogger,
+          useValue: {
+            setContext: jest.fn(),
+          },
         },
       ],
     }).compile();
