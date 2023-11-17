@@ -79,6 +79,7 @@ export class OrganisationService {
     queryBuilder
       .leftJoinAndSelect('organisations.opportunities', 'opportunities')
       .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
+      .leftJoinAndSelect('opportunities.tag', 'tag')
       .leftJoinAndSelect(
         'opportunities.pipelineDefinition',
         'pipelineDefinition',
@@ -133,6 +134,7 @@ export class OrganisationService {
         'opportunities',
         'opportunities.pipelineStage',
         'opportunities.pipelineDefinition',
+        'opportunities.tag',
       ],
     });
 
