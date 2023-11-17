@@ -29,7 +29,7 @@ export const loadOrganisationOnUrlEvent = createEffect(
           }),
           catchError((error) => {
             console.error('Error', error);
-            return of(OrganisationsActions.getOrganisationFailure({ error }));
+            return of(OrganisationsActions.getOrganisationsFailure({ error }));
           }),
         ),
       ),

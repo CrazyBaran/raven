@@ -94,6 +94,8 @@ export class TemplatesService {
         'tabs',
         'tabs.fieldGroups',
         'tabs.fieldGroups.fieldDefinitions',
+        'tabs.relatedFields',
+        'tabs.relatedTemplates',
         'fieldGroups',
         'fieldGroups.fieldDefinitions',
       ],
@@ -105,10 +107,12 @@ export class TemplatesService {
   ): Promise<TemplateEntity> {
     if (options.isDefault) {
       const defaultTemplate = await this.templatesRepository.findOne({
-        where: { isDefault: true },
+        where: { isDefault: true, type: options.type },
       });
       if (defaultTemplate) {
-        throw new BadRequestException('Only one default template is allowed');
+        throw new BadRequestException(
+          'Only one default template per type is allowed',
+        );
       }
     }
     const templateEntity = new TemplateEntity();
@@ -125,12 +129,13 @@ export class TemplatesService {
     options: UpdateTemplateOptions,
   ): Promise<TemplateEntity> {
     delete templateEntity.fieldGroups;
+    delete templateEntity.tabs;
     if (options.name) {
       templateEntity.name = options.name;
     }
     if (Object.prototype.hasOwnProperty.call(options, 'isDefault')) {
       const defaultTemplate = await this.templatesRepository.findOne({
-        where: { isDefault: true },
+        where: { isDefault: true, type: templateEntity.type },
       });
       if (defaultTemplate && options.isDefault) {
         throw new BadRequestException('Only one default template is allowed');

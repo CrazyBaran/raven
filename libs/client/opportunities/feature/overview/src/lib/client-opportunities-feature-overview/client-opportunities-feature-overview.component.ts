@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
-import { TagComponent } from '@app/client/shared/ui';
+import { TagComponent, UserTagDirective } from '@app/client/shared/ui';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { Store, createSelector } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -94,6 +94,7 @@ export const SelectOpportunityOverviewViewModel = createSelector(
     RxFor,
     GridModule,
     TagComponent,
+    UserTagDirective,
   ],
   templateUrl: './client-opportunities-feature-overview.component.html',
   styleUrls: ['./client-opportunities-feature-overview.component.scss'],

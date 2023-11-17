@@ -10,6 +10,23 @@ export const TagsActions = createActionGroup({
     'Get Tags Success': props<{ data: TagEntity[] }>(),
     'Get Tags Failure': props<{ error: string }>(),
 
+    'Get Tags By Types': props<{
+      tagTypes: TagEntity['type'][];
+    }>(),
+
+    'Get Tags By Types Success': props<{
+      data: TagEntity[];
+      tagTypes: TagEntity['type'][];
+    }>(),
+    'Get Tags By Types Failure': props<{
+      error: string;
+      tagTypes: TagEntity['type'][];
+    }>(),
+
+    'Get Tags By Types If Not Loaded': props<{
+      tagTypes: TagEntity['type'][];
+    }>(),
+
     'Create Tag': props<{ data: CreateTagData }>(),
     'Create Tag Success': props<{ data: CreateTagResponse }>(),
     'Create Tag Failure': props<{ error: string }>(),
