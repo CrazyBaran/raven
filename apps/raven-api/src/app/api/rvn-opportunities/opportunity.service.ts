@@ -279,59 +279,6 @@ export class OpportunityService {
     };
   }
 
-  public async ensureAllAffinityEntriesAsOpportunities(): Promise<void> {
-    const affinityData = await this.affinityCacheService.getAll();
-
-    const existingOpportunities = await this.opportunityRepository.find({
-      relations: ['organisation'],
-    });
-
-    const nonexistentAffinityData = affinityData.filter((affinity) => {
-      return !existingOpportunities.some((opportunity) => {
-        return opportunity.organisation.domains.some((domain) => {
-          if (affinity?.organizationDto?.domains?.length === 0) return true;
-          return affinity.organizationDto.domains.includes(domain);
-        });
-      });
-    });
-
-    const defaultDefinition = await this.getDefaultPipelineDefinition();
-
-    for (const org of nonexistentAffinityData) {
-      const organisation =
-        await this.organisationService.createFromAffinityOrGet(
-          org.organizationDto.domains,
-        );
-
-      if (!organisation) {
-        continue;
-      }
-
-      const existingOpportunity = await this.opportunityRepository.findOne({
-        where: {
-          organisation: { id: organisation.id },
-        },
-      });
-
-      if (existingOpportunity) {
-        continue;
-      }
-
-      const pipelineStage = await this.mapPipelineStage(
-        defaultDefinition,
-        org?.stage?.text,
-      );
-
-      const opportunity = new OpportunityEntity();
-
-      opportunity.organisation = organisation;
-      opportunity.pipelineDefinition = defaultDefinition;
-      opportunity.pipelineStage = pipelineStage;
-
-      await this.opportunityRepository.save(opportunity);
-    }
-  }
-
   public opportunityEntityToData(entity: OpportunityEntity): OpportunityData {
     return {
       id: entity.id,

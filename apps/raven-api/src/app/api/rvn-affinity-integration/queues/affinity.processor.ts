@@ -35,7 +35,7 @@ export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobD
     switch (job.name) {
       case AFFINITY_QUEUE__REGENERATE: {
         await this.affinityService.regenerateAffinityData();
-        this.eventEmitter.emit(`affinity.regeneration.finished`, {});
+        this.eventEmitter.emit('affinity.regeneration.finished');
         return true;
       }
       case AFFINITY_QUEUE__HANDLE_WEBHOOK: {

@@ -22,23 +22,21 @@ import { AffinityFieldChangedEventHandlerLogger } from './event-handlers/affinit
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
 import { AffinityStatusChangedEventHandlerLogger } from './event-handlers/affinity-status-changed.event-handler.logger';
-import { OPPORTUNITY_QUEUE } from './opportunities.const';
+import { ORGANISATION_QUEUE } from './opportunities.const';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
 import { OrganisationController } from './organisation.controller';
 import { OrganisationService } from './organisation.service';
-import { OpportunityProcessor } from './queues/opportunity.processor';
-import { OpportunityProcessorLogger } from './queues/opportunity.processor.logger';
-import { OpportunityProducer } from './queues/opportunity.producer';
-import { OpportunityProducerLogger } from './queues/opportunity.producer.logger';
+import { OrganisationProcessor } from './queues/organisation.processor';
+import { OrganisationProducer } from './queues/organisation.producer';
 
 @Module({
   imports: [
     BullService.registerQueue([
       {
-        name: OPPORTUNITY_QUEUE,
+        name: ORGANISATION_QUEUE,
         order: 0,
-        description: 'Opportunities',
+        description: 'Organisation queue',
         defaultJobOptions: {
           attempts: 3,
           // exponential fn: 2 ^ ($attempts - 1) * $delay
@@ -62,10 +60,8 @@ import { OpportunityProducerLogger } from './queues/opportunity.producer.logger'
   providers: [
     OrganisationService,
     OpportunityService,
-    OpportunityProducer,
-    OpportunityProducerLogger,
-    OpportunityProcessorLogger,
-    OpportunityProcessor,
+    OrganisationProducer,
+    OrganisationProcessor,
     AffinityRegenerationFinishedEventHandler,
     AffinityOrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,

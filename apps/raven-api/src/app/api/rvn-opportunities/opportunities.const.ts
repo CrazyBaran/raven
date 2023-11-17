@@ -1,4 +1,4 @@
-export const OPPORTUNITY_QUEUE = 'OpportunityQueue';
+export const ORGANISATION_QUEUE = 'OrganisationQueue';
 
-export const OPPORTUNITY_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_OPPORTUNITIES =
-  'OpportunityQueue-EnsureAllAffinityEntriesAsOpportunities';
+export const ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS =
+  'OrganisationQueue-EnsureAllAffinityEntriesAsOrganisations';
