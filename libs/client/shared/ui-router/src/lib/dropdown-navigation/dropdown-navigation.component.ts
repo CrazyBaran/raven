@@ -18,8 +18,8 @@ export type DropdownNavigationModel = {
   queryParamName: string;
   data: DropdownNavigationItem[];
   defaultItem: DropdownNavigationItem;
-  value: DropdownNavigationItem | null;
-  loading?: boolean;
+  value: DropdownNavigationItem | null | undefined;
+  loading?: boolean | undefined | null;
   strategy?: 'preserve' | 'merge';
 };
 
@@ -39,8 +39,8 @@ export class DropdownNavigationComponent {
 
   protected valueChange($event: { id: string }): void {
     this.router.navigate([], {
-      [this.model.queryParamName]: this.activatedRoute,
-      queryParams: { noteType: $event.id },
+      relativeTo: this.activatedRoute,
+      queryParams: { [this.model.queryParamName]: $event.id },
       queryParamsHandling: this.model.strategy ?? 'merge',
     });
   }

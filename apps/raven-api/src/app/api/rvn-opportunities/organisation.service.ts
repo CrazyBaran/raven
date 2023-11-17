@@ -6,7 +6,8 @@ import {
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+
+import { Like, Raw, Repository } from 'typeorm';
 import { OrganizationDto } from '../rvn-affinity-integration/api/dtos/organization.dto';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
@@ -54,12 +55,23 @@ export class OrganisationService {
     const queryBuilder =
       this.organisationRepository.createQueryBuilder('organisations');
     if (options.query) {
+      const searchString = `%${options.query.toLowerCase()}%`;
       queryBuilder.where([
         {
-          name: Like(`%${options.query}%`),
+          name: Raw(
+            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            {
+              searchString,
+            },
+          ),
         },
         {
-          domains: Like(`%${options.query}%`),
+          domains: Raw(
+            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            {
+              searchString,
+            },
+          ),
         },
       ]);
     }

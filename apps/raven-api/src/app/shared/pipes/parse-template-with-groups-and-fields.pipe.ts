@@ -37,6 +37,7 @@ export class ParseTemplateWithGroupsAndFieldsPipe
       // Selecting only id and name from relatedTemplates as it's circular reference
       .addSelect('relatedTemplates.id')
       .addSelect('relatedTemplates.name')
+      .leftJoinAndSelect('tabs.relatedFields', 'relatedFields')
       .where('templateEntity.id = :id', { id })
       .getOne();
 

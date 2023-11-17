@@ -10,6 +10,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { NgxResizeObserverService } from './resize-service';
+import { ResizedEvent } from './resized.event';
 
 // directive cloned from ngx-resize-observer
 @Directive({
@@ -19,9 +20,11 @@ import { NgxResizeObserverService } from './resize-service';
 export class OnResizeDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input() public resizeBoxModel = '';
 
-  @Output() public appOnResize = new EventEmitter<ResizeObserverEntry>();
+  @Output() public appOnResize = new EventEmitter<ResizedEvent>();
 
   private observing = false;
+
+  private oldRect: DOMRectReadOnly;
 
   public constructor(
     private readonly elementRef: ElementRef,
@@ -47,7 +50,14 @@ export class OnResizeDirective implements AfterViewInit, OnChanges, OnDestroy {
     if (!this.observing) {
       this.ngxResizeObserverService.observe(
         this.elementRef.nativeElement,
-        (resize) => this.appOnResize.emit(resize),
+        (resize) => {
+          const resizedEvent = new ResizedEvent(
+            resize.contentRect,
+            this.oldRect,
+          );
+          this.oldRect = resize.contentRect;
+          this.appOnResize.emit(resizedEvent);
+        },
         this.resizeBoxModel,
       );
       this.observing = true;

@@ -47,13 +47,7 @@
           headerClass="!font-bold"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <ui-tag
-              [label]="dataItem.dealLead.name"
-              [removable]="false"
-              class="block w-fit"
-              icon="fa-solid fa-circle-user "
-            >
-            </ui-tag>
+            <ui-tag uiUserTag [label]="dataItem.dealLead.name"> </ui-tag>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column
@@ -65,9 +59,8 @@
           <ng-template kendoGridCellTemplate let-dataItem>
             <div class="flex flex-wrap gap-x-6 gap-y-1">
               <ui-tag
-                icon="fa-solid fa-circle-user"
+                uiUserTag
                 *rxFor="let user of dataItem.dealTeam; trackBy: 'name'"
-                [removable]="false"
                 [label]="user.name"
               ></ui-tag>
             </div>
