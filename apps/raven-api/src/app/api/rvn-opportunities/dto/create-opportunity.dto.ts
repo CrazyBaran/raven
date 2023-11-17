@@ -29,8 +29,9 @@ export class CreateOpportunityDto {
   public readonly workflowTemplateId: string;
 
   @ApiProperty()
-  @IsOptional()
+  @IsDefined()
   @IsString()
+  @ValidateIf((o) => o.domain)
   public readonly name?: string;
 
   @ApiProperty()
