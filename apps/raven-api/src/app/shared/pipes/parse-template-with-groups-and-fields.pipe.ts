@@ -38,6 +38,7 @@ export class ParseTemplateWithGroupsAndFieldsPipe
       .addSelect('relatedTemplates.id')
       .addSelect('relatedTemplates.name')
       .leftJoinAndSelect('tabs.relatedFields', 'relatedFields')
+      .leftJoinAndSelect('tabs.pipelineStages', 'pipelineStages')
       .where('templateEntity.id = :id', { id })
       .getOne();
 
