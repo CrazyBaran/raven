@@ -16,6 +16,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { cloneDeep } from 'lodash';
 import { Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
@@ -684,17 +685,19 @@ export class NotesService {
     workflowNote: NoteEntity,
     relatedNotes: NoteEntity[],
   ): NoteWithRelatedNotesData {
+    delete workflowNote.noteFieldGroups;
     const mappedNote = this.noteEntityToNoteData(workflowNote);
     // we assume there is only one tab with given name and it won't change after being created from template
     for (const tab of workflowNote.template.tabs) {
       const foundTab = mappedNote.noteTabs.find(
         (nt) => nt.name === tab.name,
       ) as NoteTabsWithRelatedNotesData;
+      const relatedNotesCopy = cloneDeep(relatedNotes);
       foundTab.relatedNotesWithFields = this.getRelatedNotesWithFieldsForTab(
         tab,
-        relatedNotes,
+        relatedNotesCopy,
       );
-      foundTab.relatedNotes = this.getRelatedNotesForTab(tab, relatedNotes);
+      foundTab.relatedNotes = this.getRelatedNotesForTab(tab, relatedNotesCopy);
       foundTab.pipelineStages = tab.pipelineStages;
     }
     return mappedNote;
