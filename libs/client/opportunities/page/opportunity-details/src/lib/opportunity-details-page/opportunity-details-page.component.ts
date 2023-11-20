@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
-import { JsonPipe, NgIf } from '@angular/common';
+import { JsonPipe, NgIf, NgStyle } from '@angular/common';
+import { NotesActions } from '@app/client/notes/data-access';
 import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
+import { LoaderComponent } from '@app/client/shared/ui';
+import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { RxFor } from '@rx-angular/template/for';
@@ -23,6 +26,9 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     JsonPipe,
     NgIf,
     NoteDetailsComponent,
+    NgStyle,
+    LoaderComponent,
+    PageTemplateComponent,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
@@ -60,6 +66,7 @@ export class OpportunityDetailsPageComponent {
     this.store.dispatch(
       OrganisationsActions.getOrganisation({ id: organizationId }),
     );
+    this.store.dispatch(NotesActions.getOpportunityNotes({ opportunityId }));
   }
 
   public handleClosePreview(): void {

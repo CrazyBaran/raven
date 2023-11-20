@@ -2,13 +2,15 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 
 import { Injectable } from '@angular/core';
+import { selectQueryParam } from '@app/client/shared/util-router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import {
   DialogResult,
   DialogService,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
-import { exhaustMap, tap } from 'rxjs';
+import { exhaustMap, filter, tap } from 'rxjs';
 import { ShelfActions } from './actions/shelf.actions';
 import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
 
@@ -47,7 +49,7 @@ export class ShelfEffects {
           () =>
             this.dynamicDialogService.openDynamicDialog({
               width: 480,
-              minHeight: 600,
+              minHeight: 723,
               cssClass: 'raven-custom-dialog',
               template: {
                 name: 'opportunity dialog form',
@@ -64,45 +66,59 @@ export class ShelfEffects {
     { dispatch: false },
   );
 
-  // (close)="handleCloseWindow($event)"
-  //   title="Note"
-  //   themeColor="primary"
-  //     [width]="860"
-  //     [height]="800"
-  //   class="max-h-full"
+  private openEditOpportunityDetails$ = createEffect(
+    () => {
+      return this.store.select(selectQueryParam('opportunity-edit')).pipe(
+        filter((id) => !!id),
+        exhaustMap(
+          () =>
+            this.dynamicDialogService.openDynamicDialog({
+              width: 480,
+              minHeight: 723,
+              cssClass: 'raven-custom-dialog',
+              template: {
+                name: 'opportunity dialog edit form',
+                load: () =>
+                  import(
+                    '@app/client/opportunities/feature/update-dialog'
+                  ).then((m) => m.CreateOpportunityDialogModule),
+                showLoading: true,
+              },
+            }).result,
+        ),
+      );
+    },
+    { dispatch: false },
+  );
 
-  // private openNoteDetails$ = createEffect(
-  //   () => {
-  //     return this.actions$.pipe(
-  //       ofType(ShelfActions.openNoteDetails),
-  //       tap(async (a) =>
-  //         this.shelfService.openLazyWindow({
-  //           template: {
-  //             name: 'note details',
-  //             load: () =>
-  //               import('@app/client/notes/ui').then(
-  //                 (m) => m.NoteDetailDialogModule,
-  //               ),
-  //             showLoading: true,
-  //             componentData: {
-  //               noteId: a.noteId,
-  //             },
-  //           },
-  //           width: 860,
-  //           height: 800,
-  //           cssClass: 'max-h-full',
-  //           title: 'Note',
-  //           preventClose: (ev: unknown, widowRef): boolean =>
-  //             this._notepadShelfPreventHandler(ev, widowRef),
-  //         }),
-  //       ),
-  //     );
-  //   },
-  //   { dispatch: false },
-  // );
+  private openNoteDetails$ = createEffect(
+    () => {
+      return this.store.select(selectQueryParam('note-details')).pipe(
+        filter((id) => !!id),
+        tap(async (id) =>
+          this.shelfService.openLazyWindow({
+            template: {
+              name: 'note-details',
+              load: () =>
+                import('@app/client/notes/feature/note-details-dialog').then(
+                  (m) => m.NotepadDialogModule,
+                ),
+              showLoading: true,
+            },
+            width: 860,
+            height: 800,
+            cssClass: 'max-h-full',
+            hostCssClass: 'global-window-container',
+          }),
+        ),
+      );
+    },
+    { dispatch: false },
+  );
 
   public constructor(
     private actions$: Actions,
+    private store: Store,
     private shelfService: RavenShelfService,
     private dialogService: DialogService,
     private dynamicDialogService: DynamicDialogService,

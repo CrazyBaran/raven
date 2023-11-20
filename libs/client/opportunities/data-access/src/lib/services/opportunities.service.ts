@@ -1,16 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-//todo: temporary usage of organisations service
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { OrganisationsService } from '@app/client/organisations/data-access';
 import { GenericResponse } from '@app/rvns-api';
 import { OpportunityData } from '@app/rvns-opportunities';
-import { Observable, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export type OpportunityChanges = {
   pipelineStageId?: string;
   tagId?: string;
-};
+} & Record<string, unknown>;
 
 export type OpportunitiesResponse = {
   items: OpportunityData[];
@@ -31,10 +28,7 @@ export type CreateOpportunity = any & {
 export class OpportunitiesService {
   private url = '/api/opportunities';
 
-  public constructor(
-    private readonly http: HttpClient,
-    private readonly organisationService: OrganisationsService,
-  ) {}
+  public constructor(private readonly http: HttpClient) {}
 
   public getOpportunities(
     take: number,
@@ -68,21 +62,5 @@ export class OpportunitiesService {
       this.url,
       createOpportunity,
     );
-  }
-
-  public createOpportunityDraft(
-    createOpportunity: CreateOpportunity,
-  ): Observable<GenericResponse<OpportunityData>> {
-    return this.organisationService
-      .getOrganisation(createOpportunity.organisationId)
-      .pipe(
-        switchMap((organisationResponse) => {
-          return this.createOpportunity({
-            ...createOpportunity,
-            domain: organisationResponse?.data?.domains?.[0],
-            name: organisationResponse?.data?.name,
-          });
-        }),
-      );
   }
 }

@@ -5,6 +5,7 @@
   [plugins]="myPlugins"
   [placeholder]="placeholder!"
   [value]="value"
+  (blur)="onBlur()"
 >
   <kendo-toolbar
     [class.!hidden]="!active()"

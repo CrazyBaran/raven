@@ -29,6 +29,31 @@ export class OpportunitiesEffects {
     );
   });
 
+  private updateOpportunity$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OpportunitiesActions.updateOpportunity),
+      concatMap(({ id, changes }) =>
+        this.opportunitiesService.patchOpportunity(id, changes).pipe(
+          switchMap(({ data }) => [
+            OpportunitiesActions.updateOpportunitySuccess({
+              data: data!,
+            }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Opportunity changed.',
+            }),
+          ]),
+          catchError((error) =>
+            of(
+              OpportunitiesActions.updateOpportunityFailure({
+                error,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
   private updateOpportunityPipeline$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.changeOpportunityPipelineStage),
@@ -106,7 +131,7 @@ export class OpportunitiesEffects {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.createOpportunity),
       concatMap(({ payload }) =>
-        this.opportunitiesService.createOpportunityDraft(payload).pipe(
+        this.opportunitiesService.createOpportunity(payload).pipe(
           switchMap(({ data }) => [
             OpportunitiesActions.createOpportunitySuccess({ data: data! }),
             NotificationsActions.showSuccessNotification({

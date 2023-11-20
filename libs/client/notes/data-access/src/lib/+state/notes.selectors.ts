@@ -2,7 +2,7 @@ import { authQuery } from '@app/client/core/auth';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { NotesState, notesAdapter, notesFeatureKey } from './notes.reducer';
 
-export const { selectAll } = notesAdapter.getSelectors();
+export const { selectAll, selectEntities } = notesAdapter.getSelectors();
 
 export const selectNotesState =
   createFeatureSelector<NotesState>(notesFeatureKey);
@@ -11,6 +11,12 @@ export const selectAllNotes = createSelector(
   selectNotesState,
   (state: NotesState) => selectAll(state),
 );
+
+export const selectNotesDictionary = createSelector(
+  selectNotesState,
+  (state: NotesState) => selectEntities(state),
+);
+
 export const selectIsLoading = createSelector(
   selectNotesState,
   (state: NotesState) => state.isLoading,
@@ -52,6 +58,21 @@ export const selectAllNotesTableRows = createSelector(
     })),
 );
 
+const selectOpportunityNotesState = createSelector(
+  selectNotesState,
+  (state: NotesState) => state.opportunityNotes,
+);
+
+const selectOpportunityNotes = createSelector(
+  selectOpportunityNotesState,
+  (state) => state.data,
+);
+
+const selectOpportunityNotesIsLoading = createSelector(
+  selectOpportunityNotesState,
+  (state) => state.isLoading,
+);
+
 export const notesQuery = {
   selectAllNotes,
   selectIsLoading,
@@ -60,4 +81,7 @@ export const notesQuery = {
   selectNoteDetailsIsLoading,
   selectNoteUpdateIsLoading,
   selectAllNotesTableRows,
+  selectOpportunityNotes,
+  selectOpportunityNotesIsLoading,
+  selectNotesDictionary,
 };

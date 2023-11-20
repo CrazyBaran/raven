@@ -13,7 +13,7 @@ import {
   NotesTableComponent,
   QuickFiltersComponent,
 } from '@app/client/notes/ui';
-import { ShelfModule, ShelfStoreFacade } from '@app/client/shared/shelf';
+import { ShelfStoreFacade } from '@app/client/shared/shelf';
 import { HeaderComponent, LoaderComponent } from '@app/client/shared/ui';
 import { Store } from '@ngrx/store';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
@@ -30,11 +30,11 @@ import { Subject, takeUntil } from 'rxjs';
     NotesTableComponent,
     FilterMenuModule,
     QuickFiltersComponent,
-    ShelfModule,
     DialogModule,
     WindowModule,
     NoteDetailsComponent,
   ],
+  providers: [ShelfStoreFacade],
   templateUrl: './rvnc-notes-feature-notes-list.component.html',
   styleUrls: ['./rvnc-notes-feature-notes-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

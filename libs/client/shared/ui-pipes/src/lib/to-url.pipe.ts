@@ -1,21 +1,40 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 @Pipe({
   name: 'toUrl',
   standalone: true,
 })
 export class ToUrlPipe implements PipeTransform {
-  public transform(routerLinkDirective: RouterLink | string[]): string {
+  public transform(
+    routerLinkDirective: // | RouterLink
+    | string[]
+      | {
+          routeParams?: string[];
+          queryParams?: Record<string, string>;
+          currentUrl?: boolean;
+        },
+  ): string {
     if (Array.isArray(routerLinkDirective)) {
       return `${window.location.origin + '/' + routerLinkDirective.join('/')}`;
     }
 
-    if (!routerLinkDirective.urlTree)
-      throw new Error('RouterLinkDirective does not have a urlTree');
+    if (routerLinkDirective.currentUrl) return window.location.href;
 
-    return `${
-      window.location.origin + '/' + routerLinkDirective.urlTree.toString()
-    }`;
+    const params = new URLSearchParams();
+    for (const key in routerLinkDirective.queryParams) {
+      params.set(key, routerLinkDirective.queryParams[key]);
+    }
+
+    if (routerLinkDirective.routeParams) {
+      return `${
+        window.location.origin +
+        '/' +
+        routerLinkDirective.routeParams.join('/') +
+        '?' +
+        params.toString()
+      }`;
+    }
+
+    return `${window.location.origin + '?' + params.toString()}`;
   }
 }

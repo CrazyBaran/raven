@@ -10,6 +10,14 @@ import {
   OpportunitiesFacade,
   opportunitiesFeature,
 } from '@app/client/opportunities/data-access';
+import {
+  OrganisationsEffects,
+  OrganisationsFeature,
+} from '@app/client/organisations/state';
+import {
+  PipelinesEffects,
+  pipelinesReducer,
+} from '@app/client/pipelines/state';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
@@ -18,6 +26,10 @@ const opportunitiesProviders: Array<Provider | EnvironmentProviders> = [
   importProvidersFrom(
     StoreModule.forFeature(opportunitiesFeature),
     EffectsModule.forFeature([OpportunitiesEffects]),
+    StoreModule.forFeature(OrganisationsFeature),
+    EffectsModule.forFeature([OrganisationsEffects]),
+    StoreModule.forFeature('pipelines', pipelinesReducer),
+    EffectsModule.forFeature([PipelinesEffects]),
   ),
 ];
 

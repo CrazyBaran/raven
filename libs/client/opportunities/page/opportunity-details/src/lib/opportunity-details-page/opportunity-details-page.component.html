@@ -1,79 +1,76 @@
-<div class="bg-grey-100 flex h-full w-full flex-col bg-opacity-40">
-  <header class="bg-primary-400 bg-opacity-4 flex justify-between px-4 py-3">
-    <div class="flex items-center gap-2">
-      <kendo-button
-        fillMode="flat"
-        iconClass="fa-sharp fa-regular fa-cart-shopping"
-        themeColor="primary"
-        >All Companies</kendo-button
-      >
-
-      <i
-        class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
-      ></i>
-      <kendo-button fillMode="flat" themeColor="primary">{{
-        vm().currentOrganisation?.name
-      }}</kendo-button>
-      <i
-        class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
-      ></i>
-      <kendo-button fillMode="flat" themeColor="primary">Series B</kendo-button>
-    </div>
-    <div class="flex gap-1">
-      <div
-        *rxFor="let indicator of vm().lines; trackBy: 'label'"
-        [queryParams]="{ line: indicator.label }"
-        [routerLink]="[]"
-        queryParamsHandling="merge"
-      >
-        <app-status-indicator
-          [state]="indicator.state"
-          [theme]="indicator.theme"
-        >
-          {{ indicator.label }}
-        </app-status-indicator>
-      </div>
-    </div>
-  </header>
-  <div class="flex gap-6 px-8 py-2">
-    <div
-      *rxFor="let detail of vm().details; trackBy: 'label'"
-      class="grow px-2 py-3"
+<app-page-template>
+  <div class="flex items-center gap-2" page-header-title>
+    <kendo-button
+      fillMode="flat"
+      iconClass="fa-sharp fa-regular fa-cart-shopping"
+      themeColor="primary"
+      >All Companies</kendo-button
     >
-      <h1 class="mb-2 text-lg">{{ detail.label }}</h1>
-      <p class="text-sm">{{ detail.subLabel }}</p>
-    </div>
-  </div>
-  <div class="grid grow grid-cols-[auto_1fr]">
-    <div class="h-100 flex flex-col bg-white">
-      <kendo-buttongroup class="!flex !flex-col" selection="single">
-        <kendo-button
-          *rxFor="let navigation of vm()?.navigations; trackBy: 'label'"
-          [queryParams]="navigation.queryParams"
-          [routerLink]="navigation.link"
-          [selected]="navigation.active"
-          [toggleable]="true"
-          class="!justify-start"
-          fillMode="flat"
-          queryParamsHandling="merge"
-          size="large"
-          themeColor="primary"
-        >
-          {{ navigation.label }}
-        </kendo-button>
-      </kendo-buttongroup>
-    </div>
-    <div class="border-grey-300 border p-3">
-      <div class="h-full w-full">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
-</div>
 
-<app-note-details
-  class="absolute"
-  *ngIf="vm().noteId"
-  [noteId]="vm().noteId!"
-  (closeWindow)="handleClosePreview()"
-/>
+    <i
+      class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+    ></i>
+    <kendo-button fillMode="flat" themeColor="primary">{{
+      vm().currentOrganisation?.name
+    }}</kendo-button>
+    <i
+      class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+    ></i>
+    <kendo-button fillMode="flat" themeColor="primary"
+      >Opportunity</kendo-button
+    >
+  </div>
+  <div class="flex gap-1" page-header-actions>
+    <div *rxFor="let indicator of vm().lines; trackBy: 'label'">
+      <app-status-indicator [state]="indicator.state" [theme]="indicator.theme">
+        {{ indicator.label }}
+      </app-status-indicator>
+    </div>
+  </div>
+  <div
+    page-content
+    class="opportunity-details | bg-base-background flex h-full flex-col"
+  >
+    <ng-container *ngIf="vm().opportunityDetails; else loader">
+      <div class="flex gap-6 px-8 py-2">
+        <div
+          *rxFor="let detail of vm().details; trackBy: 'label'"
+          class="grow px-2 py-3"
+        >
+          <h1 class="mb-2 text-lg">{{ detail.label }}</h1>
+          <p class="text-sm">{{ detail.subLabel }}</p>
+        </div>
+      </div>
+      <div class="grid flex-1 grid-cols-[auto_1fr] overflow-hidden">
+        <div class="h-100 flex flex-col bg-white">
+          <kendo-buttongroup class="!flex !flex-col" selection="single">
+            <kendo-button
+              *rxFor="let navigation of vm()?.navigations; trackBy: 'label'"
+              [ngStyle]="$any(navigation).style ?? {}"
+              [queryParams]="navigation.queryParams"
+              [routerLink]="navigation.link"
+              [selected]="navigation.active"
+              [toggleable]="true"
+              class="!justify-start"
+              fillMode="flat"
+              size="large"
+              themeColor="primary"
+            >
+              {{ navigation.label }}
+            </kendo-button>
+          </kendo-buttongroup>
+        </div>
+        <div class="border-grey-300 overflow-hidden border p-3">
+          <div class="h-full w-full">
+            <ui-loader *ngIf="vm().isLoadingNotes" />
+            <router-outlet *ngIf="!vm().isLoadingNotes" />
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</app-page-template>
+
+<ng-template #loader>
+  <ui-loader />
+</ng-template>

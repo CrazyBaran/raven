@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { authQuery } from '@app/client/core/auth';
 import { NoteStoreFacade, notesQuery } from '@app/client/notes/data-access';
+import { ShelfStoreFacade } from '@app/client/shared/shelf';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -21,6 +22,7 @@ describe('RvncNotesFeatureNotesListComponent', () => {
       ],
       providers: [
         NoteStoreFacade,
+        ShelfStoreFacade,
         provideMockStore({
           selectors: [
             {

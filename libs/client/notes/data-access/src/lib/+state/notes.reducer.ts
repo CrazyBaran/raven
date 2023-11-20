@@ -1,4 +1,8 @@
-import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
+import {
+  NoteData,
+  NoteWithRelatedNotesData,
+  NoteWithRelationsData,
+} from '@app/rvns-notes/data-access';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { NotesActions } from './notes.actions';
@@ -26,6 +30,10 @@ export interface NotesState extends EntityState<NoteData> {
     isPending: boolean;
     data: NoteWithRelationsData | null;
   };
+  opportunityNotes: {
+    data: (NoteWithRelatedNotesData | NoteWithRelationsData)[];
+    isLoading: boolean;
+  };
 }
 
 export const notesAdapter: EntityAdapter<NoteData> =
@@ -51,6 +59,10 @@ export const initialState: NotesState = notesAdapter.getInitialState({
   delete: {
     isPending: false,
     error: null,
+  },
+  opportunityNotes: {
+    data: [],
+    isLoading: false,
   },
 });
 
@@ -194,6 +206,28 @@ export const notesReducer = createReducer(
       ...state.delete,
       isPending: false,
       error,
+    },
+  })),
+
+  on(NotesActions.getOpportunityNotes, (state) => ({
+    ...state,
+    opportunityNotes: {
+      ...state.opportunityNotes,
+      isLoading: true,
+    },
+  })),
+  on(NotesActions.getOpportunityNotesSuccess, (state, action) => ({
+    ...state,
+    opportunityNotes: {
+      data: action.data,
+      isLoading: false,
+    },
+  })),
+  on(NotesActions.getOpportunityNotesFailure, (state) => ({
+    ...state,
+    opportunityNotes: {
+      ...state.opportunityNotes,
+      isLoading: false,
     },
   })),
 );

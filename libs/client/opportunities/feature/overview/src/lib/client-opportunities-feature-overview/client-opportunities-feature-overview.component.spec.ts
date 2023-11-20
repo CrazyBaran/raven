@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
+import { from } from 'rxjs';
 import {
   ClientOpportunitiesFeatureOverviewComponent,
-  SelectOpportunityOverviewViewModel,
+  selectOpportunityOverviewViewModel,
 } from './client-opportunities-feature-overview.component';
 
 describe('ClientOpportunitiesFeatureOverviewComponent', () => {
@@ -13,10 +15,16 @@ describe('ClientOpportunitiesFeatureOverviewComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ClientOpportunitiesFeatureOverviewComponent],
       providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
         provideMockStore({
           selectors: [
             {
-              selector: SelectOpportunityOverviewViewModel,
+              selector: selectOpportunityOverviewViewModel,
               value: {},
             },
           ],

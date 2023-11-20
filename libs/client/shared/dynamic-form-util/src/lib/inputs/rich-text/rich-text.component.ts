@@ -62,6 +62,13 @@ export class RichTextComponent
     | boolean
     | undefined;
 
+  @Input() public proseSettings = inject(
+    DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS,
+    {
+      optional: true,
+    },
+  );
+
   @Output() public obBlur = takeAfterViewInit(() => this.editor).pipe(
     switchMap((editor) => editor.onBlur),
   );
@@ -82,9 +89,6 @@ export class RichTextComponent
 
   public active = toSignal(this.active$);
 
-  public proseSettings = inject(DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS, {
-    optional: true,
-  });
   public mySchema = this.proseSettings?.proseMirrorSettings?.schema ?? schema;
 
   public destroyRef$ = inject(DestroyRef);
@@ -107,5 +111,9 @@ export class RichTextComponent
     //   this.editor.writeValue(value);
     // });
     this.value = value;
+  }
+
+  public onBlur(): void {
+    this.onTouched?.();
   }
 }

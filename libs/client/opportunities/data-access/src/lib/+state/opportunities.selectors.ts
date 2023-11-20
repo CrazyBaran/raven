@@ -1,5 +1,7 @@
+import { getDealLeads, getDealTeam } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import * as _ from 'lodash';
 import {
   OpportunitiesState,
   opportunitiesAdapter,
@@ -33,117 +35,26 @@ export const selectOpportunitiesGroupedByOrganisation = createSelector(
     _.groupBy(opportunities ?? [], ({ organisation }) => organisation.id),
 );
 
-import * as _ from 'lodash';
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectOpportunityById = (id: string) =>
   createSelector(selectOpportunitiesDictionary, (dictionary) => dictionary[id]);
-
 export const selectRouteOpportunityDetails = createSelector(
   selectOpportunitiesDictionary,
   routerQuery.selectCurrentOpportunityId,
   (opportunities, opportunityId) => {
-    const opportunity = opportunities?.[opportunityId ?? ''] || {};
-    return {
-      ...opportunity,
+    const opportunity = opportunities?.[opportunityId ?? ''];
 
-      team: [
-        {
-          id: 'key_management',
-          title: 'Key Management',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-        {
-          id: 'positives',
-          title: 'Positives',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-        {
-          id: 'risks',
-          title: 'Risks',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-      ],
-
-      marketing: [
-        {
-          id: 'description',
-          title: 'Description',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-        {
-          id: 'tam',
-          title: 'TAM / SAM Sizing',
-          value: '',
-        },
-        {
-          id: 'positives',
-          title: 'Positives',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-      ],
-      product: [
-        {
-          id: 'description',
-          title: 'Description',
-          value: '',
-        },
-        {
-          id: 'positive',
-          title: 'Positives',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-        {
-          id: 'risks',
-          title: 'Risks',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-      ],
-      business: [
-        {
-          id: 'business',
-          title: 'Business Model Description',
-          value: '',
-        },
-        {
-          id: 'gtm',
-          title: 'GTM Description',
-          value: '',
-        },
-        {
-          id: 'Positives',
-          title: 'positives',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-      ],
-      competitive: [
-        {
-          id: 'key_competitors',
-          title: 'Key Competitors',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-        {
-          id: 'positives',
-          title: 'Positives',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-        {
-          id: 'risks',
-          title: 'Risks',
-          value:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl. Sed vitae nulla euismod, aliquam nisl quis, aliquet nisl.',
-        },
-      ],
-    };
+    return (
+      (opportunity && {
+        ...opportunity,
+        dealLeads: getDealLeads(opportunity?.fields ?? []),
+        dealTeam: getDealTeam(opportunity?.fields ?? []),
+        ndaTerminationDate: opportunity?.ndaTerminationDate
+          ? new Date(opportunity?.ndaTerminationDate)
+          : null,
+      }) ??
+      null
+    );
   },
 );
 

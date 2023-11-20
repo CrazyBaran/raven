@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
+import { RouterLink } from '@angular/router';
+import { notesQuery } from '@app/client/notes/data-access';
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
+import { OrganisationsFeature } from '@app/client/organisations/state';
 import { TagComponent, UserTagDirective } from '@app/client/shared/ui';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { Store, createSelector } from '@ngrx/store';
@@ -9,77 +12,101 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { TileLayoutModule } from '@progress/kendo-angular-layout';
 import { RxFor } from '@rx-angular/template/for';
+import * as _ from 'lodash';
 
-export const SelectOpportunityOverviewViewModel = createSelector(
+export const selectNoteFields = createSelector(
+  notesQuery.selectOpportunityNotes,
+  (notes) =>
+    _.chain(notes[0]?.noteTabs ?? [])
+
+      .map((tab) =>
+        tab.noteFieldGroups[0].noteFields.map((field) => ({
+          id: field.id,
+          title: field.name,
+          value: field.value,
+          tabId: tab.id,
+          tabName: tab.name,
+        })),
+      )
+      .flatMap()
+      .value(),
+);
+
+export const selectOpportunityOverviewViewModel = createSelector(
   getRouterSelectors().selectQueryParams,
   opportunitiesQuery.selectRouteOpportunityDetails,
-  (params, opportunity) => {
+  OrganisationsFeature.selectCurrentOrganisation,
+  selectNoteFields,
+  (params, opportunity, organisation, noteFields) => {
     return {
       details: [
         {
-          label: 'Curvestone',
-          subLabel: 'Curvestone.io',
+          label: organisation?.name,
+          subLabel: organisation?.domains[0],
         },
         {
-          label: 'Series B',
+          label: opportunity?.tag?.name,
           subLabel: 'Opportunity',
         },
         {
-          label: '$50m',
+          label: opportunity?.roundSize,
           subLabel: 'Round Size',
         },
         {
-          label: '$1bn',
+          label: opportunity?.valuation,
           subLabel: 'Valuation',
         },
         {
-          label: '$20m',
+          label: opportunity?.proposedInvestment,
           subLabel: 'Proposed Investment',
         },
         {
-          label: 'Lead',
+          label: opportunity?.positioning
+            ? _.startCase(_.toLower(opportunity.positioning))
+            : null,
           subLabel: 'Positioning',
         },
         {
-          label: 'Q2, 2024',
+          label: opportunity?.timing,
           subLabel: 'Timing',
         },
-      ],
+        {
+          label: opportunity?.underNda
+            ? _.startCase(_.toLower(opportunity.positioning))
+            : null,
+          subLabel: 'Under NDA',
+        },
+        {
+          label:
+            opportunity?.ndaTerminationDate &&
+            _.isDate(new Date(opportunity.ndaTerminationDate))
+              ? new Date(opportunity.ndaTerminationDate).toLocaleDateString(
+                  'en-GB',
+                )
+              : null,
+          subLabel: 'NDA Termination Date',
+        },
+      ].filter(({ label }) => !!label),
+      hasTeam:
+        !!opportunity?.dealTeam?.length || !!opportunity?.dealLeads?.length,
       team: [
         {
           dealLead: {
-            name: 'John Doe',
+            name: opportunity?.dealLeads[0],
           },
-          dealTeam: [
-            {
-              name: 'John Doe',
-            },
-            {
-              name: 'Jack Ma',
-            },
-            {
-              name: 'Mark Zuckerberg',
-            },
-          ],
+          dealTeam: opportunity?.dealTeam.map((name) => ({
+            name,
+          })),
         },
       ],
-      missingDetails: [
-        {
-          tab: 'Team',
-          field: 'Risks',
+      id: opportunity?.id,
+      missingDetails: noteFields
+        .filter(({ value }) => !value?.trim())
+        .map(({ tabName, title }) => ({
+          tab: tabName,
+          field: title,
           action: 'Please fill field to advance',
-        },
-        {
-          tab: 'Product & Technology',
-          field: 'Positives',
-          action: 'Please fill field to advance',
-        },
-        {
-          tab: 'Financials',
-          field: 'Key Financial to Save',
-          action: 'Please fill this table in entirety to advance',
-        },
-      ],
+        })),
     };
   },
 );
@@ -95,6 +122,7 @@ export const SelectOpportunityOverviewViewModel = createSelector(
     GridModule,
     TagComponent,
     UserTagDirective,
+    RouterLink,
   ],
   templateUrl: './client-opportunities-feature-overview.component.html',
   styleUrls: ['./client-opportunities-feature-overview.component.scss'],
@@ -103,5 +131,5 @@ export const SelectOpportunityOverviewViewModel = createSelector(
 export class ClientOpportunitiesFeatureOverviewComponent {
   protected store = inject(Store);
 
-  protected vm = this.store.selectSignal(SelectOpportunityOverviewViewModel);
+  protected vm = this.store.selectSignal(selectOpportunityOverviewViewModel);
 }

@@ -1,16 +1,25 @@
-import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
+import {
+  NoteData,
+  NoteWithRelatedNotesData,
+  NoteWithRelationsData,
+} from '@app/rvns-notes/data-access';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { CreateNote, PatchNote } from '../domain/createNote';
 
 export const NotesActions = createActionGroup({
   source: 'Notes/API',
   events: {
-    'Get Notes': props<{ domain?: string; tagIds?: string }>(),
+    'Get Notes': props<{
+      domain?: string;
+      tagIds?: string;
+      opportunityId?: string;
+    }>(),
     'Get Notes Success': props<{ data: NoteData[] }>(),
     'Get Notes Failure': props<{ error: string }>(),
 
-    'Clear Notes': emptyProps(),
+    'Get Current Note Details': emptyProps(),
 
+    'Clear Notes': emptyProps(),
     'Get Note Details': props<{ id: string }>(),
     'Get Note Details Success': props<{ data: NoteWithRelationsData }>(),
     'Get Note Details Failure': props<{ error: string }>(),
@@ -29,5 +38,11 @@ export const NotesActions = createActionGroup({
     'Delete Note': props<{ noteId: string }>(),
     'Delete Note Success': props<{ noteId: string }>(),
     'Delete Note Failure': props<{ error: string }>(),
+
+    'Get Opportunity Notes': props<{ opportunityId: string }>(),
+    'Get Opportunity Notes Success': props<{
+      data: (NoteWithRelatedNotesData | NoteWithRelationsData)[];
+    }>(),
+    'Get Opportunity Notes Failure': props<{ error: string }>(),
   },
 });

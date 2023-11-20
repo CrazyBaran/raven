@@ -60,7 +60,7 @@ export class NotesTableComponent {
   public sort: SortDescriptor[] = [
     {
       field: 'updatedAt',
-      dir: 'asc',
+      dir: 'desc',
     },
   ];
 
