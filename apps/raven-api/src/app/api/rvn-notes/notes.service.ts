@@ -187,17 +187,26 @@ export class NotesService {
       ],
     });
 
-    const opportunityNoteTemplate = await this.templateRepository.findOne({
-      where: {
-        id: opportunityNote.templateId,
-      },
-      relations: [
-        'tabs',
-        'tabs.relatedTemplates',
-        'tabs.pipelineStages',
-        'tabs.relatedFields',
-      ],
-    });
+    const opportunityNoteTemplate = await this.templateRepository
+      .createQueryBuilder('template')
+      .leftJoinAndSelect('template.tabs', 'tab')
+      .leftJoinAndSelect('tab.relatedTemplates', 'relatedTemplate')
+      .leftJoinAndSelect('tab.pipelineStages', 'pipelineStage')
+      .leftJoinAndSelect('tab.relatedFields', 'relatedFields')
+      .select([
+        'template.id',
+        'template.name',
+        'tab.id',
+        'tab.name',
+        'pipelineStage.id',
+        'pipelineStage.displayName',
+        'relatedTemplate.id',
+        'relatedFields.id',
+      ])
+      .where('template.id = :templateId', {
+        templateId: opportunityNote.templateId,
+      })
+      .getOne();
 
     // we resolve these relations manually because typeorm lacks performance in doing so...
     opportunityNote.template = opportunityNoteTemplate;
