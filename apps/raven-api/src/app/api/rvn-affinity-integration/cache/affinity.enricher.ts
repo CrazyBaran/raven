@@ -148,15 +148,13 @@ export class AffinityEnricher {
     organization: OrganizationStageDto,
   ): OpportunityDataWithoutOrganisation {
     return {
-      id: opportunity.id,
+      ...opportunity,
       stage: {
         id: opportunity.pipelineStageId,
         displayName: undefined,
         order: undefined,
         mappedFrom: undefined,
       },
-      createdAt: opportunity.createdAt,
-      tag: opportunity.tag,
       fields:
         organization?.fields.map((field) => {
           return {
