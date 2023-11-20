@@ -65,12 +65,7 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
         protectedResourceMap: new Map<
           string,
           Array<string | ProtectedResourceScopes> | null
-        >([
-          [
-            `${environment.apiUrl}/*`,
-            ['https://raven.test.mubadalacapital.ae/api'],
-          ],
-        ]),
+        >([[`${environment.apiUrl}/*`, [environment.adScope]]]),
       },
     ),
     StoreModule.forRoot({

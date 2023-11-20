@@ -10,6 +10,7 @@ export const environment = {
     'https://login.microsoftonline.com/9e89d976-bede-4fef-88b6-5d6b2aea2e02',
   adRedirectUri: 'http://localhost:4200',
   adPostLogoutRedirectUri: 'http://localhost:4200/login',
+  adScope: 'https://raven.test.mubadalacapital.ae/api',
 };
 /*
  * For easier debugging in development mode, you can import the following file

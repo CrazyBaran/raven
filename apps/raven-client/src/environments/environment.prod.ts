@@ -6,4 +6,5 @@ export const environment = {
     'https://login.microsoftonline.com/c22477b0-4838-4110-8b5c-72e85395fab5',
   adRedirectUri: 'https://raven-staging.mubadalacapital.ae',
   adPostLogoutRedirectUri: 'https://raven-staging.mubadalacapital.ae/login',
+  adScope: 'https://raven-staging.mubadalacapital.ae/api',
 };
