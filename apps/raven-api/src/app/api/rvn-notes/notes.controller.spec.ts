@@ -6,6 +6,7 @@ import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organizati
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesController } from './notes.controller';
 import { NotesService } from './notes.service';
@@ -32,6 +33,10 @@ describe('NotesController', () => {
         },
         {
           provide: getRepositoryToken(TagEntity),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(TemplateEntity),
           useValue: {},
         },
       ],
