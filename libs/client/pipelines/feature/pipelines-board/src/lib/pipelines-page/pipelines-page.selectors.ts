@@ -44,7 +44,7 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
       queryParamName: 'stage',
       data: [],
       defaultItem: {
-        name: 'All stages',
+        name: 'Funding Round',
         id: null,
       },
       value: null,
@@ -55,16 +55,6 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
       data: [],
       defaultItem: {
         name: 'Deal Lead',
-        id: null,
-      },
-      value: null,
-      loading: false,
-    },
-    {
-      queryParamName: 'geography',
-      data: [],
-      defaultItem: {
-        name: 'Geography',
         id: null,
       },
       value: null,
