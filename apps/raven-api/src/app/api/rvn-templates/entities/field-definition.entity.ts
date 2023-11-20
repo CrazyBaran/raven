@@ -59,7 +59,7 @@ export class FieldDefinitionEntity implements AuditableEntity {
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
-    this.groupId = this.groupId.toLowerCase();
-    this.createdById = this.createdById.toLowerCase();
+    this.groupId = this.groupId?.toLowerCase();
+    this.createdById = this.createdById?.toLowerCase();
   }
 }

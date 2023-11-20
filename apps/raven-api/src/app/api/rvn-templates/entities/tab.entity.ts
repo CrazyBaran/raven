@@ -102,7 +102,7 @@ export class TabEntity implements AuditableEntity {
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
-    this.templateId = this.templateId.toLowerCase();
-    this.createdById = this.createdById.toLowerCase();
+    this.templateId = this.templateId?.toLowerCase();
+    this.createdById = this.createdById?.toLowerCase();
   }
 }
