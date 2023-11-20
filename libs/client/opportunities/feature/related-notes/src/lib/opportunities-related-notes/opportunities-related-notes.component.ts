@@ -117,7 +117,7 @@ export const selectNoteFields = createSelector(
     _.chain(notes[0]?.noteTabs ?? [])
       .keyBy((x) => x.id)
       .mapValues((x) =>
-        x.noteFieldGroups[0].noteFields.map((x) => ({
+        x.noteFieldGroups[0].noteFields.map((x: any) => ({
           id: x.id,
           title: x.name,
           value: x.value,
@@ -241,7 +241,7 @@ export class OpportunitiesRelatedNotesComponent {
                 fields: _.chain(value as Record<string, unknown>)
                   .map((value, id) => ({ id, value: value ?? '' }))
                   .value(),
-                tagIds: this.vm().opportunityNote.tags.map((x) => x.id),
+                tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
               },
             }),
           );

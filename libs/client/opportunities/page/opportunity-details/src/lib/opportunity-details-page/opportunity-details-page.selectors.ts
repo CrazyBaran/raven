@@ -43,10 +43,11 @@ export const selectDynamicOpportunityTabs = createSelector(
     _.chain(opportunityNotes)
       .map(
         ({ noteTabs }) =>
-          noteTabs?.map(({ id, name }) => ({
-            label: name,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          noteTabs?.map((x: any) => ({
+            label: x.name,
             link: 'related-notes',
-            queryParams: { tab: id },
+            queryParams: { tab: x.id },
           })) ?? [],
       )
       .flatMap()

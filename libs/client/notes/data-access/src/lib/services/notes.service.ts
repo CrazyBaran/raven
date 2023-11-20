@@ -5,7 +5,6 @@ import { GenericResponse } from '@app/rvns-api';
 import {
   NoteAttachmentData,
   NoteData,
-  NoteWithRelatedNotesData,
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { Observable, map, switchMap } from 'rxjs';
@@ -90,13 +89,13 @@ export class NotesService {
     );
   }
 
-  public getOpportunityNotes(
-    opportunityId: string,
-  ): Observable<
-    GenericResponse<(NoteWithRelatedNotesData | NoteWithRelationsData)[]>
+  public getOpportunityNotes(opportunityId: string): Observable<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    GenericResponse<(any | NoteWithRelationsData)[]>
   > {
     return this.http.get<
-      GenericResponse<(NoteWithRelatedNotesData | NoteWithRelationsData)[]>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      GenericResponse<(any | NoteWithRelationsData)[]>
     >('/api/notes', {
       params: {
         opportunityId,

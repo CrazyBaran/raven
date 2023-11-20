@@ -1,8 +1,4 @@
-import {
-  NoteData,
-  NoteWithRelatedNotesData,
-  NoteWithRelationsData,
-} from '@app/rvns-notes/data-access';
+import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { CreateNote, PatchNote } from '../domain/createNote';
 
@@ -41,7 +37,8 @@ export const NotesActions = createActionGroup({
 
     'Get Opportunity Notes': props<{ opportunityId: string }>(),
     'Get Opportunity Notes Success': props<{
-      data: (NoteWithRelatedNotesData | NoteWithRelationsData)[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: (any | NoteWithRelationsData)[];
     }>(),
     'Get Opportunity Notes Failure': props<{ error: string }>(),
   },

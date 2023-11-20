@@ -20,7 +20,8 @@ export const selectNoteFields = createSelector(
     _.chain(notes[0]?.noteTabs ?? [])
 
       .map((tab) =>
-        tab.noteFieldGroups[0].noteFields.map((field) => ({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        tab.noteFieldGroups[0].noteFields.map((field: any) => ({
           id: field.id,
           title: field.name,
           value: field.value,

@@ -147,7 +147,11 @@ export class UpdateDialogComponent extends DialogContentBase implements OnInit {
     this.opporunityDetails$.subscribe((data) => {
       // fix pathValue typing
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.opportunityForm.patchValue(data as any);
+      this.opportunityForm.patchValue({
+        ...data,
+        opportunityTagId: data?.tag?.id,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
     });
   }
 

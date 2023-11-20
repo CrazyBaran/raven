@@ -1,8 +1,4 @@
-import {
-  NoteData,
-  NoteWithRelatedNotesData,
-  NoteWithRelationsData,
-} from '@app/rvns-notes/data-access';
+import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { NotesActions } from './notes.actions';
@@ -31,7 +27,8 @@ export interface NotesState extends EntityState<NoteData> {
     data: NoteWithRelationsData | null;
   };
   opportunityNotes: {
-    data: (NoteWithRelatedNotesData | NoteWithRelationsData)[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: (any | NoteWithRelationsData)[];
     isLoading: boolean;
   };
 }
