@@ -2,8 +2,9 @@ import { inject, Injectable } from '@angular/core';
 //TODO: refactor
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { GenericResponse } from '@app/rvns-api';
+import { Store } from '@ngrx/store';
 import { last, mergeMap, Observable, tap } from 'rxjs';
-import { ImagePathDictionaryService } from './image-path-dictionary.service';
+import { StorageActions } from './+state/storage.actions';
 import { StoragePostResponse } from './models/storage-post-response.interface';
 import { StorageService } from './storage.service';
 
@@ -11,8 +12,8 @@ import { StorageService } from './storage.service';
   providedIn: 'root',
 })
 export class UploadFileService {
-  private imagePathDictionaryService = inject(ImagePathDictionaryService);
   private storageService = inject(StorageService);
+  private store = inject(Store);
 
   public uploadFile(
     file: File,
@@ -43,10 +44,15 @@ export class UploadFileService {
             ),
         ),
         tap((res) => {
-          this.imagePathDictionaryService.addImageToDictionary(
-            res.data?.fileName,
-            res.data?.sasToken,
-          );
+          if (res.data?.fileName && res.data?.sasToken) {
+            this.store.dispatch(
+              StorageActions.addImages({
+                images: [
+                  { fileName: res.data.fileName, url: res.data.sasToken },
+                ],
+              }),
+            );
+          }
         }),
       );
   }

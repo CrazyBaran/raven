@@ -26,8 +26,10 @@ export const selectNotesTableViewModel = createSelector(
   selectNotesTableParams,
   selectNotesByRouteParams,
   selectRouteOpportunityDetails,
-  (params, notes, opportunity) => ({
+  notesQuery.selectIsLoading,
+  (params, notes, opportunity, isLoading) => ({
     params,
+    isLoading,
     notes: notes.filter((n) => {
       if (
         params['companyId'] &&

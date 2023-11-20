@@ -1,10 +1,13 @@
 :host {
-  height: 100%;
   display: grid;
+  height: 100dvh;
+  overflow: hidden;
 }
 
+//todo: remove this when we have a better solution for the grid
 .opportunity-details {
-  grid-template-rows: auto 1fr;
+  margin: -1.5em;
+  height: calc(100% + 3em);
 }
 
 ::ng-deep .k-tilelayout {

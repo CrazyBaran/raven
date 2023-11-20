@@ -1,9 +1,11 @@
 import { NoteData } from '@app/rvns-notes/data-access';
 
 export type PatchNote = {
+  name?: string;
+  templateId?: string;
   fields: {
     id: string;
-    value: string;
+    value: unknown;
   }[];
   tagIds: string[];
 };

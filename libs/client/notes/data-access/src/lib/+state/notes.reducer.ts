@@ -26,6 +26,11 @@ export interface NotesState extends EntityState<NoteData> {
     isPending: boolean;
     data: NoteWithRelationsData | null;
   };
+  opportunityNotes: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: (any | NoteWithRelationsData)[];
+    isLoading: boolean;
+  };
 }
 
 export const notesAdapter: EntityAdapter<NoteData> =
@@ -51,6 +56,10 @@ export const initialState: NotesState = notesAdapter.getInitialState({
   delete: {
     isPending: false,
     error: null,
+  },
+  opportunityNotes: {
+    data: [],
+    isLoading: false,
   },
 });
 
@@ -194,6 +203,28 @@ export const notesReducer = createReducer(
       ...state.delete,
       isPending: false,
       error,
+    },
+  })),
+
+  on(NotesActions.getOpportunityNotes, (state) => ({
+    ...state,
+    opportunityNotes: {
+      ...state.opportunityNotes,
+      isLoading: true,
+    },
+  })),
+  on(NotesActions.getOpportunityNotesSuccess, (state, action) => ({
+    ...state,
+    opportunityNotes: {
+      data: action.data,
+      isLoading: false,
+    },
+  })),
+  on(NotesActions.getOpportunityNotesFailure, (state) => ({
+    ...state,
+    opportunityNotes: {
+      ...state.opportunityNotes,
+      isLoading: false,
     },
   })),
 );

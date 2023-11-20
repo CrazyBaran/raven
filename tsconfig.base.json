@@ -32,6 +32,9 @@
       "@app/client/notes/data-access": [
         "libs/client/notes/data-access/src/index.ts"
       ],
+      "@app/client/notes/feature/note-details-dialog": [
+        "libs/client/notes/feature/note-details-dialog/src/index.ts"
+      ],
       "@app/client/notes/feature/notes-table": [
         "libs/client/notes/feature/notes-table/src/index.ts"
       ],
@@ -60,6 +63,9 @@
       ],
       "@app/client/opportunities/feature/create-dialog": [
         "libs/client/opportunities/feature/create-dialog/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/update-dialog": [
+        "libs/client/opportunities/feature/update-dialog/src/index.ts"
       ],
       "@app/client/opportunities/feature/files": [
         "libs/client/opportunities/feature/files/src/index.ts"

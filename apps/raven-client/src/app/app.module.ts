@@ -22,7 +22,7 @@ import { provideNotifications } from '@app/client/shared/util-notifications';
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
+import { DialogModule } from '@progress/kendo-angular-dialog';
 import { NotificationModule } from '@progress/kendo-angular-notification';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -76,7 +76,6 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
     }),
     EffectsModule.forRoot([]),
     StoreRouterConnectingModule.forRoot(),
-    WindowModule,
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,

@@ -16,7 +16,7 @@
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <kendo-button
-        [queryParams]="{ noteId: dataItem.id }"
+        [queryParams]="{ 'note-details': dataItem.id }"
         [routerLink]="['./']"
         fillMode="link"
         queryParamsHandling="merge"
@@ -120,7 +120,8 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-row gap-1" kendoTooltip>
         <kendo-button
-          [queryParams]="{ noteId: dataItem.id }"
+          [queryParams]="{ 'note-details': dataItem.id }"
+          queryParamsHandling="merge"
           [routerLink]="['./']"
           iconClass="fa-solid fa-eye"
           themeColor="primary"

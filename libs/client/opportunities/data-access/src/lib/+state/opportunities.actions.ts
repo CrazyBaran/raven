@@ -1,7 +1,10 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
 import { OpportunityData } from '@app/rvns-opportunities';
-import { CreateOpportunity } from '../services/opportunities.service';
+import {
+  CreateOpportunity,
+  OpportunityChanges,
+} from '../services/opportunities.service';
 
 export const OpportunitiesActions = createActionGroup({
   source: 'Opportunities/API',
@@ -10,7 +13,12 @@ export const OpportunitiesActions = createActionGroup({
     'Get Opportunities Success': props<{ data: OpportunityData[] }>(),
     'Get Opportunities Failure': props<{ error: string }>(),
 
-    'Update Opportunity Success': props<{ data: OpportunityData[] }>(),
+    'Update Opportunity': props<{
+      id: string;
+      changes: OpportunityChanges;
+    }>(),
+    'Update Opportunity Failure': props<{ error: string }>(),
+    'Update Opportunity Success': props<{ data: OpportunityData }>(),
 
     'Get Opportunity Details': props<{ id: string }>(),
     'Get Opportunity Details Success': props<{

@@ -1,60 +1,58 @@
-<div class="pipeline-page">
-  <app-page-template pageIcon="fa-regular fa-fire" pageName="All Companies">
-    <div class="flex items-center gap-3" page-header-actions>
-      <app-text-box-navigation
-        [placeholder]="vm().queryModel.placeholder"
-        [queryParamName]="vm().queryModel.queryParamName"
-        [urlValue]="vm().queryModel.urlValue!"
-      />
+<app-page-template pageIcon="fa-regular fa-fire" pageName="All Companies">
+  <div class="flex items-center gap-3" page-header-actions>
+    <app-text-box-navigation
+      [placeholder]="vm().queryModel.placeholder"
+      [queryParamName]="vm().queryModel.queryParamName"
+      [urlValue]="vm().queryModel.urlValue!"
+    />
 
-      <kendo-button
-        (click)="openOrganisationDialog()"
-        fillMode="flat"
-        iconClass="fa-solid fa-square-plus"
-        size="large"
-        themeColor="secondary"
-        >Add New</kendo-button
-      >
-      <!-- <kendo-button
-        fillMode="flat"
-        iconClass="fa-solid fa-filter"
-        size="large"
-        themeColor="secondary"
-        >Filters</kendo-button
-      > -->
-    </div>
-    <div
-      class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
-      page-content
+    <kendo-button
+      (click)="openOrganisationDialog()"
+      fillMode="flat"
+      iconClass="fa-solid fa-square-plus"
+      size="large"
+      themeColor="secondary"
+      >Add New</kendo-button
     >
-      <app-quick-filters-template>
-        <div class="flex gap-6">
-          <app-buttongroup-navigation [model]="vm().buttonGroupNavigation">
-          </app-buttongroup-navigation>
+<!--    <kendo-button-->
+<!--      fillMode="flat"-->
+<!--      iconClass="fa-solid fa-filter"-->
+<!--      size="large"-->
+<!--      themeColor="secondary"-->
+<!--      >Filters</kendo-button-->
+<!--    >-->
+  </div>
+  <div
+    class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
+    page-content
+  >
+    <app-quick-filters-template>
+      <div class="flex gap-6">
+        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation">
+        </app-buttongroup-navigation>
 
-          <app-dropdown-navigation
-            *rxFor="
-              let dropdown of vm().navigationDropdowns;
-              trackBy: 'queryParamName'
-            "
-            [model]="dropdown"
-          >
-          </app-dropdown-navigation>
-        </div>
-      </app-quick-filters-template>
-
-      <div class="flex-1 shrink-0 overflow-hidden">
-        <app-organisations-table-view
-          [isLoading]="vm().isLoading"
-          [organisations]="$any(vm().organisations)"
-          [skip]="vm().query.skip"
-          [take]="vm().query.take"
-          [total]="vm().total"
-          [field]="vm().query.field"
-          [dir]="vm().query.dir"
-          class="block h-full"
-        ></app-organisations-table-view>
+        <app-dropdown-navigation
+          *rxFor="
+            let dropdown of vm().navigationDropdowns;
+            trackBy: 'queryParamName'
+          "
+          [model]="dropdown"
+        >
+        </app-dropdown-navigation>
       </div>
+    </app-quick-filters-template>
+
+    <div class="flex-1 shrink-0 overflow-hidden">
+      <app-organisations-table-view
+        [isLoading]="vm().isLoading"
+        [organisations]="$any(vm().organisations)"
+        [skip]="vm().query.skip"
+        [take]="vm().query.take"
+        [total]="vm().total"
+        [field]="vm().query.field"
+        [dir]="vm().query.dir"
+        class="block h-full"
+      ></app-organisations-table-view>
     </div>
-  </app-page-template>
-</div>
+  </div>
+</app-page-template>

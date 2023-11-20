@@ -11,7 +11,6 @@ import {
   RouterLink,
   RouterOutlet,
 } from '@angular/router';
-import { NotesActions } from '@app/client/notes/data-access';
 import {
   NoteDetailsComponent,
   NotesTableComponent,
@@ -57,7 +56,6 @@ export class OpportunityNotesComponent implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
-    this.store.dispatch(NotesActions.getNotes({}));
   }
 
   public valueChange($event: { id: string }): void {

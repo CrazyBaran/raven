@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
+import { storageQuery } from './+state/storage.selectors';
 
 export type ImagePathTranslations = Record<string, string>;
 
@@ -7,39 +9,15 @@ export type ImagePathTranslations = Record<string, string>;
   providedIn: 'root',
 })
 export class ImagePathDictionaryService {
-  private imageDictionary: BehaviorSubject<ImagePathTranslations> =
-    new BehaviorSubject({});
-
-  public addImageToDictionary(
-    fileName: string | undefined,
-    url: string | undefined,
-  ): void {
-    if (!fileName || !url) return;
-
-    const images = this.imageDictionary.value;
-    this.imageDictionary.next({
-      ...images,
-      [fileName]: url,
-    });
-  }
-
-  public addImagesToDictionary(
-    files: { fileName: string; url: string }[],
-  ): void {
-    this.imageDictionary.next({
-      ...this.imageDictionary.value,
-      ...files.reduce(
-        (acc, { fileName, url }) => ({ ...acc, [fileName]: url }),
-        {},
-      ),
-    });
-  }
-
-  public getImageUrl(fileName: string): string {
-    return this.imageDictionary.value[fileName];
-  }
+  private store = inject(Store);
+  private dictionary = this.store.selectSignal(
+    storageQuery.selectAzureImageDictionary,
+  );
 
   public getImageDictionary(): ImagePathTranslations {
-    return this.imageDictionary.value;
+    return _.chain(this.dictionary() ?? {})
+      .mapKeys((x) => x!.fileName)
+      .mapValues((x) => x!.url)
+      .value();
   }
 }

@@ -31,7 +31,7 @@ export const selectCreateOpportunityDialogViewModel = createSelector(
       valueField: 'id',
       isLoading: !!loadingTags.company,
     },
-    templateId: workflowTemplates[0]?.id,
+    templateId: workflowTemplates.find(({ isDefault }) => isDefault)?.id,
     isCreating: createState.isLoading,
   }),
 );
