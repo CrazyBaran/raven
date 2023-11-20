@@ -7,7 +7,7 @@ import {
   NoteAttachmentData,
   NoteData,
   NoteFieldData,
-  NoteWithRelatedNotesData,
+  WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
 import {
   Body,
@@ -110,7 +110,7 @@ export class NotesController {
 
     @Query('opportunityId') opportunityId: string,
     @Query('type') type: TemplateTypeEnum = TemplateTypeEnum.Note,
-  ): Promise<NoteData[] | (NoteWithRelatedNotesData | NoteData)[]> {
+  ): Promise<NoteData[] | (WorkflowNoteData | NoteData)[]> {
     if (opportunityId) {
       return await this.notesService.getNotesForOpportunity(
         opportunityId,
