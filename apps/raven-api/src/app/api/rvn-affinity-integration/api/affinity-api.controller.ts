@@ -42,7 +42,7 @@ export class AffinityApiController {
   @ApiResponse({ status: 200, type: [ListDto] })
   @Get('lists')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public getLists(): Promise<ListDto[]> {
     return this.affinityApiService.getLists();
   }
@@ -51,7 +51,7 @@ export class AffinityApiController {
   @ApiResponse({ status: 200, type: DetailedListDto })
   @Get('lists/:listId')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public getListDetails(
     @Param('listId') listId: number,
   ): Promise<DetailedListDto> {
@@ -74,7 +74,7 @@ export class AffinityApiController {
   @ApiResponse({ status: 200, type: PaginatedListEntriesDto })
   @Get('list-entries/:listId')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public getListEntries(
     @Param('listId') listId: number,
     @Query('page_size') pageSize?: number,
@@ -87,7 +87,7 @@ export class AffinityApiController {
   @Get('persons/:personId')
   @ApiResponse({ status: 200, type: PersonDto })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public getPerson(@Param('personId') personId: number): Promise<PersonDto> {
     return this.affinityApiService.getPerson(personId);
   }
@@ -98,7 +98,7 @@ export class AffinityApiController {
   @ApiResponse({ status: 200, type: [FieldValueDto] })
   @Get('field-values')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public getFieldValues(
     @Query('list_entry_id') listEntryId?: number,
     @Query('person_id') personId?: number,
@@ -111,7 +111,7 @@ export class AffinityApiController {
   @ApiResponse({ status: 201, type: FieldValueDto })
   @Post('field-values')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public createFieldValue(@Body() dto: unknown): Promise<FieldValueDto> {
     return this.affinityApiService.createFieldValue(dto as CreateFieldValueDto);
   }
@@ -121,7 +121,7 @@ export class AffinityApiController {
   @ApiResponse({ status: 200, type: FieldValueDto })
   @Put('field-values/:fieldValueId')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public updateFieldValue(
     @Param('fieldValueId') fieldValueId: number,
     @Body() dto: unknown,
@@ -137,7 +137,7 @@ export class AffinityApiController {
   @ApiResponse({ status: 200, type: [FieldValueChangeDto] })
   @Get('field-value-changes')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public getFieldValueChanges(
     @Query('field_id') fieldId: number,
   ): Promise<FieldValueChangeDto[]> {
@@ -145,7 +145,7 @@ export class AffinityApiController {
   }
 
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOperation({ summary: 'Get current user details' })
   @ApiResponse({ status: 200, type: WhoAmIDto })
   @Get('auth/whoami')
@@ -154,7 +154,7 @@ export class AffinityApiController {
   }
 
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOperation({ summary: 'Get all webhooks' })
   @ApiResponse({ status: 200, type: [WebhookDto] })
   @Get('webhook')
@@ -163,7 +163,7 @@ export class AffinityApiController {
   }
 
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOperation({ summary: 'Subscribe to a webhook' })
   @ApiBody({ type: WebhookSubscribeDto })
   @ApiResponse({ status: 201, type: WebhookDto })
@@ -173,7 +173,7 @@ export class AffinityApiController {
   }
 
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOperation({ summary: 'Update a webhook' })
   @ApiBody({ type: WebhookUpdateDto })
   @ApiResponse({ status: 200, type: WebhookDto })
@@ -189,7 +189,7 @@ export class AffinityApiController {
   }
 
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOperation({ summary: 'Delete a webhook' })
   @ApiResponse({ status: 200, type: WebhookDeleteResponseDto })
   @Delete('webhook/:webhookId')

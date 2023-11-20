@@ -53,7 +53,7 @@ export class OpportunityController {
   @ApiQuery({ name: 'pipelineStageId', type: String, required: false })
   @ApiQuery({ name: 'domain', type: String, required: false })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async findAll(
     @Query('skip') skip?: number,
     @Query('take') take?: number,
@@ -71,7 +71,7 @@ export class OpportunityController {
   @ApiOperation({ summary: 'Get a single opportunity' })
   @ApiResponse({ status: 200, description: 'The opportunity details' })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public findOne(@Param('id') id: string): Promise<OpportunityData> {
     return this.opportunityService.findOne(id);
   }
@@ -83,7 +83,7 @@ export class OpportunityController {
     description: 'The opportunity has been successfully created.',
   })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async create(
     @Body() dto: CreateOpportunityDto,
     @Body('domain', FindOrganizationByDomainPipe)
@@ -148,7 +148,7 @@ export class OpportunityController {
   })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async update(
     @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
     opportunity: OpportunityEntity,
@@ -181,7 +181,7 @@ export class OpportunityController {
   })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public remove(@Param('id') id: string): Promise<void> {
     return this.opportunityService.remove(id);
   }

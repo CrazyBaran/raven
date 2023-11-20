@@ -31,7 +31,7 @@ export class AffinityController {
   @ApiResponse({ status: 200, type: [ListDto] })
   @Get('regenerate')
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public regenerate(): Promise<void> {
     return this.affinityProducer.enqueueRegenerateAffinityData();
   }

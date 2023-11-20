@@ -46,7 +46,7 @@ export class OrganisationController {
   @ApiQuery({ name: 'query', type: String, required: false })
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async findAll(
     @Query('skip') skip?: number,
     @Query('take') take?: number,
@@ -70,7 +70,7 @@ export class OrganisationController {
   @ApiResponse({ status: 200, description: 'The organisation details' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async findOne(
     @Param('id') id: string,
   ): Promise<OrganisationDataWithOpportunities> {
@@ -84,7 +84,7 @@ export class OrganisationController {
     description: 'The organisation has been successfully created.',
   })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async create(
     @Body() dto: CreateOrganisationDto,
   ): Promise<OrganisationData> {
@@ -104,7 +104,7 @@ export class OrganisationController {
   })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async update(
     @Param('id', ParseUUIDPipe, ParseOrganisationPipe)
     organisation: OrganisationEntity,
@@ -123,7 +123,7 @@ export class OrganisationController {
   })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User)
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async remove(
     @Param('id', ParseUUIDPipe, ParseOrganisationPipe)
     organisation: OrganisationEntity,
