@@ -4,9 +4,9 @@ import {
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
   NoteTabsWithRelatedNotesData,
-  NoteWithRelatedNotesData,
   NoteWithRelationsData,
   RelatedNoteWithFields,
+  WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
 import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
@@ -162,7 +162,7 @@ export class NotesService {
   public async getNotesForOpportunity(
     opportunityId: string,
     type: TemplateTypeEnum,
-  ): Promise<(NoteWithRelatedNotesData | NoteWithRelationsData)[]> {
+  ): Promise<(WorkflowNoteData | NoteWithRelationsData)[]> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
       relations: ['organisation', 'tag'],
@@ -267,6 +267,7 @@ export class NotesService {
     const workflowNote = this.transformNotesToNoteWithRelatedData(
       opportunity.note,
       relatedNotes,
+      opportunity.pipelineStageId,
     );
 
     if (type === TemplateTypeEnum.Workflow) {
@@ -693,9 +694,12 @@ export class NotesService {
   private transformNotesToNoteWithRelatedData(
     workflowNote: NoteEntity,
     relatedNotes: NoteEntity[],
-  ): NoteWithRelatedNotesData {
+    currentPipelineStageId: string,
+  ): WorkflowNoteData {
     delete workflowNote.noteFieldGroups;
     const mappedNote = this.noteEntityToNoteData(workflowNote);
+
+    const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template
     for (const tab of workflowNote.template.tabs) {
       const foundTab = mappedNote.noteTabs.find(
@@ -708,8 +712,28 @@ export class NotesService {
       );
       foundTab.relatedNotes = this.getRelatedNotesForTab(tab, relatedNotesCopy);
       foundTab.pipelineStages = tab.pipelineStages;
+      if (tab.pipelineStages.find((ps) => ps.id === currentPipelineStageId)) {
+        const emptyFields = foundTab.noteFieldGroups.reduce(
+          (
+            res: NoteFieldData[],
+            cur: NoteFieldGroupsWithFieldData,
+          ): NoteFieldData[] => {
+            const emptyFieldsInGroup = cur.noteFields.filter((nf) => !nf.value);
+            res.push(...emptyFieldsInGroup);
+            return res;
+          },
+          [],
+        );
+        missingFields.push(
+          ...emptyFields.map((nf) => ({
+            tabName: tab.name,
+            fieldName: nf.name,
+          })),
+        );
+      }
     }
-    return mappedNote;
+    (mappedNote as WorkflowNoteData).missingFields = missingFields;
+    return mappedNote as WorkflowNoteData;
   }
 
   private getRelatedNotesForTab(

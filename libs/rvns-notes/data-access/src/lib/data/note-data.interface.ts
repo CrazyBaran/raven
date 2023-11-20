@@ -71,8 +71,14 @@ export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
   noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 
-export type NoteWithRelatedNotesData =
-  NoteWithRelationsData<NoteTabsWithRelatedNotesData>;
+interface MissingFields {
+  tabName: string;
+  fieldName: string;
+}
+
+export type WorkflowNoteData = {
+  missingFields: MissingFields[];
+} & NoteWithRelationsData<NoteTabsWithRelatedNotesData>;
 
 export interface NoteAttachmentData {
   readonly fileName: string;
