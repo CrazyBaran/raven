@@ -23,7 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
-import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
+import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
@@ -91,12 +91,8 @@ export class OpportunityController {
     organisationFromDomain: string | OrganisationEntity | null,
     @Body('organisationId', ParseOptionalOrganisationPipe)
     organisationFromId: string | OrganisationEntity | null,
-    @Body(
-      'workflowTemplateId',
-      ParseUUIDPipe,
-      ParseTemplateWithGroupsAndFieldsPipe,
-    )
-    workflowTemplateEntity: TemplateEntity,
+    @Body('workflowTemplateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
+    workflowTemplateEntity: string | TemplateEntity | null,
     @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
     tagEntity: string | TagEntity | null,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
@@ -104,7 +100,11 @@ export class OpportunityController {
     if (!tagEntity) {
       throw new BadRequestException('Tag is required for opportunity creation');
     }
-    if (workflowTemplateEntity.type !== TemplateTypeEnum.Workflow) {
+    if (
+      workflowTemplateEntity !== null &&
+      (workflowTemplateEntity as TemplateEntity).type !==
+        TemplateTypeEnum.Workflow
+    ) {
       throw new BadRequestException('Template is not a workflow template');
     }
     const organisation =
@@ -116,7 +116,8 @@ export class OpportunityController {
       return this.opportunityService.opportunityEntityToData(
         await this.opportunityService.createFromOrganisation({
           organisation,
-          workflowTemplateEntity,
+          workflowTemplateEntity:
+            workflowTemplateEntity as TemplateEntity | null,
           userEntity,
           tagEntity: tagEntity as TagEntity,
           roundSize: dto.roundSize,
@@ -134,7 +135,7 @@ export class OpportunityController {
       await this.opportunityService.createForNonExistingOrganisation({
         name: dto.name,
         domain: dto.domain,
-        workflowTemplateEntity,
+        workflowTemplateEntity: workflowTemplateEntity as TemplateEntity | null,
         userEntity,
         tagEntity: tagEntity as TagEntity,
         roundSize: dto.roundSize,

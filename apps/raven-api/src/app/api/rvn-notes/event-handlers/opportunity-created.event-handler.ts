@@ -1,4 +1,5 @@
 import { OpportunityCreatedEvent } from '@app/rvns-opportunities';
+import { TemplateTypeEnum } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { EntityManager } from 'typeorm';
@@ -29,8 +30,16 @@ export class OpportunityCreatedEventHandler {
     const userEntity = await this.entityManager.findOne(UserEntity, {
       where: { id: event.createdById },
     });
+
+    const templateSearchOptions = {
+      type: TemplateTypeEnum.Workflow,
+      ...(event.workflowTemplateId
+        ? { id: event.workflowTemplateId }
+        : { isDefault: true }),
+    };
+
     const workflowTemplate = await this.entityManager.findOne(TemplateEntity, {
-      where: { id: event.workflowTemplateId },
+      where: templateSearchOptions,
     });
 
     const note = await this.noteService.createNote({

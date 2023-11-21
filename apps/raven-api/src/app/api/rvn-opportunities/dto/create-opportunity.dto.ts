@@ -24,9 +24,9 @@ export class CreateOpportunityDto {
   public readonly organisationId?: string;
 
   @ApiProperty()
-  @IsDefined()
+  @IsOptional()
   @IsUUID()
-  public readonly workflowTemplateId: string;
+  public readonly workflowTemplateId?: string;
 
   @ApiProperty()
   @IsDefined()
