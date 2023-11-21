@@ -1,6 +1,7 @@
 import { OpportunityData, PagedOpportunityData } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
+import { TemplateTypeEnum } from '@app/rvns-templates';
 import {
   BadRequestException,
   Body,
@@ -22,6 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
+import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
@@ -37,7 +39,6 @@ import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
 import { ParseOptionalOrganisationPipe } from './pipes/parse-optional-organisation.pipe';
 import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-stage.pipe';
 import { ParseOptionalTagPipe } from './pipes/parse-optional-tag.pipe';
-import { ParseWorkflowTemplatePipe } from './pipes/parse-workflow-template.pipe';
 import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pipe';
 
 @ApiTags('Opportunities')
@@ -90,7 +91,11 @@ export class OpportunityController {
     organisationFromDomain: string | OrganisationEntity | null,
     @Body('organisationId', ParseOptionalOrganisationPipe)
     organisationFromId: string | OrganisationEntity | null,
-    @Body('workflowTemplateId', ParseUUIDPipe, ParseWorkflowTemplatePipe)
+    @Body(
+      'workflowTemplateId',
+      ParseUUIDPipe,
+      ParseTemplateWithGroupsAndFieldsPipe,
+    )
     workflowTemplateEntity: TemplateEntity,
     @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
     tagEntity: string | TagEntity | null,
@@ -98,6 +103,9 @@ export class OpportunityController {
   ): Promise<OpportunityData> {
     if (!tagEntity) {
       throw new BadRequestException('Tag is required for opportunity creation');
+    }
+    if (workflowTemplateEntity.type !== TemplateTypeEnum.Workflow) {
+      throw new BadRequestException('Template is not a workflow template');
     }
     const organisation =
       (organisationFromDomain as OrganisationEntity) ||
