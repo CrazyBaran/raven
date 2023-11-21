@@ -5,8 +5,8 @@ import {
   PipeTransform,
 } from '@nestjs/common';
 import { ArgumentMetadata } from '@nestjs/common/interfaces/features/pipe-transform.interface';
-import { ParseTemplateWithGroupsAndFieldsPipe } from '../../../shared/pipes/parse-template-with-groups-and-fields.pipe';
-import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
+import { TemplateEntity } from '../../api/rvn-templates/entities/template.entity';
+import { ParseTemplateWithGroupsAndFieldsPipe } from './parse-template-with-groups-and-fields.pipe';
 
 @Injectable()
 export class ParseOptionalTemplateWithGroupsAndFieldsPipe

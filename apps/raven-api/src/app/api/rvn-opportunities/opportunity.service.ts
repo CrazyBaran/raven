@@ -33,7 +33,7 @@ interface CreateOpportunityForOrganisationOptions
 }
 
 interface CommonCreateOpportunityOptions extends CommonCreateAndUpdateOptions {
-  workflowTemplateEntity: TemplateEntity;
+  workflowTemplateEntity: TemplateEntity | null;
   userEntity: UserEntity;
   tagEntity: TagEntity;
 }
@@ -408,7 +408,7 @@ export class OpportunityService {
       'opportunity-created',
       new OpportunityCreatedEvent(
         savedOpportunity.id,
-        options.workflowTemplateEntity.id,
+        options.workflowTemplateEntity?.id,
         options.userEntity.id,
       ),
     );

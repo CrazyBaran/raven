@@ -37,6 +37,7 @@ import { UserEntity } from '../rvn-users/entities/user.entity';
 
 import { TemplateTypeEnum } from '@app/rvns-templates';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
+import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import {
   OrganisationTagEntity,
   TagEntity,
@@ -54,7 +55,6 @@ import { ParseCompanyOpportunityTagsPipe } from './pipes/parse-company-opportuni
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
-import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from './pipes/parse-optional-template-with-groups-and-fields.pipe';
 import { ParseTagsPipe } from './pipes/parse-tags.pipe';
 
 @ApiTags('Notes')
