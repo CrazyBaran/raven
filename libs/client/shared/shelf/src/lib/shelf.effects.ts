@@ -10,7 +10,7 @@ import {
   DialogService,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
-import { exhaustMap, filter, tap } from 'rxjs';
+import { exhaustMap, filter, map, tap } from 'rxjs';
 import { ShelfActions } from './actions/shelf.actions';
 import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
 
@@ -46,13 +46,14 @@ export class ShelfEffects {
       return this.actions$.pipe(
         ofType(ShelfActions.openOpportunityForm),
         exhaustMap(
-          () =>
+          (action) =>
             this.dynamicDialogService.openDynamicDialog({
               width: 480,
               minHeight: 723,
               cssClass: 'raven-custom-dialog',
               template: {
                 name: 'opportunity dialog form',
+                componentData: { payload: action.payload },
                 load: () =>
                   import(
                     '@app/client/opportunities/feature/create-dialog'
@@ -65,6 +66,13 @@ export class ShelfEffects {
     },
     { dispatch: false },
   );
+
+  private openCreateOpportunityDetails$ = createEffect(() => {
+    return this.store.select(selectQueryParam('opportunity-create')).pipe(
+      filter((id) => !!id),
+      map(() => ShelfActions.openOpportunityForm({})),
+    );
+  });
 
   private openEditOpportunityDetails$ = createEffect(
     () => {

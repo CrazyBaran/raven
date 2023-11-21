@@ -72,6 +72,6 @@ export class OrganisationsTableComponent {
   }
 
   public openOrganisationDialog(): void {
-    this.store.dispatch(ShelfActions.openOpportunityForm());
+    this.store.dispatch(ShelfActions.openOpportunityForm({}));
   }
 }

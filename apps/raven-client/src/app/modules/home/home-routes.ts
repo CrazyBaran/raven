@@ -20,30 +20,18 @@ export const HOME_ROUTES: Routes = [
         children: [
           {
             path: '',
-            pathMatch: 'full',
             loadChildren: () =>
               import('@app/client/organisations/feature/shell').then(
                 (c) => c.ORGANISATION_ROUTES,
               ),
           },
+
           {
-            path: 'pipeline',
+            path: ':companyId/opportunities',
             loadChildren: () =>
-              import('@app/client/pipelines/feature/shell').then(
-                (c) => c.PIPELINES_ROUTES,
+              import('@app/client/opportunities/feature/shell').then(
+                (m) => m.OPPORTUNITIES_ROUTES,
               ),
-          },
-          {
-            path: ':companyId',
-            children: [
-              {
-                path: 'opportunities',
-                loadChildren: () =>
-                  import('@app/client/opportunities/feature/shell').then(
-                    (m) => m.OPPORTUNITIES_ROUTES,
-                  ),
-              },
-            ],
           },
         ],
       },

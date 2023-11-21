@@ -1,0 +1,165 @@
+<app-page-template>
+  <div class="flex items-center gap-2" page-header-title>
+    <kendo-button
+      fillMode="flat"
+      iconClass="fa-sharp fa-regular fa-cart-shopping"
+      themeColor="primary"
+      [routerLink]="['/companies']"
+      >All Companies</kendo-button
+    >
+
+    <i
+      class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+    ></i>
+    <kendo-button [disabled]="true" fillMode="flat" themeColor="primary">{{
+      vm().currentOrganisation?.name
+    }}</kendo-button>
+  </div>
+
+  <div class="flex gap-1" page-header-actions></div>
+
+  <div
+    page-content
+    class="organisation-details | bg-base-background flex h-full flex-col"
+  >
+    <!--    TILES       -->
+    <kendo-tilelayout
+      *ngIf="!vm().isLoading; else loader"
+      [columns]="12"
+      [draggable]="false"
+      [gap]="24"
+      class="h-full !p-0"
+    >
+      <!--  DETAILS   -->
+      <kendo-tilelayout-item [col]="1" [colSpan]="6" class="h-full w-full">
+        <kendo-tilelayout-item-header>
+          <div class="flex items-center justify-between gap-2">
+            <h5 class="k-card-title">Company details</h5>
+            <kendo-button
+              iconClass="fa-sharp fa-solid fa-pen"
+              size="small"
+              [disabled]="true"
+              [queryParams]="{
+                'organisation-edit': vm().currentOrganisationId
+              }"
+              [routerLink]="['./']"
+              queryParamsHandling="merge"
+              >Edit</kendo-button
+            >
+          </div>
+        </kendo-tilelayout-item-header>
+        <kendo-tilelayout-item-body>
+          <div
+            class="bg-grey-100 flex flex-col flex-wrap gap-3 bg-opacity-50 px-6 py-5"
+          >
+            <div
+              class="w-1/2 px-2 py-3"
+              *rxFor="let detail of vm().details; trackBy: 'label'"
+            >
+              <h1 class="text-lg">{{ detail.label }}</h1>
+              <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
+            </div>
+          </div>
+        </kendo-tilelayout-item-body>
+      </kendo-tilelayout-item>
+
+      <!--  Opportunities   -->
+      <kendo-tilelayout-item [col]="7" [colSpan]="6" class="h-full w-full">
+        <kendo-tilelayout-item-header>
+          <div class="flex items-center justify-between gap-2">
+            <h5 class="k-card-title">Opportunities</h5>
+            <kendo-button
+              [queryParams]="{
+                'opportunity-create': vm().currentOrganisationId
+              }"
+              [routerLink]="['./']"
+              iconClass="fa-sharp fa-solid fa-pen"
+              size="small"
+              >Add new</kendo-button
+            >
+          </div>
+        </kendo-tilelayout-item-header>
+        <kendo-tilelayout-item-body>
+          <kendo-grid
+            [kendoGridBinding]="vm().opportunities"
+            [sort]="sort"
+            class="grid-borderless"
+          >
+            <kendo-grid-column
+              [headerStyle]="{ 'font-weight': '700' }"
+              title="Funding Round"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <p>{{ dataItem.tag?.name ?? 'Unknown' }}</p>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              [headerStyle]="{ 'font-weight': '700' }"
+              title="Deal Lead"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <p>{{ (dataItem.fields | dealLeads)?.[0] ?? '' }}</p>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              [headerStyle]="{ 'font-weight': '700' }"
+              title="Deal Team"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <p>{{ (dataItem.fields | dealTeam)?.[0] ?? '' }}</p>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              [headerStyle]="{ 'font-weight': '700' }"
+              field="updatedAt"
+              title="Created"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="flex flex-col gap-1">
+                  <p>dd/mm/yyyy</p>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [width]="50">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="flex flex-row gap-1">
+                  <kendo-button
+                    [routerLink]="['opportunities', dataItem.id]"
+                    iconClass="fa-solid fa-eye"
+                    themeColor="primary"
+                  />
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+          </kendo-grid>
+        </kendo-tilelayout-item-body>
+      </kendo-tilelayout-item>
+
+      <!--  Notes   -->
+      <kendo-tilelayout-item [col]="1" [colSpan]="12" class="h-full w-full">
+        <kendo-tilelayout-item-header>
+          <div class="flex items-center justify-between gap-2">
+            <h5 class="k-card-title">Related Notes</h5>
+            <kendo-button
+              iconClass="fa-sharp fa-solid fa-pen"
+              size="small"
+              (click)="openNoteShelf()"
+              >Add New</kendo-button
+            >
+          </div>
+        </kendo-tilelayout-item-header>
+        <kendo-tilelayout-item-body>
+          <app-notes-table-container />
+        </kendo-tilelayout-item-body>
+      </kendo-tilelayout-item>
+    </kendo-tilelayout>
+  </div>
+</app-page-template>
+
+<ng-template #loader>
+  <ui-loader />
+</ng-template>

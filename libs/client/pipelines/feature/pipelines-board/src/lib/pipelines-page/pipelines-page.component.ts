@@ -124,6 +124,6 @@ export class PipelinesPageComponent implements OnInit {
   }
 
   public openOpportunityDialog(): void {
-    this.store.dispatch(ShelfActions.openOpportunityForm());
+    this.store.dispatch(ShelfActions.openOpportunityForm({}));
   }
 }

@@ -15,6 +15,20 @@
         class="fa-regular fa-buildings group-hover:hidden"
         style="font-size: 27px"
       ></i>
+      <div class="hidden group-hover:block">
+        <kendo-button
+          [routerLink]="[
+            '/companies',
+            data.organisation.id,
+            'opportunities',
+            data.id
+          ]"
+          fillMode="outline"
+          themeColor="primary"
+        >
+          Open Details
+        </kendo-button>
+      </div>
     </div>
   </div>
   <!--      [class.invisible]="hovered.hovered"-->

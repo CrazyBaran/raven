@@ -79,7 +79,7 @@ export const OrganisationsFeature = createFeature({
 
     on(
       OrganisationsActions.addOpportunityToOrganisation,
-      (state, { id, opportunityId }) =>
+      (state, { id, opportunity }) =>
         id && state.entities[id]
           ? OrganisationAdapter.updateOne(
               {
@@ -87,9 +87,7 @@ export const OrganisationsFeature = createFeature({
                 changes: {
                   opportunities: [
                     ...(state.entities[id]?.opportunities || []),
-                    {
-                      id: opportunityId,
-                    } as OrganisationEntity['opportunities'][number],
+                    opportunity!,
                   ],
                 },
               },
