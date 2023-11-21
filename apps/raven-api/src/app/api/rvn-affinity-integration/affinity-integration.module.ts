@@ -9,7 +9,6 @@ import { AffinityWebhookService } from './affinity-webhook.service';
 import { AFFINITY_QUEUE } from './affinity.const';
 import { AffinityController } from './affinity.controller';
 import { AffinityService } from './affinity.service';
-import { AffinityApiController } from './api/affinity-api.controller';
 import { AffinityApiService } from './api/affinity-api.service';
 import { AffinityCacheService } from './cache/affinity-cache.service';
 import { AffinityEnricher } from './cache/affinity.enricher';
@@ -47,7 +46,7 @@ import { AffinityProducer } from './queues/affinity.producer';
     AffinityValueResolverService,
     AffinityEnricher,
   ],
-  controllers: [AffinityApiController, AffinityController],
+  controllers: [AffinityController],
   exports: [AffinityCacheService, AffinityEnricher],
 })
 export class AffinityIntegrationModule {}
