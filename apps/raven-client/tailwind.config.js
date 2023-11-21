@@ -70,6 +70,7 @@ module.exports = {
       'series-e': {
         'lighten-50': '#F0882D80',
       },
+      disabledText: '#8F8F8F',
       component: {
         border: '#EBEBEB',
         text: '#424242',
