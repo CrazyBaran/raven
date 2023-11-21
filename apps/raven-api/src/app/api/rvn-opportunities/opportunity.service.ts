@@ -76,7 +76,7 @@ export class OpportunityService {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
       relations: ['organisation', 'tag'],
       skip: skip ? skip : 0,
-      take: take > 500 ? 500 : take,
+      take: take ? (take > 500 ? 500 : take) : 10,
     };
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
@@ -117,7 +117,7 @@ export class OpportunityService {
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
-    return this.affinityEnricher.enrichOpportunity(
+    return await this.affinityEnricher.enrichOpportunity(
       opportunity,
       (entity, data) => {
         const pipelineStage = this.getPipelineStage(
@@ -176,7 +176,7 @@ export class OpportunityService {
     const { pipeline, pipelineStage } =
       await this.getDefaultPipelineAndFirstStage();
 
-    const affinityOrganisation = this.affinityCacheService.getByDomains(
+    const affinityOrganisation = await this.affinityCacheService.getByDomains(
       options.organisation.domains,
     );
 
