@@ -17,11 +17,19 @@ import {
   pipelinesReducer,
 } from '@app/client/pipelines/state';
 
+import {
+  NotesEffects,
+  notesFeature,
+  NoteStoreFacade,
+} from '@app/client/notes/data-access';
 import { tagsEffects, tagsFeature } from '@app/client/tags/state';
+import { templateFeatureProviders } from '@app/client/templates/data-access';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
 export const organisationProviders: Array<Provider | EnvironmentProviders> = [
+  NoteStoreFacade,
+  templateFeatureProviders,
   importProvidersFrom(
     StoreModule.forFeature(OrganisationsFeature),
     EffectsModule.forFeature([OrganisationsEffects]),
@@ -31,6 +39,8 @@ export const organisationProviders: Array<Provider | EnvironmentProviders> = [
     EffectsModule.forFeature([PipelinesEffects]),
     StoreModule.forFeature(tagsFeature),
     EffectsModule.forFeature([tagsEffects]),
+    StoreModule.forFeature(notesFeature),
+    EffectsModule.forFeature([NotesEffects]),
   ),
 ];
 
@@ -45,6 +55,20 @@ export const ORGANISATION_ROUTES: Routes = [
         loadComponent: () =>
           import('@app/client/organisations/feature/organisations-table').then(
             (m) => m.OrganisationsTableComponent,
+          ),
+      },
+      {
+        path: 'pipeline',
+        loadChildren: () =>
+          import('@app/client/pipelines/feature/shell').then(
+            (c) => c.PIPELINES_ROUTES,
+          ),
+      },
+      {
+        path: ':companyId',
+        loadComponent: () =>
+          import('@app/client/organisations/feature/organisation-page').then(
+            (m) => m.OrganisationPageComponent,
           ),
       },
     ],

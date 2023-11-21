@@ -108,7 +108,7 @@ export class RavenShelfService {
 
   public openLazyShelf(
     settings: Omit<WindowSettings, 'content'> & { template: ComponentTemplate },
-  ): WindowRef {
+  ): WindowRef | null {
     const ref = this._createContainer({ class: 'kendo-window' });
 
     const windowRef = this.openShelf({
@@ -117,6 +117,9 @@ export class RavenShelfService {
       cssClass: settings.cssClass ?? '' + ' rotate-180',
       appendTo: ref.instance.container,
     });
+    if (!windowRef) {
+      return null;
+    }
 
     windowRef.content.instance.component = settings.template;
 
@@ -127,8 +130,13 @@ export class RavenShelfService {
     return windowRef;
   }
 
-  public openShelf(settings: WindowSettings): WindowRef {
+  public openShelf(settings: WindowSettings): WindowRef | null {
     const index = this.windowsRefsSignal().length;
+
+    if (index > 2) {
+      return null;
+    }
+
     const defaultShelfDimensions = {
       width: settings.width || this.config.defaultWidth,
       height:

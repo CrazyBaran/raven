@@ -7,7 +7,7 @@
   <form
     *ngIf="vm.opportunityDetails; else loader"
     [formGroup]="opportunityForm"
-    class="flex flex-col gap-4 p-10"
+    class="flex flex-1 flex-col gap-4 p-10"
   >
     <kendo-formfield>
       <kendo-label text="Company Name" />
@@ -138,5 +138,5 @@
 </ng-container>
 
 <ng-template #loader>
-  <ui-loader />
+  <ui-loader class="flex-1" />
 </ng-template>

@@ -16,6 +16,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import {
   DialogContentBase,
   DialogModule,
+  DialogRef,
   DialogsModule,
 } from '@progress/kendo-angular-dialog';
 import {
@@ -29,6 +30,7 @@ import {
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
@@ -65,6 +67,8 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
   protected fb = inject(FormBuilder);
   protected store = inject(Store);
   protected actions$ = inject(Actions);
+  protected router = inject(Router);
+  protected activatedRoute = inject(ActivatedRoute);
 
   protected vmSignal = this.store.selectSignal(
     selectCreateOpportunityDialogViewModel,
@@ -74,8 +78,8 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
   protected readonly xIcon = xIcon;
 
   protected opportunityForm = this.fb.group({
-    organisationId: [null, [Validators.required]],
-    opportunityTagId: [null, [Validators.required]],
+    organisationId: [<string | null>null, [Validators.required]],
+    opportunityTagId: [<string | null>null, [Validators.required]],
     roundSize: [''],
     valuation: [''],
     proposedInvestment: [''],
@@ -111,6 +115,19 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
     },
   };
 
+  public constructor(dialog: DialogRef) {
+    super(dialog);
+    this.dialog.dialog?.onDestroy(() => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: {
+          'opportunity-create': null,
+        },
+        queryParamsHandling: 'merge',
+      });
+    });
+  }
+
   public ngOnInit(): void {
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({
@@ -119,6 +136,12 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
     );
 
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
+    if (this.vmSignal().organisationId) {
+      this.opportunityForm.controls.organisationId.setValue(
+        this.vmSignal().organisationId!,
+      );
+      this.opportunityForm.controls.organisationId.disable();
+    }
   }
 
   protected onDialogClose(): void {
@@ -146,6 +169,7 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
             OrganisationsActions.addOpportunityToOrganisation({
               id: data.data.organisation.id,
               opportunityId: data.data.id,
+              opportunity: data.data,
             }),
           );
         }

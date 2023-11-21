@@ -4,21 +4,26 @@
       fillMode="flat"
       iconClass="fa-sharp fa-regular fa-cart-shopping"
       themeColor="primary"
+      [routerLink]="['/companies']"
       >All Companies</kendo-button
     >
-
-    <i
-      class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
-    ></i>
-    <kendo-button fillMode="flat" themeColor="primary">{{
-      vm().currentOrganisation?.name
-    }}</kendo-button>
-    <i
-      class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
-    ></i>
-    <kendo-button fillMode="flat" themeColor="primary"
-      >Opportunity</kendo-button
-    >
+    <ng-container *ngIf="vm().currentOrganisation?.name">
+      <i
+        class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+      ></i>
+      <kendo-button
+        fillMode="flat"
+        themeColor="primary"
+        [routerLink]="['/companies', vm().currentOrganisation?.id]"
+        >{{ vm().currentOrganisation?.name }}</kendo-button
+      >
+      <i
+        class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+      ></i>
+      <kendo-button fillMode="flat" themeColor="primary" [disabled]="true"
+        >Opportunity</kendo-button
+      >
+    </ng-container>
   </div>
   <div class="flex gap-1" page-header-actions>
     <div *rxFor="let indicator of vm().lines; trackBy: 'label'">

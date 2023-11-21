@@ -4,16 +4,26 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotesActions, notesQuery } from '@app/client/notes/data-access';
 import { NotesTableComponent } from '@app/client/notes/ui';
 import { selectRouteOpportunityDetails } from '@app/client/opportunities/data-access';
+import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { Store, createSelector } from '@ngrx/store';
+import * as _ from 'lodash';
 
 export const selectNotesTableParams = createSelector(
   getRouterSelectors().selectQueryParams,
   getRouterSelectors().selectRouteParams,
-  (queryParams, routeParams) => ({
-    ...queryParams,
-    ...routeParams,
-  }),
+  (queryParams, routeParams) =>
+    _.pickBy(
+      {
+        ...(queryParams as Record<string, unknown>),
+        ...(routeParams as Record<string, unknown>),
+      } as _.Dictionary<unknown>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (v: any, key: any) =>
+        ['domain', 'tagIds', 'opportunityId', 'companyId', 'noteType'].includes(
+          key,
+        ),
+    ) as Record<string, string>,
 );
 
 export const selectNotesByRouteParams = createSelector(
@@ -59,7 +69,7 @@ export const selectNotesTableViewModel = createSelector(
 );
 
 @Component({
-  selector: 'app-client-notes-feature-notes-table',
+  selector: 'app-notes-table-container',
   standalone: true,
   imports: [CommonModule, NotesTableContainerComponent, NotesTableComponent],
   templateUrl: './notes-table-container.component.html',
@@ -74,8 +84,10 @@ export class NotesTableContainerComponent {
   protected vm = this.store.selectSignal(selectNotesTableViewModel);
 
   public constructor() {
-    this.tableParams$.pipe(takeUntilDestroyed()).subscribe((params) => {
-      this.store.dispatch(NotesActions.getNotes({ ...params }));
-    });
+    this.tableParams$
+      .pipe(takeUntilDestroyed(), distinctUntilChangedDeep())
+      .subscribe((params) => {
+        this.store.dispatch(NotesActions.getNotes({ ...params }));
+      });
   }
 }

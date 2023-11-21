@@ -93,44 +93,29 @@ export const selectOpportunityDetails = createSelector(
       subLabel: 'Opportunity',
     },
     {
-      label: opportunity?.dealLeads[0] ?? '',
-      subLabel: 'Deal Lead',
+      label: '12',
+      subLabel: 'Last Funding (M) (Deal Room)',
     },
-    // {
-    //   label: 'Unknown',
-    //   subLabel: 'Last Contact',
-    // },
+
+    {
+      label: '0.9',
+      subLabel: 'MCV Score',
+    },
   ],
 );
 
-export const selectOpportunityDetailViewModel = createSelector(
-  routerQuery.selectCurrentOpportunityId,
-  opportunitiesQuery.selectRouteOpportunityDetails,
+export const selectOrganisationPageViewModel = createSelector(
   OrganisationsFeature.selectCurrentOrganisation,
   routerQuery.selectCurrentOrganisationId,
-  selectOpportunityPipelines,
-  selectOpportunityPageNavigation,
-  notesQuery.selectOpportunityNotesIsLoading,
   selectOpportunityDetails,
-  (
-    opportunityId,
-    opportunityDetails,
-    currentOrganisation,
-    currentOrganisationId,
-    lines,
-    navigations,
-    isLoadingNotes,
-    details,
-  ) => {
+  OrganisationsFeature.selectLoadingOrganisation,
+  (currentOrganisation, currentOrganisationId, details, isLoading) => {
     return {
-      opportunityId,
-      opportunityDetails,
       currentOrganisationId,
       currentOrganisation,
-      lines,
       details,
-      navigations,
-      isLoadingNotes,
+      isLoading,
+      opportunities: currentOrganisation?.opportunities ?? [],
     };
   },
 );

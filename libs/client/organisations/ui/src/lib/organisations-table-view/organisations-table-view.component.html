@@ -25,6 +25,7 @@
         <i class="fa-regular fa-image text-xl"></i>
         <div
           class="hover:text-primary-600 group flex grow items-center gap-3 overflow-hidden transition-all duration-100 hover:cursor-pointer"
+          [routerLink]="['/companies', dataItem.id]"
         >
           <div class="grow overflow-hidden">
             <p class="truncate group-hover:font-bold">{{ dataItem.name }}</p>
@@ -47,8 +48,7 @@
             strategy: 'immediate'
           "
         >
-          <p>{{ opportunity.tag?.name }}</p>
-          <!--          <p>{{ opportunity ?? 'Updated: dd/mm/yyyy' }}</p>-->
+          <p>{{ opportunity?.tag?.name || '' }}</p>
         </div>
       </div>
     </ng-template>

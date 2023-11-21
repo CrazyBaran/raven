@@ -8,6 +8,14 @@
     list-style: disc;
   }
 
+  ul ul {
+    list-style: circle;
+  }
+
+  ul ul ul {
+    list-style-type: square;
+  }
+
   ol {
     @apply pl-6;
     list-style: decimal;

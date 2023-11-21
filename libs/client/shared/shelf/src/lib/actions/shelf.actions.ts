@@ -5,7 +5,6 @@ export const ShelfActions = createActionGroup({
   events: {
     'Open Notepad': emptyProps(),
     'Open Note Details': props<{ noteId: string }>(),
-
-    'Open Opportunity Form': emptyProps(),
+    'Open Opportunity Form': props<{ payload?: { organisationId?: string } }>(),
   },
 });

@@ -4,6 +4,9 @@ import {
   OrganisationsResponse,
 } from '@app/client/organisations/data-access';
 
+//TODO: QUICK FIX FOR DEMO, Remove this dependency
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { OpportunityData } from '@app/rvns-opportunities';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { OrganisationEntity } from './organisations.model';
 
@@ -29,6 +32,7 @@ export const OrganisationsActions = createActionGroup({
     'Add Opportunity to Organisation': props<{
       id: string;
       opportunityId: string;
+      opportunity?: OpportunityData;
     }>(),
   },
 });

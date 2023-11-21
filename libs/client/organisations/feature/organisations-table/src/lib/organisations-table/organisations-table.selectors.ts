@@ -111,7 +111,6 @@ export const selectOrganisationRows = createSelector(
           stageColor: opportunity
             ? stageColorDictionary?.[opportunity.stage?.id] ?? '#000'
             : '#000',
-          tag: null,
         })),
     }));
   },

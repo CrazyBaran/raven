@@ -13,8 +13,9 @@ export function getDealTeam(
     value: string | number | object | object[];
   }[],
 ): string[] {
-  const dealLeads = fields.find((field) => field.displayName === 'Deal Team')
-    ?.value as OpportunityDealTeamFieldData[];
+  const dealLeads = (fields ?? []).find(
+    (field) => field.displayName === 'Deal Team',
+  )?.value as OpportunityDealTeamFieldData[];
 
   if (!dealLeads || dealLeads?.length === 0) {
     return [];

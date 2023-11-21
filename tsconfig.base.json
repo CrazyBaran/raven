@@ -64,9 +64,6 @@
       "@app/client/opportunities/feature/create-dialog": [
         "libs/client/opportunities/feature/create-dialog/src/index.ts"
       ],
-      "@app/client/opportunities/feature/update-dialog": [
-        "libs/client/opportunities/feature/update-dialog/src/index.ts"
-      ],
       "@app/client/opportunities/feature/files": [
         "libs/client/opportunities/feature/files/src/index.ts"
       ],
@@ -84,6 +81,9 @@
       ],
       "@app/client/opportunities/feature/shell": [
         "libs/client/opportunities/feature/shell/src/index.ts"
+      ],
+      "@app/client/opportunities/feature/update-dialog": [
+        "libs/client/opportunities/feature/update-dialog/src/index.ts"
       ],
       "@app/client/opportunities/page/opportunity-details": [
         "libs/client/opportunities/page/opportunity-details/src/index.ts"
@@ -105,6 +105,9 @@
       ],
       "@app/client/organisations/feature/companies-table-container": [
         "libs/client/organisations/feature/companies-table-container/src/index.ts"
+      ],
+      "@app/client/organisations/feature/organisation-page": [
+        "libs/client/organisations/feature/organisation-page/src/index.ts"
       ],
       "@app/client/organisations/feature/organisations-table": [
         "libs/client/organisations/feature/organisations-table/src/index.ts"
