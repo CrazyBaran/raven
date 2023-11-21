@@ -172,45 +172,6 @@ export class NotesService {
         `Opportunity with id ${opportunityId} not found`,
       );
     }
-    const opportunityNote = await this.noteRepository.findOne({
-      where: { id: opportunity.noteId },
-      relations: [
-        'createdBy',
-        'updatedBy',
-        'deletedBy',
-        'tags',
-        'noteTabs',
-        'noteTabs.noteFieldGroups',
-        'noteTabs.noteFieldGroups.noteFields',
-        'noteFieldGroups',
-        'noteFieldGroups.noteFields',
-      ],
-    });
-
-    const opportunityNoteTemplate = await this.templateRepository
-      .createQueryBuilder('template')
-      .leftJoinAndSelect('template.tabs', 'tab')
-      .leftJoinAndSelect('tab.relatedTemplates', 'relatedTemplate')
-      .leftJoinAndSelect('tab.pipelineStages', 'pipelineStage')
-      .leftJoinAndSelect('tab.relatedFields', 'relatedFields')
-      .select([
-        'template.id',
-        'template.name',
-        'tab.id',
-        'tab.name',
-        'pipelineStage.id',
-        'pipelineStage.displayName',
-        'relatedTemplate.id',
-        'relatedFields.id',
-      ])
-      .where('template.id = :templateId', {
-        templateId: opportunityNote.templateId,
-      })
-      .getOne();
-
-    // we resolve these relations manually because typeorm lacks performance in doing so...
-    opportunityNote.template = opportunityNoteTemplate;
-    opportunity.note = opportunityNote;
 
     const organisationTag = await this.organisationTagRepository.findOne({
       where: { organisationId: opportunity.organisation.id },
@@ -263,6 +224,56 @@ export class NotesService {
       .andWhere('template.type = :type', { type: TemplateTypeEnum.Note });
 
     const relatedNotes = await qb.getMany();
+
+    if (type === TemplateTypeEnum.Note) {
+      return relatedNotes
+        .map((rn) => {
+          delete rn.noteFieldGroups;
+          delete rn.noteTabs;
+          return rn; // we remove note fields data to make response smaller
+        })
+        .map(this.noteEntityToNoteData.bind(this));
+    }
+
+    const opportunityNote = await this.noteRepository.findOne({
+      where: { id: opportunity.noteId },
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'deletedBy',
+        'tags',
+        'noteTabs',
+        'noteTabs.noteFieldGroups',
+        'noteTabs.noteFieldGroups.noteFields',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
+    });
+
+    const opportunityNoteTemplate = await this.templateRepository
+      .createQueryBuilder('template')
+      .leftJoinAndSelect('template.tabs', 'tab')
+      .leftJoinAndSelect('tab.relatedTemplates', 'relatedTemplate')
+      .leftJoinAndSelect('tab.pipelineStages', 'pipelineStage')
+      .leftJoinAndSelect('tab.relatedFields', 'relatedFields')
+      .select([
+        'template.id',
+        'template.name',
+        'tab.id',
+        'tab.name',
+        'pipelineStage.id',
+        'pipelineStage.displayName',
+        'relatedTemplate.id',
+        'relatedFields.id',
+      ])
+      .where('template.id = :templateId', {
+        templateId: opportunityNote.templateId,
+      })
+      .getOne();
+
+    // we resolve these relations manually because typeorm lacks performance in doing so...
+    opportunityNote.template = opportunityNoteTemplate;
+    opportunity.note = opportunityNote;
 
     const workflowNote = this.transformNotesToNoteWithRelatedData(
       opportunity.note,
