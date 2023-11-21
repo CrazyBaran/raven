@@ -36,6 +36,7 @@ import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 
 import { TemplateTypeEnum } from '@app/rvns-templates';
+import { FindOrganizationByIdPipe } from '../../shared/pipes/find-organisation-by-id.pipe';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import {
@@ -92,6 +93,7 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'domain', type: String, required: false })
   @ApiQuery({ name: 'opportunityId', type: String, required: false })
+  @ApiQuery({ name: 'organisationId', type: String, required: false })
   @ApiQuery({ name: 'type', enum: TemplateTypeEnum, required: false })
   @ApiQuery({
     name: 'tagIds',
@@ -104,12 +106,18 @@ export class NotesController {
     @Query('domain')
     domain: string,
     @Query('domain', FindOrganizationByDomainPipe, FindTagByOgranisationPipe)
-    organisationTagEntity: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
+    organisationTagFromDomain: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
     @Query('tagIds', ParseTagsPipe)
     tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
-
     @Query('opportunityId') opportunityId: string,
     @Query('type') type: TemplateTypeEnum = TemplateTypeEnum.Note,
+    @Query('organisationId') organisationId?: string,
+    @Query(
+      'organisationId',
+      FindOrganizationByIdPipe,
+      FindTagByOgranisationPipe,
+    )
+    organisationTagFromId?: string | OrganisationTagEntity | null,
   ): Promise<NoteData[] | (WorkflowNoteData | NoteData)[]> {
     if (opportunityId) {
       return await this.notesService.getNotesForOpportunity(
@@ -117,13 +125,19 @@ export class NotesController {
         type,
       );
     }
-    if (domain && organisationTagEntity === null) {
+    if (
+      (domain && organisationTagFromDomain === null) ||
+      (organisationId && organisationTagFromId === null)
+    ) {
       return [];
     }
+    const organisation =
+      (organisationTagFromDomain as OrganisationTagEntity) ||
+      (organisationTagFromId as OrganisationTagEntity);
     return await Promise.all(
       (
         await this.notesService.getAllNotes(
-          organisationTagEntity as OrganisationTagEntity,
+          organisation as OrganisationTagEntity,
           tagEntities as TagEntity[],
           type,
         )
