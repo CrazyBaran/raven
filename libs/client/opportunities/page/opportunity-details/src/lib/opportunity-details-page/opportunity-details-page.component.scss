@@ -13,3 +13,8 @@
 ::ng-deep .k-tilelayout {
   background: transparent !important;
 }
+
+::ng-deep .navigations .k-button-text {
+  width: 100% !important;
+  text-align: left !important;
+}

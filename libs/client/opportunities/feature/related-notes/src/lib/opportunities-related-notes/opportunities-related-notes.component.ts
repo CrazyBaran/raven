@@ -31,7 +31,7 @@ import {
   fadeIn,
 } from '@app/client/shared/ui';
 import { SafeHtmlPipe, TimesPipe } from '@app/client/shared/ui-pipes';
-import { distinctUntilChangedDeep, log } from '@app/client/shared/util-rxjs';
+import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { EditorView } from '@progress/kendo-angular-editor';
@@ -48,7 +48,7 @@ import { RxLet } from '@rx-angular/template/let';
 import { trigger } from '@angular/animations';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import * as _ from 'lodash';
-import { debounceTime, firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-related-notes.selectors';
 
 @Component({
@@ -116,10 +116,8 @@ export class OpportunitiesRelatedNotesComponent {
   protected fields$ = this.store
     .select(selectOpportunitiesRelatedNotesViewModel)
     .pipe(
-      debounceTime(150),
       map(({ fields }) => fields),
       distinctUntilChangedDeep(),
-      log(),
     );
 
   public constructor() {
