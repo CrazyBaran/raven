@@ -70,7 +70,7 @@ export const selectNoteFields = createSelector(
   opportunitiesQuery.selectNoteFields,
   (notes) =>
     _.chain(notes)
-      .groupBy((x) => x.tabId)
+      .groupBy((x) => x.tabName)
       .value(),
 );
 

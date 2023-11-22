@@ -1,7 +1,7 @@
 <div class="flex h-full gap-3">
+  <!--    [class.opacity-5]="!visible() && !vm().isLoading"-->
   <div
     *ngIf="vm().fields?.length || vm().isLoading"
-    [class.opacity-5]="!visible() && !vm().isLoading"
     class="h-full flex-1 overflow-auto"
   >
     <kendo-tilelayout
@@ -34,11 +34,9 @@
         </ng-container>
         <ng-template #fields>
           <kendo-tilelayout-item
-            *rxFor="
-              let field of fields$;
-              trackBy: 'id';
-              renderCallback: itemsRendered
-            "
+            *rxFor="let field of fields$; let i = index; trackBy: 'uniqId'"
+            [order]="i"
+            [@fadeIn]
             [colSpan]="12"
             [col]="1"
             [title]="$any(field).title"
@@ -46,7 +44,7 @@
             <kendo-tilelayout-item-body>
               <app-rich-text
                 [borderless]="true"
-                [formControlName]="field.id"
+                [formControlName]="field.uniqId"
                 [grow]="true"
                 [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
                 class="h-full"

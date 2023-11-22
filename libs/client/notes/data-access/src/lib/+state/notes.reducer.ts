@@ -197,6 +197,13 @@ export const notesReducer = createReducer(
           ...state.details,
           data: data,
         },
+        opportunityNotes:
+          data.templateType === 'workflow'
+            ? {
+                ...state.opportunityNotes,
+                data: [data] as WorkflowNoteData[],
+              }
+            : state.opportunityNotes,
       },
     ),
   ),

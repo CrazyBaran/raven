@@ -44,7 +44,7 @@ export const selectDynamicOpportunityTabs = createSelector(
       ({
         label: tab.name,
         link: 'related-notes',
-        queryParams: { tab: tab.id },
+        queryParams: { tab: tab.name },
       }),
     ),
 );

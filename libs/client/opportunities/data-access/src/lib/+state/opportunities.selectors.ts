@@ -81,6 +81,7 @@ export const selectNoteFields = createSelector(
       .map((tab) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         tab.noteFieldGroups[0].noteFields.map((field: any) => ({
+          uniqId: `${tab.name}-${field.name}`,
           id: field.id,
           title: field.name,
           value: field.value,
