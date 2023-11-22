@@ -809,6 +809,12 @@ export class NotesService {
         name: note.createdBy.name,
         email: note.createdBy.email,
       },
+      updatedById: note.updatedBy.id,
+      updatedBy: {
+        name: note.updatedBy.name,
+        email: note.updatedBy.email,
+      },
+      templateName: note.template.name,
       fields: note.noteFieldGroups
         .map((nfg) => nfg.noteFields)
         .flat()
