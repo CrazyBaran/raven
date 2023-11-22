@@ -3,7 +3,7 @@ import { NoteTableRow } from '@app/client/notes/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import { createSelector } from '@ngrx/store';
 
-export const selectNotesGridModel = createSelector(
+const selectNotesGridModel = createSelector(
   notesQuery.selectNotesTableParams,
   notesQuery.selectIsTableLoading,
   notesQuery.selectAllNotesTableRows,

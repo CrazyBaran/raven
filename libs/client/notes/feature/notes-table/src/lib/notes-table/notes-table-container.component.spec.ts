@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
-import {
-  NotesTableContainerComponent,
-  selectNotesTableParams,
-  selectNotesTableViewModel,
-} from './notes-table-container.component';
+import { from } from 'rxjs';
+import { NotesTableContainerComponent } from './notes-table-container.component';
+import { selectNotesTableViewModel } from './notes-table-container.selectors';
 
 describe('ClientNotesFeatureNotesTableComponent', () => {
   let component: NotesTableContainerComponent;
@@ -16,14 +16,17 @@ describe('ClientNotesFeatureNotesTableComponent', () => {
       imports: [NotesTableContainerComponent],
       providers: [
         NoteStoreFacade,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
+        provideAnimations(),
         provideMockStore({
           selectors: [
             {
               selector: selectNotesTableViewModel,
-              value: {},
-            },
-            {
-              selector: selectNotesTableParams,
               value: {},
             },
           ],

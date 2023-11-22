@@ -15,34 +15,34 @@ export interface TableViewModel<T> {
 
 @Directive()
 export abstract class TableViewBaseComponent<T> {
-  @Input() public model: TableViewModel<T>;
+  @Input() public model: TableViewModel<T> | null;
 
   public get data(): T[] {
-    return this.model.data;
+    return this.model?.data ?? [];
   }
 
   public get isLoading(): boolean {
-    return this.model.isLoading;
+    return this.model?.isLoading ?? true;
   }
 
   public get total(): number {
-    return Number(this.model.total);
+    return Number(this.model?.total);
   }
 
   public get take(): number {
-    return Number(this.model.take);
+    return Number(this.model?.take);
   }
 
   public get skip(): number {
-    return Number(this.model.skip);
+    return Number(this.model?.skip);
   }
 
   public get field(): string {
-    return this.model.field;
+    return this.model?.field ?? '';
   }
 
   public get dir(): 'asc' | 'desc' {
-    if (!this.model.dir) return 'desc';
+    if (!this.model?.dir) return 'desc';
 
     if (this.model.dir === 'asc' || this.model.dir === 'desc') {
       return this.model.dir;
@@ -68,8 +68,8 @@ export abstract class TableViewBaseComponent<T> {
 
   public get pageable(): PagerSettings | boolean {
     return (
-      this.model.pageable ?? {
-        pageSizes: [10, 25, 50, 100].filter(
+      this.model?.pageable ?? {
+        pageSizes: [15, 25, 50, 100].filter(
           (pageSize) => pageSize <= this.total,
         ),
       }

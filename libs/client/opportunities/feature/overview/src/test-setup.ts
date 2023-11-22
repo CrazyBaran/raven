@@ -9,3 +9,4 @@ globalThis.ngJest = {
     errorOnUnknownProperties: true,
   },
 };
+global.ResizeObserver = require('resize-observer-polyfill');

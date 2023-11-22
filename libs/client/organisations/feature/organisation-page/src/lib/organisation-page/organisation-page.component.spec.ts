@@ -2,12 +2,10 @@
 //TODO: Refactor opportunity details
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoteStoreFacade } from '@app/client/notes/data-access';
-import {
-  selectNotesTableParams,
-  selectNotesTableViewModel,
-} from '@app/client/notes/feature/notes-table';
+import { selectNotesTableViewModel } from '@app/client/notes/feature/notes-table';
 import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
 import { OrganisationPageComponent } from './organisation-page.component';
@@ -21,6 +19,7 @@ describe('OrganisationPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [OrganisationPageComponent, RouterTestingModule],
       providers: [
+        provideAnimations(),
         provideMockStore({
           selectors: [
             {
@@ -32,10 +31,6 @@ describe('OrganisationPageComponent', () => {
             },
             {
               selector: selectNotesTableViewModel,
-              value: {},
-            },
-            {
-              selector: selectNotesTableParams,
               value: {},
             },
           ],

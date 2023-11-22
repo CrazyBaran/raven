@@ -15,7 +15,7 @@ export const buildPageParamsSelector = <T extends readonly string[], R>(
       ...defaultQueryParams,
       ...(_.chain(params)
         .keyBy((x) => x)
-        .mapValues((key) => queryParams[key])
+        .mapValues((key) => queryParams?.[key])
         .pickBy(Boolean)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .value() as any),
