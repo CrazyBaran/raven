@@ -8,9 +8,11 @@ import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { LoaderComponent } from '@app/client/shared/ui';
+import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { RxFor } from '@rx-angular/template/for';
 import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
 
@@ -29,6 +31,8 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     NgStyle,
     LoaderComponent,
     PageTemplateComponent,
+    SkeletonModule,
+    TimesPipe,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],

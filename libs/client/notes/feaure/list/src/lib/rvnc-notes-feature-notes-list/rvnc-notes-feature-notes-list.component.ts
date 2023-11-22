@@ -1,13 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit,
-  signal,
-} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NoteStoreFacade, notesQuery } from '@app/client/notes/data-access';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import {
   NoteDetailsComponent,
   NotesTableComponent,
@@ -15,10 +8,8 @@ import {
 } from '@app/client/notes/ui';
 import { ShelfStoreFacade } from '@app/client/shared/shelf';
 import { HeaderComponent, LoaderComponent } from '@app/client/shared/ui';
-import { Store } from '@ngrx/store';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
 import { FilterMenuModule } from '@progress/kendo-angular-grid';
-import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-rvnc-notes-feature-notes-list',
@@ -33,54 +24,17 @@ import { Subject, takeUntil } from 'rxjs';
     DialogModule,
     WindowModule,
     NoteDetailsComponent,
+    NotesTableContainerComponent,
   ],
   providers: [ShelfStoreFacade],
   templateUrl: './rvnc-notes-feature-notes-list.component.html',
   styleUrls: ['./rvnc-notes-feature-notes-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RvncNotesFeatureNotesListComponent implements OnInit, OnDestroy {
-  public readonly isLoading$ = this.noteStoreFacadeService.isLoading$;
-  public readonly notes = this.store.selectSignal(
-    notesQuery.selectAllNotesTableRows,
-  );
-
-  public openNoteId = signal(null);
-
-  private ngUnsubscribe = new Subject<void>();
-
-  public constructor(
-    private readonly noteStoreFacadeService: NoteStoreFacade,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly store: Store,
-    private readonly shelfFacade: ShelfStoreFacade,
-  ) {}
-
-  public ngOnInit(): void {
-    this.noteStoreFacadeService.getNotes();
-
-    this.route.queryParams
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(({ noteId }) => {
-        this.openNoteId.set(noteId || null);
-      });
-  }
-
-  public handleClosePreview(): void {
-    this.router.navigate([], {
-      queryParams: {
-        noteId: null,
-      },
-    });
-  }
+export class RvncNotesFeatureNotesListComponent {
+  public constructor(private readonly shelfFacade: ShelfStoreFacade) {}
 
   public handleOpenNotepad(): void {
     this.shelfFacade.openNotepad();
-  }
-
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }

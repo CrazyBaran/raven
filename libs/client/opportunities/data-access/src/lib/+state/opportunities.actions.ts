@@ -45,9 +45,6 @@ export const OpportunitiesActions = createActionGroup({
       pipelineStageId: string;
     }>(),
 
-    'Clear Opportunities': emptyProps(),
-    'Clear Opportunity Details': emptyProps(),
-
     'Open Opportunity Dialog Form': emptyProps,
 
     'Create Opportunity': props<{ payload: CreateOpportunity }>(),

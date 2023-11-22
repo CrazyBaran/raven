@@ -5,14 +5,18 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { TagFilterPipe } from '@app/client/notes/util';
 import {
+  ClipboardDirective,
   KendoDynamicPagingDirective,
+  KendoUrlPagingDirective,
+  KendoUrlSortingDirective,
+  LoaderComponent,
   TagComponent,
 } from '@app/client/shared/ui';
 import { TruncateElementsDirective } from '@app/client/shared/util';
@@ -20,12 +24,10 @@ import { NoteData } from '@app/rvns-notes/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
 
-import { Clipboard } from '@angular/cdk/clipboard';
-import { NotificationsActions } from '@app/client/shared/util-notifications';
-import { Store } from '@ngrx/store';
+import { TableViewBaseComponent } from '@app/client/shared/ui-directives';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
-import { SortDescriptor } from '@progress/kendo-data-query';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 
 export type NoteTableRow = NoteData & {
@@ -34,6 +36,7 @@ export type NoteTableRow = NoteData & {
     tooltip?: string;
   };
 };
+
 @Component({
   selector: 'app-notes-table',
   standalone: true,
@@ -47,30 +50,22 @@ export type NoteTableRow = NoteData & {
     TagComponent,
     TooltipModule,
     KendoDynamicPagingDirective,
+    ClipboardDirective,
+    KendoUrlPagingDirective,
+    KendoUrlSortingDirective,
+    SkeletonModule,
+    LoaderComponent,
   ],
   templateUrl: './notes-table.component.html',
   styleUrls: ['./notes-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class NotesTableComponent {
-  @Input({ required: true }) public notes: NoteTableRow[] = [];
-  @Input() public isLoading = false;
+export class NotesTableComponent extends TableViewBaseComponent<NoteTableRow> {
+  private dialogService = inject(DialogService);
+  private noteFacade = inject(NoteStoreFacade);
 
-  public sort: SortDescriptor[] = [
-    {
-      field: 'updatedAt',
-      dir: 'desc',
-    },
-  ];
-
-  public constructor(
-    private readonly dialogService: DialogService,
-    private readonly noteFacade: NoteStoreFacade,
-    private readonly clipBoard: Clipboard,
-    private readonly store: Store,
-  ) {}
-
+  //todo: refactor to use url dynamic dialogs
   public handleDeleteNote(note: NoteData): void {
     const dialogRef = this.dialogService.open({
       width: 350,
@@ -84,12 +79,7 @@ export class NotesTableComponent {
     });
   }
 
-  public handleCopyLink(noteId: string): void {
-    this.clipBoard.copy(`${window.location.href}?noteId=${noteId}`);
-    this.store.dispatch(
-      NotificationsActions.showSuccessNotification({
-        content: 'Link copied to clipboard.',
-      }),
-    );
+  public getNoteUrl(noteId: string): string {
+    return `${window.location.href}?noteId=${noteId}`;
   }
 }

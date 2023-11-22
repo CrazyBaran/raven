@@ -15,8 +15,8 @@ export class NotesEffects {
   private loadNotes$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(NotesActions.getNotes),
-      concatMap(({ domain, tagIds, opportunityId }) =>
-        this.notesService.getNotes(domain, tagIds, opportunityId).pipe(
+      switchMap(({ params }) =>
+        this.notesService.getNotes(params).pipe(
           map(({ data }) => NotesActions.getNotesSuccess({ data: data || [] })),
           catchError((error) => of(NotesActions.getNotesFailure({ error }))),
         ),

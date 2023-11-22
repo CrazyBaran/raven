@@ -1,5 +1,8 @@
 import { authQuery } from '@app/client/core/auth';
+import { buildPageParamsSelector } from '@app/client/shared/util-router';
+import { NoteData } from '@app/rvns-notes/data-access';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { NOTES_QUERY_DEFAULTS, notesQueries } from '../domain/get-notes.params';
 import { NotesState, notesAdapter, notesFeatureKey } from './notes.reducer';
 
 export const { selectAll, selectEntities } = notesAdapter.getSelectors();
@@ -17,9 +20,17 @@ export const selectNotesDictionary = createSelector(
   (state: NotesState) => selectEntities(state),
 );
 
-export const selectIsLoading = createSelector(
+export const selectTableNotes = createSelector(
   selectNotesState,
-  (state: NotesState) => state.isLoading,
+  (state: NotesState) =>
+    state.table.ids
+      .map((id) => state.entities[id])
+      .filter(Boolean) as NoteData[],
+);
+
+export const selectIsTableLoading = createSelector(
+  selectNotesState,
+  (state: NotesState) => state.table.isLoading,
 );
 
 export const selectError = createSelector(
@@ -43,7 +54,7 @@ export const selectNoteUpdateIsLoading = createSelector(
 );
 
 export const selectAllNotesTableRows = createSelector(
-  selectAllNotes,
+  selectTableNotes,
   authQuery.selectUserEmail,
   (notes, userEmail) =>
     notes.map((note) => ({
@@ -73,9 +84,19 @@ const selectOpportunityNotesIsLoading = createSelector(
   (state) => state.isLoading,
 );
 
+const selectNotesTableParams = buildPageParamsSelector(
+  notesQueries,
+  NOTES_QUERY_DEFAULTS,
+);
+
+const selectTotal = createSelector(
+  selectNotesState,
+  (state) => state.table.total,
+);
+
 export const notesQuery = {
   selectAllNotes,
-  selectIsLoading,
+  selectIsTableLoading,
   selectError,
   selectNoteDetails,
   selectNoteDetailsIsLoading,
@@ -84,4 +105,6 @@ export const notesQuery = {
   selectOpportunityNotes,
   selectOpportunityNotesIsLoading,
   selectNotesDictionary,
+  selectNotesTableParams,
+  selectTotal,
 };

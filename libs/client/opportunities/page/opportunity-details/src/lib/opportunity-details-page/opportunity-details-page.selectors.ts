@@ -6,7 +6,6 @@ import { notesQuery } from '@app/client/notes/data-access';
 import { OrganisationsFeature } from '@app/client/organisations/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
-import * as _ from 'lodash';
 
 const LINES: {
   label: string;
@@ -38,21 +37,16 @@ const OPPORTUNITY_DETAILS_ROUTES = [
 ];
 
 export const selectDynamicOpportunityTabs = createSelector(
-  notesQuery.selectOpportunityNotes,
+  opportunitiesQuery.selectOpportunityNoteTabs,
   (opportunityNotes) =>
-    _.chain(opportunityNotes)
-      .map(
-        ({ noteTabs }) =>
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          noteTabs?.map((x: any) => ({
-            label: x.name,
-            link: 'related-notes',
-            queryParams: { tab: x.id },
-          })) ?? [],
-      )
-      .flatMap()
-
-      .value(),
+    opportunityNotes.map((tab) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ({
+        label: tab.name,
+        link: 'related-notes',
+        queryParams: { tab: tab.id },
+      }),
+    ),
 );
 
 export const selectOpportunityPipelines = createSelector(
@@ -83,24 +77,36 @@ export const selectOpportunityPageNavigation = createSelector(
 export const selectOpportunityDetails = createSelector(
   OrganisationsFeature.selectCurrentOrganisation,
   opportunitiesQuery.selectRouteOpportunityDetails,
-  (organisation, opportunity) => [
-    {
-      label: organisation?.name,
-      subLabel: organisation?.domains[0],
-    },
-    {
-      label: opportunity?.tag?.name ?? 'Unknown',
-      subLabel: 'Opportunity',
-    },
-    {
-      label: opportunity?.dealLeads[0] ?? '',
-      subLabel: 'Deal Lead',
-    },
-    // {
-    //   label: 'Unknown',
-    //   subLabel: 'Last Contact',
-    // },
-  ],
+  (organisation, opportunity) =>
+    [
+      {
+        label: organisation?.name,
+        subLabel: organisation?.domains[0],
+      },
+      {
+        label: opportunity?.tag?.name ?? '',
+        subLabel: 'Opportunity',
+      },
+      {
+        label: opportunity?.dealLeads[0] ?? '',
+        subLabel: 'Deal Lead',
+      },
+      {
+        label: '',
+        subLabel: 'Last Contact',
+      },
+    ].filter(({ label }) => !!label),
+);
+
+export const selectOpportunityPageLoadingState = createSelector(
+  opportunitiesQuery.selectOpportunityDetailsIsLoading,
+  notesQuery.selectOpportunityNotesIsLoading,
+  OrganisationsFeature.selectLoadingOrganisation,
+  (opportunityIsLoading, notesIsLoading, organisationIsLoading) => ({
+    opportunityIsLoading,
+    notesIsLoading,
+    organisationIsLoading,
+  }),
 );
 
 export const selectOpportunityDetailViewModel = createSelector(
@@ -110,8 +116,8 @@ export const selectOpportunityDetailViewModel = createSelector(
   routerQuery.selectCurrentOrganisationId,
   selectOpportunityPipelines,
   selectOpportunityPageNavigation,
-  notesQuery.selectOpportunityNotesIsLoading,
   selectOpportunityDetails,
+  selectOpportunityPageLoadingState,
   (
     opportunityId,
     opportunityDetails,
@@ -119,8 +125,8 @@ export const selectOpportunityDetailViewModel = createSelector(
     currentOrganisationId,
     lines,
     navigations,
-    isLoadingNotes,
     details,
+    loadingState,
   ) => {
     return {
       opportunityId,
@@ -130,7 +136,7 @@ export const selectOpportunityDetailViewModel = createSelector(
       lines,
       details,
       navigations,
-      isLoadingNotes,
+      ...loadingState,
     };
   },
 );

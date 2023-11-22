@@ -28,16 +28,7 @@
     <app-quick-filters />
 
     <div class="flex overflow-hidden">
-      <app-notes-table
-        [notes]="notes() || []"
-        [isLoading]="(isLoading$ | async)!"
-      />
+      <app-notes-table-container />
     </div>
   </div>
 </div>
-
-<app-note-details
-  *ngIf="openNoteId()"
-  [noteId]="openNoteId()"
-  (closeWindow)="handleClosePreview()"
-/>
