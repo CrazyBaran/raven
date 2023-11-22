@@ -49,8 +49,10 @@ import { EditorView } from '@progress/kendo-angular-editor';
 
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
 import { TagComponent } from '@app/client/shared/ui';
+import { TagsActions } from '@app/client/tags/state';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { firstValueFrom, map, startWith } from 'rxjs';
+import { firstValueFrom, map, startWith, tap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 export interface NotepadForm {
   template: TemplateWithRelationsData | null;
@@ -115,6 +117,19 @@ export class NotepadFormComponent
       .subscribe((value) => {
         this.onChange?.(value as NotepadForm);
       });
+
+    this.actions$
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(TagsActions.createTagSuccess),
+        tap((tag) => {
+          this.notepadForm.controls.tags.setValue([
+            ...(this.notepadForm.controls.tags.value ?? []),
+            tag.data.id,
+          ]);
+        }),
+      )
+      .subscribe();
   }
 
   @ViewChild('container', { read: ViewContainerRef })
@@ -124,6 +139,7 @@ export class NotepadFormComponent
   protected tagFacade = inject(TagsStoreFacade);
   protected uploadFileService = inject(UploadFileService);
   protected store = inject(Store);
+  protected actions$ = inject(Actions);
 
   //TODO: MOVE TO COMPONENT STORE
   protected noteTemplates = this.templateFacade.notesTemplates;

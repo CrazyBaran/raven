@@ -96,7 +96,7 @@ export class NotesEffects {
   private updateNote$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(NotesActions.updateNote),
-      concatMap(({ noteId, data }) =>
+      switchMap(({ noteId, data }) =>
         this.notesService.patchNote(noteId, data).pipe(
           map(({ data }) =>
             NotesActions.updateNoteSuccess({ data: data!, originId: noteId }),

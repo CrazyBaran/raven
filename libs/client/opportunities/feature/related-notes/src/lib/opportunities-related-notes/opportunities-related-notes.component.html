@@ -1,10 +1,7 @@
-<!--<pre>-->
-<!--  {{ vm() | json }}-->
-<!--</pre>-->
 <div class="flex h-full gap-3">
   <div
-    *ngIf="vm().fields?.length"
-    [class.opacity-5]="!visible()"
+    *ngIf="vm().fields?.length || vm().isLoading"
+    [class.opacity-5]="!visible() && !vm().isLoading"
     class="h-full flex-1 overflow-auto"
   >
     <kendo-tilelayout
@@ -15,52 +12,88 @@
       rowHeight="minmax(300px, 1fr)"
     >
       <ng-container [formGroup]="formGroup">
-        <kendo-tilelayout-item
-          *rxFor="
-            let field of fields$;
-            trackBy: 'id';
-            renderCallback: itemsRendered
-          "
-          [colSpan]="12"
-          [col]="1"
-          [title]="$any(field).title"
-        >
-          <kendo-tilelayout-item-body>
-            <app-rich-text
-              [borderless]="true"
-              [formControlName]="field.id"
-              [grow]="true"
-              [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
-              class="h-full"
-              placeholder="Click to write content here..."
-            >
-            </app-rich-text>
-            <!--          <div-->
-            <!--            class="bg-grey-100 flex h-full flex-col gap-3 bg-opacity-50 px-6 py-5"-->
-            <!--          >-->
+        <ng-container *ngIf="vm().isLoading; else fields">
+          <kendo-tilelayout-item
+            *rxFor="let i of 2 | times"
+            [colSpan]="12"
+            [col]="1"
+          >
+            <kendo-tilelayout-item-header>
+              <kendo-skeleton width="60%"></kendo-skeleton>
+            </kendo-tilelayout-item-header>
+            <kendo-tilelayout-item-body>
+              <div class="flex flex-col gap-2">
+                <kendo-skeleton width="60%"></kendo-skeleton>
+                <kendo-skeleton width="35%"></kendo-skeleton>
+                <kendo-skeleton width="70%"></kendo-skeleton>
+                <kendo-skeleton width="35%"></kendo-skeleton>
+                <kendo-skeleton width="70%"></kendo-skeleton>
+              </div>
+            </kendo-tilelayout-item-body>
+          </kendo-tilelayout-item>
+        </ng-container>
+        <ng-template #fields>
+          <kendo-tilelayout-item
+            *rxFor="
+              let field of fields$;
+              trackBy: 'id';
+              renderCallback: itemsRendered
+            "
+            [colSpan]="12"
+            [col]="1"
+            [title]="$any(field).title"
+          >
+            <kendo-tilelayout-item-body>
+              <app-rich-text
+                [borderless]="true"
+                [formControlName]="field.id"
+                [grow]="true"
+                [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
+                class="h-full"
+                placeholder="Click to write content here..."
+              >
+              </app-rich-text>
+              <!--          <div-->
+              <!--            class="bg-grey-100 flex h-full flex-col gap-3 bg-opacity-50 px-6 py-5"-->
+              <!--          >-->
 
-            <!--            <div [innerHTML]="field.value | safeHtml"></div>-->
-            <!--          </div>-->
-          </kendo-tilelayout-item-body>
-        </kendo-tilelayout-item>
+              <!--            <div [innerHTML]="field.value | safeHtml"></div>-->
+              <!--          </div>-->
+            </kendo-tilelayout-item-body>
+          </kendo-tilelayout-item>
+        </ng-template>
       </ng-container>
     </kendo-tilelayout>
   </div>
 
   <kendo-tilelayout
-    *ngIf="vm().visibleNoteWithFields || vm().notes?.length"
+    *ngIf="vm().visibleNoteWithFields || vm().notes?.length || vm().isLoading"
     [columns]="12"
     [draggable]="false"
     [gap]="12"
     class="h-full flex-1 !p-0"
     rowHeight="100%"
   >
-    <kendo-tilelayout-item [colSpan]="12" title="Related Notes">
+    <kendo-tilelayout-item [colSpan]="12">
+      <kendo-tilelayout-item-header>
+        <kendo-skeleton
+          *ngIf="vm().isLoading; else relatedNotesTitle"
+          width="30%"
+        ></kendo-skeleton>
+        <ng-template #relatedNotesTitle>
+          <p>Related Notes</p>
+        </ng-template>
+      </kendo-tilelayout-item-header>
       <kendo-tilelayout-item-body>
+        <ng-container
+          *ngIf="vm().isLoading"
+          [ngTemplateOutlet]="relatedNoteSkeleton"
+        />
+
         <ng-container
           *ngIf="vm().visibleNoteWithFields"
           [ngTemplateOutlet]="relatedNote"
-        ></ng-container>
+        />
 
         <ng-container
           *ngIf="!vm().visibleNoteWithFields && vm().notes?.length"
@@ -173,6 +206,7 @@
     </footer>
   </div>
 </ng-template>
+
 <ng-template #relatedNotesTable>
   <kendo-grid
     [kendoGridBinding]="vm().notes"
@@ -246,4 +280,79 @@
       </ng-template>
     </kendo-grid-column>
   </kendo-grid>
+</ng-template>
+
+<!--  TODO: Extract related note tempalte-->
+<ng-template #relatedNoteSkeleton>
+  <div
+    *rxLet="vm().visibleNoteWithFields; let note"
+    class="flex h-full flex-col"
+  >
+    <header>
+      <div class="flex flex-col">
+        <div class="flex">
+          <!--        NOTE TYPE        -->
+          <div class="px-3 py-4">
+            <div class="w-fit rounded p-1.5">
+              <kendo-skeleton [width]="75"></kendo-skeleton>
+            </div>
+          </div>
+
+          <!--        CREATE INFO       -->
+          <div class="grow px-3 py-2">
+            <div class="flex flex-col gap-1">
+              <span class="mb-2 flex gap-1">
+                <kendo-skeleton shape="circle" [width]="20"></kendo-skeleton>
+                <kendo-skeleton [width]="75"></kendo-skeleton>
+              </span>
+
+              <kendo-skeleton [width]="60"></kendo-skeleton>
+            </div>
+          </div>
+
+          <!--        ACTION ICON       -->
+          <div class="p-3">
+            <kendo-skeleton [width]="30" [height]="30"></kendo-skeleton>
+          </div>
+        </div>
+        <div class="px-3 pb-6 pt-3">
+          <kendo-skeleton [width]="150" [height]="25"></kendo-skeleton>
+        </div>
+      </div>
+    </header>
+    <article
+      class="border-component-border grow basis-0 overflow-auto border-b border-t"
+    >
+      <div class="h-full">
+        <div class="flex flex-col gap-3">
+          <div class="p-3">
+            <div class="mb-2 text-[10px] uppercase">
+              <kendo-skeleton [width]="80"></kendo-skeleton>
+            </div>
+            <div class="flex flex-col gap-2">
+              <kendo-skeleton width="70%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="40%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="90%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="20%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="40%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="90%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="20%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="40%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="90%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton width="20%" [height]="15"></kendo-skeleton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+    <footer>
+      <div class="flex items-center justify-between gap-2 p-3">
+        <kendo-skeleton [width]="80" [height]="30"></kendo-skeleton>
+
+        <kendo-skeleton [width]="60" [height]="20"></kendo-skeleton>
+
+        <kendo-skeleton [width]="80" [height]="30"></kendo-skeleton>
+      </div>
+    </footer>
+  </div>
 </ng-template>

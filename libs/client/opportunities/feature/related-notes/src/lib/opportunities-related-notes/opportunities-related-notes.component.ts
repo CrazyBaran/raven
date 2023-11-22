@@ -29,7 +29,7 @@ import {
   KendoDynamicPagingDirective,
   LoaderComponent,
 } from '@app/client/shared/ui';
-import { SafeHtmlPipe } from '@app/client/shared/ui-pipes';
+import { SafeHtmlPipe, TimesPipe } from '@app/client/shared/ui-pipes';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -44,6 +44,7 @@ import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
 
+import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import * as _ from 'lodash';
 import { Subject, firstValueFrom, map, merge } from 'rxjs';
 import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-related-notes.selectors';
@@ -66,6 +67,8 @@ import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-relate
     RxLet,
     GridModule,
     KendoDynamicPagingDirective,
+    TimesPipe,
+    SkeletonModule,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],

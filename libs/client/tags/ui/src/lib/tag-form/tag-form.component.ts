@@ -31,6 +31,10 @@ import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group
 
 export type TagType = 'company' | 'industry' | 'investor' | 'business-model';
 
+const domainPattern = {
+  pattern: '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?',
+};
+
 const TAG_FORM_DICTIOANRY: Partial<Record<TagType, DynamicControl[]>> = {
   company: [
     {
@@ -53,6 +57,7 @@ const TAG_FORM_DICTIOANRY: Partial<Record<TagType, DynamicControl[]>> = {
       placeholder: 'Company Domain',
       validators: {
         required: true,
+        ...domainPattern,
       },
     },
   ],
@@ -87,6 +92,7 @@ const TAG_FORM_DICTIOANRY: Partial<Record<TagType, DynamicControl[]>> = {
       placeholder: 'Investor Domain',
       validators: {
         required: true,
+        ...domainPattern,
       },
     },
   ],
