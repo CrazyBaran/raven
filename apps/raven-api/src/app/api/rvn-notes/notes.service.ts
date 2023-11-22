@@ -344,6 +344,7 @@ export class NotesService {
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
     return await this.noteRepository.manager.transaction(async (tem) => {
+      let start = new Date().getTime();
       const latestVersion = await this.noteRepository
         .createQueryBuilder('note')
         .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
@@ -351,6 +352,12 @@ export class NotesService {
         })
         .orderBy('note.version', 'DESC')
         .getOne();
+
+      // TODO remove debug
+      this.logger.debug(
+        'get latest version took: ',
+        new Date().getTime() - start,
+      );
 
       if (latestVersion.version !== noteEntity.version) {
         throw new ConflictException({
@@ -372,6 +379,7 @@ export class NotesService {
         );
       }
 
+      start = new Date().getTime();
       const newNoteVersion = new NoteEntity();
       newNoteVersion.name = options.name || noteEntity.name;
       newNoteVersion.rootVersionId = noteEntity.rootVersionId;
@@ -412,8 +420,13 @@ export class NotesService {
         );
 
       const savedNewNoteVersion = await tem.save(newNoteVersion);
+      this.logger.debug(
+        'save new note version took: ',
+        new Date().getTime() - start,
+      );
 
       if (noteEntity.template.type === TemplateTypeEnum.Workflow) {
+        start = new Date().getTime();
         const opportunity = await this.opportunityRepository.findOne({
           where: { noteId: noteEntity.id },
         });
@@ -421,6 +434,10 @@ export class NotesService {
           opportunity.noteId = savedNewNoteVersion.id;
           await tem.save(opportunity);
         }
+        this.logger.debug(
+          'update opportunity noteId took: ',
+          new Date().getTime() - start,
+        );
       }
       return savedNewNoteVersion;
     });
