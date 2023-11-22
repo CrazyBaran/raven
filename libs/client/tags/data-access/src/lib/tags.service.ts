@@ -5,7 +5,10 @@ import { GenericResponse } from '@app/rvns-api';
 import { CreateTagData } from './models/create-tag-data.model';
 
 import { retryWithDelay } from '@app/client/shared/util-rxjs';
-import { OrganisationsService } from '@app/client/tags/api-organisations';
+import {
+  CreateOrganisation,
+  OrganisationsService,
+} from '@app/client/tags/api-organisations';
 import { Observable, map, switchMap } from 'rxjs';
 import { CreateTagResponse } from './models/create-tag-response';
 import { Tag } from './models/tag.model';
@@ -34,37 +37,52 @@ export class TagsService {
   }
 
   public createTag(
-    createNote: CreateTagData,
+    createTag: CreateTagData,
   ): Observable<GenericResponse<CreateTagResponse>> {
-    if (createNote.type === 'company') {
-      return this.organisationService.createOrganisation(createNote).pipe(
-        switchMap((response) =>
-          this.getTags({
-            type: 'company',
-            organisationId: response?.data?.id,
-          }).pipe(
-            map((getTagResponse) => {
-              const tag = getTagResponse?.data?.find(
-                ({ organisationId }) => organisationId === response?.data?.id,
-              );
+    if (createTag.type === 'company') {
+      return this.organisationService
+        .createOrganisation(createTag as CreateOrganisation)
+        .pipe(
+          switchMap((response) =>
+            this.getTags({
+              type: 'company',
+              organisationId: response?.data?.id,
+            }).pipe(
+              map((getTagResponse) => {
+                const tag = getTagResponse?.data?.find(
+                  ({ organisationId }) => organisationId === response?.data?.id,
+                );
 
-              if (!tag) throw new Error('Tag not found');
+                if (!tag) throw new Error('Tag not found');
 
-              return {
-                data: {
-                  ...tag,
-                },
-              } as GenericResponse<CreateTagResponse>;
-            }),
-            retryWithDelay(3, 250),
+                return {
+                  data: {
+                    ...tag,
+                  },
+                } as GenericResponse<CreateTagResponse>;
+              }),
+              retryWithDelay(3, 250),
+            ),
           ),
-        ),
-      );
+        );
+    }
+
+    if (createTag.type === 'investor') {
+      return this.organisationService
+        .createOrganisation(createTag as CreateOrganisation)
+        .pipe(
+          switchMap((response) =>
+            this.http.post<GenericResponse<CreateTagResponse>>(this.url, {
+              ...createTag,
+              organisationId: response?.data?.id,
+            }),
+          ),
+        );
     }
 
     return this.http.post<GenericResponse<CreateTagResponse>>(
       this.url,
-      createNote,
+      createTag,
     );
   }
 }
