@@ -80,12 +80,14 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
   notesQuery.selectOpportunityNotes,
   selectOpportunityRelatedNotes,
   selectNoteFields,
-  (opportunity, tab, opportunityNotes, relatedNotes, fields) => {
+  notesQuery.selectOpportunityNotesIsLoading,
+  (opportunity, tab, opportunityNotes, relatedNotes, fields, isLoading) => {
     return {
       fields: fields[tab ?? ''] ?? [],
       relatedNoteFields: [],
       opportunityNote: opportunityNotes[0],
-      opportunityNoteId: opportunityNotes[0].id,
+      opportunityNoteId: opportunityNotes[0]?.id,
+      isLoading,
       ...relatedNotes,
     };
   },
