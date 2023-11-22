@@ -65,6 +65,8 @@ export class RavenShelfService {
   protected windowsRefsSignal = signal([] as WindowRef[]);
   protected windowWidths = signal([] as number[]);
 
+  private _windowContainer: ComponentRef<KendoWindowContainerComponent>;
+
   public constructor(
     private windowService: WindowService,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,7 +111,7 @@ export class RavenShelfService {
   public openLazyShelf(
     settings: Omit<WindowSettings, 'content'> & { template: ComponentTemplate },
   ): WindowRef | null {
-    const ref = this._createContainer({ class: 'kendo-window' });
+    const ref = this._getWindowContainer();
 
     const windowRef = this.openShelf({
       content: RenderTemplateComponent,
@@ -122,10 +124,6 @@ export class RavenShelfService {
     }
 
     windowRef.content.instance.component = settings.template;
-
-    windowRef.window.onDestroy(() => {
-      ref.destroy();
-    });
 
     return windowRef;
   }
@@ -170,6 +168,15 @@ export class RavenShelfService {
     return windowRef;
   }
 
+  private _getWindowContainer(): ComponentRef<KendoWindowContainerComponent> {
+    if (this._windowContainer) {
+      return this._windowContainer;
+    } else {
+      this._windowContainer = this._createContainer({ class: 'kendo-window' });
+      return this._windowContainer;
+    }
+  }
+
   private _createContainer(params?: {
     class?: string;
   }): ComponentRef<KendoWindowContainerComponent> {
@@ -180,7 +187,7 @@ export class RavenShelfService {
 
     const newNode = document.createElement('div');
     newNode.className = params?.class ?? '';
-    document.body.prepend(newNode);
+    document.body.append(newNode);
 
     const ref = factory.create(this.moduleRef.injector, [], newNode);
     this.appRef.attachView(ref.hostView);
