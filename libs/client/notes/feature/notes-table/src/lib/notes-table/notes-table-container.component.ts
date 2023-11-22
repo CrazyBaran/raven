@@ -3,8 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotesActions } from '@app/client/notes/data-access';
 import { NotesTableComponent } from '@app/client/notes/ui';
-import { selectPageParams } from '@app/client/shared/util-router';
-import { distinctUntilChangedDeep, log } from '@app/client/shared/util-rxjs';
+import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { selectNotesTableViewModel } from './notes-table-container.selectors';
@@ -23,7 +22,6 @@ export class NotesTableContainerComponent {
   protected vm = this.store.selectSignal(selectNotesTableViewModel);
 
   public constructor() {
-    this.store.select(selectPageParams).pipe(log()).subscribe();
     this.store
       .select(selectNotesTableViewModel)
       .pipe(

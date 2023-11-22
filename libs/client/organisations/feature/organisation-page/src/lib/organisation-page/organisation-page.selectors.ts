@@ -1,7 +1,5 @@
 import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
 
-import { opportunitiesQuery } from '@app/client/opportunities/data-access';
-
 import { notesQuery } from '@app/client/notes/data-access';
 import { OrganisationsFeature } from '@app/client/organisations/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
@@ -80,34 +78,40 @@ export const selectOpportunityPageNavigation = createSelector(
     }));
   },
 );
-export const selectOpportunityDetails = createSelector(
+export const selectOrganisationDetails = createSelector(
   OrganisationsFeature.selectCurrentOrganisation,
-  opportunitiesQuery.selectRouteOpportunityDetails,
-  (organisation, opportunity) => [
-    {
-      label: organisation?.name,
-      subLabel: organisation?.domains[0],
-    },
-    {
-      label: opportunity?.tag?.name ?? 'Unknown',
-      subLabel: 'Opportunity',
-    },
-    {
-      label: '12',
-      subLabel: 'Last Funding (M) (Deal Room)',
-    },
+  (organisation) =>
+    [
+      {
+        label: organisation?.name,
+        subLabel: organisation?.domains[0],
+      },
+      {
+        label: organisation?.opportunities?.length
+          ? _.orderBy(
+              organisation.opportunities,
+              (x) => new Date(x?.createdAt ?? ''),
+              'desc',
+            )[0].tag?.name ?? ''
+          : null,
+        subLabel: 'Opportunity',
+      },
+      {
+        label: '12',
+        subLabel: 'Last Funding (M) (Deal Room)',
+      },
 
-    {
-      label: '0.9',
-      subLabel: 'MCV Score',
-    },
-  ],
+      {
+        label: '0.9',
+        subLabel: 'MCV Score',
+      },
+    ].filter(({ label }) => !!label),
 );
 
 export const selectOrganisationPageViewModel = createSelector(
   OrganisationsFeature.selectCurrentOrganisation,
   routerQuery.selectCurrentOrganisationId,
-  selectOpportunityDetails,
+  selectOrganisationDetails,
   OrganisationsFeature.selectLoadingOrganisation,
   (currentOrganisation, currentOrganisationId, details, isLoading) => {
     return {

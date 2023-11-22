@@ -106,8 +106,14 @@ export const OrganisationsFeature = createFeature({
     selectCurrentOrganisation: createSelector(
       routerQuery.selectCurrentOrganisationId,
       selectOrganisationsState,
-      (companyId, organisations) =>
-        companyId ? organisations?.entities?.[companyId] : null,
+      (companyId, organisations) => {
+        if (!companyId) return null;
+
+        const org = organisations?.entities?.[companyId];
+        return org
+          ? { ...org, opportunities: org.opportunities.filter(Boolean) }
+          : null;
+      },
     ),
   }),
 });
