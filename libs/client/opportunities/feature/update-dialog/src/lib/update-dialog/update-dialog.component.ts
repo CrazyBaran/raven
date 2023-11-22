@@ -9,7 +9,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
 import { TagsActions } from '@app/client/tags/state';
-import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -38,6 +37,7 @@ import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { xIcon } from '@progress/kendo-svg-icons';
 import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
+import * as _ from 'lodash';
 import { first, map, take } from 'rxjs';
 import { selectCreateOpportunityDialogViewModel } from './update-dialog.selectors';
 
@@ -143,12 +143,13 @@ export class UpdateDialogComponent extends DialogContentBase implements OnInit {
       }),
     );
 
-    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
     this.opporunityDetails$.subscribe((data) => {
       // fix pathValue typing
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.opportunityForm.patchValue({
-        ...data,
+        ..._.pickBy(data, (v, key) =>
+          Object.keys(this.opportunityForm.controls).includes(key),
+        ),
         opportunityTagId: data?.tag?.id,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
@@ -160,9 +161,6 @@ export class UpdateDialogComponent extends DialogContentBase implements OnInit {
   }
 
   protected onCreate(): void {
-    // if (!this.vmSignal().templateId) {
-    //   throw new Error('Template id is not defined');
-    // }
     this.store.dispatch(
       OpportunitiesActions.updateOpportunity({
         id: this.vmSignal()!.opportunityDetails!.id,

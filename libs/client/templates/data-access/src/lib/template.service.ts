@@ -15,6 +15,11 @@ export class TemplateService {
   > {
     return this.http.get<GenericResponse<TemplateWithRelationsData[]>>(
       '/api/templates',
+      {
+        params: {
+          type: 'note', //todo: refactor this static param
+        },
+      },
     );
   }
 

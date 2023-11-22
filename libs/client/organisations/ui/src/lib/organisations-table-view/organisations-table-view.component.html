@@ -1,10 +1,8 @@
 <kendo-grid
-  [data]="data"
+  [data]="gridData"
   [loading]="isLoading"
   [pageSize]="take"
-  [pageable]="{
-    pageSizes: [15, 25, 50, 100]
-  }"
+  [pageable]="pageable"
   [skip]="skip"
   [sort]="sort"
   [sortable]="true"
@@ -24,8 +22,8 @@
       <div class="flex items-center gap-3">
         <i class="fa-regular fa-image text-xl"></i>
         <div
-          class="hover:text-primary-600 group flex grow items-center gap-3 overflow-hidden transition-all duration-100 hover:cursor-pointer"
           [routerLink]="['/companies', dataItem.id]"
+          class="hover:text-primary-600 group flex grow items-center gap-3 overflow-hidden transition-all duration-100 hover:cursor-pointer"
         >
           <div class="grow overflow-hidden">
             <p class="truncate group-hover:font-bold">{{ dataItem.name }}</p>
@@ -43,6 +41,7 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
+          class="flex h-10 items-center"
           *rxFor="
             let opportunity of dataItem | expandableList: collapsedRows();
             strategy: 'immediate'
@@ -69,7 +68,7 @@
             class="fa-solid fa-circle text-xs"
           ></i>
           <p class="flex-1 truncate text-black">
-            {{ opportunity.stage.displayName }}
+            {{ opportunity.stage?.displayName ?? '' }}
           </p>
         </div>
       </div>

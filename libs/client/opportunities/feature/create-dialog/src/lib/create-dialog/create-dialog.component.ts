@@ -9,7 +9,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
 import { TagsActions } from '@app/client/tags/state';
-import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -135,7 +134,6 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
       }),
     );
 
-    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
     if (this.vmSignal().organisationId) {
       this.opportunityForm.controls.organisationId.setValue(
         this.vmSignal().organisationId!,
@@ -149,14 +147,10 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
   }
 
   protected onCreate(): void {
-    if (!this.vmSignal().templateId) {
-      throw new Error('Template id is not defined');
-    }
     this.store.dispatch(
       OpportunitiesActions.createOpportunity({
         payload: {
           ...this.opportunityForm.getRawValue(),
-          workflowTemplateId: this.vmSignal().templateId,
         },
       }),
     );

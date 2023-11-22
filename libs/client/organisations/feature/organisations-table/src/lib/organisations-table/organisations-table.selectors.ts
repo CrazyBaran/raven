@@ -2,6 +2,8 @@ import { opportunitiesQuery } from '@app/client/organisations/api-opportunities'
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { tagsFeature } from '@app/client/organisations/api-tags';
 import { OrganisationsFeature } from '@app/client/organisations/state';
+import { OrganisationRow } from '@app/client/organisations/ui';
+import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
   ButtongroupNavigationModel,
   DropdownNavigationModel,
@@ -116,29 +118,42 @@ export const selectOrganisationRows = createSelector(
   },
 );
 
-export const selectOrganisationsTableViewModel = createSelector(
-  selectOrganisationsTableButtonGroupNavigation,
-  selectOrganisationsTableNavigationDropdowns,
+export const selectTableModel = createSelector(
   selectIsLoadingOrganisationsTable,
   selectOrganisationRows,
-  selectOrganisationTableQueryModel,
   selectOrganisationsTableParams,
   OrganisationsFeature.selectTotalRows,
   (
-    buttonGroupNavigation,
-    navigationDropdowns,
     isLoading,
     organisations,
-    queryModel,
-    query,
+    params,
     total,
+  ): TableViewModel<OrganisationRow> => ({
+    ...params,
+    isLoading,
+    total,
+    data: organisations,
+  }),
+);
+
+export const selectOrganisationsTableViewModel = createSelector(
+  selectOrganisationsTableButtonGroupNavigation,
+  selectOrganisationsTableNavigationDropdowns,
+  selectOrganisationTableQueryModel,
+  selectOrganisationsTableParams,
+  selectTableModel,
+
+  (
+    buttonGroupNavigation,
+    navigationDropdowns,
+    queryModel,
+    params,
+    tableModel,
   ) => ({
     buttonGroupNavigation,
     navigationDropdowns,
-    isLoading,
-    organisations,
     queryModel,
-    query,
-    total,
+    tableModel,
+    params,
   }),
 );

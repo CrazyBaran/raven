@@ -1,15 +1,18 @@
-import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
+import {
+  NoteData,
+  NoteWithRelationsData,
+  WorkflowNoteData,
+} from '@app/rvns-notes/data-access';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { CreateNote, PatchNote } from '../domain/createNote';
+import { NoteQueryParams } from '../domain/get-notes.params';
 
 export const NotesActions = createActionGroup({
   source: 'Notes/API',
   events: {
-    'Get Notes': props<{
-      domain?: string;
-      tagIds?: string;
-      opportunityId?: string;
-    }>(),
+    'Open Notes Table': emptyProps(),
+
+    'Get Notes': props<{ params: NoteQueryParams }>(),
     'Get Notes Success': props<{ data: NoteData[] }>(),
     'Get Notes Failure': props<{ error: string }>(),
 
@@ -37,8 +40,7 @@ export const NotesActions = createActionGroup({
 
     'Get Opportunity Notes': props<{ opportunityId: string }>(),
     'Get Opportunity Notes Success': props<{
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: (any | NoteWithRelationsData)[];
+      data: WorkflowNoteData[];
     }>(),
     'Get Opportunity Notes Failure': props<{ error: string }>(),
   },

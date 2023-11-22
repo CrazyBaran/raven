@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  numberAttribute,
   Pipe,
   PipeTransform,
   signal,
@@ -16,14 +14,14 @@ import {
   TagComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
+import { TableViewBaseComponent } from '@app/client/shared/ui-directives';
 import {
   DealLeadsPipe,
   DealTeamPipe,
   ToUrlPipe,
 } from '@app/client/shared/ui-pipes';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { GridDataResult, GridModule } from '@progress/kendo-angular-grid';
-import { SortDescriptor } from '@progress/kendo-data-query';
+import { GridModule } from '@progress/kendo-angular-grid';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 
@@ -33,14 +31,14 @@ export type OrganisationRow = {
   name: string;
   domains: string[];
   opportunities: {
-    tag: { name: string };
-    id: string;
+    tag?: { name: string } | undefined | null;
+    id?: string;
     stageColor: string;
-    stage: {
+    stage?: {
       id: string;
       displayName: string;
     };
-    fields: {
+    fields?: {
       displayName: string;
       value: string | number | object | object[];
     }[];
@@ -86,30 +84,8 @@ export class ExpandableListPipe implements PipeTransform {
   styleUrls: ['./organisations-table-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganisationsTableViewComponent {
-  @Input() public organisations: OrganisationRow[];
-  @Input() public isLoading: boolean;
-
-  @Input({ transform: numberAttribute }) public total: number;
-  @Input({ transform: numberAttribute }) public take: number;
-  @Input({ transform: numberAttribute }) public skip: number;
-  @Input() public field: string;
-  @Input() public dir = 'asc';
-
+export class OrganisationsTableViewComponent extends TableViewBaseComponent<OrganisationRow> {
   public collapsedRows = signal<string[]>([]);
-
-  public get data(): GridDataResult {
-    return {
-      data: this.organisations,
-      total: this.total,
-    };
-  }
-
-  public get sort(): SortDescriptor[] {
-    return this.field
-      ? [{ field: this.field, dir: this.dir as 'asc' | 'desc' }]
-      : [];
-  }
 
   public toggleRow(id: string): void {
     if (this.isRowCollapsed(id)) {

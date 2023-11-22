@@ -14,13 +14,13 @@
       themeColor="secondary"
       >Add New</kendo-button
     >
-<!--    <kendo-button-->
-<!--      fillMode="flat"-->
-<!--      iconClass="fa-solid fa-filter"-->
-<!--      size="large"-->
-<!--      themeColor="secondary"-->
-<!--      >Filters</kendo-button-->
-<!--    >-->
+    <!--    <kendo-button-->
+    <!--      fillMode="flat"-->
+    <!--      iconClass="fa-solid fa-filter"-->
+    <!--      size="large"-->
+    <!--      themeColor="secondary"-->
+    <!--      >Filters</kendo-button-->
+    <!--    >-->
   </div>
   <div
     class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
@@ -44,13 +44,7 @@
 
     <div class="flex-1 shrink-0 overflow-hidden">
       <app-organisations-table-view
-        [isLoading]="vm().isLoading"
-        [organisations]="$any(vm().organisations)"
-        [skip]="vm().query.skip"
-        [take]="vm().query.take"
-        [total]="vm().total"
-        [field]="vm().query.field"
-        [dir]="vm().query.dir"
+        [model]="vm().tableModel"
         class="block h-full"
       ></app-organisations-table-view>
     </div>

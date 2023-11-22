@@ -1,4 +1,8 @@
-import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
+import {
+  NoteData,
+  NoteWithRelationsData,
+  WorkflowNoteData,
+} from '@app/rvns-notes/data-access';
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { NotesActions } from './notes.actions';
@@ -9,6 +13,11 @@ export interface NotesState extends EntityState<NoteData> {
   // additional entities state properties
   isLoading: boolean;
   error: string | null;
+  table: {
+    isLoading: boolean;
+    ids: string[];
+    total: number;
+  };
   create: {
     isLoading: boolean;
     error: string | null;
@@ -27,8 +36,7 @@ export interface NotesState extends EntityState<NoteData> {
     data: NoteWithRelationsData | null;
   };
   opportunityNotes: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: (any | NoteWithRelationsData)[];
+    data: WorkflowNoteData[];
     isLoading: boolean;
   };
 }
@@ -40,6 +48,11 @@ export const initialState: NotesState = notesAdapter.getInitialState({
   // additional entity state properties
   isLoading: false,
   error: null,
+  table: {
+    isLoading: false,
+    ids: [],
+    total: 0,
+  },
   details: {
     isLoading: false,
     isPending: false,
@@ -65,21 +78,37 @@ export const initialState: NotesState = notesAdapter.getInitialState({
 
 export const notesReducer = createReducer(
   initialState,
+  on(NotesActions.openNotesTable, (state) => ({
+    ...state,
+    table: {
+      ...state.table,
+      total: 0,
+      ids: [],
+    },
+  })),
   on(NotesActions.getNotes, (state) => ({
     ...state,
-    isLoading: true,
+    table: {
+      ...state.table,
+      isLoading: true,
+    },
   })),
   on(NotesActions.getNotesSuccess, (state, { data }) =>
     notesAdapter.setAll(data, {
       ...state,
-      isLoading: false,
-      error: null,
+      table: {
+        isLoading: false,
+        ids: data.map((note) => note.id),
+        total: data.length,
+      },
     }),
   ),
   on(NotesActions.getNotesFailure, (state, { error }) => ({
     ...state,
-    isLoading: false,
-    error,
+    table: {
+      ...state.table,
+      isLoading: false,
+    },
   })),
 
   on(NotesActions.createNote, (state) => ({

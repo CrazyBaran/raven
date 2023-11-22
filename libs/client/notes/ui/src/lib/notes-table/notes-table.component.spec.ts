@@ -2,8 +2,11 @@
 //TODO: refactor notes table
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
+import { from } from 'rxjs';
 import { NotesTableComponent } from './notes-table.component';
 
 describe('NotesTableComponent', () => {
@@ -13,7 +16,18 @@ describe('NotesTableComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NotesTableComponent],
-      providers: [NoteStoreFacade, provideMockStore({})],
+      providers: [
+        provideAnimations(),
+        NoteStoreFacade,
+
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
+        provideMockStore({}),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotesTableComponent);

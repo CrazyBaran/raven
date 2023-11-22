@@ -1,10 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import {
-  OpportunitiesRelatedNotesComponent,
-  selectOpportunitiesRelatedNotesViewModel,
-} from './opportunities-related-notes.component';
+import { OpportunitiesRelatedNotesComponent } from './opportunities-related-notes.component';
+import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-related-notes.selectors';
 
 describe('ClientOpportunitiesFeatureRelatedNotesComponent', () => {
   let component: OpportunitiesRelatedNotesComponent;

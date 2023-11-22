@@ -2,39 +2,46 @@
   [columns]="12"
   [draggable]="false"
   [gap]="24"
+  class="h-full grid-rows-[auto_1fr] !p-0"
   rowHeight="auto"
-  class="h-full !p-0"
 >
   <!--  DETAILS   -->
-  <kendo-tilelayout-item [rowSpan]="3" [colSpan]="4" class="h-full">
+  <kendo-tilelayout-item [colSpan]="4" [rowSpan]="2" class="h-full">
     <kendo-tilelayout-item-header>
       <div class="flex items-center justify-between gap-2">
         <h5 class="k-card-title">Opportunity details</h5>
         <kendo-button
-          iconClass="fa-sharp fa-solid fa-pen"
-          size="small"
           [queryParams]="{ 'opportunity-edit': vm().id }"
           [routerLink]="['./']"
+          iconClass="fa-sharp fa-solid fa-pen"
           queryParamsHandling="merge"
+          size="small"
           >Edit</kendo-button
         >
       </div>
     </kendo-tilelayout-item-header>
     <kendo-tilelayout-item-body>
-      <div class="bg-grey-100 flex flex-col gap-3 bg-opacity-50 px-6 py-5">
-        <div
-          class="px-2 py-3"
-          *rxFor="let detail of vm().details; trackBy: 'label'"
-        >
-          <h1 class="text-lg">{{ detail.label }}</h1>
-          <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
-        </div>
+      <div
+        class="bg-grey-100 flex max-h-full flex-col gap-3 overflow-auto bg-opacity-50 px-6 py-5"
+      >
+        <ng-container *ngIf="vm().isLoadingDetails; else details">
+          <div *ngFor="let i of 7 | times" class="px-2 py-3">
+            <kendo-skeleton class="mb-1" [height]="20" width="170px" />
+            <kendo-skeleton [height]="10" width="125px" />
+          </div>
+        </ng-container>
+        <ng-template #details>
+          <div *ngFor="let detail of vm().details" class="px-2 py-3">
+            <h1 class="text-lg">{{ detail.label }}</h1>
+            <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
+          </div>
+        </ng-template>
       </div>
     </kendo-tilelayout-item-body>
   </kendo-tilelayout-item>
 
   <!--  DEAL TEAM   -->
-  <kendo-tilelayout-item [colSpan]="9">
+  <kendo-tilelayout-item [colSpan]="9" class="h-[200px]">
     <kendo-tilelayout-item-header>
       <div class="flex items-center justify-between gap-2">
         <h5 class="k-card-title">Deal Team</h5>
@@ -45,33 +52,38 @@
       </div>
     </kendo-tilelayout-item-header>
     <kendo-tilelayout-item-body>
-      <kendo-grid
-        *ngIf="vm().hasTeam"
-        [data]="vm().team"
-        class="grid-borderless"
-      >
+      <kendo-grid [data]="vm().team" class="grid-borderless h-full">
         <kendo-grid-column
-          field="dealLead"
-          title="Deal Lead"
           [width]="1"
+          field="dealLead"
           headerClass="!font-bold"
+          title="Deal Lead"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <ui-tag uiUserTag [label]="dataItem.dealLead.name"> </ui-tag>
+            <ng-container *ngIf="!vm().isLoadingDetails; else tagSkeleton">
+              <ui-tag
+                *ngIf="dataItem.dealLead.name"
+                [label]="dataItem.dealLead.name"
+                uiUserTag
+              />
+            </ng-container>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column
-          field="dealTeam"
-          title="Deal Team"
           [width]="3"
+          field="dealTeam"
           headerClass="!font-bold"
+          title="Deal Team"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <div class="flex flex-wrap gap-x-6 gap-y-1">
+            <div
+              class="flex flex-wrap gap-x-6 gap-y-1"
+              *ngIf="!vm().isLoadingDetails; else tagSkeleton"
+            >
               <ui-tag
-                uiUserTag
                 *rxFor="let user of dataItem.dealTeam; trackBy: 'name'"
                 [label]="user.name"
+                uiUserTag
               ></ui-tag>
             </div>
           </ng-template>
@@ -88,26 +100,44 @@
       </div>
     </kendo-tilelayout-item-header>
     <kendo-tilelayout-item-body>
-      <kendo-grid [data]="vm().missingDetails" class="grid-borderless h-full">
+      <kendo-grid
+        #paging="uiKendoDynamicPaging"
+        [kendoGridBinding]="vm().missingDetails"
+        [pageable]="true"
+        [pageSize]="paging.size()"
+        [uiKendoDynamicPaging]="36"
+        [loading]="vm().isLoading"
+        class="grid-borderless h-full"
+      >
+        <ng-template kendoGridLoadingTemplate>
+          <ui-loader [disableInfo]="true" class="bg-white bg-opacity-60" />
+        </ng-template>
         <kendo-grid-column [width]="40">
           <ng-template kendoGridCellTemplate let-dataItem>
             <i class="fa-light fa-circle-exclamation text-warning"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="tab" title="Tab" headerClass="!font-bold">
+        <kendo-grid-column field="tab" headerClass="!font-bold" title="Tab">
         </kendo-grid-column>
 
-        <kendo-grid-column field="field" title="Field" headerClass="!font-bold">
+        <kendo-grid-column field="field" headerClass="!font-bold" title="Field">
         </kendo-grid-column>
 
         <kendo-grid-column
           field="action"
-          title="Action"
           headerClass="!font-bold"
+          title="Action"
         >
         </kendo-grid-column>
       </kendo-grid>
     </kendo-tilelayout-item-body>
   </kendo-tilelayout-item>
 </kendo-tilelayout>
+
+<ng-template #tagSkeleton>
+  <div class="flex gap-1">
+    <kendo-skeleton shape="circle" width="20px"></kendo-skeleton>
+    <kendo-skeleton width="80px"></kendo-skeleton>
+  </div>
+</ng-template>

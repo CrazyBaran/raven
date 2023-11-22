@@ -19,7 +19,7 @@ export class NoteStoreFacade {
     select(notesQuery.selectError),
   );
   public isLoading$: Observable<boolean> = this.store.pipe(
-    select(notesQuery.selectIsLoading),
+    select(notesQuery.selectIsTableLoading),
   );
 
   public isCreatingNote = this.store.selectSignal(
@@ -59,10 +59,6 @@ export class NoteStoreFacade {
     private store: Store,
     private imagePathDictionaryService: ImagePathDictionaryService,
   ) {}
-
-  public getNotes(domain?: string, tagIds?: string): void {
-    this.store.dispatch(NotesActions.getNotes({ domain, tagIds }));
-  }
 
   public getNoteDetails(id: string): void {
     this.store.dispatch(NotesActions.getNoteDetails({ id }));

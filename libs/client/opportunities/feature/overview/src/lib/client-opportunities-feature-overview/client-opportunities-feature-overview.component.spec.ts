@@ -2,10 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { from } from 'rxjs';
-import {
-  ClientOpportunitiesFeatureOverviewComponent,
-  selectOpportunityOverviewViewModel,
-} from './client-opportunities-feature-overview.component';
+import { ClientOpportunitiesFeatureOverviewComponent } from './client-opportunities-feature-overview.component';
+import { selectOpportunityOverviewViewModel } from './client-opportunities-feature-overview.selectors';
 
 describe('ClientOpportunitiesFeatureOverviewComponent', () => {
   let component: ClientOpportunitiesFeatureOverviewComponent;

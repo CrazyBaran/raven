@@ -6,9 +6,12 @@ import {
   NoteAttachmentData,
   NoteData,
   NoteWithRelationsData,
+  WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
+import { TemplateTypeEnum } from '@app/rvns-templates';
 import { Observable, map, switchMap } from 'rxjs';
 import { CreateNote, PatchNote } from '../domain/createNote';
+import { NoteQueryParams } from '../domain/get-notes.params';
 
 export type GetNoteDetailsResponse = GenericResponse<
   NoteWithRelationsData & {
@@ -23,18 +26,13 @@ export class NotesService {
   public constructor(private http: HttpClient) {}
 
   public getNotes(
-    domain?: string,
-    tagIds?: string,
-    opportunityId?: string,
+    params?: NoteQueryParams,
   ): Observable<GenericResponse<NoteData[]>> {
-    const params: Record<string, string> = Object.fromEntries(
-      Object.entries({ domain, tagIds, opportunityId }).filter(
-        ([, v]) => typeof v !== 'undefined',
-      ),
-    ) as Record<string, string>;
-
     return this.http.get<GenericResponse<NoteData[]>>('/api/notes', {
-      params,
+      params: {
+        ...params,
+        type: TemplateTypeEnum.Note,
+      },
     });
   }
 
@@ -91,11 +89,11 @@ export class NotesService {
 
   public getOpportunityNotes(opportunityId: string): Observable<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    GenericResponse<(any | NoteWithRelationsData)[]>
+    GenericResponse<WorkflowNoteData[]>
   > {
     return this.http.get<
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      GenericResponse<(any | NoteWithRelationsData)[]>
+      GenericResponse<WorkflowNoteData[]>
     >('/api/notes', {
       params: {
         opportunityId,
