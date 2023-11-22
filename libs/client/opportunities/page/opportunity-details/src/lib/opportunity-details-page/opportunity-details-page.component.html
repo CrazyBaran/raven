@@ -51,6 +51,7 @@
         </ng-container>
         <ng-template #details>
           <div
+            [@fadeIn]
             *rxFor="let detail of vm().details; trackBy: 'label'"
             class="grow px-2 py-3"
           >

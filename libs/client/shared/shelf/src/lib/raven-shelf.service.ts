@@ -133,7 +133,7 @@ export class RavenShelfService {
   public openShelf(settings: WindowSettings): WindowRef | null {
     const index = this.windowsRefsSignal().length;
 
-    if (index > 2) {
+    if (index > 1) {
       return null;
     }
 

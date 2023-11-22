@@ -11,6 +11,7 @@ import {
   LoaderComponent,
   TagComponent,
   UserTagDirective,
+  fadeIn,
 } from '@app/client/shared/ui';
 import {
   DealLeadsPipe,
@@ -26,6 +27,7 @@ import { SortDescriptor } from '@progress/kendo-data-query';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 
+import { trigger } from '@angular/animations';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { selectOrganisationPageViewModel } from './organisation-page.selectors';
 
@@ -60,6 +62,7 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [trigger('fadeIn', fadeIn())],
 })
 export class OrganisationPageComponent {
   public sort: SortDescriptor[] = [

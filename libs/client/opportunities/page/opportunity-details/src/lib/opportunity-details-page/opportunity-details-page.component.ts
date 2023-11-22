@@ -1,13 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
+import { trigger } from '@angular/animations';
 import { JsonPipe, NgIf, NgStyle } from '@angular/common';
 import { NotesActions } from '@app/client/notes/data-access';
 import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
-import { LoaderComponent } from '@app/client/shared/ui';
+import {
+  FadeInOutDirective,
+  LoaderComponent,
+  fadeIn,
+} from '@app/client/shared/ui';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { Store } from '@ngrx/store';
@@ -33,9 +38,11 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     PageTemplateComponent,
     SkeletonModule,
     TimesPipe,
+    FadeInOutDirective,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
+  animations: [trigger('fadeIn', fadeIn())],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpportunityDetailsPageComponent {
