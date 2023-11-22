@@ -8,10 +8,13 @@ interface OpportunityDealLeadFieldData {
 }
 
 export function getDealLeads(
-  fields: {
-    displayName: string;
-    value: string | number | object | object[];
-  }[],
+  fields:
+    | {
+        displayName: string;
+        value: string | number | object | object[];
+      }[]
+    | undefined
+    | null,
 ): string[] {
   const dealLeads = (fields ?? []).find(
     (field) => field.displayName === 'Deal Lead',

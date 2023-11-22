@@ -61,7 +61,7 @@ export class OrganisationsTableComponent {
     this.vm$
       .pipe(
         takeUntilDestroyed(),
-        map(({ query }) => query),
+        map(({ params }) => params),
         distinctUntilChangedDeep({ ignoreOrder: true }),
       )
       .subscribe((params) => {
