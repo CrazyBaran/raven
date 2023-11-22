@@ -10,7 +10,7 @@ import {
   inject,
 } from '@angular/core';
 
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -28,9 +28,10 @@ import { UploadFileService } from '@app/client/shared/storage/data-access';
 import {
   KendoDynamicPagingDirective,
   LoaderComponent,
+  fadeIn,
 } from '@app/client/shared/ui';
 import { SafeHtmlPipe, TimesPipe } from '@app/client/shared/ui-pipes';
-import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import { distinctUntilChangedDeep, log } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { EditorView } from '@progress/kendo-angular-editor';
@@ -44,9 +45,10 @@ import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
 
+import { trigger } from '@angular/animations';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import * as _ from 'lodash';
-import { Subject, firstValueFrom, map, merge } from 'rxjs';
+import { debounceTime, firstValueFrom, map } from 'rxjs';
 import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-related-notes.selectors';
 
 @Component({
@@ -73,6 +75,7 @@ import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-relate
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [trigger('fadeIn', fadeIn())],
 })
 export class OpportunitiesRelatedNotesComponent {
   public sort: SortDescriptor[] = [
@@ -112,27 +115,18 @@ export class OpportunitiesRelatedNotesComponent {
 
   protected fields$ = this.store
     .select(selectOpportunitiesRelatedNotesViewModel)
-    .pipe(map(({ fields }) => fields));
-
-  protected itemsRendered = new Subject<any[]>();
-  protected startRender = new Subject<void>();
-
-  protected visible = toSignal(
-    merge(
-      this.startRender.pipe(map(() => false)),
-      this.itemsRendered.pipe(map(() => true)),
-    ),
-  );
+    .pipe(
+      debounceTime(150),
+      map(({ fields }) => fields),
+      distinctUntilChangedDeep(),
+      log(),
+    );
 
   public constructor() {
-    this.fields$.pipe(distinctUntilChangedDeep()).subscribe(() => {
-      this.startRender.next();
-    });
-
     effect(
       () => {
         const value = _.chain(this.vm().fields)
-          .keyBy('id')
+          .keyBy((x) => x.uniqId)
           .mapValues(
             ({ value }) => new FormControl(value, { updateOn: 'blur' }),
           )
@@ -147,7 +141,10 @@ export class OpportunitiesRelatedNotesComponent {
                 data: {
                   name: this.vm().opportunityNote.name,
                   fields: _.chain(value as Record<string, unknown>)
-                    .map((value, id) => ({ id, value: value ?? '' }))
+                    .map((value, id) => ({
+                      id: this.vm().fields.find((x) => x.uniqId === id)?.id,
+                      value: value ?? '',
+                    }))
                     .value(),
                   tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
                 },

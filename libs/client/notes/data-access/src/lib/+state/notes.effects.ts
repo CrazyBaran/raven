@@ -98,9 +98,12 @@ export class NotesEffects {
       ofType(NotesActions.updateNote),
       switchMap(({ noteId, data }) =>
         this.notesService.patchNote(noteId, data).pipe(
-          map(({ data }) =>
+          switchMap(({ data }) => [
             NotesActions.updateNoteSuccess({ data: data!, originId: noteId }),
-          ),
+            NotificationsActions.showSuccessNotification({
+              content: 'Fields updated successfully.',
+            }),
+          ]),
           catchError((error) => of(NotesActions.updateNoteFailure({ error }))),
         ),
       ),
