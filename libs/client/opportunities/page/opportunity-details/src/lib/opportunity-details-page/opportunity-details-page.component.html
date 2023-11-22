@@ -62,7 +62,10 @@
       </div>
       <div class="grid flex-1 grid-cols-[180px_1fr] overflow-hidden">
         <div class="h-100 flex flex-col bg-white">
-          <kendo-buttongroup class="!flex !flex-col" selection="single">
+          <kendo-buttongroup
+            class="navigations !flex !flex-col"
+            selection="single"
+          >
             <kendo-button
               *rxFor="let navigation of vm()?.navigations; trackBy: 'label'"
               [ngStyle]="$any(navigation).style ?? {}"
@@ -75,7 +78,9 @@
               size="large"
               themeColor="primary"
             >
-              {{ navigation.label }}
+              <div class="nav-clas-btn w-full truncate">
+                {{ navigation.label }}
+              </div>
             </kendo-button>
           </kendo-buttongroup>
 
