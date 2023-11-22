@@ -73,9 +73,8 @@ export const selectOpportunityOverviewViewModel = createSelector(
         !!opportunity?.dealTeam?.length || !!opportunity?.dealLeads?.length,
       team: [
         {
-          dealLead: {
-            name: opportunity?.dealLeads[0],
-          },
+          dealLeads: opportunity?.dealLeads,
+
           dealTeam: opportunity?.dealTeam.map((name) => ({
             name,
           })),

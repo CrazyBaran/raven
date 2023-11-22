@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
+import { trigger } from '@angular/animations';
 import { RouterLink } from '@angular/router';
 import {
+  fadeIn,
   KendoDynamicPagingDirective,
   LoaderComponent,
   TagComponent,
@@ -36,6 +38,7 @@ import { selectOpportunityOverviewViewModel } from './client-opportunities-featu
   ],
   templateUrl: './client-opportunities-feature-overview.component.html',
   styleUrls: ['./client-opportunities-feature-overview.component.scss'],
+  animations: [trigger('fadeIn', fadeIn())],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientOpportunitiesFeatureOverviewComponent {

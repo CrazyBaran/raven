@@ -27,7 +27,7 @@ export const HOME_ROUTES: Routes = [
           },
 
           {
-            path: ':companyId/opportunities',
+            path: ':organisationId/opportunities',
             loadChildren: () =>
               import('@app/client/opportunities/feature/shell').then(
                 (m) => m.OPPORTUNITIES_ROUTES,

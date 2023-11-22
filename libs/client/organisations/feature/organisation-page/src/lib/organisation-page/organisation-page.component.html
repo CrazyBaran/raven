@@ -8,12 +8,19 @@
       >All Companies</kendo-button
     >
 
-    <i
-      class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
-    ></i>
-    <kendo-button [disabled]="true" fillMode="flat" themeColor="primary">{{
-      vm().currentOrganisation?.name
-    }}</kendo-button>
+    <ng-container *ngIf="vm().currentOrganisation?.name">
+      <i
+        [@fadeIn]
+        class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+      ></i>
+      <kendo-button
+        [@fadeIn]
+        [disabled]="true"
+        fillMode="flat"
+        themeColor="primary"
+        >{{ vm().currentOrganisation?.name }}</kendo-button
+      >
+    </ng-container>
   </div>
 
   <div class="flex gap-1" page-header-actions></div>
@@ -35,8 +42,7 @@
           <div class="flex items-center justify-between gap-2">
             <h5 class="k-card-title">Company details</h5>
             <kendo-button
-              *ngIf="!vm().isLoading"
-              [disabled]="true"
+              [disabled]="true || vm().isLoading"
               [queryParams]="{
                 'organisation-edit': vm().currentOrganisationId
               }"
@@ -54,7 +60,11 @@
               class="bg-grey-100 grid grid-cols-2 gap-3 bg-opacity-50 px-6 py-5"
             >
               <ng-template #details>
-                <div *ngFor="let detail of vm().details" class="px-2 py-3">
+                <div
+                  *rxFor="let detail of vm().details; trackBy: 'label'"
+                  [@fadeIn]
+                  class="px-2 py-3"
+                >
                   <h1 class="text-lg">{{ detail.label }}</h1>
                   <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
                 </div>

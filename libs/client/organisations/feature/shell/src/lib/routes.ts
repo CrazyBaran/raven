@@ -65,7 +65,7 @@ export const ORGANISATION_ROUTES: Routes = [
           ),
       },
       {
-        path: ':companyId',
+        path: ':organisationId',
         loadComponent: () =>
           import('@app/client/organisations/feature/organisation-page').then(
             (m) => m.OrganisationPageComponent,

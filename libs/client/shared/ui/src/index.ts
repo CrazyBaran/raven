@@ -1,4 +1,5 @@
 export * from './lib/clipboard.directive';
+export * from './lib/fade-inout.directive';
 export * from './lib/header/header.component';
 export * from './lib/kendo-dynamic-paging.directive';
 export * from './lib/kendo-url-paging.directive';
