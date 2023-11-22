@@ -84,6 +84,9 @@ module.exports = {
         hover: '#EBEBEB',
         text: '#424242',
       },
+      placeholder: {
+        text: '#666666',
+      },
     },
     extend: {
       fontFamily: {

@@ -67,7 +67,6 @@
   </div>
 
   <kendo-tilelayout
-    *ngIf="vm().visibleNoteWithFields || vm().notes?.length || vm().isLoading"
     [columns]="12"
     [draggable]="false"
     [gap]="12"
@@ -91,12 +90,12 @@
         />
 
         <ng-container
-          *ngIf="vm().visibleNoteWithFields"
+          *ngIf="!vm().notes?.length && !vm().isLoading"
           [ngTemplateOutlet]="relatedNote"
         />
 
         <ng-container
-          *ngIf="!vm().visibleNoteWithFields && vm().notes?.length"
+          *ngIf="vm().notes?.length && !vm().isLoading"
           [ngTemplateOutlet]="relatedNotesTable"
         />
         <!--      NOTE    -->
@@ -110,71 +109,78 @@
     *rxLet="vm().visibleNoteWithFields; let note"
     class="flex h-full flex-col"
   >
-    <header>
-      <div class="flex flex-col">
-        <div class="flex">
-          <!--        NOTE TYPE        -->
-          <div class="px-3 py-4">
-            <div
-              [ngClass]="{
-                'bg-series-a-lighten-50': note.templateName === 'Company call',
-                'bg-series-e-lighten-50':
-                  note.templateName === 'Notes & Analysis',
-                'bg-series-g-lighten-50':
-                  note.templateName === 'Market Research'
-              }"
-              class="bg-series-a-lighten-50 w-fit rounded p-1.5"
-            >
-              {{ note.templateName }}
+    <ng-container *ngIf="note; else noNotesMessage">
+      <header>
+        <div class="flex flex-col">
+          <div class="flex">
+            <!--        NOTE TYPE        -->
+            <div class="px-3 py-4">
+              <div
+                [ngClass]="{
+                  'bg-series-a-lighten-50':
+                    note.templateName === 'Company call',
+                  'bg-series-e-lighten-50':
+                    note.templateName === 'Notes & Analysis',
+                  'bg-series-g-lighten-50':
+                    note.templateName === 'Market Research'
+                }"
+                class="bg-series-a-lighten-50 w-fit rounded p-1.5"
+              >
+                {{ note.templateName }}
+              </div>
+            </div>
+
+            <!--        CREATE INFO       -->
+            <div class="grow px-3 py-2">
+              <div class="flex flex-col gap-1">
+                <span>
+                  <i class="fa-solid fa-circle-user mr-1"></i>
+                  {{ note.createdBy.name || '' }}
+                </span>
+
+                <span *ngIf="note.updatedAt" class="text-xs">
+                  Updated:
+                  {{ note.updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
+                </span>
+              </div>
+            </div>
+
+            <!--        ACTION ICON       -->
+            <div class="p-3">
+              <kendo-button
+                [queryParams]="{ 'note-details': note.id }"
+                [routerLink]="['./']"
+                iconClass="fa-solid fa-eye"
+                queryParamsHandling="merge"
+                themeColor="primary"
+              >
+              </kendo-button>
             </div>
           </div>
-
-          <!--        CREATE INFO       -->
-          <div class="grow px-3 py-2">
-            <div class="flex flex-col gap-1">
-              <span>
-                <i class="fa-solid fa-circle-user mr-1"></i>
-                {{ note.createdBy.name || '' }}
-              </span>
-
-              <span *ngIf="note.updatedAt" class="text-xs">
-                Updated:
-                {{ note.updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
-              </span>
+          <div class="px-3 pb-6 pt-3">
+            <p class="font-bold">{{ note.name }}</p>
+          </div>
+        </div>
+      </header>
+      <article
+        class="border-component-border grow basis-0 overflow-auto border-b border-t"
+      >
+        <div class="h-full">
+          <div *rxFor="let field of note.fields" class="flex flex-col gap-3">
+            <div class="p-3">
+              <div class="mb-2 text-[10px] uppercase">
+                {{ field.name }}
+              </div>
+              <div
+                [innerHTML]="field.value | safeHtml"
+                class="ProseMirror"
+              ></div>
             </div>
           </div>
+        </div>
+      </article>
+    </ng-container>
 
-          <!--        ACTION ICON       -->
-          <div class="p-3">
-            <kendo-button
-              [queryParams]="{ 'note-details': note.id }"
-              [routerLink]="['./']"
-              iconClass="fa-solid fa-eye"
-              queryParamsHandling="merge"
-              themeColor="primary"
-            >
-            </kendo-button>
-          </div>
-        </div>
-        <div class="px-3 pb-6 pt-3">
-          <p class="font-bold">{{ note.name }}</p>
-        </div>
-      </div>
-    </header>
-    <article
-      class="border-component-border grow basis-0 overflow-auto border-b border-t"
-    >
-      <div class="h-full">
-        <div *rxFor="let field of note.fields" class="flex flex-col gap-3">
-          <div class="p-3">
-            <div class="mb-2 text-[10px] uppercase">
-              {{ field.name }}
-            </div>
-            <div [innerHTML]="field.value | safeHtml" class="ProseMirror"></div>
-          </div>
-        </div>
-      </div>
-    </article>
     <footer>
       <div class="flex items-center justify-between gap-2 p-3">
         <kendo-button
@@ -355,4 +361,10 @@
       </div>
     </footer>
   </div>
+</ng-template>
+
+<ng-template #noNotesMessage>
+  <p class="text-placeholder-text flex-1 p-3 font-light opacity-60">
+    There are no related notes for this section at this time
+  </p>
 </ng-template>

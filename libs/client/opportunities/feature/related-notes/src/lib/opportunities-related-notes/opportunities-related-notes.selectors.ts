@@ -61,7 +61,7 @@ export const selectOpportunityRelatedNotes = createSelector(
       disabledNext: index + 1 >= relatedNotes.length,
       prevQueryParam: { noteIndex: index - 1 },
       disabledPrev: index - 1 < 0,
-      index,
+      index: relatedNotes?.length ? index : -1,
     };
   },
 );

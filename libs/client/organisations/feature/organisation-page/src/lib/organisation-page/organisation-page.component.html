@@ -122,11 +122,10 @@
             >
               <ng-template kendoGridCellTemplate let-dataItem>
                 <ui-tag
-                  *rxIf="(dataItem.fields | dealLeads)?.[0]; let dealLead"
-                  [label]="dealLead"
+                  *rxFor="let name of dataItem.fields | dealLeads"
+                  [label]="name"
                   uiUserTag
-                >
-                </ui-tag>
+                />
               </ng-template>
             </kendo-grid-column>
 
