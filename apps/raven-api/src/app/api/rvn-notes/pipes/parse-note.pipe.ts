@@ -13,32 +13,30 @@ export class ParseNotePipe
   protected templateRepository: Repository<TemplateEntity>;
 
   public async transform(id: string): Promise<NoteEntity> {
-    const note = await this.noteRepository.findOne({
-      where: { id },
-      relations: [
-        'createdBy',
-        'updatedBy',
-        'deletedBy',
-        'tags',
-        'complexTags',
-        'noteTabs',
-        'noteTabs.noteFieldGroups',
-        'noteTabs.noteFieldGroups.noteFields',
-        'noteFieldGroups',
-        'noteFieldGroups.noteFields',
-      ],
-    });
+    const start = Date.now();
+    const qb = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.deletedBy', 'deletedBy')
+      .leftJoinAndSelect('note.updatedBy', 'updatedBy')
+      .leftJoinAndSelect('note.tags', 'tags')
+      .leftJoinAndSelect('note.complexTags', 'complexTags')
+      .leftJoinAndSelect('note.noteTabs', 'noteTabs')
+      .leftJoinAndSelect('noteTabs.noteFieldGroups', 'noteFieldGroups')
+      .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
+      .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroupsDirect')
+      .leftJoinAndSelect('noteFieldGroupsDirect.noteFields', 'noteFieldsDirect')
+      .leftJoinAndSelect('note.template', 'template')
+      .where('note.id = :id', { id })
+      .andWhere('note.deletedAt IS NULL');
+
+    const note = await qb.getOne();
+
+    // TODO remove debug
+    console.log(`NoteRepository.findOne took ${Date.now() - start}ms`);
 
     if (!note) {
       throw new Error(`Note with id ${id} not found`);
-    }
-
-    // handling template separately as typeorm nested relations is pain
-    const template = await this.templateRepository.findOne({
-      where: { id: note.templateId },
-    });
-    if (template) {
-      note.template = template;
     }
     return note;
   }
