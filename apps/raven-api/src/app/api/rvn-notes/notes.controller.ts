@@ -55,6 +55,7 @@ import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe
 import { ParseCompanyOpportunityTagsPipe } from './pipes/parse-company-opportunity-tags.pipe';
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
+import { ParseNoteForUpdatePipe } from './pipes/parse-note-for-update-pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
 import { ParseTagsPipe } from './pipes/parse-tags.pipe';
 
@@ -209,7 +210,8 @@ export class NotesController {
   @Patch(':noteId')
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-    @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+    @Param('noteId', ParseUUIDPipe, ParseNoteForUpdatePipe)
+    noteEntity: NoteEntity,
     @Body('companyOpportunityTags', ParseCompanyOpportunityTagsPipe)
     companyOpportunityTags: CompanyOpportunityTag[],
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
