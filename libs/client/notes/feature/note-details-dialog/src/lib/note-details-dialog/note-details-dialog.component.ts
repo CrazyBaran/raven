@@ -224,14 +224,7 @@ export class NoteDetailsDialogComponent
     const fields = Object.entries(this.notepadForm.value?.notes ?? {})
       .filter(([key, value]) => key !== TITLE_FIELD.id)
       .map(([id, value]) => {
-        const clearedValue = Object.entries(
-          this.imagePathDictionaryService.getImageDictionary(),
-        ).reduce((acc, [fileName, sasUrl]) => {
-          return acc
-            .replace(new RegExp('&amp;', 'g'), '&')
-            .replace(sasUrl, fileName);
-        }, value ?? '');
-        return { id, value: clearedValue || '' };
+        return { id, value: value ?? '' };
       });
 
     const { template, notes, tags, peopleTags } = this.notepadForm.value!;

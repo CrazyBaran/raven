@@ -1,4 +1,5 @@
 import { notesQuery } from '@app/client/opportunities/api-notes';
+import { storageQuery } from '@app/client/shared/storage/data-access';
 import { getDealLeads, getDealTeam } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
@@ -76,7 +77,8 @@ export const selectOpportunityNoteTabs = createSelector(
 );
 export const selectNoteFields = createSelector(
   selectOpportunityNoteTabs,
-  (tabs) =>
+  storageQuery.selectAzureImageDictionary,
+  (tabs, azureImageDictioanry) =>
     _.chain(tabs)
       .map((tab) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -84,7 +86,10 @@ export const selectNoteFields = createSelector(
           uniqId: `${tab.name}-${field.name}`,
           id: field.id,
           title: field.name,
-          value: field.value,
+          value: Object.entries(azureImageDictioanry).reduce(
+            (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
+            field.value ?? '',
+          ),
           tabId: tab.id,
           tabName: tab.name,
         })),

@@ -9,6 +9,14 @@ $shelf-window-padding: 15px;
   z-index: 10;
 }
 
+.global-window-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 .shelf-window:not(.k-window-maximized) {
   width: var(--shelf-window-width) !important;
   height: var(--shelf-window-height) !important;

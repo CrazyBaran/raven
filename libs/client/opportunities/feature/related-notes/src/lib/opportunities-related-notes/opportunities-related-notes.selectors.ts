@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 
 export const selectOpportunityNoteTabsDictionary = createSelector(
   opportunitiesQuery.selectOpportunityNoteTabs,
-  (noteTabs) => _.keyBy(noteTabs, (x) => x.id),
+  (noteTabs) => _.keyBy(noteTabs, (x) => x.name),
 );
 
 export const selectActiveNoteTab = createSelector(

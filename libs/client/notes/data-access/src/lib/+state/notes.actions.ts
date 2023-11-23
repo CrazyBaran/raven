@@ -32,7 +32,7 @@ export const NotesActions = createActionGroup({
       data: NoteWithRelationsData;
       originId: string;
     }>(),
-    'Update Note Failure': props<{ error: string }>(),
+    'Update Note Failure': props<{ error: string; originId: string }>(),
 
     'Delete Note': props<{ noteId: string }>(),
     'Delete Note Success': props<{ noteId: string }>(),
