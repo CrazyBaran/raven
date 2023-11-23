@@ -1,14 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
-import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FileService } from './file.service';
 
@@ -16,30 +7,18 @@ import { FileService } from './file.service';
 @ApiTags('Files')
 @Controller('file')
 export class FileController {
-  constructor(private readonly fileService: FileService) {}
-
-  @Post()
-  create(@Body() createFileDto: CreateFileDto) {
-    return this.fileService.create(createFileDto);
-  }
+  public constructor(private readonly fileService: FileService) {}
 
   @Get()
-  findAll() {
-    return this.fileService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.fileService.findOne(+id);
+  public findAll(): void {
+    console.log('temp');
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
-    return this.fileService.update(+id, updateFileDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.fileService.remove(+id);
+  public update(
+    @Param('id') id: string,
+    @Body() updateFileDto: UpdateFileDto,
+  ): void {
+    console.log('temp');
   }
 }

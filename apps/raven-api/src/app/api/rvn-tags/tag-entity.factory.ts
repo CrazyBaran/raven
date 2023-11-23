@@ -21,6 +21,8 @@ export class TagEntityFactory {
         tag = new PeopleTagEntity();
         tag.userId = options.userId;
         break;
+      case TagTypeEnum.Tab:
+        throw new Error('Tab tags are only created by the system');
       case TagTypeEnum.General:
       case TagTypeEnum.BusinessModel:
       case TagTypeEnum.Industry:

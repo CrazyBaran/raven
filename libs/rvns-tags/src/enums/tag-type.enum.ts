@@ -1,15 +1,3 @@
-export const tagTypes = [
-  'general',
-  'people',
-  'company',
-  'industry',
-  'opportunity',
-  'investor',
-  'business-model',
-] as const;
-
-export type TagType = (typeof tagTypes)[number];
-
 export enum TagTypeEnum {
   General = 'general',
   People = 'people',
@@ -18,4 +6,7 @@ export enum TagTypeEnum {
   Opportunity = 'opportunity',
   Investor = 'investor',
   BusinessModel = 'business-model',
+  Tab = 'tab',
 }
+
+export type TagType = (typeof TagTypeEnum)[keyof typeof TagTypeEnum];

@@ -5,10 +5,13 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OpportunityEntity } from '../../rvn-opportunities/entities/opportunity.entity';
+import { TagEntity } from '../../rvn-tags/entities/tag.entity';
 
 @Entity({ name: 'files' })
 @Index(['id', 'name'], { unique: true })
@@ -32,9 +35,18 @@ export class FileEntity {
   @Column()
   public opportunityId: string;
 
+  @ManyToMany(() => TagEntity)
+  @JoinTable({
+    name: 'file_tags',
+    joinColumn: { name: 'file_id' },
+    inverseJoinColumn: { name: 'tag_id' },
+  })
+  public tags: TagEntity[];
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
+    this.opportunityId = this.opportunityId.toLowerCase();
   }
 }

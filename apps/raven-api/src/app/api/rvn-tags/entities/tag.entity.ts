@@ -13,6 +13,7 @@ import {
   TableInheritance,
 } from 'typeorm';
 import { OrganisationEntity } from '../../rvn-opportunities/entities/organisation.entity';
+import { TabEntity } from '../../rvn-templates/entities/tab.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
 
 @Entity({ name: 'tags' })
@@ -85,5 +86,23 @@ export class OrganisationTagEntity extends TagEntity {
   public override lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.organisationId = this.organisationId.toLowerCase();
+  }
+}
+
+@ChildEntity()
+export class TabTagEntity extends TagEntity {
+  @ManyToOne(() => TabEntity)
+  @JoinColumn({ name: 'tab_id' })
+  public tab: TabEntity;
+
+  @Column()
+  @RelationId((t: TabTagEntity) => t.tab)
+  public tabId: string;
+
+  @AfterInsert()
+  @AfterLoad()
+  public override lifecycleUuidLowerCase(): void {
+    this.id = this.id.toLowerCase();
+    this.tabId = this.tabId.toLowerCase();
   }
 }
