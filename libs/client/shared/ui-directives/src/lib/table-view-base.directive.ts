@@ -37,12 +37,12 @@ export abstract class TableViewBaseComponent<T> {
     return Number(this.model?.skip);
   }
 
-  public get field(): string {
-    return this.model?.field ?? '';
+  public get field(): string | null {
+    return this.model?.field ?? null;
   }
 
-  public get dir(): 'asc' | 'desc' {
-    if (!this.model?.dir) return 'desc';
+  public get dir(): 'asc' | 'desc' | null {
+    if (!this.model?.dir) return null;
 
     if (this.model.dir === 'asc' || this.model.dir === 'desc') {
       return this.model.dir;
