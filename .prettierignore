@@ -13,3 +13,5 @@
 /apps/raven-api/src/main.ts
 
 .angular
+
+/.nx/cache
