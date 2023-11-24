@@ -62,13 +62,13 @@ import { ParseTagsPipe } from './pipes/parse-tags.pipe';
 
 @ApiTags('Notes')
 @Controller('notes')
-@ApiOAuth2(['openid'])
 export class NotesController {
   public constructor(private readonly notesService: NotesService) {}
 
   @ApiOperation({ description: 'Create note' })
   @ApiResponse(GenericCreateResponseSchema())
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Post()
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
@@ -105,6 +105,7 @@ export class NotesController {
     description: 'Comma separated list of tag ids',
   })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Get()
   public async getAllNotes(
     @Query('domain')
@@ -154,6 +155,7 @@ export class NotesController {
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Get(':id')
   public async getNote(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -174,6 +176,7 @@ export class NotesController {
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Get(':id/attachments')
   public async getNoteAttachments(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -191,6 +194,7 @@ export class NotesController {
   @ApiParam({ name: 'noteFieldGroupId', type: String })
   @ApiParam({ name: 'noteFieldId', type: String })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Put(':noteId/fields-groups/:noteFieldGroupId/fields/:noteFieldId')
   public async updateNoteField(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
@@ -214,6 +218,7 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Patch(':noteId')
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
@@ -240,6 +245,7 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Delete(':noteId')
   public async deleteNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
