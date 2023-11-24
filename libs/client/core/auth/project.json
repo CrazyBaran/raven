@@ -22,5 +22,5 @@
       }
     }
   },
-  "tags": ["client", "type:util"]
+  "tags": ["client", "type:util", "scope:shared"]
 }

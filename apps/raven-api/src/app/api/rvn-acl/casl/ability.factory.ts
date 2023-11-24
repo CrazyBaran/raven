@@ -56,7 +56,10 @@ export class AbilityFactory {
       await this.cache.set(user.id, ability.rules);
       return ability;
     }
-    return new PureAbility(rules, { fieldMatcher });
+
+    //todo: fix this
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new PureAbility(rules as any, { fieldMatcher }) as any;
   }
 
   protected async lookupExtraShares(

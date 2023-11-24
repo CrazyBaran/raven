@@ -14,6 +14,8 @@ import {
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
+// Extract auth store to a separate library
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ErrorInterceptor, RvncAuthModule } from '@app/client/core/auth';
 
 import { RouterModule } from '@angular/router';
