@@ -10,7 +10,7 @@ import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { RxIf } from '@rx-angular/template/if';
 
 export type DropdownNavigationItem = {
-  id: string | null;
+  id: string | null | undefined;
   name: string;
 };
 

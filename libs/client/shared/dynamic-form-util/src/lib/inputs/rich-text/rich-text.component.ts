@@ -21,6 +21,7 @@ import {
   EditorComponent,
   EditorModule,
   Plugin,
+  Schema,
   schema,
 } from '@progress/kendo-angular-editor';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
@@ -89,9 +90,11 @@ export class RichTextComponent
 
   public active = toSignal(this.active$);
 
-  public mySchema = this.proseSettings?.proseMirrorSettings?.schema ?? schema;
-
   public destroyRef$ = inject(DestroyRef);
+
+  public get mySchema(): Schema<string, string> {
+    return this.proseSettings?.proseMirrorSettings?.schema ?? schema;
+  }
 
   public ngAfterViewInit(): void {
     this.editor.valueChange
@@ -107,9 +110,6 @@ export class RichTextComponent
   ];
 
   public writeValue(value: string): void {
-    // setTimeout(() => {
-    //   this.editor.writeValue(value);
-    // });
     this.value = value;
   }
 

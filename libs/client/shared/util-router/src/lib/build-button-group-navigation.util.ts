@@ -7,7 +7,7 @@ export type BuildButtonGroupNavigation<
 > = {
   params: T;
   name: keyof T;
-  buttons: { id: string | null; name: string }[];
+  buttons: { id: string | null | undefined; name: string }[];
 };
 
 export function buildButtonGroupNavigation<
@@ -19,10 +19,10 @@ export function buildButtonGroupNavigation<
 }: BuildButtonGroupNavigation<T>): ButtongroupNavigationModel {
   return {
     paramName: name as string,
-    filters: buttons.map(({ id, name }) => ({
-      id: id,
-      name: name,
-      selected: id == params[name],
+    filters: buttons.map((b) => ({
+      id: b.id,
+      name: b.name,
+      selected: b.id == params[name],
     })),
   };
 }

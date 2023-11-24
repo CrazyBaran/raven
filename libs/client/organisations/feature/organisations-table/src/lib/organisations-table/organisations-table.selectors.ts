@@ -1,3 +1,4 @@
+import { authQuery } from '@app/client/core/auth';
 import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { tagsFeature } from '@app/client/organisations/api-tags';
@@ -17,7 +18,6 @@ import {
 import { createSelector } from '@ngrx/store';
 import {
   defaultOrganisationQuery,
-  organisationTableNavigationButtons,
   organisationsQueryParams,
 } from './organisations-table.models';
 
@@ -26,13 +26,30 @@ export const selectOrganisationsTableParams = buildPageParamsSelector(
   defaultOrganisationQuery,
 );
 
+export const selectCurrentUserTag = createSelector(
+  authQuery.selectUserName,
+  tagsFeature.selectPeopleTags,
+  (name, tags) => tags.find((t) => t.name === name),
+);
+
 export const selectOrganisationsTableButtonGroupNavigation = createSelector(
   selectOrganisationsTableParams,
-  (params): ButtongroupNavigationModel => {
+  selectCurrentUserTag,
+  (params, userTag): ButtongroupNavigationModel => {
+    debugger;
     return buildButtonGroupNavigation({
       params,
-      name: 'my',
-      buttons: organisationTableNavigationButtons,
+      name: 'lead',
+      buttons: [
+        {
+          id: null,
+          name: 'All deals',
+        },
+        {
+          id: userTag?.userId ?? 'unknown',
+          name: 'My deals',
+        },
+      ],
     });
   },
 );
@@ -65,7 +82,7 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
 
     const peopleData = peopleTags.map((t) => ({
       name: t.name,
-      id: t.id,
+      id: t.userId,
     }));
 
     return [

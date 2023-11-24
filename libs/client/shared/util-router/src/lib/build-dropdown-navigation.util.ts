@@ -5,7 +5,7 @@ import { DropdownNavigationModel } from '@app/client/shared/ui-router';
 export type BuildDropdownNavigation<T extends Record<string, string>> = {
   params: T;
   name: keyof T;
-  data: { id: string | null; name: string }[];
+  data: { id: string | null | undefined; name: string }[];
   loading: boolean | undefined | null;
   defaultItem: { id: string | null; name: string };
 };

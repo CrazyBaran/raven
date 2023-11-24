@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 
-import { StorageActions } from '@app/client/shared/storage/data-access';
+import {
+  StorageActions,
+  storageQuery,
+} from '@app/client/shared/storage/data-access';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { routerQuery } from '@app/client/shared/util-router';
 import { NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import { catchError, concatMap, filter, map, of, switchMap } from 'rxjs';
 import { NotesService } from '../services/notes.service';
 import { NotesActions } from './notes.actions';
@@ -65,9 +69,16 @@ export class NotesEffects {
       ofType(NotesActions.getOpportunityNotes),
       switchMap(({ opportunityId }) =>
         this.notesService.getOpportunityNotes(opportunityId).pipe(
-          map(({ data }) =>
-            NotesActions.getOpportunityNotesSuccess({ data: data || [] }),
-          ),
+          switchMap(({ data }) => [
+            NotesActions.getOpportunityNotesSuccess({ data: [data!] || [] }),
+            StorageActions.addImages({
+              images:
+                data?.noteAttachments?.map((attachment) => ({
+                  fileName: attachment.fileName,
+                  url: attachment.url,
+                })) ?? [],
+            }),
+          ]),
           catchError((error) =>
             of(NotesActions.getOpportunityNotesFailure({ error })),
           ),
@@ -96,6 +107,31 @@ export class NotesEffects {
   private updateNote$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(NotesActions.updateNote),
+      concatLatestFrom(() =>
+        this.store.select(storageQuery.selectAzureImageDictionary),
+      ),
+      map(([{ noteId, data }, dictionary]) => ({
+        noteId,
+        data: {
+          ...data,
+          fields: data.fields.map(({ id, value }) => {
+            const clearedValue = Object.entries(
+              _.chain(dictionary ?? {})
+                .mapKeys((x) => x!.fileName)
+                .mapValues((x) => x!.url)
+                .value(),
+            ).reduce(
+              (acc, [fileName, sasUrl]) => {
+                return acc
+                  .replace(new RegExp('&amp;', 'g'), '&')
+                  .replace(sasUrl, fileName);
+              },
+              String(value) ?? '',
+            );
+            return { id, value: clearedValue || '' };
+          }),
+        },
+      })),
       switchMap(({ noteId, data }) =>
         this.notesService.patchNote(noteId, data).pipe(
           switchMap(({ data }) => [
@@ -104,7 +140,9 @@ export class NotesEffects {
               content: 'Fields updated successfully.',
             }),
           ]),
-          catchError((error) => of(NotesActions.updateNoteFailure({ error }))),
+          catchError((error) =>
+            of(NotesActions.updateNoteFailure({ error, originId: noteId })),
+          ),
         ),
       ),
     );

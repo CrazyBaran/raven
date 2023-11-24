@@ -89,16 +89,38 @@ export class NotesService {
 
   public getOpportunityNotes(opportunityId: string): Observable<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    GenericResponse<WorkflowNoteData[]>
+    GenericResponse<
+      WorkflowNoteData & { noteAttachments: NoteAttachmentData[] }
+    >
   > {
-    return this.http.get<
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      GenericResponse<WorkflowNoteData[]>
-    >('/api/notes', {
-      params: {
-        opportunityId,
-        type: 'workflow',
-      },
-    });
+    return this.http
+      .get<
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        GenericResponse<WorkflowNoteData[]>
+      >('/api/notes', {
+        params: {
+          opportunityId,
+          type: 'workflow',
+        },
+      })
+      .pipe(
+        switchMap((notes) => {
+          const note = notes.data![0];
+          return this.getNoteAttachments(note.id).pipe(
+            map((attachmentResponse) => ({
+              ...notes,
+              data: {
+                ...(note as WorkflowNoteData),
+                noteAttachments: attachmentResponse?.data ?? [],
+              },
+
+              // data: {
+              //   ...(note.data as NoteWithRelationsData),
+              //   noteAttachments: attachmentResponse?.data ?? [],
+              // },
+            })),
+          );
+        }),
+      );
   }
 }
