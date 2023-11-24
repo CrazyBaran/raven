@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateFileDto } from './create-file.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsDefined, IsUUID } from 'class-validator';
 
-export class UpdateFileDto extends PartialType(CreateFileDto) {}
+export class UpdateFileDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsUUID(undefined, { each: true })
+  public readonly tagIds?: string[];
+}
