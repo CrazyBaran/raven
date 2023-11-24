@@ -28,6 +28,9 @@
       "@app/client/files/feature/files-table": [
         "libs/client/files/feature/files-table/src/index.ts"
       ],
+      "@app/client/files/sdk-pnptimeline": [
+        "libs/client/files/sdk-pnptimeline/src/index.ts"
+      ],
       "@app/client/notes/api-tags": ["libs/client/notes/api-tags/src/index.ts"],
       "@app/client/notes/data-access": [
         "libs/client/notes/data-access/src/index.ts"

@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { PickerComponent } from '../picker/picker.component';
 
 @Component({
   selector: 'app-client-files-feature-files-table',
   standalone: true,
-  imports: [CommonModule, GridModule, ButtonModule],
+  imports: [CommonModule, GridModule, ButtonModule, PickerComponent],
   templateUrl: './files-table.component.html',
   styleUrls: ['./files-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
