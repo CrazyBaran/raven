@@ -1,3 +1,5 @@
+import { GenericResponseSchema } from '@app/rvns-api';
+import { FileData } from '@app/rvns-files';
 import { OpportunityData, PagedOpportunityData } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
@@ -24,7 +26,13 @@ import {
 } from '@nestjs/swagger';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
+import { ParseTagsPipe } from '../../shared/pipes/parse-tags.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
+import { UpdateFileDto } from '../rvn-files/dto/update-file.dto';
+import { FileEntity } from '../rvn-files/entities/file.entity';
+import { FilesService } from '../rvn-files/files.service';
+import { ParseOptionalFileFromSharepointIdPipe } from '../rvn-files/pipes/parse-optional-file-from-sharepoint-id.pipe';
+import { ValidateTabTagsPipe } from '../rvn-files/pipes/validate-tab-tags.pipe';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
@@ -44,7 +52,10 @@ import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pip
 @ApiTags('Opportunities')
 @Controller('opportunities')
 export class OpportunityController {
-  public constructor(private readonly opportunityService: OpportunityService) {}
+  public constructor(
+    private readonly opportunityService: OpportunityService,
+    private readonly filesService: FilesService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all opportunities' })
@@ -179,6 +190,32 @@ export class OpportunityController {
         underNda: dto.underNda,
         ndaTerminationDate: dto.ndaTerminationDate,
       }),
+    );
+  }
+
+  @ApiOperation({ description: 'Update file tags' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'id', type: String })
+  @ApiParam({ name: 'sharepointId', type: String })
+  @Patch(':id/files/:sharepointId')
+  public async createOrUpdate(
+    @Param('sharepointId', ParseUUIDPipe, ParseOptionalFileFromSharepointIdPipe)
+    fileEntity: FileEntity | null,
+    @Param('sharepointId') sharepointId: string,
+    @Param('opportunityId') opportunityId: string,
+    @Body('tagIds', ParseTagsPipe, ValidateTabTagsPipe) // TODO in future we might want to remove tag to be restricted to tab tags only
+    tagEntities: TagEntity[] | null,
+    @Body() updateFileDto: UpdateFileDto,
+  ): Promise<FileData> {
+    if (!fileEntity) {
+      return this.filesService.fileEntityToFileData(
+        await this.filesService.create(opportunityId, sharepointId, {
+          tagEntities,
+        }),
+      );
+    }
+    return this.filesService.fileEntityToFileData(
+      await this.filesService.update(fileEntity, { tagEntities }),
     );
   }
 

@@ -112,7 +112,13 @@ export class OpportunityService {
   public async findOne(id: string): Promise<OpportunityData | null> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id },
-      relations: ['organisation', 'pipelineDefinition', 'pipelineStage', 'tag'],
+      relations: [
+        'organisation',
+        'pipelineDefinition',
+        'pipelineStage',
+        'tag',
+        'files',
+      ],
     });
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
