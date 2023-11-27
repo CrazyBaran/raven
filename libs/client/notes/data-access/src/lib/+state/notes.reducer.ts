@@ -209,6 +209,12 @@ export const notesReducer = createReducer(
                       pipelineStages:
                         state.opportunityNotes.data?.[0]?.noteTabs?.[i]
                           ?.pipelineStages,
+                      relatedNotes:
+                        state.opportunityNotes.data?.[0]?.noteTabs?.[i]
+                          ?.relatedNotes,
+                      relatedNotesWithFields:
+                        state.opportunityNotes.data?.[0]?.noteTabs?.[i]
+                          ?.relatedNotesWithFields,
                     })),
                   },
                 ] as WorkflowNoteData[],

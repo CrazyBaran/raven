@@ -14,7 +14,13 @@ export const selectUserEmail = createSelector(
   (state) => state?.email,
 );
 
+export const selectUserName = createSelector(
+  selectUserData,
+  (state) => state?.name,
+);
+
 export const authQuery = {
   selectUserData,
   selectUserEmail,
+  selectUserName,
 };

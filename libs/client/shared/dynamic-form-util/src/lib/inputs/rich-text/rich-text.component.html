@@ -1,11 +1,11 @@
 <kendo-editor
-  [iframe]="false"
-  [schema]="mySchema"
-  class="grow-1 relative"
-  [plugins]="myPlugins"
-  [placeholder]="placeholder!"
-  [value]="value"
   (blur)="onBlur()"
+  [iframe]="false"
+  [placeholder]="placeholder!"
+  [plugins]="myPlugins"
+  [schema]="mySchema"
+  [value]="value"
+  class="grow-1 relative"
 >
   <kendo-toolbar
     [class.!hidden]="!active()"

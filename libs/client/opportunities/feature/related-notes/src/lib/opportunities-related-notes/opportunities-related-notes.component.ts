@@ -46,9 +46,20 @@ import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
 
 import { trigger } from '@angular/animations';
+import { Actions, ofType } from '@ngrx/effects';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import * as _ from 'lodash';
-import { firstValueFrom, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  combineLatest,
+  concatMap,
+  filter,
+  firstValueFrom,
+  map,
+  take,
+  tap,
+} from 'rxjs';
 import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-related-notes.selectors';
 
 @Component({
@@ -85,11 +96,23 @@ export class OpportunitiesRelatedNotesComponent {
     },
   ];
 
+  public actions$ = inject(Actions);
+
+  public updateQueue$ = new Subject<any>();
+
+  public requestCompletedStream = new BehaviorSubject(true);
+
   protected store = inject(Store);
+
   protected uploadFileService = inject(UploadFileService);
 
   protected formGroup: FormGroup = new FormRecord({});
+
   protected destroyRef = inject(DestroyRef);
+
+  protected vm = this.store.selectSignal(
+    selectOpportunitiesRelatedNotesViewModel,
+  );
 
   protected proseMirrorSettings = {
     schema: getSchemaWithCrossorigin(),
@@ -109,10 +132,6 @@ export class OpportunitiesRelatedNotesComponent {
     ],
   };
 
-  protected vm = this.store.selectSignal(
-    selectOpportunitiesRelatedNotesViewModel,
-  );
-
   protected fields$ = this.store
     .select(selectOpportunitiesRelatedNotesViewModel)
     .pipe(
@@ -121,6 +140,45 @@ export class OpportunitiesRelatedNotesComponent {
     );
 
   public constructor() {
+    combineLatest([this.updateQueue$, this.requestCompletedStream])
+      .pipe(
+        takeUntilDestroyed(),
+        filter(([_, requestComplete]) => requestComplete), // continue only when the last request has completed
+        map(([requestNumber]) => requestNumber),
+        distinctUntilChangedDeep(), // do not handle the same request twice
+        concatMap((requestNumber) => {
+          this.requestCompletedStream.next(false);
+          const noteId = this.vm().opportunityNoteId;
+          this.store.dispatch(
+            NotesActions.updateNote({
+              noteId: noteId,
+              data: {
+                name: this.vm().opportunityNote.name,
+                fields: _.chain(this.formGroup.value as Record<string, unknown>)
+                  .map((value, id) => ({
+                    id: this.vm().fields.find((x) => x.uniqId === id)?.id,
+                    value: value ?? '',
+                  }))
+                  .value(),
+                tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
+              },
+            }),
+          );
+          return this.actions$.pipe(
+            ofType(
+              NotesActions.updateNoteSuccess,
+              NotesActions.updateNoteFailure,
+            ),
+            filter(({ originId }) => originId === noteId),
+            take(1),
+            tap(() => {
+              this.requestCompletedStream.next(true);
+            }),
+          );
+        }),
+      )
+      .subscribe();
+
     effect(
       () => {
         const value = _.chain(this.vm().fields)
@@ -132,23 +190,7 @@ export class OpportunitiesRelatedNotesComponent {
         this.formGroup = new FormGroup(value);
         this.formGroup.valueChanges
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((value) => {
-            this.store.dispatch(
-              NotesActions.updateNote({
-                noteId: this.vm().opportunityNoteId,
-                data: {
-                  name: this.vm().opportunityNote.name,
-                  fields: _.chain(value as Record<string, unknown>)
-                    .map((value, id) => ({
-                      id: this.vm().fields.find((x) => x.uniqId === id)?.id,
-                      value: value ?? '',
-                    }))
-                    .value(),
-                  tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
-                },
-              }),
-            );
-          });
+          .subscribe((value) => this.updateQueue$.next(value));
       },
       {
         allowSignalWrites: true,

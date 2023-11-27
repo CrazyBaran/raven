@@ -1,6 +1,9 @@
 import { notesQuery } from '@app/client/notes/data-access';
 import { NotepadForm } from '@app/client/notes/ui';
-import { storageQuery } from '@app/client/shared/storage/data-access';
+import {
+  AzureImageEntity,
+  storageQuery,
+} from '@app/client/shared/storage/data-access';
 import { routerQuery } from '@app/client/shared/util-router';
 import {
   NoteFieldData,
@@ -8,8 +11,27 @@ import {
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { TemplateWithRelationsData } from '@app/rvns-templates';
+import { Dictionary } from '@ngrx/entity';
 import { createSelector } from '@ngrx/store';
 import { sortBy } from 'lodash';
+
+export const mapImageValues = (
+  noteFieldGroups: NoteFieldGroupsWithFieldData[],
+  azureImageDictioanry: Dictionary<AzureImageEntity>,
+): NoteFieldGroupsWithFieldData[] => {
+  return (
+    noteFieldGroups?.map((fields) => ({
+      ...fields,
+      noteFields: fields.noteFields.map((field) => ({
+        ...field,
+        value: Object.entries(azureImageDictioanry).reduce(
+          (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
+          field.value ?? '',
+        ),
+      })),
+    })) ?? []
+  );
+};
 
 export const selectNoteDetailsModel = createSelector(
   routerQuery.selectNoteDetailsId,
@@ -30,17 +52,10 @@ export const selectNoteDetailsModel = createSelector(
 
     return {
       ...note,
-      noteFieldGroups:
-        note?.noteFieldGroups?.map((fields) => ({
-          ...fields,
-          noteFields: fields.noteFields.map((field) => ({
-            ...field,
-            value: Object.entries(azureImageDictioanry).reduce(
-              (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
-              field.value ?? '',
-            ),
-          })),
-        })) ?? [],
+      noteFieldGroups: mapImageValues(
+        note?.noteFieldGroups ?? [],
+        azureImageDictioanry,
+      ),
     };
   },
 );

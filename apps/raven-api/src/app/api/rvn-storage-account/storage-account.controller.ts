@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiConsumes, ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { NextFunction, Request, Response } from 'express';
+import { environment } from '../../../environments/environment';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
@@ -21,7 +22,7 @@ import { StorageAccountService } from './storage-account.service';
 
 @ApiTags('Storage Account')
 @Controller('storage-account')
-@ApiOAuth2(['https://raven.test.mubadalacapital.ae/api'])
+@ApiOAuth2([environment.scopes.apiAccess])
 export class StorageAccountController {
   public constructor(
     private readonly storageAccountService: StorageAccountService,
