@@ -1,14 +1,18 @@
 import {
   EnvironmentProviders,
   importProvidersFrom,
+  inject,
   Provider,
 } from '@angular/core';
 import { Routes } from '@angular/router';
+import { FileTypeBadgeColorsResolver } from '@app/client/files/ui';
 import {
   NotesEffects,
   notesFeature,
+  notesQuery,
   NoteStoreFacade,
 } from '@app/client/notes/data-access';
+import { NOTE_TYPE_BADGE_COLORS } from '@app/client/notes/ui';
 import {
   tagsEffects,
   tagsFeature,
@@ -16,7 +20,8 @@ import {
 } from '@app/client/tags/state';
 import { templateFeatureProviders } from '@app/client/templates/data-access';
 import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
+import { map } from 'rxjs';
 
 export const notesProviders: Array<Provider | EnvironmentProviders> = [
   NoteStoreFacade,
@@ -28,6 +33,28 @@ export const notesProviders: Array<Provider | EnvironmentProviders> = [
     EffectsModule.forFeature(tagsEffects),
   ),
   templateFeatureProviders,
+  {
+    provide: NOTE_TYPE_BADGE_COLORS,
+    useFactory: (): FileTypeBadgeColorsResolver => {
+      const store = inject(Store);
+
+      return {
+        resolve: (fileType: string) =>
+          store.select(notesQuery.selectNotesTypeBadgeColors).pipe(
+            map(
+              (dictionary) =>
+                dictionary[fileType] ?? {
+                  backgroundColor: '#e0e0e0',
+                  color: '#000000',
+                },
+            ),
+          ),
+      };
+    },
+  },
+  // provideNoteTypeBadgeColors(() => {
+  //   return inject(Store).select(notesQuery.selectNotesTypeBadgeColors);
+  // }),
 ];
 
 export const NOTES_ROUTES: Routes = [

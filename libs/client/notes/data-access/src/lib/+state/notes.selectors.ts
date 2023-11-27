@@ -1,8 +1,13 @@
+//TODO: fix colors boundaries
+/* eslint-disable @nx/enforce-module-boundaries */
 import { authQuery } from '@app/client/core/auth';
+import { BadgeStyle } from '@app/client/shared/ui';
 import { buildPageParamsSelector } from '@app/client/shared/util-router';
+import { templateQueries } from '@app/client/templates/data-access';
 import { NoteData } from '@app/rvns-notes/data-access';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { NOTES_QUERY_DEFAULTS, notesQueries } from '../domain/get-notes.params';
+import * as _ from 'lodash';
+import { notesQueries } from '../domain/get-notes.params';
 import { NotesState, notesAdapter, notesFeatureKey } from './notes.reducer';
 
 export const { selectAll, selectEntities } = notesAdapter.getSelectors();
@@ -84,14 +89,60 @@ const selectOpportunityNotesIsLoading = createSelector(
   (state) => state.isLoading,
 );
 
-const selectNotesTableParams = buildPageParamsSelector(
-  notesQueries,
-  NOTES_QUERY_DEFAULTS,
-);
+const selectNotesTableParams = buildPageParamsSelector(notesQueries, {
+  take: '15',
+  skip: '0',
+  field: 'updatedAt',
+  dir: 'desc',
+});
 
 const selectTotal = createSelector(
   selectNotesState,
   (state) => state.table.total,
+);
+
+export const NOTE_TYPE_BADGE_COLORS: BadgeStyle[] = [
+  {
+    backgroundColor: '#00CCBE80',
+    color: '#000000',
+  },
+  {
+    backgroundColor: '#77B8E480',
+    color: '#000000',
+  },
+  {
+    backgroundColor: '#F0882D80',
+    color: '#000000',
+  },
+  {
+    backgroundColor: '#D8466180',
+    color: '#000000',
+  },
+  {
+    backgroundColor: '#FDDC49',
+    color: '#000000',
+  },
+  {
+    backgroundColor: '#D281D980',
+    color: '#000000',
+  },
+];
+
+const selectNotesTypeBadgeColors = createSelector(
+  templateQueries.selectAllNoteTemplates,
+  (templates): Record<string, BadgeStyle> => {
+    return _.chain(templates)
+      .map((t, index) => ({
+        ...t,
+        styles: NOTE_TYPE_BADGE_COLORS[index] ?? {
+          backgroundColor: '#e0e0e0',
+          color: '#000000',
+        },
+      }))
+      .keyBy(({ name }) => name)
+      .mapValues(({ styles }) => styles)
+      .value();
+  },
 );
 
 export const notesQuery = {
@@ -107,4 +158,5 @@ export const notesQuery = {
   selectNotesDictionary,
   selectNotesTableParams,
   selectTotal,
+  selectNotesTypeBadgeColors,
 };

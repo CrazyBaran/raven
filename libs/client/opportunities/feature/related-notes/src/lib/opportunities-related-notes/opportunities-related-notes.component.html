@@ -2,7 +2,7 @@
   <!--    [class.opacity-5]="!visible() && !vm().isLoading"-->
   <div
     *ngIf="vm().fields?.length || vm().isLoading"
-    class="h-full flex-1 overflow-auto"
+    class="custom-scroll-on-hover -mr-1.5 h-full flex-1 overflow-auto pr-1.5"
   >
     <kendo-tilelayout
       [columns]="12"

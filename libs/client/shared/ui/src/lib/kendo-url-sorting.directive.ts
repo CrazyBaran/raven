@@ -25,7 +25,8 @@ export class KendoUrlSortingDirective implements AfterViewInit {
 
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: { field, dir },
+        queryParams: { field, dir: dir ?? 'none' },
+        // queryParams: field && dir ? { field, dir } : { field: null, dir: null },
         queryParamsHandling: this.queryParamsHandling,
       });
     });

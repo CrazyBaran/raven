@@ -5,8 +5,10 @@ export type ButtongroupNavigationModel = {
     id: string | null | undefined;
     name: string;
     selected: boolean;
+    queryParams: Record<string, string | null>;
   }[];
-  paramName: string;
+  // paramName: string;
   queryParamsHandling?: 'merge' | 'preserve';
   size?: ButtonSize;
+  toggleable?: boolean;
 };

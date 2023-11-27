@@ -39,6 +39,7 @@ export class HomeComponent {
           name: 'All Companies',
           path: 'companies',
           icon: 'fa-regular fa-cart-shopping',
+          exact: true,
         },
         {
           name: 'Shortlist',

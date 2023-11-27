@@ -8,6 +8,8 @@ export type BuildButtonGroupNavigation<
   params: T;
   name: keyof T;
   buttons: { id: string | null | undefined; name: string }[];
+  toggleable?: boolean;
+  staticQueryParams?: Record<string, string | null>;
 };
 
 export function buildButtonGroupNavigation<
@@ -16,13 +18,19 @@ export function buildButtonGroupNavigation<
   params,
   name,
   buttons,
+  toggleable,
+  staticQueryParams,
 }: BuildButtonGroupNavigation<T>): ButtongroupNavigationModel {
   return {
-    paramName: name as string,
     filters: buttons.map((b) => ({
       id: b.id,
       name: b.name,
       selected: b.id == params[name],
+      queryParams: {
+        [name as string]: b.id!,
+        ...(staticQueryParams ?? {}),
+      },
     })),
+    toggleable,
   };
 }

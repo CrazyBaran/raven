@@ -30,7 +30,7 @@ export class NotesService {
   ): Observable<GenericResponse<NoteData[]>> {
     return this.http.get<GenericResponse<NoteData[]>>('/api/notes', {
       params: {
-        ...params,
+        ...(params ?? {}),
         type: TemplateTypeEnum.Note,
       },
     });

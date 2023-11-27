@@ -4,7 +4,7 @@ import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { WindowRef } from '@progress/kendo-angular-dialog';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { NoteDetailsDialogComponent } from './note-details-dialog.component';
 import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selectors';
 
@@ -26,7 +26,19 @@ describe('ClientNotesFeatureNoteDetailsDialogComponent', () => {
         },
         {
           provide: WindowRef,
-          useValue: {},
+          useValue: {
+            window: {
+              instance: {
+                topChange: of({}),
+                leftChange: of({}),
+                dragEnd: of({}),
+                resizeEnd: of({}),
+              },
+              location: {
+                nativeElement: {},
+              },
+            },
+          },
         },
         provideMockActions(() => actions$),
         provideMockStore({

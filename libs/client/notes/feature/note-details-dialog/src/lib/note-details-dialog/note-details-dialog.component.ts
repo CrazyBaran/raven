@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ApplicationRef,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -43,7 +44,7 @@ import {
 import { IconModule } from '@progress/kendo-angular-icons';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { xIcon } from '@progress/kendo-svg-icons';
-import { filter, map, take } from 'rxjs';
+import { filter, map, merge, take } from 'rxjs';
 import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selectors';
 
 @Component({
@@ -114,6 +115,7 @@ export class NoteDetailsDialogComponent
   protected windowRef = inject(WindowRef);
 
   public constructor(
+    private appRef: ApplicationRef,
     private store: Store,
     private readonly noteStoreFacade: NoteStoreFacade,
     private actions$: Actions,
@@ -136,6 +138,45 @@ export class NoteDetailsDialogComponent
   }
 
   public ngOnInit(): void {
+    const instance = this.windowRef.window.instance;
+    const windowElement = this.windowRef.window.location.nativeElement;
+
+    merge(instance.topChange)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (instance.top < 0) {
+          instance.top = 0;
+          windowElement.style.top = '0px';
+        }
+      });
+
+    merge(instance.leftChange)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (instance.left < 0) {
+          instance.left = 0;
+          windowElement.style.left = '0px';
+        }
+
+        if (instance.left > window.innerWidth - instance.width) {
+          instance.left = window.innerWidth - instance.width;
+          windowElement.style.left = `${window.innerWidth - instance.width}px`;
+        }
+      });
+
+    merge(instance.dragEnd, instance.resizeEnd)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (instance.top < 0) {
+          instance.top = 0;
+        }
+
+        if (instance.left < 0) {
+          instance.left = 0;
+          windowElement.style.left = '0px';
+        }
+      });
+
     this.vm$
       .pipe(
         takeUntilDestroyed(this.destroyRef),

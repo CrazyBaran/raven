@@ -31,11 +31,15 @@ export class PickerComponent {
     const options: IFilePickerOptions = {
       sdk: '8.0',
       entry: {
-        sharePoint: {},
+        sharePoint: {
+          byPath: {
+            list: 'https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents',
+          },
+        },
       },
       authentication: {},
       messaging: {
-        origin: 'http://localhost:4200',
+        origin: this.env.adRedirectUri,
         channelId: '27',
       },
       search: {

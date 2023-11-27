@@ -2,23 +2,23 @@
   <div class="grid grid-cols-[1fr_360px_1fr] gap-2">
     <!--        TEMPLATES       -->
     <kendo-dropdownlist
+      (valueChange)="handleValueChange($event)"
       [data]="dropdownTemplates()"
       [defaultItem]="defaultTemplate()"
+      [formControl]="standaloneTemplateForm"
       [loading]="!templateLoaded()!"
       [textField]="templateDropdownConfig.textField"
       [valueField]="templateDropdownConfig.valueField"
-      (valueChange)="handleValueChange($event)"
-      fillMode="outline"
       [virtual]="true"
-      [formControl]="standaloneTemplateForm"
+      fillMode="outline"
     >
     </kendo-dropdownlist>
     <!--        TAGS       -->
     <app-tag-dropdown
-      formControlName="tags"
       (openTagDialog)="openTagDialog($event)"
       [loading]="!tagLoaded()"
       [tags]="$any(tags())"
+      formControlName="tags"
     >
     </app-tag-dropdown>
 
@@ -28,10 +28,10 @@
       [filterable]="true"
       [kendoDropDownFilter]="{ caseSensitive: false, operator: 'contains' }"
       [loading]="!tagLoaded()"
+      [virtual]="true"
       fillMode="outline"
       placeholder="Select people..."
       textField="name"
-      [virtual]="true"
       valueField="id"
     >
       <ng-template kendoMultiSelectItemTemplate let-dataItem>
@@ -54,13 +54,9 @@
         (tagRemove)="removeTag(tag!)"
         *ngFor="let tag of addedTags()"
         [label]="tag.name"
-        [ngClass]="{
-          'text-error': tag.type === 'company' || tag.type === 'opportunity',
-          'text-success': tag.type === 'industry',
-          'text-warning': tag.type === 'investor',
-          'text-primary-900': tag.type === 'businessModel'
-        }"
-        icon="fa-solid fa-tag"
+        [style]="tag.type | tagTypeColor"
+        [clickable]="true"
+        [removable]="true"
       ></ui-tag>
     </div>
   </div>
@@ -75,7 +71,9 @@
         (tagRemove)="removePeople(tag)"
         *ngFor="let tag of selectedPeopleTags()"
         [label]="tag.name"
-        class="text-info"
+        [style]="tag.type | tagTypeColor"
+        [clickable]="true"
+        [removable]="true"
         icon="fa-solid fa-circle-user"
       ></ui-tag>
     </div>
@@ -88,8 +86,8 @@
 
   <div class="grow overflow-hidden">
     <app-notepad
-      [appProseMirrorSettings]="proseMirrorSettings"
       *ngIf="templateLoaded()"
+      [appProseMirrorSettings]="proseMirrorSettings"
       [config]="config()"
       [hideTabs]="isDefaultTemplate()"
       [notepadFormGroup]="notepadForm.controls.notes"

@@ -6,6 +6,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InputSize, TextBoxModule } from '@progress/kendo-angular-inputs';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
+export type TextBoxNavigationModel = {
+  queryParamName: string;
+  urlValue: string;
+  size?: InputSize;
+  placeholder?: string;
+  debounceTime?: number;
+  queryParamsHandling?: 'merge' | 'preserve';
+};
+
+const textBoxNavigationModelDefaults: Required<TextBoxNavigationModel> = {
+  queryParamName: '',
+  urlValue: '',
+  size: 'large',
+  placeholder: '',
+  debounceTime: 500,
+  queryParamsHandling: 'merge',
+};
+
 @Component({
   selector: 'app-text-box-navigation',
   standalone: true,
@@ -15,18 +33,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextBoxNavigationComponent {
-  @Input() public size: InputSize = 'large';
-
-  @Input({ required: true })
-  public queryParamName: string;
-
-  @Input() public placeholder = '';
-
-  @Input() public queryParamsHandling: 'merge' | 'preserve' = 'merge';
-
-  @Input() public debounceTime = 200;
-
   public navigationControl = new FormControl();
+
+  private _model: Required<TextBoxNavigationModel> =
+    textBoxNavigationModelDefaults;
 
   public constructor(
     private router: Router,
@@ -35,19 +45,28 @@ export class TextBoxNavigationComponent {
     this.navigationControl.valueChanges
       .pipe(
         takeUntilDestroyed(),
-        debounceTime(this.debounceTime),
+        debounceTime(this.model.debounceTime),
         distinctUntilChanged(),
       )
       .subscribe((value) => {
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { [this.queryParamName]: value || null },
-          queryParamsHandling: this.queryParamsHandling,
+          queryParams: { [this.model.queryParamName]: value || null },
+          queryParamsHandling: this.model.queryParamsHandling,
         });
       });
   }
 
-  @Input() public set urlValue(value: string) {
-    this.navigationControl.setValue(value, { emitEvent: false });
+  public get model(): Required<TextBoxNavigationModel> {
+    return this._model;
+  }
+
+  @Input({ required: true }) public set model(value: TextBoxNavigationModel) {
+    this._model = {
+      ...textBoxNavigationModelDefaults,
+      ...value,
+    };
+
+    this.navigationControl.setValue(this.model.urlValue, { emitEvent: false });
   }
 }

@@ -37,7 +37,6 @@ export class DynamicRichTextComponent
   implements OnInit, AfterViewInit
 {
   @HostBinding('class.rich-text-full') public grow: boolean | undefined;
-
   @ViewChild(EditorComponent) protected editor: EditorComponent;
 
   public proseSettings = inject(DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS, {
@@ -54,6 +53,13 @@ export class DynamicRichTextComponent
   public override ngOnInit(): void {
     super.ngOnInit();
     this.grow = this.control.config.grow;
+  }
+
+  public addIndent(): void {
+    this.editor.exec('indent');
+    setTimeout(() => {
+      this.editor.focus();
+    }, 5);
   }
 
   protected setFocus(): void {

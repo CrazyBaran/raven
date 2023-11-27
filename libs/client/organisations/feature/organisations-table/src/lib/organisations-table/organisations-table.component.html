@@ -1,10 +1,6 @@
 <app-page-template pageIcon="fa-regular fa-fire" pageName="All Companies">
   <div class="flex items-center gap-3" page-header-actions>
-    <app-text-box-navigation
-      [placeholder]="vm().queryModel.placeholder"
-      [queryParamName]="vm().queryModel.queryParamName"
-      [urlValue]="vm().queryModel.urlValue!"
-    />
+    <app-text-box-navigation [model]="vm().queryModel" />
 
     <kendo-button
       (click)="openOrganisationDialog()"
@@ -28,8 +24,7 @@
   >
     <app-quick-filters-template>
       <div class="flex gap-6">
-        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation">
-        </app-buttongroup-navigation>
+        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation" />
 
         <app-dropdown-navigation
           *rxFor="
@@ -37,8 +32,7 @@
             trackBy: 'queryParamName'
           "
           [model]="dropdown"
-        >
-        </app-dropdown-navigation>
+        />
       </div>
     </app-quick-filters-template>
 
@@ -46,7 +40,7 @@
       <app-organisations-table-view
         [model]="vm().tableModel"
         class="block h-full"
-      ></app-organisations-table-view>
+      />
     </div>
   </div>
 </app-page-template>

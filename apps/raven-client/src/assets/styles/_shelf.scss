@@ -45,6 +45,11 @@ $shelf-window-padding: 15px;
     border-inline: none !important;
     border-top: none !important;
   }
+
+  col.k-sorted,
+  .k-table-th.k-sorted {
+    background: initial !important;
+  }
 }
 
 .raven-custom-dialog {
@@ -56,3 +61,62 @@ $shelf-window-padding: 15px;
 .k-dialog-actions {
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
+
+.custom-scroll {
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #b9b9b9;
+    border-radius: 4px;
+  }
+}
+
+.custom-scroll-on-hover {
+  scrollbar-gutter: stable both-edges;
+
+  margin-left: -0.5rem;
+  padding-right: 0.25rem;
+
+  &::-webkit-scrollbar {
+    background-color: transparent !important;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background: #b9b9b9;
+    }
+  }
+}
+//
+//.scroll-on-hover {
+//  &::-webkit-scrollbar {
+//    background-color: transparent !important;
+//  }
+//
+//  &:hover {
+//    &::-webkit-scrollbar-thumb {
+//      background: #b9b9b9;
+//    }
+//  }
+//}
+//.scroll-on-hover:hover {
+//  &::-webkit-scrollbar-thumb {
+//    background: #b9b9b9;
+//  }
+//}

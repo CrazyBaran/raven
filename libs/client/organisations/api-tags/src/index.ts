@@ -1,1 +1,1 @@
-export { TagsActions, tagsFeature } from '@app/client/tags/state';
+export { TagsActions, tagsFeature, tagsQuery } from '@app/client/tags/state';

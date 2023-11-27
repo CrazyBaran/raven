@@ -1,30 +1,15 @@
 <div class="flex flex-col gap-4">
-  <div class="text-xxs uppercase">Quick filters</div>
+  <app-quick-filters-template>
+    <div class="flex w-full items-center justify-between">
+      <app-dropdown-navigation [model]="vm().filters" />
 
-  <div class="flex flex-row justify-between gap-6">
-    <kendo-buttongroup class="flex gap-0.5" selection="single">
-      <kendo-button
-        *rxFor="let filter of vm().filters; trackBy: 'id'"
-        [queryParams]="{ fileFilter: filter.id }"
-        [routerLink]="[]"
-        [selected]="filter.selected"
-        [toggleable]="true"
-        queryParamsHandling="merge"
-      >
-        {{ filter.name }}
+      <kendo-button themeColor="primary" size="large">
+        Manage Files
       </kendo-button>
-    </kendo-buttongroup>
-
-    <kendo-button
-      themeColor="primary"
-      iconClass="fa-regular fa-file-arrow-up"
-      size="large"
-    >
-      New File
-    </kendo-button>
-  </div>
+    </div>
+  </app-quick-filters-template>
 
   <div>
-    <router-outlet></router-outlet>
+    <router-outlet />
   </div>
 </div>

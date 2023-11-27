@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
+import { from } from 'rxjs';
 import {
   OpportunityFilesComponent,
   selectOpportunityFilesViewModel,
@@ -13,6 +15,12 @@ describe('ClientOpportunitiesFeatureFilesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [OpportunityFilesComponent],
       providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
         provideMockStore({
           selectors: [
             {

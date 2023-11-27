@@ -1,7 +1,6 @@
-import { authQuery } from '@app/client/core/auth';
 import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
-import { tagsFeature } from '@app/client/organisations/api-tags';
+import { tagsFeature, tagsQuery } from '@app/client/organisations/api-tags';
 import { OrganisationsFeature } from '@app/client/organisations/state';
 import { OrganisationRow } from '@app/client/organisations/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
@@ -16,25 +15,29 @@ import {
   buildPageParamsSelector,
 } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
-import {
-  defaultOrganisationQuery,
-  organisationsQueryParams,
-} from './organisations-table.models';
+
+export const organisationsQueryParams = [
+  'query',
+  'my',
+  'opportunity',
+  'lead',
+  'skip',
+  'take',
+  'field',
+  'dir',
+] as const;
 
 export const selectOrganisationsTableParams = buildPageParamsSelector(
   organisationsQueryParams,
-  defaultOrganisationQuery,
-);
-
-export const selectCurrentUserTag = createSelector(
-  authQuery.selectUserName,
-  tagsFeature.selectPeopleTags,
-  (name, tags) => tags.find((t) => t.name === name),
+  {
+    skip: '0',
+    take: '15',
+  },
 );
 
 export const selectOrganisationsTableButtonGroupNavigation = createSelector(
   selectOrganisationsTableParams,
-  selectCurrentUserTag,
+  tagsQuery.selectCurrentUserTag,
   (params, userTag): ButtongroupNavigationModel => {
     return buildButtonGroupNavigation({
       params,
@@ -49,6 +52,7 @@ export const selectOrganisationsTableButtonGroupNavigation = createSelector(
           name: 'My deals',
         },
       ],
+      staticQueryParams: { skip: null },
     });
   },
 );

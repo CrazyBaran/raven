@@ -2,15 +2,3 @@
   height: 100%;
   display: grid;
 }
-
-.notes-list {
-  grid-template-rows: auto 1fr;
-
-  &__content {
-    &:has(app-quick-filters) {
-      @apply grid gap-6;
-
-      grid-template-rows: auto 1fr;
-    }
-  }
-}
