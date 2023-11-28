@@ -20,8 +20,6 @@ export class TabTagSeeding1700741499691 implements MigrationInterface {
       return tabTag;
     });
 
-    console.log({ tabs, tagsData });
-
     await queryRunner.manager.save(TabTagEntity, tagsData);
   }
 
