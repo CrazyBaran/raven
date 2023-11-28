@@ -20,18 +20,15 @@ export class CustomAuthenticationProvider implements AuthenticationProvider {
   public async getAccessToken(
     authenticationProviderOptions: AuthenticationProviderOptions | undefined,
   ): Promise<string> {
-    console.log(JSON.stringify(authenticationProviderOptions));
-
     const localAccountId = await this.cls.get('localAccountId');
     const account = await this.confidentialClientApplication
       .getTokenCache()
       .getAccountByLocalId(localAccountId);
 
-    console.log(JSON.stringify(account));
-
     const request: SilentFlowRequest = {
       account: account,
-      scopes: [], // Here should go the scopes for the Graph API. It would need to be find out which one and also move it to config.
+      scopes: [], // TODO Here should go the scopes for the Graph API. It would need to be find out which one and also move it to config.
+      // scopes: authenticationProviderOptions.scopes, // TODO maybe this will work?
     } as SilentFlowRequest;
     const response =
       await this.confidentialClientApplication.acquireTokenSilent(request);

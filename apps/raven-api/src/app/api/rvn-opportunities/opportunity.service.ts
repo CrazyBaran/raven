@@ -9,6 +9,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
+import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
@@ -112,7 +113,13 @@ export class OpportunityService {
   public async findOne(id: string): Promise<OpportunityData | null> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id },
-      relations: ['organisation', 'pipelineDefinition', 'pipelineStage', 'tag'],
+      relations: [
+        'organisation',
+        'pipelineDefinition',
+        'pipelineStage',
+        'tag',
+        'files',
+      ],
     });
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
@@ -133,6 +140,10 @@ export class OpportunityService {
             order: pipelineStage.order,
             mappedFrom: pipelineStage.mappedFrom,
           },
+          sharePointDirectory:
+            SharepointDirectoryStructureGenerator.getDirectoryForOpportunity(
+              entity,
+            ),
         };
         return data;
       },

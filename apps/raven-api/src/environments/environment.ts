@@ -186,4 +186,10 @@ export const environment = {
       .default('true')
       .asBoolStrict(),
   },
+  sharePoint: {
+    rootDirectory: env
+      .get('SHAREPOINT_ROOT_DIRECTORY')
+      .default('RavenRoot')
+      .asString(),
+  },
 };

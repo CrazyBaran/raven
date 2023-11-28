@@ -1,3 +1,4 @@
+import { FileData } from '@app/rvns-files';
 import { PipelineStageData } from '@app/rvns-pipelines';
 import { FieldData } from './field-data.interface';
 import { OrganisationData } from './organisation-data.interface';
@@ -29,4 +30,6 @@ export interface OpportunityDataWithoutOrganisation {
   readonly timing?: string;
   readonly underNda?: string;
   readonly ndaTerminationDate?: Date;
+  readonly files?: FileData[];
+  readonly sharePointDirectory?: string;
 }

@@ -1,7 +1,7 @@
 import { EntityManager, In } from 'typeorm';
 
 import { Inject, Injectable, PipeTransform } from '@nestjs/common';
-import { TagEntity } from '../../rvn-tags/entities/tag.entity';
+import { TagEntity } from '../../api/rvn-tags/entities/tag.entity';
 
 @Injectable()
 export class ParseTagsPipe
