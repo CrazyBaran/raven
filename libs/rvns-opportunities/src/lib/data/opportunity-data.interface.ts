@@ -31,4 +31,5 @@ export interface OpportunityDataWithoutOrganisation {
   readonly underNda?: string;
   readonly ndaTerminationDate?: Date;
   readonly files?: FileData[];
+  readonly sharePointDirectory?: string;
 }

@@ -9,7 +9,7 @@ import { SharePointService } from './share-point.service';
 interface UpdateOptions {
   tagEntities: TagEntity[];
 }
-interface CreateOptions extends UpdateOptions {}
+type CreateOptions = UpdateOptions;
 
 @Injectable()
 export class FilesService {

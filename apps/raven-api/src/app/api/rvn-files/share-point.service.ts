@@ -35,4 +35,9 @@ export class SharePointService {
       path: 'temp',
     };
   }
+
+  public async createDirectory(folderName: string): Promise<void> {
+    console.log('created directory: ', folderName);
+    return;
+  }
 }
