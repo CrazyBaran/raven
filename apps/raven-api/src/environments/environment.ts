@@ -65,8 +65,8 @@ export const environment = {
         .asString(),
     },
     rateLimiting: {
-      ttl: env.get('SECURITY_RATE_LIMITING_TTL').default('1').asInt(),
-      limit: env.get('SECURITY_RATE_LIMITING_LIMIT').default('15').asInt(),
+      ttl: env.get('API_RATE_LIMITING_TTL').default('1').asInt(),
+      limit: env.get('API_RATE_LIMITING_TTL').default('15').asInt(),
     },
     bcryptSaltRounds: 10,
   },
