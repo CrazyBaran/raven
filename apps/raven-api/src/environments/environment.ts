@@ -117,6 +117,10 @@ export const environment = {
         type: 'ioredis',
         options: redisConnectionOptions,
       },
+      pool: {
+        max: 10,
+        min: 1,
+      },
     } as SqlServerConnectionOptions,
     redis: {
       options: redisConnectionOptions,
