@@ -14,16 +14,10 @@ import { OpportunityEntity } from '../../rvn-opportunities/entities/opportunity.
 import { TagEntity } from '../../rvn-tags/entities/tag.entity';
 
 @Entity({ name: 'files' })
-@Index(['id', 'name'], { unique: true })
+@Index(['id', 'internalSharepointId'], { unique: true })
 export class FileEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
-
-  @Column()
-  public name: string;
-
-  @Column()
-  public path: string;
 
   @Column()
   public internalSharepointId: string;

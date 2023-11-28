@@ -2,7 +2,7 @@ import { TagTypeEnum } from '@app/rvns-tags';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { TabTagEntity } from '../app/api/rvn-tags/entities/tag.entity';
 
-export class TabTagSeeding1700741499691 implements MigrationInterface {
+export class TabTagSeeding1701165509826 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const tabs = await queryRunner.query(
       `SELECT rvn_tabs.*, rvn_templates.name as templateName

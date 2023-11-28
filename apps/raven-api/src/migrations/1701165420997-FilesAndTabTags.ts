@@ -1,14 +1,14 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class FilesAndTabTags1700740595692 implements MigrationInterface {
-  public name = 'FilesAndTabTags1700740595692';
+export class FilesAndTabTags1701165420997 implements MigrationInterface {
+  public name = 'FilesAndTabTags1701165420997';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "rvn_files" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_aa1939427717bbe5ffead4c9ed4" DEFAULT NEWSEQUENTIALID(), "name" nvarchar(255) NOT NULL, "path" nvarchar(255) NOT NULL, "internal_sharepoint_id" nvarchar(255) NOT NULL, "opportunity_id" uniqueidentifier NOT NULL, CONSTRAINT "PK_aa1939427717bbe5ffead4c9ed4" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "rvn_files" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_aa1939427717bbe5ffead4c9ed4" DEFAULT NEWSEQUENTIALID(), "internal_sharepoint_id" nvarchar(255) NOT NULL, "opportunity_id" uniqueidentifier NOT NULL, CONSTRAINT "PK_aa1939427717bbe5ffead4c9ed4" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_ad74ab825399afa88c0cdc2dbe" ON "rvn_files" ("id", "name") `,
+      `CREATE UNIQUE INDEX "IDX_beaa5b73eb122c112e6428a2c2" ON "rvn_files" ("id", "internal_sharepoint_id") `,
     );
     await queryRunner.query(
       `CREATE TABLE "rvn_file_tags" ("file_id" uniqueidentifier NOT NULL, "tag_id" uniqueidentifier NOT NULL, CONSTRAINT "PK_2cefafe2d782ecdd0a7556c02f2" PRIMARY KEY ("file_id", "tag_id"))`,
@@ -58,7 +58,7 @@ export class FilesAndTabTags1700740595692 implements MigrationInterface {
     );
     await queryRunner.query(`DROP TABLE "rvn_file_tags"`);
     await queryRunner.query(
-      `DROP INDEX "IDX_ad74ab825399afa88c0cdc2dbe" ON "rvn_files"`,
+      `DROP INDEX "IDX_beaa5b73eb122c112e6428a2c2" ON "rvn_files"`,
     );
     await queryRunner.query(`DROP TABLE "rvn_files"`);
   }

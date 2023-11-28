@@ -24,19 +24,10 @@ export class FilesService {
     sharepointId: string,
     options: CreateOptions,
   ): Promise<FileEntity> {
-    const { name, path } =
-      await this.sharePointService.getFileDetails(sharepointId);
-
-    if (!name || !path) {
-      throw new Error('File not found');
-    }
-
     const fileEntity = new FileEntity();
     fileEntity.internalSharepointId = sharepointId;
     fileEntity.tags = options.tagEntities;
     fileEntity.opportunityId = opportunityId;
-    fileEntity.name = name;
-    fileEntity.path = path;
     return await this.fileRepository.save(fileEntity);
   }
 
@@ -60,8 +51,6 @@ export class FilesService {
   public fileEntityToFileData(fileEntity: FileEntity): FileData {
     return {
       id: fileEntity.id,
-      name: fileEntity.name,
-      path: fileEntity.path,
       internalSharepointId: fileEntity.internalSharepointId,
       opportunityId: fileEntity.opportunityId,
       tags: fileEntity.tags.map((tagEntity) => ({
