@@ -4,10 +4,10 @@
   "sourceRoot": "libs/rvns-api/src",
   "projectType": "library",
   "generators": {},
-  "tags": ["client", "api","scope:rvns-api", "type:dtos"],
+  "tags": ["client", "api", "scope:rvns-api", "type:dtos"],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": ["libs/rvns-api/**/*.ts"]
       }
@@ -15,8 +15,7 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/rvns-api/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/rvns-api/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/rvns-api"]
     }

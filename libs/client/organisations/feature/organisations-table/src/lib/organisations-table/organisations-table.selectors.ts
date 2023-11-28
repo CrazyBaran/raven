@@ -36,7 +36,6 @@ export const selectOrganisationsTableButtonGroupNavigation = createSelector(
   selectOrganisationsTableParams,
   selectCurrentUserTag,
   (params, userTag): ButtongroupNavigationModel => {
-    debugger;
     return buildButtonGroupNavigation({
       params,
       name: 'lead',

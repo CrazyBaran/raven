@@ -6,7 +6,7 @@
   "tags": ["client", "api"],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": ["libs/rvns-acl/**/*.ts"]
       }
@@ -15,8 +15,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/rvns-acl"],
       "options": {
-        "jestConfig": "libs/rvns-acl/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/rvns-acl/jest.config.ts"
       }
     }
   }
