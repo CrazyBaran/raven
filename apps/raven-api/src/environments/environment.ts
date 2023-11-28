@@ -65,8 +65,8 @@ export const environment = {
         .asString(),
     },
     rateLimiting: {
-      ttl: env.get('SECURITY_RATE_LIMITING_TTL').default('1').asInt(),
-      limit: env.get('SECURITY_RATE_LIMITING_LIMIT').default('15').asInt(),
+      ttl: env.get('API_RATE_LIMITING_TTL').default('1').asInt(),
+      limit: env.get('API_RATE_LIMITING_TTL').default('15').asInt(),
     },
     bcryptSaltRounds: 10,
   },
@@ -116,6 +116,10 @@ export const environment = {
       cache: {
         type: 'ioredis',
         options: redisConnectionOptions,
+      },
+      pool: {
+        max: 20,
+        min: 1,
       },
     } as SqlServerConnectionOptions,
     redis: {
@@ -185,5 +189,11 @@ export const environment = {
       .get('AZURE_STORAGE_ACCOUNT_CREATE_IF_NOT_EXISTS')
       .default('true')
       .asBoolStrict(),
+  },
+  sharePoint: {
+    rootDirectory: env
+      .get('SHAREPOINT_ROOT_DIRECTORY')
+      .default('RavenRoot')
+      .asString(),
   },
 };

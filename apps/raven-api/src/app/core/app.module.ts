@@ -23,6 +23,7 @@ import { AffinityIntegrationModule } from '../api/rvn-affinity-integration/affin
 import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware';
 import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 import { AuthModule } from '../api/rvn-auth/auth.module';
+import { FilesModule } from '../api/rvn-files/files.module';
 import { LoggerModule } from '../api/rvn-logger/logger.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
 import { OnBehalfOfModule } from '../api/rvn-on-behalf-of/on-behalf-of.module';
@@ -86,6 +87,7 @@ import { TransformInterceptor } from './transform.interceptor';
     PipelineModule,
     StorageAccountModule,
     OnBehalfOfModule,
+    FilesModule,
   ],
   providers: [
     // core

@@ -7,10 +7,12 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
+import { FileEntity } from '../../rvn-files/entities/file.entity';
 import { NoteEntity } from '../../rvn-notes/entities/note.entity';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../../rvn-pipeline/entities/pipeline-stage.entity';
@@ -64,6 +66,9 @@ export class OpportunityEntity {
   })
   @RelationId((opportunity: OpportunityEntity) => opportunity.tag)
   public tagId: string | null;
+
+  @OneToMany(() => FileEntity, (file) => file.opportunity)
+  public files: FileEntity[];
 
   @OneToOne(() => NoteEntity, {
     nullable: true,

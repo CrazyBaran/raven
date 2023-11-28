@@ -9,6 +9,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
+import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
@@ -33,7 +34,7 @@ interface CreateOpportunityForOrganisationOptions
 }
 
 interface CommonCreateOpportunityOptions extends CommonCreateAndUpdateOptions {
-  workflowTemplateEntity: TemplateEntity;
+  workflowTemplateEntity: TemplateEntity | null;
   userEntity: UserEntity;
   tagEntity: TagEntity;
 }
@@ -76,7 +77,7 @@ export class OpportunityService {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
       relations: ['organisation', 'tag'],
       skip: skip ? skip : 0,
-      take: take > 500 ? 500 : take,
+      take: take ? (take > 500 ? 500 : take) : 10,
     };
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
@@ -112,12 +113,18 @@ export class OpportunityService {
   public async findOne(id: string): Promise<OpportunityData | null> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id },
-      relations: ['organisation', 'pipelineDefinition', 'pipelineStage', 'tag'],
+      relations: [
+        'organisation',
+        'pipelineDefinition',
+        'pipelineStage',
+        'tag',
+        'files',
+      ],
     });
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
-    return this.affinityEnricher.enrichOpportunity(
+    return await this.affinityEnricher.enrichOpportunity(
       opportunity,
       (entity, data) => {
         const pipelineStage = this.getPipelineStage(
@@ -133,6 +140,10 @@ export class OpportunityService {
             order: pipelineStage.order,
             mappedFrom: pipelineStage.mappedFrom,
           },
+          sharePointDirectory:
+            SharepointDirectoryStructureGenerator.getDirectoryForOpportunity(
+              entity,
+            ),
         };
         return data;
       },
@@ -176,7 +187,7 @@ export class OpportunityService {
     const { pipeline, pipelineStage } =
       await this.getDefaultPipelineAndFirstStage();
 
-    const affinityOrganisation = this.affinityCacheService.getByDomains(
+    const affinityOrganisation = await this.affinityCacheService.getByDomains(
       options.organisation.domains,
     );
 
@@ -408,7 +419,7 @@ export class OpportunityService {
       'opportunity-created',
       new OpportunityCreatedEvent(
         savedOpportunity.id,
-        options.workflowTemplateEntity.id,
+        options.workflowTemplateEntity?.id,
         options.userEntity.id,
       ),
     );

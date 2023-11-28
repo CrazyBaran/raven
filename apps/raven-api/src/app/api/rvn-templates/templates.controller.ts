@@ -154,7 +154,7 @@ export class TemplatesController {
     return this.service.tabEntityToTabData(
       await this.service.createTab({
         name: dto.name,
-        templateId: template.id,
+        template,
         order: dto.order,
         userEntity,
         pipelineStages,

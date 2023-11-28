@@ -135,11 +135,11 @@ export class AffinityEnricher {
     affinityOrganization: OrganizationStageDto,
   ): OpportunityData {
     return {
+      ...this.buildBaseOpportunityData(opportunity, affinityOrganization),
       organisation: this.buildBaseOrganisationData(
         opportunity.organisation,
         affinityOrganization,
       ),
-      ...this.buildBaseOpportunityData(opportunity, affinityOrganization),
     };
   }
 
@@ -183,7 +183,7 @@ export class AffinityEnricher {
       affinityUrl: affinityOrganization
         ? `${environment.affinity.affinityUrl}companies/${affinityOrganization.organizationDto.id}`
         : undefined,
-    };
+    } as OrganisationData;
   }
 
   private buildOrganisationData(

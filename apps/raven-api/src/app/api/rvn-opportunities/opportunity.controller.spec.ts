@@ -1,6 +1,9 @@
+import { ParseUUIDPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
+import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
+import { FilesService } from '../rvn-files/files.service';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityController } from './opportunity.controller';
@@ -39,7 +42,19 @@ describe('OpportunityController', () => {
           },
         },
         {
+          provide: ParseUUIDPipe,
+          useValue: {},
+        },
+        {
+          provide: ParseTemplateWithGroupsAndFieldsPipe,
+          useValue: {},
+        },
+        {
           provide: EntityManager,
+          useValue: {},
+        },
+        {
+          provide: FilesService,
           useValue: {},
         },
       ],

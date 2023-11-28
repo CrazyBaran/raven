@@ -172,45 +172,6 @@ export class NotesService {
         `Opportunity with id ${opportunityId} not found`,
       );
     }
-    const opportunityNote = await this.noteRepository.findOne({
-      where: { id: opportunity.noteId },
-      relations: [
-        'createdBy',
-        'updatedBy',
-        'deletedBy',
-        'tags',
-        'noteTabs',
-        'noteTabs.noteFieldGroups',
-        'noteTabs.noteFieldGroups.noteFields',
-        'noteFieldGroups',
-        'noteFieldGroups.noteFields',
-      ],
-    });
-
-    const opportunityNoteTemplate = await this.templateRepository
-      .createQueryBuilder('template')
-      .leftJoinAndSelect('template.tabs', 'tab')
-      .leftJoinAndSelect('tab.relatedTemplates', 'relatedTemplate')
-      .leftJoinAndSelect('tab.pipelineStages', 'pipelineStage')
-      .leftJoinAndSelect('tab.relatedFields', 'relatedFields')
-      .select([
-        'template.id',
-        'template.name',
-        'tab.id',
-        'tab.name',
-        'pipelineStage.id',
-        'pipelineStage.displayName',
-        'relatedTemplate.id',
-        'relatedFields.id',
-      ])
-      .where('template.id = :templateId', {
-        templateId: opportunityNote.templateId,
-      })
-      .getOne();
-
-    // we resolve these relations manually because typeorm lacks performance in doing so...
-    opportunityNote.template = opportunityNoteTemplate;
-    opportunity.note = opportunityNote;
 
     const organisationTag = await this.organisationTagRepository.findOne({
       where: { organisationId: opportunity.organisation.id },
@@ -263,6 +224,56 @@ export class NotesService {
       .andWhere('template.type = :type', { type: TemplateTypeEnum.Note });
 
     const relatedNotes = await qb.getMany();
+
+    if (type === TemplateTypeEnum.Note) {
+      return relatedNotes
+        .map((rn) => {
+          delete rn.noteFieldGroups;
+          delete rn.noteTabs;
+          return rn; // we remove note fields data to make response smaller
+        })
+        .map(this.noteEntityToNoteData.bind(this));
+    }
+
+    const opportunityNote = await this.noteRepository.findOne({
+      where: { id: opportunity.noteId },
+      relations: [
+        'createdBy',
+        'updatedBy',
+        'deletedBy',
+        'tags',
+        'noteTabs',
+        'noteTabs.noteFieldGroups',
+        'noteTabs.noteFieldGroups.noteFields',
+        'noteFieldGroups',
+        'noteFieldGroups.noteFields',
+      ],
+    });
+
+    const opportunityNoteTemplate = await this.templateRepository
+      .createQueryBuilder('template')
+      .leftJoinAndSelect('template.tabs', 'tab')
+      .leftJoinAndSelect('tab.relatedTemplates', 'relatedTemplate')
+      .leftJoinAndSelect('tab.pipelineStages', 'pipelineStage')
+      .leftJoinAndSelect('tab.relatedFields', 'relatedFields')
+      .select([
+        'template.id',
+        'template.name',
+        'tab.id',
+        'tab.name',
+        'pipelineStage.id',
+        'pipelineStage.displayName',
+        'relatedTemplate.id',
+        'relatedFields.id',
+      ])
+      .where('template.id = :templateId', {
+        templateId: opportunityNote.templateId,
+      })
+      .getOne();
+
+    // we resolve these relations manually because typeorm lacks performance in doing so...
+    opportunityNote.template = opportunityNoteTemplate;
+    opportunity.note = opportunityNote;
 
     const workflowNote = this.transformNotesToNoteWithRelatedData(
       opportunity.note,
@@ -333,6 +344,7 @@ export class NotesService {
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
     return await this.noteRepository.manager.transaction(async (tem) => {
+      let start = new Date().getTime();
       const latestVersion = await this.noteRepository
         .createQueryBuilder('note')
         .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
@@ -340,6 +352,12 @@ export class NotesService {
         })
         .orderBy('note.version', 'DESC')
         .getOne();
+
+      // TODO remove debug
+      this.logger.debug(
+        'get latest version took: ',
+        new Date().getTime() - start,
+      );
 
       if (latestVersion.version !== noteEntity.version) {
         throw new ConflictException({
@@ -361,6 +379,7 @@ export class NotesService {
         );
       }
 
+      start = new Date().getTime();
       const newNoteVersion = new NoteEntity();
       newNoteVersion.name = options.name || noteEntity.name;
       newNoteVersion.rootVersionId = noteEntity.rootVersionId;
@@ -401,8 +420,13 @@ export class NotesService {
         );
 
       const savedNewNoteVersion = await tem.save(newNoteVersion);
+      this.logger.debug(
+        'save new note version took: ',
+        new Date().getTime() - start,
+      );
 
       if (noteEntity.template.type === TemplateTypeEnum.Workflow) {
+        start = new Date().getTime();
         const opportunity = await this.opportunityRepository.findOne({
           where: { noteId: noteEntity.id },
         });
@@ -410,6 +434,10 @@ export class NotesService {
           opportunity.noteId = savedNewNoteVersion.id;
           await tem.save(opportunity);
         }
+        this.logger.debug(
+          'update opportunity noteId took: ',
+          new Date().getTime() - start,
+        );
       }
       return savedNewNoteVersion;
     });
@@ -798,6 +826,12 @@ export class NotesService {
         name: note.createdBy.name,
         email: note.createdBy.email,
       },
+      updatedById: note.updatedBy.id,
+      updatedBy: {
+        name: note.updatedBy.name,
+        email: note.updatedBy.email,
+      },
+      templateName: note.template.name,
       fields: note.noteFieldGroups
         .map((nfg) => nfg.noteFields)
         .flat()

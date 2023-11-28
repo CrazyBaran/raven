@@ -1,3 +1,4 @@
+import { TagTypeEnum } from '@app/rvns-tags';
 import {
   FieldDefinitionData,
   FieldDefinitionType,
@@ -11,6 +12,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
+import { TabTagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
@@ -40,7 +42,7 @@ interface CreateFieldGroupOptions {
 interface CreateTabOptions {
   name: string;
   order: number;
-  templateId: string;
+  template: TemplateEntity;
   userEntity: UserEntity;
   pipelineStages: PipelineStageEntity[] | null;
   relatedFieldDefinitions: FieldDefinitionEntity[] | null;
@@ -193,15 +195,26 @@ export class TemplatesService {
   }
 
   public async createTab(options: CreateTabOptions): Promise<TabEntity> {
-    const tab = new TabEntity();
-    tab.name = options.name;
-    tab.order = options.order;
-    tab.template = { id: options.templateId } as TemplateEntity;
-    tab.pipelineStages = options.pipelineStages;
-    tab.relatedFields = options.relatedFieldDefinitions;
-    tab.relatedTemplates = options.relatedTemplates;
-    tab.createdBy = options.userEntity;
-    return this.tabsRepository.save(tab);
+    return this.tabsRepository.manager.transaction(async (tem) => {
+      const tab = new TabEntity();
+      tab.name = options.name;
+      tab.order = options.order;
+      tab.template = { id: options.template.id } as TemplateEntity;
+      tab.pipelineStages = options.pipelineStages;
+      tab.relatedFields = options.relatedFieldDefinitions;
+      tab.relatedTemplates = options.relatedTemplates;
+      tab.createdBy = options.userEntity;
+      const savedTab = await tem.save(tab);
+
+      if (options.template.type === TemplateTypeEnum.Workflow) {
+        const tabTag = new TabTagEntity();
+        tabTag.name = `${options.template.name} - ${options.name}`;
+        tabTag.type = TagTypeEnum.Tab;
+        tabTag.tab = savedTab;
+        await tem.save(tabTag);
+      }
+      return savedTab;
+    });
   }
 
   public async updateTab(
@@ -246,6 +259,17 @@ export class TemplatesService {
       delete tab.relatedTemplates;
 
       await tem.save(tab);
+
+      if (tab.template.type === TemplateTypeEnum.Workflow && options.name) {
+        const relatedTag = await tem.findOne(TabTagEntity, {
+          where: { tabId: tab.id },
+        });
+        if (!relatedTag) {
+          throw new Error('Tab tag not found');
+        }
+        relatedTag.name = `${tab.template.name} - ${options.name}`;
+        await tem.save(relatedTag);
+      }
 
       // we reassign those here because of the way TypeORM handles relations
       tab.pipelineStages = options.pipelineStages || oldPipelineStages;

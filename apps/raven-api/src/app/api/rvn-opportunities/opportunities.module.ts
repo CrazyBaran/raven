@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ParseUUIDPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OpportunityEntity } from './entities/opportunity.entity';
@@ -16,6 +16,8 @@ import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 
 import { AffinityOrganisationCreatedEventHandler } from './event-handlers/affinity-organization-created.event-handler';
 
+import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
+import { FilesModule } from '../rvn-files/files.module';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
@@ -54,6 +56,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
     EventEmitterModule,
     PipelineModule,
     WebSocketsModule,
+    FilesModule,
   ],
   providers: [
     OrganisationService,
@@ -64,6 +67,8 @@ import { OrganisationProducer } from './queues/organisation.producer';
     AffinityOrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,
     AffinityFieldChangedEventHandler,
+    ParseUUIDPipe,
+    ParseTemplateWithGroupsAndFieldsPipe,
   ],
   controllers: [OrganisationController, OpportunityController],
 })

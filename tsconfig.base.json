@@ -193,6 +193,7 @@
       "@app/rvns-api": ["libs/rvns-api/src/index.ts"],
       "@app/rvns-auth": ["libs/rvns-auth/src/index.ts"],
       "@app/rvns-bull": ["libs/rvns-bull/src/index.ts"],
+      "@app/rvns-files": ["libs/rvns-files/src/index.ts"],
       "@app/rvns-notes/data-access": [
         "libs/rvns-notes/data-access/src/index.ts"
       ],

@@ -55,6 +55,9 @@ export interface RelatedNoteWithFields {
   readonly name: string;
   readonly createdById: string;
   readonly createdBy: UserData;
+  readonly updatedById: string;
+  readonly updatedBy: UserData;
+  readonly templateName: string;
   readonly fields: NoteFieldData[];
 }
 

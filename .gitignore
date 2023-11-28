@@ -43,4 +43,5 @@ Thumbs.db
 # e2e auth state
 .auth
 
-.nx/cache
+# nx cache
+.nx/**

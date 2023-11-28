@@ -35,8 +35,13 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import { TemplateTypeEnum } from '@app/rvns-templates';
+import { FindOrganizationByIdPipe } from '../../shared/pipes/find-organisation-by-id.pipe';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
+import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
+import { ParseTagsPipe } from '../../shared/pipes/parse-tags.pipe';
 import {
   OrganisationTagEntity,
   TagEntity,
@@ -54,17 +59,16 @@ import { ParseCompanyOpportunityTagsPipe } from './pipes/parse-company-opportuni
 import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
 import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
-import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from './pipes/parse-optional-template-with-groups-and-fields.pipe';
-import { ParseTagsPipe } from './pipes/parse-tags.pipe';
 
 @ApiTags('Notes')
 @Controller('notes')
-@ApiOAuth2(['openid'])
 export class NotesController {
   public constructor(private readonly notesService: NotesService) {}
 
   @ApiOperation({ description: 'Create note' })
   @ApiResponse(GenericCreateResponseSchema())
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Post()
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
@@ -92,6 +96,7 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'domain', type: String, required: false })
   @ApiQuery({ name: 'opportunityId', type: String, required: false })
+  @ApiQuery({ name: 'organisationId', type: String, required: false })
   @ApiQuery({ name: 'type', enum: TemplateTypeEnum, required: false })
   @ApiQuery({
     name: 'tagIds',
@@ -99,17 +104,25 @@ export class NotesController {
     required: false,
     description: 'Comma separated list of tag ids',
   })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Get()
   public async getAllNotes(
     @Query('domain')
     domain: string,
     @Query('domain', FindOrganizationByDomainPipe, FindTagByOgranisationPipe)
-    organisationTagEntity: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
+    organisationTagFromDomain: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
     @Query('tagIds', ParseTagsPipe)
     tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
-
     @Query('opportunityId') opportunityId: string,
     @Query('type') type: TemplateTypeEnum = TemplateTypeEnum.Note,
+    @Query('organisationId') organisationId?: string,
+    @Query(
+      'organisationId',
+      FindOrganizationByIdPipe,
+      FindTagByOgranisationPipe,
+    )
+    organisationTagFromId?: string | OrganisationTagEntity | null,
   ): Promise<NoteData[] | (WorkflowNoteData | NoteData)[]> {
     if (opportunityId) {
       return await this.notesService.getNotesForOpportunity(
@@ -117,13 +130,19 @@ export class NotesController {
         type,
       );
     }
-    if (domain && organisationTagEntity === null) {
+    if (
+      (domain && organisationTagFromDomain === null) ||
+      (organisationId && organisationTagFromId === null)
+    ) {
       return [];
     }
+    const organisation =
+      (organisationTagFromDomain as OrganisationTagEntity) ||
+      (organisationTagFromId as OrganisationTagEntity);
     return await Promise.all(
       (
         await this.notesService.getAllNotes(
-          organisationTagEntity as OrganisationTagEntity,
+          organisation as OrganisationTagEntity,
           tagEntities as TagEntity[],
           type,
         )
@@ -135,6 +154,8 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Get(':id')
   public async getNote(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -154,6 +175,8 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'id', type: String })
   @ApiQuery({ name: 'showHistory', type: Boolean, required: false })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Get(':id/attachments')
   public async getNoteAttachments(
     @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
@@ -170,6 +193,8 @@ export class NotesController {
   @ApiParam({ name: 'noteId', type: String })
   @ApiParam({ name: 'noteFieldGroupId', type: String })
   @ApiParam({ name: 'noteFieldId', type: String })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Put(':noteId/fields-groups/:noteFieldGroupId/fields/:noteFieldId')
   public async updateNoteField(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
@@ -192,6 +217,8 @@ export class NotesController {
   @ApiOperation({ description: 'Update note' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Patch(':noteId')
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
@@ -217,6 +244,8 @@ export class NotesController {
   @ApiOperation({ description: 'Delete note' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
   @Delete(':noteId')
   public async deleteNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
