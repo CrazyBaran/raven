@@ -7,7 +7,7 @@ import {
 import { Controller, Get, Headers } from '@nestjs/common';
 
 import { Client } from '@microsoft/microsoft-graph-client';
-import { User } from '@microsoft/microsoft-graph-types';
+import { DirectoryObject, User } from '@microsoft/microsoft-graph-types';
 import { ApiOAuth2, ApiParam, ApiTags } from '@nestjs/swagger';
 import { environment } from '../../../environments/environment';
 
@@ -24,6 +24,25 @@ export class OnBehalfOfController {
   public async getMe(): Promise<User> {
     const response = await this.graphClient.api('/me').get();
     return response as User;
+  }
+
+  @Get('test-folder')
+  public async createFolderTest(): Promise<DirectoryObject> {
+    const driveItem = {
+      name: 'New Test Folder',
+      folder: {},
+      '@microsoft.graph.conflictBehavior': 'rename',
+    };
+    let response;
+    try {
+      response = await this.graphClient
+        .api('/me/drive/root/children')
+        .post(driveItem);
+    } catch (error) {
+      console.log({ error });
+    }
+
+    return response;
   }
 
   @Get('account-info')
