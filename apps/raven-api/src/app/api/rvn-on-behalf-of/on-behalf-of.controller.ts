@@ -6,6 +6,8 @@ import {
 } from '@azure/msal-node';
 import { Controller, Get, Headers } from '@nestjs/common';
 
+import { Client } from '@microsoft/microsoft-graph-client';
+import { User } from '@microsoft/microsoft-graph-types';
 import { ApiOAuth2, ApiParam, ApiTags } from '@nestjs/swagger';
 import { environment } from '../../../environments/environment';
 
@@ -15,7 +17,14 @@ import { environment } from '../../../environments/environment';
 export class OnBehalfOfController {
   public constructor(
     private readonly confidentialClientApplication: ConfidentialClientApplication,
+    private readonly graphClient: Client,
   ) {}
+
+  @Get('me')
+  public async getMe(): Promise<User> {
+    const response = await this.graphClient.api('/me').get();
+    return response as User;
+  }
 
   @Get('account-info')
   public async getAllAccounts(): Promise<AccountInfo[]> {
