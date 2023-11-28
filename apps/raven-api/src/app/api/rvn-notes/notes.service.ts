@@ -388,7 +388,6 @@ export class NotesService {
       newNoteVersion.complexTags = this.getComplexNoteTags(
         options.companyOpportunityTags,
       );
-      newNoteVersion.template = noteEntity.template;
       newNoteVersion.templateId = noteEntity.templateId;
       newNoteVersion.previousVersion = noteEntity;
       newNoteVersion.createdBy = noteEntity.createdBy;
@@ -672,7 +671,6 @@ export class NotesService {
       const newNoteFieldGroup = new NoteFieldGroupEntity();
       newNoteFieldGroup.name = noteFieldGroup.name;
       newNoteFieldGroup.order = noteFieldGroup.order;
-      newNoteFieldGroup.createdBy = noteFieldGroup.createdBy;
       newNoteFieldGroup.createdById = noteFieldGroup.createdById;
       newNoteFieldGroup.updatedBy = userEntity;
       newNoteFieldGroup.note = newNoteVersion;
@@ -683,7 +681,6 @@ export class NotesService {
           newNoteField.order = noteField.order;
           newNoteField.type = noteField.type;
           newNoteField.templateFieldId = noteField.templateFieldId;
-          newNoteField.createdBy = noteField.createdBy;
           newNoteField.createdById = noteField.createdById;
           newNoteField.updatedBy = userEntity;
           newNoteField.value = this.findFieldValue(noteField, options.fields);
