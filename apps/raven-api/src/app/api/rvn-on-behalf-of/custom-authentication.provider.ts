@@ -20,7 +20,7 @@ export class CustomAuthenticationProvider implements AuthenticationProvider {
   public async getAccessToken(
     authenticationProviderOptions: AuthenticationProviderOptions | undefined,
   ): Promise<string> {
-    const localAccountId = await this.cls.get('localAccountId');
+    const localAccountId = this.cls.get('localAccountId');
     const account = await this.confidentialClientApplication
       .getTokenCache()
       .getAccountByLocalId(localAccountId);
