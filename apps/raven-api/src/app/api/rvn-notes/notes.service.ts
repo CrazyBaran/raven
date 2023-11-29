@@ -422,7 +422,7 @@ export class NotesService {
         options.companyOpportunityTags,
       );
       newNoteVersion.templateId = noteEntity.templateId;
-      newNoteVersion.previousVersion = noteEntity;
+      newNoteVersion.previousVersion = latestVersion;
       newNoteVersion.createdBy = noteEntity.createdBy;
       newNoteVersion.updatedBy = userEntity;
       newNoteVersion.noteTabs = noteEntity.noteTabs.map((noteTab) => {
