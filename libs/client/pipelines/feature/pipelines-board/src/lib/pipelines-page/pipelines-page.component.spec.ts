@@ -32,7 +32,9 @@ describe('PipelinesPageComponent', () => {
           selectors: [
             {
               selector: selectPipelinesPageViewModel,
-              value: {},
+              value: {
+                buttonGroups: {},
+              },
             },
             {
               selector: selectAllOpportunitiesDictionary,

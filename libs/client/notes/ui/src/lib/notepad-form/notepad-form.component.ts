@@ -48,7 +48,7 @@ import { UploadFileService } from '@app/client/shared/storage/data-access';
 import { EditorView } from '@progress/kendo-angular-editor';
 
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
-import { TagComponent } from '@app/client/shared/ui';
+import { TagComponent, TagTypeColorPipe } from '@app/client/shared/ui';
 import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -87,6 +87,7 @@ export const TITLE_FIELD: DynamicControl = {
     ButtonModule,
     CheckBoxModule,
     ProvideProseMirrorSettingsDirective,
+    TagTypeColorPipe,
   ],
   templateUrl: './notepad-form.component.html',
   styleUrls: ['./notepad-form.component.scss'],

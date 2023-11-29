@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { opportunitiesQuery } from '@app/client/opportunities/data-access';
-import { getRouterSelectors } from '@ngrx/router-store';
+import {
+  ButtongroupNavigationComponent,
+  DropdownNavigationComponent,
+} from '@app/client/shared/ui-router';
+import { QuickFiltersTemplateComponent } from '@app/client/shared/ui-templates';
+import {
+  buildDropdownNavigation,
+  buildPageParamsSelector,
+} from '@app/client/shared/util-router';
 import { Store, createSelector } from '@ngrx/store';
 import {
   ButtonGroupModule,
@@ -11,11 +18,17 @@ import {
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { RxFor } from '@rx-angular/template/for';
 
+const opportunityFilesQueryParams = [
+  'fileType',
+  'organisationId',
+  'opportunityId',
+] as const;
+
+export const selectOrganisationsTableParams = buildPageParamsSelector(
+  opportunityFilesQueryParams,
+);
+
 const FILE_FILTERS = [
-  {
-    name: 'All Files',
-    id: null,
-  },
   {
     name: 'Company Material',
     id: 'company',
@@ -31,13 +44,22 @@ const FILE_FILTERS = [
 ];
 
 export const selectOpportunityFilesViewModel = createSelector(
-  opportunitiesQuery.selectRouteOpportunityDetails,
-  getRouterSelectors().selectQueryParam('fileFilter'),
-  (opportunity, fileFilter) => ({
-    filters: FILE_FILTERS.map((f) => ({
-      ...f,
-      selected: f.id === (fileFilter ?? FILE_FILTERS[0].id),
-    })),
+  selectOrganisationsTableParams,
+  (params) => ({
+    filters: buildDropdownNavigation({
+      params,
+      name: 'fileType',
+      data: FILE_FILTERS,
+      loading: false,
+      defaultItem: {
+        name: 'All Files',
+        id: null,
+      },
+    }),
+    // filters: FILE_FILTERS.map((f) => ({
+    //   ...f,
+    //   selected: f.id === (fileFilter ?? FILE_FILTERS[0].id),
+    // })),
   }),
 );
 
@@ -52,6 +74,9 @@ export const selectOpportunityFilesViewModel = createSelector(
     RxFor,
     ButtonModule,
     RouterOutlet,
+    DropdownNavigationComponent,
+    ButtongroupNavigationComponent,
+    QuickFiltersTemplateComponent,
   ],
   templateUrl: './opportunity-files.component.html',
   styleUrls: ['./opportunity-files.component.scss'],

@@ -25,6 +25,7 @@ import {
   PageTemplateComponent,
   QuickFiltersTemplateComponent,
 } from '@app/client/shared/ui-templates';
+import { TagsActions } from '@app/client/tags/state';
 import { Store } from '@ngrx/store';
 import {
   ButtonGroupModule,
@@ -87,6 +88,12 @@ export class PipelinesPageComponent implements OnInit {
     this.opportunitiesFacade.getOpportunities(500, 0);
 
     this.store.dispatch(PipelinesActions.getPipelines());
+
+    this.store.dispatch(
+      TagsActions.getTagsByTypesIfNotLoaded({
+        tagTypes: ['people', 'opportunity'],
+      }),
+    );
 
     this.websocketService.connect();
 

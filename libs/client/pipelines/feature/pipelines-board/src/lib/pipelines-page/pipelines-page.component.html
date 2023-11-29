@@ -1,11 +1,7 @@
 <div class="pipeline-page">
   <app-page-template pageIcon="fa-regular fa-fire" pageName="Pipeline">
     <div class="flex items-center gap-3" page-header-actions>
-      <app-text-box-navigation
-        queryParamName="pipelineQuery"
-        placeholder="Search Pipelines"
-        [urlValue]="vm2().pipelineQuery!"
-      />
+      <app-text-box-navigation [model]="vm2().queryModel" />
 
       <kendo-button
         fillMode="flat"
@@ -31,7 +27,7 @@
           </app-buttongroup-navigation>
 
           <app-dropdown-navigation
-            *rxFor="let dropdown of vm2().dropdowns"
+            *ngFor="let dropdown of vm2().dropdowns"
             [model]="dropdown"
           >
           </app-dropdown-navigation>
@@ -59,7 +55,6 @@
             (vm().opportunitiesStageDictionary$ | async)!
           "
           [opportunitiesDictionary$]="vm().opportunitiesDictionary$"
-          [searchQuery]="vm2().pipelineQuery!"
         />
       </div>
     </div>

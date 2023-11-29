@@ -28,6 +28,7 @@ describe('ClientOrganisationsFeatureOrganisationsTableComponent', () => {
               value: {
                 queryModel: {},
                 query: {},
+                buttonGroupNavigation: {},
               },
             },
           ],

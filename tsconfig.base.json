@@ -28,6 +28,10 @@
       "@app/client/files/feature/files-table": [
         "libs/client/files/feature/files-table/src/index.ts"
       ],
+      "@app/client/files/ui": ["libs/client/files/ui/src/index.ts"],
+      "@app/client/files/sdk-pnptimeline": [
+        "libs/client/files/sdk-pnptimeline/src/index.ts"
+      ],
       "@app/client/notes/api-tags": ["libs/client/notes/api-tags/src/index.ts"],
       "@app/client/notes/data-access": [
         "libs/client/notes/data-access/src/index.ts"
@@ -204,7 +208,7 @@
       "@app/rvns-tags": ["libs/rvns-tags/src/index.ts"],
       "@app/rvns-teams": ["libs/rvns-teams/src/index.ts"],
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
-      "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"]
+      "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

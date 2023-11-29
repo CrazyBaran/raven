@@ -1,34 +1,38 @@
-<div class="notes-list grid max-h-screen">
-  <ui-header pageName="All Notes" pageIcon="fa-solid fa-notebook">
-    <div class="flex gap-3">
-      <kendo-textbox
-        placeholder="Search Note Tags"
-        [style]="{ width: '260px' }"
-        size="large"
-      />
+<app-page-template pageIcon="fa-regular fa-fire" pageName="All Notes">
+  <div class="flex items-center gap-3" page-header-actions>
+    <app-text-box-navigation [model]="vm().queryModel" />
 
-      <kendo-button
-        iconClass="fa-solid fa-square-plus"
-        fillMode="clear"
-        themeColor="secondary"
-        (click)="handleOpenNotepad()"
-        >Add New</kendo-button
-      >
+    <kendo-button
+      (click)="handleOpenNotepad()"
+      fillMode="flat"
+      iconClass="fa-solid fa-square-plus"
+      size="large"
+      themeColor="secondary"
+      >Add New</kendo-button
+    >
+    <kendo-button
+      iconClass="fa-solid fa-filter"
+      fillMode="clear"
+      themeColor="secondary"
+      >Filter</kendo-button
+    >
+  </div>
+  <div
+    class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
+    page-content
+  >
+    <app-quick-filters-template>
+      <div class="flex gap-6">
+        <app-buttongroup-navigation [model]="vm().buttonGroupAssignedTo">
+        </app-buttongroup-navigation>
 
-      <kendo-button
-        iconClass="fa-solid fa-filter"
-        fillMode="clear"
-        themeColor="secondary"
-        >Filter</kendo-button
-      >
-    </div>
-  </ui-header>
+        <app-buttongroup-navigation [model]="vm().buttonGroupTemplates">
+        </app-buttongroup-navigation>
+      </div>
+    </app-quick-filters-template>
 
-  <div class="notes-list__content overflow-hidden p-6">
-    <app-quick-filters />
-
-    <div class="flex overflow-hidden">
+    <div class="flex-1 shrink-0 overflow-hidden">
       <app-notes-table-container />
     </div>
   </div>
-</div>
+</app-page-template>

@@ -9,60 +9,99 @@ import {
   ButtongroupNavigationModel,
   DropdownNavigationModel,
 } from '@app/client/shared/ui-router';
-import { routerQuery } from '@app/client/shared/util-router';
+import {
+  buildButtonGroupNavigation,
+  buildDropdownNavigation,
+  buildInputNavigation,
+  buildPageParamsSelector,
+} from '@app/client/shared/util-router';
+import { tagsFeature, tagsQuery } from '@app/client/tags/state';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 
-export const PIPELINE_FILTERS = {
-  myDeals: 'my-deals',
-};
+const pipelineBoardQueryParams = ['lead', 'opportunity', 'query'] as const;
+
+export const selectPipelineBoardParams = buildPageParamsSelector(
+  pipelineBoardQueryParams,
+);
 
 export const selectPipelineBoardButtonGroupNavigation = createSelector(
-  routerQuery.selectActiveLine,
-  (): ButtongroupNavigationModel => ({
-    paramName: 'filter',
-    filters: [
-      {
-        id: null,
-        name: 'All deals',
-        selected: true,
-      },
-      {
-        id: PIPELINE_FILTERS.myDeals,
-        name: 'My deals',
-        selected: false,
-      },
-    ],
-  }),
+  selectPipelineBoardParams,
+  tagsQuery.selectCurrentUserTag,
+  (params, userTag): ButtongroupNavigationModel =>
+    buildButtonGroupNavigation({
+      params,
+      name: 'lead',
+      buttons: [
+        {
+          id: null,
+          name: 'All deals',
+        },
+        {
+          id: userTag?.userId ?? 'unknown',
+          name: 'My deals',
+        },
+      ],
+    }),
 );
 
 export const selectPipelineBoardNavigationDropdowns = createSelector(
-  routerQuery.selectActiveLine,
-  (): DropdownNavigationModel[] => [
-    {
-      queryParamName: 'stage',
-      data: [],
-      defaultItem: {
-        name: 'Funding Round',
-        id: null,
-      },
-      value: null,
-      loading: false,
-    },
-    {
-      queryParamName: 'dealLead',
-      data: [],
-      defaultItem: {
-        name: 'Deal Lead',
-        id: null,
-      },
-      value: null,
-      loading: false,
-    },
-  ],
+  selectPipelineBoardParams,
+  tagsFeature.selectOpportunityTags,
+  tagsFeature.selectPeopleTags,
+  tagsFeature.selectLoadingTags,
+  (
+    params,
+    opportunityTags,
+    peopleTags,
+    loadingTags,
+  ): DropdownNavigationModel[] => {
+    const opportunityData = opportunityTags.map((t) => ({
+      name: t.name,
+      id: t.name,
+    }));
+
+    const peopleData = peopleTags.map((t) => ({
+      name: t.name,
+      id: t.userId,
+    }));
+
+    return [
+      buildDropdownNavigation({
+        params,
+        name: 'opportunity',
+        data: opportunityData,
+        defaultItem: {
+          id: null,
+          name: 'All funding Rounds',
+        },
+        loading: loadingTags.opportunity,
+      }),
+
+      buildDropdownNavigation({
+        params,
+        name: 'lead',
+        data: peopleData,
+        defaultItem: {
+          id: null,
+          name: 'All Team Members',
+        },
+        loading: loadingTags.people,
+      }),
+    ];
+  },
 );
 
+export const selectPipelineBoardQueryModel = createSelector(
+  selectPipelineBoardParams,
+  (params) =>
+    buildInputNavigation({
+      params,
+      name: 'query',
+      placeholder: 'Search Companies',
+    }),
+);
 export const selectAllOpportunitiesDictionary = createSelector(
   opportunitiesQuery.selectAllOpportunities,
   (opportunities) =>
@@ -77,6 +116,7 @@ export const selectAllOpportunitiesDictionary = createSelector(
       .keyBy((o) => o.id)
       .value(),
 );
+
 export const selectIsLoadingPipelineBoard = createSelector(
   pipelinesQuery.selectIsLoading,
   opportunitiesQuery.selectIsLoading,
@@ -88,38 +128,11 @@ export const selectOportunitiesStageDictionary = createSelector(
   getRouterSelectors().selectQueryParam('filter'),
   authQuery.selectUserEmail,
   getRouterSelectors().selectQueryParam('pipelineQuery'),
-  (opportunities, filter, userEmail, searchQuery) => {
-    let chain = _.chain(opportunities);
-
-    if (filter === PIPELINE_FILTERS.myDeals) {
-      chain = chain.filter(
-        (o) =>
-          o.fields?.some(
-            (f) =>
-              f.displayName === 'Deal Lead' &&
-              'primary_email' in f &&
-              f['primary_email'] === userEmail,
-          ),
-      );
-    }
-
-    if (searchQuery?.trim()) {
-      chain = chain.filter(
-        (o) =>
-          o.organisation.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          o.organisation.domains.some((domain) =>
-            domain.toLowerCase().includes(searchQuery.toLowerCase()),
-          ),
-      );
-    }
-
-    return chain
+  (opportunities, filter, userEmail, searchQuery) =>
+    _.chain(opportunities)
       .groupBy((o) => o.stage.id)
       .mapValues((opportunities) => opportunities.map(({ id }) => id))
-      .value();
-  },
+      .value(),
 );
 
 export const selectPipelinesPageViewModel = createSelector(
@@ -129,7 +142,7 @@ export const selectPipelinesPageViewModel = createSelector(
   selectIsLoadingPipelineBoard,
   selectPipelineBoardNavigationDropdowns,
   selectPipelineBoardButtonGroupNavigation,
-
+  selectPipelineBoardQueryModel,
   (
     opportunitiesDictionary,
     opportunitiesStageDictionary,
@@ -137,6 +150,7 @@ export const selectPipelinesPageViewModel = createSelector(
     isLoading,
     dropdowns,
     buttonGroups,
+    queryModel,
   ) => ({
     opportunitiesDictionary,
     opportunitiesStageDictionary,
@@ -144,6 +158,6 @@ export const selectPipelinesPageViewModel = createSelector(
     isLoading,
     dropdowns,
     buttonGroups,
-    pipelineQuery: null,
+    queryModel,
   }),
 );

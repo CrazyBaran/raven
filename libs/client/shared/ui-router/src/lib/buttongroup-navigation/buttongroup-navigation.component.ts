@@ -1,11 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Input,
+} from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   ButtonGroupModule,
   ButtonsModule,
 } from '@progress/kendo-angular-buttons';
 import { RxFor } from '@rx-angular/template/for';
+import * as _ from 'lodash';
 import { ButtongroupNavigationModel } from './buttongroup-navigation.model';
 
 @Component({
@@ -19,13 +25,20 @@ import { ButtongroupNavigationModel } from './buttongroup-navigation.model';
 export class ButtongroupNavigationComponent {
   @Input({ required: true }) public model: ButtongroupNavigationModel;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public get filters() {
-    return (
-      this.model?.filters.map((f) => ({
-        ...f,
-        queryParams: { [this.model.paramName]: f.id },
-      })) ?? []
-    );
+  protected router = inject(Router);
+  protected activatedRoute = inject(ActivatedRoute);
+
+  protected onClick(
+    button: ButtongroupNavigationModel['filters'][number],
+  ): void {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams:
+        this.model.toggleable && button.selected
+          ? _.mapValues(button.queryParams, (_) => null)
+          : button.queryParams,
+
+      queryParamsHandling: this.model.queryParamsHandling ?? 'merge',
+    });
   }
 }

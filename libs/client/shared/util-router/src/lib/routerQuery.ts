@@ -19,3 +19,11 @@ export const routerQuery = {
   selectActiveNoteId,
   selectNoteDetailsId,
 };
+
+const selectNoteType = selectQueryParam('noteType');
+const selectTagId = selectQueryParam('tagId');
+
+export const notesRouterQuery = {
+  selectNoteType,
+  selectTagId,
+};

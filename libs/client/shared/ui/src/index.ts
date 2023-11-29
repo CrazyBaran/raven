@@ -1,3 +1,4 @@
+export * from './lib/badge/badge.component';
 export * from './lib/clipboard.directive';
 export * from './lib/fade-inout.directive';
 export * from './lib/header/header.component';

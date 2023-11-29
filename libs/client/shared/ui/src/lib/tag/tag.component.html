@@ -2,8 +2,9 @@
   (click)="tagClick.emit($event)"
   [class]="'group flex w-fit items-center ' + (htmlClass || '')"
   [ngClass]="{
-    'hover:text-grey-400 cursor-pointer': clickable
+    'hover:!text-grey-400 cursor-pointer': clickable
   }"
+  [ngStyle]="style"
 >
   <i [className]="icon + ' h-fit p-0.5 mr-1'"></i>
   <ng-container
@@ -18,13 +19,19 @@
     class="text-grey-400 invisible border-0 !p-0 group-hover:visible"
     fillMode="flat"
     iconClass="fa-solid fa-trash h-4 text-xs"
-    size="small"
+    [size]="size"
     [class.group-hover:invisible]="!removable"
   ></kendo-button>
 </div>
 
 <ng-template #defaultLabel>
-  <span class="text-xs leading-5">
+  <span
+    [ngClass]="{
+      'text-xs': size === 'small',
+      'text-lg': size === 'large'
+    }"
+    class="leading-5"
+  >
     {{ label }}
   </span>
 </ng-template>

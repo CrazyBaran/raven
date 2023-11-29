@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotesActions } from '@app/client/notes/data-access';
 import { NotesTableComponent } from '@app/client/notes/ui';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import { TemplateActions } from '@app/client/templates/data-access';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { selectNotesTableViewModel } from './notes-table-container.selectors';
@@ -33,5 +34,6 @@ export class NotesTableContainerComponent {
         this.store.dispatch(NotesActions.getNotes({ params }));
       });
     this.store.dispatch(NotesActions.openNotesTable());
+    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
   }
 }

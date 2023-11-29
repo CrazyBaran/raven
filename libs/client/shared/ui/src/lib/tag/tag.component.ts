@@ -7,7 +7,7 @@ import {
   Output,
   TemplateRef,
 } from '@angular/core';
-import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { ButtonModule, ButtonSize } from '@progress/kendo-angular-buttons';
 
 @Component({
   selector: 'ui-tag',
@@ -20,12 +20,14 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 export class TagComponent {
   @Input() public labelTemplate?: TemplateRef<unknown>;
 
-  @Input() public icon?: string;
+  @Input() public icon = 'fa-solid fa-tag';
   @Input() public label?: string;
   @Input() public htmlClass?: string;
+  @Input() public style?: Record<string, string | undefined | boolean>;
+  @Input() public size: ButtonSize = 'small';
 
-  @Input() public removable?: boolean = true;
-  @Input() public clickable?: boolean = true;
+  @Input() public removable?: boolean = false;
+  @Input() public clickable?: boolean = false;
 
   @Output() public tagClick = new EventEmitter<MouseEvent>();
   @Output() public tagRemove = new EventEmitter<void>();

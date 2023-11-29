@@ -1,0 +1,11 @@
+<div [ngStyle]="badgeStyles" class="bg-series-a-lighten-50 w-fit rounded p-1.5">
+  <div #blockHeader>
+    <ng-content select="[page-header-title]"></ng-content>
+  </div>
+  <div
+    *ngIf="!blockHeader.hasChildNodes()"
+    class="text-component-text flex flex-row items-center gap-5"
+  >
+    <span class="text-xxs">{{ text }} </span>
+  </div>
+</div>

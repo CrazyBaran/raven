@@ -48,9 +48,9 @@ export abstract class TableViewBaseComponent<T> {
       return this.model.dir;
     }
 
-    console.warn(`Unknown sort direction: ${this.model.dir}`);
+    // console.warn(`Unknown sort direction: ${this.model.dir}`);
 
-    return 'desc';
+    return null;
   }
 
   public get gridData(): GridDataResult {

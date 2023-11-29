@@ -18,6 +18,8 @@ import {
   KendoUrlSortingDirective,
   LoaderComponent,
   TagComponent,
+  TagTypeColorPipe,
+  UserTagDirective,
 } from '@app/client/shared/ui';
 import { TruncateElementsDirective } from '@app/client/shared/util';
 import { NoteData } from '@app/rvns-notes/data-access';
@@ -29,8 +31,10 @@ import { GridModule } from '@progress/kendo-angular-grid';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
+import { NoteTypeBadgeComponent } from '../note-type-badge/note-type-badge.component';
 
 export type NoteTableRow = NoteData & {
+  tags?: NoteData['tags'] & { style?: Record<string, string> };
   deleteButtonSettings?: {
     disabled?: boolean;
     tooltip?: string;
@@ -55,6 +59,9 @@ export type NoteTableRow = NoteData & {
     KendoUrlSortingDirective,
     SkeletonModule,
     LoaderComponent,
+    NoteTypeBadgeComponent,
+    UserTagDirective,
+    TagTypeColorPipe,
   ],
   templateUrl: './notes-table.component.html',
   styleUrls: ['./notes-table.component.scss'],
