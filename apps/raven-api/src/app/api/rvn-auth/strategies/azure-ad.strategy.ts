@@ -22,14 +22,17 @@ export class AzureADStrategy extends PassportStrategy(
     super({
       identityMetadata: environment.azureAd.identityMetadata,
       clientID: environment.azureAd.clientId,
-      passReqToCallback: false,
+      passReqToCallback: true,
       issuer: [environment.azureAd.issuer],
       audience: [environment.azureAd.audience],
       loggingLevel: 'error',
     });
   }
 
-  public async validate(response: AzureAdPayload): Promise<AzureAdPayload> {
+  public async validate(
+    req: Request,
+    response: AzureAdPayload,
+  ): Promise<AzureAdPayload> {
     const userRegistered = await this.usersCacheService.get(
       response[environment.azureAd.tokenKeys.azureId],
     );
@@ -46,6 +49,8 @@ export class AzureADStrategy extends PassportStrategy(
     }
 
     this.cls.set('localAccountId', response.oid);
+    this.cls.set('accessToken', req.headers['authorization'].split(' ')[1]);
+
     return response;
   }
 }
