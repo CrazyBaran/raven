@@ -769,7 +769,7 @@ export class NotesService {
 
     const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template
-    for (const tab of workflowNote.template.tabs) {
+    for (const tab of workflowNote.template?.tabs || []) {
       const foundTab = mappedNote.noteTabs.find(
         (nt) => nt.name === tab.name,
       ) as NoteTabsWithRelatedNotesData;
