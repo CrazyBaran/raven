@@ -10,11 +10,7 @@ import {
 } from '@app/rvns-notes/data-access';
 import { TagData } from '@app/rvns-tags';
 import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { cloneDeep } from 'lodash';
 import { Raw, Repository } from 'typeorm';
@@ -402,12 +398,6 @@ export class NotesService {
         new Date().getTime() - start,
       );
 
-      if (latestVersion.version !== noteEntity.version) {
-        throw new ConflictException({
-          message: 'Note is out of date',
-          latestVersionId: latestVersion.id,
-        });
-      }
       if (options.templateEntity) {
         return await this.createNoteFromTemplate(
           options.name,
@@ -418,7 +408,7 @@ export class NotesService {
           noteEntity.createdBy,
           noteEntity.rootVersionId,
           options.companyOpportunityTags,
-          noteEntity.version + 1,
+          latestVersion.version + 1,
         );
       }
 
@@ -426,7 +416,7 @@ export class NotesService {
       const newNoteVersion = new NoteEntity();
       newNoteVersion.name = options.name || noteEntity.name;
       newNoteVersion.rootVersionId = noteEntity.rootVersionId;
-      newNoteVersion.version = noteEntity.version + 1;
+      newNoteVersion.version = latestVersion.version + 1;
       newNoteVersion.tags = options.tags;
       newNoteVersion.complexTags = this.getComplexNoteTags(
         options.companyOpportunityTags,
