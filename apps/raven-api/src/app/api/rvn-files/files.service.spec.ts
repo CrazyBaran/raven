@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { FileEntity } from './entities/file.entity';
 import { FilesService } from './files.service';
-import { SharePointService } from './share-point.service';
 
 describe('FileService', () => {
   let service: FilesService;
@@ -13,10 +12,6 @@ describe('FileService', () => {
         FilesService,
         {
           provide: getRepositoryToken(FileEntity),
-          useValue: {},
-        },
-        {
-          provide: SharePointService,
           useValue: {},
         },
       ],

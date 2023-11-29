@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OnBehalfOfModule } from '../rvn-on-behalf-of/on-behalf-of.module';
 import { FileEntity } from './entities/file.entity';
 import { FilesService } from './files.service';
-import { SharePointService } from './share-point.service';
 
 @Module({
   imports: [
@@ -13,7 +12,7 @@ import { SharePointService } from './share-point.service';
     OnBehalfOfModule,
   ],
   controllers: [],
-  providers: [FilesService, SharePointService],
+  providers: [FilesService],
   exports: [FilesService],
 })
 export class FilesModule {}

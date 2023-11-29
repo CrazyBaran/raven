@@ -10,6 +10,7 @@ import { CCA_CONFIG, ccaConfig } from './cca.config';
 import { ConfidentialClientApplicationLogger } from './confidential-client-application.logger';
 import { CustomAuthenticationProvider } from './custom-authentication.provider';
 import { CcaTokenCacheEntity } from './entities/cca-token-cache.entity';
+import { OpportunityCreatedEventHandler } from './event-handlers/opportunity-created.event.handler';
 import { OnBehalfOfController } from './on-behalf-of.controller';
 import { PartitionManager } from './partition.manager';
 import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
@@ -59,6 +60,7 @@ import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
       },
       inject: [CustomAuthenticationProvider],
     },
+    OpportunityCreatedEventHandler,
   ],
   controllers: [OnBehalfOfController],
   exports: [ConfidentialClientApplication],
