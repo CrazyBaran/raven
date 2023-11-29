@@ -32,7 +32,7 @@ export class SharepointDirectoryStructureGenerator {
   public static getDirectoryNameForOpportunity(
     opportunityEntity: OpportunityEntity,
   ): string {
-    return `${opportunityEntity.tag.name}`;
+    return `${opportunityEntity.tag?.name}`;
   }
 
   private static removeLeadingProtocol(url: string): string {
