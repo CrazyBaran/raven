@@ -12,6 +12,8 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
+import { ShareResource } from '../../rvn-acl/contracts/share-resource.interface';
+import { ShareOpportunityEntity } from '../../rvn-acl/entities/share-opportunity.entity';
 import { FileEntity } from '../../rvn-files/entities/file.entity';
 import { NoteEntity } from '../../rvn-notes/entities/note.entity';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
@@ -21,7 +23,7 @@ import { OrganisationEntity } from './organisation.entity';
 
 @Entity({ name: 'opportunities' })
 @Index(['id'], { unique: true })
-export class OpportunityEntity {
+export class OpportunityEntity implements ShareResource {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -105,6 +107,9 @@ export class OpportunityEntity {
 
   @Column({ nullable: true, type: 'date' })
   public ndaTerminationDate: Date | null;
+
+  @OneToMany(() => ShareOpportunityEntity, (share) => share.resource)
+  public shares: ShareOpportunityEntity[];
 
   @AfterInsert()
   @AfterLoad()

@@ -1,6 +1,11 @@
+import { ShareRole } from '@app/rvns-acl';
 import { GenericResponseSchema } from '@app/rvns-api';
 import { FileData } from '@app/rvns-files';
-import { OpportunityData, PagedOpportunityData } from '@app/rvns-opportunities';
+import {
+  OpportunityData,
+  OpportunityTeamData,
+  PagedOpportunityData,
+} from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import { TemplateTypeEnum } from '@app/rvns-templates';
@@ -20,14 +25,19 @@ import {
   ApiOAuth2,
   ApiOperation,
   ApiParam,
+  ApiProperty,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { IsDefined, IsString, Length } from 'class-validator';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import { ParseTagsPipe } from '../../shared/pipes/parse-tags.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
+import { ShareAbility } from '../rvn-acl/casl/ability.factory';
+import { ShareAction } from '../rvn-acl/enums/share-action.enum';
+import { CheckShare } from '../rvn-acl/permissions/share-policy.decorator';
 import { UpdateFileDto } from '../rvn-files/dto/update-file.dto';
 import { FileEntity } from '../rvn-files/entities/file.entity';
 import { FilesService } from '../rvn-files/files.service';
@@ -38,10 +48,12 @@ import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { ParseUserPipe } from '../rvn-users/pipes/parse-user.pipe';
 import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { UpdateOpportunityDto } from './dto/update-opportunity.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
+import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityService } from './opportunity.service';
 import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
 import { ParseOptionalOrganisationPipe } from './pipes/parse-optional-organisation.pipe';
@@ -49,11 +61,20 @@ import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-
 import { ParseOptionalTagPipe } from './pipes/parse-optional-tag.pipe';
 import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pipe';
 
+export class UpdateTeamDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsString()
+  @Length(3, 20)
+  public readonly role: ShareRole;
+}
+
 @ApiTags('Opportunities')
 @Controller('opportunities')
 export class OpportunityController {
   public constructor(
     private readonly opportunityService: OpportunityService,
+    private readonly opportunityTeamService: OpportunityTeamService,
     private readonly filesService: FilesService,
   ) {}
 
@@ -169,6 +190,13 @@ export class OpportunityController {
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @CheckShare((ability: ShareAbility, context) =>
+    ability.can(
+      ShareAction.Edit,
+      'o',
+      (context.query.id as string)?.toString().toLowerCase(),
+    ),
+  )
   public async update(
     @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
     opportunity: OpportunityEntity,
@@ -230,5 +258,107 @@ export class OpportunityController {
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public remove(@Param('id') id: string): Promise<void> {
     return this.opportunityService.remove(id);
+  }
+
+  @Get(':id/team')
+  @ApiParam({ name: 'id', type: String })
+  @ApiOperation({ summary: 'Get opportunity team' })
+  @ApiResponse({ status: 200, description: 'The opportunity team details' })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async getOpportunityTeam(
+    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
+    opportunity: OpportunityEntity,
+  ): Promise<OpportunityTeamData> {
+    return this.opportunityTeamService.getOpportunityTeam(opportunity);
+  }
+
+  @Post(':id/team')
+  @ApiParam({ name: 'id', type: String })
+  @ApiOperation({ summary: 'Create opportunity team' })
+  @ApiResponse({
+    status: 200,
+    description: 'The opportunity team has been successfully created.',
+  })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async createOpportunityTeam(
+    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
+    opportunity: OpportunityEntity,
+    @Identity(ParseUserFromIdentityPipe)
+    userEntity: UserEntity,
+  ): Promise<OpportunityTeamData> {
+    const existingTeam =
+      await this.opportunityTeamService.getOpportunityTeam(opportunity);
+    if (existingTeam.owners.length > 0) {
+      throw new BadRequestException(
+        `Opportunity ${opportunity.id} already exists with owner ${existingTeam.owners[0].actorEmail}`,
+      );
+    }
+    return this.opportunityTeamService.assignTeamMember(
+      opportunity,
+      userEntity,
+      ShareRole.Owner,
+    );
+  }
+
+  @Patch(':id/team/:userId')
+  @ApiParam({ name: 'id', type: String })
+  @ApiParam({ name: 'userId', type: String })
+  @ApiOperation({ summary: 'Assign team member to opportunity' })
+  @ApiResponse({
+    status: 200,
+    description: 'The team member has been successfully assigned.',
+  })
+  @ApiOAuth2(['openid'])
+  @CheckShare((ability: ShareAbility, context) =>
+    ability.can(
+      ShareAction.Share,
+      'o',
+      (context.query.id as string)?.toString().toLowerCase(),
+    ),
+  )
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async assignTeamMember(
+    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
+    opportunity: OpportunityEntity,
+    @Param('userId', ParseUUIDPipe, ParseUserPipe)
+    userEntity: UserEntity,
+    @Body() dto: UpdateTeamDto,
+  ): Promise<OpportunityTeamData> {
+    return this.opportunityTeamService.assignTeamMember(
+      opportunity,
+      userEntity,
+      dto.role,
+    );
+  }
+
+  @Delete(':id/team/:userId')
+  @ApiParam({ name: 'id', type: String })
+  @ApiParam({ name: 'userId', type: String })
+  @ApiOperation({ summary: 'Remove team member from opportunity' })
+  @ApiResponse({
+    status: 200,
+    description: 'The team member has been successfully removed.',
+  })
+  @ApiOAuth2(['openid'])
+  @CheckShare((ability: ShareAbility, context) =>
+    ability.can(
+      ShareAction.Share,
+      'o',
+      (context.query.id as string)?.toString().toLowerCase(),
+    ),
+  )
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async removeTeamMember(
+    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
+    opportunity: OpportunityEntity,
+    @Param('userId', ParseUUIDPipe, ParseUserPipe)
+    userEntity: UserEntity,
+  ): Promise<OpportunityTeamData> {
+    return this.opportunityTeamService.removeTeamMember(
+      opportunity,
+      userEntity,
+    );
   }
 }

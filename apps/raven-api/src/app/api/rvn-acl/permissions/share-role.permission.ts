@@ -22,4 +22,23 @@ export const ShareRolePermissions: Record<
     [ShareRole.Viewer]: [],
     [ShareRole.Sharer]: [],
   },
+  // opportunity
+  o: {
+    [ShareRole.Owner]: [
+      ShareAction.List,
+      ShareAction.View,
+      ShareAction.ViewShares,
+      ShareAction.Share,
+      ShareAction.Edit,
+      ShareAction.Delete,
+    ],
+    [ShareRole.Editor]: [
+      ShareAction.List,
+      ShareAction.View,
+      ShareAction.ViewShares,
+      ShareAction.Edit,
+    ],
+    [ShareRole.Viewer]: [],
+    [ShareRole.Sharer]: [],
+  },
 };

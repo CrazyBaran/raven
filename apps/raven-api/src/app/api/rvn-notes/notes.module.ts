@@ -9,6 +9,7 @@ import {
   OrganisationTagEntity,
   TagEntity,
 } from '../rvn-tags/entities/tag.entity';
+import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
@@ -30,6 +31,7 @@ import { NotesService } from './notes.service';
       OpportunityEntity,
       OrganisationEntity,
       TemplateEntity,
+      TeamEntity,
     ]),
     EventEmitterModule,
     StorageAccountModule,

@@ -5,12 +5,14 @@ import { UserData } from '@app/rvns-api';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { RavenLogger } from '../rvn-logger/raven.logger';
+import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { AbilityCache } from './casl/ability.cache';
 import { ShareResourceId } from './contracts/share-resource-id.interface';
 import { ShareResource } from './contracts/share-resource.interface';
 import { AbstractShareEntity } from './entities/abstract-share.entity';
+import { ShareOpportunityEntity } from './entities/share-opportunity.entity';
 import { ShareTeamEntity } from './entities/share-team.entity';
 import { ShareResourceCode } from './enums/share-resource-code.enum';
 
@@ -43,7 +45,10 @@ export class AclService {
     actorId: string,
     options?: GetByActorOptions,
   ): Promise<AbstractShareEntity[]> {
-    const shareEntities = options?.shareEntities || [ShareTeamEntity];
+    const shareEntities = options?.shareEntities || [
+      ShareTeamEntity,
+      ShareOpportunityEntity,
+    ];
     const shares = [];
     for (const entityClass of shareEntities) {
       shares.push(
@@ -91,7 +96,7 @@ export class AclService {
         }
       }
       let share = this.shareEntityFactory(options.resource) as T;
-      let existingShare = await this.getByResource(
+      const existingShare = await this.getByResource(
         share.resource,
         actor.id,
         options.entityManager,
@@ -114,14 +119,6 @@ export class AclService {
           'AclService.share',
         );
         return result;
-      }
-      if (share.resource instanceof TeamEntity) {
-        existingShare = await this.getByActor(actor.id, {
-          shareEntities: [ShareTeamEntity],
-        });
-        if (existingShare.length === 1) {
-          throw new Error('Multiple teams per user are forbidden');
-        }
       }
       share.role = role;
       share.actor = actor;
@@ -201,6 +198,10 @@ export class AclService {
           shareEntityClass = ShareTeamEntity;
           shareResourceEntityClass = TeamEntity;
           break;
+        case ShareResourceCode.Opportunity:
+          shareEntityClass = ShareOpportunityEntity;
+          shareResourceEntityClass = OpportunityEntity;
+          break;
       }
       return {
         id: resourceId.substring(2),
@@ -218,6 +219,8 @@ export class AclService {
     let share = null;
     if (resource instanceof TeamEntity) {
       share = new ShareTeamEntity();
+    } else if (resource instanceof OpportunityEntity) {
+      share = new ShareOpportunityEntity();
     }
     if (share) {
       share.resource = resource;
@@ -226,7 +229,12 @@ export class AclService {
   }
 
   protected shareEntityToResourceId(resource: ShareResource): string {
-    const code = ShareResourceCode.Team;
+    let code = null;
+    if (resource instanceof TeamEntity) {
+      code = ShareResourceCode.Team;
+    } else if (resource instanceof OpportunityEntity) {
+      code = ShareResourceCode.Opportunity;
+    }
     return `${code}-${resource.id}`;
   }
 

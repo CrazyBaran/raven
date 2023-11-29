@@ -11,6 +11,7 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { JwtPayload } from '../../rvn-auth/contracts/jwt-payload.interface';
+import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { AclService } from '../acl.service';
 import { Share } from '../contracts/share.interface';
 import { ShareAction } from '../enums/share-action.enum';
@@ -31,7 +32,7 @@ export class AbilityFactory {
   ) {}
 
   public async createForUser(
-    user: UserData | JwtPayload,
+    user: UserData | JwtPayload | UserEntity,
   ): Promise<ShareAbility> {
     const rules = await this.cache.get(user.id);
     if (!rules) {
@@ -63,7 +64,7 @@ export class AbilityFactory {
   }
 
   protected async lookupExtraShares(
-    user: UserData | JwtPayload,
+    user: UserData | JwtPayload | UserEntity,
     shares: Share[],
   ): Promise<Share[]> {
     const extraShares = [...shares];

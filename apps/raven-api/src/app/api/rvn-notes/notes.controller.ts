@@ -6,7 +6,6 @@ import {
 import {
   NoteAttachmentData,
   NoteData,
-  NoteFieldData,
   WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
 import {
@@ -19,7 +18,6 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 import {
@@ -42,22 +40,20 @@ import { FindOrganizationByIdPipe } from '../../shared/pipes/find-organisation-b
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import { ParseTagsPipe } from '../../shared/pipes/parse-tags.pipe';
+import { ShareAbility } from '../rvn-acl/casl/ability.factory';
+import { ShareAction } from '../rvn-acl/enums/share-action.enum';
+import { CheckShare } from '../rvn-acl/permissions/share-policy.decorator';
 import {
   OrganisationTagEntity,
   TagEntity,
 } from '../rvn-tags/entities/tag.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteFieldDto } from './dto/update-note-field.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
-import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteEntity } from './entities/note.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
 import { NotesService } from './notes.service';
 import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe';
 import { ParseCompanyOpportunityTagsPipe } from './pipes/parse-company-opportunity-tags.pipe';
-import { ParseNoteFieldGroupPipe } from './pipes/parse-note-field-group.pipe';
-import { ParseNoteFieldPipe } from './pipes/parse-note-field.pipe';
 import { ParseNoteForUpdatePipe } from './pipes/parse-note-for-update-pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
 
@@ -201,39 +197,19 @@ export class NotesController {
     return this.notesService.getNoteAttachments(noteEntity);
   }
 
-  @ApiOperation({
-    description:
-      'Update note field. Deprecated - bulk update to be used in order to maintain correct note versioning.',
-    deprecated: true,
-  })
-  @ApiResponse(GenericResponseSchema())
-  @ApiParam({ name: 'noteId', type: String })
-  @ApiParam({ name: 'noteFieldGroupId', type: String })
-  @ApiParam({ name: 'noteFieldId', type: String })
-  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
-  @ApiOAuth2(['openid'])
-  @Put(':noteId/fields-groups/:noteFieldGroupId/fields/:noteFieldId')
-  public async updateNoteField(
-    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-    @Param('noteId', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
-    @Param('noteFieldGroupId', ParseUUIDPipe, ParseNoteFieldGroupPipe)
-    noteFieldGroupEntity: NoteFieldGroupEntity,
-    @Param('noteFieldId', ParseUUIDPipe, ParseNoteFieldPipe)
-    noteFieldEntity: NoteFieldEntity,
-    @Body() dto: UpdateNoteFieldDto,
-  ): Promise<NoteFieldData> {
-    return this.notesService.noteFieldEntityToNoteFieldData(
-      await this.notesService.updateNoteField(
-        noteFieldEntity,
-        { value: dto.value },
-        userEntity,
-      ),
-    );
-  }
-
   @ApiOperation({ description: 'Update note' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'noteId', type: String })
+  @CheckShare((ability: ShareAbility, context) => {
+    if (!context?.body['opportunityId']) {
+      return true;
+    }
+    const can = ability.can(
+      ShareAction.Edit,
+      'o',
+      (context.query.id as string)?.toString().toLowerCase(),
+    );
+  })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOAuth2(['openid'])
   @Patch(':noteId')

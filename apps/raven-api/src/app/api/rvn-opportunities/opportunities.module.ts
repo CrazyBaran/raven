@@ -17,12 +17,14 @@ import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { AffinityOrganisationCreatedEventHandler } from './event-handlers/affinity-organization-created.event-handler';
 
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
+import { ShareOpportunityEntity } from '../rvn-acl/entities/share-opportunity.entity';
 import { FilesModule } from '../rvn-files/files.module';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
 import { ORGANISATION_QUEUE } from './opportunities.const';
+import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
 import { OrganisationController } from './organisation.controller';
@@ -51,6 +53,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
       PipelineStageEntity,
       TagEntity,
       TemplateEntity,
+      ShareOpportunityEntity,
     ]),
     AffinityIntegrationModule,
     EventEmitterModule,
@@ -61,6 +64,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
   providers: [
     OrganisationService,
     OpportunityService,
+    OpportunityTeamService,
     OrganisationProducer,
     OrganisationProcessor,
     AffinityRegenerationFinishedEventHandler,

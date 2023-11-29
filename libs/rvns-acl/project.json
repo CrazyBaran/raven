@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/rvns-acl/src",
   "projectType": "library",
-  "tags": ["client", "api"],
+  "tags": ["client", "api", "type:dtos"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",

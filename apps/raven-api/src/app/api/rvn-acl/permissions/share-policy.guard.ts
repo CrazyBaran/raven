@@ -1,9 +1,11 @@
 import { Request } from 'express';
 
-import { UserData } from '@app/rvns-api';
-
+import { AzureAdPayload } from '@app/rvns-auth';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { AbilityFactory, ShareAbility } from '../casl/ability.factory';
 import { CHECK_SHARE_KEY } from './share-policy.decorator';
 import {
@@ -16,6 +18,8 @@ export class SharePolicyGuard implements CanActivate {
   public constructor(
     private readonly reflector: Reflector,
     private readonly abilityFactory: AbilityFactory,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   public async canActivate(ctx: ExecutionContext): Promise<boolean> {
@@ -32,7 +36,12 @@ export class SharePolicyGuard implements CanActivate {
         query: request.query,
         body: request.body,
       };
-      const user = request.user as UserData;
+      const jwt = request.user as AzureAdPayload;
+      const user = await this.userRepository.findOne({
+        where: {
+          azureId: jwt.oid,
+        },
+      });
       const ability = await this.abilityFactory.createForUser(user);
 
       return policyHandlers.every((handler) =>

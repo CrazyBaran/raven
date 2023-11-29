@@ -46,7 +46,7 @@ export class TeamsController {
   @ApiOperation({ description: 'List teams' })
   @ApiResponse(GenericResponseSchema())
   @Get()
-  @Roles(RoleEnum.SuperAdmin)
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
   public async list(
     @Query() dto: ListTeamsDto,
     @Identity() user: UserData,
@@ -63,7 +63,7 @@ export class TeamsController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Get(':id')
-  @Roles(RoleEnum.SuperAdmin)
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
   public async single(
     @Param('id', ParseUUIDPipe, ParseTeamPipe)
     teamEntity: TeamEntity,
@@ -74,7 +74,7 @@ export class TeamsController {
   @ApiOperation({ description: 'Create team' })
   @ApiResponse(GenericCreateResponseSchema())
   @Post()
-  @Roles(RoleEnum.SuperAdmin)
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
   public async create(@Body() dto: CreateTeamDto): Promise<TeamData> {
     try {
       return this.teamsService.entityToResponseData(
@@ -97,7 +97,7 @@ export class TeamsController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse(GenericResponseSchema())
   @Patch(':id')
-  @Roles(RoleEnum.SuperAdmin)
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
   public async update(
     @Param('id', ParseUUIDPipe, ParseTeamPipe)
     teamEntity: TeamEntity,

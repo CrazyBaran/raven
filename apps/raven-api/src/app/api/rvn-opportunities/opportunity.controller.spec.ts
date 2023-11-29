@@ -6,6 +6,7 @@ import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-t
 import { FilesService } from '../rvn-files/files.service';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
+import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
 
@@ -55,6 +56,10 @@ describe('OpportunityController', () => {
         },
         {
           provide: FilesService,
+          useValue: {},
+        },
+        {
+          provide: OpportunityTeamService,
           useValue: {},
         },
       ],
