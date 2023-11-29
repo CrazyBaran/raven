@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { FileEntity } from './entities/file.entity';
-import { SharePointService } from './share-point.service';
 
 interface UpdateOptions {
   tagEntities: TagEntity[];
@@ -16,7 +15,6 @@ export class FilesService {
   public constructor(
     @InjectRepository(FileEntity)
     private readonly fileRepository: Repository<FileEntity>,
-    private readonly sharePointService: SharePointService,
   ) {}
 
   public async create(
@@ -37,15 +35,6 @@ export class FilesService {
   ): Promise<FileEntity> {
     fileEntity.tags = options.tagEntities;
     return await this.fileRepository.save(fileEntity);
-  }
-
-  public async findAllForOpportunity(
-    opportunityId: string,
-  ): Promise<FileEntity[]> {
-    return await this.fileRepository.find({
-      where: { opportunityId },
-      relations: ['tags'],
-    });
   }
 
   public fileEntityToFileData(fileEntity: FileEntity): FileData {

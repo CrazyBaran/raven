@@ -4,11 +4,11 @@ import {
   ConfidentialClientApplication,
   OnBehalfOfRequest,
 } from '@azure/msal-node';
-import { Controller, Get, Headers } from '@nestjs/common';
+import { Controller, Get, Headers, Query } from '@nestjs/common';
 
 import { Client } from '@microsoft/microsoft-graph-client';
-import { DirectoryObject, User } from '@microsoft/microsoft-graph-types';
-import { ApiOAuth2, ApiParam, ApiTags } from '@nestjs/swagger';
+import { User } from '@microsoft/microsoft-graph-types';
+import { ApiOAuth2, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { environment } from '../../../environments/environment';
 
 @ApiTags('On Behalf Of Management')
@@ -26,23 +26,79 @@ export class OnBehalfOfController {
     return response as User;
   }
 
-  @Get('test-folder')
-  public async createFolderTest(): Promise<DirectoryObject> {
-    const driveItem = {
-      name: 'New Test Folder',
-      folder: {},
-      '@microsoft.graph.conflictBehavior': 'rename',
-    };
-    let response;
-    try {
-      response = await this.graphClient
-        .api('/me/drive/root/children')
-        .post(driveItem);
-    } catch (error) {
-      console.log({ error });
-    }
+  // leaving these endpoints for convenience of setting up config values
+  @Get('site-id')
+  @ApiQuery({
+    name: 'domain',
+    type: String,
+    required: true,
+    description: 'e.g. testonemubadala.sharepoint.com',
+  })
+  @ApiQuery({
+    name: 'site',
+    type: String,
+    required: true,
+    description: 'e.g. mctestraven',
+  })
+  public async getSiteId(
+    @Query('domain') domain: string,
+    @Query('site') site: string,
+  ): Promise<string> {
+    const response = await this.graphClient
+      .api(`https://graph.microsoft.com/v1.0/sites/${domain}:/sites/${site}`)
+      .get();
+    return response.id;
+  }
 
-    return response;
+  @Get('drives')
+  @ApiQuery({
+    name: 'siteId',
+    type: String,
+    required: true,
+    description: 'can be obtained by calling GET /on-behalf-of/site-id',
+  })
+  public async getDriveId(@Query('siteId') siteId: string): Promise<string> {
+    const response = await this.graphClient
+      .api(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives`)
+      .get();
+    return response.value;
+  }
+
+  @Get('folder-id')
+  @ApiQuery({
+    name: 'siteId',
+    type: String,
+    required: true,
+    description: 'can be obtained by calling GET /on-behalf-of/site-id',
+  })
+  @ApiQuery({
+    name: 'driveId',
+    type: String,
+    required: true,
+    description: 'can be obtained by calling GET /on-behalf-of/drives',
+  })
+  @ApiQuery({
+    name: 'folderName',
+    type: String,
+    required: true,
+    description: 'name of the folder to get the id for',
+  })
+  public async getFolderId(
+    @Query('siteId') siteId: string,
+    @Query('driveId') driveId: string,
+    @Query('folderName') folderName: string,
+  ): Promise<string> {
+    try {
+      const response = await this.graphClient
+        .api(
+          `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${folderName}`,
+        )
+        .get();
+      console.log({ response });
+      return response.value;
+    } catch (e) {
+      console.log({ e });
+    }
   }
 
   @Get('account-info')
