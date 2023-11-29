@@ -71,6 +71,7 @@ export class NotesController {
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOAuth2(['openid'])
   @Post()
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async createNote(
     @Body('templateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
     templateEntity: string | TemplateEntity | null,
@@ -99,6 +100,11 @@ export class NotesController {
   @ApiQuery({ name: 'opportunityId', type: String, required: false })
   @ApiQuery({ name: 'organisationId', type: String, required: false })
   @ApiQuery({ name: 'type', enum: TemplateTypeEnum, required: false })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiQuery({ name: 'dir', type: String, required: false })
+  @ApiQuery({ name: 'field', type: String, required: false })
+  @ApiQuery({ name: 'query', type: String, required: false })
   @ApiQuery({
     name: 'tagIds',
     type: String,
@@ -124,6 +130,11 @@ export class NotesController {
       FindTagByOgranisationPipe,
     )
     organisationTagFromId?: string | OrganisationTagEntity | null,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+    @Query('dir') dir?: 'asc' | 'desc',
+    @Query('field') field?: 'name' | 'id',
+    @Query('query') query?: string,
   ): Promise<NoteData[] | (WorkflowNoteData | NoteData)[]> {
     if (opportunityId) {
       return await this.notesService.getNotesForOpportunity(
@@ -146,6 +157,11 @@ export class NotesController {
           organisation as OrganisationTagEntity,
           tagEntities as TagEntity[],
           type,
+          skip,
+          take,
+          (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
+          field as 'createdAt' | 'updatedAt' | 'name',
+          query,
         )
       ).map((note) => this.notesService.noteEntityToNoteData(note)),
     );

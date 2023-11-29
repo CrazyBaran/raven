@@ -17,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { cloneDeep } from 'lodash';
-import { Repository } from 'typeorm';
+import { Raw, Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
@@ -88,6 +88,11 @@ export class NotesService {
     organisationTagEntity?: OrganisationTagEntity,
     tagEntities?: TagEntity[],
     type?: TemplateTypeEnum,
+    skip?: number,
+    take?: number,
+    dir?: 'ASC' | 'DESC',
+    field?: 'createdAt' | 'updatedAt' | 'name',
+    query?: string,
   ): Promise<NoteEntity[]> {
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
@@ -134,8 +139,46 @@ export class NotesService {
       }
     }
 
-    queryBuilder.orderBy('note.createdAt', 'ASC');
+    queryBuilder.orderBy(`note.${field ?? 'createdAt'}`, dir ?? 'DESC');
 
+    queryBuilder.skip(skip ? skip : 0).take(take ? take : 10);
+    if (query) {
+      const searchString = `%${query.toLowerCase()}%`;
+      queryBuilder.andWhere([
+        {
+          name: Raw(
+            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            {
+              searchString,
+            },
+          ),
+        },
+        {
+          'createdBy.name': Raw(
+            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            {
+              searchString,
+            },
+          ),
+        },
+        {
+          'updatedBy.name': Raw(
+            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            {
+              searchString,
+            },
+          ),
+        },
+        {
+          'template.name': Raw(
+            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            {
+              searchString,
+            },
+          ),
+        },
+      ]);
+    }
     return await queryBuilder.getMany();
   }
 
