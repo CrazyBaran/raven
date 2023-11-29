@@ -49,6 +49,9 @@ export const tagTypeStyleDictionary: Record<TagType, Record<string, string>> = {
   'business-model': {
     color: 'var(--series-a-darken-75)',
   },
+  tab: {
+    color: '#5a5a5a',
+  },
 };
 
 @Pipe({
