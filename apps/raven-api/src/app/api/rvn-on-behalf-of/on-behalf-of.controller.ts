@@ -10,6 +10,7 @@ import { Client } from '@microsoft/microsoft-graph-client';
 import { User } from '@microsoft/microsoft-graph-types';
 import { ApiOAuth2, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { environment } from '../../../environments/environment';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 
 @ApiTags('On Behalf Of Management')
 @Controller('on-behalf-of')
@@ -18,7 +19,10 @@ export class OnBehalfOfController {
   public constructor(
     private readonly confidentialClientApplication: ConfidentialClientApplication,
     private readonly graphClient: Client,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(OnBehalfOfController.name);
+  }
 
   @Get('me')
   public async getMe(): Promise<User> {
@@ -94,10 +98,10 @@ export class OnBehalfOfController {
           `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${folderName}`,
         )
         .get();
-      console.log({ response });
       return response.value;
     } catch (e) {
-      console.log({ e });
+      this.logger.error(e);
+      throw e;
     }
   }
 

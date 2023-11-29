@@ -15,7 +15,7 @@ export class OpportunityCreatedEventHandler {
     private readonly graphClient: Client,
     private readonly logger: RavenLogger,
   ) {
-    this.logger.setContext('OpportunityCreatedEventHandler');
+    this.logger.setContext(OpportunityCreatedEventHandler.name);
   }
 
   @OnEvent('opportunity-created')
