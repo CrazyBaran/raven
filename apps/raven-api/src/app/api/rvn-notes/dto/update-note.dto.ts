@@ -1,7 +1,9 @@
+import { WorkflowNoteData } from '@app/rvns-notes/data-access';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -39,4 +41,9 @@ export class UpdateNoteDto {
   @ValidateNested({ each: true })
   @Type(() => ComplexTagDto)
   public readonly companyOpportunityTags?: ComplexTagDto[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsObject()
+  public readonly origin: WorkflowNoteData;
 }
