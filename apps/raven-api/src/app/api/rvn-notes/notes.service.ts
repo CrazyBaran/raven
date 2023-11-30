@@ -298,6 +298,7 @@ export class NotesService {
       .select([
         'template.id',
         'template.name',
+        'template.type',
         'tab.id',
         'tab.name',
         'pipelineStage.id',
@@ -464,7 +465,6 @@ export class NotesService {
         new Date().getTime() - start,
       );
 
-      console.log({ templateType });
       if (templateType === TemplateTypeEnum.Workflow) {
         start = new Date().getTime();
         const opportunity = await this.opportunityRepository.findOne({
@@ -478,12 +478,16 @@ export class NotesService {
           'update opportunity noteId took: ',
           new Date().getTime() - start,
         );
+        // performance hack - when we update workflow note, we get the origin workflow note data but we need to return fields existing in entity for this to work
+        savedNewNoteVersion.template = {
+          type: TemplateTypeEnum.Workflow,
+        } as TemplateEntity;
       }
       return savedNewNoteVersion;
     });
   }
 
-  public async getNoteForUpdate(id: string) {
+  public async getNoteForUpdate(id: string): Promise<NoteEntity> {
     const start = Date.now();
     const qb = this.noteRepository
       .createQueryBuilder('note')
@@ -536,9 +540,6 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
-    console.log({
-      noteEntity,
-    });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
