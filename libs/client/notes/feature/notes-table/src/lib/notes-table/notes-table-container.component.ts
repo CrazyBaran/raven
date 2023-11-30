@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NotesActions } from '@app/client/notes/data-access';
+import { NoteQueryParams, NotesActions } from '@app/client/notes/data-access';
 import { NotesTableComponent } from '@app/client/notes/ui';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import { map } from 'rxjs';
 import { selectNotesTableViewModel } from './notes-table-container.selectors';
 
@@ -33,10 +34,10 @@ export class NotesTableContainerComponent {
       .subscribe((params) => {
         this.store.dispatch(
           NotesActions.getNotes({
-            params: {
-              ...params,
-              dir: params.dir === 'none' ? '' : params.dir,
-            },
+            params:
+              params.dir === 'none'
+                ? (_.omit(params, 'dir') as NoteQueryParams)
+                : params,
           }),
         );
       });
