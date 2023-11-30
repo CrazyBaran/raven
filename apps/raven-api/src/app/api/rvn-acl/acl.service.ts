@@ -78,6 +78,18 @@ export class AclService {
     return qb.getMany();
   }
 
+  public async shareById<T extends AbstractShareEntity>(
+    actorId: string,
+    role: ShareRole,
+    options?: ShareOptions,
+  ): Promise<T> {
+    return this.share(
+      await this.entityManager.findOne(UserEntity, { where: { id: actorId } }),
+      role,
+      options,
+    );
+  }
+
   public async share<T extends AbstractShareEntity>(
     actor: UserEntity,
     role: ShareRole,
@@ -152,7 +164,7 @@ export class AclService {
     }
     await this.entityManager.remove(parsedRes.shareEntityClass, share);
     this.logger.log(
-      `Revoked access to resource ${share.resource.id} for user ${share.actor.email} as ${share.role}`,
+      `Revoked access to resource ${share.resourceId} for user ${share.actor?.email} as ${share.role}`,
       'AclService.revoke',
     );
     await this.cache.invalidate(share.actorId);

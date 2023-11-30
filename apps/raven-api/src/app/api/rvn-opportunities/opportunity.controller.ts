@@ -30,7 +30,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { IsDefined, IsString, Length } from 'class-validator';
+import { IsArray, IsDefined, IsString, Length } from 'class-validator';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import { ParseTagsPipe } from '../../shared/pipes/parse-tags.pipe';
@@ -64,9 +64,24 @@ import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pip
 export class UpdateTeamDto {
   @ApiProperty()
   @IsDefined()
+  @IsArray()
+  public readonly members: UpdateTeamMemberDto[];
+}
+
+export class UpdateTeamMemberRoleDto {
+  @ApiProperty()
+  @IsDefined()
   @IsString()
   @Length(3, 20)
   public readonly role: ShareRole;
+}
+
+export class UpdateTeamMemberDto extends UpdateTeamMemberRoleDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsString()
+  @Length(3, 20)
+  public readonly userId: string;
 }
 
 @ApiTags('Opportunities')
@@ -302,6 +317,36 @@ export class OpportunityController {
     );
   }
 
+  @Patch(':id/team')
+  @ApiParam({ name: 'id', type: String })
+  @ApiOperation({ summary: 'Modify opportunity team members' })
+  @ApiResponse({
+    status: 200,
+    description: 'The opportunity team has been successfully modified.',
+  })
+  @ApiOAuth2(['openid'])
+  @CheckShare((ability: ShareAbility, context) =>
+    ability.can(
+      ShareAction.Share,
+      'o',
+      (context.query.id as string)?.toString().toLowerCase(),
+    ),
+  )
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async modifyTeam(
+    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
+    opportunity: OpportunityEntity,
+    @Body() dto: UpdateTeamDto,
+  ): Promise<OpportunityTeamData> {
+    return await this.opportunityTeamService.modifyTeamMembers({
+      opportunity,
+      members: dto.members.map((member) => ({
+        userId: member.userId,
+        role: member.role,
+      })),
+    });
+  }
+
   @Patch(':id/team/:userId')
   @ApiParam({ name: 'id', type: String })
   @ApiParam({ name: 'userId', type: String })
@@ -324,7 +369,7 @@ export class OpportunityController {
     opportunity: OpportunityEntity,
     @Param('userId', ParseUUIDPipe, ParseUserPipe)
     userEntity: UserEntity,
-    @Body() dto: UpdateTeamDto,
+    @Body() dto: UpdateTeamMemberDto,
   ): Promise<OpportunityTeamData> {
     return this.opportunityTeamService.assignTeamMember(
       opportunity,
