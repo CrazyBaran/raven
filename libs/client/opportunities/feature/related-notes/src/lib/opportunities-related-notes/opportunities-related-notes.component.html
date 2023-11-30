@@ -1,5 +1,4 @@
 <div class="flex h-full gap-3">
-  <!--    [class.opacity-5]="!visible() && !vm().isLoading"-->
   <div
     *ngIf="vm().fields?.length || vm().isLoading"
     class="custom-scroll-on-hover -mr-1.5 h-full flex-1 overflow-auto pr-1.5"
@@ -34,17 +33,48 @@
         </ng-container>
         <ng-template #fields>
           <kendo-tilelayout-item
-            *rxFor="let field of fields$; let i = index; trackBy: 'uniqId'"
+            *rxFor="
+              let field of fields$;
+              let i = index;
+              trackBy: 'formControlName'
+            "
             [order]="i"
             [@fadeIn]
             [colSpan]="12"
             [col]="1"
-            [title]="$any(field).title"
           >
+            <kendo-tilelayout-item-header>
+              <div class="flex items-center justify-between gap-2">
+                <h5 class="k-card-title">{{ field.title }}</h5>
+                <ng-container
+                  *ngIf="state().updatingField === field.formControlName"
+                >
+                  @switch (state().state) { @case ('validate') {
+
+                  <div class="flex items-center gap-2" [@fadeIn]>
+                    <kendo-loader
+                      size="small"
+                      type="infinite-spinner"
+                      themeColor="primary"
+                    />
+                    Saving...
+                  </div>
+
+                  } @case ('updated') {
+                  <div class="flex items-center gap-2" [@fadeIn]>
+                    <i class="fa-solid fa-check text-primary-400"></i>
+                    Saved
+                  </div>
+                  } @default { }}
+                </ng-container>
+              </div>
+            </kendo-tilelayout-item-header>
             <kendo-tilelayout-item-body>
               <app-rich-text
+                [disabled]="state().state === 'validate'"
+                (valueChange)="onValueChange(field.formControlName)"
                 [borderless]="true"
-                [formControlName]="field.uniqId"
+                [formControlName]="field.formControlName"
                 [grow]="true"
                 [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
                 class="h-full"
@@ -92,9 +122,9 @@
           [ngTemplateOutlet]="relatedNote"
         />
 
-        <ng-container
+        <app-related-notes-table
           *ngIf="vm().notes?.length && !vm().isLoading"
-          [ngTemplateOutlet]="relatedNotesTable"
+          [notes]="vm().notes"
         />
         <!--      NOTE    -->
       </kendo-tilelayout-item-body>
@@ -110,23 +140,11 @@
     <ng-container *ngIf="note; else noNotesMessage">
       <header>
         <div class="flex flex-col">
-          <div class="flex">
+          <div class="flex items-center">
             <!--        NOTE TYPE        -->
-            <div class="px-3 py-4">
-              <div
-                [ngClass]="{
-                  'bg-series-a-lighten-50':
-                    note.templateName === 'Company call',
-                  'bg-series-e-lighten-50':
-                    note.templateName === 'Notes & Analysis',
-                  'bg-series-g-lighten-50':
-                    note.templateName === 'Market Research'
-                }"
-                class="bg-series-a-lighten-50 w-fit rounded p-1.5"
-              >
-                {{ note.templateName }}
-              </div>
-            </div>
+            <app-note-type-badge
+              [type]="note.templateName"
+            ></app-note-type-badge>
 
             <!--        CREATE INFO       -->
             <div class="grow px-3 py-2">
@@ -209,81 +227,6 @@
       </div>
     </footer>
   </div>
-</ng-template>
-
-<ng-template #relatedNotesTable>
-  <kendo-grid
-    [kendoGridBinding]="vm().notes"
-    [sort]="sort"
-    class="grid-borderless"
-  >
-    <kendo-grid-column
-      [headerStyle]="{ 'font-weight': '700' }"
-      field="name"
-      title="Note Title"
-    >
-      <ng-template kendoGridCellTemplate let-dataItem>
-        <kendo-button
-          [queryParams]="{ 'note-details': dataItem.id }"
-          [routerLink]="['./']"
-          fillMode="link"
-          queryParamsHandling="merge"
-        >
-          {{ dataItem?.name }}
-        </kendo-button>
-      </ng-template>
-    </kendo-grid-column>
-
-    <kendo-grid-column
-      [headerStyle]="{ 'font-weight': '700' }"
-      [sortable]="false"
-      field="templateName"
-      title="Note Type"
-    >
-      <ng-template kendoGridCellTemplate let-dataItem>
-        <div
-          *ngIf="dataItem?.templateName"
-          class="text-xxs bg-primary-500 flex h-6 w-fit items-center rounded px-[0.375rem] font-normal"
-        >
-          {{ dataItem?.templateName }}
-        </div>
-      </ng-template>
-    </kendo-grid-column>
-
-    <kendo-grid-column
-      [headerStyle]="{ 'font-weight': '700' }"
-      field="updatedAt"
-      title="Created"
-    >
-      <ng-template kendoGridCellTemplate let-dataItem>
-        <div class="flex flex-col gap-1">
-          <span>
-            <i class="fa-solid fa-circle-user mr-1"></i>
-            {{ dataItem?.createdBy?.name || '' }}
-          </span>
-
-          <span class="text-xs">
-            Updated:
-            {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
-          </span>
-        </div>
-      </ng-template>
-    </kendo-grid-column>
-
-    <kendo-grid-column [width]="50">
-      <ng-template kendoGridCellTemplate let-dataItem>
-        <div class="flex flex-row gap-1" kendoTooltip>
-          <kendo-button
-            [queryParams]="{ 'note-details': dataItem.id }"
-            [routerLink]="['./']"
-            iconClass="fa-solid fa-eye"
-            queryParamsHandling="merge"
-            themeColor="primary"
-          />
-        </div>
-      </ng-template>
-    </kendo-grid-column>
-  </kendo-grid>
 </ng-template>
 
 <!--  TODO: Extract related note tempalte-->

@@ -4,7 +4,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DatePipe, JsonPipe, NgForOf, NgIf, NgStyle } from '@angular/common';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import { NoteDetailsComponent } from '@app/client/notes/ui';
-import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
+import { RelatedNotesTableComponent } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { ShelfActions } from '@app/client/shared/shelf';
 import {
@@ -38,7 +38,7 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
     RouterOutlet,
     RouterLink,
     ButtonsModule,
-    StatusIndicatorComponent,
+    RelatedNotesTableComponent,
     RxFor,
     JsonPipe,
     NgIf,

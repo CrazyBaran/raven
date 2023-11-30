@@ -43,5 +43,11 @@ export const NotesActions = createActionGroup({
       data: WorkflowNoteData[];
     }>(),
     'Get Opportunity Notes Failure': props<{ error: string }>(),
+
+    'Update Opportunity Note': props<{
+      noteId: string;
+      data: PatchNote;
+      changedFields: string[];
+    }>(),
   },
 });

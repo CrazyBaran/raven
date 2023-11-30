@@ -8,6 +8,7 @@ export type PatchNote = {
     value: unknown;
   }[];
   tagIds: string[];
+  origin?: NoteData;
 };
 
 export type CreateNote = Pick<NoteData, 'templateId' | 'name'> &

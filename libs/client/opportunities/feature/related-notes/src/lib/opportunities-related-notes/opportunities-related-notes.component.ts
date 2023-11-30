@@ -5,18 +5,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  effect,
   inject,
+  signal,
 } from '@angular/core';
 
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  FormControl,
-  FormGroup,
-  FormRecord,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NotesActions } from '@app/client/opportunities/api-notes';
 import {
@@ -40,27 +33,26 @@ import {
   ExpansionPanelModule,
   TileLayoutModule,
 } from '@progress/kendo-angular-layout';
-import { SortDescriptor } from '@progress/kendo-data-query';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
 
 import { trigger } from '@angular/animations';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NoteTypeBadgeComponent } from '@app/client/notes/ui';
+import { RelatedNotesTableComponent } from '@app/client/opportunities/ui';
+import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
-import { SkeletonModule } from '@progress/kendo-angular-indicators';
-import * as _ from 'lodash';
 import {
-  BehaviorSubject,
-  Subject,
-  combineLatest,
-  concatMap,
-  filter,
-  firstValueFrom,
-  map,
-  take,
-  tap,
-} from 'rxjs';
-import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-related-notes.selectors';
+  LoaderModule,
+  SkeletonModule,
+} from '@progress/kendo-angular-indicators';
+import * as _ from 'lodash';
+import { firstValueFrom, map } from 'rxjs';
+import {
+  selectOpportunitiesRelatedNotesViewModel,
+  selectOpportunityFormRecord,
+} from './opportunities-related-notes.selectors';
 
 @Component({
   selector: 'app-opportunities-related-notes',
@@ -82,6 +74,9 @@ import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-relate
     KendoDynamicPagingDirective,
     TimesPipe,
     SkeletonModule,
+    NoteTypeBadgeComponent,
+    RelatedNotesTableComponent,
+    LoaderModule,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
@@ -89,26 +84,74 @@ import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-relate
   animations: [trigger('fadeIn', fadeIn())],
 })
 export class OpportunitiesRelatedNotesComponent {
-  public sort: SortDescriptor[] = [
-    {
-      field: 'updatedAt',
-      dir: 'desc',
-    },
-  ];
-
-  public actions$ = inject(Actions);
-
-  public updateQueue$ = new Subject<any>();
-
-  public requestCompletedStream = new BehaviorSubject(true);
-
   protected store = inject(Store);
+  protected actions = inject(Actions);
 
   protected uploadFileService = inject(UploadFileService);
 
-  protected formGroup: FormGroup = new FormRecord({});
+  protected formGroup = new FormRecord({});
 
-  protected destroyRef = inject(DestroyRef);
+  protected state = signal(
+    {
+      disabledForm: false,
+      updatingField: null as null | string,
+      state: 'edit' as 'edit' | 'validate' | 'updated',
+    },
+    {
+      equal: _.isEqual,
+    },
+  );
+
+  public constructor() {
+    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
+    this.store
+      .select(selectOpportunityFormRecord)
+      .pipe(takeUntilDestroyed(), distinctUntilChangedDeep())
+      .subscribe((values) => {
+        Object.entries(values).forEach(([key, value]) => {
+          if (this.formGroup.controls[key]) {
+            this.formGroup.controls[key].setValue(value, { emitEvent: false });
+          } else {
+            this.formGroup.addControl(
+              key,
+              new FormControl(value, { updateOn: 'blur' }),
+              { emitEvent: false },
+            );
+          }
+
+          //remove controls that are not in the form
+          Object.keys(this.formGroup.controls).forEach((key) => {
+            if (!(key in values)) {
+              this.formGroup.removeControl(key, { emitEvent: false });
+            }
+          });
+        });
+      });
+
+    this.formGroup.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((change) => {
+        this.updateNotes();
+      });
+
+    this.actions
+      .pipe(takeUntilDestroyed(), ofType(NotesActions.updateNoteSuccess))
+      .subscribe(() => {
+        this.state.update((state) => ({
+          ...state,
+          state: 'edit',
+          updatingField: null,
+        }));
+
+        // setTimeout(() => {
+        //   this.state.update((state) => ({
+        //     ...state,
+        //     state: 'edit',
+        //     updatingField: null,
+        //   }));
+        // }, 3000);
+      });
+  }
 
   protected vm = this.store.selectSignal(
     selectOpportunitiesRelatedNotesViewModel,
@@ -135,66 +178,39 @@ export class OpportunitiesRelatedNotesComponent {
   protected fields$ = this.store
     .select(selectOpportunitiesRelatedNotesViewModel)
     .pipe(
-      map(({ fields }) => fields),
+      map(({ visibleFields }) => visibleFields),
       distinctUntilChangedDeep(),
     );
 
-  public constructor() {
-    combineLatest([this.updateQueue$, this.requestCompletedStream])
-      .pipe(
-        takeUntilDestroyed(),
-        filter(([_, requestComplete]) => requestComplete), // continue only when the last request has completed
-        map(([requestNumber]) => requestNumber),
-        distinctUntilChangedDeep(), // do not handle the same request twice
-        concatMap((requestNumber) => {
-          this.requestCompletedStream.next(false);
-          const noteId = this.vm().opportunityNoteId;
-          this.store.dispatch(
-            NotesActions.updateNote({
-              noteId: noteId,
-              data: {
-                name: this.vm().opportunityNote.name,
-                fields: _.chain(this.formGroup.value as Record<string, unknown>)
-                  .map((value, id) => ({
-                    id: this.vm().fields.find((x) => x.uniqId === id)?.id,
-                    value: value ?? '',
-                  }))
-                  .value(),
-                tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
-              },
-            }),
-          );
-          return this.actions$.pipe(
-            ofType(
-              NotesActions.updateNoteSuccess,
-              NotesActions.updateNoteFailure,
-            ),
-            filter(({ originId }) => originId === noteId),
-            take(1),
-            tap(() => {
-              this.requestCompletedStream.next(true);
-            }),
-          );
-        }),
-      )
-      .subscribe();
-
-    effect(
-      () => {
-        const value = _.chain(this.vm().fields)
-          .keyBy((x) => x.uniqId)
-          .mapValues(
-            ({ value }) => new FormControl(value, { updateOn: 'blur' }),
-          )
-          .value();
-        this.formGroup = new FormGroup(value);
-        this.formGroup.valueChanges
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((value) => this.updateQueue$.next(value));
-      },
-      {
-        allowSignalWrites: true,
-      },
+  private updateNotes(): void {
+    const noteId = this.vm().opportunityNoteId;
+    this.state.update((state) => ({
+      ...state,
+      state: 'validate',
+    }));
+    this.store.dispatch(
+      NotesActions.updateNote({
+        noteId: noteId,
+        data: {
+          name: this.vm().opportunityNote.name,
+          fields: _.chain(this.formGroup.value as Record<string, unknown>)
+            .map((value, id) => ({
+              id: this.vm().allFields.find((x) => x.uniqId === id)?.id,
+              value: value ?? '',
+            }))
+            .value(),
+          tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
+          origin: this.vm().opportunityNote,
+        },
+      }),
     );
+  }
+
+  public onValueChange(formControlName: string): void {
+    this.state.update((state) => ({
+      ...state,
+      updatingField: formControlName,
+      state: 'edit',
+    }));
   }
 }
