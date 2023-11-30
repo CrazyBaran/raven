@@ -1,3 +1,4 @@
+export * from './lib/diff';
 export * from './lib/distinct-until-changed-deep';
 export { log } from './lib/log';
 export * from './lib/retry-with-delay.operator';

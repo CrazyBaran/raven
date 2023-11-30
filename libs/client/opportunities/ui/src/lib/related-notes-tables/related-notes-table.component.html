@@ -1,0 +1,68 @@
+<kendo-grid [kendoGridBinding]="notes" [sort]="sort" class="grid-borderless">
+  <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
+    field="name"
+    title="Note Title"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <kendo-button
+        [queryParams]="{ 'note-details': dataItem.id }"
+        [routerLink]="['./']"
+        fillMode="link"
+        queryParamsHandling="merge"
+      >
+        {{ dataItem?.name }}
+      </kendo-button>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
+    [sortable]="false"
+    field="templateName"
+    title="Note Type"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div
+        *ngIf="dataItem?.templateName"
+        class="text-xxs bg-primary-500 flex h-6 w-fit items-center rounded px-[0.375rem] font-normal"
+      >
+        {{ dataItem?.templateName }}
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column
+    [headerStyle]="{ 'font-weight': '700' }"
+    field="updatedAt"
+    title="Created"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-1">
+        <span>
+          <i class="fa-solid fa-circle-user mr-1"></i>
+          {{ dataItem?.createdBy?.name || '' }}
+        </span>
+
+        <span class="text-xs">
+          Updated:
+          {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
+        </span>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [width]="50">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-row gap-1" kendoTooltip>
+        <kendo-button
+          [queryParams]="{ 'note-details': dataItem.id }"
+          [routerLink]="['./']"
+          iconClass="fa-solid fa-eye"
+          queryParamsHandling="merge"
+          themeColor="primary"
+        />
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>

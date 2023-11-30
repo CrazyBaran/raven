@@ -31,7 +31,14 @@ export class NotesTableContainerComponent {
         takeUntilDestroyed(),
       )
       .subscribe((params) => {
-        this.store.dispatch(NotesActions.getNotes({ params }));
+        this.store.dispatch(
+          NotesActions.getNotes({
+            params: {
+              ...params,
+              dir: params.dir === 'none' ? '' : params.dir,
+            },
+          }),
+        );
       });
     this.store.dispatch(NotesActions.openNotesTable());
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());

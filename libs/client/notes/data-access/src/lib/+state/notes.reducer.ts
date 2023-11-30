@@ -198,24 +198,24 @@ export const notesReducer = createReducer(
           data: data,
         },
         opportunityNotes:
-          data.templateType === 'workflow'
+          data.name === state.opportunityNotes.data?.[0]?.name
             ? {
                 ...state.opportunityNotes,
                 data: [
                   {
                     ...data,
-                    noteTabs: data.noteTabs.map((tab, i) => ({
-                      ...tab,
-                      pipelineStages:
-                        state.opportunityNotes.data?.[0]?.noteTabs?.[i]
-                          ?.pipelineStages,
-                      relatedNotes:
-                        state.opportunityNotes.data?.[0]?.noteTabs?.[i]
-                          ?.relatedNotes,
-                      relatedNotesWithFields:
-                        state.opportunityNotes.data?.[0]?.noteTabs?.[i]
-                          ?.relatedNotesWithFields,
-                    })),
+                    // noteTabs: data.noteTabs.map((tab, i) => ({
+                    //   ...tab,
+                    //   pipelineStages:
+                    //     state.opportunityNotes.data?.[0]?.noteTabs?.[i]
+                    //       ?.pipelineStages,
+                    //   relatedNotes:
+                    //     state.opportunityNotes.data?.[0]?.noteTabs?.[i]
+                    //       ?.relatedNotes,
+                    //   relatedNotesWithFields:
+                    //     state.opportunityNotes.data?.[0]?.noteTabs?.[i]
+                    //       ?.relatedNotesWithFields,
+                    // })),
                   },
                 ] as WorkflowNoteData[],
               }

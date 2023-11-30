@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -70,8 +71,22 @@ export class RichTextComponent
     },
   );
 
+  protected _disabled: boolean | undefined;
+  @Input() public set disabled(value: boolean | undefined) {
+    this._disabled = value;
+    this.editor?.blur();
+  }
+
+  public get isDisabled(): boolean {
+    return this._disabled ?? this.disabled ?? false;
+  }
+
   @Output() public obBlur = takeAfterViewInit(() => this.editor).pipe(
     switchMap((editor) => editor.onBlur),
+  );
+
+  @Output() public valueChange = takeAfterViewInit(() => this.editor).pipe(
+    switchMap((editor) => editor.valueChange),
   );
 
   @ViewChild(EditorComponent) protected editor: EditorComponent;

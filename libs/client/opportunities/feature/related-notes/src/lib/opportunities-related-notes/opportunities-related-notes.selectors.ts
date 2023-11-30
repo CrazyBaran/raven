@@ -22,10 +22,10 @@ export const selectActiveNoteTab = createSelector(
   },
 );
 
-export const selectActiveNoteTabFieldGroup = createSelector(
-  selectActiveNoteTab,
-  (activeTab) => activeTab?.noteFieldGroups[0],
-);
+// export const selectActiveNoteTabFieldGroup = createSelector(
+//   selectActiveNoteTab,
+//   (activeTab) => activeTab?.noteFieldGroups[0],
+// );
 
 export const selectRelatedNotesWithFields = createSelector(
   selectActiveNoteTab,
@@ -43,11 +43,10 @@ export const selectOpportunityRelatedNotes = createSelector(
   selectRelatedNotes,
   getRouterSelectors().selectQueryParam('noteIndex'),
   (notesWithFields, notes, visibleNoteWithFieldsIndex) => {
-    const relatedNotes = notesWithFields.slice(0, 12);
     const index =
       visibleNoteWithFieldsIndex &&
       +visibleNoteWithFieldsIndex > 0 &&
-      +visibleNoteWithFieldsIndex < relatedNotes.length
+      +visibleNoteWithFieldsIndex < notesWithFields.length
         ? +visibleNoteWithFieldsIndex
         : 0;
 
@@ -58,10 +57,10 @@ export const selectOpportunityRelatedNotes = createSelector(
         ? notesWithFields[visibleNoteWithFieldsIndex ?? 0] ?? notesWithFields[0]
         : null,
       nextQueryParam: { noteIndex: index + 1 },
-      disabledNext: index + 1 >= relatedNotes.length,
+      disabledNext: index + 1 >= notesWithFields.length,
       prevQueryParam: { noteIndex: index - 1 },
       disabledPrev: index - 1 < 0,
-      index: relatedNotes?.length ? index : -1,
+      index: notesWithFields?.length ? index : -1,
     };
   },
 );
@@ -75,20 +74,32 @@ export const selectNoteFields = createSelector(
 );
 
 export const selectOpportunitiesRelatedNotesViewModel = createSelector(
-  opportunitiesQuery.selectRouteOpportunityDetails,
   routerQuery.selectActiveTab,
   notesQuery.selectOpportunityNotes,
   selectOpportunityRelatedNotes,
   selectNoteFields,
   notesQuery.selectOpportunityNotesIsLoading,
-  (opportunity, tab, opportunityNotes, relatedNotes, fields, isLoading) => {
+  (tab, opportunityNotes, relatedNotes, fields, isLoading) => {
     return {
+      allFields: Object.values(fields).flat(),
+      visibleFields: (fields[tab ?? ''] ?? []).map((f) => ({
+        title: f.title,
+        formControlName: f.uniqId,
+      })),
       fields: fields[tab ?? ''] ?? [],
-      relatedNoteFields: [],
       opportunityNote: opportunityNotes[0],
       opportunityNoteId: opportunityNotes[0]?.id,
       isLoading,
       ...relatedNotes,
     };
   },
+);
+
+export const selectOpportunityFormRecord = createSelector(
+  opportunitiesQuery.selectNoteFields,
+  (fields) =>
+    _.chain(fields)
+      .keyBy((x) => x.uniqId)
+      .mapValues(({ value }) => value)
+      .value(),
 );
