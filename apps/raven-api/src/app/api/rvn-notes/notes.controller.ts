@@ -54,7 +54,6 @@ import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.inte
 import { NotesService } from './notes.service';
 import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe';
 import { ParseCompanyOpportunityTagsPipe } from './pipes/parse-company-opportunity-tags.pipe';
-import { ParseNoteForUpdatePipe } from './pipes/parse-note-for-update-pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
 
 @ApiTags('Notes')
@@ -215,8 +214,8 @@ export class NotesController {
   @Patch(':noteId')
   public async updateNote(
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-    @Param('noteId', ParseUUIDPipe, ParseNoteForUpdatePipe)
-    noteEntity: NoteEntity,
+    @Param('noteId', ParseUUIDPipe)
+    noteId: string,
     @Body('companyOpportunityTags', ParseCompanyOpportunityTagsPipe)
     companyOpportunityTags: CompanyOpportunityTag[],
     @Body('tagIds', ParseTagsPipe) tags: TagEntity[],
@@ -224,6 +223,12 @@ export class NotesController {
     templateEntity: string | TemplateEntity | null,
     @Body() dto: UpdateNoteDto,
   ): Promise<NoteData> {
+    let noteEntity;
+    if (!dto.origin) {
+      noteEntity = await this.notesService.getNoteForUpdate(noteId);
+    } else {
+      noteEntity = dto.origin;
+    }
     return this.notesService.noteEntityToNoteData(
       await this.notesService.updateNote(noteEntity, userEntity, {
         tags,

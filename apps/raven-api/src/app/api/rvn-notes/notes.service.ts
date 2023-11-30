@@ -378,12 +378,17 @@ export class NotesService {
   }
 
   public async updateNote(
-    noteEntity: NoteEntity,
+    noteEntity: NoteEntity | WorkflowNoteData,
     userEntity: UserEntity,
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
     return await this.noteRepository.manager.transaction(async (tem) => {
       let start = new Date().getTime();
+
+      const templateType =
+        (noteEntity as NoteEntity)?.template?.type ||
+        (noteEntity as WorkflowNoteData).templateType;
+
       const latestVersion = await this.noteRepository
         .createQueryBuilder('note')
         .where('LOWER(note.rootVersionId) = LOWER(:rootVersionId)', {
@@ -405,7 +410,7 @@ export class NotesService {
           options.tags,
           options.templateEntity,
           userEntity,
-          noteEntity.createdBy,
+          (noteEntity as NoteEntity).createdBy,
           noteEntity.rootVersionId,
           options.companyOpportunityTags,
           latestVersion.version + 1,
@@ -423,7 +428,7 @@ export class NotesService {
       );
       newNoteVersion.templateId = noteEntity.templateId;
       newNoteVersion.previousVersion = latestVersion;
-      newNoteVersion.createdBy = noteEntity.createdBy;
+      newNoteVersion.createdById = noteEntity.createdById;
       newNoteVersion.updatedBy = userEntity;
       newNoteVersion.noteTabs = noteEntity.noteTabs.map((noteTab) => {
         const newNoteTab = new NoteTabEntity();
@@ -441,15 +446,17 @@ export class NotesService {
         );
         return newNoteTab;
       });
-      newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
-        .filter((nfg) => !nfg.noteTabId)
-        .map(
-          this.getNewGroupsAndFieldsMapping(
-            userEntity,
-            newNoteVersion,
-            options,
-          ),
-        );
+      if (templateType === TemplateTypeEnum.Note) {
+        newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
+          ?.filter((nfg) => !nfg.noteTabId)
+          .map(
+            this.getNewGroupsAndFieldsMapping(
+              userEntity,
+              newNoteVersion,
+              options,
+            ),
+          );
+      }
 
       const savedNewNoteVersion = await tem.save(newNoteVersion);
       this.logger.debug(
@@ -457,7 +464,8 @@ export class NotesService {
         new Date().getTime() - start,
       );
 
-      if (noteEntity.template.type === TemplateTypeEnum.Workflow) {
+      console.log({ templateType });
+      if (templateType === TemplateTypeEnum.Workflow) {
         start = new Date().getTime();
         const opportunity = await this.opportunityRepository.findOne({
           where: { noteId: noteEntity.id },
@@ -475,15 +483,32 @@ export class NotesService {
     });
   }
 
-  public async updateNoteField(
-    noteFieldEntity: NoteFieldEntity,
-    options: UpdateNoteFieldOptions,
-    userEntity: UserEntity,
-  ): Promise<NoteFieldEntity> {
-    noteFieldEntity.value = options.value;
-    noteFieldEntity.updatedBy = userEntity;
-    noteFieldEntity.updatedAt = new Date();
-    return await this.noteFieldRepository.save(noteFieldEntity);
+  public async getNoteForUpdate(id: string) {
+    const start = Date.now();
+    const qb = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.updatedBy', 'updatedBy')
+      .leftJoinAndSelect('note.tags', 'tags')
+      .leftJoinAndSelect('note.complexTags', 'complexTags')
+      .leftJoinAndSelect('note.noteTabs', 'noteTabs')
+      .leftJoinAndSelect('noteTabs.noteFieldGroups', 'noteFieldGroups')
+      .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
+      .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroupsDirect')
+      .leftJoinAndSelect('noteFieldGroupsDirect.noteFields', 'noteFieldsDirect')
+      .leftJoin('note.template', 'template')
+      .addSelect(['template.type', 'template.name', 'template.id'])
+      .where('note.id = :id', { id });
+
+    const note = await qb.getOne();
+
+    // TODO remove debug
+    console.log(`NoteRepository.getOne took ${Date.now() - start}ms`);
+
+    if (!note) {
+      throw new Error(`Note with id ${id} not found`);
+    }
+    return note;
   }
 
   public async deleteNotes(
@@ -511,6 +536,9 @@ export class NotesService {
   }
 
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
+    console.log({
+      noteEntity,
+    });
     return {
       id: noteEntity.id,
       name: noteEntity.name,
@@ -521,8 +549,8 @@ export class NotesService {
       templateType: noteEntity.template?.type as TemplateTypeEnum,
       createdById: noteEntity.createdById,
       createdBy: {
-        name: noteEntity.createdBy.name,
-        email: noteEntity.createdBy.email,
+        name: noteEntity.createdBy?.name,
+        email: noteEntity.createdBy?.email, //TODO change somehow? fetch this user or sth?
       },
       updatedById: noteEntity.updatedById,
       updatedBy: {
