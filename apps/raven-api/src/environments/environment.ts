@@ -118,7 +118,7 @@ export const environment = {
         options: redisConnectionOptions,
       },
       pool: {
-        max: 20,
+        max: 100,
         min: 1,
       },
     } as SqlServerConnectionOptions,
