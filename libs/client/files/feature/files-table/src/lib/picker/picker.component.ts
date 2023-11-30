@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Input,
+} from '@angular/core';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import {
   IFilePickerOptions,
@@ -16,12 +21,16 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
   selector: 'app-picker',
   standalone: true,
   imports: [CommonModule, ButtonModule],
-  templateUrl: './tag.component.html',
-  styleUrls: ['./tag.component.scss'],
+  templateUrl: './picker.component.html',
+  styleUrls: ['./picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PickerComponent {
-  // protected app = inject(PublicClientApplication);
+  @Input() public type: 'sharepoint' | 'onedrive' = 'sharepoint';
+  @Input() public name: string;
+  @Input() public path: string;
+  @Input() public url: string;
+
   protected env = inject(ENVIRONMENT);
   protected msal = inject(MsalService);
 
@@ -30,13 +39,18 @@ export class PickerComponent {
 
     const options: IFilePickerOptions = {
       sdk: '8.0',
-      entry: {
-        sharePoint: {
-          byPath: {
-            list: 'https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents',
-          },
-        },
-      },
+      entry:
+        this.type === 'sharepoint'
+          ? {
+              sharePoint: {
+                byPath: {
+                  list: this.path,
+                },
+              },
+            }
+          : {
+              oneDrive: {},
+            },
       authentication: {},
       messaging: {
         origin: this.env.adRedirectUri,
@@ -71,15 +85,10 @@ export class PickerComponent {
 
     // activate the picker with our baseUrl and options object
     const results = await picker.activate({
-      // baseUrl: 'https://testonemubadala.sharepoint.com', // this.env.adRedirectUri,
-      baseUrl: 'https://testonemubadala.sharepoint.com/',
+      baseUrl: this.url,
       options,
     });
 
-    document.getElementById('pickedFiles')!.innerHTML = `<pre>${JSON.stringify(
-      results,
-      null,
-      2,
-    )}</pre>`;
+    console.log(results);
   }
 }
