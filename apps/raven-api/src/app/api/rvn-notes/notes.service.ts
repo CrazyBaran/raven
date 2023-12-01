@@ -274,20 +274,33 @@ export class NotesService {
         .map(this.noteEntityToNoteData.bind(this));
     }
 
-    const opportunityNote = await this.noteRepository.findOne({
-      where: { id: opportunity.noteId },
-      relations: [
-        'createdBy',
-        'updatedBy',
-        'deletedBy',
-        'tags',
-        'noteTabs',
-        'noteTabs.noteFieldGroups',
-        'noteTabs.noteFieldGroups.noteFields',
-        'noteFieldGroups',
-        'noteFieldGroups.noteFields',
-      ],
-    });
+    const opportunityNote = await this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.updatedBy', 'updatedBy')
+      .leftJoinAndSelect('note.deletedBy', 'deletedBy')
+      .leftJoinAndSelect('note.tags', 'tags')
+      .where('note.id = :id', { id: opportunity.noteId })
+      .getOne();
+
+    // funny performance hack - we need to get all tabs and fields for opportunity note
+    const allTabs = await this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.noteTabs', 'noteTabs')
+      .leftJoinAndSelect('noteTabs.noteFieldGroups', 'noteFieldGroups')
+      .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
+      .where('note.id = :id', { id: opportunity.noteId })
+      .getOne();
+
+    const allFieldGroups = await this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
+      .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
+      .where('note.id = :id', { id: opportunity.noteId })
+      .getOne();
+
+    opportunityNote.noteTabs = allTabs.noteTabs;
+    opportunityNote.noteFieldGroups = allFieldGroups.noteFieldGroups;
 
     const opportunityNoteTemplate = await this.templateRepository
       .createQueryBuilder('template')

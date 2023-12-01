@@ -55,6 +55,7 @@ import { NotesService } from './notes.service';
 import { FindTagByOgranisationPipe } from './pipes/find-tag-by-ogranisation.pipe';
 import { ParseCompanyOpportunityTagsPipe } from './pipes/parse-company-opportunity-tags.pipe';
 import { ParseNotePipe } from './pipes/parse-note.pipe';
+import { ParseSimpleNotePipe } from './pipes/parse-simple-note.pipe';
 
 @ApiTags('Notes')
 @Controller('notes')
@@ -191,7 +192,7 @@ export class NotesController {
   @ApiOAuth2(['openid'])
   @Get(':id/attachments')
   public async getNoteAttachments(
-    @Param('id', ParseUUIDPipe, ParseNotePipe) noteEntity: NoteEntity,
+    @Param('id', ParseUUIDPipe, ParseSimpleNotePipe) noteEntity: NoteEntity,
   ): Promise<NoteAttachmentData[]> {
     return this.notesService.getNoteAttachments(noteEntity);
   }
