@@ -18,7 +18,6 @@ import { UserEntity } from '../../rvn-users/entities/user.entity';
 
 @Entity({ name: 'tags' })
 @Index(['id', 'type'])
-@Index(['name', 'type'], { unique: true })
 @TableInheritance({ column: 'class' })
 export class TagEntity {
   @PrimaryGeneratedColumn('uuid')
