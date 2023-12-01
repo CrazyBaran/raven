@@ -22,6 +22,7 @@ export class AffinityOrganisationCreatedEventHandler {
     await this.organisationService.create({
       name: event.name,
       domain: event.domains[0],
+      createOpportunity: event.createOpportunity,
     });
   }
 }

@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Like, Raw, Repository } from 'typeorm';
+import { EntityManager, Like, Raw, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
@@ -22,6 +22,7 @@ import { OrganisationCreatedEvent } from './events/organisation-created.event';
 interface CreateOrganisationOptions {
   name: string;
   domain: string;
+  createOpportunity?: boolean;
 }
 
 interface UpdateOrganisationOptions {
@@ -166,16 +167,29 @@ export class OrganisationService {
   public async create(
     options: CreateOrganisationOptions,
   ): Promise<OrganisationEntity> {
-    const organisation = new OrganisationEntity();
-    organisation.name = options.name;
-    organisation.domains = [options.domain];
-    const organisationEntity =
-      await this.organisationRepository.save(organisation);
-    this.eventEmitter.emit(
-      'organisation-created',
-      new OrganisationCreatedEvent(organisationEntity),
+    return await this.organisationRepository.manager.transaction(
+      async (tem) => {
+        const organisation = new OrganisationEntity();
+        organisation.name = options.name;
+        organisation.domains = [options.domain];
+        const organisationEntity = await tem.save(organisation);
+
+        this.eventEmitter.emit(
+          'organisation-created',
+          new OrganisationCreatedEvent(organisationEntity),
+        );
+
+        if (options.createOpportunity) {
+          await this.createOpportunityForOrganisation(
+            organisationEntity,
+            null,
+            tem,
+          );
+
+          return organisationEntity;
+        }
+      },
     );
-    return organisationEntity;
   }
 
   public async update(
@@ -237,18 +251,17 @@ export class OrganisationService {
         organisation.domains = organisationDto.domains;
         const savedOrganisation = await tem.save(organisation);
 
-        if (environment.opportunitySync.enabledOnInit) {
-          const defaultPipeline = await this.getDefaultPipelineDefinition();
-          const pipelineStage = this.mapPipelineStage(
-            defaultPipeline,
-            organisationstageDto.stage?.text,
-          );
-          const opportunity = new OpportunityEntity();
-          opportunity.pipelineStage = pipelineStage;
-          opportunity.pipelineDefinition = defaultPipeline;
-          opportunity.organisation = savedOrganisation;
+        this.eventEmitter.emit(
+          'organisation-created',
+          new OrganisationCreatedEvent(savedOrganisation),
+        );
 
-          await tem.save(opportunity);
+        if (environment.opportunitySync.enabledOnInit) {
+          await this.createOpportunityForOrganisation(
+            savedOrganisation,
+            organisationstageDto.stage?.text,
+            tem,
+          );
         }
 
         return savedOrganisation;
@@ -310,5 +323,20 @@ export class OrganisationService {
       throw new Error('There should be only one pipeline definition!');
     }
     return pipelineDefinitions[0];
+  }
+
+  private async createOpportunityForOrganisation(
+    savedOrganisation: OrganisationEntity,
+    stageText: string | null,
+    tem: EntityManager,
+  ): Promise<OpportunityEntity> {
+    const defaultPipeline = await this.getDefaultPipelineDefinition();
+    const pipelineStage = this.mapPipelineStage(defaultPipeline, stageText);
+    const opportunity = new OpportunityEntity();
+    opportunity.pipelineStage = pipelineStage;
+    opportunity.pipelineDefinition = defaultPipeline;
+    opportunity.organisation = savedOrganisation;
+
+    return await tem.save(opportunity);
   }
 }

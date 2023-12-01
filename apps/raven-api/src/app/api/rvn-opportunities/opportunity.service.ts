@@ -1,4 +1,5 @@
 import {
+  OpportunityCreatedEvent,
   OpportunityData,
   OpportunityStageChangedEvent,
   PagedOpportunityData,
@@ -180,47 +181,47 @@ export class OpportunityService {
     return { items, total: items.length } as PagedOpportunityData;
   }
 
-  // public async createFromOrganisation(
-  //   options: CreateOpportunityForOrganisationOptions,
-  // ): Promise<OpportunityEntity> {
-  //   const { pipeline, pipelineStage } =
-  //     await this.getDefaultPipelineAndFirstStage();
-  //
-  //   const affinityOrganisation = await this.affinityCacheService.getByDomains(
-  //     options.organisation.domains,
-  //   );
-  //
-  //   const affinityPipelineStage = this.organisationService.mapPipelineStage(
-  //     pipeline,
-  //     affinityOrganisation[0]?.stage?.text,
-  //   );
-  //
-  //   return await this.createOpportunity(
-  //     options.organisation,
-  //     pipeline,
-  //     affinityPipelineStage ? affinityPipelineStage : pipelineStage,
-  //     options,
-  //   );
-  // }
+  public async createFromOrganisation(
+    options: CreateOpportunityForOrganisationOptions,
+  ): Promise<OpportunityEntity> {
+    const { pipeline, pipelineStage } =
+      await this.getDefaultPipelineAndFirstStage();
 
-  // public async createForNonExistingOrganisation(
-  //   options: CreateOpportunityForNonExistingOrganisationOptions,
-  // ): Promise<OpportunityEntity> {
-  //   const { pipeline, pipelineStage } =
-  //     await this.getDefaultPipelineAndFirstStage();
-  //
-  //   const organisation = await this.organisationService.create({
-  //     domain: options.domain,
-  //     name: options.name,
-  //   });
-  //
-  //   return await this.createOpportunity(
-  //     organisation,
-  //     pipeline,
-  //     pipelineStage,
-  //     options,
-  //   );
-  // }
+    const affinityOrganisation = await this.affinityCacheService.getByDomains(
+      options.organisation.domains,
+    );
+
+    const affinityPipelineStage = this.organisationService.mapPipelineStage(
+      pipeline,
+      affinityOrganisation[0]?.stage?.text,
+    );
+
+    return await this.createOpportunity(
+      options.organisation,
+      pipeline,
+      affinityPipelineStage ? affinityPipelineStage : pipelineStage,
+      options,
+    );
+  }
+
+  public async createForNonExistingOrganisation(
+    options: CreateOpportunityForNonExistingOrganisationOptions,
+  ): Promise<OpportunityEntity> {
+    const { pipeline, pipelineStage } =
+      await this.getDefaultPipelineAndFirstStage();
+
+    const organisation = await this.organisationService.create({
+      domain: options.domain,
+      name: options.name,
+    });
+
+    return await this.createOpportunity(
+      organisation,
+      pipeline,
+      pipelineStage,
+      options,
+    );
+  }
 
   public async update(
     opportunity: OpportunityEntity,
@@ -342,21 +343,21 @@ export class OpportunityService {
     return pipelineStage;
   }
 
-  // private async getDefaultPipelineAndFirstStage(): Promise<{
-  //   pipeline: PipelineDefinitionEntity;
-  //   pipelineStage: PipelineStageEntity;
-  // }> {
-  //   const pipeline = await this.getDefaultPipelineDefinition();
-  //   const pipelineStage = pipeline.stages.find(
-  //     (s: { order: number }) => s.order === 1,
-  //   );
-  //   if (!pipelineStage) {
-  //     throw new Error(
-  //       'Pipeline stage with order = 1 not found! Incorrect configuration',
-  //     );
-  //   }
-  //   return { pipeline, pipelineStage };
-  // }
+  private async getDefaultPipelineAndFirstStage(): Promise<{
+    pipeline: PipelineDefinitionEntity;
+    pipelineStage: PipelineStageEntity;
+  }> {
+    const pipeline = await this.getDefaultPipelineDefinition();
+    const pipelineStage = pipeline.stages.find(
+      (s: { order: number }) => s.order === 1,
+    );
+    if (!pipelineStage) {
+      throw new Error(
+        'Pipeline stage with order = 1 not found! Incorrect configuration',
+      );
+    }
+    return { pipeline, pipelineStage };
+  }
 
   private assignOpportunityProperties(
     opportunity: OpportunityEntity,
@@ -385,30 +386,30 @@ export class OpportunityService {
     }
   }
 
-  // private async createOpportunity(
-  //   organisation: OrganisationEntity,
-  //   pipeline: PipelineDefinitionEntity,
-  //   pipelineStage: PipelineStageEntity,
-  //   options: CommonCreateOpportunityOptions,
-  // ): Promise<OpportunityEntity> {
-  //   const opportunity = new OpportunityEntity();
-  //   opportunity.organisation = organisation;
-  //   opportunity.pipelineDefinition = pipeline;
-  //   opportunity.pipelineStage = pipelineStage;
-  //   opportunity.tag = options.tagEntity;
-  //   this.assignOpportunityProperties(opportunity, options);
-  //
-  //   const savedOpportunity = await this.opportunityRepository.save(opportunity);
-  //
-  //   this.eventEmitter.emit(
-  //     'opportunity-created',
-  //     new OpportunityCreatedEvent(
-  //       savedOpportunity.id,
-  //       options.workflowTemplateEntity?.id,
-  //       options.userEntity.id,
-  //     ),
-  //   );
-  //
-  //   return savedOpportunity;
-  // }
+  private async createOpportunity(
+    organisation: OrganisationEntity,
+    pipeline: PipelineDefinitionEntity,
+    pipelineStage: PipelineStageEntity,
+    options: CommonCreateOpportunityOptions,
+  ): Promise<OpportunityEntity> {
+    const opportunity = new OpportunityEntity();
+    opportunity.organisation = organisation;
+    opportunity.pipelineDefinition = pipeline;
+    opportunity.pipelineStage = pipelineStage;
+    opportunity.tag = options.tagEntity;
+    this.assignOpportunityProperties(opportunity, options);
+
+    const savedOpportunity = await this.opportunityRepository.save(opportunity);
+
+    this.eventEmitter.emit(
+      'opportunity-created',
+      new OpportunityCreatedEvent(
+        savedOpportunity.id,
+        options.workflowTemplateEntity?.id,
+        options.userEntity.id,
+      ),
+    );
+
+    return savedOpportunity;
+  }
 }

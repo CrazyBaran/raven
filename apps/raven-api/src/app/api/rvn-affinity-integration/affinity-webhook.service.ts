@@ -113,6 +113,7 @@ export class AffinityWebhookService {
       new AffinityOrganizationCreatedEvent(
         organizationDto.name,
         organizationDto.domains,
+        environment.opportunitySync.enabledOnWebhook,
       ),
     );
   }
