@@ -8,7 +8,6 @@ import {
 } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
-import { TemplateTypeEnum } from '@app/rvns-templates';
 import {
   BadRequestException,
   Body,
@@ -31,8 +30,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { IsArray, IsDefined, IsString, Length } from 'class-validator';
-import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
-import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import { ParseTagsPipe } from '../../shared/pipes/parse-tags.pipe';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { ShareAbility } from '../rvn-acl/casl/ability.factory';
@@ -45,18 +42,14 @@ import { ParseOptionalFileFromSharepointIdPipe } from '../rvn-files/pipes/parse-
 import { ValidateTabTagsPipe } from '../rvn-files/pipes/validate-tab-tags.pipe';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
-import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { ParseUserPipe } from '../rvn-users/pipes/parse-user.pipe';
-import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { UpdateOpportunityDto } from './dto/update-opportunity.dto';
 import { OpportunityEntity } from './entities/opportunity.entity';
-import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityService } from './opportunity.service';
 import { ParseOpportunityPipe } from './pipes/parse-opportunity.pipe';
-import { ParseOptionalOrganisationPipe } from './pipes/parse-optional-organisation.pipe';
 import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-stage.pipe';
 import { ParseOptionalTagPipe } from './pipes/parse-optional-tag.pipe';
 import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pipe';
@@ -124,77 +117,77 @@ export class OpportunityController {
     return this.opportunityService.findOne(id);
   }
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new opportunity' })
-  @ApiResponse({
-    status: 201,
-    description: 'The opportunity has been successfully created.',
-  })
-  @ApiOAuth2(['openid'])
-  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
-  public async create(
-    @Body() dto: CreateOpportunityDto,
-    @Body('domain', FindOrganizationByDomainPipe)
-    organisationFromDomain: string | OrganisationEntity | null,
-    @Body('organisationId', ParseOptionalOrganisationPipe)
-    organisationFromId: string | OrganisationEntity | null,
-    @Body('workflowTemplateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
-    workflowTemplateEntity: string | TemplateEntity | null,
-    @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
-    tagEntity: string | TagEntity | null,
-    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
-  ): Promise<OpportunityData> {
-    if (!tagEntity) {
-      throw new BadRequestException('Tag is required for opportunity creation');
-    }
-    if (
-      workflowTemplateEntity !== null &&
-      (workflowTemplateEntity as TemplateEntity).type !==
-        TemplateTypeEnum.Workflow
-    ) {
-      throw new BadRequestException('Template is not a workflow template');
-    }
-    const organisation =
-      (organisationFromDomain as OrganisationEntity) ||
-      (organisationFromId as OrganisationEntity);
-    if (organisation) {
-      // TODO - find previous opportunity, check if is at last stage? remove or soft delete? confirm logic for that
-      // TODO - current logic should be one opportunity for given organisation is in active stages...
-      return this.opportunityService.opportunityEntityToData(
-        await this.opportunityService.createFromOrganisation({
-          organisation,
-          workflowTemplateEntity:
-            workflowTemplateEntity as TemplateEntity | null,
-          userEntity,
-          tagEntity: tagEntity as TagEntity,
-          roundSize: dto.roundSize,
-          valuation: dto.valuation,
-          proposedInvestment: dto.proposedInvestment,
-          positioning: dto.positioning,
-          timing: dto.timing,
-          underNda: dto.underNda,
-          ndaTerminationDate: dto.ndaTerminationDate,
-        }),
-      );
-    }
-
-    return this.opportunityService.opportunityEntityToData(
-      await this.opportunityService.createForNonExistingOrganisation({
-        name: dto.name,
-        domain: dto.domain,
-        workflowTemplateEntity: workflowTemplateEntity as TemplateEntity | null,
-        userEntity,
-        tagEntity: tagEntity as TagEntity,
-        roundSize: dto.roundSize,
-        valuation: dto.valuation,
-        proposedInvestment: dto.proposedInvestment,
-        positioning: dto.positioning,
-        timing: dto.timing,
-        underNda: dto.underNda,
-        ndaTerminationDate: dto.ndaTerminationDate,
-      }),
-    );
-  }
+  // @Post()
+  // @ApiOperation({ summary: 'Create a new opportunity' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: 'The opportunity has been successfully created.',
+  // })
+  // @ApiOAuth2(['openid'])
+  // @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  // public async create(
+  //   @Body() dto: CreateOpportunityDto,
+  //   @Body('domain', FindOrganizationByDomainPipe)
+  //   organisationFromDomain: string | OrganisationEntity | null,
+  //   @Body('organisationId', ParseOptionalOrganisationPipe)
+  //   organisationFromId: string | OrganisationEntity | null,
+  //   @Body('workflowTemplateId', ParseOptionalTemplateWithGroupsAndFieldsPipe)
+  //   workflowTemplateEntity: string | TemplateEntity | null,
+  //   @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
+  //   tagEntity: string | TagEntity | null,
+  //   @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
+  // ): Promise<OpportunityData> {
+  //   if (!tagEntity) {
+  //     throw new BadRequestException('Tag is required for opportunity creation');
+  //   }
+  //   if (
+  //     workflowTemplateEntity !== null &&
+  //     (workflowTemplateEntity as TemplateEntity).type !==
+  //       TemplateTypeEnum.Workflow
+  //   ) {
+  //     throw new BadRequestException('Template is not a workflow template');
+  //   }
+  //   const organisation =
+  //     (organisationFromDomain as OrganisationEntity) ||
+  //     (organisationFromId as OrganisationEntity);
+  //   if (organisation) {
+  //     // TODO - find previous opportunity, check if is at last stage? remove or soft delete? confirm logic for that
+  //     // TODO - current logic should be one opportunity for given organisation is in active stages...
+  //     return this.opportunityService.opportunityEntityToData(
+  //       await this.opportunityService.createFromOrganisation({
+  //         organisation,
+  //         workflowTemplateEntity:
+  //           workflowTemplateEntity as TemplateEntity | null,
+  //         userEntity,
+  //         tagEntity: tagEntity as TagEntity,
+  //         roundSize: dto.roundSize,
+  //         valuation: dto.valuation,
+  //         proposedInvestment: dto.proposedInvestment,
+  //         positioning: dto.positioning,
+  //         timing: dto.timing,
+  //         underNda: dto.underNda,
+  //         ndaTerminationDate: dto.ndaTerminationDate,
+  //       }),
+  //     );
+  //   }
+  //
+  //   return this.opportunityService.opportunityEntityToData(
+  //     await this.opportunityService.createForNonExistingOrganisation({
+  //       name: dto.name,
+  //       domain: dto.domain,
+  //       workflowTemplateEntity: workflowTemplateEntity as TemplateEntity | null,
+  //       userEntity,
+  //       tagEntity: tagEntity as TagEntity,
+  //       roundSize: dto.roundSize,
+  //       valuation: dto.valuation,
+  //       proposedInvestment: dto.proposedInvestment,
+  //       positioning: dto.positioning,
+  //       timing: dto.timing,
+  //       underNda: dto.underNda,
+  //       ndaTerminationDate: dto.ndaTerminationDate,
+  //     }),
+  //   );
+  // }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an opportunity' })

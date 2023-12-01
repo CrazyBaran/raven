@@ -199,4 +199,14 @@ export const environment = {
     siteId: env.get('SHAREPOINT_SITE_ID').asString(),
     rootDirectoryId: env.get('SHAREPOINT_ROOT_DIRECTORY_ID').asString(),
   },
+  opportunitySync: {
+    enabledOnWebhook: env
+      .get('ENABLE_CREATE_OPPORTUNITY_ON_WEBHOOK')
+      .default('false')
+      .asBoolStrict(),
+    enabledOnInit: env
+      .get('ENABLE_CREATE_OPPORTUNITY_ON_INIT')
+      .default('false')
+      .asBoolStrict(),
+  },
 };

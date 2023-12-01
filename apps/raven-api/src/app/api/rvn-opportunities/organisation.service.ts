@@ -8,13 +8,14 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Like, Raw, Repository } from 'typeorm';
-import { OrganizationDto } from '../rvn-affinity-integration/api/dtos/organization.dto';
+import { environment } from '../../../environments/environment';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
+import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
 
@@ -194,7 +195,7 @@ export class OrganisationService {
     await this.organisationRepository.delete(id);
   }
 
-  public async ensureAllAffinityEntriesAsOrganisations(): Promise<void> {
+  public async ensureAllAffinityEntriesAsOrganisationsAndOpportunities(): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll();
     const existingOrganisations = await this.organisationRepository.find();
     const nonExistentAffinityData = this.getNonExistentAffinityData(
@@ -206,7 +207,7 @@ export class OrganisationService {
       `Found ${nonExistentAffinityData.length} non-existent organisations`,
     );
     for (const organisation of nonExistentAffinityData) {
-      await this.createFromAffinity(organisation.organizationDto);
+      await this.createFromAffinity(organisation);
     }
     this.logger.log(`Found non-existent organisations synced`);
   }
@@ -226,13 +227,33 @@ export class OrganisationService {
   }
 
   public async createFromAffinity(
-    organizationDto: OrganizationDto,
+    organisationstageDto: OrganizationStageDto,
   ): Promise<OrganisationEntity> {
-    const organisation = new OrganisationEntity();
-    organisation.name = organizationDto.name;
-    organisation.domains = organizationDto.domains;
+    const organisationDto = organisationstageDto.organizationDto;
+    return await this.organisationRepository.manager.transaction(
+      async (tem) => {
+        const organisation = new OrganisationEntity();
+        organisation.name = organisationDto.name;
+        organisation.domains = organisationDto.domains;
+        const savedOrganisation = await tem.save(organisation);
 
-    return await this.organisationRepository.save(organisation);
+        if (environment.opportunitySync.enabledOnInit) {
+          const defaultPipeline = await this.getDefaultPipelineDefinition();
+          const pipelineStage = this.mapPipelineStage(
+            defaultPipeline,
+            organisationstageDto.stage?.text,
+          );
+          const opportunity = new OpportunityEntity();
+          opportunity.pipelineStage = pipelineStage;
+          opportunity.pipelineDefinition = defaultPipeline;
+          opportunity.organisation = savedOrganisation;
+
+          await tem.save(opportunity);
+        }
+
+        return savedOrganisation;
+      },
+    );
   }
 
   public organisationEntityToData(
@@ -251,6 +272,20 @@ export class OrganisationService {
     });
 
     return !!existingOrganisation;
+  }
+
+  public mapPipelineStage(
+    pipelineDefinition: PipelineDefinitionEntity,
+    text: string,
+  ): PipelineStageEntity {
+    if (!text) {
+      return pipelineDefinition.stages.find(
+        (s: { order: number }) => s.order === 1,
+      );
+    }
+    return pipelineDefinition.stages.find((s: { mappedFrom: string }) =>
+      text.toLowerCase().includes(s.mappedFrom.toLowerCase()),
+    );
   }
 
   private getPipelineStage(
