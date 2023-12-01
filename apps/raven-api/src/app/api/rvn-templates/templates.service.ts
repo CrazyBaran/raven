@@ -208,10 +208,10 @@ export class TemplatesService {
 
       if (options.template.type === TemplateTypeEnum.Workflow) {
         const tabTag = new TabTagEntity();
-        tabTag.name = `${options.template.name} - ${options.name}`;
+        tabTag.name = options.name;
         tabTag.type = TagTypeEnum.Tab;
-        tabTag.tab = savedTab;
-        await tem.save(tabTag);
+        tabTag.tabId = savedTab.id;
+        await tem.save(TabTagEntity, tabTag);
       }
       return savedTab;
     });

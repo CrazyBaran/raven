@@ -50,6 +50,11 @@ export class TagEntity {
         this as unknown as OrganisationTagEntity
       ).organisationId.toLowerCase();
     }
+    if (this.type === TagTypeEnum.Tab) {
+      (this as unknown as TabTagEntity).tabId = (
+        this as unknown as TabTagEntity
+      ).tabId.toLowerCase();
+    }
   }
 }
 
