@@ -226,6 +226,7 @@ export class OpportunityService {
   public async update(
     opportunity: OpportunityEntity,
     options: UpdateOpportunityOptions,
+    userEntity: UserEntity,
   ): Promise<OpportunityEntity> {
     if (options.pipelineStage) {
       opportunity.pipelineStage = options.pipelineStage;
@@ -248,6 +249,15 @@ export class OpportunityService {
         ),
       );
     }
+
+    // if opportunity had no workflow note and tag is now set, it's time for opportunity to become a real opportunity with note and folder structure
+    if (!opportunity.note && options.tagEntity) {
+      this.eventEmitter.emit(
+        'opportunity-created',
+        new OpportunityCreatedEvent(opportunityEntity.id, null, userEntity.id),
+      );
+    }
+
     return opportunityEntity;
   }
 
@@ -399,17 +409,6 @@ export class OpportunityService {
     opportunity.tag = options.tagEntity;
     this.assignOpportunityProperties(opportunity, options);
 
-    const savedOpportunity = await this.opportunityRepository.save(opportunity);
-
-    this.eventEmitter.emit(
-      'opportunity-created',
-      new OpportunityCreatedEvent(
-        savedOpportunity.id,
-        options.workflowTemplateEntity?.id,
-        options.userEntity.id,
-      ),
-    );
-
-    return savedOpportunity;
+    return await this.opportunityRepository.save(opportunity);
   }
 }

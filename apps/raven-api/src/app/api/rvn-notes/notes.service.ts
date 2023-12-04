@@ -274,6 +274,10 @@ export class NotesService {
         .map(this.noteEntityToNoteData.bind(this));
     }
 
+    if (!opportunity.noteId) {
+      return [];
+    }
+
     const opportunityNote = await this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.createdBy', 'createdBy')
