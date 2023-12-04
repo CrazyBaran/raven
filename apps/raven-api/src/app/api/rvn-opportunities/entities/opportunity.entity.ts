@@ -111,6 +111,9 @@ export class OpportunityEntity implements ShareResource {
   @OneToMany(() => ShareOpportunityEntity, (share) => share.resource)
   public shares: ShareOpportunityEntity[];
 
+  @Column({ nullable: true })
+  public sharepointDirectoryId: string | null;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {

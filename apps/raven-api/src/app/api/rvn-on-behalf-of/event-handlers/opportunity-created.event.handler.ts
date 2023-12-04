@@ -33,10 +33,13 @@ export class OpportunityCreatedEventHandler {
       await this.createSharepointDirectoryForOpportunityOrganisation(
         opportunityEntity,
       );
-    await this.createSharepointDirectoryForOpportunity(
-      opportunityEntity,
-      ogranisationFolderId,
-    );
+    const opportunityFolderId =
+      await this.createSharepointDirectoryForOpportunity(
+        opportunityEntity,
+        ogranisationFolderId,
+      );
+    opportunityEntity.sharepointDirectoryId = opportunityFolderId;
+    await this.entityManager.save(opportunityEntity);
   }
 
   private async createSharepointDirectoryForOpportunityOrganisation(
@@ -57,13 +60,13 @@ export class OpportunityCreatedEventHandler {
   private async createSharepointDirectoryForOpportunity(
     opportunityEntity: OpportunityEntity,
     organisationFolderId: string,
-  ): Promise<void> {
+  ): Promise<string> {
     const directory =
       SharepointDirectoryStructureGenerator.getDirectoryNameForOpportunity(
         opportunityEntity,
       );
 
-    await this.createDirectory(directory, organisationFolderId);
+    return await this.createDirectory(directory, organisationFolderId);
   }
 
   private async createDirectory(
