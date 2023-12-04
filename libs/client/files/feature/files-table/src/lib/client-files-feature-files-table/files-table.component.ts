@@ -1,16 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FileTypeBadgeComponent } from '@app/client/files/ui';
 import {
-  FILE_TYPE_BADGE_COLORS,
-  FileTypeBadgeColorsResolver,
-  FileTypeBadgeComponent,
-} from '@app/client/files/ui';
-import { BadgeComponent, BadgeStyle } from '@app/client/shared/ui';
+  BadgeComponent,
+  TagComponent,
+  UserTagDirective,
+} from '@app/client/shared/ui';
+import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
-import { PanelBarModule } from '@progress/kendo-angular-layout';
-import { Observable, of } from 'rxjs';
+import {
+  PanelBarExpandMode,
+  PanelBarItemModel,
+  PanelBarModule,
+} from '@progress/kendo-angular-layout';
+import { OneDrivePickerComponent } from '../one-drive-picker/one-drive-picker.component';
 import { PickerComponent } from '../picker/picker.component';
+
+type FileTypeItem = {
+  folderName: string;
+  files: { name: string; type: string; createdBy: string; updatedAt: Date }[];
+};
 
 @Component({
   selector: 'app-client-files-feature-files-table',
@@ -23,48 +33,22 @@ import { PickerComponent } from '../picker/picker.component';
     FileTypeBadgeComponent,
     PickerComponent,
     PanelBarModule,
+    TagComponent,
+    UserTagDirective,
+    OneDrivePickerComponent,
   ],
   templateUrl: './files-table.component.html',
   styleUrls: ['./files-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: FILE_TYPE_BADGE_COLORS,
-      useValue: {
-        resolve: (): FileTypeBadgeColorsResolver => {
-          const fileTypes: Record<string, BadgeStyle> = {
-            'Company Material': {
-              backgroundColor: '#e0e0e0',
-              color: '#000000',
-            },
-            'Notes & Analysis': {
-              backgroundColor: '#e0e0e0',
-              color: '#000000',
-            },
-            'Market Research': {
-              backgroundColor: '#e0e0e0',
-              color: '#000000',
-            },
-          };
-
-          return {
-            resolve(fileType: string): Observable<BadgeStyle> {
-              return of(fileTypes[fileType]);
-            },
-          };
-        },
-      },
-    },
-  ],
 })
 export class FilesTableComponent {
-  public data: {
-    folderName: string;
-    files: { name: string; type: string; createdBy: string; updatedAt: Date }[];
-  }[] = [
-    {
-      folderName: 'VDR',
-      files: [
+  public panelExapndMode = PanelBarExpandMode.Single;
+
+  public data: PanelBarItemModel[] = [
+    <PanelBarItemModel>{
+      iconClass: 'fa-regular fa-folder mr-2',
+      title: 'VDR',
+      content: [
         {
           name: 'Company Bussiness Plan.docx',
           type: 'Company Material',
@@ -92,9 +76,10 @@ export class FilesTableComponent {
       ],
     },
 
-    {
-      folderName: 'Research',
-      files: [
+    <PanelBarItemModel>{
+      iconClass: 'fa-regular fa-folder mr-2',
+      title: 'Research',
+      content: [
         {
           name: 'Company Bussiness Plan.docx',
           type: 'Company Material',
@@ -121,9 +106,10 @@ export class FilesTableComponent {
         },
       ],
     },
-    {
-      folderName: 'Analysis',
-      files: [
+    <PanelBarItemModel>{
+      iconClass: 'fa-regular fa-folder mr-2',
+      title: 'Analysis',
+      content: [
         {
           name: 'Company Bussiness Plan.docx',
           type: 'Company Material',
@@ -150,9 +136,10 @@ export class FilesTableComponent {
         },
       ],
     },
-    {
-      folderName: 'Legal/Tax',
-      files: [
+    <PanelBarItemModel>{
+      iconClass: 'fa-regular fa-folder mr-2',
+      title: 'Legal/Tax',
+      content: [
         {
           name: 'Company Bussiness Plan.docx',
           type: 'Company Material',
@@ -179,9 +166,10 @@ export class FilesTableComponent {
         },
       ],
     },
-    {
-      folderName: 'Output',
-      files: [
+    <PanelBarItemModel>{
+      iconClass: 'fa-regular fa-folder mr-2',
+      title: 'Output',
+      content: [
         {
           name: 'Company Bussiness Plan.docx',
           type: 'Company Material',
@@ -209,4 +197,8 @@ export class FilesTableComponent {
       ],
     },
   ];
+
+  public constructor(private store: Store) {
+    // this.store.dispatch(TagsActions.getTagsByTypesIfNotLoaded({tagTypes:['file']}))
+  }
 }

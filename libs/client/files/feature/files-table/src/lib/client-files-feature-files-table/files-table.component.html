@@ -6,20 +6,47 @@
     class="bg-primary-20 flex p-6"
   ></app-picker>
 
-  <app-picker
+  <app-one-drive-picker
     type="onedrive"
     name="One drive"
-    url="https://testonemubadala.sharepoint.com/"
-    path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
     class="bg-primary-20 flex p-6"
-  ></app-picker>
+  ></app-one-drive-picker>
 </div>
 
-<!--<kendo-panelbar [items]="data">-->
-<!--  <ng-template kendoPanelBarItemTemplate let-dataItem>-->
-<!--    <div class="custom-template">-->
-<!--      <h4>Custom template:</h4>-->
-<!--      <p>{{ dataItem.content }}</p>-->
-<!--    </div>-->
-<!--  </ng-template>-->
-<!--</kendo-panelbar>-->
+<div class="file-grid">
+  <p class="flex items-center gap-2 font-bold">Folder/File Name</p>
+  <p class="font-bold">Tags</p>
+  <p class="font-bold">Added by</p>
+</div>
+
+<kendo-panelbar [items]="data" [expandMode]="panelExapndMode">
+  <ng-template kendoPanelBarItemTitle let-dataItem> </ng-template>
+  <ng-template kendoPanelBarItemTemplate let-dataItem>
+    @for(item of dataItem.content; track item.name){
+
+    <div class="file-grid">
+      <div>
+        <p class="flex items-center gap-2 pl-2">
+          <i class="fa-regular fa-file"></i>
+          {{ item.name }}
+        </p>
+      </div>
+      <div class="flex gap-2 overflow-hidden">
+        <ui-tag label="tag 1" icon="fa-regular fa-tag" /><ui-tag
+          label="tag 2"
+          icon="fa-regular fa-tag"
+        /><ui-tag label="tag 3" icon="fa-regular fa-tag" />
+      </div>
+      <p><ui-tag uiUserTag [label]="item.createdBy" /></p>
+      <div class="flex justify-end gap-1">
+        <kendo-button
+          themeColor="primary"
+          iconClass="fa-solid fa-arrow-up-right-from-square"
+        />
+        <kendo-button class="mr-10" iconClass="fa-regular fa-tag" />
+      </div>
+    </div>
+
+    }
+  </ng-template>
+</kendo-panelbar>
