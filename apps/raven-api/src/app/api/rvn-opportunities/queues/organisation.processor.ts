@@ -29,7 +29,7 @@ export class OrganisationProcessor extends AbstractSimpleQueueProcessor<Affinity
   public async process(job: JobPro): Promise<boolean> {
     switch (job.name) {
       case ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS: {
-        await this.organisationService.ensureAllAffinityEntriesAsOrganisations();
+        await this.organisationService.ensureAllAffinityEntriesAsOrganisationsAndOpportunities();
         return true;
       }
       default: {

@@ -125,7 +125,12 @@ export class OpportunityController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new opportunity' })
+  @ApiOperation({
+    summary: 'Create a new opportunity',
+    deprecated: true,
+    description:
+      'Method is deprecated, because opportunities are now created when affinity organisations are added to lists automatically (we might however want to keep this method for manual opportunity creation in future)',
+  })
   @ApiResponse({
     status: 201,
     description: 'The opportunity has been successfully created.',
@@ -220,19 +225,24 @@ export class OpportunityController {
     pipelineStage: string | PipelineStageEntity | null,
     @Body('opportunityTagId', ParseOptionalTagPipe, ValidateOpportunityTagPipe)
     tag: string | TagEntity | null,
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<OpportunityData> {
     return this.opportunityService.opportunityEntityToData(
-      await this.opportunityService.update(opportunity, {
-        pipelineStage: pipelineStage as PipelineStageEntity,
-        tagEntity: tag as TagEntity,
-        roundSize: dto.roundSize,
-        valuation: dto.valuation,
-        proposedInvestment: dto.proposedInvestment,
-        positioning: dto.positioning,
-        timing: dto.timing,
-        underNda: dto.underNda,
-        ndaTerminationDate: dto.ndaTerminationDate,
-      }),
+      await this.opportunityService.update(
+        opportunity,
+        {
+          pipelineStage: pipelineStage as PipelineStageEntity,
+          tagEntity: tag as TagEntity,
+          roundSize: dto.roundSize,
+          valuation: dto.valuation,
+          proposedInvestment: dto.proposedInvestment,
+          positioning: dto.positioning,
+          timing: dto.timing,
+          underNda: dto.underNda,
+          ndaTerminationDate: dto.ndaTerminationDate,
+        },
+        userEntity,
+      ),
     );
   }
 

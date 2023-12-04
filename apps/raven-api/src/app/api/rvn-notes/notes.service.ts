@@ -274,6 +274,10 @@ export class NotesService {
         .map(this.noteEntityToNoteData.bind(this));
     }
 
+    if (!opportunity.noteId) {
+      return [];
+    }
+
     const opportunityNote = await this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.createdBy', 'createdBy')
@@ -564,7 +568,7 @@ export class NotesService {
       createdById: noteEntity.createdById,
       createdBy: {
         name: noteEntity.createdBy?.name,
-        email: noteEntity.createdBy?.email, //TODO change somehow? fetch this user or sth?
+        email: noteEntity.createdBy?.email,
       },
       updatedById: noteEntity.updatedById,
       updatedBy: {
@@ -893,10 +897,10 @@ export class NotesService {
     return {
       id: note.id,
       name: note.name,
-      createdById: note.createdBy.id,
+      createdById: note.createdBy?.id,
       createdBy: {
-        name: note.createdBy.name,
-        email: note.createdBy.email,
+        name: note.createdBy?.name,
+        email: note.createdBy?.email,
       },
       updatedById: note.updatedBy.id,
       updatedBy: {
