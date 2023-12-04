@@ -6,19 +6,9 @@ export class SharepointDirectoryStructureGenerator {
   public static getDirectoryForOpportunity(
     opportunityEntity: OpportunityEntity,
   ): string {
-    const organisationDirectory =
-      this.getDirectoryForOpportunityOrganisation(opportunityEntity);
-    return `${organisationDirectory}/${this.getDirectoryNameForOpportunity(
-      opportunityEntity,
-    )}`;
-  }
-
-  public static getDirectoryForOpportunityOrganisation(
-    opportunityEntity: OpportunityEntity,
-  ): string {
-    const root = environment.sharePoint.rootDirectory;
-    const organisation = opportunityEntity.organisation;
-    return `${root}/${this.getDirectoryNameForOrganisation(organisation)}`;
+    const { siteId } = environment.sharePoint;
+    const itemId = opportunityEntity.sharepointDirectoryId;
+    return `https://graph.microsoft.com/v1.0/sites/${siteId}/drive/items/${itemId}/children`;
   }
 
   public static getDirectoryNameForOrganisation(
