@@ -119,6 +119,7 @@ export class OpportunityService {
         'pipelineStage',
         'tag',
         'files',
+        'files.tags',
       ],
     });
 
