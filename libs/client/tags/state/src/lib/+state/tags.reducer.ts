@@ -96,26 +96,25 @@ export const tagsFeature = createFeature({
 
       return [...companyTags, ...oportunityTags, ...otherTags];
     }),
-    selectPeopleTags: createSelector(
-      selectTagsState,
-      (state) =>
-        _.values(state.entities).filter(
-          (tag) => tag && tag?.type === 'people',
-        ) as TagEntity[],
+    selectPeopleTags: createSelector(selectTagsState, (state) =>
+      selectTagsByTypes(state, 'people'),
     ),
-    selectOpportunityTags: createSelector(
-      selectTagsState,
-      (state) =>
-        _.values(state.entities).filter(
-          (tag) => tag && tag?.type === 'opportunity',
-        ) as TagEntity[],
+    selectOpportunityTags: createSelector(selectTagsState, (state) =>
+      selectTagsByTypes(state, 'opportunity'),
     ),
-    selectOrganisationTags: createSelector(
-      selectTagsState,
-      (state) =>
-        _.values(state.entities).filter(
-          (tag) => tag && tag?.type === 'company',
-        ) as TagEntity[],
+    selectOrganisationTags: createSelector(selectTagsState, (state) =>
+      selectTagsByTypes(state, 'company'),
+    ),
+    selectTabTags: createSelector(selectTagsState, (state) =>
+      selectTagsByTypes(state, 'tab'),
     ),
   }),
 });
+
+const selectTagsByTypes = (
+  state: TagsState,
+  type: TagEntity['type'],
+): TagEntity[] =>
+  _.values(state.entities).filter(
+    (tag) => tag && tag?.type === type,
+  ) as TagEntity[];
