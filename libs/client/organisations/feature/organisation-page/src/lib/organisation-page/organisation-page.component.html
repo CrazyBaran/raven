@@ -122,7 +122,7 @@
             >
               <ng-template kendoGridCellTemplate let-dataItem>
                 <ui-tag
-                  *rxFor="let name of dataItem.fields | dealLeads"
+                  *rxFor="let name of dataItem.team | dealLeads"
                   [label]="name"
                   uiUserTag
                 />

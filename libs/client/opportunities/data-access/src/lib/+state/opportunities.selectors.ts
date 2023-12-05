@@ -50,7 +50,7 @@ export const selectRouteOpportunityDetails = createSelector(
     return (
       (opportunity && {
         ...opportunity,
-        dealLeads: getDealLeads(opportunity?.fields ?? []),
+        dealLeads: getDealLeads(opportunity?.team),
         dealTeam: getDealTeam(opportunity?.fields ?? []),
         ndaTerminationDate: opportunity?.ndaTerminationDate
           ? new Date(opportunity?.ndaTerminationDate)
