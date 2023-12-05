@@ -53,9 +53,6 @@ export abstract class AbstractEntityPipe<E>
         const missingIds = id.filter(
           (id) => !entities.some((entity) => entity[this.entityField] === id),
         );
-        if (this.optional) {
-          return null;
-        }
         throw new NotFoundException(
           `Unable to find "${this.resource}" with ids: "${missingIds.join(
             ', ',
@@ -63,6 +60,9 @@ export abstract class AbstractEntityPipe<E>
         );
       }
       return entities;
+    }
+    if (this.optional) {
+      return null;
     }
     throw new NotFoundException(
       `"${metadata.data}" should not be null or undefined`,
