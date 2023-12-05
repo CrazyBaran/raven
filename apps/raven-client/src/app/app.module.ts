@@ -67,7 +67,10 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
         protectedResourceMap: new Map<
           string,
           Array<string | ProtectedResourceScopes> | null
-        >([[`${environment.apiUrl}/*`, [environment.adScope]]]),
+        >([
+          [`${environment.apiUrl}/*`, [environment.adScope]],
+          ['https://graph.microsoft.com/sites/*', ['Sites.Manage.All']],
+        ]),
       },
     ),
     StoreModule.forRoot({

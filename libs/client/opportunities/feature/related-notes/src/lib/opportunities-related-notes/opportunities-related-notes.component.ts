@@ -102,6 +102,35 @@ export class OpportunitiesRelatedNotesComponent {
     },
   );
 
+  protected vm = this.store.selectSignal(
+    selectOpportunitiesRelatedNotesViewModel,
+  );
+
+  protected proseMirrorSettings = {
+    schema: getSchemaWithCrossorigin(),
+    plugins: [
+      imageUploader({
+        upload: async (fileOrUrl: File | string, view: EditorView) => {
+          return await firstValueFrom(
+            this.uploadFileService
+              .uploadFile(
+                fileOrUrl as File,
+                this.vm().opportunityNote.rootVersionId,
+              )
+              .pipe(map((res) => res.data!.sasToken)),
+          );
+        },
+      }),
+    ],
+  };
+
+  protected fields$ = this.store
+    .select(selectOpportunitiesRelatedNotesViewModel)
+    .pipe(
+      map(({ visibleFields }) => visibleFields),
+      distinctUntilChangedDeep(),
+    );
+
   public constructor() {
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
     this.store
@@ -153,34 +182,13 @@ export class OpportunitiesRelatedNotesComponent {
       });
   }
 
-  protected vm = this.store.selectSignal(
-    selectOpportunitiesRelatedNotesViewModel,
-  );
-
-  protected proseMirrorSettings = {
-    schema: getSchemaWithCrossorigin(),
-    plugins: [
-      imageUploader({
-        upload: async (fileOrUrl: File | string, view: EditorView) => {
-          return await firstValueFrom(
-            this.uploadFileService
-              .uploadFile(
-                fileOrUrl as File,
-                this.vm().opportunityNote.rootVersionId,
-              )
-              .pipe(map((res) => res.data!.sasToken)),
-          );
-        },
-      }),
-    ],
-  };
-
-  protected fields$ = this.store
-    .select(selectOpportunitiesRelatedNotesViewModel)
-    .pipe(
-      map(({ visibleFields }) => visibleFields),
-      distinctUntilChangedDeep(),
-    );
+  public onValueChange(formControlName: string): void {
+    this.state.update((state) => ({
+      ...state,
+      updatingField: formControlName,
+      state: 'edit',
+    }));
+  }
 
   private updateNotes(): void {
     const noteId = this.vm().opportunityNoteId;
@@ -204,13 +212,5 @@ export class OpportunitiesRelatedNotesComponent {
         },
       }),
     );
-  }
-
-  public onValueChange(formControlName: string): void {
-    this.state.update((state) => ({
-      ...state,
-      updatingField: formControlName,
-      state: 'edit',
-    }));
   }
 }

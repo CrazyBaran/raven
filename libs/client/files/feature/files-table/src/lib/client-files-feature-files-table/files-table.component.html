@@ -3,23 +3,101 @@
     name="Sharepoint"
     url="https://testonemubadala.sharepoint.com/"
     path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
-    class="bg-primary-20 flex p-6"
   ></app-picker>
 
   <app-picker
-    type="onedrive"
-    name="One drive"
-    url="https://testonemubadala.sharepoint.com/"
-    path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
-    class="bg-primary-20 flex p-6"
+    name="One Drive Sharepoint"
+    url="https://testonemubadala-my.sharepoint.com/"
+    path="https://testonemubadala-my.sharepoint.com/personal/curvestone_qa_auto_test_mubadalacapital_ae/Documents"
   ></app-picker>
 </div>
 
-<!--<kendo-panelbar [items]="data">-->
-<!--  <ng-template kendoPanelBarItemTemplate let-dataItem>-->
-<!--    <div class="custom-template">-->
-<!--      <h4>Custom template:</h4>-->
-<!--      <p>{{ dataItem.content }}</p>-->
-<!--    </div>-->
-<!--  </ng-template>-->
-<!--</kendo-panelbar>-->
+<div class="file-grid">
+  <p class="flex items-center gap-2 font-bold">Folder/File Name</p>
+  <p class="font-bold">Tags</p>
+  <p class="font-bold">Added by</p>
+</div>
+
+<kendo-panelbar [items]="vm().data" [expandMode]="panelExapndMode">
+  <ng-template kendoPanelBarItemTitle let-dataItem> </ng-template>
+  <ng-template kendoPanelBarItemTemplate let-dataItem>
+    @for(item of dataItem.content; track item.name){
+
+    <div class="file-grid">
+      <div>
+        <p class="flex items-center gap-2 pl-4">
+          <i class="fa-regular fa-file"></i>
+          {{ item.name }}
+        </p>
+      </div>
+      <div class="flex gap-2 overflow-hidden">
+        <ui-tag label="tag 1" icon="fa-regular fa-tag" /><ui-tag
+          label="tag 2"
+          icon="fa-regular fa-tag"
+        /><ui-tag label="tag 3" icon="fa-regular fa-tag" />
+      </div>
+      <p><ui-tag uiUserTag [label]="item.createdBy" /></p>
+      <div class="flex justify-end gap-1">
+        <kendo-button
+          themeColor="primary"
+          iconClass="fa-solid fa-arrow-up-right-from-square"
+        />
+        <kendo-button
+          class="mr-10"
+          iconClass="fa-regular fa-tag"
+          (click)="openFileManage(item)"
+        />
+      </div>
+    </div>
+
+    }
+  </ng-template>
+</kendo-panelbar>
+
+<kendo-dialog
+  #dialog
+  *ngIf="activeFile"
+  title="Manage File Tags"
+  [minWidth]="480"
+  (close)="activeFile = null"
+>
+  <!--  themeColor="primary"-->
+  <div class="flex flex-col gap-4 p-10" [formGroup]="manageFileGroup">
+    <kendo-formfield>
+      <kendo-label text="File Name"></kendo-label>
+      <kendo-textbox formControlName="name"></kendo-textbox>
+    </kendo-formfield>
+    <kendo-formfield>
+      <kendo-label>Add Related Tags</kendo-label>
+      <kendo-multiselect
+        formControlName="tags"
+        [data]="vm().tags"
+        [textField]="'name'"
+        [valueField]="'id'"
+        [checkboxes]="true"
+        [autoClose]="false"
+      >
+      </kendo-multiselect>
+    </kendo-formfield>
+    <div>
+      <p>Added Tags</p>
+      <div class="flex w-full flex-wrap gap-2 overflow-hidden">
+        <ui-tag
+          *ngFor="let tag of manageFileGroup.get('tags')?.value!"
+          [label]="tag.name"
+          icon="fa-regular fa-tag"
+          [removable]="true"
+          [clickable]="true"
+          (tagRemove)="removeTag(tag)"
+        ></ui-tag>
+      </div>
+    </div>
+  </div>
+
+  <kendo-dialog-actions>
+    <kendo-button (click)="activeFile = null"> Cancel </kendo-button>
+    <kendo-button (click)="updateFile()" themeColor="primary">
+      Confirm File Tags
+    </kendo-button>
+  </kendo-dialog-actions>
+</kendo-dialog>

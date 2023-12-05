@@ -49,7 +49,9 @@ export class PickerComponent {
               },
             }
           : {
-              oneDrive: {},
+              oneDrive: {
+                files: {},
+              },
             },
       authentication: {},
       messaging: {
