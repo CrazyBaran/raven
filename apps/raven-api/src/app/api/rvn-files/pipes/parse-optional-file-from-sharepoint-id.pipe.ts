@@ -1,9 +1,22 @@
-import { AbstractEntityPipe } from '../../../shared/pipes/abstract-entity.pipe';
+import { Inject, PipeTransform } from '@nestjs/common';
+import { EntityManager } from 'typeorm';
 import { FileEntity } from '../entities/file.entity';
 
-export class ParseOptionalFileFromSharepointIdPipe extends AbstractEntityPipe<FileEntity> {
-  public readonly entityClass = FileEntity;
-  public readonly resource = 'file';
-  public readonly optional = true;
-  public readonly entityField = 'internalSharepointId';
+export class ParseOptionalFileFromSharepointIdPipe
+  implements PipeTransform<string, Promise<FileEntity | null>>
+{
+  @Inject(EntityManager)
+  protected entityManager: EntityManager;
+  public async transform(id: string): Promise<FileEntity | null> {
+    const entity = await this.entityManager.findOne(FileEntity, {
+      where: {
+        internalSharepointId: id,
+      },
+      relations: ['tags'],
+    });
+    if (entity) {
+      return entity;
+    }
+    return null;
+  }
 }

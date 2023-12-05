@@ -38,9 +38,6 @@ export abstract class AbstractEntityPipe<E>
       if (entity) {
         return entity;
       }
-      if (this.optional) {
-        return null;
-      }
       throw new NotFoundException(
         `Unable to find "${this.resource}" with id: "${id}"`,
       );
@@ -66,9 +63,6 @@ export abstract class AbstractEntityPipe<E>
         );
       }
       return entities;
-    }
-    if (this.optional) {
-      return null;
     }
     throw new NotFoundException(
       `"${metadata.data}" should not be null or undefined`,
