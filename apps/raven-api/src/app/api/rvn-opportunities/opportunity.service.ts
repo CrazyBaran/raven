@@ -89,9 +89,7 @@ export class OpportunityService {
     const total = await this.opportunityRepository.count(options);
 
     const teamsForOpportunities =
-      await this.opportunityTeamService.getOpportunityTeamForOpportunities(
-        opportunities,
-      );
+      await this.opportunityTeamService.getOpportunitiesTeams(opportunities);
 
     const items = await this.affinityEnricher.enrichOpportunities(
       opportunities,
@@ -133,6 +131,9 @@ export class OpportunityService {
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
+    const teamForOpportunity =
+      await this.opportunityTeamService.getOpportunityTeam(opportunity);
+
     return await this.affinityEnricher.enrichOpportunity(
       opportunity,
       (entity, data) => {
@@ -153,6 +154,7 @@ export class OpportunityService {
             SharepointDirectoryStructureGenerator.getDirectoryForOpportunity(
               entity,
             ),
+          team: teamForOpportunity,
         };
         return data;
       },

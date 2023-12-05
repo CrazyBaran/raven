@@ -28,7 +28,7 @@ export class OpportunityTeamService {
     return this.entityToResponseData(opportunityTeam);
   }
 
-  public async getOpportunityTeamForOpportunities(
+  public async getOpportunitiesTeams(
     opportunities: OpportunityEntity[],
   ): Promise<Record<string, OpportunityTeamData>> {
     const opportunityTeams =
