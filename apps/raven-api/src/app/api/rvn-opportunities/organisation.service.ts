@@ -314,15 +314,14 @@ export class OrganisationService {
     return pipelineStage;
   }
 
-  // TODO using this might cause problem in the future if we would switch to use multiple pipelines
   private async getDefaultPipelineDefinition(): Promise<PipelineDefinitionEntity> {
-    const pipelineDefinitions = await this.pipelineRepository.find({
+    const pipelineDefinition = await this.pipelineRepository.findOne({
       relations: ['stages'],
+      where: {
+        isDefault: true,
+      },
     });
-    if (pipelineDefinitions.length !== 1) {
-      throw new Error('There should be only one pipeline definition!');
-    }
-    return pipelineDefinitions[0];
+    return pipelineDefinition;
   }
 
   private async createOpportunityForOrganisation(
