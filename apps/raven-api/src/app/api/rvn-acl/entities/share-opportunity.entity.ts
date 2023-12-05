@@ -12,7 +12,6 @@ import { ShareResourceCode } from '../enums/share-resource-code.enum';
 import { AbstractShareEntity } from './abstract-share.entity';
 
 @Entity({ name: 'shares_opportunities' })
-@Index(['actor'], { unique: true })
 export class ShareOpportunityEntity extends AbstractShareEntity {
   @Index()
   @ManyToOne(() => OpportunityEntity, (opportunity) => opportunity.shares, {

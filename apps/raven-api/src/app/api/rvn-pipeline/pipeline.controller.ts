@@ -44,7 +44,7 @@ export class PipelineController {
   @ApiOperation({ description: 'Create pipeline' })
   @ApiResponse(GenericCreateResponseSchema())
   @ApiBody({ type: CreatePipelineDto })
-  @Roles(RoleEnum.SuperAdmin)
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
   @Post()
   public async createPipeline(
     @Body() dto: CreatePipelineDto,

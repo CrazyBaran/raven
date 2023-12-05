@@ -359,37 +359,6 @@ export class OpportunityController {
     });
   }
 
-  @Patch(':id/team/:userId')
-  @ApiParam({ name: 'id', type: String })
-  @ApiParam({ name: 'userId', type: String })
-  @ApiOperation({ summary: 'Assign team member to opportunity' })
-  @ApiResponse({
-    status: 200,
-    description: 'The team member has been successfully assigned.',
-  })
-  @ApiOAuth2(['openid'])
-  @CheckShare((ability: ShareAbility, context) =>
-    ability.can(
-      ShareAction.Share,
-      'o',
-      (context.query.id as string)?.toString().toLowerCase(),
-    ),
-  )
-  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
-  public async assignTeamMember(
-    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
-    opportunity: OpportunityEntity,
-    @Param('userId', ParseUUIDPipe, ParseUserPipe)
-    userEntity: UserEntity,
-    @Body() dto: UpdateTeamMemberDto,
-  ): Promise<OpportunityTeamData> {
-    return this.opportunityTeamService.assignTeamMember(
-      opportunity,
-      userEntity,
-      dto.role,
-    );
-  }
-
   @Delete(':id/team/:userId')
   @ApiParam({ name: 'id', type: String })
   @ApiParam({ name: 'userId', type: String })
