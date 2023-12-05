@@ -21,6 +21,12 @@ export class PipelineDefinitionEntity {
   @Column({ default: false })
   public isDefault: boolean;
 
+  @Column({ nullable: true })
+  public affinityListId: number;
+
+  @Column({ nullable: true })
+  public affinityStatusFieldId: number;
+
   @OneToMany(() => PipelineStageEntity, (ps) => ps.pipelineDefinition, {
     eager: true,
     cascade: ['insert'],
