@@ -78,6 +78,27 @@ export class AclService {
     return qb.getMany();
   }
 
+  public getByResources(
+    resources: string[] | ShareResource[],
+    actorId?: string,
+    entityManager?: EntityManager,
+  ): Promise<AbstractShareEntity[]> {
+    const shareEntityClass = this.parseCompoundId(
+      resources[0],
+    ).shareEntityClass;
+    const resourceIds = resources.map(
+      (resource) => this.parseCompoundId(resource).id,
+    );
+    const qb = (entityManager || this.entityManager)
+      .createQueryBuilder(shareEntityClass, 's')
+      .innerJoinAndSelect('s.actor', 'a')
+      .where('s.resourceId IN (:...ids)', { ids: resourceIds });
+    if (actorId) {
+      qb.andWhere('a.id = :actorId', { actorId });
+    }
+    return qb.getMany();
+  }
+
   public async shareById<T extends AbstractShareEntity>(
     actorId: string,
     role: ShareRole,

@@ -28,6 +28,22 @@ export class OpportunityTeamService {
     return this.entityToResponseData(opportunityTeam);
   }
 
+  public async getOpportunityTeamForOpportunities(
+    opportunities: OpportunityEntity[],
+  ): Promise<Record<string, OpportunityTeamData>> {
+    const opportunityTeams =
+      await this.aclService.getByResources(opportunities);
+
+    const result = {};
+    for (const opportunity of opportunities) {
+      result[opportunity.id] = this.entityToResponseData(
+        opportunityTeams.filter((team) => team.resourceId === opportunity.id),
+      );
+    }
+
+    return result;
+  }
+
   public async assignTeamMember(
     opportunity: OpportunityEntity,
     user: UserEntity,
