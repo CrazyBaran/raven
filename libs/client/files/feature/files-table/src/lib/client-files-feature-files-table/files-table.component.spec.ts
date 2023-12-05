@@ -1,7 +1,10 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import { MsalService } from '@azure/msal-angular';
+import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import { Observable } from 'rxjs';
 import {
   FilesTableComponent,
   selectFilesTableViewModel,
@@ -10,10 +13,11 @@ import {
 describe('ClientFilesFeatureFilesTableComponent', () => {
   let component: FilesTableComponent;
   let fixture: ComponentFixture<FilesTableComponent>;
+  let actions$: Observable<unknown>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FilesTableComponent],
+      imports: [FilesTableComponent, HttpClientModule],
       providers: [
         {
           provide: ENVIRONMENT,
@@ -23,6 +27,8 @@ describe('ClientFilesFeatureFilesTableComponent', () => {
           provide: MsalService,
           useValue: {},
         },
+        provideMockActions(() => actions$),
+
         provideMockStore({
           selectors: [
             {

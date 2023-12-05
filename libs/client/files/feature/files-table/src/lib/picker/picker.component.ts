@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   inject,
   Input,
+  Output,
 } from '@angular/core';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import {
@@ -30,6 +32,8 @@ export class PickerComponent {
   @Input() public name: string;
   @Input() public path: string;
   @Input() public url: string;
+
+  @Output() public selectFiles = new EventEmitter<any>();
 
   protected env = inject(ENVIRONMENT);
   protected msal = inject(MsalService);
@@ -91,6 +95,8 @@ export class PickerComponent {
       options,
     });
 
-    console.log(results);
+    if (results instanceof Object && results?.command === 'pick') {
+      this.selectFiles.emit(results.items);
+    }
   }
 }
