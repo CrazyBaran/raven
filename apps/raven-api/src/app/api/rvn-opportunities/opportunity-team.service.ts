@@ -31,6 +31,9 @@ export class OpportunityTeamService {
   public async getOpportunitiesTeams(
     opportunities: OpportunityEntity[],
   ): Promise<Record<string, OpportunityTeamData>> {
+    if (!opportunities || opportunities.length === 0) {
+      return {};
+    }
     const opportunityTeams =
       await this.aclService.getByResources(opportunities);
 
