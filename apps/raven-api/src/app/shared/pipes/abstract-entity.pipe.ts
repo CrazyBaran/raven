@@ -38,6 +38,9 @@ export abstract class AbstractEntityPipe<E>
       if (entity) {
         return entity;
       }
+      if (this.optional) {
+        return null;
+      }
       throw new NotFoundException(
         `Unable to find "${this.resource}" with id: "${id}"`,
       );
@@ -53,6 +56,9 @@ export abstract class AbstractEntityPipe<E>
         const missingIds = id.filter(
           (id) => !entities.some((entity) => entity[this.entityField] === id),
         );
+        if (this.optional) {
+          return null;
+        }
         throw new NotFoundException(
           `Unable to find "${this.resource}" with ids: "${missingIds.join(
             ', ',

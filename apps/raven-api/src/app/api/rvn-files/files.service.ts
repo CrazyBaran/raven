@@ -33,6 +33,10 @@ export class FilesService {
     fileEntity: FileEntity,
     options: UpdateOptions,
   ): Promise<FileEntity> {
+    // TODO check why addAndRemove does not work
+    fileEntity.tags = [];
+    await this.fileRepository.save(fileEntity);
+
     fileEntity.tags = options.tagEntities;
     return await this.fileRepository.save(fileEntity);
   }

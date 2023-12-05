@@ -248,11 +248,13 @@ export class OpportunityController {
 
   @ApiOperation({ description: 'Update file tags' })
   @ApiResponse(GenericResponseSchema())
-  @ApiParam({ name: 'id', type: String })
+  @ApiParam({ name: 'opportunityId', type: String })
   @ApiParam({ name: 'sharepointId', type: String })
-  @Patch(':id/files/:sharepointId')
+  @Patch(':opportunityId/files/:sharepointId')
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async createOrUpdate(
-    @Param('sharepointId', ParseUUIDPipe, ParseOptionalFileFromSharepointIdPipe)
+    @Param('sharepointId', ParseOptionalFileFromSharepointIdPipe)
     fileEntity: FileEntity | null,
     @Param('sharepointId') sharepointId: string,
     @Param('opportunityId') opportunityId: string,
