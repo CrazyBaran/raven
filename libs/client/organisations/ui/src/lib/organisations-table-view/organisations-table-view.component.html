@@ -87,7 +87,7 @@
         >
           <ui-tag
             *rxFor="
-              let lead of opportunity.fields | dealLeads;
+              let lead of opportunity.team | dealLeads;
               strategy: 'immediate'
             "
             [label]="lead"
@@ -113,7 +113,7 @@
         >
           <ui-tag
             *rxFor="
-              let lead of opportunity.fields | dealTeam;
+              let lead of opportunity.team | dealTeam;
               strategy: 'immediate'
             "
             [label]="lead"

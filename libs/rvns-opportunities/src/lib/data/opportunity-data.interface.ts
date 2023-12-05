@@ -1,6 +1,7 @@
 import { FileData } from '@app/rvns-files';
 import { PipelineStageData } from '@app/rvns-pipelines';
 import { FieldData } from './field-data.interface';
+import { OpportunityTeamData } from './opportunity-team-data.interface';
 import { OrganisationData } from './organisation-data.interface';
 
 export interface PagedOpportunityData {
@@ -33,4 +34,5 @@ export interface OpportunityDataWithoutOrganisation {
   readonly files?: FileData[];
   readonly sharePointDirectory?: string;
   readonly sharepointDirectoryId?: string;
+  team?: OpportunityTeamData;
 }

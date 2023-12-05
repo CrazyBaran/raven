@@ -20,6 +20,7 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
+import { OpportunityTeamService } from './opportunity-team.service';
 import { OrganisationService } from './organisation.service';
 
 interface CreateOpportunityForNonExistingOrganisationOptions
@@ -64,6 +65,7 @@ export class OpportunityService {
     private readonly affinityCacheService: AffinityCacheService,
     private readonly affinityEnricher: AffinityEnricher,
     private readonly organisationService: OrganisationService,
+    private readonly opportunityTeamService: OpportunityTeamService,
 
     private readonly eventEmitter: EventEmitter2,
   ) {}
@@ -86,6 +88,9 @@ export class OpportunityService {
 
     const total = await this.opportunityRepository.count(options);
 
+    const teamsForOpportunities =
+      await this.opportunityTeamService.getOpportunitiesTeams(opportunities);
+
     const items = await this.affinityEnricher.enrichOpportunities(
       opportunities,
       (entity, data) => {
@@ -102,6 +107,7 @@ export class OpportunityService {
             order: pipelineStage.order,
             mappedFrom: pipelineStage.mappedFrom,
           },
+          team: teamsForOpportunities[entity.id],
         };
         return data;
       },
@@ -125,6 +131,9 @@ export class OpportunityService {
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
+    const teamForOpportunity =
+      await this.opportunityTeamService.getOpportunityTeam(opportunity);
+
     return await this.affinityEnricher.enrichOpportunity(
       opportunity,
       (entity, data) => {
@@ -145,6 +154,7 @@ export class OpportunityService {
             SharepointDirectoryStructureGenerator.getDirectoryForOpportunity(
               entity,
             ),
+          team: teamForOpportunity,
         };
         return data;
       },

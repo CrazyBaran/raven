@@ -20,6 +20,7 @@ import {
   DealTeamPipe,
   ToUrlPipe,
 } from '@app/client/shared/ui-pipes';
+import { OpportunityTeamData } from '@app/rvns-opportunities';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { RxFor } from '@rx-angular/template/for';
@@ -42,6 +43,7 @@ export type OrganisationRow = {
       displayName: string;
       value: string | number | object | object[];
     }[];
+    team?: OpportunityTeamData;
   }[];
 };
 
