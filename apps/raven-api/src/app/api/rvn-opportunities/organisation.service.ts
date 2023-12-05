@@ -18,6 +18,7 @@ import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.ent
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
+import { OpportunityTeamService } from './opportunity-team.service';
 
 interface CreateOrganisationOptions {
   name: string;
@@ -41,6 +42,7 @@ export class OrganisationService {
     private readonly affinityEnricher: AffinityEnricher,
     private readonly eventEmitter: EventEmitter2,
     private readonly logger: RavenLogger,
+    private readonly opportunityTeamService: OpportunityTeamService,
   ) {
     this.logger.setContext(OrganisationService.name);
   }
@@ -82,6 +84,7 @@ export class OrganisationService {
       .leftJoinAndSelect('organisations.opportunities', 'opportunities')
       .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
       .leftJoinAndSelect('opportunities.tag', 'tag')
+      .leftJoinAndSelect('opportunities.shares', 'shares')
       .leftJoinAndSelect(
         'opportunities.pipelineDefinition',
         'pipelineDefinition',
@@ -102,6 +105,13 @@ export class OrganisationService {
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
+    const teamsForOpportunities =
+      await this.opportunityTeamService.getOpportunitiesTeams(
+        (organisations as unknown as OrganisationDataWithOpportunities[])
+          .map((org) => org.opportunities)
+          .flat() as unknown as OpportunityEntity[],
+      );
+
     const enrichedData = await this.affinityEnricher.enrichOrganisations(
       organisations,
       (entity, data) => {
@@ -117,6 +127,8 @@ export class OrganisationService {
             order: pipelineStage.order,
             mappedFrom: pipelineStage.mappedFrom,
           };
+
+          opportunity.team = teamsForOpportunities[opportunity.id];
         }
 
         return data;
