@@ -6,6 +6,7 @@ import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
+import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityService } from './opportunity.service';
 import { OrganisationService } from './organisation.service';
 
@@ -38,6 +39,10 @@ describe('OpportunityService', () => {
         },
         {
           provide: EventEmitter2,
+          useValue: {},
+        },
+        {
+          provide: OpportunityTeamService,
           useValue: {},
         },
         {

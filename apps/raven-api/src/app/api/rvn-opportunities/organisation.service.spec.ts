@@ -7,6 +7,7 @@ import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisat
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
+import { OpportunityTeamService } from './opportunity-team.service';
 import { OrganisationService } from './organisation.service';
 
 describe('OrganisationService', () => {
@@ -41,6 +42,11 @@ describe('OrganisationService', () => {
           useValue: {
             setContext: jest.fn(),
           },
+        },
+
+        {
+          provide: OpportunityTeamService,
+          useValue: {},
         },
       ],
     }).compile();
