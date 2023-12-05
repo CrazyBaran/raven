@@ -1,7 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import { MsalService } from '@azure/msal-angular';
-import { FilesTableComponent } from './files-table.component';
+import { provideMockStore } from '@ngrx/store/testing';
+import {
+  FilesTableComponent,
+  selectFilesTableViewModel,
+} from './files-table.component';
 
 describe('ClientFilesFeatureFilesTableComponent', () => {
   let component: FilesTableComponent;
@@ -19,6 +23,14 @@ describe('ClientFilesFeatureFilesTableComponent', () => {
           provide: MsalService,
           useValue: {},
         },
+        provideMockStore({
+          selectors: [
+            {
+              selector: selectFilesTableViewModel,
+              value: {},
+            },
+          ],
+        }),
       ],
     }).compileComponents();
 

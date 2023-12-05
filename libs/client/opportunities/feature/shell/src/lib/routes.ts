@@ -4,6 +4,7 @@ import {
   Provider,
 } from '@angular/core';
 import { Route } from '@angular/router';
+import { provideFileFeature } from '@app/client/files/feature/state';
 import { notesProviders } from '@app/client/notes/feaure/shell';
 import {
   OpportunitiesEffects,
@@ -60,6 +61,7 @@ export const OPPORTUNITIES_ROUTES: Route[] = [
           },
           {
             path: 'files',
+            providers: [provideFileFeature],
             loadComponent: () =>
               import('@app/client/opportunities/feature/files').then(
                 (m) => m.OpportunityFilesComponent,
