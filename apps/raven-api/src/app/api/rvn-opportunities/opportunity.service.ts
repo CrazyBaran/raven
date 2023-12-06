@@ -147,7 +147,7 @@ export class OpportunityService {
         const tagSubQuery = this.opportunityRepository
           .createQueryBuilder('opportunity_with_tag')
           .select('opportunity_with_tag.id')
-          .innerJoin('opportunity_with_tag.tags', 'subquerytag')
+          .innerJoin('opportunity_with_tag.tag', 'subquerytag')
           .where('subquerytag.id = :tagId');
 
         queryBuilder
