@@ -30,7 +30,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { IsArray, IsDefined, IsString, Length } from 'class-validator';
+import { IsArray, IsDefined } from 'class-validator';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
 import { ParseTagsPipe } from '../../shared/pipes/parse-tags.pipe';
@@ -61,27 +61,15 @@ import { ParseOptionalPipelineStagePipe } from './pipes/parse-optional-pipeline-
 import { ParseOptionalTagPipe } from './pipes/parse-optional-tag.pipe';
 import { ValidateOpportunityTagPipe } from './pipes/validate-opportunity-tag.pipe';
 
-export class UpdateTeamDto {
+export class CreateOrUpdateTeamDto {
   @ApiProperty()
   @IsDefined()
   @IsArray()
-  public readonly members: UpdateTeamMemberDto[];
-}
-
-export class UpdateTeamMemberRoleDto {
+  public readonly members: string[];
   @ApiProperty()
   @IsDefined()
-  @IsString()
-  @Length(3, 20)
-  public readonly role: ShareRole;
-}
-
-export class UpdateTeamMemberDto extends UpdateTeamMemberRoleDto {
-  @ApiProperty()
-  @IsDefined()
-  @IsString()
-  @Length(3, 20)
-  public readonly userId: string;
+  @IsArray()
+  public readonly owners: string[];
 }
 
 @ApiTags('Opportunities')
@@ -333,6 +321,7 @@ export class OpportunityController {
     opportunity: OpportunityEntity,
     @Identity(ParseUserFromIdentityPipe)
     userEntity: UserEntity,
+    @Body() dto: CreateOrUpdateTeamDto,
   ): Promise<OpportunityTeamData> {
     const existingTeam =
       await this.opportunityTeamService.getOpportunityTeam(opportunity);
@@ -340,6 +329,13 @@ export class OpportunityController {
       throw new BadRequestException(
         `Opportunity ${opportunity.id} already exists with owner ${existingTeam.owners[0].actorEmail}`,
       );
+    }
+    if (dto && dto.owners && dto.owners.length > 0) {
+      return this.opportunityTeamService.modifyTeamMembers({
+        opportunity,
+        members: dto.members,
+        owners: dto.owners,
+      });
     }
     return this.opportunityTeamService.assignTeamMember(
       opportunity,
@@ -367,14 +363,12 @@ export class OpportunityController {
   public async modifyTeam(
     @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
     opportunity: OpportunityEntity,
-    @Body() dto: UpdateTeamDto,
+    @Body() dto: CreateOrUpdateTeamDto,
   ): Promise<OpportunityTeamData> {
     return await this.opportunityTeamService.modifyTeamMembers({
       opportunity,
-      members: dto.members.map((member) => ({
-        userId: member.userId,
-        role: member.role,
-      })),
+      members: dto.members,
+      owners: dto.owners,
     });
   }
 

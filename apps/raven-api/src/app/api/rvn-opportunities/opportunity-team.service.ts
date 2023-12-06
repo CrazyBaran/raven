@@ -6,14 +6,14 @@ import { AbstractShareEntity } from '../rvn-acl/entities/abstract-share.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 
-export class ModifyMemberOptions {
+export class MemberData {
   public userId: string;
   public role: ShareRole;
 }
-
-export class ModifyTeamOptions {
+export class CreateOrModifyTeamOptions {
   public opportunity: OpportunityEntity;
-  public members: ModifyMemberOptions[];
+  public members: string[];
+  public owners: string[];
 }
 
 @Injectable()
@@ -94,13 +94,30 @@ export class OpportunityTeamService {
   }
 
   public async modifyTeamMembers(
-    options: ModifyTeamOptions,
+    options: CreateOrModifyTeamOptions,
   ): Promise<OpportunityTeamData> {
     const opportunityTeam = await this.aclService.getByResource(
       options.opportunity,
     );
     const currentMemberIds = opportunityTeam.map((member) => member.actorId);
-    const newMemberIds = options.members.map((member) => member.userId);
+
+    const members = options.members.map((member) => {
+      return {
+        userId: member,
+        role: 'editor',
+      } as MemberData;
+    });
+
+    const owners = options.owners.map((owner) => {
+      return {
+        userId: owner,
+        role: 'owner',
+      } as MemberData;
+    });
+
+    const allMembers = [...members, ...owners];
+
+    const newMemberIds = allMembers.map((member) => member.userId);
     const membersToRemove = currentMemberIds.filter(
       (memberId) => !newMemberIds.includes(memberId),
     );
@@ -112,7 +129,7 @@ export class OpportunityTeamService {
       await this.aclService.revoke(member);
     }
 
-    for (const member of options.members) {
+    for (const member of allMembers) {
       const currentMember = opportunityTeam.find(
         (currentMember) => currentMember.actorId === member.userId,
       );
