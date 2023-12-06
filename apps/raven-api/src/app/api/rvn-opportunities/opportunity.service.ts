@@ -323,6 +323,8 @@ export class OpportunityService {
     }
     this.assignOpportunityProperties(opportunity, options);
 
+    delete opportunity.shares;
+
     const opportunityEntity =
       await this.opportunityRepository.save(opportunity);
 
