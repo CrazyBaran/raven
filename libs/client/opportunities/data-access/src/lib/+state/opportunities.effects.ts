@@ -14,8 +14,8 @@ export class OpportunitiesEffects {
   private loadOpportunities$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.getOpportunities),
-      concatMap(({ take, skip }) =>
-        this.opportunitiesService.getOpportunities(take, skip).pipe(
+      concatMap(({ params }) =>
+        this.opportunitiesService.getOpportunities(params).pipe(
           map(({ data }) =>
             OpportunitiesActions.getOpportunitiesSuccess({
               data: data?.items || [],

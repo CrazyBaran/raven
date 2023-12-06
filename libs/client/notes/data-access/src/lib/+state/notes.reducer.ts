@@ -93,13 +93,13 @@ export const notesReducer = createReducer(
       isLoading: true,
     },
   })),
-  on(NotesActions.getNotesSuccess, (state, { data }) =>
+  on(NotesActions.getNotesSuccess, (state, { data, total }) =>
     notesAdapter.setAll(data, {
       ...state,
       table: {
         isLoading: false,
         ids: data.map((note) => note.id),
-        total: data.length,
+        total: total,
       },
     }),
   ),

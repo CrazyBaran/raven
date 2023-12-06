@@ -1,5 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
+import { Params } from '@angular/router';
 import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';
 import {
   CreateOpportunity,
@@ -9,7 +10,7 @@ import {
 export const OpportunitiesActions = createActionGroup({
   source: 'Opportunities/API',
   events: {
-    'Get Opportunities': props<{ take: number; skip: number }>(),
+    'Get Opportunities': props<{ params: Params }>(),
     'Get Opportunities Success': props<{ data: OpportunityData[] }>(),
     'Get Opportunities Failure': props<{ error: string }>(),
 

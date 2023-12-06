@@ -20,10 +20,20 @@ import { getRouterSelectors } from '@ngrx/router-store';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 
-const pipelineBoardQueryParams = ['member', 'round', 'query'] as const;
+const pipelineBoardQueryParams = [
+  'member',
+  'round',
+  'query',
+  'take',
+  'skip',
+] as const;
 
 export const selectPipelineBoardParams = buildPageParamsSelector(
   pipelineBoardQueryParams,
+  {
+    skip: '0',
+    take: '500',
+  },
 );
 
 export const selectPipelineBoardButtonGroupNavigation = createSelector(

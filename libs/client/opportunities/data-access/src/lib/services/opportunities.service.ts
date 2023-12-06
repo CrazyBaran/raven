@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Params } from '@angular/router';
 import { GenericResponse } from '@app/rvns-api';
 import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';
 import { Observable } from 'rxjs';
@@ -31,11 +32,10 @@ export class OpportunitiesService {
   public constructor(private readonly http: HttpClient) {}
 
   public getOpportunities(
-    take: number,
-    skip: number,
+    params: Params,
   ): Observable<GenericResponse<OpportunitiesResponse>> {
     return this.http.get<GenericResponse<OpportunitiesResponse>>(this.url, {
-      params: { take, skip },
+      params,
     });
   }
 
