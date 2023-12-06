@@ -13,6 +13,7 @@ import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-d
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
@@ -58,6 +59,7 @@ interface CommonCreateAndUpdateOptions {
 @Injectable()
 export class OpportunityService {
   public constructor(
+    private readonly logger: RavenLogger,
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
     @InjectRepository(PipelineDefinitionEntity)
@@ -68,7 +70,9 @@ export class OpportunityService {
     private readonly opportunityTeamService: OpportunityTeamService,
 
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    this.logger.setContext(OpportunityService.name);
+  }
 
   public async findAll(
     options: {
@@ -91,10 +95,6 @@ export class OpportunityService {
       .leftJoinAndSelect('opportunity.shares', 'shares')
       .leftJoinAndSelect('shares.actor', 'member');
 
-    if (options.skip || options.take) {
-      queryBuilder.skip(options.skip ?? 0).take(options.take ?? 10);
-    }
-
     if (options.pipelineStageId) {
       queryBuilder.andWhere('opportunity.pipelineStageId = :pipelineStageId', {
         pipelineStageId: options.pipelineStageId,
@@ -110,24 +110,20 @@ export class OpportunityService {
     if (options.query) {
       const searchString = `%${options.query.toLowerCase()}%`;
       const organisationSubQuery = this.opportunityRepository.manager
-        .createQueryBuilder(OrganisationEntity, 'organisation')
-        .select('organisation.id')
+        .createQueryBuilder(OrganisationEntity, 'subOrganisation')
+        .select('subOrganisation.id')
         .where(
-          '(CAST(organisation.name as NVARCHAR(255))) LIKE :searchString',
-          {
-            searchString,
-          },
+          '(CAST(subOrganisation.name as NVARCHAR(255))) LIKE :searchString',
         )
         .orWhere(
-          '(CAST(organisation.domains as NVARCHAR(255))) LIKE :searchString',
-          {
-            searchString,
-          },
+          '(CAST(subOrganisation.domains as NVARCHAR(1024))) LIKE :searchString',
         );
 
-      queryBuilder.andWhere(
-        `opportunity.organisationId IN (${organisationSubQuery.getQuery()})`,
-      );
+      queryBuilder
+        .andWhere(
+          `opportunity.organisationId IN (${organisationSubQuery.getQuery()})`,
+        )
+        .setParameter('searchString', searchString);
     }
 
     let tagEntities = [];
@@ -158,6 +154,10 @@ export class OpportunityService {
 
     if (options.dir && options.field) {
       queryBuilder.orderBy(`opportunity.${options.field}`, options.dir);
+    }
+
+    if (options.skip || options.take) {
+      queryBuilder.skip(options.skip ?? 0).take(options.take ?? 10);
     }
 
     const result = await queryBuilder.getManyAndCount();

@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
+import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
@@ -17,6 +18,14 @@ describe('OpportunityService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OpportunityService,
+        {
+          provide: RavenLogger,
+          useValue: {
+            setContext: jest.fn(),
+            debug: jest.fn(),
+            error: jest.fn(),
+          },
+        },
         {
           provide: getRepositoryToken(OpportunityEntity),
           useValue: {},
