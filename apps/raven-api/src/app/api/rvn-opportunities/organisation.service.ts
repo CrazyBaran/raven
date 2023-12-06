@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EntityManager, Like, Raw, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
+import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
@@ -170,7 +171,10 @@ export class OrganisationService {
             mappedFrom: pipelineStage.mappedFrom,
           };
         }
-
+        data.sharepointDirectory =
+          SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
+            organisation,
+          );
         return data;
       },
     );
@@ -195,17 +199,11 @@ export class OrganisationService {
           const organizationStageDtos =
             await this.affinityCacheService.getByDomains([options.domain]);
 
-          if (
-            organizationStageDtos &&
-            organizationStageDtos.length !== 0 &&
-            organizationStageDtos[0].stage
-          ) {
-            await this.createOpportunityForOrganisation(
-              organisationEntity,
-              organizationStageDtos[0].stage?.text || null,
-              tem,
-            );
-          }
+          await this.createOpportunityForOrganisation(
+            organisationEntity,
+            organizationStageDtos[0].stage?.text || null,
+            tem,
+          );
           return organisationEntity;
         }
       },

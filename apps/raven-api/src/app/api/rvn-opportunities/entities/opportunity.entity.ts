@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
+import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
 import { ShareResource } from '../../rvn-acl/contracts/share-resource.interface';
 import { ShareOpportunityEntity } from '../../rvn-acl/entities/share-opportunity.entity';
 import { FileEntity } from '../../rvn-files/entities/file.entity';
@@ -23,7 +24,9 @@ import { OrganisationEntity } from './organisation.entity';
 
 @Entity({ name: 'opportunities' })
 @Index(['id'], { unique: true })
-export class OpportunityEntity implements ShareResource {
+export class OpportunityEntity
+  implements ShareResource, SharepointEnabledEntity
+{
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 

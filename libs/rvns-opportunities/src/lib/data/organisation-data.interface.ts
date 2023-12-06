@@ -11,6 +11,7 @@ export interface OrganisationData {
   readonly name: string;
   readonly domains: string[];
   readonly affinityUrl?: string;
+  sharepointDirectory?: string;
 }
 
 export interface OrganisationDataWithOpportunities extends OrganisationData {
