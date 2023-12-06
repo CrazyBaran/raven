@@ -95,7 +95,7 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
         data: opportunityData,
         defaultItem: {
           id: null,
-          name: 'Any Opportunity',
+          name: 'All Funding Rounds',
         },
         loading: loadingTags.opportunity,
       }),
@@ -106,7 +106,7 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
         data: peopleData,
         defaultItem: {
           id: null,
-          name: 'Any Deal Lead',
+          name: 'Deal Lead',
         },
         loading: loadingTags.people,
       }),
