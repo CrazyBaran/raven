@@ -1,3 +1,4 @@
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { OpportunityTeamData } from '@app/rvns-opportunities';
 
 export function getDealTeam(

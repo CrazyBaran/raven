@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
-import { OpportunityData } from '@app/rvns-opportunities';
+import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';
 import { Observable } from 'rxjs';
 
 export type OpportunityChanges = {
@@ -61,6 +61,32 @@ export class OpportunitiesService {
     return this.http.post<GenericResponse<OpportunityData>>(
       this.url,
       createOpportunity,
+    );
+  }
+
+  public patchOpportunityTeam(
+    opportunityId: string,
+    payload: {
+      owners: string[];
+      members: string[];
+    },
+  ): Observable<GenericResponse<OpportunityTeamData>> {
+    return this.http.patch<GenericResponse<OpportunityTeamData>>(
+      `${this.url}/${opportunityId}/team`,
+      payload,
+    );
+  }
+
+  public createOpportunityTeam(
+    opportunityId: string,
+    payload: {
+      owners: string[];
+      members: string[];
+    },
+  ): Observable<GenericResponse<OpportunityTeamData>> {
+    return this.http.post<GenericResponse<OpportunityTeamData>>(
+      `${this.url}/${opportunityId}/team`,
+      payload,
     );
   }
 }
