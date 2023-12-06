@@ -197,10 +197,10 @@ export class ClientOpportunitiesFeatureOverviewComponent {
     const payload = {
       owners: this.teamFormGroup.value
         .roles!.filter((r) => r.role === 'admin')
-        .map((r) => r.user!.id),
+        .map((r) => r.user!.userId!),
       members: this.teamFormGroup.value
         .roles!.filter((r) => r.role === 'user')
-        .map((r) => r.user!.id),
+        .map((r) => r.user!.userId!),
     };
 
     this.store.dispatch(

@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { EntityManager } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../../rvn-opportunities/entities/opportunity.entity';
 import { TemplateEntity } from '../../rvn-templates/entities/template.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
@@ -14,7 +15,10 @@ export class OpportunityCreatedEventHandler {
   public constructor(
     private readonly noteService: NotesService,
     private readonly entityManager: EntityManager,
-  ) {}
+    private readonly logger: RavenLogger,
+  ) {
+    this.logger.setContext(OpportunityCreatedEventHandler.name);
+  }
 
   @OnEvent('opportunity-created')
   protected async createOpportunity(
@@ -53,6 +57,12 @@ export class OpportunityCreatedEventHandler {
     opportunityEntity.note = note;
     opportunityEntity.noteId = note.id;
 
-    await this.entityManager.save(OpportunityEntity, opportunityEntity);
+    const savedOpportunity = await this.entityManager.save(
+      OpportunityEntity,
+      opportunityEntity,
+    );
+    this.logger.info(
+      `Saved opportunity ${savedOpportunity.id} with note ${savedOpportunity.noteId}`,
+    );
   }
 }
