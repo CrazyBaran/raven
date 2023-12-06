@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { getDealTeam } from '@app/client/shared/util';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { OpportunityTeamData } from '@app/rvns-opportunities';
 
 @Pipe({

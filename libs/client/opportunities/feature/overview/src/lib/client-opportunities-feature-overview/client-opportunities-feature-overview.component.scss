@@ -1,4 +1,4 @@
-::ng-deep .grid-borderless {
+.grid-borderless {
   .k-table-th {
     border: none !important;
   }
@@ -10,4 +10,8 @@
     border-inline: none !important;
     border-top: none !important;
   }
+}
+
+.multiselect-without-remove-all .k-clear-value {
+  display: none;
 }

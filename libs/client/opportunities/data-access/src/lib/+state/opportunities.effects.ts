@@ -54,6 +54,38 @@ export class OpportunitiesEffects {
     );
   });
 
+  private updateOpportunityTeam$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OpportunitiesActions.updateOpportunityTeam),
+      concatMap(({ id, payload, method }) =>
+        (method === 'post'
+          ? this.opportunitiesService.createOpportunityTeam(id, payload)
+          : this.opportunitiesService.patchOpportunityTeam(id, payload)
+        ).pipe(
+          switchMap(({ data }) => [
+            OpportunitiesActions.updateOpportunityTeamSuccess({
+              data: data!,
+              id,
+            }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Opportunity team changed.',
+            }),
+          ]),
+          catchError((error) =>
+            of(
+              OpportunitiesActions.updateOpportunityTeamFailure({
+                error,
+              }),
+              NotificationsActions.showErrorNotification({
+                content: 'Opportunity team change failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
   private updateOpportunityPipeline$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.changeOpportunityPipelineStage),

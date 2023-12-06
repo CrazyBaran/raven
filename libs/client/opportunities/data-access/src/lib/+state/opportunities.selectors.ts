@@ -103,6 +103,11 @@ export const selectOpportunityDetailsIsLoading = createSelector(
   (state: OpportunitiesState) => state.details.isLoading,
 );
 
+export const selectOpportunityUpdateIsLoading = createSelector(
+  selectOpportunitiesState,
+  (state: OpportunitiesState) => state.update.isLoading,
+);
+
 export const opportunitiesQuery = {
   selectAllOpportunities,
   selectIsLoading,
@@ -113,4 +118,5 @@ export const opportunitiesQuery = {
   selectOpportunitiesGroupedByOrganisation,
   selectOpportunityNoteTabs,
   selectOpportunityDetailsIsLoading,
+  selectOpportunityUpdateIsLoading,
 };

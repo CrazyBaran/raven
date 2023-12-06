@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
-import { OpportunityData } from '@app/rvns-opportunities';
+import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';
 import {
   CreateOpportunity,
   OpportunityChanges,
@@ -19,6 +19,20 @@ export const OpportunitiesActions = createActionGroup({
     }>(),
     'Update Opportunity Failure': props<{ error: string }>(),
     'Update Opportunity Success': props<{ data: OpportunityData }>(),
+
+    'Update Opportunity Team': props<{
+      id: string;
+      payload: {
+        owners: string[];
+        members: string[];
+      };
+      method: 'patch' | 'post';
+    }>(),
+    'Update Opportunity Team Failure': props<{ error: string }>(),
+    'Update Opportunity Team Success': props<{
+      id: string;
+      data: OpportunityTeamData;
+    }>(),
 
     'Get Opportunity Details': props<{ id: string }>(),
     'Get Opportunity Details Success': props<{

@@ -134,7 +134,7 @@
               title="Deal Team"
             >
               <ng-template kendoGridCellTemplate let-dataItem>
-                <p>{{ (dataItem.fields | dealTeam)?.[0] ?? '' }}</p>
+                <p>{{ (dataItem.team | dealTeam)?.[0] ?? '' }}</p>
               </ng-template>
             </kendo-grid-column>
 

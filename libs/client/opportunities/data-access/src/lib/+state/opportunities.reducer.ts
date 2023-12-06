@@ -19,6 +19,9 @@ export interface OpportunitiesState extends EntityState<OpportunityData> {
   update: {
     isLoading: boolean;
   };
+  updateTeam: {
+    isLoading: boolean;
+  };
 }
 
 export const opportunitiesAdapter: EntityAdapter<OpportunityData> =
@@ -36,6 +39,9 @@ export const initialState: OpportunitiesState =
       isLoading: false,
     },
     details: {
+      isLoading: false,
+    },
+    updateTeam: {
       isLoading: false,
     },
   });
@@ -153,6 +159,32 @@ export const opportunitiesReducer = createReducer(
       {
         ...state,
         update: {
+          isLoading: false,
+        },
+      },
+    ),
+  ),
+
+  on(OpportunitiesActions.updateOpportunityTeam, (state) => ({
+    ...state,
+    updateTeam: {
+      isLoading: true,
+    },
+  })),
+
+  on(OpportunitiesActions.updateOpportunityTeamFailure, (state, { error }) => ({
+    ...state,
+    updateTeam: {
+      isLoading: false,
+    },
+  })),
+
+  on(OpportunitiesActions.updateOpportunityTeamSuccess, (state, { id, data }) =>
+    opportunitiesAdapter.updateOne(
+      { id: id, changes: { team: data } },
+      {
+        ...state,
+        updateTeam: {
           isLoading: false,
         },
       },
