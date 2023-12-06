@@ -37,7 +37,7 @@
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column headerClass="!font-bold" title="Opportunity">
+  <kendo-grid-column headerClass="!font-bold" title="Funding Round">
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-4">
         <div
@@ -47,7 +47,7 @@
           "
           class="flex h-10 items-center"
         >
-          <p>{{ opportunity?.tag?.name || '' }}</p>
+          <p>{{ opportunity?.tag?.name || 'No Opportunity' }}</p>
         </div>
       </div>
     </ng-template>
