@@ -29,17 +29,23 @@ export class OpportunityCreatedEventHandler {
         relations: ['organisation', 'tag'],
       },
     );
-    const ogranisationFolderId =
-      await this.createSharepointDirectoryForOpportunityOrganisation(
-        opportunityEntity,
-      );
-    const opportunityFolderId =
-      await this.createSharepointDirectoryForOpportunity(
-        opportunityEntity,
-        ogranisationFolderId,
-      );
-    opportunityEntity.sharepointDirectoryId = opportunityFolderId;
-    await this.entityManager.save(opportunityEntity);
+    await this.entityManager.transaction(async (tem) => {
+      const ogranisationFolderId =
+        await this.createSharepointDirectoryForOpportunityOrganisation(
+          opportunityEntity,
+        );
+      opportunityEntity.organisation.sharepointDirectoryId =
+        ogranisationFolderId;
+      await tem.save(opportunityEntity.organisation);
+
+      const opportunityFolderId =
+        await this.createSharepointDirectoryForOpportunity(
+          opportunityEntity,
+          ogranisationFolderId,
+        );
+      opportunityEntity.sharepointDirectoryId = opportunityFolderId;
+      await tem.save(opportunityEntity);
+    });
   }
 
   private async createSharepointDirectoryForOpportunityOrganisation(

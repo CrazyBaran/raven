@@ -227,7 +227,7 @@ export class OpportunityService {
             mappedFrom: pipelineStage.mappedFrom,
           },
           sharePointDirectory:
-            SharepointDirectoryStructureGenerator.getDirectoryForOpportunity(
+            SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
               entity,
             ),
           team: teamForOpportunity,

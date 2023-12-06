@@ -1,13 +1,17 @@
 import { environment } from '../../environments/environment';
 import { OpportunityEntity } from '../api/rvn-opportunities/entities/opportunity.entity';
 import { OrganisationEntity } from '../api/rvn-opportunities/entities/organisation.entity';
+import { SharepointEnabledEntity } from './interfaces/sharepoint-enabled-entity.interface';
 
 export class SharepointDirectoryStructureGenerator {
-  public static getDirectoryForOpportunity(
-    opportunityEntity: OpportunityEntity,
+  public static getDirectoryForSharepointEnabledEntity(
+    sharepointEnabledEntity: SharepointEnabledEntity,
   ): string {
     const { siteId } = environment.sharePoint;
-    const itemId = opportunityEntity.sharepointDirectoryId;
+    const itemId = sharepointEnabledEntity.sharepointDirectoryId;
+    if (!itemId) {
+      return '';
+    }
     return `https://graph.microsoft.com/v1.0/sites/${siteId}/drive/items/${itemId}/children`;
   }
 

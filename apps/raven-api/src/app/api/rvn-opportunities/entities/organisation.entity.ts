@@ -7,11 +7,12 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
 import { OpportunityEntity } from './opportunity.entity';
 
 @Entity('organisations')
 @Index(['id'], { unique: true })
-export class OrganisationEntity {
+export class OrganisationEntity implements SharepointEnabledEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -26,6 +27,9 @@ export class OrganisationEntity {
     (opportunity) => opportunity.organisation,
   )
   public opportunities: OpportunityEntity[];
+
+  @Column({ nullable: true })
+  public sharepointDirectoryId: string | null;
 
   @AfterInsert()
   @AfterLoad()
