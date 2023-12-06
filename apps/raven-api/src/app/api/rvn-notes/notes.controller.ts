@@ -36,6 +36,7 @@ import { UserEntity } from '../rvn-users/entities/user.entity';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import { TemplateTypeEnum } from '@app/rvns-templates';
+import { PagedData } from 'rvns-shared';
 import { FindOrganizationByIdPipe } from '../../shared/pipes/find-organisation-by-id.pipe';
 import { FindOrganizationByDomainPipe } from '../../shared/pipes/find-organization-by-domain.pipe';
 import { ParseOptionalTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-optional-template-with-groups-and-fields.pipe';
@@ -134,23 +135,27 @@ export class NotesController {
     @Query('dir') dir?: 'asc' | 'desc',
     @Query('field') field?: 'name' | 'id',
     @Query('query') query?: string,
-  ): Promise<NoteData[] | (WorkflowNoteData | NoteData)[]> {
+  ): Promise<PagedData<WorkflowNoteData | NoteData>> {
     if (opportunityId) {
-      return await this.notesService.getNotesForOpportunity(
+      const items = await this.notesService.getNotesForOpportunity(
         opportunityId,
         type,
       );
+      return {
+        total: items.length,
+        items,
+      };
     }
     if (
       (domain && organisationTagFromDomain === null) ||
       (organisationId && organisationTagFromId === null)
     ) {
-      return [];
+      return { total: 0, items: [] };
     }
     const organisation =
       (organisationTagFromDomain as OrganisationTagEntity) ||
       (organisationTagFromId as OrganisationTagEntity);
-    return await Promise.all(
+    const items = await Promise.all(
       (
         await this.notesService.getAllNotes(
           userEntity,
@@ -169,6 +174,7 @@ export class NotesController {
         )
       ).map((note) => this.notesService.noteEntityToNoteData(note)),
     );
+    return { total: items.length, items };
   }
 
   @ApiOperation({ description: 'Get single note' })
