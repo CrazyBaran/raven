@@ -81,6 +81,7 @@ export class NotesService {
   }
 
   public async getAllNotes(
+    me: UserEntity,
     organisationTagEntity?: OrganisationTagEntity,
     tagEntities?: TagEntity[],
     type?: TemplateTypeEnum,
@@ -89,6 +90,10 @@ export class NotesService {
     dir?: 'ASC' | 'DESC',
     field?: 'createdAt' | 'updatedAt' | 'name',
     query?: string,
+    noteType?: string,
+    createdBy?: string,
+    assignedTo?: string,
+    role?: 'created' | 'tagged',
   ): Promise<NoteEntity[]> {
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
@@ -113,6 +118,30 @@ export class NotesService {
 
     if (type) {
       queryBuilder.andWhere('template.type = :type', { type });
+    }
+
+    if (noteType) {
+      queryBuilder.andWhere('template.name = :noteType', { noteType });
+    }
+
+    if (role === 'created') {
+      createdBy = me.id;
+    } else if (role === 'tagged') {
+      assignedTo = me.id;
+    }
+
+    if (createdBy) {
+      queryBuilder.andWhere('createdBy.id = :createdBy', { createdBy });
+    }
+
+    if (assignedTo) {
+      const tagAssignedTo = await this.noteRepository.manager
+        .createQueryBuilder(PeopleTagEntity, 'peopleTag')
+        .select()
+        .where('peopleTag.userId = :assignedTo', { assignedTo })
+        .getOne();
+
+      if (tagAssignedTo) tagEntities = [...tagEntities, tagAssignedTo];
     }
 
     if (organisationTagEntity) {

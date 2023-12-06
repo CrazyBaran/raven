@@ -101,16 +101,15 @@ export class NotesController {
   @ApiQuery({ name: 'dir', type: String, required: false })
   @ApiQuery({ name: 'field', type: String, required: false })
   @ApiQuery({ name: 'query', type: String, required: false })
-  @ApiQuery({
-    name: 'tagIds',
-    type: String,
-    required: false,
-    description: 'Comma separated list of tag ids',
-  })
+  @ApiQuery({ name: 'noteType', type: String, required: false })
+  @ApiQuery({ name: 'createdBy', type: String, required: false })
+  @ApiQuery({ name: 'assignedTo', type: String, required: false })
+  @ApiQuery({ name: 'role', type: String, required: false })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOAuth2(['openid'])
   @Get()
   public async getAllNotes(
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
     @Query('domain')
     domain: string,
     @Query('domain', FindOrganizationByDomainPipe, FindTagByOgranisationPipe)
@@ -120,6 +119,10 @@ export class NotesController {
     @Query('opportunityId') opportunityId: string,
     @Query('type') type: TemplateTypeEnum = TemplateTypeEnum.Note,
     @Query('organisationId') organisationId?: string,
+    @Query('noteType') noteType?: string,
+    @Query('createdBy') createdBy?: string,
+    @Query('assignedTo') assignedTo?: string,
+    @Query('role') role?: 'created' | 'tagged',
     @Query(
       'organisationId',
       FindOrganizationByIdPipe,
@@ -150,6 +153,7 @@ export class NotesController {
     return await Promise.all(
       (
         await this.notesService.getAllNotes(
+          userEntity,
           organisation as OrganisationTagEntity,
           tagEntities as TagEntity[],
           type,
@@ -158,6 +162,10 @@ export class NotesController {
           (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
           field as 'createdAt' | 'updatedAt' | 'name',
           query,
+          noteType,
+          createdBy,
+          assignedTo,
+          role,
         )
       ).map((note) => this.notesService.noteEntityToNoteData(note)),
     );

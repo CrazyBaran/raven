@@ -100,6 +100,11 @@ export class OpportunityController {
   @ApiQuery({ name: 'take', type: Number, required: false })
   @ApiQuery({ name: 'pipelineStageId', type: String, required: false })
   @ApiQuery({ name: 'domain', type: String, required: false })
+  @ApiQuery({ name: 'dir', type: String, required: false })
+  @ApiQuery({ name: 'field', type: String, required: false })
+  @ApiQuery({ name: 'query', type: String, required: false })
+  @ApiQuery({ name: 'member', type: String, required: false })
+  @ApiQuery({ name: 'round', type: String, required: false })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async findAll(
@@ -107,11 +112,25 @@ export class OpportunityController {
     @Query('take') take?: number,
     @Query('domain') domain?: string,
     @Query('pipelineStageId') pipelineStageId?: string,
+    @Query('dir') dir?: string,
+    @Query('field') field?: string,
+    @Query('query') query?: string,
+    @Query('member') member?: string,
+    @Query('round') round?: string,
   ): Promise<PagedOpportunityData> {
     if (domain) {
       return await this.opportunityService.findByDomain(domain);
     } else {
-      return await this.opportunityService.findAll(skip, take, pipelineStageId);
+      return await this.opportunityService.findAll(
+        skip,
+        take,
+        pipelineStageId,
+        (dir?.toUpperCase() ?? 'DESC') as 'ASC' | 'DESC',
+        field ?? 'createdAt',
+        query,
+        member,
+        round,
+      );
     }
   }
 

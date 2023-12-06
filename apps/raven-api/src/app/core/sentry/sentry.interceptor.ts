@@ -29,7 +29,7 @@ export class SentryInterceptor implements NestInterceptor {
         // capture the error
         Sentry.captureException(
           error,
-          this.sentryService.span.getTraceContext(),
+          //this.sentryService.span.getTraceContext(),
         );
 
         // throw the error again

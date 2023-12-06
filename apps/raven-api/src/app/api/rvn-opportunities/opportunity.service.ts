@@ -74,12 +74,68 @@ export class OpportunityService {
     skip = 0,
     take = 10,
     pipelineStageId?: string,
+    dir?: 'ASC' | 'DESC',
+    field?: string,
+    query?: string,
+    member?: string,
+    round?: string,
   ): Promise<PagedOpportunityData> {
+    const queryBuilder = this.opportunityRepository
+      .createQueryBuilder('opportunity')
+      .leftJoinAndSelect('opportunity.organisation', 'organisation')
+      .leftJoinAndSelect('opportunity.pipelineStage', 'pipelineStage')
+      .leftJoinAndSelect('opportunity.tag', 'tag')
+      .leftJoinAndSelect('opportunity.files', 'files')
+      .leftJoinAndSelect('opportunity.assignedUsers', 'assignedUsers')
+      .leftJoinAndSelect('opportunity.createdBy', 'createdBy')
+      .leftJoinAndSelect('opportunity.updatedBy', 'updatedBy')
+      .leftJoinAndSelect('opportunity.assignedTo', 'assignedTo')
+      .leftJoinAndSelect('opportunity.notes', 'notes')
+      .leftJoinAndSelect('opportunity.shares', 'shares')
+      .leftJoinAndSelect('shares.actor', 'member');
+
+    if (skip || take) {
+      queryBuilder.skip(skip ?? 0).take(take ?? 10);
+    }
+
+    if (pipelineStageId) {
+      queryBuilder.andWhere('opportunity.pipelineStageId = :pipelineStageId', {
+        pipelineStageId,
+      });
+    }
+
+    if (member) {
+      queryBuilder.andWhere('member.id = :member', {
+        member,
+      });
+    }
+
+    if (query) {
+      const organisationSubQuery = this.opportunityRepository.manager
+        .createQueryBuilder(OrganisationEntity, 'organisation')
+        .select('organisation.id')
+        .where('(CAST(organisation.name as NVARCHAR(255))) LIKE :query', {
+          query,
+        })
+        .orWhere('(CAST(organisation.domains as NVARCHAR(255))) LIKE :query', {
+          query,
+        });
+
+      queryBuilder.andWhere(
+        `opportunity.organisationId IN (${organisationSubQuery.getQuery()})`,
+      );
+    }
+
+    if (dir && field) {
+      queryBuilder.orderBy(`opportunity.${field}`, dir);
+    }
+
     const options = {
       where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
       relations: ['organisation', 'tag'],
       skip: skip ? skip : 0,
       take: take ? (take > 500 ? 500 : take) : 10,
+      order: dir && field ? { [field]: dir.toUpperCase() } : {},
     };
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();

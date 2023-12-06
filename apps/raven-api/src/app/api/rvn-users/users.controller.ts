@@ -4,8 +4,10 @@ import { Roles } from '@app/rvns-roles-api';
 
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { Identity } from './decorators/identity.decorator';
 import { ListUsersDto } from './dto/list-users.dto';
+import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
@@ -30,5 +32,16 @@ export class UsersController {
     return Promise.all(
       entities.map((user) => this.usersService.entityToResponseData(user)),
     );
+  }
+
+  @ApiOAuth2(['openid'])
+  @ApiOperation({ description: 'Get myself' })
+  @ApiResponse(GenericResponseSchema())
+  @Get('me')
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
+  public async me(
+    @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
+  ): Promise<UserData> {
+    return this.usersService.entityToResponseData(userEntity);
   }
 }
