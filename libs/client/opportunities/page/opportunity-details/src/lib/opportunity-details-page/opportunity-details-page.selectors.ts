@@ -20,7 +20,7 @@ const LINES: {
 
 const OPPORTUNITY_DETAILS_ROUTES = [
   {
-    label: 'Opportunity Overview',
+    label: 'Overview',
     link: 'overview',
     queryParams: { tab: null },
   },

@@ -19,17 +19,17 @@ export const selectOrganisationDetails = createSelector(
               'desc',
             )[0].tag?.name ?? ''
           : null,
-        subLabel: 'Opportunity',
+        subLabel: 'Last Funding Round',
       },
-      {
-        label: '12',
-        subLabel: 'Last Funding (M) (Deal Room)',
-      },
+      // {
+      //   label: '12',
+      //   subLabel: 'Last Funding (M) (Deal Room)',
+      // },
 
-      {
-        label: '0.9',
-        subLabel: 'MCV Score',
-      },
+      // {
+      //   label: '0.9',
+      //   subLabel: 'MCV Score',
+      // },
     ].filter(({ label }) => !!label),
 );
 
