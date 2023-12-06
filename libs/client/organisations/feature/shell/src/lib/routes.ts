@@ -17,6 +17,7 @@ import {
   pipelinesReducer,
 } from '@app/client/pipelines/state';
 
+import { provideFileFeature } from '@app/client/files/feature/state';
 import {
   NotesEffects,
   notesFeature,
@@ -30,6 +31,7 @@ import { StoreModule } from '@ngrx/store';
 export const organisationProviders: Array<Provider | EnvironmentProviders> = [
   NoteStoreFacade,
   templateFeatureProviders,
+  provideFileFeature,
   importProvidersFrom(
     StoreModule.forFeature(OrganisationsFeature),
     EffectsModule.forFeature([OrganisationsEffects]),
