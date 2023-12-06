@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4">
+<div class="flex h-full flex-col gap-4 overflow-hidden">
   <app-quick-filters-template>
     <div class="flex w-full items-center justify-between">
       <app-dropdown-navigation [model]="vm().filters" />
@@ -9,7 +9,7 @@
     </div>
   </app-quick-filters-template>
 
-  <div>
+  <div class="flex-1 overflow-hidden">
     <router-outlet />
   </div>
 </div>
