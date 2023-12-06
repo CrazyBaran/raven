@@ -358,7 +358,7 @@ export class OpportunityController {
     ability.can(
       ShareAction.Share,
       'o',
-      (context.query.id as string)?.toString().toLowerCase(),
+      (context.params.id as string)?.toString().toLowerCase(),
     ),
   )
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
@@ -387,7 +387,7 @@ export class OpportunityController {
     ability.can(
       ShareAction.Share,
       'o',
-      (context.query.id as string)?.toString().toLowerCase(),
+      (context.params.id as string)?.toString().toLowerCase(),
     ),
   )
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)

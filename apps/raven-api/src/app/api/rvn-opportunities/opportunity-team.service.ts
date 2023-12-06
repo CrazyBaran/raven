@@ -89,6 +89,7 @@ export class OpportunityTeamService {
       );
     }
     await this.aclService.revoke(share[0]);
+    await this.aclService.invalidateCacheForUser(user.id);
 
     return await this.getOpportunityTeam(opportunity);
   }
@@ -99,18 +100,20 @@ export class OpportunityTeamService {
     const opportunityTeam = await this.aclService.getByResource(
       options.opportunity,
     );
-    const currentMemberIds = opportunityTeam.map((member) => member.actorId);
+    const currentMemberIds = opportunityTeam.map((member) =>
+      member.actorId.toLowerCase(),
+    );
 
     const members = options.members.map((member) => {
       return {
-        userId: member,
+        userId: member.toLowerCase(),
         role: 'editor',
       } as MemberData;
     });
 
     const owners = options.owners.map((owner) => {
       return {
-        userId: owner,
+        userId: owner.toLowerCase(),
         role: 'owner',
       } as MemberData;
     });
@@ -127,6 +130,7 @@ export class OpportunityTeamService {
         (member) => member.actorId === memberId,
       );
       await this.aclService.revoke(member);
+      await this.aclService.invalidateCacheForUser(member.actorId);
     }
 
     for (const member of allMembers) {
@@ -137,6 +141,7 @@ export class OpportunityTeamService {
         await this.aclService.shareById(member.userId, member.role, {
           resource: options.opportunity,
         });
+        await this.aclService.invalidateCacheForUser(member.userId);
       }
     }
 
