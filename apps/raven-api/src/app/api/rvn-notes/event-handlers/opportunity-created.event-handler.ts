@@ -52,6 +52,7 @@ export class OpportunityCreatedEventHandler {
     });
     opportunityEntity.note = note;
     opportunityEntity.noteId = note.id;
-    await this.entityManager.save(opportunityEntity);
+
+    await this.entityManager.save(OpportunityEntity, opportunityEntity);
   }
 }
