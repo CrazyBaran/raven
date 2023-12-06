@@ -63,7 +63,7 @@ export class OrganisationService {
       queryBuilder.where([
         {
           name: Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            (alias) => `(CAST(${alias} as NVARCHAR(255))) LIKE :searchString`,
             {
               searchString,
             },
@@ -71,7 +71,7 @@ export class OrganisationService {
         },
         {
           domains: Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+            (alias) => `(CAST(${alias} as NVARCHAR(255))) LIKE :searchString`,
             {
               searchString,
             },

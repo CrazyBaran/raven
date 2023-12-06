@@ -20,7 +20,7 @@ import { getRouterSelectors } from '@ngrx/router-store';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 
-const pipelineBoardQueryParams = ['lead', 'opportunity', 'query'] as const;
+const pipelineBoardQueryParams = ['member', 'round', 'query'] as const;
 
 export const selectPipelineBoardParams = buildPageParamsSelector(
   pipelineBoardQueryParams,
@@ -32,7 +32,7 @@ export const selectPipelineBoardButtonGroupNavigation = createSelector(
   (params, userTag): ButtongroupNavigationModel =>
     buildButtonGroupNavigation({
       params,
-      name: 'lead',
+      name: 'member',
       buttons: [
         {
           id: null,
@@ -70,7 +70,7 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
     return [
       buildDropdownNavigation({
         params,
-        name: 'opportunity',
+        name: 'round',
         data: opportunityData,
         defaultItem: {
           id: null,
@@ -81,7 +81,7 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
 
       buildDropdownNavigation({
         params,
-        name: 'lead',
+        name: 'member',
         data: peopleData,
         defaultItem: {
           id: null,

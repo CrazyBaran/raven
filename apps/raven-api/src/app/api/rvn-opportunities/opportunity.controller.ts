@@ -109,16 +109,18 @@ export class OpportunityController {
     if (domain) {
       return await this.opportunityService.findByDomain(domain);
     } else {
-      return await this.opportunityService.findAll(
-        skip,
-        take,
-        pipelineStageId,
-        (dir?.toUpperCase() ?? 'DESC') as 'ASC' | 'DESC',
-        field ?? 'createdAt',
-        query,
-        member,
-        round,
-      );
+      const options = {
+        skip: skip ?? 0,
+        take: take ?? 10,
+        dir: (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
+        field: field ?? 'createdAt',
+        pipelineStageId: pipelineStageId ?? null,
+        query: query ?? '',
+        member: member ?? null,
+        round: round ?? null,
+      };
+
+      return await this.opportunityService.findAll(options);
     }
   }
 

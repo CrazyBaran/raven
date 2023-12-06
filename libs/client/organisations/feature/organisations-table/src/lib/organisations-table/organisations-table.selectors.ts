@@ -19,8 +19,8 @@ import { createSelector } from '@ngrx/store';
 export const organisationsQueryParams = [
   'query',
   'my',
-  'opportunity',
-  'lead',
+  'round',
+  'member',
   'skip',
   'take',
   'field',
@@ -41,7 +41,7 @@ export const selectOrganisationsTableButtonGroupNavigation = createSelector(
   (params, userTag): ButtongroupNavigationModel => {
     return buildButtonGroupNavigation({
       params,
-      name: 'lead',
+      name: 'member',
       buttons: [
         {
           id: null,
@@ -91,7 +91,7 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
     return [
       buildDropdownNavigation({
         params,
-        name: 'opportunity',
+        name: 'round',
         data: opportunityData,
         defaultItem: {
           id: null,
@@ -102,11 +102,11 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
 
       buildDropdownNavigation({
         params,
-        name: 'lead',
+        name: 'member',
         data: peopleData,
         defaultItem: {
           id: null,
-          name: 'Deal Lead',
+          name: 'Deal Member',
         },
         loading: loadingTags.people,
       }),

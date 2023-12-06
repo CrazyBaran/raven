@@ -44,6 +44,8 @@ export class OrganisationController {
   @ApiQuery({ name: 'dir', type: String, required: false })
   @ApiQuery({ name: 'field', type: String, required: false })
   @ApiQuery({ name: 'query', type: String, required: false })
+  @ApiQuery({ name: 'member', type: String, required: false })
+  @ApiQuery({ name: 'round', type: String, required: false })
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
@@ -53,6 +55,8 @@ export class OrganisationController {
     @Query('dir') dir?: 'asc' | 'desc',
     @Query('field') field?: 'name' | 'id',
     @Query('query') query?: string,
+    @Query('member') member?: string,
+    @Query('round') round?: string,
   ): Promise<PagedOrganisationData> {
     const options = {
       skip: skip ?? 0,
@@ -60,6 +64,8 @@ export class OrganisationController {
       dir: (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
       field: field ?? 'name',
       query: query ?? '',
+      member: member ?? null,
+      round: round ?? null,
     };
 
     return await this.organisationService.findAll(options);

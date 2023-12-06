@@ -71,14 +71,16 @@ export class OpportunityService {
   ) {}
 
   public async findAll(
-    skip = 0,
-    take = 10,
-    pipelineStageId?: string,
-    dir?: 'ASC' | 'DESC',
-    field?: string,
-    query?: string,
-    member?: string,
-    round?: string,
+    options: {
+      skip?: number;
+      take?: number;
+      pipelineStageId?: string;
+      dir?: 'ASC' | 'DESC';
+      field?: string;
+      query?: string;
+      member?: string;
+      round?: string;
+    } = {},
   ): Promise<PagedOpportunityData> {
     const queryBuilder = this.opportunityRepository
       .createQueryBuilder('opportunity')
@@ -86,69 +88,87 @@ export class OpportunityService {
       .leftJoinAndSelect('opportunity.pipelineStage', 'pipelineStage')
       .leftJoinAndSelect('opportunity.tag', 'tag')
       .leftJoinAndSelect('opportunity.files', 'files')
-      .leftJoinAndSelect('opportunity.assignedUsers', 'assignedUsers')
-      .leftJoinAndSelect('opportunity.createdBy', 'createdBy')
-      .leftJoinAndSelect('opportunity.updatedBy', 'updatedBy')
-      .leftJoinAndSelect('opportunity.assignedTo', 'assignedTo')
-      .leftJoinAndSelect('opportunity.notes', 'notes')
       .leftJoinAndSelect('opportunity.shares', 'shares')
       .leftJoinAndSelect('shares.actor', 'member');
 
-    if (skip || take) {
-      queryBuilder.skip(skip ?? 0).take(take ?? 10);
+    if (options.skip || options.take) {
+      queryBuilder.skip(options.skip ?? 0).take(options.take ?? 10);
     }
 
-    if (pipelineStageId) {
+    if (options.pipelineStageId) {
       queryBuilder.andWhere('opportunity.pipelineStageId = :pipelineStageId', {
-        pipelineStageId,
+        pipelineStageId: options.pipelineStageId,
       });
     }
 
-    if (member) {
+    if (options.member) {
       queryBuilder.andWhere('member.id = :member', {
-        member,
+        member: options.member,
       });
     }
 
-    if (query) {
+    if (options.query) {
+      const searchString = `%${options.query.toLowerCase()}%`;
       const organisationSubQuery = this.opportunityRepository.manager
         .createQueryBuilder(OrganisationEntity, 'organisation')
         .select('organisation.id')
-        .where('(CAST(organisation.name as NVARCHAR(255))) LIKE :query', {
-          query,
-        })
-        .orWhere('(CAST(organisation.domains as NVARCHAR(255))) LIKE :query', {
-          query,
-        });
+        .where(
+          '(CAST(organisation.name as NVARCHAR(255))) LIKE :searchString',
+          {
+            searchString,
+          },
+        )
+        .orWhere(
+          '(CAST(organisation.domains as NVARCHAR(255))) LIKE :searchString',
+          {
+            searchString,
+          },
+        );
 
       queryBuilder.andWhere(
         `opportunity.organisationId IN (${organisationSubQuery.getQuery()})`,
       );
     }
 
-    if (dir && field) {
-      queryBuilder.orderBy(`opportunity.${field}`, dir);
+    let tagEntities = [];
+
+    if (options.round) {
+      const tagAssignedTo = await this.opportunityRepository.manager
+        .createQueryBuilder(TagEntity, 'tag')
+        .select()
+        .where('tag.name = :round', { round: options.round })
+        .getOne();
+
+      if (tagAssignedTo) tagEntities = [...tagEntities, tagAssignedTo];
     }
 
-    const options = {
-      where: pipelineStageId ? { pipelineStageId: pipelineStageId } : {},
-      relations: ['organisation', 'tag'],
-      skip: skip ? skip : 0,
-      take: take ? (take > 500 ? 500 : take) : 10,
-      order: dir && field ? { [field]: dir.toUpperCase() } : {},
-    };
+    if (tagEntities) {
+      for (const tag of tagEntities) {
+        const tagSubQuery = this.opportunityRepository
+          .createQueryBuilder('opportunity_with_tag')
+          .select('opportunity_with_tag.id')
+          .innerJoin('opportunity_with_tag.tags', 'subquerytag')
+          .where('subquerytag.id = :tagId');
+
+        queryBuilder
+          .andWhere(`opportunity.id IN (${tagSubQuery.getQuery()})`)
+          .setParameter('tagId', tag.id);
+      }
+    }
+
+    if (options.dir && options.field) {
+      queryBuilder.orderBy(`opportunity.${options.field}`, options.dir);
+    }
+
+    const result = await queryBuilder.getManyAndCount();
+
+    const teamsForOpportunities =
+      await this.opportunityTeamService.getOpportunitiesTeams(result[0]);
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
-    const opportunities = await this.opportunityRepository.find(options);
-
-    const total = await this.opportunityRepository.count(options);
-
-    const teamsForOpportunities =
-      await this.opportunityTeamService.getOpportunitiesTeams(opportunities);
-
     const items = await this.affinityEnricher.enrichOpportunities(
-      opportunities,
+      result[0],
       (entity, data) => {
         const pipelineStage = this.getPipelineStage(
           defaultPipeline,
@@ -169,7 +189,7 @@ export class OpportunityService {
       },
     );
 
-    return { items, total } as PagedOpportunityData;
+    return { items, total: result[1] } as PagedOpportunityData;
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {
