@@ -69,7 +69,7 @@ import { ProxyInterceptor } from './core/interceptors/proxy.interceptor';
           Array<string | ProtectedResourceScopes> | null
         >([
           [`${environment.apiUrl}/*`, [environment.adScope]],
-          ['https://graph.microsoft.com/sites/*', ['Sites.Manage.All']],
+          ['https://graph.microsoft.com/*', ['Sites.Manage.All']],
         ]),
       },
     ),

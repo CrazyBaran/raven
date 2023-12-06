@@ -1,71 +1,117 @@
-<div class="flex gap-4">
-  <app-picker
-    name="Sharepoint"
-    url="https://testonemubadala.sharepoint.com/"
-    path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
-    (selectFiles)="onPickerChange($event)"
-  ></app-picker>
+<div class="flex h-full flex-col">
+  <div class="flex gap-4">
+    <app-picker
+      (selectFiles)="onPickerChange($event)"
+      name="Sharepoint"
+      path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
+      url="https://testonemubadala.sharepoint.com/"
+    ></app-picker>
 
-  <app-picker
-    name="One Drive Sharepoint"
-    url="https://testonemubadala-my.sharepoint.com/"
-    path="https://testonemubadala-my.sharepoint.com/personal/curvestone_qa_auto_test_mubadalacapital_ae/Documents"
-    (selectFiles)="onPickerChange($event)"
-  ></app-picker>
+    <app-picker
+      (selectFiles)="onPickerChange($event)"
+      name="One Drive Sharepoint"
+      path="https://testonemubadala-my.sharepoint.com/personal/curvestone_qa_auto_test_mubadalacapital_ae/Documents"
+      url="https://testonemubadala-my.sharepoint.com/"
+    ></app-picker>
+  </div>
+
+  <kendo-treelist
+    [data]="source()"
+    [fetchChildren]="fetchChildren"
+    [hasChildren]="hasChildren"
+    [loading]="vm().isLoading"
+    [rowClass]="rowCallback"
+    [trackBy]="trackBy"
+    class="grid-borderless flex-1 overflow-hidden"
+    kendoTreeListExpandable
+    scrollable="scrollable"
+  >
+    <kendo-treelist-column
+      [expandable]="true"
+      [headerStyle]="{ 'font-weight': '700' }"
+      title="Folder/File Name"
+    >
+      <ng-template kendoTreeListCellTemplate let-dataItem>
+        <span
+          [ngClass]="{
+            'font-bold': dataItem.type === 'folder'
+          }"
+        >
+          <i
+            [ngClass]="{
+              'fa-file': dataItem.type === 'file',
+              'fa-folder': dataItem.type === 'folder'
+            }"
+            class="fa-regular"
+          ></i>
+          <span class="ml-2">
+            {{ dataItem.name }}
+          </span>
+        </span>
+      </ng-template>
+    </kendo-treelist-column>
+
+    <kendo-treelist-column
+      [headerStyle]="{ 'font-weight': '700' }"
+      title="Tags"
+    >
+      <ng-template kendoTreeListCellTemplate let-dataItem>
+        @if(dataItem.type === 'file'){
+        <div class="text-button flex flex-wrap gap-2 overflow-hidden">
+          <ui-tag
+            class="text-buttons-button-text"
+            *ngFor="let tag of getTagsSource(dataItem) | async"
+            [label]="tag.name"
+            [wrap]="false"
+            size="medium"
+            icon="fa-regular fa-tag"
+          />
+        </div>
+        }
+      </ng-template>
+    </kendo-treelist-column>
+
+    <kendo-treelist-column
+      [headerStyle]="{ 'font-weight': '700' }"
+      title="Added by"
+    >
+      <ng-template kendoTreeListCellTemplate let-dataItem>
+        @if(dataItem.type === 'file'){
+        <ui-tag uiUserTag [label]="dataItem.createdBy" size="medium" />
+        }
+      </ng-template>
+    </kendo-treelist-column>
+
+    <kendo-treelist-column [width]="120" title="">
+      <ng-template kendoTreeListCellTemplate let-dataItem>
+        @if(dataItem.type === 'file'){
+        <div class="flex gap-1">
+          <kendo-button
+            themeColor="primary"
+            iconClass="fa-solid fa-arrow-up-right-from-square"
+            (click)="openFileWebUrl(dataItem)"
+          />
+          <kendo-button
+            class="mr-10"
+            iconClass="fa-regular fa-tag"
+            (click)="openFileManage(dataItem)"
+          />
+        </div>
+        }
+      </ng-template>
+    </kendo-treelist-column>
+  </kendo-treelist>
 </div>
-
-<div class="file-grid">
-  <p class="flex items-center gap-2 font-bold">Folder/File Name</p>
-  <p class="font-bold">Tags</p>
-  <p class="font-bold">Added by</p>
-</div>
-
-<kendo-panelbar [items]="vm().data" [expandMode]="panelExapndMode">
-  <ng-template kendoPanelBarItemTitle let-dataItem> </ng-template>
-  <ng-template kendoPanelBarItemTemplate let-dataItem>
-    @for(item of dataItem.content; track item.name){
-
-    <div class="file-grid">
-      <div>
-        <p class="flex items-center gap-2 pl-4">
-          <i class="fa-regular fa-file"></i>
-          {{ item.name }}
-        </p>
-      </div>
-      <div class="flex gap-2 overflow-hidden">
-        <ui-tag label="tag 1" icon="fa-regular fa-tag" /><ui-tag
-          label="tag 2"
-          icon="fa-regular fa-tag"
-        /><ui-tag label="tag 3" icon="fa-regular fa-tag" />
-      </div>
-      <p><ui-tag uiUserTag [label]="item.createdBy" /></p>
-      <div class="flex justify-end gap-1">
-        <kendo-button
-          themeColor="primary"
-          iconClass="fa-solid fa-arrow-up-right-from-square"
-          (click)="openFileWebUrl(item)"
-        />
-        <kendo-button
-          class="mr-10"
-          iconClass="fa-regular fa-tag"
-          (click)="openFileManage(item)"
-        />
-      </div>
-    </div>
-
-    }
-  </ng-template>
-</kendo-panelbar>
 
 <kendo-dialog
   #dialog
-  *ngIf="activeFile"
-  title="Manage File Tags"
-  [minWidth]="480"
   (close)="activeFile = null"
+  *ngIf="activeFile"
+  [width]="480"
+  title="Manage File Tags"
 >
   <!--  themeColor="primary"-->
-  <div class="flex flex-col gap-4 p-10" [formGroup]="manageFileGroup">
+  <div [formGroup]="manageFileGroup" class="flex flex-col gap-4 p-10">
     <kendo-formfield>
       <kendo-label text="File Name"></kendo-label>
       <kendo-textbox formControlName="name"></kendo-textbox>
@@ -73,13 +119,13 @@
     <kendo-formfield>
       <kendo-label>Add Related Tags</kendo-label>
       <kendo-multiselect
-        class="w-full overflow-hidden"
-        formControlName="tags"
+        [autoClose]="false"
+        [checkboxes]="true"
         [data]="vm().tags"
         [textField]="'name'"
         [valueField]="'id'"
-        [checkboxes]="true"
-        [autoClose]="false"
+        class="w-full overflow-hidden"
+        formControlName="tags"
       >
       </kendo-multiselect>
     </kendo-formfield>
@@ -87,12 +133,12 @@
       <p>Added Tags</p>
       <div class="flex w-full flex-wrap gap-2 overflow-hidden">
         <ui-tag
-          *ngFor="let tag of manageFileGroup.get('tags')?.value!"
-          [label]="tag.name"
-          icon="fa-regular fa-tag"
-          [removable]="true"
-          [clickable]="true"
           (tagRemove)="removeTag(tag)"
+          *ngFor="let tag of manageFileGroup.get('tags')?.value!"
+          [clickable]="true"
+          [label]="tag.name"
+          [removable]="true"
+          icon="fa-regular fa-tag"
         ></ui-tag>
       </div>
     </div>

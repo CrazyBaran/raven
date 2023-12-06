@@ -5,6 +5,7 @@ import * as filesEffects from './lib/+state/files.effects';
 import { filesFeature } from './lib/+state/files.reducer';
 
 export * from './lib/+state/files.actions';
+export * from './lib/+state/files.model';
 export * from './lib/+state/files.reducer';
 export * from './lib/+state/files.selectors';
 

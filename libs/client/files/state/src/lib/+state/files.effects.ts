@@ -15,11 +15,17 @@ export const loadFiles = createEffect(
           map((response) => {
             return FilesActions.getFilesSuccess({
               data: response?.value || [],
+              folderId: action.folderId,
             });
           }),
           catchError((error) => {
             console.error('Error', error);
-            return of(FilesActions.getFilesFailure({ error }));
+            return of(
+              FilesActions.getFilesFailure({
+                error,
+                folderId: action.folderId,
+              }),
+            );
           }),
         ),
       ),
@@ -39,7 +45,7 @@ export const updateFile = createEffect(
           switchMap((response) => {
             return [
               FilesActions.updateFileTagsSuccess({
-                data: response.data,
+                data: response.data!,
               }),
               NotificationsActions.showSuccessNotification({
                 content: 'File tags updated successfully',
@@ -52,6 +58,36 @@ export const updateFile = createEffect(
               FilesActions.updateFileTagsFailure({ error }),
               NotificationsActions.showErrorNotification({
                 content: 'File tags update failed',
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const copyFile = createEffect(
+  (actions$ = inject(Actions), filesService = inject(FilesService)) => {
+    return actions$.pipe(
+      ofType(FilesActions.copyFile),
+      switchMap(({ siteId, itemId, parentReference }) =>
+        filesService.copyFile(siteId, itemId, { parentReference }).pipe(
+          map((response) => {
+            return FilesActions.copyFileSuccess({
+              data: [], //todo: response?.value || [],
+              folderId: 'Root',
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              FilesActions.copyFileFailure({
+                error,
+                folderId: 'Root',
               }),
             );
           }),

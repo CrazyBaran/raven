@@ -78,6 +78,7 @@ module.exports = {
       },
       buttons: {
         'button-text-50': '#002c3c80',
+        'button-text': '#002C3CE5',
       },
       base: {
         background: '#FAFAFA',

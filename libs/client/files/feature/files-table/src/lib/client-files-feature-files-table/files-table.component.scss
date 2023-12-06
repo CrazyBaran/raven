@@ -1,8 +1,7 @@
-.file-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  > * {
-    overflow: hidden;
-    padding: 8px 12px;
-  }
+.k-treelist .k-table-md .k-table-tbody .k-table-row.folder-row {
+  background-color: #f5f5f5;
+}
+
+.k-treelist .k-table-md .k-table-tbody .k-table-row.file-row {
+  background-color: #ffffff;
 }
