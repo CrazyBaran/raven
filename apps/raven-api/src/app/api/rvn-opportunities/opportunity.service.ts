@@ -416,6 +416,42 @@ export class OpportunityService {
     };
   }
 
+  public async ensureAllAffinityEntriesAsOpportunities(): Promise<void> {
+    const affinityData = await this.affinityCacheService.getAll(
+      (data) => data.stage != null && data.stage.text != null,
+    );
+    const opportunities = await this.opportunityRepository.find({
+      relations: ['organisation'],
+    });
+
+    for (const affinityEntry of affinityData) {
+      const existingOpportunity = opportunities.find((opportunity) =>
+        opportunity.organisation.domains.includes(
+          affinityEntry.organizationDto.domain,
+        ),
+      );
+      if (!existingOpportunity) {
+        const organisation = await this.organisationService.findByDomain(
+          affinityEntry.organizationDto.domain,
+        );
+
+        const pipeline = await this.getDefaultPipelineDefinition();
+        const pipelineStage = this.getPipelineStage(
+          pipeline,
+          affinityEntry.stage.text,
+        );
+
+        await this.createOpportunity(organisation, pipeline, pipelineStage, {
+          workflowTemplateEntity: null,
+          userEntity: null,
+          tagEntity: null,
+        });
+      }
+    }
+
+    const defaultPipeline = await this.getDefaultPipelineDefinition();
+  }
+
   private async getDefaultPipelineDefinition(): Promise<PipelineDefinitionEntity> {
     const pipelineDefinition = await this.pipelineRepository.findOne({
       relations: ['stages'],

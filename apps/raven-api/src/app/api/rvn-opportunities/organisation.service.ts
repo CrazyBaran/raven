@@ -180,6 +180,14 @@ export class OrganisationService {
     );
   }
 
+  public async findByDomain(domain: string): Promise<OrganisationEntity> {
+    const organisation = await this.organisationRepository.findOne({
+      where: { domains: Like(`%${domain}%`) },
+    });
+
+    return organisation;
+  }
+
   public async create(
     options: CreateOrganisationOptions,
   ): Promise<OrganisationEntity> {
@@ -227,7 +235,7 @@ export class OrganisationService {
     await this.organisationRepository.delete(id);
   }
 
-  public async ensureAllAffinityEntriesAsOrganisationsAndOpportunities(): Promise<void> {
+  public async ensureAllAffinityOrganisationsAsOrganisations(): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll();
     const existingOrganisations = await this.organisationRepository.find();
     const nonExistentAffinityData = this.getNonExistentAffinityData(

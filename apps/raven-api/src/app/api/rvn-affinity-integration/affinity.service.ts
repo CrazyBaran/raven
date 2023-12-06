@@ -136,7 +136,7 @@ export class AffinityService {
     const matchedData: OrganizationStageDto[] = [];
     for (const organization of organizations) {
       const matchedFieldChanges = fieldChanges.filter(
-        (change) => change.list_entry_id === organization.id,
+        (change) => change.entity_id === organization.id,
       );
 
       const latestFieldChange = matchedFieldChanges.sort(

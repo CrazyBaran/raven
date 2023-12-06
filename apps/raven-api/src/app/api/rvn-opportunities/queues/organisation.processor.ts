@@ -6,6 +6,7 @@ import {
   ORGANISATION_QUEUE,
   ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS,
 } from '../opportunities.const';
+import { OpportunityService } from '../opportunity.service';
 import { OrganisationService } from '../organisation.service';
 
 export interface AffinityJobData<EncryptedType = Record<string, string>> {
@@ -20,6 +21,7 @@ export interface AffinityJobData<EncryptedType = Record<string, string>> {
 export class OrganisationProcessor extends AbstractSimpleQueueProcessor<AffinityJobData> {
   public constructor(
     private readonly organisationService: OrganisationService,
+    private readonly opportunityService: OpportunityService,
     public readonly logger: RavenLogger,
   ) {
     super(logger);
@@ -29,7 +31,8 @@ export class OrganisationProcessor extends AbstractSimpleQueueProcessor<Affinity
   public async process(job: JobPro): Promise<boolean> {
     switch (job.name) {
       case ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS: {
-        await this.organisationService.ensureAllAffinityEntriesAsOrganisationsAndOpportunities();
+        await this.organisationService.ensureAllAffinityOrganisationsAsOrganisations();
+        await this.opportunityService.ensureAllAffinityEntriesAsOpportunities();
         return true;
       }
       default: {
