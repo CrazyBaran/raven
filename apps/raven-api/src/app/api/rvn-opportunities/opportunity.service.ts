@@ -434,7 +434,13 @@ export class OpportunityService {
       (s: { id: string }) => s.id === id,
     );
     if (!pipelineStage) {
-      throw new Error('Pipeline stage not found! Incorrect configuration');
+      if (!pipelineStage) {
+        const defaultStage = pipelineDefinition.stages.find(
+          (s: { order: number }) => s.order === 1,
+        );
+
+        return defaultStage;
+      }
     }
     return pipelineStage;
   }

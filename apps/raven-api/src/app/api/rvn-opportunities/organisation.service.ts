@@ -329,7 +329,11 @@ export class OrganisationService {
       (s: { id: string }) => s.id === id,
     );
     if (!pipelineStage) {
-      throw new Error('Pipeline stage not found! Incorrect configuration');
+      const defaultStage = pipelineDefinition.stages.find(
+        (s: { order: number }) => s.order === 1,
+      );
+
+      return defaultStage;
     }
     return pipelineStage;
   }
