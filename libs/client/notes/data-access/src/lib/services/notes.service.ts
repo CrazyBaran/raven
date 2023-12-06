@@ -27,13 +27,16 @@ export class NotesService {
 
   public getNotes(
     params?: NoteQueryParams,
-  ): Observable<GenericResponse<NoteData[]>> {
-    return this.http.get<GenericResponse<NoteData[]>>('/api/notes', {
-      params: {
-        ...(params ?? {}),
-        type: TemplateTypeEnum.Note,
+  ): Observable<GenericResponse<{ items: NoteData[]; total: number }>> {
+    return this.http.get<GenericResponse<{ items: NoteData[]; total: number }>>(
+      '/api/notes',
+      {
+        params: {
+          ...(params ?? {}),
+          type: TemplateTypeEnum.Note,
+        },
       },
-    });
+    );
   }
 
   public getNoteDetails(id: string): Observable<GetNoteDetailsResponse> {
@@ -87,16 +90,13 @@ export class NotesService {
     );
   }
 
-  public getOpportunityNotes(opportunityId: string): Observable<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    GenericResponse<
-      WorkflowNoteData & { noteAttachments: NoteAttachmentData[] }
-    >
-  > {
+  public getOpportunityNotes(
+    opportunityId: string,
+  ): Observable<WorkflowNoteData & { noteAttachments: NoteAttachmentData[] }> {
     return this.http
       .get<
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        GenericResponse<WorkflowNoteData[]>
+        GenericResponse<{ items: WorkflowNoteData[]; total: number }>
       >('/api/notes', {
         params: {
           opportunityId,
@@ -104,20 +104,12 @@ export class NotesService {
         },
       })
       .pipe(
-        switchMap((notes) => {
-          const note = notes.data![0];
+        switchMap(({ data }) => {
+          const note = data!.items![0];
           return this.getNoteAttachments(note.id).pipe(
             map((attachmentResponse) => ({
-              ...notes,
-              data: {
-                ...(note as WorkflowNoteData),
-                noteAttachments: attachmentResponse?.data ?? [],
-              },
-
-              // data: {
-              //   ...(note.data as NoteWithRelationsData),
-              //   noteAttachments: attachmentResponse?.data ?? [],
-              // },
+              ...(note as WorkflowNoteData),
+              noteAttachments: attachmentResponse?.data ?? [],
             })),
           );
         }),

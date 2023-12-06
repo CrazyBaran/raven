@@ -6,13 +6,11 @@ import {
   OnInit,
 } from '@angular/core';
 
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { WebsocketService } from '@app/client/core/websockets';
-import {
-  OpportunitiesActions,
-  OpportunitiesFacade,
-} from '@app/client/opportunities/data-access';
+import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
 import { ShelfActions } from '@app/client/shared/shelf';
@@ -39,6 +37,7 @@ import { distinctUntilChanged } from 'rxjs';
 import {
   selectAllOpportunitiesDictionary,
   selectOportunitiesStageDictionary,
+  selectPipelineBoardParams,
   selectPipelinesPageViewModel,
 } from './pipelines-page.selectors';
 
@@ -80,13 +79,17 @@ export class PipelinesPageComponent implements OnInit {
 
   public constructor(
     private readonly store: Store,
-    private readonly opportunitiesFacade: OpportunitiesFacade,
     private readonly websocketService: WebsocketService,
-  ) {}
+  ) {
+    this.store
+      .select(selectPipelineBoardParams)
+      .pipe(takeUntilDestroyed())
+      .subscribe((params) => {
+        this.store.dispatch(OpportunitiesActions.getOpportunities({ params }));
+      });
+  }
 
   public ngOnInit(): void {
-    this.opportunitiesFacade.getOpportunities(500, 0);
-
     this.store.dispatch(PipelinesActions.getPipelines());
 
     this.store.dispatch(

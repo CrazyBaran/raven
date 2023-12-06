@@ -13,7 +13,7 @@ export const NotesActions = createActionGroup({
     'Open Notes Table': emptyProps(),
 
     'Get Notes': props<{ params: NoteQueryParams }>(),
-    'Get Notes Success': props<{ data: NoteData[] }>(),
+    'Get Notes Success': props<{ data: NoteData[]; total: number }>(),
     'Get Notes Failure': props<{ error: string }>(),
 
     'Get Current Note Details': emptyProps(),

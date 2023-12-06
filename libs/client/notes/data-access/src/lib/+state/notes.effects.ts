@@ -21,7 +21,12 @@ export class NotesEffects {
       ofType(NotesActions.getNotes),
       switchMap(({ params }) =>
         this.notesService.getNotes(params).pipe(
-          map(({ data }) => NotesActions.getNotesSuccess({ data: data || [] })),
+          map(({ data }) =>
+            NotesActions.getNotesSuccess({
+              data: data?.items || [],
+              total: data?.total ?? 0,
+            }),
+          ),
           catchError((error) => of(NotesActions.getNotesFailure({ error }))),
         ),
       ),
@@ -69,7 +74,7 @@ export class NotesEffects {
       ofType(NotesActions.getOpportunityNotes),
       switchMap(({ opportunityId }) =>
         this.notesService.getOpportunityNotes(opportunityId).pipe(
-          switchMap(({ data }) => [
+          switchMap((data) => [
             NotesActions.getOpportunityNotesSuccess({ data: [data!] || [] }),
             StorageActions.addImages({
               images:
