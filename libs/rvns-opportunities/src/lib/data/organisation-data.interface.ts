@@ -1,9 +1,8 @@
+import { PagedData } from 'rvns-shared';
 import { OpportunityDataWithoutOrganisation } from './opportunity-data.interface';
 
-export interface PagedOrganisationData {
-  readonly items: OrganisationDataWithOpportunities[];
-  readonly total: number;
-}
+export interface PagedOrganisationData
+  extends PagedData<OrganisationDataWithOpportunities> {}
 
 export interface OrganisationData {
   readonly id?: string;
