@@ -9,6 +9,7 @@ import { FieldValueDto } from './dtos/field-value.dto';
 import { FieldDto } from './dtos/field.dto';
 import { ListDto } from './dtos/list.dto';
 import { PaginatedListEntriesDto } from './dtos/paginated-list-entries.dto';
+import { PaginatedOrganizationsDto } from './dtos/paginated-organizations.dto';
 import { PersonDto } from './dtos/person.dto';
 import { UpdateFieldValueDto } from './dtos/update-field-value.dto';
 import { WebhookDeleteResponseDto } from './dtos/webhook-delete.dto';
@@ -146,6 +147,23 @@ export class AffinityApiService {
         baseURL: this.baseURL,
         headers: this.headers,
         params: { field_id: fieldId },
+      })
+      .pipe(map((response) => response.data))
+      .toPromise();
+  }
+
+  public async getOrganizations(
+    pageSize = 500,
+    pageToken?: string,
+  ): Promise<PaginatedOrganizationsDto> {
+    return await this.httpService
+      .get<PaginatedOrganizationsDto>(`/organizations`, {
+        baseURL: this.baseURL,
+        headers: this.headers,
+        params: {
+          page_size: pageSize || 500,
+          ...(pageToken && { page_token: pageToken }),
+        },
       })
       .pipe(map((response) => response.data))
       .toPromise();

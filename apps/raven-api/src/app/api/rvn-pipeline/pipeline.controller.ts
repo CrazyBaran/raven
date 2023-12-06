@@ -15,6 +15,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -60,11 +61,14 @@ export class PipelineController {
 
   @ApiOperation({ description: 'Get all pipelines' })
   @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'defaultOnly', type: 'boolean', required: false })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @Get()
-  public async getAllPipelines(): Promise<PipelineDefinitionData[]> {
-    return (await this.pipelineService.getAllPipelines()).map((pipeline) =>
-      this.pipelineService.pipelineEntityToData(pipeline),
+  public async getAllPipelines(
+    @Query('defaultOnly') defaultOnly: boolean = true,
+  ): Promise<PipelineDefinitionData[]> {
+    return (await this.pipelineService.getAllPipelines(defaultOnly)).map(
+      (pipeline) => this.pipelineService.pipelineEntityToData(pipeline),
     );
   }
 

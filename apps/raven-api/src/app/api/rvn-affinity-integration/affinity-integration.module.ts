@@ -1,7 +1,9 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullService } from '../../core/bull.service';
+import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
@@ -33,6 +35,7 @@ import { AffinityProducer } from './queues/affinity.producer';
     HttpModule,
     ConfigModule,
     WebSocketsModule,
+    TypeOrmModule.forFeature([PipelineDefinitionEntity]),
   ],
   providers: [
     AffinityApiService,

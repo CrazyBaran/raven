@@ -7,7 +7,10 @@ import { AffinityApiService } from './api/affinity-api.service';
 import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
 import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
 import { ListEntryDto } from './api/dtos/list-entry.dto';
-import { OrganizationDto } from './api/dtos/organization.dto';
+import {
+  OrganizationBaseDto,
+  OrganizationWithCrunchbaseDto,
+} from './api/dtos/organization.dto';
 import { AffinityCacheService } from './cache/affinity-cache.service';
 import { OrganizationStageDto } from './dtos/organisation-stage.dto';
 
@@ -25,7 +28,7 @@ export class AffinityService {
   public async regenerateAffinityData(): Promise<void> {
     this.logger.debug('Fetching for list and field from Affinity settings');
     const { defaultListId, statusFieldId } =
-      this.affinitySettingsService.getListSettings();
+      await this.affinitySettingsService.getListSettings();
     this.logger.debug(`List id: ${defaultListId}, field id: ${statusFieldId}`);
     const listDetails =
       await this.affinityApiService.getListDetails(defaultListId);
@@ -44,19 +47,12 @@ export class AffinityService {
 
     await this.affinityCacheService.setListFields(listDetails.fields);
 
+    this.logger.debug('Fetching all organizations from Affinity');
+    const organizations = await this.getAllOrganizations();
+
     this.logger.debug('Fetching all entries from Affinity');
-    let pageToken: string | undefined;
-    const allEntries: ListEntryDto[] = [];
-    do {
-      const entries = await this.affinityApiService.getListEntries(
-        defaultListId,
-        500,
-        pageToken,
-      );
-      allEntries.push(...entries.list_entries);
-      pageToken = entries.next_page_token;
-    } while (pageToken);
-    this.logger.debug(`Fetched ${allEntries.length} entries from Affinity`);
+    const listEntries = await this.getListEntries(defaultListId);
+    this.logger.debug(`Fetched ${listEntries.length} entries from Affinity`);
 
     this.logger.debug(
       'Fetching field value changes for status field from Affinity',
@@ -68,7 +64,8 @@ export class AffinityService {
     );
 
     const matchedData = this.matchListEntriesWithStages(
-      allEntries,
+      organizations,
+      listEntries,
       fieldChanges,
     );
     this.logger.debug(
@@ -110,9 +107,12 @@ export class AffinityService {
                 new Date(b.changed_at).getTime(),
             ),
           );
-          matchedData
-            .find((data) => data.entryId.toString() === entryIdKey)
-            .fields.push({
+          const matchingEntry = matchedData.find(
+            (data) => data?.entryId?.toString() === entryIdKey,
+          );
+
+          if (matchingEntry)
+            matchingEntry.fields.push({
               displayName: field.displayName,
               value: finalValue,
             });
@@ -129,28 +129,65 @@ export class AffinityService {
   }
 
   private matchListEntriesWithStages(
+    organizations: OrganizationWithCrunchbaseDto[],
     entries: ListEntryDto[],
     fieldChanges: FieldValueChangeDto[],
   ): OrganizationStageDto[] {
     const matchedData: OrganizationStageDto[] = [];
-    for (const entry of entries) {
+    for (const organization of organizations) {
       const matchedFieldChanges = fieldChanges.filter(
-        (change) => change.list_entry_id === entry.id,
+        (change) => change.list_entry_id === organization.id,
       );
 
       const latestFieldChange = matchedFieldChanges.sort(
         (a, b) =>
           new Date(b.changed_at).getTime() - new Date(a.changed_at).getTime(),
       )[0];
+
+      const matchingEntry = entries.find(
+        (entry) => entry.entity_id === organization.id,
+      );
+
       matchedData.push({
-        entryId: entry.id,
-        entryAdded: new Date(entry.created_at),
-        organizationDto: entry.entity as OrganizationDto,
+        entryId: organization.id,
+        entryAdded: matchingEntry ? new Date(matchingEntry.created_at) : null,
+        organizationDto: organization as OrganizationBaseDto,
         stage: latestFieldChange?.value as FieldValueRankedDropdownDto,
         fields: [],
       });
     }
 
     return matchedData;
+  }
+
+  private async getAllOrganizations(): Promise<
+    OrganizationWithCrunchbaseDto[]
+  > {
+    let pageToken: string | undefined;
+    const allOrganizations: OrganizationWithCrunchbaseDto[] = [];
+    do {
+      const organizations = await this.affinityApiService.getOrganizations(
+        500,
+        pageToken,
+      );
+      allOrganizations.push(...organizations.organizations);
+      pageToken = organizations.next_page_token;
+    } while (pageToken);
+    return allOrganizations;
+  }
+
+  private async getListEntries(defaultListId: number): Promise<ListEntryDto[]> {
+    let pageToken: string | undefined;
+    const allEntries: ListEntryDto[] = [];
+    do {
+      const entries = await this.affinityApiService.getListEntries(
+        defaultListId,
+        500,
+        pageToken,
+      );
+      allEntries.push(...entries.list_entries);
+      pageToken = entries.next_page_token;
+    } while (pageToken);
+    return allEntries;
   }
 }

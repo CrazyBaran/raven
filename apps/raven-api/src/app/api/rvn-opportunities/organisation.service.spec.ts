@@ -64,7 +64,6 @@ describe('OrganisationService', () => {
     );
     afOrg1.organizationDto = {
       id: 1,
-      type: 1,
       name: 'test name',
       domain: 'test-domain.com',
       domains: ['test-domain.pl', 'test-domain.com'],
@@ -90,7 +89,6 @@ describe('OrganisationService', () => {
     );
     afOrg1.organizationDto = {
       id: 1,
-      type: 1,
       name: 'test name',
       domain: 'nonexistiant-main.com',
       domains: ['nonexistiant-main.com', 'test-domain.com'],
@@ -117,7 +115,6 @@ describe('OrganisationService', () => {
     );
     afOrg1.organizationDto = {
       id: 1,
-      type: 1,
       name: 'test name',
       domain: 'nonexistiant-main.com',
       domains: ['nonexistiant-main.com', 'and-another-one.com'],

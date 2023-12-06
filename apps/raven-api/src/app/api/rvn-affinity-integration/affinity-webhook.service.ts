@@ -18,12 +18,16 @@ import { ActionType } from './api/dtos/action-type.dto';
 import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
 import { FieldValueEntityDto } from './api/dtos/field-value-entity.dto';
 import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
-import { OrganizationDto } from './api/dtos/organization.dto';
+import {
+  OrganizationBaseDto,
+  OrganizationDto,
+} from './api/dtos/organization.dto';
 import { PersonDto } from './api/dtos/person.dto';
 import {
   WebhookPayloadDto,
   WebhookPayloadFieldValueDto,
   WebhookPayloadListEntryDto,
+  WebhookPayloadOrganisationDto,
 } from './api/dtos/webhook-payload.dto';
 import { WebhookSubscriptions } from './api/dtos/webhook-subscriptions.dto';
 import { AffinityCacheService } from './cache/affinity-cache.service';
@@ -55,6 +59,10 @@ export class AffinityWebhookService {
         this.logger.debug('Handling field value change');
         await this.handleFieldValueUpdated(payload);
         break;
+      case WebhookSubscriptions.ORGANIZATION_CREATED:
+      case WebhookSubscriptions.ORGANIZATION_UPDATED:
+        this.logger.debug('Handling organization created');
+        await this.handleOrganizationCreated(payload);
     }
   }
 
@@ -96,8 +104,8 @@ export class AffinityWebhookService {
       fields: [],
     };
 
-    const statusFieldId =
-      this.affinitySettingsService.getListSettings().statusFieldId;
+    const statusFieldId = (await this.affinitySettingsService.getListSettings())
+      .statusFieldId;
 
     const fieldValues = await this.affinityApiService.getFieldValues(
       payload.body.id,
@@ -114,6 +122,40 @@ export class AffinityWebhookService {
         organizationDto.name,
         organizationDto.domains,
         environment.opportunitySync.enabledOnWebhook,
+      ),
+    );
+  }
+
+  private async handleOrganizationCreated(
+    payload: WebhookPayloadOrganisationDto,
+  ): Promise<void> {
+    const organizationDto = payload.body as OrganizationBaseDto;
+    const organizationData: OrganizationStageDto = {
+      entryId: payload.body.id,
+      entryAdded: null,
+      organizationDto: organizationDto,
+      stage: undefined,
+      fields: [],
+    };
+
+    const statusFieldId = (await this.affinitySettingsService.getListSettings())
+      .statusFieldId;
+
+    const fieldValues = await this.affinityApiService.getFieldValues(
+      payload.body.id,
+    );
+
+    organizationData.stage = fieldValues.find((fieldValue) => {
+      return fieldValue.field_id === statusFieldId;
+    }).value as FieldValueRankedDropdownDto;
+
+    await this.affinityCacheService.addOrReplaceMany([organizationData]);
+    this.eventEmitter.emit(
+      'affinity-organization-created',
+      new AffinityOrganizationCreatedEvent(
+        organizationDto.name,
+        organizationDto.domains,
+        false,
       ),
     );
   }

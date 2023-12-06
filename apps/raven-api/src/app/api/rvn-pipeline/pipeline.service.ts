@@ -55,9 +55,12 @@ export class PipelineService {
     return this.pipelineDefinitionRepository.save(pipeline);
   }
 
-  public async getAllPipelines(): Promise<PipelineDefinitionEntity[]> {
+  public async getAllPipelines(
+    defaultOnly: boolean,
+  ): Promise<PipelineDefinitionEntity[]> {
     return this.pipelineDefinitionRepository.find({
       relations: ['stages'],
+      where: defaultOnly ? { isDefault: true } : {},
     });
   }
 

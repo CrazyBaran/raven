@@ -192,12 +192,20 @@ export class OrganisationService {
         );
 
         if (options.createOpportunity) {
-          await this.createOpportunityForOrganisation(
-            organisationEntity,
-            null,
-            tem,
-          );
+          const organizationStageDtos =
+            await this.affinityCacheService.getByDomains([options.domain]);
 
+          if (
+            organizationStageDtos &&
+            organizationStageDtos.length !== 0 &&
+            organizationStageDtos[0].stage
+          ) {
+            await this.createOpportunityForOrganisation(
+              organisationEntity,
+              organizationStageDtos[0].stage?.text || null,
+              tem,
+            );
+          }
           return organisationEntity;
         }
       },
@@ -269,11 +277,13 @@ export class OrganisationService {
         );
 
         if (environment.opportunitySync.enabledOnInit) {
-          await this.createOpportunityForOrganisation(
-            savedOrganisation,
-            organisationstageDto.stage?.text,
-            tem,
-          );
+          if (organisationstageDto.stage) {
+            await this.createOpportunityForOrganisation(
+              savedOrganisation,
+              organisationstageDto.stage.text,
+              tem,
+            );
+          }
         }
 
         return savedOrganisation;

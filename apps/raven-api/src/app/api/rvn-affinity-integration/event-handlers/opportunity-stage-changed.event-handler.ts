@@ -26,7 +26,7 @@ export class OpportunityStageChangedEventHandler {
     const company = companies[0];
 
     const { defaultListId, statusFieldId } =
-      this.affinitySettingsService.getListSettings();
+      await this.affinitySettingsService.getListSettings();
 
     const listFields = await this.affinityCacheService.getListFields();
     if (!listFields.some((field) => field.name === STATUS_FIELD_NAME)) {
