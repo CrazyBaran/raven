@@ -164,7 +164,10 @@ export class OpportunitiesRelatedNotesComponent {
       });
 
     this.actions
-      .pipe(takeUntilDestroyed(), ofType(NotesActions.updateNoteSuccess))
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(NotesActions.updateNoteSuccess, NotesActions.updateNoteFailure),
+      )
       .subscribe(() => {
         this.state.update((state) => ({
           ...state,

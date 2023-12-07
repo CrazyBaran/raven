@@ -1,10 +1,11 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import { MsalService } from '@azure/msal-angular';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import {
   FilesTableComponent,
   selectFilesTableViewModel,
@@ -28,7 +29,12 @@ describe('ClientFilesFeatureFilesTableComponent', () => {
           useValue: {},
         },
         provideMockActions(() => actions$),
-
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([]),
+          },
+        },
         provideMockStore({
           selectors: [
             {
