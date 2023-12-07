@@ -18,7 +18,7 @@ export class OpportunityCreatedEventHandler {
     this.logger.setContext(OpportunityCreatedEventHandler.name);
   }
 
-  @OnEvent('opportunity-created')
+  @OnEvent('opportunity-note-created')
   protected async createSharepointDirectories(
     event: OpportunityCreatedEvent,
   ): Promise<void> {
@@ -38,12 +38,11 @@ export class OpportunityCreatedEventHandler {
         ogranisationFolderId;
       await tem.save(opportunityEntity.organisation);
 
-      const opportunityFolderId =
+      opportunityEntity.sharepointDirectoryId =
         await this.createSharepointDirectoryForOpportunity(
           opportunityEntity,
           ogranisationFolderId,
         );
-      opportunityEntity.sharepointDirectoryId = opportunityFolderId;
       await tem.save(opportunityEntity);
     });
   }
@@ -56,7 +55,7 @@ export class OpportunityCreatedEventHandler {
       SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
         opportunityEntity.organisation,
       );
-    const existingFolderId = await this.getOrganisationDirectoryId(directory);
+    const existingFolderId = await this.getDirectoryIdForName(directory);
     if (existingFolderId) {
       return existingFolderId;
     }
@@ -71,7 +70,20 @@ export class OpportunityCreatedEventHandler {
       SharepointDirectoryStructureGenerator.getDirectoryNameForOpportunity(
         opportunityEntity,
       );
-
+    const organisationDirectory =
+      SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
+        opportunityEntity.organisation,
+      );
+    const organisationOpportunityPath = `${organisationDirectory}/${directory}`;
+    const existingFolderId = await this.getDirectoryIdForName(
+      organisationOpportunityPath,
+    );
+    if (existingFolderId) {
+      this.logger.log(
+        `Directory ${organisationOpportunityPath} already exists`,
+      );
+      return existingFolderId;
+    }
     return await this.createDirectory(directory, organisationFolderId);
   }
 
@@ -99,9 +111,7 @@ export class OpportunityCreatedEventHandler {
     }
   }
 
-  private async getOrganisationDirectoryId(
-    name: string,
-  ): Promise<string | null> {
+  private async getDirectoryIdForName(name: string): Promise<string | null> {
     const { siteId, driveId, rootDirectory } = environment.sharePoint;
     try {
       const response = await this.graphClient
