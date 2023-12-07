@@ -67,7 +67,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   private handle403Error(error: HttpErrorResponse | string): Observable<any> {
     this.notificationService.showErrorNotification({
-      content: 'Access denied.',
+      content: `You don't have the permissions to perform this action.`,
     });
 
     // this.router.navigateByUrl('/access-denied', {
