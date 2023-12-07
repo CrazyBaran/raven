@@ -1,106 +1,107 @@
-<div class="flex h-full flex-col">
-  <div class="flex gap-4">
-    <app-picker
-      (selectFiles)="onPickerChange($event)"
-      name="Sharepoint"
-      path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
-      url="https://testonemubadala.sharepoint.com/"
-    ></app-picker>
+<div class="flex h-full flex-col gap-4 overflow-hidden">
+  <app-quick-filters-template>
+    <div class="flex w-full items-center justify-between">
+      <app-dropdown-navigation [model]="vm().filters" />
 
-    <app-picker
-      (selectFiles)="onPickerChange($event)"
-      name="One Drive Sharepoint"
-      path="https://testonemubadala-my.sharepoint.com/personal/curvestone_qa_auto_test_mubadalacapital_ae/Documents"
-      url="https://testonemubadala-my.sharepoint.com/"
-    ></app-picker>
-  </div>
+      <app-picker
+        (selectFiles)="onPickerChange($event)"
+        name="Manage Files"
+        path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
+        url="https://testonemubadala.sharepoint.com/"
+      ></app-picker>
+    </div>
+  </app-quick-filters-template>
 
-  <kendo-treelist
-    [data]="source()"
-    [fetchChildren]="fetchChildren"
-    [hasChildren]="hasChildren"
-    [loading]="vm().isLoading"
-    [rowClass]="rowCallback"
-    [trackBy]="trackBy"
-    class="grid-borderless flex-1 overflow-hidden"
-    kendoTreeListExpandable
-    scrollable="scrollable"
-  >
-    <kendo-treelist-column
-      [expandable]="true"
-      [headerStyle]="{ 'font-weight': '700' }"
-      title="Folder/File Name"
-    >
-      <ng-template kendoTreeListCellTemplate let-dataItem>
-        <span
-          [ngClass]="{
-            'font-bold': dataItem.type === 'folder'
-          }"
+  <div class="flex-1 overflow-hidden">
+    <div class="flex h-full flex-col">
+      <kendo-treelist
+        [data]="source()"
+        [fetchChildren]="fetchChildren"
+        [hasChildren]="hasChildren"
+        [loading]="vm().isLoading"
+        [rowClass]="rowCallback"
+        [trackBy]="trackBy"
+        class="grid-borderless flex-1 overflow-hidden"
+        kendoTreeListExpandable
+        scrollable="scrollable"
+      >
+        <kendo-treelist-column
+          [expandable]="true"
+          [headerStyle]="{ 'font-weight': '700' }"
+          title="Folder/File Name"
         >
-          <i
-            [ngClass]="{
-              'fa-file': dataItem.type === 'file',
-              'fa-folder': dataItem.type === 'folder'
-            }"
-            class="fa-regular"
-          ></i>
-          <span class="ml-2">
-            {{ dataItem.name }}
-          </span>
-        </span>
-      </ng-template>
-    </kendo-treelist-column>
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span
+              [ngClass]="{
+                'font-bold': dataItem.type === 'folder'
+              }"
+            >
+              <i
+                [ngClass]="{
+                  'fa-file': dataItem.type === 'file',
+                  'fa-folder': dataItem.type === 'folder'
+                }"
+                class="fa-regular"
+              ></i>
+              <span class="ml-2">
+                {{ dataItem.name }}
+              </span>
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
 
-    <kendo-treelist-column
-      [headerStyle]="{ 'font-weight': '700' }"
-      title="Tags"
-    >
-      <ng-template kendoTreeListCellTemplate let-dataItem>
-        @if(dataItem.type === 'file'){
-        <div class="text-button flex flex-wrap gap-2 overflow-hidden">
-          <ui-tag
-            class="text-buttons-button-text"
-            *ngFor="let tag of getTagsSource(dataItem) | async"
-            [label]="tag.name"
-            [wrap]="false"
-            size="medium"
-            icon="fa-regular fa-tag"
-          />
-        </div>
-        }
-      </ng-template>
-    </kendo-treelist-column>
+        <kendo-treelist-column
+          [headerStyle]="{ 'font-weight': '700' }"
+          title="Tags"
+        >
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            @if(dataItem.type === 'file'){
+            <div class="text-button flex flex-wrap gap-2 overflow-hidden">
+              <ui-tag
+                class="text-buttons-button-text"
+                *ngFor="let tag of getTagsSource(dataItem) | async"
+                [label]="tag.name"
+                [wrap]="false"
+                size="medium"
+                icon="fa-regular fa-tag"
+              />
+            </div>
+            }
+          </ng-template>
+        </kendo-treelist-column>
 
-    <kendo-treelist-column
-      [headerStyle]="{ 'font-weight': '700' }"
-      title="Added by"
-    >
-      <ng-template kendoTreeListCellTemplate let-dataItem>
-        @if(dataItem.type === 'file'){
-        <ui-tag uiUserTag [label]="dataItem.createdBy" size="medium" />
-        }
-      </ng-template>
-    </kendo-treelist-column>
+        <kendo-treelist-column
+          [headerStyle]="{ 'font-weight': '700' }"
+          title="Added by"
+        >
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            @if(dataItem.type === 'file'){
+            <ui-tag uiUserTag [label]="dataItem.createdBy" size="medium" />
+            }
+          </ng-template>
+        </kendo-treelist-column>
 
-    <kendo-treelist-column [width]="120" title="">
-      <ng-template kendoTreeListCellTemplate let-dataItem>
-        @if(dataItem.type === 'file'){
-        <div class="flex gap-1">
-          <kendo-button
-            themeColor="primary"
-            iconClass="fa-solid fa-arrow-up-right-from-square"
-            (click)="openFileWebUrl(dataItem)"
-          />
-          <kendo-button
-            class="mr-10"
-            iconClass="fa-regular fa-tag"
-            (click)="openFileManage(dataItem)"
-          />
-        </div>
-        }
-      </ng-template>
-    </kendo-treelist-column>
-  </kendo-treelist>
+        <kendo-treelist-column [width]="120" title="">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            @if(dataItem.type === 'file'){
+            <div class="flex gap-1">
+              <kendo-button
+                themeColor="primary"
+                iconClass="fa-solid fa-arrow-up-right-from-square"
+                (click)="openFileWebUrl(dataItem)"
+              />
+              <kendo-button
+                class="mr-10"
+                iconClass="fa-regular fa-tag"
+                (click)="openFileManage(dataItem)"
+              />
+            </div>
+            }
+          </ng-template>
+        </kendo-treelist-column>
+      </kendo-treelist>
+    </div>
+  </div>
 </div>
 
 <kendo-dialog
