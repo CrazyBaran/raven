@@ -5,18 +5,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
+import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import { Observable } from 'rxjs';
 import { OpportunityDetailsPageComponent } from './opportunity-details-page.component';
 import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
 
 describe('OpportunityDetailsPageComponent', () => {
   let component: OpportunityDetailsPageComponent;
   let fixture: ComponentFixture<OpportunityDetailsPageComponent>;
-
+  let actions$: Observable<unknown>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OpportunityDetailsPageComponent, RouterTestingModule],
       providers: [
+        provideMockActions(() => actions$),
         provideMockStore({
           selectors: [
             {
