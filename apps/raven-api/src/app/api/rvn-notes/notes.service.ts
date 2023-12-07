@@ -94,7 +94,7 @@ export class NotesService {
     createdBy?: string,
     assignedTo?: string,
     role?: 'created' | 'tagged',
-  ): Promise<NoteEntity[]> {
+  ): Promise<{ items: NoteEntity[]; total: number }> {
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
       .select('note_with_tag.id')
@@ -204,7 +204,8 @@ export class NotesService {
         },
       ]);
     }
-    return await queryBuilder.getMany();
+    const [items, total] = await queryBuilder.getManyAndCount();
+    return { items, total };
   }
 
   public async getAllNoteVersions(

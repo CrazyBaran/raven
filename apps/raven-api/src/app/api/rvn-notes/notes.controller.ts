@@ -155,26 +155,25 @@ export class NotesController {
     const organisation =
       (organisationTagFromDomain as OrganisationTagEntity) ||
       (organisationTagFromId as OrganisationTagEntity);
-    const items = await Promise.all(
-      (
-        await this.notesService.getAllNotes(
-          userEntity,
-          organisation as OrganisationTagEntity,
-          tagEntities as TagEntity[],
-          type,
-          skip,
-          take,
-          (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
-          field as 'createdAt' | 'updatedAt' | 'name',
-          query,
-          noteType,
-          createdBy,
-          assignedTo,
-          role,
-        )
-      ).map((note) => this.notesService.noteEntityToNoteData(note)),
+    const { items, total } = await this.notesService.getAllNotes(
+      userEntity,
+      organisation as OrganisationTagEntity,
+      tagEntities as TagEntity[],
+      type,
+      skip,
+      take,
+      (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
+      field as 'createdAt' | 'updatedAt' | 'name',
+      query,
+      noteType,
+      createdBy,
+      assignedTo,
+      role,
     );
-    return { total: items.length, items };
+    return {
+      total,
+      items: items.map((note) => this.notesService.noteEntityToNoteData(note)),
+    };
   }
 
   @ApiOperation({ description: 'Get single note' })
