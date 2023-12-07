@@ -220,8 +220,9 @@ export class NotesController {
     const can = ability.can(
       ShareAction.Edit,
       'o',
-      (context.query.id as string)?.toString().toLowerCase(),
+      (context?.body['opportunityId'] as string)?.toString().toLowerCase(),
     );
+    return can;
   })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   @ApiOAuth2(['openid'])
