@@ -48,7 +48,7 @@ export class OpportunityStageChangedEventHandler {
     }
 
     const fieldValues = await this.affinityApiService.getFieldValues(
-      company.entryId,
+      company.listEntryId,
     );
 
     const statusValue = fieldValues.find(

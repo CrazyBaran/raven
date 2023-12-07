@@ -3,7 +3,8 @@ import { FieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-drop
 import { OrganizationBaseDto } from '../api/dtos/organization.dto';
 
 export class OrganizationStageDto {
-  public entryId: number;
+  public entityId: number;
+  public listEntryId: number;
   public entryAdded: Date;
   public organizationDto: OrganizationBaseDto;
   public stage?: FieldValueRankedDropdownDto;
