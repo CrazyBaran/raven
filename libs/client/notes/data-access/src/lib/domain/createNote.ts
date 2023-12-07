@@ -9,6 +9,7 @@ export type PatchNote = {
   }[];
   tagIds: string[];
   origin?: NoteData;
+  opportunityId?: string;
 };
 
 export type CreateNote = Pick<NoteData, 'templateId' | 'name'> &

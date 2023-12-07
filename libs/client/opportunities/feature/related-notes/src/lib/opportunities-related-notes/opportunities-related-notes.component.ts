@@ -171,14 +171,6 @@ export class OpportunitiesRelatedNotesComponent {
           state: 'edit',
           updatingField: null,
         }));
-
-        // setTimeout(() => {
-        //   this.state.update((state) => ({
-        //     ...state,
-        //     state: 'edit',
-        //     updatingField: null,
-        //   }));
-        // }, 3000);
       });
   }
 
@@ -199,6 +191,7 @@ export class OpportunitiesRelatedNotesComponent {
     this.store.dispatch(
       NotesActions.updateNote({
         noteId: noteId,
+
         data: {
           name: this.vm().opportunityNote.name,
           fields: _.chain(this.formGroup.value as Record<string, unknown>)
@@ -209,6 +202,7 @@ export class OpportunitiesRelatedNotesComponent {
             .value(),
           tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
           origin: this.vm().opportunityNote,
+          opportunityId: this.vm().opportunityId,
         },
       }),
     );

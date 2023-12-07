@@ -79,7 +79,8 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
   selectOpportunityRelatedNotes,
   selectNoteFields,
   notesQuery.selectOpportunityNotesIsLoading,
-  (tab, opportunityNotes, relatedNotes, fields, isLoading) => {
+  routerQuery.selectCurrentOpportunityId,
+  (tab, opportunityNotes, relatedNotes, fields, isLoading, opportunityId) => {
     return {
       allFields: Object.values(fields).flat(),
       visibleFields: (fields[tab ?? ''] ?? []).map((f) => ({
@@ -90,6 +91,7 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
       opportunityNote: opportunityNotes[0],
       opportunityNoteId: opportunityNotes[0]?.id,
       isLoading,
+      opportunityId,
       ...relatedNotes,
     };
   },
