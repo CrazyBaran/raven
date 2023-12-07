@@ -16,6 +16,7 @@ import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisat
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
+import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
@@ -55,6 +56,8 @@ export class OrganisationService {
       dir?: 'ASC' | 'DESC';
       field?: 'name' | 'id';
       query?: string;
+      member?: string;
+      round?: string;
     } = {},
   ): Promise<PagedOrganisationData> {
     const queryBuilder =
@@ -86,12 +89,47 @@ export class OrganisationService {
       .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
       .leftJoinAndSelect('opportunities.tag', 'tag')
       .leftJoinAndSelect('opportunities.shares', 'shares')
+      .leftJoinAndSelect('shares.actor', 'member')
       .leftJoinAndSelect(
         'opportunities.pipelineDefinition',
         'pipelineDefinition',
       );
 
-    queryBuilder.skip(options.skip).take(options.take);
+    if (options.skip || options.take) {
+      queryBuilder.skip(options.skip ?? 0).take(options.take ?? 10);
+    }
+
+    if (options.member) {
+      queryBuilder.andWhere('member.id = :member', {
+        member: options.member,
+      });
+    }
+
+    let tagEntities = [];
+
+    if (options.round) {
+      const tagAssignedTo = await this.organisationRepository.manager
+        .createQueryBuilder(TagEntity, 'tag')
+        .select()
+        .where('tag.id = :round', { round: options.round })
+        .getOne();
+
+      if (tagAssignedTo) tagEntities = [...tagEntities, tagAssignedTo];
+    }
+
+    if (tagEntities) {
+      for (const tag of tagEntities) {
+        const tagSubQuery = this.organisationRepository.manager
+          .createQueryBuilder(OpportunityEntity, 'opportunity_with_tag')
+          .select('opportunity_with_tag.organisationId')
+          .innerJoin('opportunity_with_tag.tag', 'subquerytag')
+          .where('subquerytag.id = :tagId');
+
+        queryBuilder
+          .andWhere(`organisations.id IN (${tagSubQuery.getQuery()})`)
+          .setParameter('tagId', tag.id);
+      }
+    }
 
     if (options.field) {
       queryBuilder.addOrderBy(
