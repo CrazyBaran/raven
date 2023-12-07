@@ -9,12 +9,16 @@ import {
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { RavenNotificationsService } from '@app/client/shared/util-notifications';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  public constructor(private readonly router: Router) {}
+  public constructor(
+    private readonly router: Router,
+    private notificationService: RavenNotificationsService,
+  ) {}
 
   public intercept(
     request: HttpRequest<unknown>,
@@ -62,9 +66,13 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
   private handle403Error(error: HttpErrorResponse | string): Observable<any> {
-    this.router.navigateByUrl('/access-denied', {
-      skipLocationChange: true,
+    this.notificationService.showErrorNotification({
+      content: 'Access denied.',
     });
+
+    // this.router.navigateByUrl('/access-denied', {
+    //   skipLocationChange: true,
+    // }); //TODO: handle 403 error
 
     return throwError(() => error);
   }

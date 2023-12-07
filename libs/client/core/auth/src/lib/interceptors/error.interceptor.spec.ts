@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { provideMockStore } from '@ngrx/store/testing';
 
+import { RavenNotificationsService } from '@app/client/shared/util-notifications';
 import { ErrorInterceptor } from './error.interceptor';
 
 describe('ErrorInterceptor', () => {
@@ -17,6 +18,12 @@ describe('ErrorInterceptor', () => {
           multi: true,
         },
         provideMockStore({}),
+        {
+          provide: RavenNotificationsService,
+          useValue: {
+            showErrorNotification: (): void => {},
+          },
+        },
       ],
       imports: [RouterTestingModule, HttpClientModule],
     }),

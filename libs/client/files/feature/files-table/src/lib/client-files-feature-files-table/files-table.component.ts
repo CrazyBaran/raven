@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { RouterOutlet } from '@angular/router';
 import { FilesService } from '@app/client/files/feature/data-access';
 import {
   FileEntity,
@@ -24,7 +25,13 @@ import {
   TagComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
+import { DropdownNavigationComponent } from '@app/client/shared/ui-router';
+import { QuickFiltersTemplateComponent } from '@app/client/shared/ui-templates';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
+import {
+  buildDropdownNavigation,
+  buildPageParamsSelector,
+} from '@app/client/shared/util-router';
 import { TagsActions, tagsQuery } from '@app/client/tags/state';
 import { TagData } from '@app/rvns-tags';
 import { Actions, ofType } from '@ngrx/effects';
@@ -43,6 +50,12 @@ import {
 import * as _ from 'lodash';
 import { filter, first, map, Observable } from 'rxjs';
 import { PickerComponent } from '../picker/picker.component';
+
+const opportunityFilesQueryParams = ['tag'] as const;
+
+export const selectOrganisationsTableParams = buildPageParamsSelector(
+  opportunityFilesQueryParams,
+);
 
 type FileRow = {
   type: 'file' | 'folder';
@@ -81,7 +94,8 @@ export const selectFilesTableViewModel = createSelector(
   opportunitiesQuery.selectRouteOpportunityDetails,
   filesQuery.selectLoadedFolders,
   filesQuery.selectFileTags,
-  (files, tags, opportunity, loadedFolders, fileTags) => {
+  selectOrganisationsTableParams,
+  (files, tags, opportunity, loadedFolders, fileTags, params) => {
     return {
       source: files
         .filter((t) => t.folderId === opportunity?.sharepointDirectoryId)
@@ -92,6 +106,16 @@ export const selectFilesTableViewModel = createSelector(
         !opportunity || !loadedFolders[opportunity.sharepointDirectoryId!],
       fileTags,
       rootFolder: opportunity?.sharepointDirectoryId,
+      filters: buildDropdownNavigation({
+        params,
+        name: 'tag',
+        data: tags.map((t) => ({ name: t.name, id: t.name })),
+        loading: false,
+        defaultItem: {
+          name: 'All Files',
+          id: null,
+        },
+      }),
     };
   },
 );
@@ -128,6 +152,9 @@ export const selectFolderChildren = (folder: string) =>
     ReactiveFormsModule,
     LabelModule,
     TreeListModule,
+    DropdownNavigationComponent,
+    QuickFiltersTemplateComponent,
+    RouterOutlet,
   ],
   templateUrl: './files-table.component.html',
   styleUrls: ['./files-table.component.scss'],

@@ -63,8 +63,8 @@ export const OPPORTUNITIES_ROUTES: Route[] = [
             path: 'files',
             providers: [provideFileFeature],
             loadComponent: () =>
-              import('@app/client/opportunities/feature/files').then(
-                (m) => m.OpportunityFilesComponent,
+              import('@app/client/files/feature/files-table').then(
+                (m) => m.FilesTableComponent,
               ),
             children: [
               {
