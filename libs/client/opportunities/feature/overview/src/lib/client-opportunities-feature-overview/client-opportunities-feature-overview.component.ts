@@ -184,13 +184,15 @@ export class ClientOpportunitiesFeatureOverviewComponent {
         this.cdr.detectChanges();
       });
 
-    this.actions.pipe(
-      takeUntilDestroyed(),
-      ofType(OpportunitiesActions.updateOpportunityTeamSuccess),
-      tap(() => {
-        this.showEditTeam.set(false);
-      }),
-    );
+    this.actions
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(OpportunitiesActions.updateOpportunityTeamSuccess),
+        tap(() => {
+          this.showEditTeam.set(false);
+        }),
+      )
+      .subscribe();
   }
 
   protected updateTeam(): void {
