@@ -18,7 +18,7 @@ const organisationStageDtos = [
       domains: ['first-test.com'],
       global: true,
     } as OrganizationDto,
-    entryId: 456,
+    entityId: 456,
     entryAdded: new Date(),
     stage: {} as FieldValueRankedDropdownDto,
     fields: [
@@ -38,7 +38,7 @@ const organisationStageDtos = [
       domains: ['test.com', 'test.co.uk'],
       global: true,
     } as OrganizationDto,
-    entryId: 456,
+    entityId: 456,
     entryAdded: new Date(),
     stage: {} as FieldValueRankedDropdownDto,
     fields: [

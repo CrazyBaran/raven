@@ -108,7 +108,7 @@ export class AffinityService {
             ),
           );
           const matchingEntry = matchedData.find(
-            (data) => data?.entryId?.toString() === entryIdKey,
+            (data) => data?.entityId?.toString() === entryIdKey,
           );
 
           if (matchingEntry)
@@ -149,7 +149,8 @@ export class AffinityService {
       );
 
       matchedData.push({
-        entryId: organization.id,
+        entityId: organization.id,
+        listEntryId: matchingEntry?.id,
         entryAdded: matchingEntry ? new Date(matchingEntry.created_at) : null,
         organizationDto: organization as OrganizationBaseDto,
         stage: latestFieldChange?.value as FieldValueRankedDropdownDto,

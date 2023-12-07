@@ -97,7 +97,8 @@ export class AffinityWebhookService {
   ): Promise<void> {
     const organizationDto = payload.body.entity as OrganizationDto;
     const organizationData: OrganizationStageDto = {
-      entryId: payload.body.id,
+      entityId: payload.body.entity_id,
+      listEntryId: payload.body.id,
       entryAdded: new Date(payload.body.created_at),
       organizationDto: organizationDto,
       stage: undefined,
@@ -131,7 +132,8 @@ export class AffinityWebhookService {
   ): Promise<void> {
     const organizationDto = payload.body as OrganizationBaseDto;
     const organizationData: OrganizationStageDto = {
-      entryId: payload.body.id,
+      entityId: payload.body.id,
+      listEntryId: null,
       entryAdded: null,
       organizationDto: organizationDto,
       stage: undefined,
@@ -181,7 +183,7 @@ export class AffinityWebhookService {
       handledField.allows_multiple
     ) {
       const companies = await this.affinityCacheService.getAll(
-        (entry) => entry.entryId === payload.body.list_entry_id,
+        (entry) => entry.entityId === payload.body.list_entry_id,
       );
       const company = companies[0];
       const cacheFieldName = FIELD_MAPPING.find(
@@ -235,7 +237,7 @@ export class AffinityWebhookService {
     payload: WebhookPayloadFieldValueDto,
   ): Promise<void> {
     const companies = await this.affinityCacheService.getAll(
-      (entry) => entry.entryId === payload.body.list_entry_id,
+      (entry) => entry.listEntryId === payload.body.list_entry_id,
     );
     if (!companies || companies.length === 0) {
       this.logger.warn(

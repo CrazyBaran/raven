@@ -27,7 +27,7 @@ export class AffinityStatusChangedEventHandler {
       where: {
         organisation: { domains: Like(`%${event.organisationDomains[0]}%`) },
       },
-      relations: ['organisation'],
+      relations: ['organisation', 'pipelineDefinition'],
       order: { createdAt: 'DESC' },
     });
     if (opportunities.length === 0) {
@@ -37,13 +37,14 @@ export class AffinityStatusChangedEventHandler {
       return;
     }
 
-    const pipelineDefinitions = await this.pipelineRepository.find({
-      relations: ['stages'],
-    });
-    if (pipelineDefinitions.length !== 1) {
-      throw new Error('There should be only one pipeline definition!');
+    const opportunity = opportunities[0];
+    const pipelineDefinition = opportunity.pipelineDefinition;
+    if (!pipelineDefinition) {
+      throw new Error(
+        `Cannot find pipeline definition for opportunity ${opportunities[0].id}!`,
+      );
     }
-    const pipelineDefinition = pipelineDefinitions[0];
+
     const stage = pipelineDefinition.stages.find(
       (stage) => stage.mappedFrom === event.targetStatusName,
     );
@@ -53,7 +54,6 @@ export class AffinityStatusChangedEventHandler {
       );
     }
 
-    const opportunity = opportunities[0];
     opportunity.pipelineStage = stage;
     opportunity.pipelineStageId = stage.id;
     await this.opportunityRepository.save(opportunity);
