@@ -81,7 +81,7 @@ import { selectOpportunityOverviewViewModel } from './client-opportunities-featu
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientOpportunitiesFeatureOverviewComponent {
-  public rolesData = ['admin', 'user'];
+  public rolesData = ['Deal Lead', 'Team Member'];
 
   protected store = inject(Store);
 
@@ -100,7 +100,7 @@ export class ClientOpportunitiesFeatureOverviewComponent {
     roles: this.fb.array(
       [] as FormGroup<{
         user: FormControl<Tag>;
-        role: FormControl<'admin' | 'user'>;
+        role: FormControl<'Deal Lead' | 'Team Member'>;
       }>[],
     ),
   });
@@ -118,7 +118,7 @@ export class ClientOpportunitiesFeatureOverviewComponent {
           index: number;
         }): boolean => {
           const adminCount = value.roles!.filter(
-            (r) => r.role === 'admin',
+            (r) => r.role === 'Deal Lead',
           ).length;
 
           if (adminCount > 1) {
@@ -127,7 +127,7 @@ export class ClientOpportunitiesFeatureOverviewComponent {
 
           const isAdmin =
             value.roles!.find((r) => r.user?.id === itemArgs.dataItem.id)
-              ?.role === 'admin';
+              ?.role === 'Deal Lead';
 
           return isAdmin;
         };
@@ -135,7 +135,7 @@ export class ClientOpportunitiesFeatureOverviewComponent {
     );
 
   protected adminCount = computed(() => {
-    return this.teamFormValue()!.roles!.filter((r) => r.role === 'admin')
+    return this.teamFormValue()!.roles!.filter((r) => r.role === 'Deal Lead')
       .length;
   });
 
@@ -163,13 +163,17 @@ export class ClientOpportunitiesFeatureOverviewComponent {
 
         added.forEach((r) => {
           const hasAdmin = rolesArray.controls.some(
-            ({ value }) => value.role === 'admin',
+            ({ value }) => value.role === 'Deal Lead',
           );
 
           rolesArray.push(
             this.fb.group({
               user: [r],
-              role: [hasAdmin ? 'user' : ('admin' as 'user' | 'admin')],
+              role: [
+                hasAdmin
+                  ? 'Team Member'
+                  : ('Deal Lead' as 'Team Member' | 'Deal Lead'),
+              ],
             }),
           );
         });
@@ -184,22 +188,24 @@ export class ClientOpportunitiesFeatureOverviewComponent {
         this.cdr.detectChanges();
       });
 
-    this.actions.pipe(
-      takeUntilDestroyed(),
-      ofType(OpportunitiesActions.updateOpportunityTeamSuccess),
-      tap(() => {
-        this.showEditTeam.set(false);
-      }),
-    );
+    this.actions
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(OpportunitiesActions.updateOpportunityTeamSuccess),
+        tap(() => {
+          this.showEditTeam.set(false);
+        }),
+      )
+      .subscribe();
   }
 
   protected updateTeam(): void {
     const payload = {
       owners: this.teamFormGroup.value
-        .roles!.filter((r) => r.role === 'admin')
+        .roles!.filter((r) => r.role === 'Deal Lead')
         .map((r) => r.user!.userId!),
       members: this.teamFormGroup.value
-        .roles!.filter((r) => r.role === 'user')
+        .roles!.filter((r) => r.role === 'Team Member')
         .map((r) => r.user!.userId!),
     };
 
@@ -238,11 +244,11 @@ export class ClientOpportunitiesFeatureOverviewComponent {
         roles: [
           ...team.owners.map((m) => ({
             user: this.vm().users.find((x) => x.userId === m.actorId)!,
-            role: 'admin' as 'admin' | 'user',
+            role: 'Deal Lead' as 'Deal Lead' | 'Team Member',
           })),
           ...team.members.map((m) => ({
             user: this.vm().users.find((x) => x.userId === m.actorId)!,
-            role: 'user' as 'admin' | 'user',
+            role: 'Team Member' as 'Deal Lead' | 'Team Member',
           })),
         ],
       });
