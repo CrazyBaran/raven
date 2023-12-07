@@ -19,6 +19,7 @@ const organisationStageDtos = [
       global: true,
     } as OrganizationDto,
     entityId: 456,
+    listEntryId: 789,
     entryAdded: new Date(),
     stage: {} as FieldValueRankedDropdownDto,
     fields: [
@@ -39,6 +40,7 @@ const organisationStageDtos = [
       global: true,
     } as OrganizationDto,
     entityId: 456,
+    listEntryId: 789,
     entryAdded: new Date(),
     stage: {} as FieldValueRankedDropdownDto,
     fields: [
