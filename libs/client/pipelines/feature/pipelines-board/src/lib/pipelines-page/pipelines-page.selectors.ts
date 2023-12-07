@@ -109,7 +109,7 @@ export const selectPipelineBoardQueryModel = createSelector(
     buildInputNavigation({
       params,
       name: 'query',
-      placeholder: 'Search Companies',
+      placeholder: 'Search Pipeline',
     }),
 );
 export const selectAllOpportunitiesDictionary = createSelector(
