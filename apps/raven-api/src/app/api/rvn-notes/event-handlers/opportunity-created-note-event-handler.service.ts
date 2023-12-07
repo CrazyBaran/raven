@@ -1,7 +1,7 @@
 import { OpportunityCreatedEvent } from '@app/rvns-opportunities';
 import { TemplateTypeEnum } from '@app/rvns-templates';
 import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { EntityManager } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
@@ -11,13 +11,14 @@ import { UserEntity } from '../../rvn-users/entities/user.entity';
 import { NotesService } from '../notes.service';
 
 @Injectable()
-export class OpportunityCreatedEventHandler {
+export class OpportunityCreatedNoteEventHandler {
   public constructor(
     private readonly noteService: NotesService,
     private readonly entityManager: EntityManager,
     private readonly logger: RavenLogger,
+    private readonly eventEmitter: EventEmitter2,
   ) {
-    this.logger.setContext(OpportunityCreatedEventHandler.name);
+    this.logger.setContext(OpportunityCreatedNoteEventHandler.name);
   }
 
   @OnEvent('opportunity-created')
@@ -54,7 +55,6 @@ export class OpportunityCreatedEventHandler {
       tags: [],
       fields: [],
     });
-    opportunityEntity.note = note;
     opportunityEntity.noteId = note.id;
 
     const savedOpportunity = await this.entityManager.save(
@@ -64,5 +64,8 @@ export class OpportunityCreatedEventHandler {
     this.logger.info(
       `Saved opportunity ${savedOpportunity.id} with note ${savedOpportunity.noteId}`,
     );
+    this.logger.debug({ savedOpportunity });
+    // we need to emit this event to trigger the creation of the sharepoint directories
+    this.eventEmitter.emit('opportunity-note-created', event);
   }
 }
