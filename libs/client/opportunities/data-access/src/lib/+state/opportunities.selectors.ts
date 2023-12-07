@@ -1,3 +1,4 @@
+import { authQuery } from '@app/client/core/auth';
 import { notesQuery } from '@app/client/opportunities/api-notes';
 import { storageQuery } from '@app/client/shared/storage/data-access';
 import { getDealLeads, getDealTeam } from '@app/client/shared/util';
@@ -24,6 +25,11 @@ export const selectAllOpportunities = createSelector(
 export const selectIsLoading = createSelector(
   selectOpportunitiesState,
   (state: OpportunitiesState) => state.isLoading,
+);
+
+export const selectIsLoadingUpdateStage = createSelector(
+  selectOpportunitiesState,
+  (state: OpportunitiesState) => state.updateStage.isLoading,
 );
 
 export const selectOpportunitiesDictionary = createSelector(
@@ -59,6 +65,15 @@ export const selectRouteOpportunityDetails = createSelector(
       null
     );
   },
+);
+
+export const selectHasPermissionForCurrentOpportunity = createSelector(
+  authQuery.selectUserEmail,
+  selectRouteOpportunityDetails,
+  (userEmail, opportunity) =>
+    opportunity?.team?.owners?.some(
+      ({ actorEmail }) => actorEmail === userEmail,
+    ),
 );
 
 export const selectOpportunityNoteTabs = createSelector(
@@ -119,4 +134,6 @@ export const opportunitiesQuery = {
   selectOpportunityNoteTabs,
   selectOpportunityDetailsIsLoading,
   selectOpportunityUpdateIsLoading,
+  selectHasPermissionForCurrentOpportunity,
+  selectIsLoadingUpdateStage,
 };

@@ -47,6 +47,11 @@ const selectStageSecondaryColorDictionary = createSelector(
       .value(),
 );
 
+export const selectAllPipelineStages = createSelector(
+  selectAllPipelines,
+  (pipelines) => pipelines.flatMap(({ stages }) => stages),
+);
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectPipelineById = (id: string) =>
   createSelector(selectPipelinesDictionary, (dictionary) => dictionary[id]);
@@ -56,4 +61,5 @@ export const pipelinesQuery = {
   selectIsLoading,
   selectPipelineById,
   selectStagePrimaryColorDictionary,
+  selectAllPipelineStages,
 };

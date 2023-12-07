@@ -3,11 +3,13 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { trigger } from '@angular/animations';
 import { JsonPipe, NgIf, NgStyle } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotesActions } from '@app/client/notes/data-access';
 import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
+import { PipelinesActions } from '@app/client/pipelines/state';
 import {
   FadeInOutDirective,
   LoaderComponent,
@@ -15,8 +17,10 @@ import {
 } from '@app/client/shared/ui';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { RxFor } from '@rx-angular/template/for';
 import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
@@ -39,6 +43,7 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     SkeletonModule,
     TimesPipe,
     FadeInOutDirective,
+    DropDownsModule,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
@@ -48,6 +53,7 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
 export class OpportunityDetailsPageComponent {
   protected store = inject(Store);
   protected router = inject(Router);
+  protected actions = inject(Actions);
 
   protected vm = this.store.selectSignal(selectOpportunityDetailViewModel);
 
@@ -78,6 +84,20 @@ export class OpportunityDetailsPageComponent {
       OrganisationsActions.getOrganisation({ id: organizationId }),
     );
     this.store.dispatch(NotesActions.getOpportunityNotes({ opportunityId }));
+    this.store.dispatch(PipelinesActions.getPipelines());
+
+    this.actions
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(OpportunitiesActions.changeOpportunityPipelineStageSuccess),
+      )
+      .subscribe((action) => {
+        this.store.dispatch(
+          OpportunitiesActions.getOpportunityDetails({
+            id: opportunityId,
+          }),
+        );
+      });
   }
 
   public handleClosePreview(): void {
@@ -87,5 +107,14 @@ export class OpportunityDetailsPageComponent {
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  public onStageChange(stageId: string): void {
+    this.store.dispatch(
+      OpportunitiesActions.changeOpportunityPipelineStage({
+        id: this.vm().opportunityId!,
+        pipelineStageId: stageId,
+      }),
+    );
   }
 }
