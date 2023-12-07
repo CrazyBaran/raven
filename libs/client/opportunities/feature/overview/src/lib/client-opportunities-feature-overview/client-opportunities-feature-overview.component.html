@@ -180,7 +180,9 @@
         [data]="rolesData"
         class="!w-[126px] overflow-hidden"
         [formControl]="role.controls.role"
-        [disabled]="adminCount() < 2 && role.controls.role.value === 'admin'"
+        [disabled]="
+          adminCount() < 2 && role.controls.role.value === 'Deal Lead'
+        "
         fillMode="outline"
       />
     </div>
