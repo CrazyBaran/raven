@@ -2,6 +2,7 @@
 //TODO: Refactor opportunity details
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoteStoreFacade } from '@app/client/notes/data-access';
 import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
@@ -19,6 +20,7 @@ describe('OpportunityDetailsPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [OpportunityDetailsPageComponent, RouterTestingModule],
       providers: [
+        provideAnimations(),
         provideMockActions(() => actions$),
         provideMockStore({
           selectors: [
@@ -27,6 +29,7 @@ describe('OpportunityDetailsPageComponent', () => {
               value: {
                 opportunityId: '1',
                 currentOrganisationId: '1',
+                lines: {},
               },
             },
           ],
