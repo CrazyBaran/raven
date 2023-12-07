@@ -193,6 +193,12 @@ export class OrganisationService {
 
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
+    const teamsForOpportunities =
+      await this.opportunityTeamService.getOpportunitiesTeams(
+        (organisation as unknown as OrganisationDataWithOpportunities)
+          .opportunities as unknown as OpportunityEntity[],
+      );
+
     return await this.affinityEnricher.enrichOrganisation(
       organisation,
       (entity, data) => {
@@ -208,6 +214,8 @@ export class OrganisationService {
             order: pipelineStage.order,
             mappedFrom: pipelineStage.mappedFrom,
           };
+
+          opportunity.team = teamsForOpportunities[opportunity.id];
         }
         data.sharepointDirectory =
           SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
