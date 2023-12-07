@@ -22,6 +22,9 @@ export interface OpportunitiesState extends EntityState<OpportunityData> {
   updateTeam: {
     isLoading: boolean;
   };
+  updateStage: {
+    isLoading: boolean;
+  };
 }
 
 export const opportunitiesAdapter: EntityAdapter<OpportunityData> =
@@ -42,6 +45,9 @@ export const initialState: OpportunitiesState =
       isLoading: false,
     },
     updateTeam: {
+      isLoading: false,
+    },
+    updateStage: {
       isLoading: false,
     },
   });
@@ -87,6 +93,24 @@ export const opportunitiesReducer = createReducer(
         },
         { ...state, isLoading: false },
       ),
+  ),
+
+  on(OpportunitiesActions.changeOpportunityPipelineStage, (state) => ({
+    ...state,
+    updateStage: {
+      isLoading: true,
+    },
+  })),
+
+  on(
+    OpportunitiesActions.changeOpportunityPipelineStageFailure,
+    OpportunitiesActions.changeOpportunityPipelineStageSuccess,
+    (state) => ({
+      ...state,
+      updateStage: {
+        isLoading: false,
+      },
+    }),
   ),
 
   on(OpportunitiesActions.getOpportunityDetails, (state) => ({

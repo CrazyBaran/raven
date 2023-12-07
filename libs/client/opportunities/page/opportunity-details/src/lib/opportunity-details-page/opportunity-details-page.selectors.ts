@@ -4,6 +4,7 @@ import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 
 import { notesQuery } from '@app/client/notes/data-access';
 import { OrganisationsFeature } from '@app/client/organisations/state';
+import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
 
@@ -50,15 +51,17 @@ export const selectDynamicOpportunityTabs = createSelector(
 );
 
 export const selectOpportunityPipelines = createSelector(
-  routerQuery.selectActiveLine,
-  (activeLine) =>
-    LINES.map(({ label, theme }) => ({
-      label,
-      theme,
-      state: <StatusIndicatorComponent['state']>(
-        ((activeLine ?? LINES[0].label) === label ? 'active' : 'inactive')
-      ),
-    })),
+  pipelinesQuery.selectAllPipelineStages,
+  pipelinesQuery.selectIsLoading,
+  opportunitiesQuery.selectRouteOpportunityDetails,
+  opportunitiesQuery.selectHasPermissionForCurrentOpportunity,
+  opportunitiesQuery.selectIsLoadingUpdateStage,
+  (stages, isLoading, opportunity, hasPermission, isLoadingUpdateState) => ({
+    data: stages,
+    value: opportunity?.stage.id,
+    disabled: isLoading || isLoadingUpdateState, // todo: add permission check
+    isLoading: isLoading || isLoadingUpdateState,
+  }),
 );
 
 export const selectOpportunityPageNavigation = createSelector(
