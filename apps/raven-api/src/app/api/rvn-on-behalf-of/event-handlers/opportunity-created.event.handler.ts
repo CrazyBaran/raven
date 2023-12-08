@@ -143,7 +143,9 @@ export class OpportunityCreatedEventHandler {
       if (e.statusCode === 404) {
         return null;
       }
-      this.logger.log(`Could not fetch directory information: ${e}`);
+      this.logger.log(
+        `Could not fetch directory information for name: ${name}: ${e}`,
+      );
       throw e;
     }
   }
