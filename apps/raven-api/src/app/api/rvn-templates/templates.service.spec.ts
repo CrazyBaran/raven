@@ -95,7 +95,6 @@ describe('TemplatesService', () => {
       );
       savedTemplateMock.id = 'uuid';
       savedTemplateMock.name = name;
-      savedTemplateMock.createdBy = userEntity as UserEntity;
       savedTemplateMock.version = 1;
 
       jest
@@ -168,7 +167,6 @@ describe('TemplatesService', () => {
       savedFieldGroupMock.template = {
         id: options.templateId,
       } as TemplateEntity;
-      savedFieldGroupMock.createdBy = options.userEntity as UserEntity;
 
       jest
         .spyOn(mockFieldGroupsRepository, 'save')
@@ -244,7 +242,6 @@ describe('TemplatesService', () => {
       savedFieldDefinitionMock.group = {
         id: options.groupId,
       } as FieldGroupEntity;
-      savedFieldDefinitionMock.createdBy = options.userEntity as UserEntity;
       jest
         .spyOn(mockFieldDefinitionsRepository, 'save')
         .mockResolvedValue(savedFieldDefinitionMock);

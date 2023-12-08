@@ -122,7 +122,6 @@ export class TemplatesService {
     templateEntity.type = options.type;
     templateEntity.isDefault = options.isDefault;
     templateEntity.version = 1; // TODO versioning on update will be handled later?
-    templateEntity.createdBy = options.userEntity;
     return this.templatesRepository.save(templateEntity);
   }
 
@@ -170,7 +169,6 @@ export class TemplatesService {
       fieldGroupEntity.tab = options.tab;
     }
     fieldGroupEntity.template = { id: options.templateId } as TemplateEntity;
-    fieldGroupEntity.createdBy = options.userEntity;
     return this.fieldGroupsRepository.save(fieldGroupEntity);
   }
 
@@ -203,7 +201,6 @@ export class TemplatesService {
       tab.pipelineStages = options.pipelineStages;
       tab.relatedFields = options.relatedFieldDefinitions;
       tab.relatedTemplates = options.relatedTemplates;
-      tab.createdBy = options.userEntity;
       const savedTab = await tem.save(tab);
 
       if (options.template.type === TemplateTypeEnum.Workflow) {
@@ -297,7 +294,6 @@ export class TemplatesService {
     fieldDefinitionEntity.order = options.order;
     fieldDefinitionEntity.type = options.type;
     fieldDefinitionEntity.group = { id: options.groupId } as FieldGroupEntity;
-    fieldDefinitionEntity.createdBy = options.userEntity;
     return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
   }
 
@@ -331,7 +327,6 @@ export class TemplatesService {
       isDefault: entity.isDefault,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
-      createdById: entity.createdById,
     };
   }
 
@@ -356,7 +351,6 @@ export class TemplatesService {
       templateId: entity.templateId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
-      createdById: entity.createdById,
     };
   }
   public tabEntityToTabData(entity: TabEntity): TabWithFieldGroupsData {
@@ -382,7 +376,6 @@ export class TemplatesService {
       templateId: entity.templateId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
-      createdById: entity.createdById,
     };
   }
 
@@ -397,7 +390,6 @@ export class TemplatesService {
       fieldGroupId: entity.groupId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
-      createdById: entity.createdById,
     };
   }
 
@@ -411,7 +403,6 @@ export class TemplatesService {
       isDefault: template.isDefault,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
-      createdById: template.createdById,
       tabs: template.tabs.map(this.tabEntityToTabData.bind(this)),
       fieldGroups: template.fieldGroups
         ?.filter((fg) => !fg.tabId)

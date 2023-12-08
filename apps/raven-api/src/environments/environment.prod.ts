@@ -97,6 +97,9 @@ export const environment = {
       subscribers: [],
       autoLoadEntities: true,
       namingStrategy: new SnakeNamingStrategy(),
+      migrations: ['./apps/raven-api/src/migrations/*.ts'],
+      migrationsTableName: 'rvn_migrations',
+      migrationsRun: true,
       options: {
         enableArithAbort: true,
         useUTC: true,

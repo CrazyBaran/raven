@@ -12,13 +12,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
-import { UserEntity } from '../../rvn-users/entities/user.entity';
+import { BaseAuditableEntity } from '../../../shared/interfaces/auditable.interface';
 import { FieldGroupEntity } from './field-group.entity';
 
 @Entity({ name: 'field_definitions' })
 @Index(['id', 'group'], { unique: true })
-export class FieldDefinitionEntity implements AuditableEntity {
+export class FieldDefinitionEntity implements BaseAuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -39,15 +38,6 @@ export class FieldDefinitionEntity implements AuditableEntity {
   @RelationId((fd: FieldDefinitionEntity) => fd.group)
   public groupId: string;
 
-  @Index()
-  @ManyToOne(() => UserEntity, { nullable: false })
-  @JoinColumn({ name: 'created_by_id' })
-  public createdBy: UserEntity;
-
-  @Column()
-  @RelationId((fd: FieldDefinitionEntity) => fd.createdBy)
-  public createdById: string;
-
   @CreateDateColumn()
   public createdAt: Date;
 
@@ -60,6 +50,5 @@ export class FieldDefinitionEntity implements AuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.groupId = this.groupId?.toLowerCase();
-    this.createdById = this.createdById?.toLowerCase();
   }
 }

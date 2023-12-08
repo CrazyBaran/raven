@@ -6,5 +6,4 @@ export interface FieldDefinitionData {
   readonly fieldGroupId: string;
   readonly updatedAt: Date;
   readonly createdAt: Date;
-  readonly createdById: string;
 }
