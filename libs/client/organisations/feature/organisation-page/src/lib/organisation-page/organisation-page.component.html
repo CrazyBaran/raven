@@ -134,7 +134,11 @@
               title="Deal Team"
             >
               <ng-template kendoGridCellTemplate let-dataItem>
-                <p>{{ (dataItem.team | dealTeam)?.[0] ?? '' }}</p>
+                <ui-tag
+                  *rxFor="let name of dataItem.team | dealTeam"
+                  [label]="name"
+                  uiUserTag
+                />
               </ng-template>
             </kendo-grid-column>
 
