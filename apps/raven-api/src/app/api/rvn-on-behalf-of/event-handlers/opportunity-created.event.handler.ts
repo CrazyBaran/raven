@@ -29,22 +29,41 @@ export class OpportunityCreatedEventHandler {
         relations: ['organisation', 'tag'],
       },
     );
-    await this.entityManager.transaction(async (tem) => {
-      const ogranisationFolderId =
-        await this.createSharepointDirectoryForOpportunityOrganisation(
-          opportunityEntity,
-        );
-      opportunityEntity.organisation.sharepointDirectoryId =
-        ogranisationFolderId;
-      await tem.save(opportunityEntity.organisation);
+    const ogranisationFolderId =
+      await this.createSharepointDirectoryForOpportunityOrganisation(
+        opportunityEntity,
+      );
+    opportunityEntity.organisation.sharepointDirectoryId = ogranisationFolderId;
 
-      opportunityEntity.sharepointDirectoryId =
-        await this.createSharepointDirectoryForOpportunity(
-          opportunityEntity,
-          ogranisationFolderId,
-        );
+    const opportunityFolderId =
+      await this.createSharepointDirectoryForOpportunity(
+        opportunityEntity,
+        ogranisationFolderId,
+      );
+    opportunityEntity.sharepointDirectoryId = opportunityFolderId;
+
+    await this.entityManager.transaction(async (tem) => {
+      await tem.save(opportunityEntity.organisation);
       await tem.save(opportunityEntity);
     });
+
+    const opportunityPath = `${SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
+      opportunityEntity.organisation,
+    )}/${SharepointDirectoryStructureGenerator.getDirectoryNameForOpportunity(
+      opportunityEntity,
+    )}`;
+    const directories = environment.sharePoint.companyDirectories;
+    for (const directory of directories) {
+      const directoryPath = `${opportunityPath}/${directory}`;
+      const existingFolderId = await this.getDirectoryIdForName(directoryPath);
+      if (existingFolderId) {
+        this.logger.log(
+          `Directory '${directory}' already exists in opportunity ${opportunityEntity.id} folder`,
+        );
+        continue;
+      }
+      await this.createDirectory(directory, opportunityFolderId);
+    }
   }
 
   private async createSharepointDirectoryForOpportunityOrganisation(
