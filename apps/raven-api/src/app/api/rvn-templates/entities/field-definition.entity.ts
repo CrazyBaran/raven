@@ -7,14 +7,12 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { BaseAuditableEntity } from '../../../shared/interfaces/auditable.interface';
-import { FieldConfigurationEntity } from './field-configuration.entity';
 import { FieldGroupEntity } from './field-group.entity';
 
 @Entity({ name: 'field_definitions' })
@@ -40,12 +38,8 @@ export class FieldDefinitionEntity implements BaseAuditableEntity {
   @RelationId((fd: FieldDefinitionEntity) => fd.group)
   public groupId: string;
 
-  @OneToMany(
-    () => FieldConfigurationEntity,
-    (fc: FieldConfigurationEntity) => fc.fieldDefinition,
-    { cascade: ['insert'] },
-  )
-  public configurations: FieldConfigurationEntity[];
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public configuration: string;
 
   @CreateDateColumn()
   public createdAt: Date;
@@ -59,12 +53,5 @@ export class FieldDefinitionEntity implements BaseAuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.groupId = this.groupId?.toLowerCase();
-
-    this.configuration = this.configurations.reduce(
-      (acc, curr) => ({ ...acc, [curr.key]: curr.value }),
-      {},
-    );
   }
-  /* eslint-disable @typescript-eslint/member-ordering */
-  public configuration: Record<string, string>;
 }

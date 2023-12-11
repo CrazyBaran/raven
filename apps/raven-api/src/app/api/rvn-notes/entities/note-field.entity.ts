@@ -49,7 +49,7 @@ export class NoteFieldEntity implements AuditableEntity {
   @RelationId((nfd: NoteFieldEntity) => nfd.noteGroup)
   public noteGroupId: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public configuration: string;
 
   @Index()
