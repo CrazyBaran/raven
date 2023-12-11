@@ -19,5 +19,5 @@
       }
     }
   },
-  "tags": ["api", "client"]
+  "tags": ["api", "client", "type:dtos"]
 }

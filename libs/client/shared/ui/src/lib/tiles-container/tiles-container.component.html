@@ -1,26 +1,26 @@
 <ul
   (appOnResize)="onContainerWidthChange($event)"
   #placeholder
-  class="m-0 flex list-none items-start justify-start overflow-hidden p-0"
+  class="m-0 flex list-none flex-wrap items-start justify-start overflow-hidden p-0"
 >
-  <ng-container *ngFor="let tile of tilesSignal(); let i = index">
-    <li
-      (appOnResize)="onTileListWidthChange()"
-      class="p-1 first:pl-0 last:pr-0"
-      [ngClass]="{
-        'invisible order-last': i > maxIndexSignal()!
-      }"
-    >
-      <ng-container
-        [ngTemplateOutlet]="itemTemplate"
-        [ngTemplateOutletContext]="{ $implicit: tile }"
-      ></ng-container>
-    </li>
-  </ng-container>
+  @for (tile of tilesSignal(); track trackBy; let i = $index){
 
   <li
+    (appOnResize)="onTileListWidthChange()"
+    class="tile-list p-1 pl-0 pr-2 last:pr-0"
     [ngClass]="{
-      'invisible order-last': hiddenTilesLengthSignal() < 1
+      'invisible order-last h-0': i > maxIndexSignal()!
+    }"
+  >
+    <ng-container
+      [ngTemplateOutlet]="itemTemplate"
+      [ngTemplateOutletContext]="{ $implicit: tile }"
+    />
+  </li>
+  }
+  <li
+    [ngClass]="{
+      'invisible order-last h-0': hiddenTilesLengthSignal() < 1
     }"
     class="p-1 first:pl-0 last:pr-0"
     (appOnResize)="onTooltipTileWidthChange($event)"
@@ -28,6 +28,6 @@
     <ng-container
       [ngTemplateOutlet]="tooltipTemplate"
       [ngTemplateOutletContext]="{ $implicit: hiddenTilesLengthSignal() }"
-    ></ng-container>
+    />
   </li>
 </ul>

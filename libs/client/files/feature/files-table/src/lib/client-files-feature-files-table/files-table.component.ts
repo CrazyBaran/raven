@@ -170,6 +170,8 @@ export class FilesTableComponent {
 
   public source = computed(() => this.vm().source, { equal: _.isEqual });
 
+  public filters = computed(() => this.vm().filters, { equal: _.isEqual });
+
   public manageFileGroup = new FormGroup({
     name: new FormControl({ value: '', disabled: true }),
     tags: new FormControl([] as TagData[]),

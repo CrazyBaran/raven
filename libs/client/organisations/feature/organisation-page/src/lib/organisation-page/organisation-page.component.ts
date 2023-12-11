@@ -98,10 +98,14 @@ export class OrganisationPageComponent {
       dir: 'desc',
     },
   ];
+  public source = computed(() => this.fileTable().source, { equal: _.isEqual });
   protected store = inject(Store);
   protected router = inject(Router);
 
   protected vm = this.store.selectSignal(selectOrganisationPageViewModel);
+
+  // files
+  protected fileTable = this.store.selectSignal(selectFilesTableViewModel);
 
   public constructor() {
     const organizationId = this.vm().currentOrganisationId;
@@ -145,11 +149,6 @@ export class OrganisationPageComponent {
   public openNoteShelf(): void {
     this.store.dispatch(ShelfActions.openNotepad());
   }
-
-  // files
-  protected fileTable = this.store.selectSignal(selectFilesTableViewModel);
-
-  public source = computed(() => this.fileTable().source, { equal: _.isEqual });
 
   public trackBy: TrackByFunction<FileRow> = (index: number, item: FileRow) =>
     item.id;

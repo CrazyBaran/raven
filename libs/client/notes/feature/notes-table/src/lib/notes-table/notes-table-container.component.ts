@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoteQueryParams, NotesActions } from '@app/client/notes/data-access';
 import { NotesTableComponent } from '@app/client/notes/ui';
@@ -24,6 +29,9 @@ export class NotesTableContainerComponent {
   protected vm = this.store.selectSignal(selectNotesTableViewModel);
 
   public constructor() {
+    effect(() => {
+      console.log(this.vm());
+    });
     this.store
       .select(selectNotesTableViewModel)
       .pipe(
