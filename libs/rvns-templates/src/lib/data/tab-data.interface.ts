@@ -18,5 +18,4 @@ export interface TabData {
   readonly relatedTemplates: RelatedSimpleEntityData[];
   readonly updatedAt: Date;
   readonly createdAt: Date;
-  readonly createdById: string;
 }

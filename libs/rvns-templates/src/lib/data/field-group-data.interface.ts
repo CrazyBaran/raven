@@ -7,5 +7,4 @@ export interface FieldGroupData {
   readonly templateId: string;
   readonly updatedAt: Date;
   readonly createdAt: Date;
-  readonly createdById: string;
 }

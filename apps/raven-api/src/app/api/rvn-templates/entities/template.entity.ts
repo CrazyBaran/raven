@@ -6,7 +6,6 @@ import {
   Entity,
   Index,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -14,14 +13,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { AuditableEntity } from '../../../shared/interfaces/auditable.interface';
-import { UserEntity } from '../../rvn-users/entities/user.entity';
+import { BaseAuditableEntity } from '../../../shared/interfaces/auditable.interface';
 import { FieldGroupEntity } from './field-group.entity';
 import { TabEntity } from './tab.entity';
 
 @Entity({ name: 'templates' })
 @Index(['id'], { unique: true })
-export class TemplateEntity implements AuditableEntity {
+export class TemplateEntity implements BaseAuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -51,15 +49,6 @@ export class TemplateEntity implements AuditableEntity {
   @OneToMany(() => TabEntity, (t) => t.template, { eager: true })
   public tabs: TabEntity[];
 
-  @Index()
-  @ManyToOne(() => UserEntity, { nullable: false })
-  @JoinColumn({ name: 'created_by_id' })
-  public createdBy: UserEntity;
-
-  @Column()
-  @RelationId((t: TemplateEntity) => t.createdBy)
-  public createdById: string;
-
   @CreateDateColumn()
   public createdAt: Date;
 
@@ -72,6 +61,5 @@ export class TemplateEntity implements AuditableEntity {
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.previousVersionId = this.previousVersionId?.toLowerCase() || null;
-    this.createdById = this.createdById?.toLowerCase();
   }
 }

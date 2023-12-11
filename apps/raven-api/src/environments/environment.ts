@@ -198,6 +198,10 @@ export const environment = {
     driveId: env.get('SHAREPOINT_DRIVE_ID').asString(),
     siteId: env.get('SHAREPOINT_SITE_ID').asString(),
     rootDirectoryId: env.get('SHAREPOINT_ROOT_DIRECTORY_ID').asString(),
+    companyDirectories: env
+      .get('SHAREPOINT_COMPANY_DIRECTORIES')
+      .default('VDR,Research,Analysis,Output,LegalTax')
+      .asArray(),
   },
   opportunitySync: {
     enabledOnWebhook: env

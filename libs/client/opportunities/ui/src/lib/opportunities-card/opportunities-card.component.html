@@ -2,7 +2,11 @@
   class="opportunity-card | border-component-border group flex cursor-pointer flex-col rounded-lg bg-white p-4 hover:bg-opacity-80"
 >
   <div class="text-base-text mb-7 flex justify-between gap-2 overflow-hidden">
-    <div class="flex-1 overflow-hidden">
+    <div
+      [routerLink]="['/companies', data.organisation.id]"
+      title="View Company Profile"
+      class="hover:text-primary-600 flex-1 grow cursor-pointer items-center gap-3 overflow-hidden overflow-hidden transition-all duration-100"
+    >
       <h1 class="mb-1 flex items-center gap-2 truncate text-lg">
         {{ data.organisation.name }}
       </h1>
