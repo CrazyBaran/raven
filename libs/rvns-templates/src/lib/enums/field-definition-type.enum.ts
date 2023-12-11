@@ -5,4 +5,5 @@ export enum FieldDefinitionType {
   Boolean = 'boolean',
   Select = 'select',
   RichText = 'richText',
+  Heatmap = 'heatmap',
 }

@@ -5,6 +5,7 @@ import {
   Entity,
   Index,
   JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
@@ -22,6 +23,10 @@ export class FieldConfigurationEntity {
   @Column()
   public value: string;
 
+  @ManyToOne(() => FieldDefinitionEntity, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'field_id' })
   public fieldDefinition: FieldDefinitionEntity;
 
