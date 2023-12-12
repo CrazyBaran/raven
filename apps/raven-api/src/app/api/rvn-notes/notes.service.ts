@@ -671,6 +671,9 @@ export class NotesService {
       updatedById: noteFieldEntity.updatedById,
       updatedAt: noteFieldEntity.updatedAt,
       createdAt: noteFieldEntity.createdAt,
+      configuration: noteFieldEntity.configuration
+        ? JSON.parse(noteFieldEntity.configuration)
+        : null,
     };
   }
 
@@ -766,6 +769,7 @@ export class NotesService {
           noteField.createdBy = userEntity;
           noteField.updatedBy = userEntity;
           noteField.value = this.findFieldValue(fieldDefinition, fields);
+          noteField.configuration = fieldDefinition.configuration;
           return noteField;
         },
       );
@@ -795,6 +799,7 @@ export class NotesService {
           newNoteField.createdById = noteField.createdById;
           newNoteField.updatedBy = userEntity;
           newNoteField.value = this.findFieldValue(noteField, options.fields);
+          newNoteField.configuration = noteField.configuration;
           return newNoteField;
         },
       );
