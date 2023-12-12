@@ -116,9 +116,13 @@ export class AffinityWebhookService {
       payload.body.id,
     );
 
-    organizationData.stage = fieldValues.find((fieldValue) => {
+    const statusField = fieldValues.find((fieldValue) => {
       return fieldValue.field_id === statusFieldId;
     }).value as FieldValueRankedDropdownDto;
+
+    this.logger.log({ statusField });
+
+    organizationData.stage = statusField;
 
     await this.affinityCacheService.addOrReplaceMany([organizationData]);
     this.eventEmitter.emit(
