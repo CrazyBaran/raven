@@ -4,6 +4,7 @@ export interface NoteFieldData {
   readonly type: string;
   readonly order: number;
   readonly value: string;
+  readonly configuration?: Record<string, any>;
   readonly noteGroupId: string;
   readonly updatedAt: Date;
   readonly createdAt: Date;

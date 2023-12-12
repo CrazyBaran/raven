@@ -38,6 +38,9 @@ export class FieldDefinitionEntity implements BaseAuditableEntity {
   @RelationId((fd: FieldDefinitionEntity) => fd.group)
   public groupId: string;
 
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public configuration: string;
+
   @CreateDateColumn()
   public createdAt: Date;
 

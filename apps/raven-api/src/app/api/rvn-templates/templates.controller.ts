@@ -278,6 +278,9 @@ export class TemplatesController {
         name: dto.name,
         type: dto.type,
         order: dto.order,
+        configuration: dto.configuration
+          ? JSON.stringify(dto.configuration)
+          : null,
         groupId: group.id,
         userEntity,
       }),
@@ -304,6 +307,9 @@ export class TemplatesController {
         name: dto.name,
         type: dto.type,
         order: dto.order,
+        configuration: dto.configuration
+          ? JSON.stringify(dto.configuration)
+          : null,
       }),
     ) as FieldDefinitionData;
   }

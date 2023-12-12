@@ -495,7 +495,9 @@ export class NotesService {
         return newNoteTab;
       });
       if (templateType === TemplateTypeEnum.Note) {
-        newNoteVersion.noteFieldGroups = noteEntity.noteFieldGroups
+        newNoteVersion.noteFieldGroups = (
+          noteEntity as NoteEntity
+        ).noteFieldGroups
           ?.filter((nfg) => !nfg.noteTabId)
           .map(
             this.getNewGroupsAndFieldsMapping(

@@ -49,6 +49,9 @@ export class NoteFieldEntity implements AuditableEntity {
   @RelationId((nfd: NoteFieldEntity) => nfd.noteGroup)
   public noteGroupId: string;
 
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public configuration: string;
+
   @Index()
   @ManyToOne(() => UserEntity, { nullable: false })
   @JoinColumn({ name: 'created_by_id' })
