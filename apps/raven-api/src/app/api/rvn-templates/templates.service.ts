@@ -401,6 +401,9 @@ export class TemplatesService {
       fieldGroupId: entity.groupId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+      configuration: entity.configuration
+        ? JSON.parse(entity.configuration)
+        : null,
     };
   }
 

@@ -1,15 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDefined,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsDefined, IsNumber, IsString, Length } from 'class-validator';
 
 export class HeatmapFieldConfigurationDto {
   @ApiProperty()
-  @IsOptional()
+  @IsDefined()
   @IsString()
   @Length(1, 50)
   public readonly unit: string;
@@ -27,7 +21,7 @@ export class HeatmapFieldConfigurationDto {
   @ApiProperty()
   @IsDefined()
   @IsString()
-  public readonly order: 'ASC' | 'DESC';
+  public readonly direction: 'ASC' | 'DESC';
 
   @ApiProperty()
   @IsDefined()
