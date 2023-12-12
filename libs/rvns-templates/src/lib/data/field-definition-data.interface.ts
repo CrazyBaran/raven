@@ -1,9 +1,11 @@
-export interface HeatmapFieldConfigurationData {
+export interface HeatmapThresholdData {
+  readonly thresholds: number[];
+}
+
+export interface HeatmapFieldConfigurationData extends HeatmapThresholdData {
   readonly unit: string;
   readonly min: number;
   readonly max: number;
-  readonly direction: 'ASC' | 'DESC';
-  readonly thresholds: number[];
 }
 
 export interface FieldDefinitionData {
