@@ -25,7 +25,7 @@ export class TagComponent {
   @Input() public htmlClass?: string;
   @Input() public style?: Record<string, string | undefined | boolean>;
   @Input() public size: ButtonSize = 'small';
-  @Input() public wrap?: boolean = true;
+  @Input() public wrap?: boolean = false;
 
   @Input() public removable?: boolean = false;
   @Input() public clickable?: boolean = false;

@@ -26,6 +26,7 @@ import { NoteData } from '@app/rvns-notes/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
 
+import { TagItem, TagsContainerComponent } from '@app/client/shared/ui';
 import { TableViewBaseComponent } from '@app/client/shared/ui-directives';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
@@ -33,8 +34,9 @@ import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 import { NoteTypeBadgeComponent } from '../note-type-badge/note-type-badge.component';
 
-export type NoteTableRow = NoteData & {
-  tags?: NoteData['tags'] & { style?: Record<string, string> };
+export type NoteTableRow = Omit<NoteData, 'tags'> & {
+  peopleTags: TagItem[];
+  tags: TagItem[];
   deleteButtonSettings?: {
     disabled?: boolean;
     tooltip?: string;
@@ -62,6 +64,7 @@ export type NoteTableRow = NoteData & {
     NoteTypeBadgeComponent,
     UserTagDirective,
     TagTypeColorPipe,
+    TagsContainerComponent,
   ],
   templateUrl: './notes-table.component.html',
   styleUrls: ['./notes-table.component.scss'],

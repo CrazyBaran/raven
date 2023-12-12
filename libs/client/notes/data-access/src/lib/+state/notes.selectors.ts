@@ -1,10 +1,12 @@
 //TODO: fix colors boundaries
 /* eslint-disable @nx/enforce-module-boundaries */
 import { authQuery } from '@app/client/core/auth';
-import { BadgeStyle } from '@app/client/shared/ui';
+import { NoteTableRow } from '@app/client/notes/ui';
+import { BadgeStyle, tagTypeStyleDictionary } from '@app/client/shared/ui';
 import { buildPageParamsSelector } from '@app/client/shared/util-router';
 import { templateQueries } from '@app/client/templates/data-access';
 import { NoteData } from '@app/rvns-notes/data-access';
+import { TagType } from '@app/rvns-tags';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 import { notesQueries } from '../domain/get-notes.params';
@@ -62,16 +64,37 @@ export const selectAllNotesTableRows = createSelector(
   selectTableNotes,
   authQuery.selectUserEmail,
   (notes, userEmail) =>
-    notes.map((note) => ({
-      ...note,
-      deleteButtonSettings: {
-        disabled: note.createdBy?.email !== userEmail,
-        tooltip:
-          note.createdBy?.email !== userEmail
-            ? 'You can only delete your own notes'
-            : '',
-      },
-    })),
+    notes.map(
+      (note): NoteTableRow => ({
+        ...note,
+        deleteButtonSettings: {
+          disabled: note.createdBy?.email !== userEmail,
+          tooltip:
+            note.createdBy?.email !== userEmail
+              ? 'You can only delete your own notes'
+              : '',
+        },
+        peopleTags: note.tags
+          .filter((t) => t.type === 'people')
+          .map((t) => ({
+            name: t.name,
+            id: t.id,
+            style: { color: '#424242' },
+            size: 'medium',
+            icon: 'fa-solid fa-circle-user',
+          })),
+        tags: note.tags
+          .filter((t) => t.type !== 'people')
+          .sort((a, b) => a.name.length - b.name.length)
+          .map((t) => ({
+            name: t.name,
+            id: t.id,
+            style: tagTypeStyleDictionary[t.type as TagType] ?? '',
+            size: 'small',
+            icon: 'fa-solid fa-tag',
+          })),
+      }),
+    ),
 );
 
 const selectOpportunityNotesState = createSelector(

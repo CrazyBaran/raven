@@ -16,6 +16,7 @@ import { ResizedEvent } from './resized.event';
 @Directive({
   selector: '[appOnResize]',
   standalone: true,
+  providers: [NgxResizeObserverService],
 })
 export class OnResizeDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input() public resizeBoxModel = '';

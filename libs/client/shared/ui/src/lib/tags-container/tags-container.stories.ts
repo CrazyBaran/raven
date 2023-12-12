@@ -1,13 +1,12 @@
-import { Story, Meta, moduleMetadata } from "@storybook/angular";
-import { CeIconComponent } from "src/Enginuity-UI/Core/atoms/ce-icon/ce-icon.component";
-import { TagsContainerComponent } from "./tags-container.component";
+import { Meta, Story, moduleMetadata } from '@storybook/angular';
+import { TagsContainerComponent } from './tags-container.component';
 
 export default {
-  title: "Products/Organisms/Create/Tags Container",
+  title: 'Ui/Tags Container',
   component: TagsContainerComponent,
   decorators: [
     moduleMetadata({
-      imports: [CeIconComponent],
+      imports: [],
     }),
   ],
 } as Meta;
@@ -18,20 +17,85 @@ const Template: Story<TagsContainerComponent> = (
   props: args,
 });
 
-export const With3Tags = Template.bind({});
-With3Tags.args = {
-  tags: ["tag1", "tag2", "tag3"],
+export const With5Tags = Template.bind({});
+With5Tags.args = {
+  tags: [
+    {
+      name: 'tag1',
+      id: '1',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'tag 2',
+      id: '2',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'tag 3',
+      id: '3',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'lorem ipsum',
+      id: '4',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'Lorem 5',
+      id: '5',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+  ],
 };
 
-export const WithLongNameTags = Template.bind({});
-WithLongNameTags.args = {
+export const With5TagsAnd2Rows = Template.bind({});
+With5TagsAnd2Rows.args = {
+  rows: 2,
   tags: [
-    "lorem ipsum dolor sit amet",
-    "consectetur adipis",
-    "cing elit, sed",
-    "do eiusmod tempor incididunt ut ",
-    "labore et dolore magna aliqua",
-    "tag2",
-    "tag3",
+    {
+      name: 'tag1',
+      id: '1',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'tag 2',
+      id: '2',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'tag 3',
+      id: '3',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'lorem ipsum',
+      id: '4',
+      style: {},
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
+    {
+      name: 'Lorem 5',
+      id: '5',
+      style: '',
+      size: 'normal',
+      icon: 'fa-icon fa-regular',
+    },
   ],
 };

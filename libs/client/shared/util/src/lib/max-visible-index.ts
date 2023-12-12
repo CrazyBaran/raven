@@ -1,31 +1,41 @@
+import * as _ from 'lodash';
 export const maxVisibleIndex = (
   width: number,
   tagsLength: number[],
   tooltipWidth?: number,
+  rows?: number,
 ): number => {
-  let currentWidth = 0;
-  let maxVisibleIndex = -1;
+  const x = tagsLength.reduce(
+    ({ index, arr }, tagWidth) => {
+      const currentRowSum = arr[index].reduce((a, b) => a + b, 0);
+      const isOverflow = currentRowSum + tagWidth > width;
+      if (isOverflow) {
+        index++;
+        arr.push([tagWidth]);
+      } else {
+        arr[index].push(tagWidth);
+      }
+      return { index, arr };
+    },
+    {
+      index: 0,
+      arr: [[]] as number[][],
+    },
+  );
 
-  tagsLength.every((tagWidth: number, index: number) => {
-    const isLast = index === tagsLength.length - 1;
+  const takenRows = x.arr.slice(0, rows ?? x.arr.length);
+  const haveAllTiles = tagsLength.length === _.flatten(takenRows).length;
 
-    let totalWidth = currentWidth + tagWidth;
+  if (haveAllTiles) {
+    return tagsLength.length - 1;
+  }
 
-    if (!isLast) {
-      totalWidth += tooltipWidth ?? 0;
-    }
+  const lastRow = takenRows[takenRows.length - 1];
+  const lastRowSum = lastRow.reduce((a, b) => a + b, 0);
 
-    const isOverflow = totalWidth > width;
+  if (lastRowSum + tooltipWidth! > width) {
+    lastRow.pop();
+  }
 
-    if (isOverflow) {
-      return false;
-    }
-
-    currentWidth += tagWidth;
-    maxVisibleIndex = index;
-
-    return true;
-  });
-
-  return maxVisibleIndex;
+  return _.flatten(takenRows).length - 1;
 };

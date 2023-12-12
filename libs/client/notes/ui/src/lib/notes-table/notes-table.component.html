@@ -20,7 +20,6 @@
     title="Note Title"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <!--      <ng-container *ngIf="!isLoading; else skeleton">-->
       <kendo-button
         [queryParams]="{ 'note-details': dataItem.id }"
         [routerLink]="['./']"
@@ -29,7 +28,6 @@
       >
         {{ dataItem?.name }}
       </kendo-button>
-      <!--      </ng-container>-->
     </ng-template>
   </kendo-grid-column>
 
@@ -54,7 +52,11 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <!--      <ng-container *ngIf="!isLoading; else skeleton">-->
       <div class="flex flex-col gap-1">
-        <ui-tag uiUserTag [label]="dataItem?.createdBy?.name || ''" />
+        <ui-tag
+          uiUserTag
+          [label]="dataItem?.createdBy?.name || ''"
+          size="medium"
+        />
 
         <span class="text-xs">
           Updated:
@@ -72,19 +74,7 @@
     title="People"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <!--      <ng-container *ngIf="!isLoading; else skeleton">-->
-      <div
-        [gap]="12"
-        class="flex h-[2.5rem] flex-row flex-wrap items-center gap-[0_0.75rem] overflow-hidden text-base"
-        truncateElements
-      >
-        <ui-tag
-          uiUserTag
-          *ngFor="let tag of dataItem?.tags | tagFilter: ['people']"
-          [label]="tag.name"
-        />
-      </div>
-      <!--      </ng-container>-->
+      <ui-tags-container [tags]="dataItem.peopleTags" />
     </ng-template>
   </kendo-grid-column>
 
@@ -95,35 +85,7 @@
     title="Tags"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <!--      <ng-container *ngIf="!isLoading; else skeleton">-->
-      <div
-        [gap]="12"
-        class="flex h-[2.5rem] flex-row flex-wrap items-center gap-[0_0.75rem] overflow-hidden text-sm"
-        suffixInfo="more"
-        truncateElements
-      >
-        <ui-tag
-          *ngFor="let tag of dataItem?.tags | tagFilter: ['people'] : false"
-          [label]="tag.name"
-          icon="fa-regular fa-tag"
-          [style]="tag.type | tagTypeColor"
-        ></ui-tag>
-        <!--        <div-->
-        <!--          *ngFor="let tag of dataItem?.tags | tagFilter: ['people'] : false"-->
-        <!--          [ngClass]="{-->
-        <!--            'text-error': tag.type === 'company' || tag.type === 'opportunity',-->
-        <!--            'text-success': tag.type === 'industry',-->
-        <!--            'text-warning': tag.type === 'investor',-->
-        <!--            'text-primary-900': tag.type === 'businessModel'-->
-        <!--          }"-->
-        <!--          class="lex items-center gap-1"-->
-        <!--        >-->
-        <!--          <i class="fa-regular fa-tag"></i>-->
-
-        <!--          {{ tag.name }}-->
-        <!--        </div>-->
-      </div>
-      <!--      </ng-container>-->
+      <ui-tags-container [tags]="dataItem?.tags" [rows]="2" />
     </ng-template>
   </kendo-grid-column>
 
