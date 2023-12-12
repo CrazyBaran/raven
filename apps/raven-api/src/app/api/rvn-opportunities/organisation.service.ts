@@ -353,12 +353,12 @@ export class OrganisationService {
     };
   }
 
-  public async exists(domains: string[]): Promise<boolean> {
-    const existingOrganisation = await this.organisationRepository.findOne({
+  public async getExistingByDomains(
+    domains: string[],
+  ): Promise<OrganisationEntity | null> {
+    return await this.organisationRepository.findOne({
       where: { domains: Like(`%${domains[0]}%`) },
     });
-
-    return !!existingOrganisation;
   }
 
   public mapPipelineStage(
@@ -373,6 +373,24 @@ export class OrganisationService {
     return pipelineDefinition.stages.find((s: { mappedFrom: string }) =>
       text.toLowerCase().includes(s.mappedFrom.toLowerCase()),
     );
+  }
+
+  public async createOpportunityForOrganisation(
+    savedOrganisation: OrganisationEntity,
+    stageText: string | null,
+    tem?: EntityManager,
+  ): Promise<OpportunityEntity> {
+    if (!tem) {
+      tem = this.organisationRepository.manager;
+    }
+    const defaultPipeline = await this.getDefaultPipelineDefinition();
+    const pipelineStage = this.mapPipelineStage(defaultPipeline, stageText);
+    const opportunity = new OpportunityEntity();
+    opportunity.pipelineStage = pipelineStage;
+    opportunity.pipelineDefinition = defaultPipeline;
+    opportunity.organisation = savedOrganisation;
+
+    return await tem.save(opportunity);
   }
 
   private getPipelineStage(
@@ -400,20 +418,5 @@ export class OrganisationService {
       },
     });
     return pipelineDefinition;
-  }
-
-  private async createOpportunityForOrganisation(
-    savedOrganisation: OrganisationEntity,
-    stageText: string | null,
-    tem: EntityManager,
-  ): Promise<OpportunityEntity> {
-    const defaultPipeline = await this.getDefaultPipelineDefinition();
-    const pipelineStage = this.mapPipelineStage(defaultPipeline, stageText);
-    const opportunity = new OpportunityEntity();
-    opportunity.pipelineStage = pipelineStage;
-    opportunity.pipelineDefinition = defaultPipeline;
-    opportunity.organisation = savedOrganisation;
-
-    return await tem.save(opportunity);
   }
 }
