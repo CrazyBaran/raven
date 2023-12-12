@@ -1,7 +1,17 @@
-import { IsIn, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsIn,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  Length,
+  ValidateIf,
+  ValidateNested,
+} from 'class-validator';
 
 import { FieldDefinitionType } from '@app/rvns-templates';
 import { ApiProperty } from '@nestjs/swagger';
+import { HeatmapFieldConfigurationDto } from './field-configs/heatmap-field-configuration.dto';
 
 export class UpdateFieldDefinitionDto {
   @ApiProperty()
@@ -20,4 +30,11 @@ export class UpdateFieldDefinitionDto {
   @IsOptional()
   @IsNumber()
   public readonly order?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @ValidateIf((value) => value.configuration)
+  public readonly configuration?: HeatmapFieldConfigurationDto | null;
 }

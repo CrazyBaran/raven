@@ -62,10 +62,7 @@ interface UpdateTabOptions {
   relatedTemplates: TemplateEntity[] | null;
 }
 
-interface CreateFieldDefinitionOptions {
-  name: string;
-  order: number;
-  type: FieldDefinitionType;
+interface CreateFieldDefinitionOptions extends UpdateFieldDefinitionOptions {
   groupId: string;
   userEntity: UserEntity;
 }
@@ -74,6 +71,7 @@ interface UpdateFieldDefinitionOptions {
   name: string;
   order: number;
   type: FieldDefinitionType;
+  configuration?: string;
 }
 
 @Injectable()
@@ -294,6 +292,7 @@ export class TemplatesService {
     fieldDefinitionEntity.order = options.order;
     fieldDefinitionEntity.type = options.type;
     fieldDefinitionEntity.group = { id: options.groupId } as FieldGroupEntity;
+    fieldDefinitionEntity.configuration = options.configuration;
     return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
   }
 
@@ -309,6 +308,18 @@ export class TemplatesService {
     }
     if (options.type) {
       fieldDefinitionEntity.type = options.type;
+    }
+    if (options.configuration) {
+      if (
+        options.type !== FieldDefinitionType.Heatmap ||
+        (!options.type &&
+          fieldDefinitionEntity.type !== FieldDefinitionType.Heatmap)
+      ) {
+        throw new BadRequestException(
+          'Invalid configuration for the given type.',
+        );
+      }
+      fieldDefinitionEntity.configuration = options.configuration;
     }
     return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
   }
