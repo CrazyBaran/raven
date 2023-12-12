@@ -95,6 +95,10 @@ export class AffinityWebhookService {
   private async handleListEntryCreated(
     payload: WebhookPayloadListEntryDto,
   ): Promise<void> {
+    this.logger.log(
+      `Handling list entry created: entity_id: ${payload.body.entity_id}`,
+    );
+    this.logger.log({ payloadBody: payload.body });
     const organizationDto = payload.body.entity as OrganizationDto;
     const organizationData: OrganizationStageDto = {
       entityId: payload.body.entity_id,
@@ -165,6 +169,9 @@ export class AffinityWebhookService {
   private async handleFieldValueUpdated(
     payload: WebhookPayloadFieldValueDto,
   ): Promise<void> {
+    this.logger.log(
+      `Handling field value updated: entity_id: ${payload.body.entity_id}`,
+    );
     const fields = await this.affinityCacheService.getListFields();
     const handledField = fields.find(
       (field) => field.id === payload.body.field_id,
@@ -236,6 +243,10 @@ export class AffinityWebhookService {
   private async handleStatusFieldChange(
     payload: WebhookPayloadFieldValueDto,
   ): Promise<void> {
+    this.logger.log(
+      `Handling status field change: entity_id: ${payload.body.entity_id}`,
+    );
+    this.logger.log({ payloadBody: payload.body });
     const companies = await this.affinityCacheService.getAll(
       (entry) => entry.listEntryId === payload.body.list_entry_id,
     );
