@@ -799,6 +799,7 @@ export class NotesService {
           newNoteField.createdById = noteField.createdById;
           newNoteField.updatedBy = userEntity;
           newNoteField.value = this.findFieldValue(noteField, options.fields);
+          newNoteField.configuration = noteField.configuration;
           return newNoteField;
         },
       );
