@@ -120,7 +120,7 @@ export class AffinityWebhookService {
       return fieldValue.field_id === statusFieldId;
     }).value as FieldValueRankedDropdownDto;
 
-    this.logger.log({ statusField });
+    this.logger.log({ statusField, entity_id: payload.body.entity_id });
 
     organizationData.stage = statusField;
 
@@ -138,6 +138,9 @@ export class AffinityWebhookService {
   private async handleOrganizationCreated(
     payload: WebhookPayloadOrganisationDto,
   ): Promise<void> {
+    this.logger.log(
+      `Handling organisation created: domain: ${payload.body.domain}`,
+    );
     const organizationDto = payload.body as OrganizationBaseDto;
     const organizationData: OrganizationStageDto = {
       entityId: payload.body.id,
@@ -155,9 +158,13 @@ export class AffinityWebhookService {
       payload.body.id,
     );
 
-    organizationData.stage = fieldValues.find((fieldValue) => {
+    const statusField = fieldValues.find((fieldValue) => {
       return fieldValue.field_id === statusFieldId;
     }).value as FieldValueRankedDropdownDto;
+
+    this.logger.log({ statusField, domain: payload.body.domain });
+
+    organizationData.stage = statusField;
 
     await this.affinityCacheService.addOrReplaceMany([organizationData]);
     this.eventEmitter.emit(
