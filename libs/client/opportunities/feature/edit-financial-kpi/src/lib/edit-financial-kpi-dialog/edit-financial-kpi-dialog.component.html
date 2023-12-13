@@ -1,0 +1,43 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Edit Financial KPIs</span>
+</kendo-dialog-titlebar>
+
+<div class="relative flex h-full flex-col overflow-auto p-10">
+  <p class="mb-6">
+    Please fill in the following fields with this company’s KPI information
+  </p>
+  <form [formGroup]="kpiForm" class="flex flex-1 flex-col gap-4 px-3">
+    <ng-container
+      *rxFor="
+        let control of visibleControls() | keyvalue: comparatorFn;
+        trackBy: 'key'
+      "
+    >
+      <ng-container
+        [ngComponentOutletInjector]="
+          control.key | controlInjector: control.value
+        "
+        [ngComponentOutlet]="
+          controlResolver.resolve(control.value.type) | async
+        "
+      ></ng-container>
+    </ng-container>
+  </form>
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="onCreate()"
+    [disabled]="!kpiForm.valid || vm().isCreating"
+    themeColor="primary"
+  >
+    <kendo-loader
+      *ngIf="vm().isCreating"
+      class="!text-secondary-100 mr-1"
+      size="small"
+    >
+    </kendo-loader>
+    Save KPI Values
+  </kendo-button>
+</kendo-dialog-actions>

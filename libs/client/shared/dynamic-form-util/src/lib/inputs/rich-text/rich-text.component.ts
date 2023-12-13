@@ -30,7 +30,7 @@ import { mapTo, merge, switchMap } from 'rxjs';
 import {
   dynamicControlProvider,
   sharedDynamicControlDeps,
-} from '../../base-dynamic-control';
+} from '../../base-dynamic-control-component.directive';
 import { DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS } from '../dynamic-rich-text/provide-prose-mirror-settings.directive';
 
 @Component({

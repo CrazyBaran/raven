@@ -80,6 +80,10 @@ module.exports = {
         'button-text-50': '#002c3c80',
         'button-text': '#002C3CE5',
       },
+      chart: {
+        'tooltip-bg': '#F9F9F9',
+        border: '#00000014',
+      },
       base: {
         background: '#FAFAFA',
         hover: '#EBEBEB',

@@ -8,6 +8,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { DynamicRichTextControl } from '@app/client/shared/dynamic-form-util';
 import {
   EditorComponent,
   EditorModule,
@@ -16,10 +17,10 @@ import {
 } from '@progress/kendo-angular-editor';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import {
-  BaseDynamicControl,
+  BaseDynamicControlComponent,
   dynamicControlProvider,
   sharedDynamicControlDeps,
-} from '../../base-dynamic-control';
+} from '../../base-dynamic-control-component.directive';
 import { DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS } from './provide-prose-mirror-settings.directive';
 
 @Component({
@@ -33,7 +34,7 @@ import { DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS } from './provide-prose-mirror-
   encapsulation: ViewEncapsulation.None,
 })
 export class DynamicRichTextComponent
-  extends BaseDynamicControl
+  extends BaseDynamicControlComponent<DynamicRichTextControl>
   implements OnInit, AfterViewInit
 {
   @HostBinding('class.rich-text-full') public grow: boolean | undefined;

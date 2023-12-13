@@ -25,9 +25,9 @@ import {
 import { FormFieldModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { take } from 'rxjs';
-import { CONTROL_DATA } from './control-data.token';
+import { CONTROL_DATA, ControlData } from './control-data.token';
 import { DynamicControlFocusHandler } from './dynamic-control-focus-handler.service';
-import { DynamicControl } from './dynamic-forms.model';
+import { BaseDynamicControl, DynamicControl } from './dynamic-forms.model';
 import { ErrorMessagePipe } from './error-message.pipe';
 import { validatorMapper } from './validator.mapper';
 
@@ -53,12 +53,16 @@ export const dynamicControlProvider: StaticProvider = {
 };
 
 @Directive()
-export abstract class BaseDynamicControl
+export abstract class BaseDynamicControlComponent<T extends BaseDynamicControl>
   implements OnInit, AfterViewInit, OnDestroy
 {
   @HostBinding('class') protected hostClass = 'form-field block';
 
-  protected control = inject(CONTROL_DATA);
+  protected control = inject(CONTROL_DATA) as ControlData<T>;
+
+  @HostBinding('attr.data-testid') protected testId =
+    this.control?.controlKey ?? '';
+
   protected elementRef = inject(ElementRef);
   protected destroyRef = inject(DestroyRef);
   protected focusHandler = inject(DynamicControlFocusHandler, {
@@ -108,7 +112,7 @@ export abstract class BaseDynamicControl
 
   private resolveValidators({
     validators = {},
-  }: DynamicControl): ValidatorFn[] {
+  }: BaseDynamicControl): ValidatorFn[] {
     const entries = Object.entries(validators) as [
       keyof typeof validators,
       unknown,

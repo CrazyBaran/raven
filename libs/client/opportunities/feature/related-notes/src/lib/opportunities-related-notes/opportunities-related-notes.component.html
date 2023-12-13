@@ -32,6 +32,56 @@
           </kendo-tilelayout-item>
         </ng-container>
         <ng-template #fields>
+          @if (vm().heatmapFields.length ){
+          <kendo-tilelayout-item [@fadeIn] [colSpan]="12" [col]="1">
+            <kendo-tilelayout-item-header>
+              <div class="flex items-center justify-between gap-2">
+                <h5 class="k-card-title">Financial KPIs</h5>
+                <kendo-button
+                  [queryParams]="{ 'edit-financial-kpi': true }"
+                  [routerLink]="['./']"
+                  queryParamsHandling="merge"
+                  >Edit</kendo-button
+                >
+              </div>
+            </kendo-tilelayout-item-header>
+            <kendo-tilelayout-item-body>
+              <div class="flex flex-col gap-3">
+                @for(fieldGroup of vm().heatmapFields; track fieldGroup.uniqId){
+                <div>
+                  <div
+                    class="bg-chart-tooltip-bg border-chart-border mb-0.5 border px-3 py-2"
+                  >
+                    {{ fieldGroup.title }}
+                  </div>
+                  <div class="financial-grid grid gap-0.5">
+                    @for(field of $any(fieldGroup).noteFields; track
+                    field.uniqId){
+                    <div
+                      [ngStyle]="{
+                        'background-color':
+                          field.heat | heatColor: 'background',
+                        color: field.heat | heatColor: 'font'
+                      }"
+                      class="bg-success flex min-h-[60px] flex-col justify-between px-2 py-1 text-white"
+                    >
+                      <div class="text-sm">{{ field.title }}</div>
+
+                      <div class="text-end text-sm">
+                        @if (field.value){
+                        {{ field.value || '' }} {{ field.unit }} }
+                      </div>
+                    </div>
+                    }
+                  </div>
+                </div>
+
+                }
+              </div>
+            </kendo-tilelayout-item-body>
+          </kendo-tilelayout-item>
+          }
+
           <kendo-tilelayout-item
             *rxFor="
               let field of fields$;
@@ -81,12 +131,6 @@
                 placeholder="Click to write content here..."
               >
               </app-rich-text>
-              <!--          <div-->
-              <!--            class="bg-grey-100 flex h-full flex-col gap-3 bg-opacity-50 px-6 py-5"-->
-              <!--          >-->
-
-              <!--            <div [innerHTML]="field.value | safeHtml"></div>-->
-              <!--          </div>-->
             </kendo-tilelayout-item-body>
           </kendo-tilelayout-item>
         </ng-template>

@@ -3,6 +3,7 @@ import { notesQuery } from '@app/client/opportunities/api-notes';
 import { storageQuery } from '@app/client/shared/storage/data-access';
 import { getDealLeads, getDealTeam } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
+import { HeatmapFieldUtils } from '@app/rvns-templates';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 import {
@@ -93,24 +94,85 @@ export const selectOpportunityNoteTabs = createSelector(
 export const selectNoteFields = createSelector(
   selectOpportunityNoteTabs,
   storageQuery.selectAzureImageDictionary,
-  (tabs, azureImageDictioanry) =>
-    _.chain(tabs)
-      .map((tab) =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        tab.noteFieldGroups[0].noteFields.map((field: any) => ({
-          uniqId: `${tab.name}-${field.name}`,
-          id: field.id,
-          title: field.name,
-          value: Object.entries(azureImageDictioanry).reduce(
-            (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
-            field.value ?? '',
-          ),
-          tabId: tab.id,
-          tabName: tab.name,
-        })),
-      )
+  (tabs, azureImageDictioanry) => {
+    return _.chain(tabs)
+      .map((tab) => {
+        return _.chain(tab.noteFieldGroups)
+          .map(({ noteFields, name, id }) => {
+            return noteFields.map((field) => ({
+              type: 'field',
+              flat: !noteFields.some((f) => f.type === 'heatmap'),
+              uniqId: `${tab.name}-${field.name}`,
+              id: field.id,
+              title: field.name,
+              value: Object.entries(azureImageDictioanry).reduce(
+                (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
+                field.value ?? '',
+              ),
+              tabId: tab.id,
+              tabName: tab.name,
+            }));
+          })
+          .flatMap()
+          .value();
+      })
       .flatMap()
-      .value(),
+      .value();
+  },
+);
+
+export const selectFinancialGroups = createSelector(
+  selectOpportunityNoteTabs,
+  (tabs) => {
+    return _.chain(tabs)
+      .map((tab) => {
+        return _.chain(tab.noteFieldGroups)
+          .filter(({ noteFields }) =>
+            noteFields.some((f) => f.type === 'heatmap'),
+          )
+          .map(({ noteFields, order, name, id }) => {
+            return [
+              {
+                name: name,
+                order: order,
+                tabName: tab.name,
+                type: 'heatmap-group',
+                title: name,
+                id: id,
+                noteFields: noteFields.map((field) => {
+                  const heatmapFn = (value: any): any =>
+                    value === null || value === undefined
+                      ? null
+                      : HeatmapFieldUtils.withConfig({
+                          thresholds: field.configuration?.['thresholds'],
+                        }).getColourForValue(value);
+
+                  return {
+                    name: field.name,
+                    order: field.order,
+                    type: 'heatmap',
+                    uniqId: `${tab.name}-${field.name}`,
+                    id: field.id,
+                    title: field.name,
+                    value: field.value,
+                    tabId: tab.id,
+                    tabName: tab.name,
+                    heatmapFn,
+                    heat: heatmapFn(field.value),
+                    ...(field.configuration ?? {}),
+                  };
+                }),
+                tabId: tab.id,
+                uniqId: `${tab.name}-${name}`,
+              },
+            ];
+          })
+          .flatMap()
+          .value();
+      })
+      .flatMap()
+      .value();
+  },
 );
 
 export const selectOpportunityDetailsIsLoading = createSelector(
@@ -136,4 +198,5 @@ export const opportunitiesQuery = {
   selectOpportunityUpdateIsLoading,
   selectHasPermissionForCurrentOpportunity,
   selectIsLoadingUpdateStage,
+  selectFinancialGroups,
 };

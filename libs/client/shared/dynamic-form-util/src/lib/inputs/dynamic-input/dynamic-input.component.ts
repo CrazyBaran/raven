@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 
 import {
+  BaseDynamicControlComponent,
+  DynamicTextControl,
+  dynamicControlProvider,
+  sharedDynamicControlDeps,
+} from '@app/client/shared/dynamic-form-util';
+import {
   TextBoxComponent,
   TextBoxModule,
 } from '@progress/kendo-angular-inputs';
-import {
-  BaseDynamicControl,
-  dynamicControlProvider,
-  sharedDynamicControlDeps,
-} from '../../base-dynamic-control';
 
 @Component({
   selector: 'app-dynamic-input',
@@ -19,7 +20,7 @@ import {
   viewProviders: [dynamicControlProvider],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DynamicInputComponent extends BaseDynamicControl {
+export class DynamicInputComponent extends BaseDynamicControlComponent<DynamicTextControl> {
   @ViewChild(TextBoxComponent) protected textBox: TextBoxComponent;
 
   protected override onFocus = (): void => {

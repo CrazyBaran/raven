@@ -95,9 +95,13 @@
       "@app/client/opportunities/feature/update-dialog": [
         "libs/client/opportunities/feature/update-dialog/src/index.ts"
       ],
+      "@app/client/opportunities/feature/edit-financial-kpi": [
+        "libs/client/opportunities/feature/edit-financial-kpi/src/index.ts"
+      ],
       "@app/client/opportunities/page/opportunity-details": [
         "libs/client/opportunities/page/opportunity-details/src/index.ts"
       ],
+
       "@app/client/opportunities/ui": [
         "libs/client/opportunities/ui/src/index.ts"
       ],
@@ -215,6 +219,7 @@
       "@app/rvns-teams": ["libs/rvns-teams/src/index.ts"],
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"],
+
       "rvns-shared": ["libs/rvns-shared/src/index.ts"]
     }
   },

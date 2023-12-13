@@ -4,7 +4,7 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms';
 
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import { CONTROL_DATA } from '../../base-dynamic-control';
+import { CONTROL_DATA } from '../../base-dynamic-control-component.directive';
 import { ControlData } from '../../control-data.token';
 import { DynamicRichTextComponent } from './dynamic-rich-text.component';
 

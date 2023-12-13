@@ -6,6 +6,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 export type BadgeStyle = {
   backgroundColor?: string;
   color?: string;
+  borderRadius?: string;
 };
 
 @Component({
@@ -25,10 +26,17 @@ export class BadgeComponent {
     this._color = value;
   }
 
+  @Input() public _borderRadius = '4px';
+
+  @Input() public set borderRadius(value: string) {
+    this._borderRadius = value;
+  }
+
   public get badgeStyles(): BadgeStyle {
     return {
       backgroundColor: this._backgroundColor,
       color: this._color,
+      borderRadius: this._borderRadius,
     };
   }
 

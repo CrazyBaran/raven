@@ -146,7 +146,12 @@ export class NotesEffects {
             }),
           ]),
           catchError((error) =>
-            of(NotesActions.updateNoteFailure({ error, originId: noteId })),
+            of(
+              NotesActions.updateNoteFailure({ error, originId: noteId }),
+              NotificationsActions.showErrorNotification({
+                content: 'Note update failed.',
+              }),
+            ),
           ),
         ),
       ),

@@ -5,6 +5,7 @@
   <div
     *ngIf="!blockHeader.hasChildNodes()"
     class="text-component-text flex flex-row items-center gap-5"
+    [ngStyle]="badgeStyles"
   >
     <span class="text-xxs">{{ text }} </span>
   </div>

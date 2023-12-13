@@ -24,7 +24,7 @@ import {
   fadeIn,
 } from '@app/client/shared/ui';
 import { SafeHtmlPipe, TimesPipe } from '@app/client/shared/ui-pipes';
-import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import { distinctUntilChangedDeep, log } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { EditorView } from '@progress/kendo-angular-editor';
@@ -40,7 +40,10 @@ import { RxLet } from '@rx-angular/template/let';
 import { trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoteTypeBadgeComponent } from '@app/client/notes/ui';
+// import { selectNoteFields2 } from '@app/client/opportunities/data-access';
+import { selectNoteFields } from '@app/client/opportunities/data-access';
 import { RelatedNotesTableComponent } from '@app/client/opportunities/ui';
+import { HearColorPipe } from '@app/client/shared/ui-pipes';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import {
@@ -77,6 +80,7 @@ import {
     NoteTypeBadgeComponent,
     RelatedNotesTableComponent,
     LoaderModule,
+    HearColorPipe,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
@@ -90,6 +94,8 @@ export class OpportunitiesRelatedNotesComponent {
   protected uploadFileService = inject(UploadFileService);
 
   protected formGroup = new FormRecord({});
+
+  protected allFields = this.store.select(selectNoteFields);
 
   protected state = signal(
     {
@@ -132,6 +138,7 @@ export class OpportunitiesRelatedNotesComponent {
     );
 
   public constructor() {
+    this.store.select(selectNoteFields).pipe(log()).subscribe();
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
     this.store
       .select(selectOpportunityFormRecord)
@@ -194,12 +201,11 @@ export class OpportunitiesRelatedNotesComponent {
     this.store.dispatch(
       NotesActions.updateNote({
         noteId: noteId,
-
         data: {
           name: this.vm().opportunityNote.name,
           fields: _.chain(this.formGroup.value as Record<string, unknown>)
             .map((value, id) => ({
-              id: this.vm().allFields.find((x) => x.uniqId === id)?.id,
+              id: this.vm().allFields.find((x) => x.uniqId === id)!.id,
               value: value ?? '',
             }))
             .value(),

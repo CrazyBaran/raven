@@ -99,6 +99,32 @@ export class ShelfEffects {
     { dispatch: false },
   );
 
+  private openEditFinancialKpi$ = createEffect(
+    () => {
+      return this.store.select(selectQueryParam('edit-financial-kpi')).pipe(
+        filter((id) => !!id),
+        exhaustMap(
+          () =>
+            this.dynamicDialogService.openDynamicDialog({
+              width: 508,
+              height: 716,
+              maxHeight: '90vh',
+              cssClass: 'raven-custom-dialog',
+              template: {
+                name: 'edit financial kpi form',
+                load: () =>
+                  import(
+                    '@app/client/opportunities/feature/edit-financial-kpi'
+                  ).then((m) => m.EditFinancialKpiDialogModule),
+                showLoading: true,
+              },
+            }).result,
+        ),
+      );
+    },
+    { dispatch: false },
+  );
+
   private openNoteDetails$ = createEffect(
     () => {
       return this.store.select(selectQueryParam('note-details')).pipe(

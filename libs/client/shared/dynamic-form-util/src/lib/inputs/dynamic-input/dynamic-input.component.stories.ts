@@ -8,7 +8,7 @@ import { moduleMetadata } from '@storybook/angular';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { CONTROL_DATA } from '../../base-dynamic-control';
+import { CONTROL_DATA } from '../../base-dynamic-control-component.directive';
 import { ControlData } from '../../control-data.token';
 import { DynamicInputComponent } from './dynamic-input.component';
 

@@ -112,8 +112,9 @@
         #paging="uiKendoDynamicPaging"
         [kendoGridBinding]="vm().missingDetails"
         [loading]="vm().isLoading"
-        [pageSize]="paging.size()"
-        [pageable]="true"
+        [pageSize]="paging.size() * 2"
+        scrollable="virtual"
+        [rowHeight]="36"
         [uiKendoDynamicPaging]="36"
         class="grid-borderless h-full"
       >

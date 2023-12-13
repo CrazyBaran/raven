@@ -130,13 +130,19 @@ export class RavenShelfService {
 
   public openShelf(settings: WindowSettings): WindowRef | null {
     const index = this.windowsRefsSignal().length;
+    const width = settings.width || this.config.defaultWidth;
 
-    if (index > 1) {
+    const sumPreviousWidths = this.windowWidths().reduce(
+      (acc, width, i) => (i < index ? acc + (width + 16) : acc),
+      0,
+    );
+
+    if (index > 1 || sumPreviousWidths + width > window.innerWidth) {
       return null;
     }
 
     const defaultShelfDimensions = {
-      width: settings.width || this.config.defaultWidth,
+      width: width,
       height:
         settings.height ||
         (`calc(100% - ${this.config.headerHeight}px)` as unknown as number),

@@ -14,7 +14,12 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { maxVisibleIndex } from '@app/client/shared/util';
-import { BehaviorSubject, combineLatest, distinctUntilChanged } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
@@ -51,6 +56,7 @@ export class TilesContainerComponent {
     this.tooltipTileWidth$,
     this.rows$,
   ]).pipe(
+    debounceTime(5),
     map(([width, tilesLength, tooltipWidth, rows]) => {
       return maxVisibleIndex(width, tilesLength, tooltipWidth, rows);
     }),
@@ -78,8 +84,6 @@ export class TilesContainerComponent {
   }
 
   onTileListWidthChange(): void {
-    // debugger;
-    console.log(this._getTilesWidth());
     this.tilesLength$.next(this._getTilesWidth());
   }
 

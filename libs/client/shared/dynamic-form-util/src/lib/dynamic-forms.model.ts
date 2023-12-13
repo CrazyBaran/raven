@@ -1,4 +1,5 @@
 import { Validators } from '@angular/forms';
+import { HeatMapValue } from '@app/rvns-templates';
 
 export interface DynamicOptions {
   label: string;
@@ -13,32 +14,47 @@ export type ValidatorKeys = keyof Omit<
   'prototype' | 'compose' | 'composeAsync'
 >;
 
-export interface FieldDefinitionData {
-  readonly id: string;
-  readonly name: string;
-  readonly type: string;
-  readonly order: number;
-  readonly fieldGroupId: string;
-  readonly updatedAt: Date;
-  readonly createdAt: Date;
-  readonly createdById: string;
-}
-
-export interface DynamicControl<T = string> {
-  type: 'text' | 'richText';
+export interface BaseDynamicControl<T = string> {
   name: string;
   order: number;
   id: string;
-
-  grow?: boolean;
   placeholder?: string;
   value?: T | null;
   options?: DynamicOptions[];
-  controls?: DynamicFormConfig['controls'];
   validators?: {
     [key in ValidatorKeys]?: unknown;
   };
 }
+
+export interface DynamicTextControl extends BaseDynamicControl {
+  type: 'text';
+}
+
+export interface DynamicRichTextControl extends BaseDynamicControl {
+  type: 'richText';
+  grow?: boolean;
+}
+
+export interface DynamicNumericControl extends BaseDynamicControl {
+  type: 'numeric';
+  min?: number;
+  max?: number;
+  unit?: string;
+  heatmapFn?: (value: number) => HeatMapValue | null;
+}
+
+export interface DynamicGroupControl extends BaseDynamicControl {
+  type: 'group';
+  controls: DynamicFormConfig['controls'];
+  labelClass?: string;
+  fieldsetClass?: string;
+}
+
+export type DynamicControl =
+  | DynamicTextControl
+  | DynamicRichTextControl
+  | DynamicNumericControl
+  | DynamicGroupControl;
 
 export interface DynamicFormConfig {
   description: string;

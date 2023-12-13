@@ -1,12 +1,13 @@
-import { HeatmapThresholdData } from '@app/rvns-templates';
+import { HeatmapThresholdData } from '../data/field-definition-data.interface';
+import { HeatMapValue, heatMapValues } from '../enums/heat-map.value';
 
 export class HeatmapFieldUtils {
-  private readonly colours: string[];
+  private readonly colours: readonly HeatMapValue[];
   private readonly config: HeatmapThresholdData;
 
   private constructor(
     config: HeatmapThresholdData,
-    colours: string[] = ['#00FF00', '#FFFF00', '#FF0000'],
+    colours: readonly HeatMapValue[] = heatMapValues,
   ) {
     this.config = config;
     this.colours = colours;
@@ -14,12 +15,12 @@ export class HeatmapFieldUtils {
 
   public static withConfig(
     config: HeatmapThresholdData,
-    colours?: string[],
+    colours?: readonly HeatMapValue[],
   ): HeatmapFieldUtils {
     return new HeatmapFieldUtils(config, colours);
   }
 
-  public getColourForValue(value: number) {
+  public getColourForValue(value: number): HeatMapValue | null {
     const { thresholds } = this.config;
 
     if (thresholds.length <= 1) {
@@ -52,9 +53,10 @@ export class HeatmapFieldUtils {
       }
       return this.getColourForIndex(thresholds.length);
     }
+    return null;
   }
 
-  private getColourForIndex(index: number): string {
+  private getColourForIndex(index: number): HeatMapValue {
     return this.colours[index];
   }
 

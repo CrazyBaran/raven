@@ -16,6 +16,7 @@
 </ng-template>
 
 <ng-template #tooltipTemplate let-hiddenTilesLength>
+  @if (hiddenTilesLength){
   <p
     [tooltipTemplate]="tooltip"
     tooltipClass="tag-tooltip"
@@ -25,10 +26,11 @@
   >
     {{ hiddenTilesLength }}+
   </p>
+  }
 </ng-template>
 
 <ng-template #tooltip>
-  <div class="flex gap-2">
+  <div class="flex flex-col gap-2">
     @for (tag of tags; track tag.id){
     <ui-tag
       [label]="tag.name"

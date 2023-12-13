@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface NoteFieldData {
   readonly id: string;
   readonly name: string;

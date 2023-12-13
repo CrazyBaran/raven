@@ -94,7 +94,7 @@ export const notesReducer = createReducer(
     },
   })),
   on(NotesActions.getNotesSuccess, (state, { data, total }) =>
-    notesAdapter.setAll(data, {
+    notesAdapter.upsertMany(data, {
       ...state,
       table: {
         isLoading: false,
