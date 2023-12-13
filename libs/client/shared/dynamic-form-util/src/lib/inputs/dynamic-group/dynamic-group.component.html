@@ -1,0 +1,15 @@
+<fieldset
+  [formGroupName]="control.controlKey"
+  class="flex flex-col gap-6 {{ control.config.fieldsetClass ?? '' }}"
+>
+  <legend class="font-bold mb-6 {{ control.config.labelClass ?? '' }}">
+    {{ control.config.name }}
+  </legend>
+  @for (control of control.config.controls | keyvalue: comparatorFn; track
+  control.key){
+  <ng-container
+    [ngComponentOutlet]="controlResolver.resolve(control.value.type) | async"
+    [ngComponentOutletInjector]="control.key | controlInjector: control.value"
+  />
+  }
+</fieldset>

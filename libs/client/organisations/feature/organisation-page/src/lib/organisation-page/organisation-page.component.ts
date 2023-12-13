@@ -67,15 +67,12 @@ import {
     ButtonsModule,
     RelatedNotesTableComponent,
     RxFor,
-
     NoteDetailsComponent,
-
     LoaderComponent,
     PageTemplateComponent,
     GridModule,
     TileLayoutModule,
     NotesTableContainerComponent,
-
     DealLeadsPipe,
     DealTeamPipe,
     TagComponent,
@@ -83,7 +80,6 @@ import {
     RxIf,
     TimesPipe,
     SkeletonModule,
-
     TreeListModule,
   ],
   templateUrl: './organisation-page.component.html',

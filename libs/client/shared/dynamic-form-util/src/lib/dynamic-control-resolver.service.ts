@@ -20,6 +20,14 @@ export class DynamicControlResolver {
       import('./inputs/dynamic-rich-text/dynamic-rich-text.component').then(
         (c) => c.DynamicRichTextComponent,
       ),
+    numeric: () =>
+      import(
+        './inputs/dynamic-numeric-input/dynamic-numeric-input.component'
+      ).then((c) => c.DynamicNumericInputComponent),
+    group: () =>
+      import('./inputs/dynamic-group/dynamic-group.component').then(
+        (c) => c.DynamicGroupComponent,
+      ),
   };
 
   private loadedControlComponents = new Map<string, Type<unknown>>();

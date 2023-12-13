@@ -2,7 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { notesQuery } from '@app/client/opportunities/api-notes';
-import { opportunitiesQuery } from '@app/client/opportunities/data-access';
+import {
+  opportunitiesQuery,
+  selectFinancialGroups,
+} from '@app/client/opportunities/data-access';
 import { routerQuery } from '@app/client/shared/util-router';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { createSelector } from '@ngrx/store';
@@ -30,7 +33,9 @@ export const selectActiveNoteTab = createSelector(
 export const selectRelatedNotesWithFields = createSelector(
   selectActiveNoteTab,
   (tab): any =>
-    tab && 'relatedNotesWithFields' in tab ? tab.relatedNotesWithFields : [],
+    tab && 'relatedNotesWithFields' in tab
+      ? tab.relatedNotesWithFields ?? []
+      : [],
 );
 
 export const selectRelatedNotes = createSelector(
@@ -69,7 +74,7 @@ export const selectNoteFields = createSelector(
   opportunitiesQuery.selectNoteFields,
   (notes) =>
     _.chain(notes)
-      .groupBy((x) => x.tabName)
+      .groupBy(({ tabName }) => tabName)
       .value(),
 );
 
@@ -78,15 +83,27 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
   notesQuery.selectOpportunityNotes,
   selectOpportunityRelatedNotes,
   selectNoteFields,
+  selectFinancialGroups,
   notesQuery.selectOpportunityNotesIsLoading,
   routerQuery.selectCurrentOpportunityId,
-  (tab, opportunityNotes, relatedNotes, fields, isLoading, opportunityId) => {
+  (
+    tab,
+    opportunityNotes,
+    relatedNotes,
+    fields,
+    financialGroups,
+    isLoading,
+    opportunityId,
+  ) => {
     return {
       allFields: Object.values(fields).flat(),
-      visibleFields: (fields[tab ?? ''] ?? []).map((f) => ({
-        title: f.title,
-        formControlName: f.uniqId,
-      })),
+      visibleFields: (fields[tab ?? ''] ?? [])
+        .filter((f) => f.type === 'field' && f.flat)
+        .map((f) => ({
+          title: f.title,
+          formControlName: f.uniqId,
+        })),
+      heatmapFields: financialGroups.filter((x) => x.tabName === tab),
       fields: fields[tab ?? ''] ?? [],
       opportunityNote: opportunityNotes[0],
       opportunityNoteId: opportunityNotes[0]?.id,

@@ -9,7 +9,7 @@
     (appOnResize)="onTileListWidthChange()"
     class="tile-list p-1 pl-0 pr-2 last:pr-0"
     [ngClass]="{
-      'invisible order-last h-0': i > maxIndexSignal()!
+      'invisible order-last h-0 !p-0': i > maxIndexSignal()!
     }"
   >
     <ng-container
@@ -20,7 +20,7 @@
   }
   <li
     [ngClass]="{
-      'invisible order-last h-0': hiddenTilesLengthSignal() < 1
+      'invisible order-last h-0 !p-0': hiddenTilesLengthSignal() < 1
     }"
     class="p-1 first:pl-0 last:pr-0"
     (appOnResize)="onTooltipTileWidthChange($event)"

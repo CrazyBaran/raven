@@ -1,0 +1,40 @@
+<div class="flex gap-4">
+  <kendo-formfield class="flex-1">
+    <kendo-label
+      [for]="control.controlKey"
+      [text]="control.config.name"
+      labelCssClass="k-form-label text-secondary-900 text-sm leading-5"
+    />
+    <kendo-numerictextbox
+      (focus)="setFocus()"
+      [formControl]="numberFormControl"
+      [id]="control.controlKey"
+      [placeholder]="control.config.placeholder!"
+      [value]="numericValue"
+      [min]="control.config.min!"
+      [max]="control.config.max!"
+      [autoCorrect]="true"
+      [format]="formatOptions"
+    />
+    <kendo-formerror
+      *ngFor="let error of formControl.errors ?? [] | keyvalue"
+      class="text-danger"
+    >
+      {{ error.key | errorMessage: error.value }}
+    </kendo-formerror>
+  </kendo-formfield>
+  @if (control.config.heatmapFn){
+  <ui-badge
+    [backgroundColor]="badgeText() | heatColor: 'badge'"
+    color="white"
+    class="mb-1 h-fit self-end"
+    borderRadius="10px"
+    [class.invisible]="!badgeText()"
+  >
+    <p class="text-xxs w-12 text-center" page-header-title>
+      {{ badgeText() | titlecase }}
+    </p>
+  </ui-badge>
+
+  }
+</div>

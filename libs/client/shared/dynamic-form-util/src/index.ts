@@ -1,4 +1,4 @@
-export * from './lib/base-dynamic-control';
+export * from './lib/base-dynamic-control-component.directive';
 export * from './lib/control-data.token';
 export * from './lib/control-injector.pipe';
 export * from './lib/dynamic-control-focus-handler.service';
