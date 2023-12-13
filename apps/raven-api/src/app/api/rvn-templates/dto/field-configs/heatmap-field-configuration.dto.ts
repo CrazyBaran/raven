@@ -20,11 +20,6 @@ export class HeatmapFieldConfigurationDto {
 
   @ApiProperty()
   @IsDefined()
-  @IsString()
-  public readonly direction: 'ASC' | 'DESC';
-
-  @ApiProperty()
-  @IsDefined()
   @IsNumber({}, { each: true })
   public readonly thresholds: number[];
 }
