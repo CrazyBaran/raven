@@ -6,8 +6,8 @@ describe('HeatmapFieldUtils', () => {
       thresholds: [5, 20],
     };
 
-    const heatmapFieldUtils = new HeatmapFieldUtils();
-    const result = heatmapFieldUtils.getColourForField(testConfig, 2);
+    const result =
+      HeatmapFieldUtils.withConfig(testConfig).getColourForValue(2);
 
     expect(result).toStrictEqual('#00FF00');
   });
@@ -16,8 +16,8 @@ describe('HeatmapFieldUtils', () => {
       thresholds: [5, 20],
     };
 
-    const heatmapFieldUtils = new HeatmapFieldUtils();
-    const result = heatmapFieldUtils.getColourForField(testConfig, 10);
+    const result =
+      HeatmapFieldUtils.withConfig(testConfig).getColourForValue(10);
 
     expect(result).toStrictEqual('#FFFF00');
   });
@@ -26,8 +26,8 @@ describe('HeatmapFieldUtils', () => {
       thresholds: [5, 20],
     };
 
-    const heatmapFieldUtils = new HeatmapFieldUtils();
-    const result = heatmapFieldUtils.getColourForField(testConfig, 22);
+    const result =
+      HeatmapFieldUtils.withConfig(testConfig).getColourForValue(22);
 
     expect(result).toStrictEqual('#FF0000');
   });
@@ -36,8 +36,8 @@ describe('HeatmapFieldUtils', () => {
       thresholds: [20, 5],
     };
 
-    const heatmapFieldUtils = new HeatmapFieldUtils();
-    const result = heatmapFieldUtils.getColourForField(testConfig, 22);
+    const result =
+      HeatmapFieldUtils.withConfig(testConfig).getColourForValue(22);
 
     expect(result).toStrictEqual('#00FF00');
   });
@@ -46,8 +46,8 @@ describe('HeatmapFieldUtils', () => {
       thresholds: [20, 5],
     };
 
-    const heatmapFieldUtils = new HeatmapFieldUtils();
-    const result = heatmapFieldUtils.getColourForField(testConfig, 10);
+    const result =
+      HeatmapFieldUtils.withConfig(testConfig).getColourForValue(10);
 
     expect(result).toStrictEqual('#FFFF00');
   });
@@ -56,8 +56,8 @@ describe('HeatmapFieldUtils', () => {
       thresholds: [20, 5],
     };
 
-    const heatmapFieldUtils = new HeatmapFieldUtils();
-    const result = heatmapFieldUtils.getColourForField(testConfig, 3);
+    const result =
+      HeatmapFieldUtils.withConfig(testConfig).getColourForValue(3);
 
     expect(result).toStrictEqual('#FF0000');
   });
@@ -66,13 +66,11 @@ describe('HeatmapFieldUtils', () => {
       thresholds: [15, 10, 5],
     };
 
-    const heatmapFieldUtils = new HeatmapFieldUtils([
-      'first',
-      'second',
-      'third',
-      'fourth',
-    ]);
-    const result = heatmapFieldUtils.getColourForField(testConfig, 2);
+    const colours = ['first', 'second', 'third', 'fourth'];
+    const result = HeatmapFieldUtils.withConfig(
+      testConfig,
+      colours,
+    ).getColourForValue(2);
 
     expect(result).toStrictEqual('fourth');
   });

@@ -1,14 +1,26 @@
 import { HeatmapThresholdData } from '@app/rvns-templates';
 
 export class HeatmapFieldUtils {
-  private readonly colours;
+  private readonly colours: string[];
+  private readonly config: HeatmapThresholdData;
 
-  public constructor(colors: string[] = ['#00FF00', '#FFFF00', '#FF0000']) {
-    this.colours = colors;
+  private constructor(
+    config: HeatmapThresholdData,
+    colours: string[] = ['#00FF00', '#FFFF00', '#FF0000'],
+  ) {
+    this.config = config;
+    this.colours = colours;
   }
 
-  public getColourForField(config: HeatmapThresholdData, value: number) {
-    const { thresholds } = config;
+  public static withConfig(
+    config: HeatmapThresholdData,
+    colours?: string[],
+  ): HeatmapFieldUtils {
+    return new HeatmapFieldUtils(config, colours);
+  }
+
+  public getColourForValue(value: number) {
+    const { thresholds } = this.config;
 
     if (thresholds.length <= 1) {
       throw new Error(
