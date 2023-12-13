@@ -11,6 +11,9 @@ export const environment = {
   adRedirectUri: 'http://localhost:4200',
   adPostLogoutRedirectUri: 'http://localhost:4200/login',
   adScope: 'https://raven.test.mubadalacapital.ae/api',
+  sharepointRoot: 'https://testonemubadala.sharepoint.com/',
+  sharepointPath:
+    'https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents',
 };
 /*
  * For easier debugging in development mode, you can import the following file

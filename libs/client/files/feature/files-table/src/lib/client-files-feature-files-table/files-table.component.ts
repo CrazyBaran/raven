@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   computed,
+  inject,
   TrackByFunction,
   ViewChild,
   ViewEncapsulation,
@@ -11,6 +12,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
+import { ENVIRONMENT } from '@app/client/core/environment';
 import { FilesService } from '@app/client/files/feature/data-access';
 import {
   FileEntity,
@@ -165,6 +167,9 @@ export class FilesTableComponent {
   @ViewChild(TreeListComponent)
   public treeList: TreeListComponent;
 
+  public environment = inject(ENVIRONMENT);
+  public sharepointUrl = this.environment.sharepointRoot;
+  public sharepointPath = this.environment.sharepointPath;
   public vm = this.store.selectSignal(selectFilesTableViewModel);
   public rootFolder = computed(() => this.vm().rootFolder ?? 'Root');
 

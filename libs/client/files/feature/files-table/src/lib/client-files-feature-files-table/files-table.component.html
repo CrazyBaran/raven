@@ -6,8 +6,8 @@
       <app-picker
         (selectFiles)="onPickerChange($event)"
         name="Manage Files"
-        path="https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents"
-        url="https://testonemubadala.sharepoint.com/"
+        [path]="sharepointPath"
+        [url]="sharepointUrl"
       ></app-picker>
     </div>
   </app-quick-filters-template>

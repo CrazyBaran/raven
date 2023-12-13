@@ -5,4 +5,6 @@ export interface Environment {
   adAuthority: string;
   adRedirectUri: string;
   adPostLogoutRedirectUri: string;
+  sharepointRoot: string;
+  sharepointPath: string;
 }

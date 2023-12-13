@@ -7,4 +7,7 @@ export const environment = {
   adRedirectUri: 'https://raven-static.test.mubadalacapital.ae',
   adPostLogoutRedirectUri: 'https://raven-static.test.mubadalacapital.ae/login',
   adScope: 'https://raven.test.mubadalacapital.ae/api',
+  sharepointRoot: 'https://testonemubadala.sharepoint.com/',
+  sharepointPath:
+    'https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents',
 };
