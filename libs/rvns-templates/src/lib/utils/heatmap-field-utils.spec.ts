@@ -1,7 +1,17 @@
 import { HeatmapFieldUtils } from './heatmap-field.utils';
 
 describe('HeatmapFieldUtils', () => {
-  it('ascending order', async () => {
+  it('ascending order 1', async () => {
+    const testConfig = {
+      thresholds: [5, 20],
+    };
+
+    const heatmapFieldUtils = new HeatmapFieldUtils();
+    const result = heatmapFieldUtils.getColourForField(testConfig, 2);
+
+    expect(result).toStrictEqual('#00FF00');
+  });
+  it('ascending order 2', async () => {
     const testConfig = {
       thresholds: [5, 20],
     };
@@ -11,7 +21,7 @@ describe('HeatmapFieldUtils', () => {
 
     expect(result).toStrictEqual('#FFFF00');
   });
-  it('ascending order, 2', async () => {
+  it('ascending order 3', async () => {
     const testConfig = {
       thresholds: [5, 20],
     };
@@ -21,7 +31,7 @@ describe('HeatmapFieldUtils', () => {
 
     expect(result).toStrictEqual('#FF0000');
   });
-  it('descending order', async () => {
+  it('descending order 1', async () => {
     const testConfig = {
       thresholds: [20, 5],
     };
@@ -30,6 +40,26 @@ describe('HeatmapFieldUtils', () => {
     const result = heatmapFieldUtils.getColourForField(testConfig, 22);
 
     expect(result).toStrictEqual('#00FF00');
+  });
+  it('descending order 2', async () => {
+    const testConfig = {
+      thresholds: [20, 5],
+    };
+
+    const heatmapFieldUtils = new HeatmapFieldUtils();
+    const result = heatmapFieldUtils.getColourForField(testConfig, 10);
+
+    expect(result).toStrictEqual('#FFFF00');
+  });
+  it('descending order 3', async () => {
+    const testConfig = {
+      thresholds: [20, 5],
+    };
+
+    const heatmapFieldUtils = new HeatmapFieldUtils();
+    const result = heatmapFieldUtils.getColourForField(testConfig, 3);
+
+    expect(result).toStrictEqual('#FF0000');
   });
   it('custom colours', async () => {
     const testConfig = {
