@@ -50,7 +50,6 @@ import {
   TreeListModule,
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
-import { times } from 'lodash';
 import { filter, first, map, Observable } from 'rxjs';
 import {
   FileRow,
@@ -68,15 +67,12 @@ import {
     ButtonsModule,
     RelatedNotesTableComponent,
     RxFor,
-
     NoteDetailsComponent,
-
     LoaderComponent,
     PageTemplateComponent,
     GridModule,
     TileLayoutModule,
     NotesTableContainerComponent,
-
     DealLeadsPipe,
     DealTeamPipe,
     TagComponent,
@@ -84,7 +80,6 @@ import {
     RxIf,
     TimesPipe,
     SkeletonModule,
-
     TreeListModule,
   ],
   templateUrl: './organisation-page.component.html',
@@ -191,6 +186,4 @@ export class OrganisationPageComponent {
   public openFileWebUrl(file: FileRow): void {
     window.open(file.url, '_blank');
   }
-
-  protected readonly times = times;
 }

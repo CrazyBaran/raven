@@ -24,7 +24,7 @@ import {
   fadeIn,
 } from '@app/client/shared/ui';
 import { SafeHtmlPipe, TimesPipe } from '@app/client/shared/ui-pipes';
-import { distinctUntilChangedDeep, log } from '@app/client/shared/util-rxjs';
+import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { EditorView } from '@progress/kendo-angular-editor';
@@ -138,7 +138,6 @@ export class OpportunitiesRelatedNotesComponent {
     );
 
   public constructor() {
-    this.store.select(selectNoteFields).pipe(log()).subscribe();
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
     this.store
       .select(selectOpportunityFormRecord)
