@@ -847,24 +847,32 @@ export class NotesService {
         (nt) => nt.name === tab.name,
       ) as NoteTabsWithRelatedNotesData;
       const relatedNotesCopy = cloneDeep(relatedNotes);
-      foundTab.relatedNotesWithFields = this.getRelatedNotesWithFieldsForTab(
-        tab,
-        relatedNotesCopy,
-      );
-      foundTab.relatedNotes = this.getRelatedNotesForTab(tab, relatedNotesCopy);
-      foundTab.pipelineStages = tab.pipelineStages;
-      if (tab.pipelineStages.find((ps) => ps.id === currentPipelineStageId)) {
-        const emptyFields = foundTab.noteFieldGroups.reduce(
-          (
-            res: NoteFieldData[],
-            cur: NoteFieldGroupsWithFieldData,
-          ): NoteFieldData[] => {
-            const emptyFieldsInGroup = cur.noteFields.filter((nf) => !nf.value);
-            res.push(...emptyFieldsInGroup);
-            return res;
-          },
-          [],
+      if (foundTab) {
+        foundTab.relatedNotesWithFields = this.getRelatedNotesWithFieldsForTab(
+          tab,
+          relatedNotesCopy,
         );
+        foundTab.relatedNotes = this.getRelatedNotesForTab(
+          tab,
+          relatedNotesCopy,
+        );
+        foundTab.pipelineStages = tab.pipelineStages;
+      }
+      if (tab.pipelineStages.find((ps) => ps.id === currentPipelineStageId)) {
+        const emptyFields =
+          foundTab?.noteFieldGroups?.reduce(
+            (
+              res: NoteFieldData[],
+              cur: NoteFieldGroupsWithFieldData,
+            ): NoteFieldData[] => {
+              const emptyFieldsInGroup = cur.noteFields.filter(
+                (nf) => !nf.value,
+              );
+              res.push(...emptyFieldsInGroup);
+              return res;
+            },
+            [],
+          ) || [];
         missingFields.push(
           ...emptyFields.map((nf) => ({
             tabName: tab.name,
