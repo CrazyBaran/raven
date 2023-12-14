@@ -3,7 +3,7 @@ import { CalculationTypeEnum } from '../enums/calculation-type.enum';
 import { HeatMapValue, heatMapValues } from '../enums/heat-map.value';
 
 export interface HeatmapConfigData {
-  readonly thresholds?: number[];
+  readonly thresholds: number[];
   readonly calculationConfig?: CalculationConfigData;
 }
 
@@ -64,11 +64,13 @@ export class HeatmapFieldUtils {
 
   public getCalculatedValue(valueMap: {
     [key: string]: number | null;
-  }): number | string {
-    if (this.config.calculationConfig.type === CalculationTypeEnum.DIVISION) {
+  }): number | string | null {
+    if (this.config.calculationConfig?.type === CalculationTypeEnum.DIVISION) {
       return this.calculateDivision(valueMap);
     }
-    if (this.config.calculationConfig.type === CalculationTypeEnum.EFFICIENCY) {
+    if (
+      this.config.calculationConfig?.type === CalculationTypeEnum.EFFICIENCY
+    ) {
       return this.calculateEfficiency(valueMap);
     }
     throw new Error('Configuration is not correct - incorrect type');
@@ -76,7 +78,7 @@ export class HeatmapFieldUtils {
 
   private calculateDivision(valueMap: {
     [key: string]: number | null;
-  }): number | string {
+  }): number | string | null {
     const { calculationConfig } = this.config;
     if (!calculationConfig) {
       throw new Error('Configuration is not correct - no calculationConfig');
@@ -104,7 +106,9 @@ export class HeatmapFieldUtils {
     return numerator / denominator;
   }
 
-  private calculateEfficiency(valueMap: { [p: string]: number | null }) {
+  private calculateEfficiency(valueMap: {
+    [p: string]: number | null;
+  }): number | string | null {
     const { calculationConfig } = this.config;
     if (!calculationConfig) {
       throw new Error('Configuration is not correct - no calculationConfig');

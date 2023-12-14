@@ -68,6 +68,7 @@ describe('HeatmapFieldUtils', () => {
   describe('calculations', () => {
     it('division', async () => {
       const testConfig = {
+        thresholds: [],
         calculationConfig: {
           type: CalculationTypeEnum.DIVISION,
           valueIds: ['uuid-1', 'uuid-2'],
@@ -85,6 +86,7 @@ describe('HeatmapFieldUtils', () => {
     });
     it('division by zero', async () => {
       const testConfig = {
+        thresholds: [],
         calculationConfig: {
           type: CalculationTypeEnum.DIVISION,
           valueIds: ['uuid-1', 'uuid-2'],
@@ -102,6 +104,7 @@ describe('HeatmapFieldUtils', () => {
     });
     it('efficiency', async () => {
       const testConfig = {
+        thresholds: [],
         calculationConfig: {
           type: CalculationTypeEnum.EFFICIENCY,
           valueIds: ['uuid-1', 'uuid-2', 'uuid-3'],
@@ -120,6 +123,7 @@ describe('HeatmapFieldUtils', () => {
     });
     it('efficiency - division by zero', async () => {
       const testConfig = {
+        thresholds: [],
         calculationConfig: {
           type: CalculationTypeEnum.EFFICIENCY,
           valueIds: ['uuid-1', 'uuid-2', 'uuid-3'],
@@ -138,6 +142,7 @@ describe('HeatmapFieldUtils', () => {
     });
     it('incorrect config 1', async () => {
       const testConfig = {
+        thresholds: [],
         calculationConfig: {
           type: 'incorrect' as CalculationTypeEnum,
           valueIds: ['uuid-1', 'uuid-2', 'uuid-3'],
@@ -157,6 +162,7 @@ describe('HeatmapFieldUtils', () => {
     });
     it('incorrect config 2', async () => {
       const testConfig = {
+        thresholds: [],
         calculationConfig: {
           type: CalculationTypeEnum.EFFICIENCY,
           valueIds: ['uuid-1', 'uuid-2'],
