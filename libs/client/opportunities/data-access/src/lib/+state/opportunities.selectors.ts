@@ -151,8 +151,12 @@ export const selectFinancialGroups = createSelector(
                     values: Record<string, number | undefined>,
                   ) => {
                     try {
+                      const value = util.getCalculatedValue(values);
+                      if (_.isString(value)) {
+                        return { error: value, value: null };
+                      }
                       return {
-                        value: util.getCalculatedValue(values),
+                        value: value,
                         error: null,
                       };
                     } catch (error) {
