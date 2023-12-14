@@ -1,6 +1,7 @@
 import { CommonModule, KeyValue } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   DestroyRef,
   Directive,
   ElementRef,
@@ -12,7 +13,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlContainer,
@@ -24,7 +25,8 @@ import {
 } from '@angular/forms';
 import { FormFieldModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
-import { take } from 'rxjs';
+import * as _ from 'lodash';
+import { startWith, take } from 'rxjs';
 import { CONTROL_DATA, ControlData } from './control-data.token';
 import { DynamicControlFocusHandler } from './dynamic-control-focus-handler.service';
 import { BaseDynamicControl, DynamicControl } from './dynamic-forms.model';
@@ -53,7 +55,9 @@ export const dynamicControlProvider: StaticProvider = {
 };
 
 @Directive()
-export abstract class BaseDynamicControlComponent<T extends BaseDynamicControl>
+export abstract class BaseDynamicControlComponent<
+    T extends BaseDynamicControl<any>,
+  >
   implements OnInit, AfterViewInit, OnDestroy
 {
   @HostBinding('class') protected hostClass = 'form-field block';
@@ -69,10 +73,15 @@ export abstract class BaseDynamicControlComponent<T extends BaseDynamicControl>
     optional: true,
   });
   protected parentGroupDir = inject(ControlContainer);
+  protected cdr = inject(ChangeDetectorRef);
 
   protected formControl: AbstractControl = new FormControl(
     this.control.config.value,
     this.resolveValidators(this.control.config),
+  );
+
+  protected value = toSignal(
+    this.formControl.valueChanges.pipe(startWith(this.formControl.value)),
   );
 
   protected state = signal({
@@ -102,6 +111,25 @@ export abstract class BaseDynamicControlComponent<T extends BaseDynamicControl>
           }, 25);
         }
       });
+
+    if (this.control.config.dynamicError$) {
+      this.control.config.dynamicError$.subscribe((error) => {
+        if (error) {
+          this.formControl.setErrors({
+            ...(this.formControl.errors ?? {}),
+            dynamicError: { message: error },
+          });
+        } else {
+          this.formControl.setErrors(
+            _.omit(this.formControl.errors ?? {}, 'dynamicError'),
+          );
+          this.formControl.updateValueAndValidity();
+        }
+
+        this.formControl.markAsTouched();
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   public ngOnDestroy(): void {
@@ -112,7 +140,7 @@ export abstract class BaseDynamicControlComponent<T extends BaseDynamicControl>
 
   private resolveValidators({
     validators = {},
-  }: BaseDynamicControl): ValidatorFn[] {
+  }: BaseDynamicControl<any>): ValidatorFn[] {
     const entries = Object.entries(validators) as [
       keyof typeof validators,
       unknown,

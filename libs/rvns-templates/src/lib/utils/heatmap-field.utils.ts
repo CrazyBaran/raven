@@ -107,7 +107,7 @@ export class HeatmapFieldUtils {
   }
 
   private calculateEfficiency(valueMap: {
-    [p: string]: number | null;
+    [p: string]: number | null | undefined;
   }): number | string | null {
     const { calculationConfig } = this.config;
     if (!calculationConfig) {

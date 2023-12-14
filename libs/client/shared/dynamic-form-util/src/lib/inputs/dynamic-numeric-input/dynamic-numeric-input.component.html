@@ -7,14 +7,16 @@
     />
     <kendo-numerictextbox
       (focus)="setFocus()"
-      [formControl]="numberFormControl"
+      [formControlName]="control.controlKey"
       [id]="control.controlKey"
       [placeholder]="control.config.placeholder!"
       [value]="numericValue"
       [min]="control.config.min!"
       [max]="control.config.max!"
-      [autoCorrect]="true"
+      [autoCorrect]="control.config.autoCorrect ?? false"
       [format]="formatOptions"
+      [readonly]="control.config.readonly ?? false"
+      [class.opacity-75]="control.config.readonly"
     />
     <kendo-formerror
       *ngFor="let error of formControl.errors ?? [] | keyvalue"
@@ -23,13 +25,13 @@
       {{ error.key | errorMessage: error.value }}
     </kendo-formerror>
   </kendo-formfield>
-  @if (control.config.heatmapFn){
+  @if (control.config.heatmapFn ){
   <ui-badge
     [backgroundColor]="badgeText() | heatColor: 'badge'"
     color="white"
     class="mb-1 h-fit self-end"
     borderRadius="10px"
-    [class.invisible]="!badgeText()"
+    [class.invisible]="!badgeText() || !formControl.valid"
   >
     <p class="text-xxs w-12 text-center" page-header-title>
       {{ badgeText() | titlecase }}

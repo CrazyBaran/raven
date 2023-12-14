@@ -57,6 +57,12 @@ import {
   selectOpportunityFormRecord,
 } from './opportunities-related-notes.selectors';
 
+// @Pipe({
+//   name: 'heatmapValue',
+//   standalone: true,
+// })
+// export class HeatmapValuePipe implements PipeTransform {}
+
 @Component({
   selector: 'app-opportunities-related-notes',
   standalone: true,
