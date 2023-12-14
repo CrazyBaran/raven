@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/member-ordering,@typescript-eslint/explicit-function-return-type */
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -24,6 +24,10 @@ export class BadgeComponent {
 
   @Input() public set color(value: string) {
     this._color = value;
+  }
+
+  public get color() {
+    return this._color;
   }
 
   @Input() public _borderRadius = '4px';

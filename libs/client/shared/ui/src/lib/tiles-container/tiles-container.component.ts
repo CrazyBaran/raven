@@ -26,6 +26,7 @@ import {
   OnResizeDirective,
   ResizedEvent,
 } from '@app/client/shared/ui-directives';
+import { log } from '@app/client/shared/util-rxjs';
 
 @Component({
   selector: 'ui-tiles-container',
@@ -56,6 +57,7 @@ export class TilesContainerComponent {
     this.tooltipTileWidth$,
     this.rows$,
   ]).pipe(
+    log(),
     debounceTime(5),
     map(([width, tilesLength, tooltipWidth, rows]) => {
       return maxVisibleIndex(width, tilesLength, tooltipWidth, rows);
@@ -98,6 +100,6 @@ export class TilesContainerComponent {
       .filter((el: any) => {
         return el.className?.includes('tile-list');
       })
-      .map((el: any) => el.getBoundingClientRect().width);
+      .map((el: any) => Math.round(el.getBoundingClientRect().width));
   }
 }
