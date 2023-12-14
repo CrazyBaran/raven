@@ -1,11 +1,14 @@
-export interface HeatmapThresholdData {
-  readonly thresholds: number[];
+export interface CalculationConfigData {
+  readonly type: 'division' | 'efficiency';
+  readonly values: number[];
 }
 
-export interface HeatmapFieldConfigurationData extends HeatmapThresholdData {
+export interface HeatmapFieldConfigurationData {
   readonly unit: string;
   readonly min: number;
   readonly max: number;
+  readonly thresholds: number[];
+  readonly calculationConfig?: CalculationConfigData;
 }
 
 export interface FieldDefinitionData {
