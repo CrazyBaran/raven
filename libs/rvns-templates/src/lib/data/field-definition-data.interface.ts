@@ -1,5 +1,7 @@
+import { CalculationTypeEnum } from '../enums/calculation-type.enum';
+
 export interface CalculationConfigData {
-  readonly type: 'division' | 'efficiency';
+  readonly type: CalculationTypeEnum;
   readonly valueIds: string[];
 }
 
