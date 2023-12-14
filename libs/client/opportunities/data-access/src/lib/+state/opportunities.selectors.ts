@@ -141,7 +141,7 @@ export const selectFinancialGroups = createSelector(
                 id: id,
                 noteFields: noteFields.map((field) => {
                   const heatmapFn = (value: any): any =>
-                    value === null || value === undefined
+                    value === null || value === undefined || value === ''
                       ? null
                       : HeatmapFieldUtils.withConfig({
                           thresholds: field.configuration?.['thresholds'],
