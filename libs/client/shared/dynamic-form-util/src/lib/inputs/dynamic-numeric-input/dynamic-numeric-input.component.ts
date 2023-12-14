@@ -8,13 +8,14 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { BadgeComponent } from '@app/client/shared/ui';
+import { HearColorPipe } from '@app/client/shared/ui-pipes';
 import {
   NumericTextBoxComponent,
   NumericTextBoxModule,
   TextBoxModule,
 } from '@progress/kendo-angular-inputs';
+import * as _ from 'lodash';
 import { startWith } from 'rxjs';
-import { HearColorPipe } from '../../../../../ui-pipes/src/lib/heat-color.pipe';
 import {
   BaseDynamicControlComponent,
   dynamicControlProvider,
@@ -58,7 +59,11 @@ export class DynamicNumericInputComponent extends BaseDynamicControlComponent<Dy
   public constructor() {
     super();
     this.numberFormControl.valueChanges.subscribe((value) => {
-      this.formControl.setValue(String(value));
+      if (_.isNumber(value)) {
+        this.formControl.setValue(String(value));
+      } else {
+        this.formControl.setValue('');
+      }
     });
   }
 

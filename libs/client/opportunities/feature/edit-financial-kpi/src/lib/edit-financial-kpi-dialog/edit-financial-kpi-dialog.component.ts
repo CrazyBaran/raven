@@ -1,21 +1,15 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  Directive,
   inject,
-  OnInit,
 } from '@angular/core';
-import { FormBuilder, FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { FormRecord, ReactiveFormsModule } from '@angular/forms';
 import {
-  comparatorFn,
   ControlInjectorPipe,
-  DynamicControl,
   DynamicControlResolver,
-  DynamicGroupControl,
-  ErrorMessagePipe,
+  comparatorFn,
 } from '@app/client/shared/dynamic-form-util';
-import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -25,116 +19,89 @@ import {
   DialogRef,
   DialogsModule,
 } from '@progress/kendo-angular-dialog';
-import {
-  ComboBoxModule,
-  DropDownListModule,
-} from '@progress/kendo-angular-dropdowns';
-import {
-  FormFieldModule,
-  RadioButtonModule,
-  TextBoxModule,
-} from '@progress/kendo-angular-inputs';
-import { LabelModule } from '@progress/kendo-angular-label';
 
+import { KeyValuePipe, NgComponentOutlet } from '@angular/common';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotesActions } from '@app/client/notes/data-access';
-import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
-import { RxFor } from '@rx-angular/template/for';
 import { RxLet } from '@rx-angular/template/let';
 import * as _ from 'lodash';
-import { take } from 'rxjs/operators';
-import { selectCreateOpportunityDialogViewModel } from './edit-financial-kpi.selectors';
+import { delay, filter, take, tap } from 'rxjs/operators';
+import {
+  selectCreateOpportunityDialogViewModel,
+  selectEditFinancialDynamicControls,
+} from './edit-financial-kpi.selectors';
+
+@Directive()
+export abstract class DynamicDialogContentBase extends DialogContentBase {
+  protected router = inject(Router);
+  protected activatedRoute = inject(ActivatedRoute);
+
+  protected abstract dialogParam: string;
+
+  public constructor(dialog: DialogRef) {
+    super(dialog);
+
+    this.dialog.dialog?.onDestroy(() => {
+      this.clearDialogQueryParam();
+    });
+
+    this.activatedRoute.queryParams
+      .pipe(
+        delay(250),
+        takeUntilDestroyed(),
+        filter((params) => !(this.dialogParam in params)),
+        take(1),
+        tap(() => this.dialog.close()),
+      )
+      .subscribe();
+  }
+
+  protected clearDialogQueryParam(): void {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        [this.dialogParam]: null,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+}
 
 @Component({
   selector: 'app-edit-financial-kpi-dialog',
   standalone: true,
   imports: [
-    CommonModule,
-    FormFieldModule,
-    LabelModule,
-    TextBoxModule,
-    DropDownListModule,
-    RadioButtonModule,
     ReactiveFormsModule,
     DialogModule,
     ButtonModule,
     DialogsModule,
-    RxLet,
-    ComboBoxModule,
-    ErrorMessagePipe,
     LoaderModule,
-    DateInputModule,
     ControlInjectorPipe,
-    RxFor,
+    RxLet,
+    NgComponentOutlet,
+    KeyValuePipe,
   ],
   templateUrl: './edit-financial-kpi-dialog.component.html',
   styleUrls: ['./edit-financial-kpi-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditFinancialKpiDialogComponent
-  extends DialogContentBase
-  implements OnInit
-{
-  protected kpiForm = new FormRecord({});
-  protected fb = inject(FormBuilder);
+export class EditFinancialKpiDialogComponent extends DynamicDialogContentBase {
   protected store = inject(Store);
   protected actions$ = inject(Actions);
-  protected router = inject(Router);
-  protected activatedRoute = inject(ActivatedRoute);
   protected controlResolver = inject(DynamicControlResolver);
+
+  protected override dialogParam = 'edit-financial-kpi';
+  protected kpiForm = new FormRecord({});
 
   protected vm = this.store.selectSignal(
     selectCreateOpportunityDialogViewModel,
   );
 
-  protected visibleControls = computed(
-    (): Record<string, DynamicControl> => {
-      const fields = this.vm().fieldGroups;
-
-      return _.chain(fields)
-        .map(
-          (group): DynamicGroupControl => ({
-            ...group,
-            type: 'group',
-            controls: _.chain(group.noteFields)
-              .map(
-                (control): DynamicControl => ({
-                  ...control,
-                  type: 'numeric',
-                  value: control.value,
-                }),
-              )
-              .mapKeys(({ id }) => id)
-              .value(),
-          }),
-        )
-        .mapKeys(({ id }) => id)
-        .value();
-    },
-    { equal: _.isEqual },
+  protected visibleControls = toSignal(
+    this.store.select(selectEditFinancialDynamicControls),
   );
-
-  public constructor(dialog: DialogRef) {
-    super(dialog);
-    this.dialog.dialog?.onDestroy(() => {
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams: {
-          'edit-financial-kpi': null,
-        },
-        queryParamsHandling: 'merge',
-      });
-    });
-  }
-
-  public ngOnInit(): void {
-    this.store.dispatch(
-      TagsActions.getTagsByTypesIfNotLoaded({
-        tagTypes: ['opportunity', 'company'],
-      }),
-    );
-  }
 
   protected onDialogClose(): void {
     this.dialog.close();
