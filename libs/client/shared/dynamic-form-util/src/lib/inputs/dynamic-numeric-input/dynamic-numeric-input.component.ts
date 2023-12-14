@@ -5,8 +5,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BadgeComponent } from '@app/client/shared/ui';
 import { HearColorPipe } from '@app/client/shared/ui-pipes';
 import {
@@ -14,8 +13,7 @@ import {
   NumericTextBoxModule,
   TextBoxModule,
 } from '@progress/kendo-angular-inputs';
-import * as _ from 'lodash';
-import { startWith } from 'rxjs';
+import { isObservable } from 'rxjs';
 import {
   BaseDynamicControlComponent,
   dynamicControlProvider,
@@ -42,29 +40,24 @@ export class DynamicNumericInputComponent extends BaseDynamicControlComponent<Dy
   @ViewChild(NumericTextBoxComponent)
   protected textBox: NumericTextBoxComponent;
 
-  protected numberFormControl = new FormControl(
-    this.control.config.value ? Number(this.control.config.value) : null,
-  );
-
-  protected value = toSignal(
-    this.numberFormControl.valueChanges.pipe(
-      startWith(this.numberFormControl.value),
-    ),
-  );
-
   protected badgeText = computed((): string => {
     return this.control.config.heatmapFn?.(this.value()!) ?? '';
   });
 
   public constructor() {
     super();
-    this.numberFormControl.valueChanges.subscribe((value) => {
-      if (_.isNumber(value)) {
-        this.formControl.setValue(String(value));
-      } else {
-        this.formControl.setValue('');
-      }
-    });
+
+    if (
+      this.control.config.calculatedValue$ &&
+      isObservable(this.control.config.calculatedValue$)
+    ) {
+      this.control.config.calculatedValue$
+        .pipe(takeUntilDestroyed())
+        .subscribe((v) => {
+          this.formControl.setValue(v!);
+          this.formControl.markAsTouched();
+        });
+    }
   }
 
   public get formatOptions() {

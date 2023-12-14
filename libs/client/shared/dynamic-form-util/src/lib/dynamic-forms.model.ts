@@ -1,5 +1,6 @@
-import { Validators } from '@angular/forms';
+import { AbstractControl, Validators } from '@angular/forms';
 import { HeatMapValue } from '@app/rvns-templates';
+import { Observable } from 'rxjs';
 
 export interface DynamicOptions {
   label: string;
@@ -24,6 +25,8 @@ export interface BaseDynamicControl<T = string> {
   validators?: {
     [key in ValidatorKeys]?: unknown;
   };
+  readonly?: boolean;
+  dynamicError$?: Observable<string | null>;
 }
 
 export interface DynamicTextControl extends BaseDynamicControl {
@@ -35,12 +38,15 @@ export interface DynamicRichTextControl extends BaseDynamicControl {
   grow?: boolean;
 }
 
-export interface DynamicNumericControl extends BaseDynamicControl {
+export interface DynamicNumericControl extends BaseDynamicControl<number> {
   type: 'numeric';
+  autoCorrect?: boolean;
   min?: number;
   max?: number;
   unit?: string;
   heatmapFn?: (value: number) => HeatMapValue | null;
+  calculatedValue$?: Observable<number | undefined | null>;
+  customErrorFn?: (form: AbstractControl) => string;
 }
 
 export interface DynamicGroupControl extends BaseDynamicControl {

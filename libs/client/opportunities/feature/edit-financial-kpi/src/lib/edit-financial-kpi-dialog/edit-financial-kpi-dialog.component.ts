@@ -4,7 +4,7 @@ import {
   Directive,
   inject,
 } from '@angular/core';
-import { FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import {
   ControlInjectorPipe,
   DynamicControlResolver,
@@ -93,14 +93,14 @@ export class EditFinancialKpiDialogComponent extends DynamicDialogContentBase {
   protected controlResolver = inject(DynamicControlResolver);
 
   protected override dialogParam = 'edit-financial-kpi';
-  protected kpiForm = new FormRecord({});
+  protected kpiForm = new FormRecord<FormRecord<FormControl<number>>>({});
 
   protected vm = this.store.selectSignal(
     selectCreateOpportunityDialogViewModel,
   );
 
   protected visibleControls = toSignal(
-    this.store.select(selectEditFinancialDynamicControls),
+    this.store.select(selectEditFinancialDynamicControls(this.kpiForm)),
   );
 
   protected onDialogClose(): void {
@@ -108,19 +108,19 @@ export class EditFinancialKpiDialogComponent extends DynamicDialogContentBase {
   }
 
   protected onCreate(): void {
+    this.kpiForm.value[''];
     this.store.dispatch(
       NotesActions.updateNote({
         noteId: this.vm().opportunityNote.id,
         data: {
           name: this.vm().opportunityNote.name,
-          fields: _.chain(
-            this.kpiForm.value as Record<string, Record<string, unknown>>,
-          )
+          fields: _.chain(this.kpiForm.value)
             .map((value, id) =>
               _.chain(value)
                 .map((value, key) => ({
                   id: key,
-                  value,
+                  value:
+                    value === null || value === undefined ? '' : String(value),
                 }))
                 .value(),
             )

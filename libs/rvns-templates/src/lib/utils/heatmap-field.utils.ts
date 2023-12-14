@@ -63,7 +63,7 @@ export class HeatmapFieldUtils {
   }
 
   public getCalculatedValue(valueMap: {
-    [key: string]: number | null;
+    [key: string]: number | null | undefined;
   }): number | string | null {
     if (this.config.calculationConfig?.type === CalculationTypeEnum.DIVISION) {
       return this.calculateDivision(valueMap);
@@ -77,7 +77,7 @@ export class HeatmapFieldUtils {
   }
 
   private calculateDivision(valueMap: {
-    [key: string]: number | null;
+    [key: string]: number | null | undefined;
   }): number | string | null {
     const { calculationConfig } = this.config;
     if (!calculationConfig) {
@@ -95,7 +95,7 @@ export class HeatmapFieldUtils {
     const numerator = valueMap[valueIds[0]];
     const denominator = valueMap[valueIds[1]];
 
-    if (numerator === null || denominator === null) {
+    if (numerator == null || denominator == null) {
       return null;
     }
 
@@ -107,7 +107,7 @@ export class HeatmapFieldUtils {
   }
 
   private calculateEfficiency(valueMap: {
-    [p: string]: number | null;
+    [p: string]: number | null | undefined;
   }): number | string | null {
     const { calculationConfig } = this.config;
     if (!calculationConfig) {
@@ -126,7 +126,7 @@ export class HeatmapFieldUtils {
     const ltm = valueMap[valueIds[1]];
     const burn = valueMap[valueIds[2]];
 
-    if (arr === null || ltm === null || burn === null) {
+    if (arr == null || ltm == null || burn == null) {
       return null;
     }
 

@@ -69,8 +69,13 @@
                       <div class="text-sm">{{ field.title }}</div>
 
                       <div class="text-end text-sm">
-                        @if (field.value){
-                        {{ field.value || '' }} {{ field.unit }} }
+                        @if(field.calculatedValueFn){
+                        {{ field.calculatedValueFn(vm().fieldValues) || '' }}
+                        {{ field.unit }}
+
+                        } @else if (field.value){
+                        {{ field.value || '' }} {{ field.unit }}
+                        }
                       </div>
                     </div>
                     }

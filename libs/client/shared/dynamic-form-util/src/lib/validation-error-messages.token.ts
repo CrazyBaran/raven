@@ -11,8 +11,12 @@ export const ERROR_MESSAGES: Record<string, (args?: unknown) => string> = {
   required: () => `This field is required`,
   requiredTrue: () => `This field is required`,
   email: () => `It should be a valid email`,
-  min: (args: unknown) => `Value must be equal or greater than ${args}`,
-  max: (args: unknown) => `Value must be equal or less than ${args}`,
+  min: (args: unknown) =>
+    `Value must be equal or greater than ${
+      hasProp(args, 'min') ? args.min : ''
+    }`,
+  max: (args: unknown) =>
+    `Value must be equal or less than ${hasProp(args, 'max') ? args.max : ''}`,
   minlength: (args: unknown) =>
     `The length should be at least ${
       hasProp(args, 'requiredLength') ? args.requiredLength : ''
@@ -20,6 +24,8 @@ export const ERROR_MESSAGES: Record<string, (args?: unknown) => string> = {
   appPasswordShouldMatch: () => `Password should match`,
   passwordShouldMatch: () => `Password should match`,
   pattern: () => `Wrong format`,
+  dynamicError: (args: unknown) =>
+    hasProp(args, 'message') ? String(args.message) : '',
 };
 
 export const VALIDATION_ERROR_MESSAGES = new InjectionToken(

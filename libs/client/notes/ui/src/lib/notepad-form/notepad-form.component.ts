@@ -267,11 +267,11 @@ export class NotepadFormComponent
           .mapValues((field) => ({
             ...field,
           }))
-          .value() as unknown as Dictionary<DynamicControl>),
+          .value() as any),
       }; //TODO: fix typing
     }
 
-    return titleField;
+    return titleField as any;
   });
 
   protected isDefaultTemplate = computed(

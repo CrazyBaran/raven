@@ -3,7 +3,7 @@ import { notesQuery } from '@app/client/opportunities/api-notes';
 import { storageQuery } from '@app/client/shared/storage/data-access';
 import { getDealLeads, getDealTeam } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
-import { HeatmapFieldUtils } from '@app/rvns-templates';
+import { HeatMapValue, HeatmapFieldUtils } from '@app/rvns-templates';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 import {
@@ -140,12 +140,56 @@ export const selectFinancialGroups = createSelector(
                 title: name,
                 id: id,
                 noteFields: noteFields.map((field) => {
-                  const heatmapFn = (value: any): any =>
+                  const util = HeatmapFieldUtils.withConfig({
+                    thresholds: field.configuration?.['thresholds'],
+                    calculationConfig: field.configuration?.[
+                      'calculationConfig'
+                    ] as any,
+                  });
+
+                  const calcValue = (
+                    values: Record<string, number | undefined>,
+                  ) => {
+                    try {
+                      const value = util.getCalculatedValue(values);
+                      if (_.isString(value)) {
+                        return { error: value, value: null };
+                      }
+                      return {
+                        value: value,
+                        error: null,
+                      };
+                    } catch (error) {
+                      return { error: String(error), value: null };
+                    }
+                  };
+
+                  const heatmapFn = (
+                    value: number | string,
+                  ): HeatMapValue | null =>
                     value === null || value === undefined || value === ''
                       ? null
-                      : HeatmapFieldUtils.withConfig({
-                          thresholds: field.configuration?.['thresholds'],
-                        }).getColourForValue(value);
+                      : util.getColourForValue(Number(value));
+
+                  const calculatedValueFn =
+                    'calculationConfig' in field.configuration!
+                      ? (
+                          values: Record<string, number | undefined>,
+                        ): number | null =>
+                          values === null || values === undefined
+                            ? null
+                            : calcValue(values).value
+                      : null;
+
+                  const dynamicErrorFn =
+                    'calculationConfig' in field.configuration!
+                      ? (
+                          values: Record<string, number | undefined>,
+                        ): string | null =>
+                          values === null || values === undefined
+                            ? null
+                            : calcValue(values).error
+                      : null;
 
                   return {
                     name: field.name,
@@ -158,7 +202,11 @@ export const selectFinancialGroups = createSelector(
                     tabId: tab.id,
                     tabName: tab.name,
                     heatmapFn,
+                    calculatedValueFn,
+                    dynamicErrorFn,
                     heat: heatmapFn(field.value),
+                    min: field.configuration!['min'],
+                    max: field.configuration!['max'],
                     ...(field.configuration ?? {}),
                   };
                 }),

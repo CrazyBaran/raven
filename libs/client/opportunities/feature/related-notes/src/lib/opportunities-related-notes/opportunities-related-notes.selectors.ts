@@ -95,16 +95,21 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
     isLoading,
     opportunityId,
   ) => {
+    const tabFields = fields[tab ?? ''] ?? [];
     return {
       allFields: Object.values(fields).flat(),
-      visibleFields: (fields[tab ?? ''] ?? [])
+      visibleFields: tabFields
         .filter((f) => f.type === 'field' && f.flat)
         .map((f) => ({
           title: f.title,
           formControlName: f.uniqId,
         })),
       heatmapFields: financialGroups.filter((x) => x.tabName === tab),
-      fields: fields[tab ?? ''] ?? [],
+      fields: tabFields,
+      fieldValues: _.chain(tabFields)
+        .mapKeys(({ id }) => id)
+        .mapValues(({ value }) => value)
+        .value(),
       opportunityNote: opportunityNotes[0],
       opportunityNoteId: opportunityNotes[0]?.id,
       isLoading,
