@@ -1,6 +1,6 @@
 export interface CalculationConfigData {
   readonly type: 'division' | 'efficiency';
-  readonly values: number[];
+  readonly valueIds: string[];
 }
 
 export interface HeatmapFieldConfigurationData {
