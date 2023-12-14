@@ -2,8 +2,8 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 
 import { Injectable } from '@angular/core';
-import { selectQueryParam } from '@app/client/shared/util-router';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { selectQueryParam, selectUrl } from '@app/client/shared/util-router';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import {
   DialogResult,
@@ -129,7 +129,8 @@ export class ShelfEffects {
     () => {
       return this.store.select(selectQueryParam('note-details')).pipe(
         filter((id) => !!id),
-        tap(async (id) =>
+        concatLatestFrom(() => this.store.select(selectUrl)),
+        tap(async ([id, url]) =>
           this.shelfService.openLazyWindow({
             template: {
               name: 'note-details',
@@ -142,7 +143,9 @@ export class ShelfEffects {
             width: 860,
             height: 800,
             cssClass: 'max-h-full',
-            hostCssClass: 'global-window-container',
+            hostCssClass: url.includes('opportunities')
+              ? undefined
+              : 'global-window-container',
           }),
         ),
       );
