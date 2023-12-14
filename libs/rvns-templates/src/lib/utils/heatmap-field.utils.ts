@@ -1,12 +1,17 @@
-import { HeatmapThresholdData } from '../data/field-definition-data.interface';
+import { CalculationConfigData } from '../data/field-definition-data.interface';
 import { HeatMapValue, heatMapValues } from '../enums/heat-map.value';
+
+export interface HeatmapConfigData {
+  readonly thresholds: number[];
+  readonly calculationConfig?: CalculationConfigData;
+}
 
 export class HeatmapFieldUtils {
   private readonly colours: readonly HeatMapValue[];
-  private readonly config: HeatmapThresholdData;
+  private readonly config: HeatmapConfigData;
 
   private constructor(
-    config: HeatmapThresholdData,
+    config: HeatmapConfigData,
     colours: readonly HeatMapValue[] = heatMapValues,
   ) {
     this.config = config;
@@ -14,7 +19,7 @@ export class HeatmapFieldUtils {
   }
 
   public static withConfig(
-    config: HeatmapThresholdData,
+    config: HeatmapConfigData,
     colours?: readonly HeatMapValue[],
   ): HeatmapFieldUtils {
     return new HeatmapFieldUtils(config, colours);
@@ -54,6 +59,12 @@ export class HeatmapFieldUtils {
       return this.getColourForIndex(thresholds.length);
     }
     return null;
+  }
+
+  public getCalculatedValue(valueMap: {
+    [key: string]: number | null;
+  }): number | null {
+    return 43;
   }
 
   private getColourForIndex(index: number): HeatMapValue {
