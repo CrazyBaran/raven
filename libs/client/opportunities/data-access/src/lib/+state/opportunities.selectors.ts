@@ -3,7 +3,11 @@ import { notesQuery } from '@app/client/opportunities/api-notes';
 import { storageQuery } from '@app/client/shared/storage/data-access';
 import { getDealLeads, getDealTeam } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
-import { HeatMapValue, HeatmapFieldUtils } from '@app/rvns-templates';
+import {
+  HeatMapValue,
+  HeatmapFieldConfigurationData,
+  HeatmapFieldUtils,
+} from '@app/rvns-templates';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 import {
@@ -124,6 +128,19 @@ export const selectNoteFields = createSelector(
 export const selectFinancialGroups = createSelector(
   selectOpportunityNoteTabs,
   (tabs) => {
+    const fields = _.chain(tabs)
+      .flatMap((x) => x.noteFieldGroups)
+      .flatMap((x) => x.noteFields)
+      .keyBy((x) => x.templateFieldId)
+      .value();
+
+    const fieldValues = _.chain(tabs)
+      .flatMap((x) => x.noteFieldGroups)
+      .flatMap((x) => x.noteFields)
+      .mapKeys(({ id }) => id)
+      .mapValues(({ value }) => Number(value))
+      .value();
+
     return _.chain(tabs)
       .map((tab) => {
         return _.chain(tab.noteFieldGroups)
@@ -140,11 +157,19 @@ export const selectFinancialGroups = createSelector(
                 title: name,
                 id: id,
                 noteFields: noteFields.map((field) => {
+                  const configuration =
+                    field.configuration as HeatmapFieldConfigurationData;
                   const util = HeatmapFieldUtils.withConfig({
-                    thresholds: field.configuration?.['thresholds'],
-                    calculationConfig: field.configuration?.[
-                      'calculationConfig'
-                    ] as any,
+                    thresholds: configuration?.thresholds ?? [],
+                    calculationConfig: configuration?.calculationConfig
+                      ? {
+                          ...configuration?.calculationConfig,
+                          valueIds:
+                            configuration?.calculationConfig?.valueIds?.map(
+                              (id) => fields[id.toLowerCase()]?.id,
+                            ),
+                        }
+                      : undefined,
                   });
 
                   const calcValue = (
@@ -191,6 +216,10 @@ export const selectFinancialGroups = createSelector(
                             : calcValue(values).error
                       : null;
 
+                  const value = calculatedValueFn
+                    ? calculatedValueFn(fieldValues)
+                    : field.value;
+
                   return {
                     name: field.name,
                     order: field.order,
@@ -198,15 +227,16 @@ export const selectFinancialGroups = createSelector(
                     uniqId: `${tab.name}-${field.name}`,
                     id: field.id,
                     title: field.name,
-                    value: field.value,
+                    value,
                     tabId: tab.id,
                     tabName: tab.name,
                     heatmapFn,
                     calculatedValueFn,
                     dynamicErrorFn,
-                    heat: heatmapFn(field.value),
+                    heat: heatmapFn(value!),
                     min: field.configuration!['min'],
                     max: field.configuration!['max'],
+                    templateId: field.templateFieldId,
                     ...(field.configuration ?? {}),
                   };
                 }),

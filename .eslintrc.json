@@ -43,7 +43,7 @@
               },
               {
                 "sourceTag": "type:ui",
-                "onlyDependOnLibsWithTags": ["type:util", "type:ui","type:dtos"]
+                "onlyDependOnLibsWithTags": ["type:util", "type:ui","type:dtos" ]
               },
               {
                 "sourceTag": "type:util",
