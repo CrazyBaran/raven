@@ -81,8 +81,10 @@
         <div
           class="h-100 flex flex-col overflow-y-auto overflow-x-hidden bg-white"
         >
-          <kendo-buttongroup class="navigations !flex !flex-col">
-            <!--            selection="single"-->
+          <kendo-buttongroup
+            class="navigations !flex !flex-col"
+            selection="single"
+          >
             <kendo-button
               *rxFor="let navigation of vm()?.navigations; trackBy: 'label'"
               [ngStyle]="$any(navigation).style ?? {}"

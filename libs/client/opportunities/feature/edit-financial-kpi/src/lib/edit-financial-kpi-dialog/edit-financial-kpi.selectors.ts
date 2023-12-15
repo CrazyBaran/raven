@@ -37,8 +37,8 @@ export const selectFinancialNoteFields = createSelector(
 export const selectEditFinancialDynamicControls =
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   (form: FormRecord<FormRecord<FormControl<number>>>) =>
-    createSelector(selectFinancialNoteFields, (financialNoteGroupFields) =>
-      _.chain(financialNoteGroupFields)
+    createSelector(selectFinancialNoteFields, (financialNoteGroupFields) => {
+      return _.chain(financialNoteGroupFields)
         .map(
           (group): DynamicGroupControl => ({
             ...group,
@@ -48,11 +48,11 @@ export const selectEditFinancialDynamicControls =
                 const flatValues$ = form.valueChanges.pipe(
                   map((v) => {
                     const value = v;
-                    return _.mapValues(flatNestedRecord(value), (v) =>
-                      value === null || value === undefined
-                        ? undefined
-                        : Number(value),
-                    );
+                    return _.chain(flatNestedRecord(value))
+                      .mapValues((v, key) =>
+                        v === null || v === undefined ? undefined : Number(v),
+                      )
+                      .value();
                   }),
                 );
 
@@ -85,8 +85,8 @@ export const selectEditFinancialDynamicControls =
           }),
         )
         .mapKeys(({ id }) => id)
-        .value(),
-    );
+        .value();
+    });
 
 export const selectCreateOpportunityDialogViewModel = createSelector(
   notesQuery.selectNoteUpdateIsLoading,

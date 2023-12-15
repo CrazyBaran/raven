@@ -1,5 +1,8 @@
 <div class="flex gap-4">
-  <kendo-formfield class="flex-1">
+  <kendo-formfield
+    class="flex-1"
+    [class.pointer-events-none]="control.config.readonly"
+  >
     <kendo-label
       [for]="control.controlKey"
       [text]="control.config.name"
