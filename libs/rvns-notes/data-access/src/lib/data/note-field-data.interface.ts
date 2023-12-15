@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface NoteFieldData {
   readonly id: string;
+  readonly templateFieldId: string;
   readonly name: string;
   readonly type: string;
   readonly order: number;

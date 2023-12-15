@@ -84,7 +84,7 @@ export class HeatmapFieldUtils {
       throw new Error('Configuration is not correct - no calculationConfig');
     }
 
-    const { valueIds } = calculationConfig;
+    const valueIds = calculationConfig.valueIds.map((vid) => vid.toLowerCase());
 
     if (!valueIds || valueIds.length !== 2) {
       throw new Error(
@@ -114,7 +114,7 @@ export class HeatmapFieldUtils {
       throw new Error('Configuration is not correct - no calculationConfig');
     }
 
-    const { valueIds } = calculationConfig;
+    const valueIds = calculationConfig.valueIds.map((vid) => vid.toLowerCase());
 
     if (!valueIds || valueIds.length !== 3) {
       throw new Error(
