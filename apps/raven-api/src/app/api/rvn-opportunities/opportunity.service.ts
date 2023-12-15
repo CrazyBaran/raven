@@ -230,6 +230,13 @@ export class OpportunityService {
             SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
               entity,
             ),
+          sharePointPath: `${
+            environment.sharePoint.rootDirectory
+          }/${SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
+            entity.organisation,
+          )}/${SharepointDirectoryStructureGenerator.getDirectoryNameForOpportunity(
+            entity,
+          )}`,
           team: teamForOpportunity,
         };
         return data;

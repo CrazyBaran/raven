@@ -32,5 +32,6 @@ export interface OpportunityDataWithoutOrganisation {
   readonly files?: FileData[];
   readonly sharePointDirectory?: string;
   readonly sharepointDirectoryId?: string;
+  readonly sharePointPath?: string;
   team?: OpportunityTeamData;
 }
