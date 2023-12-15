@@ -662,6 +662,7 @@ export class NotesService {
   ): NoteFieldData {
     return {
       id: noteFieldEntity.id,
+      templateFieldId: noteFieldEntity.templateFieldId,
       name: noteFieldEntity.name,
       type: noteFieldEntity.type,
       order: noteFieldEntity.order,
