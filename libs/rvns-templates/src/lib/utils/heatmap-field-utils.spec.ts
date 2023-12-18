@@ -33,6 +33,16 @@ describe('HeatmapFieldUtils', () => {
 
       expect(result).toStrictEqual('average');
     });
+    it('ascending order - on the limit', async () => {
+      const testConfig = {
+        thresholds: [5, 20],
+      };
+
+      const result =
+        HeatmapFieldUtils.withConfig(testConfig).getColourForValue(5);
+
+      expect(result).toStrictEqual('good');
+    });
     it('descending order 1', async () => {
       const testConfig = {
         thresholds: [20, 5],
@@ -62,6 +72,16 @@ describe('HeatmapFieldUtils', () => {
         HeatmapFieldUtils.withConfig(testConfig).getColourForValue(3);
 
       expect(result).toStrictEqual('average');
+    });
+    it('descending order - on the limit', async () => {
+      const testConfig = {
+        thresholds: [20, 5],
+      };
+
+      const result =
+        HeatmapFieldUtils.withConfig(testConfig).getColourForValue(20);
+
+      expect(result).toStrictEqual('good');
     });
   });
 

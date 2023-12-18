@@ -45,7 +45,7 @@ export class HeatmapFieldUtils {
 
     if (direction === 'ASC') {
       for (let i = 0; i < thresholds.length; i++) {
-        if (value <= thresholds[i]) {
+        if (value < thresholds[i]) {
           return this.getColourForIndex(i);
         }
       }
@@ -53,7 +53,7 @@ export class HeatmapFieldUtils {
     }
     if (direction === 'DESC') {
       for (let i = 0; i < thresholds.length; i++) {
-        if (value >= thresholds[i]) {
+        if (value > thresholds[i]) {
           return this.getColourForIndex(i);
         }
       }
