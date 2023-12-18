@@ -29,6 +29,8 @@ import {
   ClipboardDirective,
   LoaderComponent,
   TagComponent,
+  TagTypeColorPipe,
+  UserTagDirective,
 } from '@app/client/shared/ui';
 import { SafeHtmlPipe, ToUrlPipe } from '@app/client/shared/ui-pipes';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
@@ -43,6 +45,7 @@ import {
 } from '@progress/kendo-angular-dialog';
 import { IconModule } from '@progress/kendo-angular-icons';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { xIcon } from '@progress/kendo-svg-icons';
 import { filter, map, merge, take } from 'rxjs';
 import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selectors';
@@ -64,6 +67,9 @@ import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selector
     IconModule,
     ClipboardDirective,
     ToUrlPipe,
+    TooltipModule,
+    TagTypeColorPipe,
+    UserTagDirective,
   ],
   templateUrl: './note-details-dialog.component.html',
   styleUrls: ['./note-details-dialog.component.scss'],
