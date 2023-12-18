@@ -20,4 +20,8 @@
     @apply pl-6;
     list-style: decimal;
   }
+
+  strong {
+    @apply font-bold;
+  }
 }
