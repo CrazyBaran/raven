@@ -200,5 +200,24 @@ describe('HeatmapFieldUtils', () => {
         'Configuration is not correct - calculationConfig should have exactly 3 valueIds for efficiency calculation',
       );
     });
+    it('division_multiplied', async () => {
+      const testConfig = {
+        thresholds: [],
+        calculationConfig: {
+          type: CalculationTypeEnum.DIVISION_MULTIPLIED,
+          valueIds: ['uuid-1', 'uuid-2'],
+          multiplier: 2,
+        },
+      };
+
+      const result = HeatmapFieldUtils.withConfig(
+        testConfig,
+      ).getCalculatedValue({
+        'uuid-1': 2,
+        'uuid-2': 1,
+      });
+
+      expect(result).toStrictEqual(4);
+    });
   });
 });
