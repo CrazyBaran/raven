@@ -8,7 +8,7 @@
       [draggable]="false"
       [gap]="12"
       class="!p-0"
-      rowHeight="minmax(300px, 1fr)"
+      rowHeight="minmax(300px, auto)"
     >
       <ng-container [formGroup]="formGroup">
         <ng-container *ngIf="vm().isLoading; else fields">
