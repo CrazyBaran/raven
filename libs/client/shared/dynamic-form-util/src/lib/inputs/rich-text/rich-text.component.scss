@@ -34,3 +34,7 @@ app-dynamic-rich-text {
     @apply border-l-0 border-r-0 border-t-0;
   }
 }
+
+.k-editor.k-readonly .k-editor-content.k-focus {
+  outline-width: 0;
+}

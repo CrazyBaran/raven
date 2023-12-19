@@ -5,6 +5,7 @@ import { notesQuery } from '@app/client/opportunities/api-notes';
 import {
   opportunitiesQuery,
   selectFinancialGroups,
+  selectIsTeamMemberForCurrentOpportunity,
 } from '@app/client/opportunities/data-access';
 import { routerQuery } from '@app/client/shared/util-router';
 import { getRouterSelectors } from '@ngrx/router-store';
@@ -83,6 +84,7 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
   selectFinancialGroups,
   notesQuery.selectOpportunityNotesIsLoading,
   routerQuery.selectCurrentOpportunityId,
+  selectIsTeamMemberForCurrentOpportunity,
   (
     tab,
     opportunityNotes,
@@ -91,6 +93,7 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
     financialGroups,
     isLoading,
     opportunityId,
+    isMember,
   ) => {
     const tabFields = fields[tab ?? ''] ?? [];
     return {
@@ -111,6 +114,7 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
       opportunityNoteId: opportunityNotes[0]?.id,
       isLoading,
       opportunityId,
+      canEditFields: isMember,
       ...relatedNotes,
     };
   },

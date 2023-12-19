@@ -130,6 +130,7 @@
                 [grow]="true"
                 [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
                 class="h-full"
+                [readonly]="!vm().canEditFields"
                 placeholder="Click to write content here..."
               >
               </app-rich-text>

@@ -72,11 +72,23 @@ export const selectRouteOpportunityDetails = createSelector(
   },
 );
 
-export const selectHasPermissionForCurrentOpportunity = createSelector(
+export const selectIsTeamLeadForCurrentOpportunity = createSelector(
   authQuery.selectUserEmail,
   selectRouteOpportunityDetails,
   (userEmail, opportunity) =>
     opportunity?.team?.owners?.some(
+      ({ actorEmail }) => actorEmail === userEmail,
+    ),
+);
+
+export const selectIsTeamMemberForCurrentOpportunity = createSelector(
+  authQuery.selectUserEmail,
+  selectRouteOpportunityDetails,
+  (userEmail, opportunity) =>
+    opportunity?.team?.owners?.some(
+      ({ actorEmail }) => actorEmail === userEmail,
+    ) ||
+    opportunity?.team?.members?.some(
       ({ actorEmail }) => actorEmail === userEmail,
     ),
 );
@@ -274,7 +286,8 @@ export const opportunitiesQuery = {
   selectOpportunityNoteTabs,
   selectOpportunityDetailsIsLoading,
   selectOpportunityUpdateIsLoading,
-  selectHasPermissionForCurrentOpportunity,
+  selectHasPermissionForCurrentOpportunity:
+    selectIsTeamLeadForCurrentOpportunity,
   selectIsLoadingUpdateStage,
   selectFinancialGroups,
 };

@@ -77,6 +77,8 @@ export class RichTextComponent
     this.editor?.blur();
   }
 
+  @Input() public readonly: boolean | undefined;
+
   public get isDisabled(): boolean {
     return this._disabled ?? this.disabled ?? false;
   }
