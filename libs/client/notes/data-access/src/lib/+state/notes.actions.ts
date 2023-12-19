@@ -16,6 +16,10 @@ export const NotesActions = createActionGroup({
     'Get Notes Success': props<{ data: NoteData[]; total: number }>(),
     'Get Notes Failure': props<{ error: string }>(),
 
+    'Get Note Attachments': props<{ id: string }>(),
+    'Get Notes Attachments Success': props<{ id: string }>(),
+    'Get Notes Attachments Failure': props<{ id: string }>(),
+
     'Get Current Note Details': emptyProps(),
 
     'Clear Notes': emptyProps(),

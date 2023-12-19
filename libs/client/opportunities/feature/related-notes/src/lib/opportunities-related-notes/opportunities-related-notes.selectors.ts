@@ -25,17 +25,13 @@ export const selectActiveNoteTab = createSelector(
   },
 );
 
-// export const selectActiveNoteTabFieldGroup = createSelector(
-//   selectActiveNoteTab,
-//   (activeTab) => activeTab?.noteFieldGroups[0],
-// );
-
 export const selectRelatedNotesWithFields = createSelector(
   selectActiveNoteTab,
-  (tab): any =>
-    tab && 'relatedNotesWithFields' in tab
+  (tab) => {
+    return tab && 'relatedNotesWithFields' in tab
       ? tab.relatedNotesWithFields ?? []
-      : [],
+      : [];
+  },
 );
 
 export const selectRelatedNotes = createSelector(
@@ -59,7 +55,8 @@ export const selectOpportunityRelatedNotes = createSelector(
       notesWithFields,
       notes,
       visibleNoteWithFields: notesWithFields?.length
-        ? notesWithFields[visibleNoteWithFieldsIndex ?? 0] ?? notesWithFields[0]
+        ? notesWithFields[Number(visibleNoteWithFieldsIndex ?? 0)] ??
+          notesWithFields[0]
         : null,
       nextQueryParam: { noteIndex: index + 1 },
       disabledNext: index + 1 >= notesWithFields.length,

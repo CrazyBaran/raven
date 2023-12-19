@@ -6,6 +6,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  Pipe,
+  PipeTransform,
   signal,
 } from '@angular/core';
 
@@ -13,15 +15,18 @@ import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NotesActions } from '@app/client/opportunities/api-notes';
 import {
-  RichTextComponent,
   getSchemaWithCrossorigin,
   imageUploader,
+  RichTextComponent,
 } from '@app/client/shared/dynamic-form-util';
-import { UploadFileService } from '@app/client/shared/storage/data-access';
 import {
+  storageQuery,
+  UploadFileService,
+} from '@app/client/shared/storage/data-access';
+import {
+  fadeIn,
   KendoDynamicPagingDirective,
   LoaderComponent,
-  fadeIn,
 } from '@app/client/shared/ui';
 import { SafeHtmlPipe, TimesPipe } from '@app/client/shared/ui-pipes';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
@@ -51,17 +56,31 @@ import {
   SkeletonModule,
 } from '@progress/kendo-angular-indicators';
 import * as _ from 'lodash';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import {
   selectOpportunitiesRelatedNotesViewModel,
   selectOpportunityFormRecord,
+  selectRelatedNotesWithFields,
 } from './opportunities-related-notes.selectors';
 
-// @Pipe({
-//   name: 'heatmapValue',
-//   standalone: true,
-// })
-// export class HeatmapValuePipe implements PipeTransform {}
+@Pipe({
+  name: 'populateAzureImages',
+  standalone: true,
+})
+export class PopulateAzureImagesPipe implements PipeTransform {
+  public store = inject(Store);
+
+  public transform(value: string): Observable<string> {
+    return this.store.select(storageQuery.selectAzureImageDictionary).pipe(
+      map((azureImageDictionary) => {
+        return Object.entries(azureImageDictionary).reduce(
+          (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
+          value ?? '',
+        );
+      }),
+    );
+  }
+}
 
 @Component({
   selector: 'app-opportunities-related-notes',
@@ -87,6 +106,7 @@ import {
     RelatedNotesTableComponent,
     LoaderModule,
     HearColorPipe,
+    PopulateAzureImagesPipe,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
@@ -186,6 +206,19 @@ export class OpportunitiesRelatedNotesComponent {
           state: 'edit',
           updatingField: null,
         }));
+      });
+
+    this.store
+      .select(selectRelatedNotesWithFields)
+      .pipe(
+        takeUntilDestroyed(),
+        map((notes) => notes.map((note) => note.id)),
+        distinctUntilChangedDeep(),
+      )
+      .subscribe((noteIds) => {
+        noteIds.forEach((id) => {
+          this.store.dispatch(NotesActions.getNoteAttachments({ id }));
+        });
       });
   }
 
