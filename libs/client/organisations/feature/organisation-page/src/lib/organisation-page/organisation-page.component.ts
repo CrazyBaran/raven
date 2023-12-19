@@ -38,9 +38,10 @@ import { RxIf } from '@rx-angular/template/if';
 
 import { trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ENVIRONMENT } from '@app/client/core/environment';
 import {
   selectFileTags,
-  selectFolderChildren,
+  selectFolderChildrenFactory,
 } from '@app/client/files/feature/files-table';
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
 import { TagData } from '@app/rvns-tags';
@@ -53,7 +54,7 @@ import * as _ from 'lodash';
 import { filter, first, map, Observable } from 'rxjs';
 import {
   FileRow,
-  selectFilesTableViewModel,
+  selectFilesTableViewModelFactory,
   selectOrganisationPageViewModel,
 } from './organisation-page.selectors';
 
@@ -94,6 +95,7 @@ export class OrganisationPageComponent {
       dir: 'desc',
     },
   ];
+  public environment = inject(ENVIRONMENT);
   public source = computed(() => this.fileTable().source, { equal: _.isEqual });
   protected store = inject(Store);
   protected router = inject(Router);
@@ -101,7 +103,9 @@ export class OrganisationPageComponent {
   protected vm = this.store.selectSignal(selectOrganisationPageViewModel);
 
   // files
-  protected fileTable = this.store.selectSignal(selectFilesTableViewModel);
+  protected fileTable = this.store.selectSignal(
+    selectFilesTableViewModelFactory(this.environment),
+  );
 
   public constructor() {
     const organizationId = this.vm().currentOrganisationId;
@@ -169,11 +173,13 @@ export class OrganisationPageComponent {
       );
     });
 
-    return this.store.select(selectFolderChildren(item.id)).pipe(
-      filter((res) => res.isLoaded!),
-      map((res) => res.files),
-      first(),
-    );
+    return this.store
+      .select(selectFolderChildrenFactory(this.environment)(item.id))
+      .pipe(
+        filter((res) => res.isLoaded!),
+        map((res) => res.files),
+        first(),
+      );
   };
 
   public rowCallback = (context: RowClassArgs): Record<string, boolean> => {
