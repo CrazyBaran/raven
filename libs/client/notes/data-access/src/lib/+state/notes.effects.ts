@@ -69,6 +69,29 @@ export class NotesEffects {
     );
   });
 
+  private loadNoteAttachmets = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(NotesActions.getNoteAttachments),
+      concatMap(({ id }) =>
+        this.notesService.getNoteAttachments(id).pipe(
+          switchMap(({ data }) => [
+            NotesActions.getNotesAttachmentsSuccess({ id }),
+            StorageActions.addImages({
+              images:
+                data?.map((attachment) => ({
+                  fileName: attachment.fileName,
+                  url: attachment.url,
+                })) ?? [],
+            }),
+          ]),
+          catchError((error) =>
+            of(NotesActions.getNotesAttachmentsFailure({ id })),
+          ),
+        ),
+      ),
+    );
+  });
+
   private loadOpportunityNotes$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(NotesActions.getOpportunityNotes),

@@ -200,9 +200,9 @@
                   {{ note.createdBy.name || '' }}
                 </span>
 
-                <span *ngIf="note.updatedAt" class="text-xs">
+                <span *ngIf="$any(note).updatedAt" class="text-xs">
                   Updated:
-                  {{ note.updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
+                  {{ $any(note).updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
                 </span>
               </div>
             </div>
@@ -234,7 +234,8 @@
                 {{ field.name }}
               </div>
               <div
-                [innerHTML]="field.value | safeHtml"
+                *rxLet="field.value | populateAzureImages; let value"
+                [innerHTML]="value | safeHtml"
                 class="ProseMirror"
               ></div>
             </div>

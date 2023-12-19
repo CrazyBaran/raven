@@ -1,4 +1,4 @@
-<form [formGroup]="notepadForm" class="flex h-full flex-col gap-4">
+<div [formGroup]="notepadForm" class="flex h-full flex-col gap-4">
   <div class="grid grid-cols-[1fr_360px_1fr] gap-2">
     <!--        TEMPLATES       -->
     <kendo-dropdownlist
@@ -93,6 +93,6 @@
       [notepadFormGroup]="notepadForm.controls.notes"
     ></app-notepad>
   </div>
-</form>
+</div>
 
 <ng-container #container></ng-container>
