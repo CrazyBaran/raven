@@ -40,30 +40,16 @@
 
       <div *ngIf="!!noteDetails.tags.length" class="flex flex-col gap-4">
         <ul class="flex flex-row flex-wrap gap-[0_0.75rem]">
-          <li
-            *ngFor="let tag of noteDetails.tags | tagFilter: ['people'] : false"
-            [ngClass]="{
-              'text-error':
-                tag.type === 'company' || tag.type === 'opportunity',
-              'text-success': tag.type === 'industry',
-              'text-warning': tag.type === 'investor',
-              'text-primary-900': tag.type === 'businessModel'
-            }"
-            class="text-sm"
-          >
-            <i class="fa-regular fa-tag mr-1"></i>
-            {{ tag.name }}
-          </li>
+          @for (tag of noteDetails.tags | tagFilter: ['people'] : false; track
+          tag.id){
+          <ui-tag [label]="tag.name" [style]="tag.type | tagTypeColor" />
+          }
         </ul>
 
         <ul class="flex flex-row flex-wrap gap-[0_0.75rem]">
-          <li
-            *ngFor="let tag of noteDetails.tags | tagFilter: ['people']"
-            class="text-sm"
-          >
-            <i class="fa-regular fa-circle-user mr-1"></i>
-            {{ tag.name }}
-          </li>
+          @for (tag of noteDetails.tags | tagFilter: ['people']; track tag.id){
+          <ui-tag uiUserTag [label]="tag.name" />
+          }
         </ul>
       </div>
 
@@ -119,7 +105,7 @@
           >Copy Link</kendo-button
         >
 
-        <div class="flex flex-row gap-3">
+        <div class="flex flex-row gap-3" kendoTooltip>
           <div class="flex items-center justify-center gap-3 text-xs">
             <span>
               Created:{{ noteDetails.createdAt | date: 'dd/MM/yyyy hh:mm a' }}
@@ -141,14 +127,25 @@
             themeColor="primary"
             >Delete</kendo-button
           >
-          <kendo-button
-            (click)="editMode = true"
-            fillMode="outline"
-            iconClass="fa-regular fa-pen"
-            size="large"
-            themeColor="primary"
-            >Edit / Update</kendo-button
+          <div
+            [title]="
+              !vm().canEditNote
+                ? 'You do not have access to edit this note'
+                : ''
+            "
           >
+            <kendo-button
+              [disabled]="!vm().canEditNote"
+              [class.!opacity-40]="!vm().canEditNote"
+              (click)="editMode = true"
+              fillMode="outline"
+              iconClass="fa-regular fa-pen"
+              size="large"
+              themeColor="primary"
+              >Edit / Update</kendo-button
+            >
+          </div>
+
           <kendo-button
             (click)="handleCloseWindow()"
             size="large"

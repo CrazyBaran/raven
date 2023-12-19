@@ -110,6 +110,7 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
         isLoading:
           !opportunity || !loadedFolders[opportunity.sharepointDirectoryId!],
         fileTags,
+        sharepointFolder: opportunity?.sharePointPath,
         rootFolder: opportunity?.sharepointDirectoryId,
         filters: buildDropdownNavigation({
           params,
@@ -174,8 +175,11 @@ export class FilesTableComponent {
   public treeList: TreeListComponent;
 
   public environment = inject(ENVIRONMENT);
+
   public sharepointUrl = this.environment.sharepointRoot;
-  public sharepointPath = this.environment.sharepointPath;
+  public sharepointList = this.environment.sharepointList;
+  public sharepointWeb = this.environment.sharepointWeb;
+
   public vm = this.store.selectSignal(
     selectFilesTableViewModelFactory(this.environment),
   );

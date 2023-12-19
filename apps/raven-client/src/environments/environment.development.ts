@@ -8,8 +8,8 @@ export const environment = {
   adPostLogoutRedirectUri: 'https://raven-static.test.mubadalacapital.ae/login',
   adScope: 'https://raven.test.mubadalacapital.ae/api',
   sharepointRoot: 'https://testonemubadala.sharepoint.com/',
-  sharepointPath:
-    'https://testonemubadala.sharepoint.com/sites/mctestraven/Shared Documents',
+  sharepointWeb: 'sites/mctestraven',
+  sharepointList: 'Shared Documents',
   sharepointSiteId: '474b0b44-ccfa-4e1d-aae8-41e54af7c32c',
   sharepointDriveId:
     'b!RAtLR_rMHU6q6EHlSvfDLAASJHjBXgVDjdZqm3u-M8xaIH4wn66DSb1tnKWcYlEx',

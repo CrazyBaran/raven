@@ -1,3 +1,4 @@
+import { authQuery } from '@app/client/core/auth';
 import { notesQuery } from '@app/client/notes/data-access';
 import { NotepadForm } from '@app/client/notes/ui';
 import {
@@ -64,11 +65,16 @@ export const selectNoteDetailsDialogViewModel = createSelector(
   routerQuery.selectNoteDetailsId,
   notesQuery.selectNoteDetailsIsLoading,
   selectNoteDetailsModel,
-  (noteId, isLoading, noteDetails) => ({
+  authQuery.selectUserName,
+  authQuery.selectUserEmail,
+  (noteId, isLoading, noteDetails, userName, userEmail) => ({
     noteId,
     isLoading,
     noteDetails,
     form: createNotepadForm(noteDetails),
+    canEditNote:
+      noteDetails?.tags.some((t) => t.name === userName) ||
+      noteDetails?.createdBy?.email === userEmail,
     ...prepareAllNotes(noteDetails?.noteFieldGroups ?? []),
   }),
 );
