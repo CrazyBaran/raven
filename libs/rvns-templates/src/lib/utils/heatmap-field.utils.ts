@@ -84,7 +84,7 @@ export class HeatmapFieldUtils {
         );
       }
       const divisionResult = this.calculateDivision(valueMap);
-      if (typeof divisionResult === 'string' || null) {
+      if (typeof divisionResult !== 'number') {
         return divisionResult;
       }
       return divisionResult * multiplier;
