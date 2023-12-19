@@ -12,7 +12,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-import { ENVIRONMENT } from '@app/client/core/environment';
+import { Environment, ENVIRONMENT } from '@app/client/core/environment';
 import { FilesService } from '@app/client/files/feature/data-access';
 import {
   FileEntity,
@@ -70,18 +70,20 @@ type FileRow = {
   childrenCount?: number | null;
 };
 
-export const toFileRow = (file: FileEntity): FileRow => ({
-  type: file.file ? 'file' : 'folder',
-  id: file.id!,
-  url: file.webUrl!,
-  name: file.name!,
-  createdBy: file.createdBy?.user?.displayName ?? '',
-  updatedAt: new Date(file.lastModifiedDateTime ?? ''),
-  folderUrl: file.folder
-    ? `https://graph.microsoft.com/v1.0/sites/474b0b44-ccfa-4e1d-aae8-41e54af7c32c/drive/items/${file.id}/children`
-    : '',
-  childrenCount: file.folder?.childCount,
-});
+export const toFileRow =
+  (environment: Environment) =>
+  (file: FileEntity): FileRow => ({
+    type: file.file ? 'file' : 'folder',
+    id: file.id!,
+    url: file.webUrl!,
+    name: file.name!,
+    createdBy: file.createdBy?.user?.displayName ?? '',
+    updatedAt: new Date(file.lastModifiedDateTime ?? ''),
+    folderUrl: file.folder
+      ? `https://graph.microsoft.com/v1.0/sites/${environment.sharepointSiteId}/drive/items/${file.id}/children`
+      : '',
+    childrenCount: file.folder?.childCount,
+  });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectFileTags = (file: FileEntity) =>
@@ -90,50 +92,54 @@ export const selectFileTags = (file: FileEntity) =>
     (fileTags) => fileTags[file.id!] ?? [],
   );
 
-export const selectFilesTableViewModel = createSelector(
-  filesQuery.selectAll,
-  tagsQuery.tagsFeature.selectTabTags,
-  opportunitiesQuery.selectRouteOpportunityDetails,
-  filesQuery.selectLoadedFolders,
-  filesQuery.selectFileTags,
-  selectOrganisationsTableParams,
-  (files, tags, opportunity, loadedFolders, fileTags, params) => {
-    return {
-      source: files
-        .filter((t) => t.folderId === opportunity?.sharepointDirectoryId)
-        .map(toFileRow),
-      tags,
-      opportunity,
-      isLoading:
-        !opportunity || !loadedFolders[opportunity.sharepointDirectoryId!],
-      fileTags,
-      rootFolder: opportunity?.sharepointDirectoryId,
-      filters: buildDropdownNavigation({
-        params,
-        name: 'tag',
-        data: tags.map((t) => ({ name: t.name, id: t.name })),
-        loading: false,
-        defaultItem: {
-          name: 'All Files',
-          id: null,
-        },
-      }),
-    };
-  },
-);
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const selectFolderChildren = (folder: string) =>
+export const selectFilesTableViewModelFactory = (environment: Environment) =>
   createSelector(
     filesQuery.selectAll,
+    tagsQuery.tagsFeature.selectTabTags,
+    opportunitiesQuery.selectRouteOpportunityDetails,
     filesQuery.selectLoadedFolders,
-    (files, loadingFolders) => {
+    filesQuery.selectFileTags,
+    selectOrganisationsTableParams,
+    (files, tags, opportunity, loadedFolders, fileTags, params) => {
       return {
-        isLoaded: loadingFolders[folder],
-        files: files.filter((file) => file.folderId === folder).map(toFileRow),
+        source: files
+          .filter((t) => t.folderId === opportunity?.sharepointDirectoryId)
+          .map(toFileRow(environment)),
+        tags,
+        opportunity,
+        isLoading:
+          !opportunity || !loadedFolders[opportunity.sharepointDirectoryId!],
+        fileTags,
+        rootFolder: opportunity?.sharepointDirectoryId,
+        filters: buildDropdownNavigation({
+          params,
+          name: 'tag',
+          data: tags.map((t) => ({ name: t.name, id: t.name })),
+          loading: false,
+          defaultItem: {
+            name: 'All Files',
+            id: null,
+          },
+        }),
       };
     },
   );
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const selectFolderChildrenFactory =
+  (environment: Environment) => (folder: string) =>
+    createSelector(
+      filesQuery.selectAll,
+      filesQuery.selectLoadedFolders,
+      (files, loadingFolders) => {
+        return {
+          isLoaded: loadingFolders[folder],
+          files: files
+            .filter((file) => file.folderId === folder)
+            .map(toFileRow(environment)),
+        };
+      },
+    );
 @Component({
   selector: 'app-client-files-feature-files-table',
   standalone: true,
@@ -170,7 +176,9 @@ export class FilesTableComponent {
   public environment = inject(ENVIRONMENT);
   public sharepointUrl = this.environment.sharepointRoot;
   public sharepointPath = this.environment.sharepointPath;
-  public vm = this.store.selectSignal(selectFilesTableViewModel);
+  public vm = this.store.selectSignal(
+    selectFilesTableViewModelFactory(this.environment),
+  );
   public rootFolder = computed(() => this.vm().rootFolder ?? 'Root');
 
   public source = computed(() => this.vm().source, { equal: _.isEqual });
@@ -239,11 +247,13 @@ export class FilesTableComponent {
       );
     });
 
-    return this.store.select(selectFolderChildren(item.id)).pipe(
-      filter((res) => res.isLoaded!),
-      map((res) => res.files),
-      first(),
-    );
+    return this.store
+      .select(selectFolderChildrenFactory(this.environment)(item.id))
+      .pipe(
+        filter((res) => res.isLoaded!),
+        map((res) => res.files),
+        first(),
+      );
   };
 
   public removeTag(tag: TagData): void {
@@ -282,8 +292,7 @@ export class FilesTableComponent {
 
     const parentReference = {
       id: opportunity.sharepointDirectoryId!,
-      driveId:
-        'b!RAtLR_rMHU6q6EHlSvfDLAASJHjBXgVDjdZqm3u-M8xaIH4wn66DSb1tnKWcYlEx',
+      driveId: this.environment.sharepointDriveId,
     };
 
     event.forEach((file) => {

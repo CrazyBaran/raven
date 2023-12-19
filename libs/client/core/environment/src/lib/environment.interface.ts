@@ -7,4 +7,7 @@ export interface Environment {
   adPostLogoutRedirectUri: string;
   sharepointRoot: string;
   sharepointPath: string;
+  sharepointSiteId: string;
+  sharepointDriveId: string;
+  sharepointRootDirectoryId: string;
 }
