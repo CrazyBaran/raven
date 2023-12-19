@@ -73,6 +73,22 @@ export class HeatmapFieldUtils {
     ) {
       return this.calculateEfficiency(valueMap);
     }
+    if (
+      this.config.calculationConfig?.type ===
+      CalculationTypeEnum.DIVISION_MULTIPLIED
+    ) {
+      const multiplier = this.config.calculationConfig?.multiplier;
+      if (!multiplier) {
+        throw new Error(
+          'Configuration is not correct - no multiplier for division_multiplied calculation',
+        );
+      }
+      const divisionResult = this.calculateDivision(valueMap);
+      if (typeof divisionResult !== 'number') {
+        return divisionResult;
+      }
+      return divisionResult * multiplier;
+    }
     throw new Error('Configuration is not correct - incorrect type');
   }
 

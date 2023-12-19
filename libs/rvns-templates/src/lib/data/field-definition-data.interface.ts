@@ -3,6 +3,7 @@ import { CalculationTypeEnum } from '../enums/calculation-type.enum';
 export interface CalculationConfigData {
   readonly type: CalculationTypeEnum;
   readonly valueIds: string[];
+  readonly multiplier?: number;
 }
 
 export interface HeatmapFieldConfigurationData {
