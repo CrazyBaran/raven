@@ -7,9 +7,10 @@
   [value]="value"
   [disabled]="isDisabled!"
   class="grow-1 relative"
+  [readonly]="readonly!"
 >
   <kendo-toolbar
-    [class.!hidden]="!active()"
+    [class.!hidden]="!active() || readonly"
     class="space border-top order-last !-mx-[1px] !-mb-[1px] flex gap-2 !border-b-0 !bg-white"
   >
     <kendo-toolbar-buttongroup class="space-x-2">
