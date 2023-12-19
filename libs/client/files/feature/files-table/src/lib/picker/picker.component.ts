@@ -30,7 +30,9 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 export class PickerComponent {
   @Input() public type: 'sharepoint' | 'onedrive' = 'sharepoint';
   @Input() public name: string;
-  @Input() public path: string;
+  @Input() public web: string;
+  @Input() public list: string;
+  @Input() public folder: string;
   @Input() public url: string;
 
   @Output() public selectFiles = new EventEmitter<any>();
@@ -48,7 +50,9 @@ export class PickerComponent {
           ? {
               sharePoint: {
                 byPath: {
-                  list: this.path,
+                  web: this.web,
+                  list: this.list,
+                  folder: this.folder,
                 },
               },
             }

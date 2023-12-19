@@ -5,9 +5,11 @@
 
       <app-picker
         (selectFiles)="onPickerChange($event)"
+        [web]="sharepointWeb!"
+        [list]="sharepointList!"
+        [folder]="vm().sharepointFolder!"
+        [url]="sharepointUrl!"
         name="Manage Files"
-        [path]="sharepointPath"
-        [url]="sharepointUrl"
       ></app-picker>
     </div>
   </app-quick-filters-template>
