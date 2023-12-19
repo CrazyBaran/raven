@@ -115,19 +115,22 @@ export const selectNoteFields = createSelector(
       .map((tab) => {
         return _.chain(tab.noteFieldGroups)
           .map(({ noteFields, name, id }) => {
-            return noteFields.map((field) => ({
-              type: 'field',
-              flat: !noteFields.some((f) => f.type === 'heatmap'),
-              uniqId: `${tab.name}-${field.name}`,
-              id: field.id,
-              title: field.name,
-              value: Object.entries(azureImageDictioanry).reduce(
-                (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
-                field.value ?? '',
-              ),
-              tabId: tab.id,
-              tabName: tab.name,
-            }));
+            return _.chain(noteFields)
+              .orderBy('order')
+              .map((field) => ({
+                type: 'field',
+                flat: !noteFields.some((f) => f.type === 'heatmap'),
+                uniqId: `${tab.name}-${field.name}`,
+                id: field.id,
+                title: field.name,
+                value: Object.entries(azureImageDictioanry).reduce(
+                  (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
+                  field.value ?? '',
+                ),
+                tabId: tab.id,
+                tabName: tab.name,
+              }))
+              .value();
           })
           .flatMap()
           .value();
