@@ -72,6 +72,7 @@ interface UpdateFieldDefinitionOptions {
   order: number;
   type: FieldDefinitionType;
   configuration?: string;
+  hideOnPipelineStages?: PipelineStageEntity[] | null;
 }
 
 @Injectable()
@@ -293,6 +294,7 @@ export class TemplatesService {
     fieldDefinitionEntity.type = options.type;
     fieldDefinitionEntity.group = { id: options.groupId } as FieldGroupEntity;
     fieldDefinitionEntity.configuration = options.configuration;
+    fieldDefinitionEntity.hideOnPipelineStages = options.hideOnPipelineStages;
     return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
   }
 
@@ -300,28 +302,53 @@ export class TemplatesService {
     fieldDefinitionEntity: FieldDefinitionEntity,
     options: UpdateFieldDefinitionOptions,
   ): Promise<FieldDefinitionEntity> {
-    if (options.name) {
-      fieldDefinitionEntity.name = options.name;
-    }
-    if (options.order) {
-      fieldDefinitionEntity.order = options.order;
-    }
-    if (options.type) {
-      fieldDefinitionEntity.type = options.type;
-    }
-    if (options.configuration) {
-      if (
-        options.type !== FieldDefinitionType.Heatmap ||
-        (!options.type &&
-          fieldDefinitionEntity.type !== FieldDefinitionType.Heatmap)
-      ) {
-        throw new BadRequestException(
-          'Invalid configuration for the given type.',
-        );
-      }
-      fieldDefinitionEntity.configuration = options.configuration;
-    }
-    return this.fieldDefinitionsRepository.save(fieldDefinitionEntity);
+    return await this.fieldDefinitionsRepository.manager.transaction(
+      async (tem) => {
+        if (options.name) {
+          fieldDefinitionEntity.name = options.name;
+        }
+        if (options.order) {
+          fieldDefinitionEntity.order = options.order;
+        }
+        if (options.type) {
+          fieldDefinitionEntity.type = options.type;
+        }
+        if (options.configuration) {
+          if (
+            options.type !== FieldDefinitionType.Heatmap ||
+            (!options.type &&
+              fieldDefinitionEntity.type !== FieldDefinitionType.Heatmap)
+          ) {
+            throw new BadRequestException(
+              'Invalid configuration for the given type.',
+            );
+          }
+          fieldDefinitionEntity.configuration = options.configuration;
+        }
+
+        if (options.hideOnPipelineStages) {
+          await tem
+            .createQueryBuilder()
+            .relation(FieldDefinitionEntity, 'hideOnPipelineStages')
+            .of(fieldDefinitionEntity)
+            .addAndRemove(
+              options.hideOnPipelineStages,
+              fieldDefinitionEntity.hideOnPipelineStages,
+            );
+        }
+
+        const oldHideOnPipelineStages =
+          fieldDefinitionEntity.hideOnPipelineStages;
+        delete fieldDefinitionEntity.hideOnPipelineStages;
+
+        const savedFieldDefinition = await tem.save(fieldDefinitionEntity);
+
+        // we reassign those here because of the way TypeORM handles relations
+        savedFieldDefinition.hideOnPipelineStages =
+          options.hideOnPipelineStages || oldHideOnPipelineStages;
+        return savedFieldDefinition;
+      },
+    );
   }
 
   public async removeFieldDefinition(

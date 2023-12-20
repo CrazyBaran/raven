@@ -100,7 +100,7 @@ export const environment = {
       username: env.get('TYPEORM_USERNAME').default('root').asString(),
       password: env.get('TYPEORM_PASSWORD').default('root').asString(),
       synchronize: false,
-      logging: true,
+      logging: false,
       debug: false,
       trace: false,
       entityPrefix: 'rvn_',

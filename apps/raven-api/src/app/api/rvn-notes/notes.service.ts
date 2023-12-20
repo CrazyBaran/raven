@@ -336,7 +336,7 @@ export class NotesService {
     opportunityNote.noteTabs = allTabs.noteTabs;
     opportunityNote.noteFieldGroups = allFieldGroups.noteFieldGroups;
 
-    let start = new Date().getTime();
+    const start = new Date().getTime();
     const opportunityNoteTemplate = await this.templateRepository
       .createQueryBuilder('template')
       .leftJoinAndSelect('template.tabs', 'tab')

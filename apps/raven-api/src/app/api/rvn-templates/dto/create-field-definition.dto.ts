@@ -7,6 +7,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUUID,
   Length,
   ValidateIf,
   ValidateNested,
@@ -37,4 +38,9 @@ export class CreateFieldDefinitionDto {
   @ValidateNested()
   @ValidateIf((value) => value.type === FieldDefinitionType.Heatmap)
   public readonly configuration?: HeatmapFieldConfigurationDto | null;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID(undefined, { each: true })
+  public readonly hideOnPipelineStageIds?: string[];
 }
