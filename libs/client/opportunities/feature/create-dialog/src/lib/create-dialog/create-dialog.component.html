@@ -3,7 +3,10 @@
     <span class="k-window-title">Add New Opportunity</span>
   </kendo-dialog-titlebar>
 
-  <form [formGroup]="opportunityForm" class="flex flex-col gap-4 p-10">
+  <form
+    [formGroup]="opportunityForm"
+    class="flex min-h-0 flex-col gap-4 overflow-auto p-10"
+  >
     <kendo-formfield>
       <kendo-label text="Company Name" />
       <kendo-combobox

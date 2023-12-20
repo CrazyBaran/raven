@@ -49,7 +49,8 @@ export class ShelfEffects {
           (action) =>
             this.dynamicDialogService.openDynamicDialog({
               width: 480,
-              minHeight: 723,
+              minHeight: 'min(723px,95vh)',
+              maxHeight: '95vh',
               cssClass: 'raven-custom-dialog',
               template: {
                 name: 'opportunity dialog form',
@@ -82,7 +83,8 @@ export class ShelfEffects {
           () =>
             this.dynamicDialogService.openDynamicDialog({
               width: 480,
-              minHeight: 723,
+              minHeight: 'min(723px,95vh)',
+              maxHeight: '95vh',
               cssClass: 'raven-custom-dialog',
               template: {
                 name: 'opportunity dialog edit form',
