@@ -6,6 +6,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   RelationId,
@@ -13,6 +15,7 @@ import {
 } from 'typeorm';
 
 import { BaseAuditableEntity } from '../../../shared/interfaces/auditable.interface';
+import { PipelineStageEntity } from '../../rvn-pipeline/entities/pipeline-stage.entity';
 import { FieldGroupEntity } from './field-group.entity';
 
 @Entity({ name: 'field_definitions' })
@@ -40,6 +43,18 @@ export class FieldDefinitionEntity implements BaseAuditableEntity {
 
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public configuration: string;
+
+  @ManyToMany(() => PipelineStageEntity, {
+    eager: false,
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinTable({
+    name: 'field_hide_pipeline_stage',
+    joinColumn: { name: 'field_id' },
+    inverseJoinColumn: { name: 'pipeline_stage_id' },
+  })
+  public hideOnPipelineStages: PipelineStageEntity[];
 
   @CreateDateColumn()
   public createdAt: Date;

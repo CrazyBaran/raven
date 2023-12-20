@@ -336,12 +336,19 @@ export class NotesService {
     opportunityNote.noteTabs = allTabs.noteTabs;
     opportunityNote.noteFieldGroups = allFieldGroups.noteFieldGroups;
 
+    let start = new Date().getTime();
     const opportunityNoteTemplate = await this.templateRepository
       .createQueryBuilder('template')
       .leftJoinAndSelect('template.tabs', 'tab')
       .leftJoinAndSelect('tab.relatedTemplates', 'relatedTemplate')
       .leftJoinAndSelect('tab.pipelineStages', 'pipelineStage')
       .leftJoinAndSelect('tab.relatedFields', 'relatedFields')
+      .leftJoinAndSelect('tab.fieldGroups', 'fieldGroups')
+      .leftJoinAndSelect('fieldGroups.fieldDefinitions', 'fieldDefinitions')
+      .leftJoinAndSelect(
+        'fieldDefinitions.hideOnPipelineStages',
+        'hideOnPipelineStages',
+      )
       .select([
         'template.id',
         'template.name',
@@ -352,11 +359,21 @@ export class NotesService {
         'pipelineStage.displayName',
         'relatedTemplate.id',
         'relatedFields.id',
+        'fieldGroups.id',
+        'fieldGroups.name',
+        'fieldDefinitions.id',
+        'fieldDefinitions.name',
+        'hideOnPipelineStages.id',
       ])
       .where('template.id = :templateId', {
         templateId: opportunityNote.templateId,
       })
       .getOne();
+
+    this.logger.debug(
+      'get opportunity note template took: ',
+      new Date().getTime() - start,
+    );
 
     // we resolve these relations manually because typeorm lacks performance in doing so...
     opportunityNote.template = opportunityNoteTemplate;
@@ -843,7 +860,13 @@ export class NotesService {
     currentPipelineStageId: string,
   ): WorkflowNoteData {
     delete workflowNote.noteFieldGroups;
-    const mappedNote = this.noteEntityToNoteData(workflowNote);
+
+    const filteredWorkflowNote = this.filterWorkflowNote(
+      workflowNote,
+      currentPipelineStageId,
+    );
+
+    const mappedNote = this.noteEntityToNoteData(filteredWorkflowNote);
 
     const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template
@@ -963,5 +986,20 @@ export class NotesService {
         .flat()
         .map(this.noteFieldEntityToNoteFieldData.bind(this)),
     };
+  }
+
+  private filterWorkflowNote(
+    workflowNote: NoteEntity,
+    currentPipelineStageId: string,
+  ): NoteEntity {
+    // TODO filtering logic here
+    console.log({ temp: workflowNote.template });
+    console.log({
+      fieldy: JSON.stringify(
+        workflowNote.template.tabs[0].fieldGroups[0].fieldDefinitions,
+      ),
+      currentPipelineStageId,
+    });
+    return workflowNote;
   }
 }

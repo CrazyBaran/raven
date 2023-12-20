@@ -60,7 +60,7 @@ export class FieldGroupEntity implements BaseAuditableEntity {
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
-    this.templateId = this.templateId.toLowerCase();
+    this.templateId = this.templateId?.toLowerCase();
     this.tabId = this.tabId?.toLowerCase() || null;
   }
 }
