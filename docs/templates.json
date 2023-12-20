@@ -1,0 +1,1572 @@
+[
+  {
+    "id": "3b37fc0e-2f6f-ee11-b007-6045bdd17462",
+    "name": "Company call",
+    "type": "note",
+    "isDefault": false,
+    "fieldGroups": [
+      {
+        "id": "04f07851-2f6f-ee11-b007-6045bdd17462",
+        "name": "Company call field group",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "90a3258f-ff73-ee11-8925-6045bdc18eee",
+            "name": "Preparation",
+            "type": "richText",
+            "order": 10,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "29d5fb6c-2f6f-ee11-b007-6045bdd17462",
+            "name": "Call Attendees",
+            "type": "text",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "327abb74-2f6f-ee11-b007-6045bdd17462",
+            "name": "Team",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "9760a07d-2f6f-ee11-b007-6045bdd17462",
+            "name": "Market / Competition",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "9860a07d-2f6f-ee11-b007-6045bdd17462",
+            "name": "Product / Technology",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "6c9c9e87-2f6f-ee11-b007-6045bdd17462",
+            "name": "Go-to-Market",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "6d9c9e87-2f6f-ee11-b007-6045bdd17462",
+            "name": "Financials",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "4173d891-2f6f-ee11-b007-6045bdd17462",
+            "name": "Fundraising",
+            "type": "richText",
+            "order": 8,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "4273d891-2f6f-ee11-b007-6045bdd17462",
+            "name": "Other",
+            "type": "richText",
+            "order": 9,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "6d138753-4682-ee11-8927-6045bdd178c1",
+            "name": "Company Overview",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "3b37fc0e-2f6f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "173d9bd9-306f-ee11-b007-6045bdd17462",
+    "name": "Investor call",
+    "type": "note",
+    "isDefault": false,
+    "fieldGroups": [
+      {
+        "id": "d06d0ded-306f-ee11-b007-6045bdd17462",
+        "name": "Investor call field group",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "2a840dfd-0478-ee11-8925-6045bdc18eee",
+            "name": "Preparation",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "2e665a0f-316f-ee11-b007-6045bdd17462",
+            "name": "Call Attendees",
+            "type": "text",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "d111af1b-316f-ee11-b007-6045bdd17462",
+            "name": "General update",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "81fa1a26-316f-ee11-b007-6045bdd17462",
+            "name": "Co-investments",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "82fa1a26-316f-ee11-b007-6045bdd17462",
+            "name": "Mubadala update",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "1343a830-316f-ee11-b007-6045bdd17462",
+            "name": "Fund update",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "36aeb83b-316f-ee11-b007-6045bdd17462",
+            "name": "Pipeline",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "173d9bd9-306f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "0b9474fd-316f-ee11-b007-6045bdd17462",
+    "name": "Market expert call",
+    "type": "note",
+    "isDefault": false,
+    "fieldGroups": [
+      {
+        "id": "71a79b0c-326f-ee11-b007-6045bdd17462",
+        "name": "Market expert call field group",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "211c7238-0678-ee11-8925-6045bdc18eee",
+            "name": "Preparation",
+            "type": "richText",
+            "order": 10,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "8ea30d49-336f-ee11-b007-6045bdd17462",
+            "name": "Company Name",
+            "type": "text",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "6547ec50-336f-ee11-b007-6045bdd17462",
+            "name": "Company URL",
+            "type": "text",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "c2732e57-336f-ee11-b007-6045bdd17462",
+            "name": "Call Attendees",
+            "type": "text",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "89cea15e-336f-ee11-b007-6045bdd17462",
+            "name": "Background",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "8acea15e-336f-ee11-b007-6045bdd17462",
+            "name": "Market / Competition",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "fc6f6468-336f-ee11-b007-6045bdd17462",
+            "name": "Product / Tech",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "fd6f6468-336f-ee11-b007-6045bdd17462",
+            "name": "GTM",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "79bf1b74-336f-ee11-b007-6045bdd17462",
+            "name": "Risks / Challenges",
+            "type": "richText",
+            "order": 8,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "6b86997a-336f-ee11-b007-6045bdd17462",
+            "name": "Other",
+            "type": "richText",
+            "order": 9,
+            "configuration": null,
+            "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "0b9474fd-316f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "dd396795-336f-ee11-b007-6045bdd17462",
+    "name": "Customer reference call",
+    "type": "note",
+    "isDefault": false,
+    "fieldGroups": [
+      {
+        "id": "f7adafa4-336f-ee11-b007-6045bdd17462",
+        "name": "Customer reference call field group",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "bdd58a6f-0678-ee11-8925-6045bdc18eee",
+            "name": "Preparation",
+            "type": "richText",
+            "order": 9,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "90f137c2-336f-ee11-b007-6045bdd17462",
+            "name": "Company Name",
+            "type": "text",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "91f137c2-336f-ee11-b007-6045bdd17462",
+            "name": "Company URL",
+            "type": "text",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "22da49ce-336f-ee11-b007-6045bdd17462",
+            "name": "Call Attendees",
+            "type": "text",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "da9a08d7-336f-ee11-b007-6045bdd17462",
+            "name": "Market / Competition",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "db9a08d7-336f-ee11-b007-6045bdd17462",
+            "name": "Product / Tech",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "dfea54df-336f-ee11-b007-6045bdd17462",
+            "name": "GTM",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "e0ea54df-336f-ee11-b007-6045bdd17462",
+            "name": "Risks / Challenges",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "f71b2cea-336f-ee11-b007-6045bdd17462",
+            "name": "Other",
+            "type": "richText",
+            "order": 8,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "dd396795-336f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "72041836-346f-ee11-b007-6045bdd17462",
+    "name": "Pipeline call",
+    "type": "note",
+    "isDefault": false,
+    "fieldGroups": [
+      {
+        "id": "1651a36d-346f-ee11-b007-6045bdd17462",
+        "name": "Pipeline call field group",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "218d37a3-346f-ee11-b007-6045bdd17462",
+            "name": "Operations",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "228d37a3-346f-ee11-b007-6045bdd17462",
+            "name": "Comms",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "e3844eac-346f-ee11-b007-6045bdd17462",
+            "name": "Finance",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "e4844eac-346f-ee11-b007-6045bdd17462",
+            "name": "Legal",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "44248ab4-346f-ee11-b007-6045bdd17462",
+            "name": "Other",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "72041836-346f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "297d68bf-346f-ee11-b007-6045bdd17462",
+        "name": "Portfolio updates",
+        "order": 2,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "19b16ccd-346f-ee11-b007-6045bdd17462",
+            "name": "Portfolio | Company Updates",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "297d68bf-346f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "72041836-346f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "07addddc-346f-ee11-b007-6045bdd17462",
+        "name": "Pipeline",
+        "order": 3,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "ec9938ea-346f-ee11-b007-6045bdd17462",
+            "name": "Pipeline | Company Updates",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "07addddc-346f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "72041836-346f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "560d043d-356f-ee11-b007-6045bdd17462",
+    "name": "Loose Note",
+    "type": "note",
+    "isDefault": true,
+    "fieldGroups": [
+      {
+        "id": "1d542f52-356f-ee11-b007-6045bdd17462",
+        "name": "Field group - default",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "8ae9ea73-356f-ee11-b007-6045bdd17462",
+            "name": "Note",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "1d542f52-356f-ee11-b007-6045bdd17462",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "560d043d-356f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+    "name": "Default Workflow Template for Opportunities",
+    "type": "workflow",
+    "isDefault": true,
+    "fieldGroups": [
+      {
+        "id": "9c176d21-8284-ee11-8927-6045bdd178c1",
+        "name": "Team Field Group",
+        "order": 1,
+        "tab_id": "0e527d60-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "6f532923-8384-ee11-8927-6045bdd178c1",
+            "name": "Key Management",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "3f9bf856-8384-ee11-8927-6045bdd178c1",
+            "name": "Positives",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "27e8c05f-8384-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "24fc9b6b-8384-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "77af272c-8284-ee11-8927-6045bdd178c1",
+        "name": "Market Field Group",
+        "order": 1,
+        "tab_id": "02b1b267-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "5b9a5c8a-8384-ee11-8927-6045bdd178c1",
+            "name": "Description",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "4b503294-8384-ee11-8927-6045bdd178c1",
+            "name": "TAM / SAM sizing",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "7a0c6d9d-8384-ee11-8927-6045bdd178c1",
+            "name": "Positives",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "6311e6a3-8384-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "331605ac-8384-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "3415033d-8284-ee11-8927-6045bdd178c1",
+        "name": "Product & Technology Field Group",
+        "order": 1,
+        "tab_id": "47eba08b-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "19afa2fc-8384-ee11-8927-6045bdd178c1",
+            "name": "Description",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "8b1f0a04-8484-ee11-8927-6045bdd178c1",
+            "name": "Positives",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "8c1f0a04-8484-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "08b43c26-8484-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "f68f6450-8284-ee11-8927-6045bdd178c1",
+        "name": "Business Model / GTM Field Group",
+        "order": 1,
+        "tab_id": "cb32079f-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "024d8b39-8484-ee11-8927-6045bdd178c1",
+            "name": "Business Model Description",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "2a611d44-8484-ee11-8927-6045bdd178c1",
+            "name": "GTM Description",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "cd24dc4c-8484-ee11-8927-6045bdd178c1",
+            "name": "Positives",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "438bc256-8484-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "fb0d1e5e-8484-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+        "name": "Competitive Analysis Field Group",
+        "order": 1,
+        "tab_id": "ef52fbae-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "e38bfb9a-8584-ee11-8927-6045bdd178c1",
+            "name": "Key Competitors",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "85e69ea7-8584-ee11-8927-6045bdd178c1",
+            "name": "Positives",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "86e69ea7-8584-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "08872cbf-8584-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "d92f4165-8284-ee11-8927-6045bdd178c1",
+        "name": "Financials Field Group",
+        "order": 1,
+        "tab_id": "7452e8c6-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "7a6776cb-dc89-ee11-8927-6045bdd178c1",
+            "name": "Past financial snapshot",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "6da5b5df-dc89-ee11-8927-6045bdd178c1",
+            "name": "Management Business Plan",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "727b4ff4-dc89-ee11-8927-6045bdd178c1",
+            "name": "Positives",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "52265e09-dd89-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "1077e022-dd89-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 8,
+            "configuration": null,
+            "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "21b17d0e-949d-ee11-bea0-6045bdf23835",
+            "name": "Mubadala underwriting",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "e1c40732-949d-ee11-bea0-6045bdf23835",
+            "name": "Unit Economics",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "adc61a70-8284-ee11-8927-6045bdd178c1",
+        "name": "Valuation / Exit Field Group",
+        "order": 1,
+        "tab_id": "d3f720cd-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "a94003f0-8584-ee11-8927-6045bdd178c1",
+            "name": "Return analysis",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "73b891f6-8584-ee11-8927-6045bdd178c1",
+            "name": "Comps",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "1350c2fd-8584-ee11-8927-6045bdd178c1",
+            "name": "Pathway to Exit",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "0275a206-8684-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "c6121116-8684-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "f82b507f-8284-ee11-8927-6045bdd178c1",
+        "name": "Expert Calls Field Group",
+        "order": 1,
+        "tab_id": "fd9ae3d6-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "51a3633f-8c84-ee11-8927-6045bdd178c1",
+            "name": "List of calls",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "c26a6b49-8c84-ee11-8927-6045bdd178c1",
+            "name": "Summary of Positives",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "04de3a52-8c84-ee11-8927-6045bdd178c1",
+            "name": "Summary of Risks / Unknowns",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+        "name": "Customer Calls Field Group",
+        "order": 1,
+        "tab_id": "a2b431dd-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "d2f4bc5e-8684-ee11-8927-6045bdd178c1",
+            "name": "List of Calls",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "0d4acb66-8684-ee11-8927-6045bdd178c1",
+            "name": "Summary of Positives",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "4c93d16f-8684-ee11-8927-6045bdd178c1",
+            "name": "Summary of Risks / Unknowns",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "de08a991-8284-ee11-8927-6045bdd178c1",
+        "name": "Value Creation Field Group",
+        "order": 1,
+        "tab_id": "e1e74c5f-8184-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "711f497d-8684-ee11-8927-6045bdd178c1",
+            "name": "Opportunities identified",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "de08a991-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "911e199a-8284-ee11-8927-6045bdd178c1",
+        "name": "ESG Field Group",
+        "order": 1,
+        "tab_id": "e2e74c5f-8184-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "71b16694-8684-ee11-8927-6045bdd178c1",
+            "name": "ESG Assessment",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "911e199a-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "9e0f079f-8684-ee11-8927-6045bdd178c1",
+            "name": "ESG Risks",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "911e199a-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "1efa72a9-8684-ee11-8927-6045bdd178c1",
+            "name": "Value Creation Opportunities",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "911e199a-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+        "name": "Investment Thesis and Risk Field Group",
+        "order": 1,
+        "tab_id": "04e38691-8184-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "654bc5bd-8684-ee11-8927-6045bdd178c1",
+            "name": "Merits",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "664bc5bd-8684-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Financial Health",
+        "order": 2,
+        "tab_id": "7452e8c6-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "348a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Capital efficiency",
+            "type": "heatmap",
+            "order": 1,
+            "configuration": "{\"unit\":\"\",\"min\":0,\"max\":5,\"thresholds\":[1,0.5], \"calculationConfig\":{\"type\":\"efficiency\",\"valueIds\":[\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3B8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"368A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+            "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "358a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Est. burn multiple",
+            "type": "heatmap",
+            "order": 2,
+            "configuration": "{\"unit\":\"\",\"min\":0,\"max\":3,\"thresholds\":[0.9999,2.0001]}",
+            "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "368a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Monthly burn",
+            "type": "heatmap",
+            "order": 3,
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":3,\"thresholds\":[0.4999,2]}",
+            "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "378a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Cash",
+            "type": "heatmap",
+            "order": 4,
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":100,\"thresholds\":[20.0001,9.9999]}",
+            "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "388a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Runway",
+            "type": "heatmap",
+            "order": 5,
+            "configuration": "{\"unit\":\"\",\"min\":0,\"max\":24,\"thresholds\":[12.0001,5.9999],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"378A25C2-BC99-EE11-BEA0-6045BDF23835\",\"368A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+            "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Traction",
+        "order": 3,
+        "tab_id": "7452e8c6-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "3a8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "ARR",
+            "type": "heatmap",
+            "order": 1,
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":100,\"thresholds\":[15.0001,5]}",
+            "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "3b8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "LTM growth",
+            "type": "heatmap",
+            "order": 2,
+            "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":300,\"thresholds\":[100.0001,50]}",
+            "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "3c8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "# of logos",
+            "type": "heatmap",
+            "order": 3,
+            "configuration": "{\"unit\":\"\",\"min\":0,\"max\":1000,\"thresholds\":[500.0001,50],\"calculationConfig\":{\"type\":\"division_multiplied\",\"multiplier\": 1000,\"valueIds\":[\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3F8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+            "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "3d8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Share of US revenue",
+            "type": "heatmap",
+            "order": 4,
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[30.0001,1]}",
+            "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Unit Economics",
+        "order": 4,
+        "tab_id": "7452e8c6-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "3f8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "ACV",
+            "type": "heatmap",
+            "order": 1,
+            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[100.0001,50]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "408a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Largest contract value",
+            "type": "heatmap",
+            "order": 2,
+            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[500.0001,100]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "418a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Gross margin",
+            "type": "heatmap",
+            "order": 3,
+            "configuration": "{\"unit\":\"%\",\"min\":-5,\"max\":100,\"thresholds\":[85.0001,50]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "428a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "S&M % revenue",
+            "type": "heatmap",
+            "order": 4,
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[19.9999,50]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "438a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Inbound lead gen",
+            "type": "heatmap",
+            "order": 5,
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[50.0001,10]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "448a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "CAC",
+            "type": "heatmap",
+            "order": 6,
+            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":100,\"thresholds\":[19.9999,100]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "458a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Gross churn",
+            "type": "heatmap",
+            "order": 7,
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":50,\"thresholds\":[0.9999,10]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "468a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "NRR",
+            "type": "heatmap",
+            "order": 8,
+            "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":200,\"thresholds\":[130.0001,110]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "478a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "CAC payback",
+            "type": "heatmap",
+            "order": 9,
+            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":24,\"thresholds\":[8.9999,18]}",
+            "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Valuation",
+        "order": 5,
+        "tab_id": "7452e8c6-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "498a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Last round valuation",
+            "type": "heatmap",
+            "order": 1,
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":10000,\"thresholds\":[249.9999,500]}",
+            "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "4a8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Last round / ARR",
+            "type": "heatmap",
+            "order": 2,
+            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":100,\"thresholds\":[9.9999,18],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"498A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+            "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "4b8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "name": "Capital raised",
+            "type": "heatmap",
+            "order": 3,
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":500,\"thresholds\":[19.9999,100]}",
+            "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [
+      {
+        "id": "0e527d60-8084-ee11-8927-6045bdd178c1",
+        "name": "Team",
+        "order": 1,
+        "pipelineStageIds": [
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1",
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [
+          "327abb74-2f6f-ee11-b007-6045bdd17462"
+        ],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "02b1b267-8084-ee11-8927-6045bdd178c1",
+        "name": "Market",
+        "order": 2,
+        "pipelineStageIds": [
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1",
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [
+          "9760a07d-2f6f-ee11-b007-6045bdd17462"
+        ],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "47eba08b-8084-ee11-8927-6045bdd178c1",
+        "name": "Product & Technology",
+        "order": 3,
+        "pipelineStageIds": [
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1",
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [
+          "9860a07d-2f6f-ee11-b007-6045bdd17462"
+        ],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "cb32079f-8084-ee11-8927-6045bdd178c1",
+        "name": "Business Model / GTM",
+        "order": 4,
+        "pipelineStageIds": [
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1",
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [
+          "6c9c9e87-2f6f-ee11-b007-6045bdd17462"
+        ],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "ef52fbae-8084-ee11-8927-6045bdd178c1",
+        "name": "Competitive Analysis",
+        "order": 5,
+        "pipelineStageIds": [
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1",
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [
+          "9760a07d-2f6f-ee11-b007-6045bdd17462"
+        ],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "7452e8c6-8084-ee11-8927-6045bdd178c1",
+        "name": "Financials",
+        "order": 6,
+        "pipelineStageIds": [
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1",
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [
+          "6d9c9e87-2f6f-ee11-b007-6045bdd17462"
+        ],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "d3f720cd-8084-ee11-8927-6045bdd178c1",
+        "name": "Valuation / Exit",
+        "order": 7,
+        "pipelineStageIds": [
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "fd9ae3d6-8084-ee11-8927-6045bdd178c1",
+        "name": "Expert Calls",
+        "order": 8,
+        "pipelineStageIds": [
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [],
+        "relatedTemplateIds": [
+          "0b9474fd-316f-ee11-b007-6045bdd17462"
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "a2b431dd-8084-ee11-8927-6045bdd178c1",
+        "name": "Customer Calls",
+        "order": 9,
+        "pipelineStageIds": [
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [],
+        "relatedTemplateIds": [
+          "dd396795-336f-ee11-b007-6045bdd17462"
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "e1e74c5f-8184-ee11-8927-6045bdd178c1",
+        "name": "Value Creation",
+        "order": 10,
+        "pipelineStageIds": [
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1",
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "e2e74c5f-8184-ee11-8927-6045bdd178c1",
+        "name": "ESG",
+        "order": 11,
+        "pipelineStageIds": [
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      },
+      {
+        "id": "04e38691-8184-ee11-8927-6045bdd178c1",
+        "name": "Investment Thesis and Risk",
+        "order": 12,
+        "pipelineStageIds": [
+          "e155560e-7293-ee11-8927-6045bdd178c1",
+          "e255560e-7293-ee11-8927-6045bdd178c1",
+          "e355560e-7293-ee11-8927-6045bdd178c1",
+          "e455560e-7293-ee11-8927-6045bdd178c1",
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "relatedFieldIds": [],
+        "relatedTemplateIds": [],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "TabEntity"
+      }
+    ],
+    "correspondingEntity": "TemplateEntity"
+  }
+]

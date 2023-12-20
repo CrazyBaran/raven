@@ -1,0 +1,211 @@
+[
+  {
+    "id": "d955560e-7293-ee11-8927-6045bdd178c1",
+    "name": "New Affinity Pipeline",
+    "isDefault": true,
+    "affinityListId": 221285,
+    "affinityStatusFieldId": 4129962,
+    "pipelineStages": [
+      {
+        "id": "da55560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Shortlist",
+        "order": 1,
+        "mappedFrom": "Shortlist",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "db55560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Outreach - Planned",
+        "order": 2,
+        "mappedFrom": "Outreach - Planned",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "dc55560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Outreach - In progress",
+        "order": 3,
+        "mappedFrom": "Outreach - In progress",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "dd55560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Outreach - Scheduling",
+        "order": 4,
+        "mappedFrom": "Outreach - Scheduling",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "de55560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Met",
+        "order": 5,
+        "mappedFrom": "Met",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "df55560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Preliminary DD - in progress",
+        "order": 6,
+        "mappedFrom": "Preliminary DD - in progress",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "e055560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Preliminary DD - ready for socialisation",
+        "order": 7,
+        "mappedFrom": "Preliminary DD - ready for socialisation",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "e155560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "DD - In Progress",
+        "order": 8,
+        "mappedFrom": "DD - In Progress",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "e255560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "DD - Ready for Local IC",
+        "order": 9,
+        "mappedFrom": "DD - Ready for Local IC",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "e355560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "IC - Prepping for Capital IC",
+        "order": 10,
+        "mappedFrom": "IC - prepping for Capital IC",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "e455560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "IC - Ready for Capital IC",
+        "order": 11,
+        "mappedFrom": "IC - ready for Capital IC",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "e555560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Portfolio",
+        "order": 12,
+        "mappedFrom": "Portfolio",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "e655560e-7293-ee11-8927-6045bdd178c1",
+        "displayName": "Passed",
+        "order": 13,
+        "mappedFrom": "Passed",
+        "correspondingEntity": "PipelineStageEntity"
+      }
+    ],
+    "correspondingEntity": "PipelineDefinitionEntity"
+  },
+  {
+    "id": "274ed02a-9166-ee11-b004-6045bdd179fd",
+    "name": "default pipeline 1",
+    "isDefault": false,
+    "affinityListId": 90186,
+    "affinityStatusFieldId": 766787,
+    "pipelineStages": [
+      {
+        "id": "936e91f9-9166-ee11-b004-6045bdd179fd",
+        "displayName": "Lead",
+        "order": 1,
+        "mappedFrom": "Lead",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "946e91f9-9166-ee11-b004-6045bdd179fd",
+        "displayName": "Screening",
+        "order": 2,
+        "mappedFrom": "Screening",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "956e91f9-9166-ee11-b004-6045bdd179fd",
+        "displayName": "1st Call / Meeting",
+        "order": 3,
+        "mappedFrom": "1st Call / Meeting",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "966e91f9-9166-ee11-b004-6045bdd179fd",
+        "displayName": "Initial DD",
+        "order": 4,
+        "mappedFrom": "Initial DD",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "976e91f9-9166-ee11-b004-6045bdd179fd",
+        "displayName": "Active / Live",
+        "order": 5,
+        "mappedFrom": "Active / Live",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "986e91f9-9166-ee11-b004-6045bdd179fd",
+        "displayName": "Portfolio",
+        "order": 6,
+        "mappedFrom": "Portfolio",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "996e91f9-9166-ee11-b004-6045bdd179fd",
+        "displayName": "Passed - 1st Meeting / Call",
+        "order": 7,
+        "mappedFrom": "Passed - 1st Meeting / Call",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "576cdf42-9266-ee11-b004-6045bdd179fd",
+        "displayName": "Passed - No Deck/website Only",
+        "order": 8,
+        "mappedFrom": "Passed - No Deck/website Only",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "d4d34c4d-9466-ee11-b004-6045bdd179fd",
+        "displayName": "Passed - Reviewed Deck",
+        "order": 9,
+        "mappedFrom": "Passed - Reviewed Deck",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "6323c777-9466-ee11-b004-6045bdd179fd",
+        "displayName": "Passed - Company Not Engaged",
+        "order": 10,
+        "mappedFrom": "Passed - Company Not Engaged",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "7d720fba-9466-ee11-b004-6045bdd179fd",
+        "displayName": "Passed - Activation",
+        "order": 11,
+        "mappedFrom": "Passed - Activation",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "705b5c2f-9566-ee11-b004-6045bdd179fd",
+        "displayName": "Passed - Intial DD",
+        "order": 12,
+        "mappedFrom": "Passed - Intial DD",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "22541087-9566-ee11-b004-6045bdd179fd",
+        "displayName": "Passed - Intel From Another Fund",
+        "order": 13,
+        "mappedFrom": "Passed - Intel From Another Fund",
+        "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "23541087-9566-ee11-b004-6045bdd179fd",
+        "displayName": "Lost - Term Sheet",
+        "order": 14,
+        "mappedFrom": "Lost - Term Sheet",
+        "correspondingEntity": "PipelineStageEntity"
+      }
+    ],
+    "correspondingEntity": "PipelineDefinitionEntity"
+  }
+]
