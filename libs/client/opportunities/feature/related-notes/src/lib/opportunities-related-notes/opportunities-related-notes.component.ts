@@ -5,10 +5,13 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   inject,
   Pipe,
   PipeTransform,
+  QueryList,
   signal,
+  ViewChildren,
 } from '@angular/core';
 
 import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
@@ -47,8 +50,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoteTypeBadgeComponent } from '@app/client/notes/ui';
 // import { selectNoteFields2 } from '@app/client/opportunities/data-access';
 import { selectNoteFields } from '@app/client/opportunities/data-access';
-import { RelatedNotesTableComponent } from '@app/client/opportunities/ui';
+import {
+  RelatedNotesTableComponent,
+  StatusIndicatorComponent,
+  StatusIndicatorState,
+} from '@app/client/opportunities/ui';
 import { HearColorPipe } from '@app/client/shared/ui-pipes';
+import { selectQueryParam } from '@app/client/shared/util-router';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import {
@@ -107,6 +115,7 @@ export class PopulateAzureImagesPipe implements PipeTransform {
     LoaderModule,
     HearColorPipe,
     PopulateAzureImagesPipe,
+    StatusIndicatorComponent,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
@@ -116,6 +125,9 @@ export class PopulateAzureImagesPipe implements PipeTransform {
 export class OpportunitiesRelatedNotesComponent {
   protected store = inject(Store);
   protected actions = inject(Actions);
+
+  @ViewChildren(RichTextComponent)
+  protected richTextEditors: QueryList<RichTextComponent>;
 
   protected uploadFileService = inject(UploadFileService);
 
@@ -127,7 +139,7 @@ export class OpportunitiesRelatedNotesComponent {
     {
       disabledForm: false,
       updatingField: null as null | string,
-      state: 'edit' as 'edit' | 'validate' | 'updated',
+      state: 'none' as StatusIndicatorState,
     },
     {
       equal: _.isEqual,
@@ -196,15 +208,20 @@ export class OpportunitiesRelatedNotesComponent {
       });
 
     this.actions
-      .pipe(
-        takeUntilDestroyed(),
-        ofType(NotesActions.updateNoteSuccess, NotesActions.updateNoteFailure),
-      )
+      .pipe(takeUntilDestroyed(), ofType(NotesActions.updateNoteSuccess))
       .subscribe(() => {
         this.state.update((state) => ({
           ...state,
-          state: 'edit',
-          updatingField: null,
+          state: 'updated',
+        }));
+      });
+
+    this.actions
+      .pipe(takeUntilDestroyed(), ofType(NotesActions.updateNoteFailure))
+      .subscribe(() => {
+        this.state.update((state) => ({
+          ...state,
+          state: 'failed',
         }));
       });
 
@@ -220,13 +237,30 @@ export class OpportunitiesRelatedNotesComponent {
           this.store.dispatch(NotesActions.getNoteAttachments({ id }));
         });
       });
+
+    this.store
+      .select(selectQueryParam('tab'))
+      .pipe(takeUntilDestroyed(), distinctUntilChangedDeep())
+      .subscribe((tab) => {
+        this.state.update((state) => ({
+          ...state,
+          updatingField: null,
+        }));
+      });
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  public showAlertMessageWhenClosingTab($event: any): void {
+    if (this.richTextEditors?.some((editor) => editor.active()!)) {
+      $event.returnValue = 'Changes that you made may not be saved.';
+    }
   }
 
   public onValueChange(formControlName: string): void {
     this.state.update((state) => ({
       ...state,
       updatingField: formControlName,
-      state: 'edit',
+      state: 'none',
     }));
   }
 
@@ -249,6 +283,7 @@ export class OpportunitiesRelatedNotesComponent {
             .value(),
           tagIds: this.vm().opportunityNote.tags.map((x: any) => x.id),
           origin: this.vm().opportunityNote,
+          companyOpportunityTags: [],
           opportunityId: this.vm().opportunityId,
         },
       }),

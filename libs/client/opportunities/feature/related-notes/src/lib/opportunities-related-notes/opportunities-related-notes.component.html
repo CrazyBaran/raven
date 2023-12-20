@@ -90,47 +90,34 @@
               let i = index;
               trackBy: 'formControlName'
             "
-            [order]="i"
             [@fadeIn]
             [colSpan]="12"
             [col]="1"
+            [order]="i"
           >
             <kendo-tilelayout-item-header>
               <div class="flex items-center justify-between gap-2">
                 <h5 class="k-card-title">{{ field.title }}</h5>
-                <ng-container
-                  *ngIf="state().updatingField === field.formControlName"
-                >
-                  @switch (state().state) { @case ('validate') {
 
-                  <div class="flex items-center gap-2" [@fadeIn]>
-                    <kendo-loader
-                      size="small"
-                      type="infinite-spinner"
-                      themeColor="primary"
-                    />
-                    Saving...
-                  </div>
-
-                  } @case ('updated') {
-                  <div class="flex items-center gap-2" [@fadeIn]>
-                    <i class="fa-solid fa-check text-primary-400"></i>
-                    Saved
-                  </div>
-                  } @default { }}
-                </ng-container>
+                <app-status-indicator
+                  [state]="
+                    state().updatingField === field.formControlName
+                      ? state().state
+                      : 'none'
+                  "
+                />
               </div>
             </kendo-tilelayout-item-header>
             <kendo-tilelayout-item-body>
               <app-rich-text
-                [disabled]="state().state === 'validate'"
                 (valueChange)="onValueChange(field.formControlName)"
                 [borderless]="true"
+                [disabled]="state().state === 'validate'"
                 [formControlName]="field.formControlName"
                 [grow]="true"
                 [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
-                class="h-full"
                 [readonly]="!vm().canEditFields"
+                class="h-full"
                 placeholder="Click to write content here..."
               >
               </app-rich-text>
@@ -297,7 +284,7 @@
           <div class="grow px-3 py-2">
             <div class="flex flex-col gap-1">
               <span class="mb-2 flex gap-1">
-                <kendo-skeleton shape="circle" [width]="20"></kendo-skeleton>
+                <kendo-skeleton [width]="20" shape="circle"></kendo-skeleton>
                 <kendo-skeleton [width]="75"></kendo-skeleton>
               </span>
 
@@ -307,11 +294,11 @@
 
           <!--        ACTION ICON       -->
           <div class="p-3">
-            <kendo-skeleton [width]="30" [height]="30"></kendo-skeleton>
+            <kendo-skeleton [height]="30" [width]="30"></kendo-skeleton>
           </div>
         </div>
         <div class="px-3 pb-6 pt-3">
-          <kendo-skeleton [width]="150" [height]="25"></kendo-skeleton>
+          <kendo-skeleton [height]="25" [width]="150"></kendo-skeleton>
         </div>
       </div>
     </header>
@@ -325,16 +312,16 @@
               <kendo-skeleton [width]="80"></kendo-skeleton>
             </div>
             <div class="flex flex-col gap-2">
-              <kendo-skeleton width="70%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="40%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="90%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="20%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="40%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="90%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="20%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="40%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="90%" [height]="15"></kendo-skeleton>
-              <kendo-skeleton width="20%" [height]="15"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="70%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="40%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="90%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="20%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="40%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="90%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="20%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="40%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="90%"></kendo-skeleton>
+              <kendo-skeleton [height]="15" width="20%"></kendo-skeleton>
             </div>
           </div>
         </div>
@@ -342,11 +329,11 @@
     </article>
     <footer>
       <div class="flex items-center justify-between gap-2 p-3">
-        <kendo-skeleton [width]="80" [height]="30"></kendo-skeleton>
+        <kendo-skeleton [height]="30" [width]="80"></kendo-skeleton>
 
-        <kendo-skeleton [width]="60" [height]="20"></kendo-skeleton>
+        <kendo-skeleton [height]="20" [width]="60"></kendo-skeleton>
 
-        <kendo-skeleton [width]="80" [height]="30"></kendo-skeleton>
+        <kendo-skeleton [height]="30" [width]="80"></kendo-skeleton>
       </div>
     </footer>
   </div>

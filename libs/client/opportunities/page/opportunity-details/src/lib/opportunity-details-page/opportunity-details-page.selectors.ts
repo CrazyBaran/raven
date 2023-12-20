@@ -1,5 +1,3 @@
-import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
-
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 
 import { notesQuery } from '@app/client/notes/data-access';
@@ -7,17 +5,6 @@ import { OrganisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
-
-const LINES: {
-  label: string;
-  theme: StatusIndicatorComponent['theme'];
-}[] = [
-  { label: 'Contacted', theme: 'blue' },
-  { label: 'Met', theme: 'orange' },
-  { label: 'DD', theme: 'purple' },
-  { label: 'Socialised', theme: 'yellow' },
-  { label: 'Prep for IC', theme: 'red' },
-];
 
 const OPPORTUNITY_DETAILS_ROUTES = [
   {
@@ -105,10 +92,17 @@ export const selectOpportunityPageLoadingState = createSelector(
   opportunitiesQuery.selectOpportunityDetailsIsLoading,
   notesQuery.selectOpportunityNotesIsLoading,
   OrganisationsFeature.selectLoadingOrganisation,
-  (opportunityIsLoading, notesIsLoading, organisationIsLoading) => ({
+  opportunitiesQuery.selectIsLoadingUpdateStage,
+  (
     opportunityIsLoading,
     notesIsLoading,
     organisationIsLoading,
+    updatingPipeline,
+  ) => ({
+    opportunityIsLoading,
+    notesIsLoading,
+    organisationIsLoading,
+    updatingPipeline,
   }),
 );
 
