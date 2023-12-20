@@ -23,4 +23,5 @@ export interface FieldDefinitionData {
   readonly updatedAt: Date;
   readonly createdAt: Date;
   readonly configuration?: HeatmapFieldConfigurationData | null;
+  readonly hideOnPipelineStageIds?: string[];
 }

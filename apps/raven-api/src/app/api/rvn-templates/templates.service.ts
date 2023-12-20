@@ -431,6 +431,7 @@ export class TemplatesService {
       configuration: entity.configuration
         ? JSON.parse(entity.configuration)
         : null,
+      hideOnPipelineStageIds: entity.hideOnPipelineStages?.map((ps) => ps.id),
     };
   }
 
