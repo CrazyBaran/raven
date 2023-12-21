@@ -258,8 +258,8 @@ export class OrganisationService {
             organizationStageDtos[0].stage?.text || null,
             tem,
           );
-          return organisationEntity;
         }
+        return organisationEntity;
       },
     );
   }
