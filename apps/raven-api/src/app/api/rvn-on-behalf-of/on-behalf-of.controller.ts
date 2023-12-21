@@ -31,6 +31,14 @@ export class OnBehalfOfController {
   }
 
   // leaving these endpoints for convenience of setting up config values
+  @Get('sites')
+  public async getSites(): Promise<string> {
+    const response = await this.graphClient
+      .api(`https://graph.microsoft.com/v1.0/sites`)
+      .get();
+    return response;
+  }
+
   @Get('site-id')
   @ApiQuery({
     name: 'domain',
