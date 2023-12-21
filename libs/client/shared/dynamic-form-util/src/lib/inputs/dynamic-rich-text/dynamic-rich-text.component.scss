@@ -1,5 +1,3 @@
-@import 'libs/client/shared/ui/src/lib/styles/rich-editor';
-
 .rich-text-full {
   @apply grid grow;
 }
@@ -25,6 +23,6 @@
 
 app-dynamic-rich-text {
   display: grid !important;
-  min-height: 160px;
+  min-height: 80px;
   overflow: hidden;
 }
