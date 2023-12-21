@@ -399,6 +399,52 @@ export class NotesService {
     return [workflowNote, ...mappedRelatedNotes];
   }
 
+  public filterWorkflowNote(
+    workflowNote: NoteEntity,
+    currentPipelineStageId: string,
+  ): NoteEntity {
+    const templateFieldsFlat = workflowNote.template?.tabs
+      .map((t) => t.fieldGroups)
+      .flat()
+      .map((fg) => fg.fieldDefinitions)
+      .flat();
+
+    const filteredNote = cloneDeep(workflowNote);
+
+    filteredNote.noteTabs = filteredNote.noteTabs
+      ?.filter((nt) => {
+        const relatedTemplateTab = workflowNote.template?.tabs.find(
+          (t) => t.name === nt.name,
+        );
+        if (!relatedTemplateTab) {
+          return true; // we don't hide tabs that do not exist in template anymore
+        }
+        const pipelineStageFound = relatedTemplateTab.pipelineStages?.find(
+          (hops) => hops.id === currentPipelineStageId,
+        );
+        return !!pipelineStageFound;
+      })
+      ?.map((nt) => {
+        nt.noteFieldGroups = nt.noteFieldGroups?.map((nfg) => {
+          nfg.noteFields = nfg.noteFields?.filter((nf) => {
+            const fieldDefinition = templateFieldsFlat.find(
+              (tf) => tf.id === nf.templateFieldId,
+            );
+            if (!fieldDefinition) {
+              return true; // we don't hide fields that do not exist in template anymore
+            }
+            return !fieldDefinition.hideOnPipelineStages?.find(
+              (hops) => hops.id === currentPipelineStageId,
+            );
+          });
+          return nfg;
+        });
+        return nt;
+      });
+
+    return filteredNote;
+  }
+
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {
       return await this.createNoteFromTemplate(
@@ -986,20 +1032,5 @@ export class NotesService {
         .flat()
         .map(this.noteFieldEntityToNoteFieldData.bind(this)),
     };
-  }
-
-  private filterWorkflowNote(
-    workflowNote: NoteEntity,
-    currentPipelineStageId: string,
-  ): NoteEntity {
-    // TODO filtering logic here
-    console.log({ temp: workflowNote.template });
-    console.log({
-      fieldy: JSON.stringify(
-        workflowNote.template.tabs[0].fieldGroups[0].fieldDefinitions,
-      ),
-      currentPipelineStageId,
-    });
-    return workflowNote;
   }
 }

@@ -11,6 +11,7 @@ import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
+import { NoteTabEntity } from './entities/note-tab.entity';
 import { NoteEntity } from './entities/note.entity';
 import { NotesService } from './notes.service';
 
@@ -123,6 +124,29 @@ describe('NotesService', () => {
 
       expect(mockNoteRepository.save).toHaveBeenCalledWith(note);
       expect(result).toBe(note);
+    });
+  });
+
+  describe('filterWorkflowNote', () => {
+    it('should filter tabs and fields correctly', async () => {
+      const noteMock = jest.genMockFromModule<NoteEntity>(
+        './entities/note.entity',
+      );
+      const tabMock1 = jest.genMockFromModule<NoteTabEntity>(
+        './entities/note-tab.entity',
+      );
+
+      const currentPipelineStageId = 'currentPipelineStageId';
+
+      const result = await service.filterWorkflowNote(
+        noteMock,
+        currentPipelineStageId,
+      );
+
+      const noteTabs = result.noteTabs;
+
+      expect(noteTabs.length).toEqual(1);
+      expect(noteTabs[0].name).toEqual('Test tab 1');
     });
   });
 });
