@@ -14,7 +14,7 @@ import { RavenLogger } from '../rvn-logger/raven.logger';
 
 @ApiTags('On Behalf Of Management')
 @Controller('on-behalf-of')
-@ApiOAuth2(['https://raven.test.mubadalacapital.ae/api'])
+@ApiOAuth2([environment.scopes.apiAccess])
 export class OnBehalfOfController {
   public constructor(
     private readonly confidentialClientApplication: ConfidentialClientApplication,
@@ -31,6 +31,14 @@ export class OnBehalfOfController {
   }
 
   // leaving these endpoints for convenience of setting up config values
+  @Get('sites')
+  public async getSites(): Promise<string> {
+    const response = await this.graphClient
+      .api(`https://graph.microsoft.com/v1.0/sites`)
+      .get();
+    return response;
+  }
+
   @Get('site-id')
   @ApiQuery({
     name: 'domain',
