@@ -14,7 +14,7 @@ import { RavenLogger } from '../rvn-logger/raven.logger';
 
 @ApiTags('On Behalf Of Management')
 @Controller('on-behalf-of')
-@ApiOAuth2(['https://raven.test.mubadalacapital.ae/api'])
+@ApiOAuth2([environment.scopes.apiAccess])
 export class OnBehalfOfController {
   public constructor(
     private readonly confidentialClientApplication: ConfidentialClientApplication,
