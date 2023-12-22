@@ -35,6 +35,15 @@ export const fadeIn = (): [AnimationTransitionMetadata] => {
   ];
 };
 
+export const fadeOut = (): [AnimationTransitionMetadata] => {
+  return [
+    transition(':leave', [
+      style({ opacity: 1 }),
+      animate('200ms ease-in', style({ opacity: 0 })),
+    ]),
+  ];
+};
+
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[animeFadeInOut]',

@@ -8,6 +8,10 @@ export type PatchNote = {
     value: unknown;
   }[];
   tagIds: string[];
+  companyOpportunityTags?: {
+    organisationId: string;
+    opportunityTagId: string;
+  }[];
   origin?: NoteData;
   opportunityId?: string;
 };
