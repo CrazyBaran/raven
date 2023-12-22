@@ -404,9 +404,9 @@ export class NotesService {
     currentPipelineStageId: string,
   ): NoteEntity {
     const templateFieldsFlat = workflowNote.template?.tabs
-      .map((t) => t.fieldGroups)
+      .map((t) => t.fieldGroups || [])
       .flat()
-      .map((fg) => fg.fieldDefinitions)
+      .map((fg) => fg.fieldDefinitions || [])
       .flat();
 
     const filteredNote = cloneDeep(workflowNote);
