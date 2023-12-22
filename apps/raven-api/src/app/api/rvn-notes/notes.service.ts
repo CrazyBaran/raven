@@ -112,6 +112,11 @@ export class NotesService {
       .leftJoinAndMapOne('note.updatedBy', 'note.updatedBy', 'updatedBy')
       .leftJoinAndMapMany('note.tags', 'note.tags', 'tags')
       .leftJoinAndMapMany('note.complexTags', 'note.complexTags', 'complexTags')
+      .leftJoinAndMapMany(
+        'complexTags.tags',
+        'complexTags.tags',
+        'complexTagsTags',
+      )
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
       .where(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL');
@@ -262,6 +267,7 @@ export class NotesService {
       .leftJoinAndSelect('note.deletedBy', 'deletedBy')
       .leftJoinAndSelect('note.updatedBy', 'updatedBy')
       .leftJoinAndSelect('note.complexTags', 'complexTags')
+      .leftJoinAndSelect('complexTags.tags', 'complexTagsTags')
       .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroups')
       .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
       .leftJoinAndSelect('note.template', 'template');
