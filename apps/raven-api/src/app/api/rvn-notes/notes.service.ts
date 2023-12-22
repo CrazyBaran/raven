@@ -216,21 +216,21 @@ export class NotesService {
   public async getAllNoteVersions(
     noteEntity: NoteEntity,
   ): Promise<NoteEntity[]> {
-    return await this.noteRepository.find({
-      where: { rootVersionId: noteEntity.rootVersionId },
-      relations: [
-        'createdBy',
-        'updatedBy',
-        'deletedBy',
-        'tags',
-        'template',
-        'noteTabs',
-        'noteTabs.noteFieldGroups',
-        'noteTabs.noteFieldGroups.noteFields',
-        'noteFieldGroups',
-        'noteFieldGroups.noteFields',
-      ],
-    });
+    const qb = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.createdBy', 'createdBy')
+      .leftJoinAndSelect('note.deletedBy', 'deletedBy')
+      .leftJoinAndSelect('note.updatedBy', 'updatedBy')
+      .leftJoinAndSelect('note.noteTabs', 'noteTabs')
+      .leftJoinAndSelect('noteTabs.noteFieldGroups', 'noteFieldGroups')
+      .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
+      .leftJoinAndSelect('note.noteFieldGroups', 'noteFieldGroupsDirect')
+      .leftJoinAndSelect('noteFieldGroupsDirect.noteFields', 'noteFieldsDirect')
+      .where('note.rootVersionId = :rootVersionId', {
+        rootVersionId: noteEntity.rootVersionId,
+      });
+
+    return await qb.getMany();
   }
 
   public async getNotesForOpportunity(
