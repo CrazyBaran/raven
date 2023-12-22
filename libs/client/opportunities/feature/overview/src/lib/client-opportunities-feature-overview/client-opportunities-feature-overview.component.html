@@ -10,6 +10,7 @@
     <kendo-tilelayout-item-header>
       <div class="flex items-center justify-between gap-2">
         <h5 class="k-card-title">Details</h5>
+        @if(vm().canEditOpportunity){
         <kendo-button
           [queryParams]="{ 'opportunity-edit': vm().id }"
           [routerLink]="['./']"
@@ -18,13 +19,14 @@
           size="small"
           >Edit</kendo-button
         >
+        }
       </div>
     </kendo-tilelayout-item-header>
     <kendo-tilelayout-item-body>
       <div
         class="bg-grey-100 flex max-h-full flex-col gap-3 overflow-auto bg-opacity-50 px-6 py-5"
       >
-        <ng-container *ngIf="vm().isLoadingDetails; else details">
+        <ng-container *ngIf="vm().isLoading; else details">
           <div *ngFor="let i of 7 | times" class="px-2 py-3">
             <kendo-skeleton [height]="20" class="mb-1" width="170px" />
             <kendo-skeleton [height]="10" width="125px" />
@@ -67,7 +69,7 @@
           title="Deal Lead"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <ng-container *ngIf="!vm().isLoadingDetails; else tagSkeleton">
+            <ng-container *ngIf="!vm().isLoading; else tagSkeleton">
               <ui-tag
                 *rxFor="let name of dataItem.dealLeads"
                 [label]="name"
@@ -86,7 +88,7 @@
         >
           <ng-template kendoGridCellTemplate let-dataItem>
             <div
-              *ngIf="!vm().isLoadingDetails; else tagSkeleton"
+              *ngIf="!vm().isLoading; else tagSkeleton"
               class="flex flex-wrap gap-x-6 gap-y-1"
             >
               <ui-tag
@@ -195,11 +197,11 @@
     <kendo-button (click)="showEditTeam.set(false)"> Cancel </kendo-button>
     <kendo-button
       (click)="updateTeam()"
-      [disabled]="vm().updateTeamLoading! || !adminCount()"
+      [disabled]="vm().isLoading! || !adminCount()"
       themeColor="primary"
     >
       <kendo-loader
-        *ngIf="vm().updateTeamLoading"
+        *ngIf="vm().isLoading"
         class="!text-secondary-100 mr-1"
         size="small"
       />

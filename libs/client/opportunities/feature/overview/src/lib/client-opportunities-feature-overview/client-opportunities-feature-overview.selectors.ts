@@ -40,24 +40,29 @@ export const selectOpportunityOverviewTeam = createSelector(
   },
 );
 
+export const selectIsLoadingOpportunityOverview = createSelector(
+  notesQuery.selectOpportunityNotesIsLoading,
+  opportunitiesQuery.selectOpportunityDetailsIsLoading,
+  OrganisationsFeature.selectLoadingOrganisation,
+  (notes, opportunity, organisation) => notes || opportunity || organisation,
+);
+
 export const selectOpportunityOverviewViewModel = createSelector(
   opportunitiesQuery.selectRouteOpportunityDetails,
   OrganisationsFeature.selectCurrentOrganisation,
   opportunitiesQuery.selectNoteFields,
-  notesQuery.selectOpportunityNotesIsLoading,
-  opportunitiesQuery.selectOpportunityDetailsIsLoading,
-  OrganisationsFeature.selectLoadingOrganisation,
   tagsQuery.tagsFeature.selectPeopleTags,
   selectOpportunityOverviewTeam,
+  selectIsLoadingOpportunityOverview,
+  opportunitiesQuery.selectIsTeamMemberForCurrentOpportunity,
   (
     opportunity,
     organisation,
     noteFields,
-    isLoading,
-    isLoadingOpportunity,
-    isLoadingOrganisation,
     peopleTags,
     overviewTeam,
+    isLoading,
+    isTeamMember,
   ) => {
     return {
       details: [
@@ -107,7 +112,6 @@ export const selectOpportunityOverviewViewModel = createSelector(
         },
       ].filter(({ label }) => !!label),
       isLoading,
-      isLoadingDetails: isLoadingOrganisation || isLoadingOpportunity,
       id: opportunity?.id,
       missingDetails: noteFields
         .filter(({ value }) => !value?.trim())
@@ -118,6 +122,7 @@ export const selectOpportunityOverviewViewModel = createSelector(
         })),
       users: peopleTags,
       opportunity,
+      canEditOpportunity: isTeamMember,
       ...overviewTeam,
     };
   },
