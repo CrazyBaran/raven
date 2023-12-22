@@ -347,7 +347,7 @@ export class OpportunityService {
     }
 
     // if opportunity had no workflow note and tag is now set, it's time for opportunity to become a real opportunity with note and folder structure
-    if (!opportunity.note && options.tagEntity) {
+    if (!opportunity.noteId && options.tagEntity) {
       this.eventEmitter.emit(
         'opportunity-created',
         new OpportunityCreatedEvent(opportunityEntity.id, null, userEntity.id),
