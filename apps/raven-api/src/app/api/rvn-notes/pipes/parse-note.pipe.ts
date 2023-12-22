@@ -21,6 +21,7 @@ export class ParseNotePipe
       .leftJoinAndSelect('note.updatedBy', 'updatedBy')
       .leftJoinAndSelect('note.tags', 'tags')
       .leftJoinAndSelect('note.complexTags', 'complexTags')
+      .leftJoinAndSelect('complexTags.tags', 'complexTagsTags')
       .leftJoinAndSelect('note.noteTabs', 'noteTabs')
       .leftJoinAndSelect('noteTabs.noteFieldGroups', 'noteFieldGroups')
       .leftJoinAndSelect('noteFieldGroups.noteFields', 'noteFields')
