@@ -1,9 +1,18 @@
-<button
-  class="indicator-btn | border-grey-400 flex w-fit items-center rounded-lg border px-3 py-1"
-  (click)="statusClick.emit()"
->
-  <div class="status-circle | bg-primary-400 h-4 w-4 rounded-full"></div>
-  <p class="ml-4">
-    <ng-content></ng-content>
-  </p>
-</button>
+@switch (stateSignal()) { @case ('validate') {
+
+<div class="flex items-center gap-2" [@fadeIn]>
+  <kendo-loader size="small" type="infinite-spinner" themeColor="primary" />
+  Saving...
+</div>
+
+} @case ('updated') {
+<div class="flex items-center gap-2" [@fadeIn] [@fadeOut]>
+  <i class="fa-solid fa-check text-primary-400"></i>
+  Saved
+</div>
+} @case('failed'){
+<div class="flex items-center gap-2" [@fadeIn] [@fadeOut]>
+  <i class="fa-solid fa-circle-exclamation text-error opacity-75"></i>
+  Save Failed
+</div>
+} @default { }}

@@ -293,4 +293,5 @@ export const opportunitiesQuery = {
     selectIsTeamLeadForCurrentOpportunity,
   selectIsLoadingUpdateStage,
   selectFinancialGroups,
+  selectIsTeamMemberForCurrentOpportunity,
 };

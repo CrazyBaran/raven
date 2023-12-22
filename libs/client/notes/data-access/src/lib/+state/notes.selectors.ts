@@ -76,6 +76,7 @@ export const selectAllNotesTableRows = createSelector(
         },
         peopleTags: note.tags
           .filter((t) => t.type === 'people')
+          .sort((a, b) => a.name.length - b.name.length)
           .map((t) => ({
             name: t.name,
             id: t.id,

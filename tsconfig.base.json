@@ -77,9 +77,6 @@
       "@app/client/opportunities/feature/files": [
         "libs/client/opportunities/feature/files/src/index.ts"
       ],
-      "@app/client/opportunities/feature/finacials": [
-        "libs/client/opportunities/feature/finacials/src/index.ts"
-      ],
       "@app/client/opportunities/feature/opportunity-notes": [
         "libs/client/opportunities/feature/opportunity-notes/src/index.ts"
       ],

@@ -57,7 +57,9 @@
       <div class="grid min-h-[92px] grid-cols-4 gap-6 px-8 py-2">
         <ng-container
           *ngIf="
-            vm().opportunityIsLoading || vm().organisationIsLoading;
+            vm().opportunityIsLoading ||
+              vm().organisationIsLoading ||
+              vm().updatingPipeline;
             else details
           "
         >
@@ -85,8 +87,9 @@
             class="navigations !flex !flex-col"
             selection="single"
           >
+            @for (navigation of vm()?.navigations ?? []; track
+            navigation.label){
             <kendo-button
-              *rxFor="let navigation of vm()?.navigations; trackBy: 'label'"
               [ngStyle]="$any(navigation).style ?? {}"
               [queryParams]="navigation.queryParams"
               [routerLink]="navigation.link"
@@ -101,15 +104,8 @@
                 {{ navigation.label }}
               </div>
             </kendo-button>
+            }
           </kendo-buttongroup>
-
-          <!--          <div *ngIf="vm().notesIsLoading" class="!flex !flex-col gap-2">-->
-          <!--            <kendo-skeleton-->
-          <!--              class="bg-primary-25"-->
-          <!--              *rxFor="let i of 5 | times"-->
-          <!--              width="70%"-->
-          <!--            ></kendo-skeleton>-->
-          <!--          </div>-->
         </div>
         <div class="border-grey-300 overflow-hidden border p-3">
           <div class="h-full w-full">
