@@ -590,7 +590,10 @@ export class NotesService {
           relations: ['note'],
         });
         if (opportunity) {
-          if (opportunity.note.rootVersionId !== noteEntity.rootVersionId) {
+          if (
+            opportunity.note &&
+            opportunity.note.rootVersionId !== noteEntity.rootVersionId
+          ) {
             throw new Error(
               'Updated note root version id does not match workflow note root version id',
             );
