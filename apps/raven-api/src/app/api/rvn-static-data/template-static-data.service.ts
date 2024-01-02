@@ -58,6 +58,9 @@ export class TemplateStaticDataService {
                 field.order,
                 field.configuration,
                 fieldGroup.id,
+                field.hideOnPipelineStages.map((stage) => {
+                  return stage.id;
+                }),
               );
             }),
             template.id,
@@ -107,6 +110,7 @@ export class TemplateStaticDataService {
                 field.order,
                 field.configuration,
                 fieldGroup.id,
+                field.hideOnPipelineStageIds,
               );
             }),
             template.id,
@@ -330,6 +334,17 @@ export class TemplateStaticDataService {
             groupId: modifiedChange.newData.fieldGroupId,
           },
         );
+        await transactionalEntityManager.query(
+          `DELETE FROM field_hide_pipeline_stage WHERE tab_id = ?`,
+          [modifiedChange.newData.id],
+        );
+        await transactionalEntityManager.query(
+          `INSERT INTO field_hide_pipeline_stage (tab_id, pipeline_stage_id) VALUES (?, ?)`,
+          [
+            modifiedChange.newData.id,
+            modifiedChange.newData.hideOnPipelineStageIds,
+          ],
+        );
       }
 
       for (const change of changes.filter(
@@ -353,6 +368,10 @@ export class TemplateStaticDataService {
             await transactionalEntityManager.delete(
               FieldDefinitionEntity,
               data.id,
+            );
+            await transactionalEntityManager.query(
+              `DELETE FROM field_hide_pipeline_stage WHERE tab_id = ?`,
+              [data.id],
             );
             break;
         }
