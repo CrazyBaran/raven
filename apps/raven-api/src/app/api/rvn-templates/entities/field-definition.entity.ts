@@ -45,7 +45,7 @@ export class FieldDefinitionEntity implements BaseAuditableEntity {
   public configuration: string;
 
   @ManyToMany(() => PipelineStageEntity, {
-    eager: true,
+    eager: false,
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
