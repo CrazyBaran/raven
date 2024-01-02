@@ -26,10 +26,15 @@
           class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
         >
           <div class="grow overflow-hidden">
-            <p class="truncate group-hover:font-bold">{{ dataItem.name }}</p>
-            <p *rxIf="dataItem.domains[0]" class="truncate text-xs">
+            <p [isEllipsisActive]="true" class="group-hover:font-bold">
+              {{ dataItem.name }}
+            </p>
+
+            @if (dataItem.domains[0]){
+            <p [isEllipsisActive]="true" class="text-xs">
               {{ dataItem.domains[0] }}
             </p>
+            }
           </div>
           <i class="fa-solid fa-share"></i>
         </div>
@@ -67,7 +72,7 @@
             [style.color]="opportunity.stageColor"
             class="fa-solid fa-circle text-xs"
           ></i>
-          <p class="flex-1 truncate text-black">
+          <p [isEllipsisActive]="true" class="flex-1 text-black">
             {{ opportunity.stage?.displayName ?? '' }}
           </p>
         </div>
@@ -85,16 +90,11 @@
           "
           class="flex h-10 items-center gap-1"
         >
-          <ui-tag
-            *rxFor="
-              let lead of opportunity.team | dealLeads;
-              strategy: 'immediate'
-            "
-            [label]="lead"
-            class="shrink-0"
-            size="medium"
-            uiUserTag
-          ></ui-tag>
+          <ui-tags-container
+            [rows]="1"
+            [tags]="opportunity.team | dealLeads | toUserTag"
+            class="w-full"
+          ></ui-tags-container>
         </div>
       </div>
     </ng-template>
@@ -111,16 +111,11 @@
           "
           class="flex h-10 items-center gap-1"
         >
-          <ui-tag
-            *rxFor="
-              let lead of opportunity.team | dealTeam;
-              strategy: 'immediate'
-            "
-            [label]="lead"
-            class="shrink-0"
-            size="medium"
-            uiUserTag
-          ></ui-tag>
+          <ui-tags-container
+            [rows]="1"
+            [tags]="opportunity.team | dealTeam | toUserTag"
+            class="w-full"
+          ></ui-tags-container>
         </div>
       </div>
     </ng-template>

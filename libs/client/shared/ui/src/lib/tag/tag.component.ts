@@ -7,12 +7,13 @@ import {
   Output,
   TemplateRef,
 } from '@angular/core';
+import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { ButtonModule, ButtonSize } from '@progress/kendo-angular-buttons';
 
 @Component({
   selector: 'ui-tag',
   standalone: true,
-  imports: [CommonModule, ButtonModule],
+  imports: [CommonModule, ButtonModule, IsEllipsisActiveDirective],
   templateUrl: './tag.component.html',
   styleUrls: ['./tag.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
