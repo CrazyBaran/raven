@@ -6,7 +6,11 @@ import {
 } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+// TODO: Fix this import
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { BadgeComponent } from '@app/client/shared/ui';
+// TODO: Fix this import
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { HearColorPipe } from '@app/client/shared/ui-pipes';
 import {
   NumericTextBoxComponent,
@@ -60,7 +64,7 @@ export class DynamicNumericInputComponent extends BaseDynamicControlComponent<Dy
     }
   }
 
-  public get formatOptions() {
+  public get formatOptions(): string {
     return `#,##.######## '${this.control.config.unit}'`;
   }
 

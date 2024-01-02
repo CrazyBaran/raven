@@ -88,7 +88,12 @@ export const createTag = createEffect(
           }),
           catchError((error) => {
             console.error('Error', error);
-            return of(TagsActions.createTagFailure({ error }));
+            return of(
+              TagsActions.createTagFailure({ error }),
+              NotificationsActions.showErrorNotification({
+                content: 'Tag Creation Failed.',
+              }),
+            );
           }),
         ),
       ),

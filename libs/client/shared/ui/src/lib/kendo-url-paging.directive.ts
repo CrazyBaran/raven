@@ -33,9 +33,9 @@ export class KendoUrlPagingDirective implements AfterViewInit {
   exportAs: 'uiKendoGridInfinityScroll',
 })
 export class KendoGridInfinityScrollDirective implements AfterViewInit {
-  private _scrollIndex: number = 0;
-
   @Input() public queryParamsHandling: 'merge' | 'preserve' = 'merge';
+
+  private _scrollIndex: number = 0;
 
   public constructor(
     private grid: GridComponent,

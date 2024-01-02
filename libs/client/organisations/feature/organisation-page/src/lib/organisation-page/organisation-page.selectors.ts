@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Environment } from '@app/client/core/environment';
 import { FileEntity, filesQuery } from '@app/client/files/feature/state';
 import { OrganisationsFeature } from '@app/client/organisations/state';
@@ -32,7 +33,6 @@ export const toFileRow =
     childrenCount: file.folder?.childCount,
   });
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectFileTags = (file: FileEntity) =>
   createSelector(
     filesQuery.selectFileTags,

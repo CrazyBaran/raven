@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 
 import {
-  BaseDynamicControlComponent,
-  DynamicTextControl,
-  dynamicControlProvider,
-  sharedDynamicControlDeps,
-} from '@app/client/shared/dynamic-form-util';
-import {
   TextBoxComponent,
   TextBoxModule,
 } from '@progress/kendo-angular-inputs';
+import {
+  BaseDynamicControlComponent,
+  dynamicControlProvider,
+  sharedDynamicControlDeps,
+} from '../../base-dynamic-control-component.directive';
+import { DynamicTextControl } from '../../dynamic-forms.model';
 
 @Component({
   selector: 'app-dynamic-input',

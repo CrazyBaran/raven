@@ -123,11 +123,12 @@ export class PopulateAzureImagesPipe implements PipeTransform {
   animations: [trigger('fadeIn', fadeIn())],
 })
 export class OpportunitiesRelatedNotesComponent {
-  protected store = inject(Store);
-  protected actions = inject(Actions);
-
   @ViewChildren(RichTextComponent)
-  protected richTextEditors: QueryList<RichTextComponent>;
+  public richTextEditors: QueryList<RichTextComponent>;
+
+  protected store = inject(Store);
+
+  protected actions = inject(Actions);
 
   protected uploadFileService = inject(UploadFileService);
 

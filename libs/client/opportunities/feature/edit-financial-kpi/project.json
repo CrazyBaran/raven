@@ -2,7 +2,7 @@
   "name": "edit-financial-kpi",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/opportunities/feature/edit-financial-kpi/src",
-  "prefix": "lib",
+  "prefix": "app",
   "tags": [],
   "projectType": "library",
   "targets": {

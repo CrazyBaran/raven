@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   EventEmitter,
   forwardRef,
   inject,
@@ -28,7 +29,6 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { FilterExpandSettings } from '@progress/kendo-angular-treeview';
-import * as _ from 'lodash';
 import { isEqual } from 'lodash';
 import { unique } from 'ng-packagr/lib/utils/array';
 import {
@@ -52,6 +52,10 @@ export type DropdownTag = {
     | 'business-model'
     | 'company_root';
 };
+
+export type TagDropdownValue =
+  | string
+  | { organisationId: string; opportunityTagId: string };
 
 @Component({
   selector: 'app-tag-dropdown',
@@ -77,20 +81,21 @@ export type DropdownTag = {
     },
   ],
 })
-export class TagDropdownComponent extends ControlValueAccessor<string[]> {
-  protected value: WritableSignal<string[]> = signal([]);
-  protected linkedOpportunities: WritableSignal<Record<string, string[]>> =
-    signal({});
+export class TagDropdownComponent extends ControlValueAccessor<
+  TagDropdownValue[]
+> {
+  protected value: WritableSignal<TagDropdownValue[]> = signal([]);
+  protected value$ = toObservable(this.value);
 
-  protected linkedOpportunities$ = toObservable(this.linkedOpportunities);
-
-  public override writeValue(value: string[]): void {
+  public override writeValue(value: TagDropdownValue[]): void {
     this.value.set(value);
-    this.linkedOpportunities.update((dict) =>
-      _.mapValues(dict, (value, key) =>
-        _.uniq(value.filter((v) => this.value().includes(v))),
-      ),
-    );
+  }
+
+  public constructor() {
+    super();
+    effect(() => {
+      console.log(this.value());
+    });
   }
 
   @Output() public openTagDialog = new EventEmitter<{
@@ -131,18 +136,12 @@ export class TagDropdownComponent extends ControlValueAccessor<string[]> {
     this.tagsSignal().filter((item) => item.type === 'company'),
   );
 
-  protected value$ = toObservable(this.value);
-
   protected hasChildren = (dataItem: object): boolean =>
     'type' in dataItem && dataItem.type === 'company_root';
 
   protected children = (dataItem: object): Observable<object[]> =>
-    combineLatest([
-      this.opportunityTags$,
-      this.value$,
-      this.linkedOpportunities$,
-    ]).pipe(
-      map(([opportunityTags, value, linkedOpportunities]) => {
+    combineLatest([this.opportunityTags$, this.value$]).pipe(
+      map(([opportunityTags, value]) => {
         const companyId = 'id' in dataItem ? (dataItem?.id as string) : '';
         const companyTag = {
           id: companyId,
@@ -151,14 +150,27 @@ export class TagDropdownComponent extends ControlValueAccessor<string[]> {
           type: 'company',
           companyId: 'id' in dataItem ? dataItem?.id : '',
         };
+
         const tags = opportunityTags
+          .filter(
+            ({ id }) =>
+              !value.some(
+                (v) =>
+                  typeof v !== 'string' &&
+                  v.organisationId === companyId &&
+                  v.opportunityTagId === id,
+              ),
+          )
           .map((t) => ({
             ...t,
             companyId: 'id' in dataItem ? dataItem.id : null,
-          }))
-          .filter(({ id }) => !linkedOpportunities[companyId]?.includes(id)); //TODO: Remove this filter when opportunities will have relations per company
+          }));
 
-        return this.value().includes(companyId) ? tags : [companyTag, ...tags];
+        return this.value().some(
+          (t) => typeof t === 'string' && t === companyId,
+        )
+          ? tags
+          : [companyTag, ...tags];
       }),
       distinctUntilChanged(isEqual),
     );
@@ -192,21 +204,27 @@ export class TagDropdownComponent extends ControlValueAccessor<string[]> {
   };
 
   public itemClicked(dataItem: DropdownTag): void {
+    this.tagClicked.emit(dataItem);
+
     if (this.type() === 'company_root') {
       return;
     }
 
     if (dataItem.type === 'opportunity') {
-      const compandyId = dataItem?.companyId ?? '';
-      this.linkedOpportunities.update((dict) => ({
-        ...dict,
-        [compandyId]: unique([...(dict[compandyId] ?? []), dataItem.id]),
-      }));
-
-      console.log(this.linkedOpportunities());
+      const companyId = String(dataItem.companyId ?? '');
+      this.value.update((value) =>
+        unique([
+          ...value,
+          {
+            organisationId: companyId,
+            opportunityTagId: dataItem.id,
+          },
+        ]),
+      );
+      this.onChange?.(this.value());
+      return;
     }
 
-    this.tagClicked.emit(dataItem);
     this.value.set([...this.value(), dataItem.id]);
     this.onChange?.(this.value());
   }

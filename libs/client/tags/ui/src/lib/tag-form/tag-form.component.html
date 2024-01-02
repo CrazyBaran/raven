@@ -25,5 +25,12 @@
 
 <kendo-dialog-actions>
   <button (click)="dialog.close()" kendoButton>Cancel</button>
-  <button (click)="submit()" kendoButton themeColor="primary">Submit</button>
+  <button
+    (click)="submit()"
+    [disabled]="!tagForm.valid"
+    kendoButton
+    themeColor="primary"
+  >
+    Submit
+  </button>
 </kendo-dialog-actions>

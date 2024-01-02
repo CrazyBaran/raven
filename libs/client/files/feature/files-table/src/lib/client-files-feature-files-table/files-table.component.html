@@ -33,7 +33,8 @@
           title="Folder/File Name"
         >
           <ng-template kendoTreeListCellTemplate let-dataItem>
-            <span
+            <div
+              class="flex gap-2"
               [ngClass]="{
                 'font-bold': dataItem.type === 'folder'
               }"
@@ -45,10 +46,10 @@
                 }"
                 class="fa-regular"
               ></i>
-              <span class="ml-2">
+              <p class="ml-2">
                 {{ dataItem.name }}
-              </span>
-            </span>
+              </p>
+            </div>
           </ng-template>
         </kendo-treelist-column>
 

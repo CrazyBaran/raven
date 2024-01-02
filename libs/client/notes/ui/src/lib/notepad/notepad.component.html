@@ -12,13 +12,13 @@
   </ng-container>
 
   <div
-    [class.opacity-10]="!visible()"
-    class="relative h-full overflow-auto"
+    [class.opacity-0]="!visible()"
+    class="relative h-full overflow-auto transition-opacity duration-150 ease-in-out"
     controls
   >
     <form
       [formGroup]="notepadFormGroup"
-      class="ml-2 mr-1 flex min-h-full flex-col gap-4 transition-opacity duration-150 ease-in-out"
+      class="ml-2 mr-1 flex min-h-full flex-col gap-4"
     >
       <ng-container
         *rxFor="

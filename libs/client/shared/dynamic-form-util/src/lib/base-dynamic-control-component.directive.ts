@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/member-ordering */
 import { CommonModule, KeyValue } from '@angular/common';
 import {
   AfterViewInit,
@@ -62,7 +63,7 @@ export abstract class BaseDynamicControlComponent<
 {
   @HostBinding('class') protected hostClass = 'form-field block';
 
-  protected control = inject(CONTROL_DATA) as ControlData<T>;
+  public control = inject(CONTROL_DATA) as ControlData<T>;
 
   @HostBinding('attr.data-testid') protected testId =
     this.control?.controlKey ?? '';
