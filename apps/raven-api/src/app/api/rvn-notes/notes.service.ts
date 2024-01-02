@@ -342,12 +342,19 @@ export class NotesService {
     opportunityNote.noteTabs = allTabs.noteTabs;
     opportunityNote.noteFieldGroups = allFieldGroups.noteFieldGroups;
 
+    const start = new Date().getTime();
     const opportunityNoteTemplate = await this.templateRepository
       .createQueryBuilder('template')
       .leftJoinAndSelect('template.tabs', 'tab')
       .leftJoinAndSelect('tab.relatedTemplates', 'relatedTemplate')
       .leftJoinAndSelect('tab.pipelineStages', 'pipelineStage')
       .leftJoinAndSelect('tab.relatedFields', 'relatedFields')
+      .leftJoinAndSelect('tab.fieldGroups', 'fieldGroups')
+      .leftJoinAndSelect('fieldGroups.fieldDefinitions', 'fieldDefinitions')
+      .leftJoinAndSelect(
+        'fieldDefinitions.hideOnPipelineStages',
+        'hideOnPipelineStages',
+      )
       .select([
         'template.id',
         'template.name',
@@ -358,11 +365,21 @@ export class NotesService {
         'pipelineStage.displayName',
         'relatedTemplate.id',
         'relatedFields.id',
+        'fieldGroups.id',
+        'fieldGroups.name',
+        'fieldDefinitions.id',
+        'fieldDefinitions.name',
+        'hideOnPipelineStages.id',
       ])
       .where('template.id = :templateId', {
         templateId: opportunityNote.templateId,
       })
       .getOne();
+
+    this.logger.debug(
+      'get opportunity note template took: ',
+      new Date().getTime() - start,
+    );
 
     // we resolve these relations manually because typeorm lacks performance in doing so...
     opportunityNote.template = opportunityNoteTemplate;
@@ -386,6 +403,52 @@ export class NotesService {
       })
       .map(this.noteEntityToNoteData.bind(this));
     return [workflowNote, ...mappedRelatedNotes];
+  }
+
+  public filterWorkflowNote(
+    workflowNote: NoteEntity,
+    currentPipelineStageId: string,
+  ): NoteEntity {
+    const templateFieldsFlat = workflowNote.template?.tabs
+      .map((t) => t.fieldGroups || [])
+      .flat()
+      .map((fg) => fg.fieldDefinitions || [])
+      .flat();
+
+    const filteredNote = cloneDeep(workflowNote);
+
+    filteredNote.noteTabs = filteredNote.noteTabs
+      ?.filter((nt) => {
+        const relatedTemplateTab = workflowNote.template?.tabs.find(
+          (t) => t.name === nt.name,
+        );
+        if (!relatedTemplateTab) {
+          return true; // we don't hide tabs that do not exist in template anymore
+        }
+        const pipelineStageFound = relatedTemplateTab.pipelineStages?.find(
+          (hops) => hops.id === currentPipelineStageId,
+        );
+        return !!pipelineStageFound;
+      })
+      ?.map((nt) => {
+        nt.noteFieldGroups = nt.noteFieldGroups?.map((nfg) => {
+          nfg.noteFields = nfg.noteFields?.filter((nf) => {
+            const fieldDefinition = templateFieldsFlat.find(
+              (tf) => tf.id === nf.templateFieldId,
+            );
+            if (!fieldDefinition) {
+              return true; // we don't hide fields that do not exist in template anymore
+            }
+            return !fieldDefinition.hideOnPipelineStages?.find(
+              (hops) => hops.id === currentPipelineStageId,
+            );
+          });
+          return nfg;
+        });
+        return nt;
+      });
+
+    return filteredNote;
   }
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
@@ -849,7 +912,13 @@ export class NotesService {
     currentPipelineStageId: string,
   ): WorkflowNoteData {
     delete workflowNote.noteFieldGroups;
-    const mappedNote = this.noteEntityToNoteData(workflowNote);
+
+    const filteredWorkflowNote = this.filterWorkflowNote(
+      workflowNote,
+      currentPipelineStageId,
+    );
+
+    const mappedNote = this.noteEntityToNoteData(filteredWorkflowNote);
 
     const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template

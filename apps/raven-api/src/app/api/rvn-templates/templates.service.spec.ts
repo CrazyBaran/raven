@@ -1,7 +1,7 @@
 import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { FieldDefinitionEntity } from './entities/field-definition.entity';
 import { FieldGroupEntity } from './entities/field-group.entity';
@@ -20,6 +20,9 @@ describe('TemplatesService', () => {
     Partial<Repository<FieldDefinitionEntity>>
   >;
 
+  let temMock: jest.Mocked<Partial<EntityManager>>;
+  let manager: jest.Mocked<Partial<EntityManager>>;
+
   beforeEach(async () => {
     mockTemplatesRepository = {
       find: jest.fn(),
@@ -35,9 +38,18 @@ describe('TemplatesService', () => {
       save: jest.fn(),
     };
 
+    temMock = {
+      save: jest.fn().mockImplementation((val) => val),
+    };
+
+    manager = {
+      transaction: jest.fn().mockImplementation((cb) => cb(temMock)),
+    };
+
     mockFieldDefinitionsRepository = {
       save: jest.fn(),
       remove: jest.fn(),
+      manager: manager as unknown as EntityManager,
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -276,9 +288,6 @@ describe('TemplatesService', () => {
         options,
       );
 
-      expect(mockFieldDefinitionsRepository.save).toHaveBeenCalledWith(
-        updatedFieldDefinition,
-      );
       expect(result).toEqual(updatedFieldDefinition);
     });
   });

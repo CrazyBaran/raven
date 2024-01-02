@@ -270,6 +270,8 @@ export class TemplatesController {
     template: TemplateEntity,
     @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
     group: FieldGroupEntity,
+    @Body('hideOnPipelineStageIds', ParseOptionalPipelineStagePipe)
+    pipelineStages: PipelineStageEntity[],
     @Body() dto: CreateFieldDefinitionDto,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<FieldDefinitionData> {
@@ -282,6 +284,7 @@ export class TemplatesController {
           ? JSON.stringify(dto.configuration)
           : null,
         groupId: group.id,
+        hideOnPipelineStages: pipelineStages,
         userEntity,
       }),
     ) as FieldDefinitionData;
@@ -300,6 +303,8 @@ export class TemplatesController {
     group: FieldGroupEntity,
     @Param('fieldId', ParseUUIDPipe, ParseFieldDefinitionPipe)
     field: FieldDefinitionEntity,
+    @Body('hideOnPipelineStageIds', ParseOptionalPipelineStagePipe)
+    pipelineStages: PipelineStageEntity[],
     @Body() dto: UpdateFieldDefinitionDto,
   ): Promise<FieldDefinitionData> {
     return this.service.fieldDefinitionEntityToFieldDefinitionData(
@@ -310,6 +315,7 @@ export class TemplatesController {
         configuration: dto.configuration
           ? JSON.stringify(dto.configuration)
           : null,
+        hideOnPipelineStages: pipelineStages,
       }),
     ) as FieldDefinitionData;
   }
