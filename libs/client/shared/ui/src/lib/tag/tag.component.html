@@ -14,14 +14,14 @@
     "
   ></ng-container>
 
-  @if(removable){
-  <kendo-button
-    (click)="$event?.stopPropagation(); tagRemove.emit($event)"
-    class="text-grey-400 invisible border-0 !p-0 duration-0 group-hover:visible"
-    fillMode="flat"
-    iconClass="fa-solid fa-trash h-4 text-xs"
-    [size]="size"
-  />
+  @if (removable) {
+    <kendo-button
+      (click)="$event?.stopPropagation(); tagRemove.emit($event)"
+      class="text-grey-400 invisible border-0 !p-0 duration-0 group-hover:visible"
+      fillMode="flat"
+      iconClass="fa-solid fa-trash h-4 text-xs"
+      [size]="size"
+    />
   }
 </div>
 

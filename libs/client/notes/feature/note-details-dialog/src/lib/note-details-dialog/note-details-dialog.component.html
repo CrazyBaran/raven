@@ -40,15 +40,17 @@
 
       <div *ngIf="!!noteDetails.tags.length" class="flex flex-col gap-4">
         <ul class="flex flex-row flex-wrap gap-[0_0.75rem]">
-          @for (tag of noteDetails.tags | tagFilter: ['people'] : false; track
-          tag.id){
-          <ui-tag [label]="tag.name" [style]="tag.type | tagTypeColor" />
+          @for (
+            tag of noteDetails.tags | tagFilter: ['people'] : false;
+            track tag.id
+          ) {
+            <ui-tag [label]="tag.name" [style]="tag.type | tagTypeColor" />
           }
         </ul>
 
         <ul class="flex flex-row flex-wrap gap-[0_0.75rem]">
-          @for (tag of noteDetails.tags | tagFilter: ['people']; track tag.id){
-          <ui-tag uiUserTag [label]="tag.name" />
+          @for (tag of noteDetails.tags | tagFilter: ['people']; track tag.id) {
+            <ui-tag uiUserTag [label]="tag.name" />
           }
         </ul>
       </div>

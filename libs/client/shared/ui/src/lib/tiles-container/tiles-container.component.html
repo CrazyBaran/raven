@@ -3,20 +3,19 @@
   #placeholder
   class="m-0 flex list-none flex-wrap items-start justify-start overflow-hidden p-0"
 >
-  @for (tile of tilesSignal(); track trackBy; let i = $index){
-
-  <li
-    (appOnResize)="onTileListWidthChange()"
-    class="tile-list max-w-full p-1 pl-0 pr-2 last:pr-0"
-    [ngClass]="{
-      'invisible order-last h-0 !py-0': i > maxIndexSignal()!
-    }"
-  >
-    <ng-container
-      [ngTemplateOutlet]="itemTemplate"
-      [ngTemplateOutletContext]="{ $implicit: tile }"
-    />
-  </li>
+  @for (tile of tilesSignal(); track trackBy; let i = $index) {
+    <li
+      (appOnResize)="onTileListWidthChange()"
+      class="tile-list max-w-full p-1 pl-0 pr-2 last:pr-0"
+      [ngClass]="{
+        'invisible order-last h-0 !py-0': i > maxIndexSignal()!
+      }"
+    >
+      <ng-container
+        [ngTemplateOutlet]="itemTemplate"
+        [ngTemplateOutletContext]="{ $implicit: tile }"
+      />
+    </li>
   }
   <li
     [ngClass]="{

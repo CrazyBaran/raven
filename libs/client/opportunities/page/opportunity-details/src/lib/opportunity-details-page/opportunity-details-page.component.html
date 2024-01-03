@@ -55,8 +55,11 @@
   >
     <ng-container>
       <div class="grid min-h-[92px] grid-cols-4 gap-6 px-8 py-2">
-        @if (vm().opportunityIsLoading || vm().organisationIsLoading ||
-        vm().updatingPipeline) {
+        @if (
+          vm().opportunityIsLoading ||
+          vm().organisationIsLoading ||
+          vm().updatingPipeline
+        ) {
           @for (i of 3 | times; track i) {
             <div class="px-2 py-3">
               <kendo-skeleton [height]="24" class="mb-2" width="50%" />
@@ -78,23 +81,25 @@
             class="navigations !flex min-h-0 flex-1 !flex-col overflow-y-auto overflow-x-hidden"
             selection="single"
           >
-            @for (navigation of vm()?.navigations ?? []; track
-            navigation.label){
-            <kendo-button
-              [ngStyle]="$any(navigation).style ?? {}"
-              [queryParams]="navigation.queryParams"
-              [routerLink]="navigation.link"
-              [selected]="navigation.active"
-              [toggleable]="true"
-              class="!justify-start"
-              fillMode="flat"
-              size="large"
-              themeColor="primary"
-            >
-              <div class="nav-clas-btn w-full truncate">
-                {{ navigation.label }}
-              </div>
-            </kendo-button>
+            @for (
+              navigation of vm()?.navigations ?? [];
+              track navigation.label
+            ) {
+              <kendo-button
+                [ngStyle]="$any(navigation).style ?? {}"
+                [queryParams]="navigation.queryParams"
+                [routerLink]="navigation.link"
+                [selected]="navigation.active"
+                [toggleable]="true"
+                class="!justify-start"
+                fillMode="flat"
+                size="large"
+                themeColor="primary"
+              >
+                <div class="nav-clas-btn w-full truncate">
+                  {{ navigation.label }}
+                </div>
+              </kendo-button>
             }
           </kendo-buttongroup>
 

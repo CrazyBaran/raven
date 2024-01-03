@@ -81,8 +81,8 @@ export class NotepadComponent implements OnInit {
         state: (this.state().disabledTabIds.includes(key)
           ? 'disabled'
           : this.state().activeTabId === key
-          ? 'active'
-          : 'default') as ScrollTabState,
+            ? 'active'
+            : 'default') as ScrollTabState,
         canBeDisabled: this.formConfig()[key].id !== 'TITLE',
       }),
     );
