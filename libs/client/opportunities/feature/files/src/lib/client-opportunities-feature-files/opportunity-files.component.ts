@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
   ButtongroupNavigationComponent,
   DropdownNavigationComponent,
@@ -45,7 +46,9 @@ const FILE_FILTERS = [
 
 export const selectOpportunityFilesViewModel = createSelector(
   selectOrganisationsTableParams,
-  (params) => ({
+  opportunitiesQuery.selectIsTeamMemberForCurrentOpportunity,
+
+  (params, isTeamMember) => ({
     filters: buildDropdownNavigation({
       params,
       name: 'fileType',
@@ -56,10 +59,7 @@ export const selectOpportunityFilesViewModel = createSelector(
         id: null,
       },
     }),
-    // filters: FILE_FILTERS.map((f) => ({
-    //   ...f,
-    //   selected: f.id === (fileFilter ?? FILE_FILTERS[0].id),
-    // })),
+    canEditFiles: isTeamMember,
   }),
 );
 
