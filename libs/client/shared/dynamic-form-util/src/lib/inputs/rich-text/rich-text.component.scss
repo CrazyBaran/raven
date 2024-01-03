@@ -21,12 +21,6 @@
   @apply border-b border-solid border-[#00000014];
 }
 
-app-dynamic-rich-text {
-  display: grid !important;
-  min-height: 160px;
-  overflow: hidden;
-}
-
 .rich-text-borderless {
   .k-editor {
     @apply border-l-0 border-r-0 border-t-0;
@@ -35,4 +29,10 @@ app-dynamic-rich-text {
 
 .k-editor.k-readonly .k-editor-content.k-focus {
   outline-width: 0;
+}
+
+:host {
+  display: grid !important;
+  min-height: 160px;
+  overflow: hidden;
 }

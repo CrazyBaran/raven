@@ -1,5 +1,14 @@
-.rich-text-full {
+:host {
+  display: grid !important;
+  min-height: 80px;
+  overflow: hidden;
+}
+1 .rich-text-full {
   @apply grid grow;
+}
+
+:host:not(.rich-text-full) {
+  height: 150px;
 }
 
 .k-form-field {
@@ -12,17 +21,6 @@
   display: grid !important;
   grid-template-rows: 1fr auto;
 }
-
-:host:not(.rich-text-full) {
-  height: 150px;
-}
-
 .k-editor .k-editor-content {
   @apply border-b border-solid border-[#00000014];
-}
-
-app-dynamic-rich-text {
-  display: grid !important;
-  min-height: 80px;
-  overflow: hidden;
 }
