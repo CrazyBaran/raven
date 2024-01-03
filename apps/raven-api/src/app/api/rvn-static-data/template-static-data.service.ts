@@ -32,6 +32,7 @@ export class TemplateStaticDataService {
         'fieldGroups',
         'tabs',
         'fieldGroups.fieldDefinitions',
+        'fieldGroups.fieldDefinitions.hideOnPipelineStages',
         'tabs.fieldGroups',
         'tabs.relatedFields',
         'tabs.relatedTemplates',
@@ -58,7 +59,7 @@ export class TemplateStaticDataService {
                 field.order,
                 field.configuration,
                 fieldGroup.id,
-                field.hideOnPipelineStages.map((stage) => {
+                field.hideOnPipelineStages?.map((stage) => {
                   return stage.id;
                 }),
               );
