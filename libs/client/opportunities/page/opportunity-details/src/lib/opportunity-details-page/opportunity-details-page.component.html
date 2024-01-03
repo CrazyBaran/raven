@@ -7,7 +7,7 @@
       themeColor="primary"
       >All Companies</kendo-button
     >
-    <ng-container *ngIf="vm().currentOrganisation?.name">
+    @if (vm().currentOrganisation?.name) {
       <i
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
       ></i>
@@ -21,10 +21,10 @@
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
       ></i>
       <kendo-button
+        [routerLink]="['/companies/pipeline']"
         fillMode="flat"
         iconClass="fa-sharp fa-regular fa-fire"
         themeColor="primary"
-        [routerLink]="['/companies/pipeline']"
         >Pipeline</kendo-button
       >
       <i
@@ -33,17 +33,17 @@
       <kendo-button [disabled]="true" fillMode="flat" themeColor="primary"
         >Opportunity</kendo-button
       >
-    </ng-container>
+    }
   </div>
   <div class="flex gap-1" page-header-actions>
     <kendo-dropdownlist
-      class="!min-w-[200px]"
+      (valueChange)="onStageChange($event)"
       [data]="vm().lines.data"
+      [disabled]="vm().lines.disabled"
       [loading]="vm().lines.isLoading"
       [valuePrimitive]="true"
       [value]="vm().lines.value"
-      [disabled]="vm().lines.disabled"
-      (valueChange)="onStageChange($event)"
+      class="!min-w-[200px]"
       fillMode="flat"
       textField="displayName"
       valueField="id"
@@ -55,36 +55,27 @@
   >
     <ng-container>
       <div class="grid min-h-[92px] grid-cols-4 gap-6 px-8 py-2">
-        <ng-container
-          *ngIf="
-            vm().opportunityIsLoading ||
-              vm().organisationIsLoading ||
-              vm().updatingPipeline;
-            else details
-          "
-        >
-          <div *rxFor="let i of 3 | times" class="px-2 py-3">
-            <kendo-skeleton [height]="24" class="mb-2" width="50%" />
-            <kendo-skeleton [height]="20" width="30%" />
-          </div>
-        </ng-container>
-        <ng-template #details>
-          <div
-            *rxFor="let detail of vm().details; trackBy: 'label'"
-            [@fadeIn]
-            class="grow px-2 py-3"
-          >
-            <h1 class="mb-2 text-lg">{{ detail.label }}</h1>
-            <p class="text-sm">{{ detail.subLabel }}</p>
-          </div>
-        </ng-template>
+        @if (vm().opportunityIsLoading || vm().organisationIsLoading ||
+        vm().updatingPipeline) {
+          @for (i of 3 | times; track i) {
+            <div class="px-2 py-3">
+              <kendo-skeleton [height]="24" class="mb-2" width="50%" />
+              <kendo-skeleton [height]="20" width="30%" />
+            </div>
+          }
+        } @else {
+          @for (detail of vm().details; track detail.label) {
+            <div [@fadeIn] class="grow px-2 py-3">
+              <h1 class="mb-2 text-lg">{{ detail.label }}</h1>
+              <p class="text-sm">{{ detail.subLabel }}</p>
+            </div>
+          }
+        }
       </div>
       <div class="grid flex-1 grid-cols-[180px_1fr] overflow-hidden">
-        <div
-          class="h-100 flex flex-col overflow-y-auto overflow-x-hidden bg-white"
-        >
+        <div class="h-100 flex flex-col overflow-hidden bg-white">
           <kendo-buttongroup
-            class="navigations !flex !flex-col"
+            class="navigations !flex min-h-0 flex-1 !flex-col overflow-y-auto overflow-x-hidden"
             selection="single"
           >
             @for (navigation of vm()?.navigations ?? []; track
@@ -106,6 +97,14 @@
             </kendo-button>
             }
           </kendo-buttongroup>
+
+          @if (vm().affinityUrl) {
+            <app-affinity-url-button
+              [vertical]="true"
+              [url]="vm().affinityUrl!"
+              class="my-2 self-center"
+            />
+          }
         </div>
         <div class="border-grey-300 overflow-hidden border p-3">
           <div class="h-full w-full">
@@ -116,7 +115,3 @@
     </ng-container>
   </div>
 </app-page-template>
-
-<ng-template #loader>
-  <ui-loader />
-</ng-template>

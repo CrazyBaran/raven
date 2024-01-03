@@ -2,19 +2,18 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { trigger } from '@angular/animations';
-import { JsonPipe, NgIf, NgStyle } from '@angular/common';
+import { JsonPipe, NgStyle } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotesActions } from '@app/client/notes/data-access';
 import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
-import { StatusIndicatorComponent } from '@app/client/opportunities/ui';
+import {
+  AffinityUrlButtonComponent,
+  StatusIndicatorComponent,
+} from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { PipelinesActions } from '@app/client/pipelines/state';
-import {
-  FadeInOutDirective,
-  LoaderComponent,
-  fadeIn,
-} from '@app/client/shared/ui';
+import { FadeInOutDirective, fadeIn } from '@app/client/shared/ui';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { Actions, ofType } from '@ngrx/effects';
@@ -22,7 +21,6 @@ import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
-import { RxFor } from '@rx-angular/template/for';
 import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
 
 @Component({
@@ -33,17 +31,15 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     RouterLink,
     ButtonsModule,
     StatusIndicatorComponent,
-    RxFor,
     JsonPipe,
-    NgIf,
     NoteDetailsComponent,
     NgStyle,
-    LoaderComponent,
     PageTemplateComponent,
     SkeletonModule,
     TimesPipe,
     FadeInOutDirective,
     DropDownsModule,
+    AffinityUrlButtonComponent,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
