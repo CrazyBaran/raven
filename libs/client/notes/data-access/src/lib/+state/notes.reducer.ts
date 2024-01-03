@@ -220,6 +220,10 @@ export const notesReducer = createReducer(
                 ] as WorkflowNoteData[],
               }
             : state.opportunityNotes,
+        table: {
+          ...state.table,
+          ids: state.table.ids.map((id) => (id === originId ? data.id : id)),
+        },
       },
     ),
   ),
