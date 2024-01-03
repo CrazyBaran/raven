@@ -1,6 +1,10 @@
 import { Comparable } from '../interfaces/comparable';
+import { BaseArrayPropertiesStaticDataDto } from './base-array-properties.static-data.dto';
 
-export class TabStaticData implements Comparable<TabStaticData> {
+export class TabStaticData
+  extends BaseArrayPropertiesStaticDataDto
+  implements Comparable<TabStaticData>
+{
   public correspondingEntity: string = 'TabEntity';
   public constructor(
     public id: string,
@@ -10,7 +14,9 @@ export class TabStaticData implements Comparable<TabStaticData> {
     public relatedFieldIds: string[],
     public relatedTemplateIds: string[],
     public templateId?: string,
-  ) {}
+  ) {
+    super();
+  }
 
   public isSame(other: TabStaticData): boolean {
     return (
@@ -24,12 +30,4 @@ export class TabStaticData implements Comparable<TabStaticData> {
   }
 
   public unsetNested(): void {}
-
-  private compareArray(thisArray: string[], otherArray: string[]): boolean {
-    return (
-      thisArray.length === otherArray.length &&
-      thisArray.every((value, index) => value === otherArray[index]) &&
-      otherArray.every((value, index) => value === thisArray[index])
-    );
-  }
 }
