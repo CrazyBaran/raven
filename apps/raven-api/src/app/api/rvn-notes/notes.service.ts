@@ -942,6 +942,7 @@ export class NotesService {
         );
         foundTab.pipelineStages = tab.pipelineStages;
       }
+      // TODO add hideOnPipelineStages to correct fields
       if (tab.pipelineStages.find((ps) => ps.id === currentPipelineStageId)) {
         const emptyFields =
           foundTab?.noteFieldGroups?.reduce(
@@ -965,6 +966,22 @@ export class NotesService {
         );
       }
     }
+
+    const fieldDefinitions =
+      workflowNote.template?.tabs
+        .flatMap((t) => t.fieldGroups)
+        .flatMap((fg) => fg.fieldDefinitions) || [];
+    for (const field of mappedNote.noteTabs
+      .flatMap((nt) => nt.noteFieldGroups)
+      .flatMap((nfg) => nfg.noteFields)) {
+      const fieldDefinition = fieldDefinitions.find(
+        (fd) => fd.id === field.templateFieldId,
+      );
+      if (fieldDefinition) {
+        field.hideOnPipelineStages = fieldDefinition.hideOnPipelineStages;
+      }
+    }
+
     (mappedNote as WorkflowNoteData).missingFields = missingFields;
     return mappedNote as WorkflowNoteData;
   }
