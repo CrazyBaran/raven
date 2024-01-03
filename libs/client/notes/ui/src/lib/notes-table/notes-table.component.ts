@@ -27,7 +27,10 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
 
 import { TagItem, TagsContainerComponent } from '@app/client/shared/ui';
-import { TableViewBaseComponent } from '@app/client/shared/ui-directives';
+import {
+  IsEllipsisActiveDirective,
+  TableViewBaseComponent,
+} from '@app/client/shared/ui-directives';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
@@ -65,6 +68,7 @@ export type NoteTableRow = Omit<NoteData, 'tags'> & {
     UserTagDirective,
     TagTypeColorPipe,
     TagsContainerComponent,
+    IsEllipsisActiveDirective,
   ],
   templateUrl: './notes-table.component.html',
   styleUrls: ['./notes-table.component.scss'],

@@ -1,6 +1,6 @@
 <div
   (click)="tagClick.emit($event)"
-  [class]="'group flex w-fit items-center ' + (htmlClass || '')"
+  [class]="'group flex w-fit max-w-full items-center ' + (htmlClass || '')"
   [ngClass]="{
     'hover:!text-grey-400 cursor-pointer': clickable
   }"
@@ -14,24 +14,25 @@
     "
   ></ng-container>
 
+  @if(removable){
   <kendo-button
     (click)="$event?.stopPropagation(); tagRemove.emit($event)"
-    class="text-grey-400 invisible border-0 !p-0 group-hover:visible"
+    class="text-grey-400 invisible border-0 !p-0 duration-0 group-hover:visible"
     fillMode="flat"
     iconClass="fa-solid fa-trash h-4 text-xs"
     [size]="size"
-    [class.group-hover:invisible]="!removable"
-  ></kendo-button>
+  />
+  }
 </div>
 
 <ng-template #defaultLabel>
   <span
     [ngClass]="{
       'text-xs': size === 'small',
-      'text-lg': size === 'large',
-      'whitespace-nowrap': !wrap
+      'text-lg': size === 'large'
     }"
-    class="leading-5"
+    [isEllipsisActive]="!wrap"
+    class="overflow-hidden leading-5"
   >
     {{ label }}
   </span>

@@ -12,9 +12,14 @@ import {
   KendoUrlPagingDirective,
   KendoUrlSortingDirective,
   TagComponent,
+  TagItem,
+  TagsContainerComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
-import { TableViewBaseComponent } from '@app/client/shared/ui-directives';
+import {
+  IsEllipsisActiveDirective,
+  TableViewBaseComponent,
+} from '@app/client/shared/ui-directives';
 import {
   DealLeadsPipe,
   DealTeamPipe,
@@ -47,6 +52,21 @@ export type OrganisationRow = {
     team?: OpportunityTeamData;
   }[];
 };
+
+@Pipe({
+  name: 'toUserTag',
+  standalone: true,
+})
+export class ToUserTagPipe implements PipeTransform {
+  public transform(users: string[]): TagItem[] {
+    return users.map((user) => ({
+      name: user,
+      icon: 'fa-solid fa-user',
+      id: user,
+      size: 'medium',
+    }));
+  }
+}
 
 @Pipe({
   name: 'expandableList',
@@ -82,6 +102,9 @@ export class ExpandableListPipe implements PipeTransform {
     UserTagDirective,
     DealLeadsPipe,
     DealTeamPipe,
+    IsEllipsisActiveDirective,
+    TagsContainerComponent,
+    ToUserTagPipe,
   ],
   templateUrl: './organisations-table-view.component.html',
   styleUrls: ['./organisations-table-view.component.scss'],
