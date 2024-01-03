@@ -364,6 +364,15 @@ export class TemplateStaticDataService {
               configuration: data.configuration,
               groupId: data.fieldGroupId,
             });
+            if (
+              data.hideOnPipelineStageIds &&
+              data.hideOnPipelineStageIds.length > 0
+            ) {
+              await transactionalEntityManager.query(
+                `INSERT INTO field_hide_pipeline_stage (tab_id, pipeline_stage_id) VALUES (?, ?)`,
+                [data.id, data.hideOnPipelineStageIds],
+              );
+            }
             break;
           case ChangeType.Removed:
             await transactionalEntityManager.delete(
