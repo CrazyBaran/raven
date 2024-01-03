@@ -3,8 +3,8 @@ import { pipelinesQuery } from '@app/client/opportunities/api-pipelines';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { combineLatest, filter, mergeMap, of, switchMap } from 'rxjs';
-import { catchError, concatMap, map } from 'rxjs/operators';
+import { combineLatest, mergeMap, of, switchMap } from 'rxjs';
+import { catchError, concatMap, filter, map } from 'rxjs/operators';
 import { OpportunitiesService } from '../services/opportunities.service';
 import { OpportunitiesActions } from './opportunities.actions';
 import { opportunitiesQuery } from './opportunities.selectors';
@@ -131,7 +131,10 @@ export class OpportunitiesEffects {
       }),
       mergeMap(([{ id, pipelineStageId }, { opportunity, pipelineStage }]) => [
         NotificationsActions.showSuccessNotification({
-          content: `Opportunity ${opportunity?.organisation.name} pipeline stage changed to ${pipelineStage?.name}`,
+          content: `Opportunity ${opportunity?.organisation
+            .name} pipeline stage changed to '${
+            pipelineStage?.displayName ?? ''
+          }'`,
         }),
         OpportunitiesActions.liveChangeOpportunityPipelineStageUpdated({
           id,
