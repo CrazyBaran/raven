@@ -59,7 +59,10 @@ export const tagTypeStyleDictionary: Record<TagType, Record<string, string>> = {
   standalone: true,
 })
 export class TagTypeColorPipe implements PipeTransform {
-  public transform(type: string): Record<string, string> | undefined {
+  public transform(
+    type: string | undefined,
+  ): Record<string, string> | undefined {
+    if (!type) return undefined;
     return tagTypeStyleDictionary[type as TagType];
   }
 }

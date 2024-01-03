@@ -93,7 +93,7 @@ With5TagsAnd2Rows.args = {
     {
       name: 'Lorem 5',
       id: '5',
-      style: '',
+      style: {},
       size: 'medium',
       icon: 'fa-icon fa-regular',
     },

@@ -169,7 +169,7 @@ describe('HeatmapFieldUtils', () => {
         },
       };
 
-      const result = () =>
+      const result = (): string | number =>
         HeatmapFieldUtils.withConfig(testConfig).getCalculatedValue({
           'uuid-1': 24,
           'uuid-2': 2,
@@ -189,7 +189,7 @@ describe('HeatmapFieldUtils', () => {
         },
       };
 
-      const result = () =>
+      const result = (): string | number =>
         HeatmapFieldUtils.withConfig(testConfig).getCalculatedValue({
           'uuid-1': 24,
           'uuid-2': 2,

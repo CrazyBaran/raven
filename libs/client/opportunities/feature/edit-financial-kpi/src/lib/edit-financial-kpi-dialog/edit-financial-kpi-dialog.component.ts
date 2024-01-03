@@ -103,6 +103,8 @@ export class EditFinancialKpiDialogComponent extends DynamicDialogContentBase {
     this.store.select(selectEditFinancialDynamicControls(this.kpiForm)),
   );
 
+  protected readonly comparatorFn = comparatorFn;
+
   protected onDialogClose(): void {
     this.dialog.close();
   }
@@ -127,6 +129,7 @@ export class EditFinancialKpiDialogComponent extends DynamicDialogContentBase {
             .flatMap()
             .value(),
           tagIds: this.vm().opportunityNote.tags.map((x) => x.id),
+          companyOpportunityTags: [],
           origin: this.vm().opportunityNote,
           opportunityId: this.vm().opportunityId,
         },
@@ -138,6 +141,4 @@ export class EditFinancialKpiDialogComponent extends DynamicDialogContentBase {
         this.dialog?.close();
       });
   }
-
-  protected readonly comparatorFn = comparatorFn;
 }

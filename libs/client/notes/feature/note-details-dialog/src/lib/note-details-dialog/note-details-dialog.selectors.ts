@@ -1,10 +1,6 @@
 import { authQuery } from '@app/client/core/auth';
 import { notesQuery } from '@app/client/notes/data-access';
 import { NotepadForm } from '@app/client/notes/ui';
-import {
-  AzureImageEntity,
-  storageQuery,
-} from '@app/client/shared/storage/data-access';
 import { routerQuery } from '@app/client/shared/util-router';
 import {
   NoteFieldData,
@@ -12,33 +8,13 @@ import {
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { TemplateWithRelationsData } from '@app/rvns-templates';
-import { Dictionary } from '@ngrx/entity';
 import { createSelector } from '@ngrx/store';
 import { sortBy } from 'lodash';
-
-export const mapImageValues = (
-  noteFieldGroups: NoteFieldGroupsWithFieldData[],
-  azureImageDictioanry: Dictionary<AzureImageEntity>,
-): NoteFieldGroupsWithFieldData[] => {
-  return (
-    noteFieldGroups?.map((fields) => ({
-      ...fields,
-      noteFields: fields.noteFields.map((field) => ({
-        ...field,
-        value: Object.entries(azureImageDictioanry).reduce(
-          (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
-          field.value ?? '',
-        ),
-      })),
-    })) ?? []
-  );
-};
 
 export const selectNoteDetailsModel = createSelector(
   routerQuery.selectNoteDetailsId,
   notesQuery.selectNotesDictionary,
-  storageQuery.selectAzureImageDictionary,
-  (noteId, notesDictionary, azureImageDictioanry) => {
+  (noteId, notesDictionary) => {
     if (!noteId) {
       throw new Error(
         'Note id is not defined. Please check the route query param: `note-details`.',
@@ -53,10 +29,6 @@ export const selectNoteDetailsModel = createSelector(
 
     return {
       ...note,
-      noteFieldGroups: mapImageValues(
-        note?.noteFieldGroups ?? [],
-        azureImageDictioanry,
-      ),
     };
   },
 );
@@ -70,7 +42,17 @@ export const selectNoteDetailsDialogViewModel = createSelector(
   (noteId, isLoading, noteDetails, userName, userEmail) => ({
     noteId,
     isLoading,
-    noteDetails,
+    noteDetails: {
+      ...noteDetails,
+      tags: [
+        ...(noteDetails?.tags ?? []),
+        ...(noteDetails?.complexTags?.map((tag) => ({
+          id: tag.id,
+          name: tag.tags.map((t) => t.name).join(' / '),
+          type: 'opportunity',
+        })) ?? []),
+      ],
+    },
     form: createNotepadForm(noteDetails),
     canEditNote:
       noteDetails?.tags.some((t) => t.name === userName) ||
@@ -116,19 +98,28 @@ function createNotepadForm(
   return {
     template: {
       ...note,
-      fieldGroups: note?.noteFieldGroups.map((group) => ({
-        ...group,
-        fieldDefinitions: group.noteFields,
-      })),
+      fieldGroups:
+        note?.noteFieldGroups?.map((group) => ({
+          ...group,
+          fieldDefinitions: group.noteFields,
+        })) ?? [],
       name: note?.templateName,
     } as unknown as TemplateWithRelationsData,
     notes: {},
     peopleTags:
       note?.tags?.filter((tag) => tag.type === 'people').map((tag) => tag.id) ||
       [],
-    tags:
-      note?.tags?.filter((tag) => tag.type !== 'people').map((tag) => tag.id) ||
-      [],
+    tags: [
+      ...(note?.tags
+        ?.filter((tag) => tag.type !== 'people')
+        .map((tag) => tag.id) ?? []),
+      ...(note?.complexTags?.map((tag) => ({
+        opportunityTagId:
+          tag.tags.find((t) => t.type === 'opportunity')?.id ?? '',
+        organisationId: tag.tags.find((t) => t.type === 'company')?.id ?? '',
+      })) ?? []),
+    ],
+
     title: note?.name,
     rootVersionId: note?.rootVersionId,
   };

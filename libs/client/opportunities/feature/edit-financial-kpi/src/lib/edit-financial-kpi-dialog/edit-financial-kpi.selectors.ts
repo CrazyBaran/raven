@@ -12,7 +12,7 @@ import { distinctUntilChanged, map } from 'rxjs';
 
 export const flatNestedRecord = (
   value: Record<string, Record<string, number | undefined> | undefined>,
-) => {
+): Record<string, number | undefined> => {
   return _.chain(value)
     .map((value, id) =>
       _.chain(value)

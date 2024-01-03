@@ -8,6 +8,8 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+// TODO: Fix this import
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { DynamicRichTextControl } from '@app/client/shared/dynamic-form-util';
 import {
   EditorComponent,

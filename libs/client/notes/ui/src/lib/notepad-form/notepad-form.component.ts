@@ -50,6 +50,7 @@ import { EditorView } from '@progress/kendo-angular-editor';
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
 import { TagComponent, TagTypeColorPipe } from '@app/client/shared/ui';
 import { TagsActions } from '@app/client/tags/state';
+import { TagDropdownValue } from '@app/client/tags/ui';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { firstValueFrom, map, startWith, tap } from 'rxjs';
@@ -58,7 +59,7 @@ export interface NotepadForm {
   template: TemplateWithRelationsData | null;
   notes: Dictionary<string | null>;
   peopleTags: string[];
-  tags: string[];
+  tags: TagDropdownValue[];
   title?: string;
   rootVersionId?: string;
 }
@@ -172,7 +173,7 @@ export class NotepadFormComponent
     template: [null as TemplateWithRelationsData | null],
     notes: new FormRecord<FormControl<string | null>>({}),
     peopleTags: new FormControl([] as string[]),
-    tags: new FormControl([] as string[]),
+    tags: new FormControl([] as TagDropdownValue[]),
     title: new FormControl(''),
     rootVersionId: new FormControl(this.defaultOriginId),
   });
@@ -238,7 +239,25 @@ export class NotepadFormComponent
   protected addedTags = computed(() => {
     return (
       this.addedTagIds()
-        ?.map((tagId) => this.tags().find((t) => t?.id === tagId) as TagData)
+        ?.map((tag) => {
+          if (typeof tag === 'string') {
+            return this.tags().find((t) => t?.id === tag) as TagData;
+          }
+          const oppotunityTag = this.tags().find(
+            (t) => t?.id === tag.opportunityTagId,
+          ) as TagData;
+          const organisationTag = this.tags().find(
+            (t) => t?.id === tag.organisationId,
+          ) as TagData;
+          if (!oppotunityTag || !organisationTag) {
+            return null;
+          }
+          return {
+            ...oppotunityTag,
+            organisationId: organisationTag?.id,
+            name: `${organisationTag?.name} / ${oppotunityTag?.name}`,
+          } as TagData;
+        })
         .filter(Boolean) ?? []
     );
   });
@@ -267,10 +286,12 @@ export class NotepadFormComponent
           .mapValues((field) => ({
             ...field,
           }))
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .value() as any),
       }; //TODO: fix typing
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return titleField as any;
   });
 
@@ -315,7 +336,12 @@ export class NotepadFormComponent
 
   public removeTag(tag: TagData): void {
     this.notepadForm.controls.tags.setValue(
-      this.addedTagIds()?.filter((t) => t !== tag.id) ?? [],
+      this.addedTagIds()?.filter((t) => {
+        if (typeof t === 'string') {
+          return t !== tag.id;
+        }
+        return t.opportunityTagId !== tag.id && t.organisationId !== tag.id;
+      }) ?? [],
     );
     this.notepadForm.controls.tags.markAsDirty();
   }

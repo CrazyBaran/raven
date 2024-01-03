@@ -4,7 +4,8 @@ export type PatchNote = {
   name?: string;
   templateId?: string;
   fields: {
-    id: string;
+    id?: string;
+    rootId?: string;
     value: unknown;
   }[];
   tagIds: string[];

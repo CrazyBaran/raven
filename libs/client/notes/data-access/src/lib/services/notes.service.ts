@@ -60,7 +60,15 @@ export class NotesService {
   ): Observable<GenericResponse<NoteWithRelationsData>> {
     return this.http.post<GenericResponse<NoteWithRelationsData>>(
       '/api/notes',
-      createNote,
+      {
+        ...createNote,
+        companyOpportunityTags: createNote.companyOpportunityTags?.map(
+          (tag) => ({
+            ...tag,
+            companyTagId: tag.organisationId ?? '',
+          }),
+        ),
+      },
     );
   }
 
@@ -70,7 +78,15 @@ export class NotesService {
   ): Observable<GenericResponse<NoteWithRelationsData>> {
     return this.http.patch<GenericResponse<NoteWithRelationsData>>(
       `/api/notes/${noteId}`,
-      patchNote,
+      {
+        ...patchNote,
+        companyOpportunityTags: patchNote.companyOpportunityTags?.map(
+          (tag) => ({
+            ...tag,
+            companyTagId: tag.organisationId ?? '',
+          }),
+        ),
+      },
     );
   }
 

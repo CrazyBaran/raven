@@ -3,14 +3,14 @@
   (clickOutside)="dropDownTree.toggle(false)"
   (close)="$event.preventDefault()"
   (filterChange)="filterValue.set($event)"
+  [data]="currentTypeTags()"
   [expandOnFilter]="filterExpandSettings"
   [filterable]="true"
-  [data]="currentTypeTags()"
   [loading]="loading"
-  fillMode="outline"
-  kendoDropDownTreeExpandable
   [hasChildren]="hasChildren"
   [fetchChildren]="children"
+  fillMode="outline"
+  kendoDropDownTreeExpandable
   placeholder="Select tag..."
   textField="name"
   valueField="id"
@@ -18,13 +18,12 @@
   <ng-template kendoDropDownTreeHeaderTemplate>
     <div class="flex flex-col gap-3 px-3 pb-1 pt-2">
       <app-tags-button-group
-        class="block w-full"
         [formControl]="tagTypeControl"
+        class="block w-full"
       ></app-tags-button-group>
-      <div
-        *ngIf="filterValue().trim()"
-        class="selected-item-shadow flex gap-2 px-1.5 py-0.5"
-      >
+
+      @if(filterValue().trim()){
+      <div class="selected-item-shadow flex gap-2 px-1.5 py-0.5">
         <p class="grow">{{ filterValue() }} (Add new tag)</p>
         <kendo-button
           (click)="onOpenTagDialog(); dropDownTree.toggle(false)"
@@ -33,6 +32,7 @@
           iconClass="fa-solid fa-plus"
         ></kendo-button>
       </div>
+      }
       <p class="font-bold">{{ type() | titlecase }}</p>
     </div>
   </ng-template>

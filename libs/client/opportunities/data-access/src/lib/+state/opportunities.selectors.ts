@@ -120,7 +120,7 @@ export const selectNoteFields = createSelector(
               .map((field) => ({
                 type: 'field',
                 flat: !noteFields.some((f) => f.type === 'heatmap'),
-                uniqId: `${tab.name}-${field.name}`,
+                uniqId: field.templateFieldId,
                 id: field.id,
                 title: field.name,
                 value: Object.entries(azureImageDictioanry).reduce(
@@ -189,7 +189,10 @@ export const selectFinancialGroups = createSelector(
 
                   const calcValue = (
                     values: Record<string, number | undefined>,
-                  ) => {
+                  ): {
+                    value: number | null;
+                    error: string | null;
+                  } => {
                     try {
                       const value = util.getCalculatedValue(values);
                       if (_.isString(value)) {

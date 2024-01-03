@@ -104,8 +104,16 @@ export class NotepadContentComponent {
       fields: fields,
       tagIds: [
         ...(peopleTags ?? []),
-        ...(tags ?? []).map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
+        ...(tags ?? [])
+          .filter((t) => typeof t === 'string')
+          .map((t) => String(t).replace('_company', '')), //TODO: REFACTOR SUBMIT()
       ],
+      companyOpportunityTags: (tags ?? []).filter(
+        (t) => typeof t !== 'string',
+      ) as {
+        organisationId: string;
+        opportunityTagId: string;
+      }[],
       rootVersionId,
     };
 

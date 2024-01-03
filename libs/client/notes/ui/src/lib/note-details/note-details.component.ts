@@ -267,7 +267,7 @@ export class NoteDetailsComponent implements OnInit, OnDestroy {
       fields: fields,
       tagIds: [
         ...(peopleTags ?? []),
-        ...(tags ?? []).map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
+        ...(tags ?? []).map((t) => String(t).replace('_company', '')), //TODO: REFACTOR SUBMIT()
       ],
     };
   }

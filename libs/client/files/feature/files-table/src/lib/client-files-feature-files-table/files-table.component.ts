@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -85,7 +86,6 @@ export const toFileRow =
     childrenCount: file.folder?.childCount,
   });
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectFileTags = (file: FileEntity) =>
   createSelector(
     filesQuery.selectFileTags,

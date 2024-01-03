@@ -5,7 +5,7 @@ import { NoteTableRow } from '@app/client/notes/ui';
 import { BadgeStyle, tagTypeStyleDictionary } from '@app/client/shared/ui';
 import { buildPageParamsSelector } from '@app/client/shared/util-router';
 import { templateQueries } from '@app/client/templates/data-access';
-import { NoteData } from '@app/rvns-notes/data-access';
+import { NoteData, NoteTagData } from '@app/rvns-notes/data-access';
 import { TagType } from '@app/rvns-tags';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
@@ -64,8 +64,14 @@ export const selectAllNotesTableRows = createSelector(
   selectTableNotes,
   authQuery.selectUserEmail,
   (notes, userEmail) =>
-    notes.map(
-      (note): NoteTableRow => ({
+    notes.map((note): NoteTableRow => {
+      const complexTags: NoteTagData[] =
+        note.complexTags?.map((t) => ({
+          id: t.id,
+          name: `${t.tags.map((t) => t.name).join(' / ')}`,
+          type: 'opportunity',
+        })) ?? [];
+      return {
         ...note,
         deleteButtonSettings: {
           disabled: note.createdBy?.email !== userEmail,
@@ -84,7 +90,7 @@ export const selectAllNotesTableRows = createSelector(
             size: 'medium',
             icon: 'fa-solid fa-circle-user',
           })),
-        tags: note.tags
+        tags: [...note.tags, ...complexTags]
           .filter((t) => t.type !== 'people')
           .sort((a, b) => a.name.length - b.name.length)
           .map((t) => ({
@@ -94,8 +100,8 @@ export const selectAllNotesTableRows = createSelector(
             size: 'small',
             icon: 'fa-solid fa-tag',
           })),
-      }),
-    ),
+      };
+    }),
 );
 
 const selectOpportunityNotesState = createSelector(

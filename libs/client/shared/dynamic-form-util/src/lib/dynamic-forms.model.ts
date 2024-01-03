@@ -1,4 +1,6 @@
 import { AbstractControl, Validators } from '@angular/forms';
+// TODO: Fix this import
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { HeatMapValue } from '@app/rvns-templates';
 import { Observable } from 'rxjs';
 

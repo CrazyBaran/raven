@@ -51,11 +51,11 @@
     <div class="grid grid-cols-[auto_1fr] gap-2">
       <p class="w-[72px] text-[10px] uppercase leading-5">added tags:</p>
       <div class="flex flex-wrap gap-x-0.5 gap-y-1">
-        @for (tag of addedTags(); track tag.id) {
+        @for (tag of addedTags(); track tag?.id) {
           <ui-tag
             (tagRemove)="removeTag(tag!)"
-            [label]="tag.name"
-            [style]="tag.type | tagTypeColor"
+            [label]="tag?.name"
+            [style]="tag?.type | tagTypeColor"
             [clickable]="true"
             [removable]="true"
           />

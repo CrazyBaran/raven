@@ -23,6 +23,7 @@ import {
   TITLE_FIELD,
 } from '@app/client/notes/ui';
 import { TagFilterPipe } from '@app/client/notes/util';
+import { PopulateAzureImagesPipe } from '@app/client/opportunities/feature/related-notes';
 import { ShelfTemplateBase } from '@app/client/shared/dynamic-renderer/feature';
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import {
@@ -47,6 +48,7 @@ import { IconModule } from '@progress/kendo-angular-icons';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { xIcon } from '@progress/kendo-svg-icons';
+import { RxLet } from '@rx-angular/template/let';
 import { filter, map, merge, take } from 'rxjs';
 import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selectors';
 
@@ -70,6 +72,8 @@ import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selector
     TooltipModule,
     TagTypeColorPipe,
     UserTagDirective,
+    PopulateAzureImagesPipe,
+    RxLet,
   ],
   templateUrl: './note-details-dialog.component.html',
   styleUrls: ['./note-details-dialog.component.scss'],
@@ -101,7 +105,7 @@ export class NoteDetailsDialogComponent
   public vm$ = this.store.select(selectNoteDetailsDialogViewModel);
   public vm = this.store.selectSignal(selectNoteDetailsDialogViewModel);
 
-  public noteDetails = computed(() => this.vm().noteDetails);
+  public noteDetails = computed(() => this.vm().noteDetails!);
   public noteDetails$ = toObservable(this.noteDetails);
 
   public editMode = false;
@@ -198,7 +202,7 @@ export class NoteDetailsDialogComponent
   public updateNote(): void {
     const payload = this.getPayload();
 
-    this.noteStoreFacade.updateNote(this.noteDetails()!.id, payload);
+    this.noteStoreFacade.updateNote(this.noteDetails()!.id!, payload);
 
     this.actions$
       .pipe(
@@ -218,7 +222,9 @@ export class NoteDetailsDialogComponent
     });
   }
 
-  public handleDeleteNote(noteId: string): void {
+  public handleDeleteNote(noteId: string | undefined): void {
+    if (!noteId) return;
+
     const dialogRef = this.dialogService.open({
       width: 350,
       content: DeleteNoteComponent,
@@ -267,6 +273,10 @@ export class NoteDetailsDialogComponent
     templateId: string | undefined;
     fields: { id: string; value: string }[];
     tagIds: string[];
+    companyOpportunityTags?: {
+      organisationId: string;
+      opportunityTagId: string;
+    }[];
   } {
     const fields = Object.entries(this.notepadForm.value?.notes ?? {})
       .filter(([key, value]) => key !== TITLE_FIELD.id)
@@ -281,8 +291,16 @@ export class NoteDetailsDialogComponent
       fields: fields,
       tagIds: [
         ...(peopleTags ?? []),
-        ...(tags ?? []).map((t) => t.replace('_company', '')), //TODO: REFACTOR SUBMIT()
+        ...(tags ?? [])
+          .filter((t) => typeof t === 'string')
+          .map((t) => String(t).replace('_company', '')), //TODO: REFACTOR SUBMIT()
       ],
+      companyOpportunityTags: (tags ?? []).filter(
+        (t) => typeof t !== 'string',
+      ) as {
+        organisationId: string;
+        opportunityTagId: string;
+      }[],
     };
   }
 
