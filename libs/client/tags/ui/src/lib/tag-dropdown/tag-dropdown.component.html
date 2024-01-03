@@ -22,16 +22,16 @@
         class="block w-full"
       ></app-tags-button-group>
 
-      @if(filterValue().trim()){
-      <div class="selected-item-shadow flex gap-2 px-1.5 py-0.5">
-        <p class="grow">{{ filterValue() }} (Add new tag)</p>
-        <kendo-button
-          (click)="onOpenTagDialog(); dropDownTree.toggle(false)"
-          class="!p-0"
-          fillMode="flat"
-          iconClass="fa-solid fa-plus"
-        ></kendo-button>
-      </div>
+      @if (filterValue().trim()) {
+        <div class="selected-item-shadow flex gap-2 px-1.5 py-0.5">
+          <p class="grow">{{ filterValue() }} (Add new tag)</p>
+          <kendo-button
+            (click)="onOpenTagDialog(); dropDownTree.toggle(false)"
+            class="!p-0"
+            fillMode="flat"
+            iconClass="fa-solid fa-plus"
+          ></kendo-button>
+        </div>
       }
       <p class="font-bold">{{ type() | titlecase }}</p>
     </div>

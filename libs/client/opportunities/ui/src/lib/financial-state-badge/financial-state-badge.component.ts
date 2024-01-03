@@ -19,8 +19,8 @@ export class FinancialStateBadgeComponent {
         this.state === 'great'
           ? 'var(--informational-success)'
           : this.state === 'good'
-          ? 'var(--informational-success-50)'
-          : 'var(--informational-warning)',
+            ? 'var(--informational-success-50)'
+            : 'var(--informational-warning)',
     };
   }
 }

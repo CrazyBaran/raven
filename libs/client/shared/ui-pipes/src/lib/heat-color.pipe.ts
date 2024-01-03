@@ -25,8 +25,8 @@ export class HearColorPipe implements PipeTransform {
     return (heat as HeatMapValue) === 'great'
       ? 'var(--informational-success)'
       : heat === 'good'
-      ? 'var(--informational-success-50)'
-      : 'var(--informational-warning)';
+        ? 'var(--informational-success-50)'
+        : 'var(--informational-warning)';
   }
 
   private getFontColor(heat: string): string {
@@ -34,8 +34,8 @@ export class HearColorPipe implements PipeTransform {
     return (heat as HeatMapValue) === 'great'
       ? 'white'
       : heat === 'good'
-      ? '#424242'
-      : '#424242';
+        ? '#424242'
+        : '#424242';
   }
 
   private getBackgroundColor(heat: string): string {
@@ -43,8 +43,8 @@ export class HearColorPipe implements PipeTransform {
     return (heat as HeatMapValue) === 'great'
       ? 'var(--informational-success)'
       : heat === 'good'
-      ? '#B3D6B7'
-      : '#FBDC8C';
+        ? '#B3D6B7'
+        : '#FBDC8C';
   }
 
   private getBadgeColor(heat: string): string {
@@ -52,7 +52,7 @@ export class HearColorPipe implements PipeTransform {
     return (heat as HeatMapValue) === 'great'
       ? 'var(--informational-success)'
       : heat === 'good'
-      ? 'var(--informational-success-50)'
-      : 'var(--informational-warning)';
+        ? 'var(--informational-success-50)'
+        : 'var(--informational-warning)';
   }
 }

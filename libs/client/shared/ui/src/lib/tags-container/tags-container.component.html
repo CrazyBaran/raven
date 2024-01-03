@@ -16,29 +16,29 @@
 </ng-template>
 
 <ng-template #tooltipTemplate let-hiddenTilesLength>
-  @if (hiddenTilesLength){
-  <p
-    [tooltipTemplate]="tooltip"
-    tooltipClass="tag-tooltip"
-    class="text-disabledText w-8 cursor-pointer"
-    kendoTooltip
-    title="test"
-  >
-    {{ hiddenTilesLength }}+
-  </p>
+  @if (hiddenTilesLength) {
+    <p
+      [tooltipTemplate]="tooltip"
+      tooltipClass="tag-tooltip"
+      class="text-disabledText w-8 cursor-pointer"
+      kendoTooltip
+      title="test"
+    >
+      {{ hiddenTilesLength }}+
+    </p>
   }
 </ng-template>
 
 <ng-template #tooltip>
   <div class="flex flex-col gap-2">
-    @for (tag of tags; track tag.id){
-    <ui-tag
-      [label]="tag.name"
-      [wrap]="false"
-      [icon]="tag.icon"
-      [size]="tag.size"
-      [style]="tag.style"
-    />
+    @for (tag of tags; track tag.id) {
+      <ui-tag
+        [label]="tag.name"
+        [wrap]="false"
+        [icon]="tag.icon"
+        [size]="tag.size"
+        [style]="tag.style"
+      />
     }
   </div>
 </ng-template>

@@ -1,18 +1,21 @@
-@switch (stateSignal()) { @case ('validate') {
-
-<div class="flex items-center gap-2" [@fadeIn]>
-  <kendo-loader size="small" type="infinite-spinner" themeColor="primary" />
-  Saving...
-</div>
-
-} @case ('updated') {
-<div class="flex items-center gap-2" [@fadeIn] [@fadeOut]>
-  <i class="fa-solid fa-check text-primary-400"></i>
-  Saved
-</div>
-} @case('failed'){
-<div class="flex items-center gap-2" [@fadeIn] [@fadeOut]>
-  <i class="fa-solid fa-circle-exclamation text-error opacity-75"></i>
-  Save Failed
-</div>
-} @default { }}
+@switch (stateSignal()) {
+  @case ('validate') {
+    <div class="flex items-center gap-2" [@fadeIn]>
+      <kendo-loader size="small" type="infinite-spinner" themeColor="primary" />
+      Saving...
+    </div>
+  }
+  @case ('updated') {
+    <div class="flex items-center gap-2" [@fadeIn] [@fadeOut]>
+      <i class="fa-solid fa-check text-primary-400"></i>
+      Saved
+    </div>
+  }
+  @case ('failed') {
+    <div class="flex items-center gap-2" [@fadeIn] [@fadeOut]>
+      <i class="fa-solid fa-circle-exclamation text-error opacity-75"></i>
+      Save Failed
+    </div>
+  }
+  @default {}
+}
