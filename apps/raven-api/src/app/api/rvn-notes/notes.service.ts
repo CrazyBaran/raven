@@ -922,12 +922,7 @@ export class NotesService {
   ): WorkflowNoteData {
     delete workflowNote.noteFieldGroups;
 
-    const filteredWorkflowNote = this.filterWorkflowNote(
-      workflowNote,
-      currentPipelineStageId,
-    );
-
-    const mappedNote = this.noteEntityToNoteData(filteredWorkflowNote);
+    const mappedNote = this.noteEntityToNoteData(workflowNote);
 
     const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template
