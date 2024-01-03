@@ -47,51 +47,54 @@
     </kendo-multiselect>
   </div>
 
-  <div *ngIf="addedTags().length" class="grid grid-cols-[auto_1fr] gap-2">
-    <p class="w-[72px] text-[10px] uppercase leading-5">added tags:</p>
-    <div class="flex flex-wrap gap-x-0.5 gap-y-1">
-      <ui-tag
-        (tagRemove)="removeTag(tag!)"
-        *ngFor="let tag of addedTags()"
-        [label]="tag.name"
-        [style]="tag.type | tagTypeColor"
-        [clickable]="true"
-        [removable]="true"
-      />
+  @if (addedTags().length) {
+    <div class="grid grid-cols-[auto_1fr] gap-2">
+      <p class="w-[72px] text-[10px] uppercase leading-5">added tags:</p>
+      <div class="flex flex-wrap gap-x-0.5 gap-y-1">
+        @for (tag of addedTags(); track tag.id) {
+          <ui-tag
+            (tagRemove)="removeTag(tag!)"
+            [label]="tag.name"
+            [style]="tag.type | tagTypeColor"
+            [clickable]="true"
+            [removable]="true"
+          />
+        }
+      </div>
     </div>
-  </div>
+  }
 
-  <div
-    *ngIf="selectedPeopleTags().length"
-    class="grid grid-cols-[auto_1fr] gap-2"
-  >
-    <p class="w-[72px] text-[10px] uppercase leading-5">people:</p>
-    <div class="flex flex-wrap gap-x-0.5 gap-y-1">
-      <ui-tag
-        (tagRemove)="removePeople(tag)"
-        *ngFor="let tag of selectedPeopleTags()"
-        [label]="tag.name"
-        [style]="tag.type | tagTypeColor"
-        [clickable]="true"
-        [removable]="true"
-        icon="fa-solid fa-circle-user"
-      ></ui-tag>
+  @if (selectedPeopleTags().length) {
+    <div class="grid grid-cols-[auto_1fr] gap-2">
+      <p class="w-[72px] text-[10px] uppercase leading-5">people:</p>
+      <div class="flex flex-wrap gap-x-0.5 gap-y-1">
+        @for (tag of selectedPeopleTags(); track tag.id) {
+          <ui-tag
+            (tagRemove)="removePeople(tag)"
+            [label]="tag.name"
+            [style]="tag.type | tagTypeColor"
+            [clickable]="true"
+            [removable]="true"
+            icon="fa-solid fa-circle-user"
+          />
+        }
+      </div>
     </div>
-  </div>
+  }
 
-  <div
-    *ngIf="addedTagIds.length || selectedPeopleTags().length"
-    class="border-grey-400 border-t"
-  ></div>
+  @if (addedTagIds.length || selectedPeopleTags().length) {
+    <div class="border-grey-400 border-t"></div>
+  }
 
   <div class="grow overflow-hidden">
-    <app-notepad
-      *ngIf="templateLoaded()"
-      [appProseMirrorSettings]="proseMirrorSettings"
-      [config]="config()"
-      [hideTabs]="isDefaultTemplate()"
-      [notepadFormGroup]="notepadForm.controls.notes"
-    ></app-notepad>
+    @if (templateLoaded()) {
+      <app-notepad
+        [appProseMirrorSettings]="proseMirrorSettings"
+        [config]="config()"
+        [hideTabs]="isDefaultTemplate()"
+        [notepadFormGroup]="notepadForm.controls.notes"
+      />
+    }
   </div>
 </div>
 

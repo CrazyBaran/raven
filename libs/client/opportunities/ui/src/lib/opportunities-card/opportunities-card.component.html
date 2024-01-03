@@ -5,7 +5,7 @@
     <div
       [routerLink]="['/companies', data.organisation.id]"
       title="View Company Profile"
-      class="hover:text-primary-600 flex-1 grow cursor-pointer items-center gap-3 overflow-hidden overflow-hidden transition-all duration-100"
+      class="hover:text-primary-600 flex-1 grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
     >
       <h1 class="mb-1 flex items-center gap-2 truncate text-lg">
         {{ data.organisation.name }}
@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-  <!--      [class.invisible]="hovered.hovered"-->
+
   <div class="relative">
     <div
       *ngIf="data.team | dealLeads as dealLeads"
@@ -54,35 +54,11 @@
       </div>
     </div>
     <div class="absolute top-0 hidden w-full justify-center group-hover:flex">
-      <kendo-button
-        (click)="openAffinityUrl()"
-        *ngIf="affinityUrl; else dragInfo"
-        fillMode="flat"
-        themeColor="primary"
-      >
-        <span class="flex gap-1">
-          Open in
-          <img alt="affinity logo" src="assets/images/affinity.svg" />
-        </span>
-      </kendo-button>
+      @if (affinityUrl) {
+        <app-affinity-url-button [url]="affinityUrl" />
+      } @else {
+        <p class="text-disabledText">Drop into preferred pipeline stage</p>
+      }
     </div>
   </div>
-  <ng-template #openDetailsBtn>
-    <kendo-button
-      [routerLink]="[
-        '/companies',
-        data.organisation.id,
-        'opportunities',
-        data.id
-      ]"
-      fillMode="outline"
-      themeColor="primary"
-    >
-      Open Details
-    </kendo-button>
-  </ng-template>
 </div>
-
-<ng-template #dragInfo>
-  <p class="text-disabledText">Drop into preferred pipeline stage</p>
-</ng-template>

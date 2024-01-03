@@ -42,7 +42,6 @@
     title="Note Type"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <!--      <ng-container *ngIf="!isLoading; else skeleton">-->
       <app-note-type-badge [type]="dataItem.templateName"></app-note-type-badge>
     </ng-template>
   </kendo-grid-column>
@@ -53,12 +52,11 @@
     title="Updated"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <!--      <ng-container *ngIf="!isLoading; else skeleton">-->
       <div class="flex flex-col gap-1">
         <ui-tag
-          uiUserTag
           [label]="dataItem?.createdBy?.name || ''"
           size="medium"
+          uiUserTag
         />
 
         <span class="text-xs">
@@ -66,7 +64,6 @@
           {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
         </span>
       </div>
-      <!--      </ng-container>-->
     </ng-template>
   </kendo-grid-column>
 
@@ -77,7 +74,7 @@
     title="People"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <ui-tags-container [tags]="dataItem.peopleTags" [rows]="2" />
+      <ui-tags-container [rows]="2" [tags]="dataItem.peopleTags" />
     </ng-template>
   </kendo-grid-column>
 
@@ -88,19 +85,18 @@
     title="Tags"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
-      <ui-tags-container [tags]="dataItem?.tags" [rows]="2" />
+      <ui-tags-container [rows]="2" [tags]="dataItem?.tags" />
     </ng-template>
   </kendo-grid-column>
 
   <kendo-grid-column [width]="135">
     <ng-template kendoGridCellTemplate let-dataItem>
-      <!--      <ng-container *ngIf="!isLoading; else skeleton">-->
       <div class="flex flex-row gap-1" kendoTooltip>
         <kendo-button
           [queryParams]="{ 'note-details': dataItem.id }"
-          queryParamsHandling="merge"
           [routerLink]="['./']"
           iconClass="fa-solid fa-eye"
+          queryParamsHandling="merge"
           themeColor="primary"
         />
         <kendo-button
@@ -118,15 +114,6 @@
           />
         </div>
       </div>
-      <!--      </ng-container>-->
     </ng-template>
   </kendo-grid-column>
 </kendo-grid>
-<ng-template #skeleton>
-  <kendo-skeleton
-    shape="text"
-    animation="wave"
-    width="80%"
-    [height]="20"
-  ></kendo-skeleton>
-</ng-template>

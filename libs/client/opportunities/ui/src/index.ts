@@ -1,3 +1,4 @@
+export * from './lib/affinity-url-button/affinity-url-button.component';
 export * from './lib/kanban-board/kanban-board.component';
 export * from './lib/kanban-board/kanban-board.interface';
 export * from './lib/opportunities-card/opportunities-card.component';

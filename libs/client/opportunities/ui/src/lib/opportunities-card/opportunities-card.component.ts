@@ -11,6 +11,7 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
 import { RxUnpatch } from '@rx-angular/template/unpatch';
+import { AffinityUrlButtonComponent } from '../affinity-url-button/affinity-url-button.component';
 
 @Component({
   selector: 'app-opportunities-card',
@@ -23,6 +24,7 @@ import { RxUnpatch } from '@rx-angular/template/unpatch';
     DealLeadsPipe,
     RxUnpatch,
     ButtonsModule,
+    AffinityUrlButtonComponent,
   ],
   templateUrl: './opportunities-card.component.html',
   styleUrls: ['./opportunities-card.component.scss'],
@@ -33,9 +35,5 @@ export class OpportunitiesCardComponent {
 
   public get affinityUrl(): string {
     return this.data?.organisation.affinityUrl ?? '';
-  }
-
-  public openAffinityUrl(): void {
-    window.open(this.affinityUrl, '_blank');
   }
 }

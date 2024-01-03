@@ -133,6 +133,7 @@ export const selectOpportunityDetailViewModel = createSelector(
       lines,
       details,
       navigations,
+      affinityUrl: opportunityDetails?.organisation?.affinityUrl,
       ...loadingState,
     };
   },
