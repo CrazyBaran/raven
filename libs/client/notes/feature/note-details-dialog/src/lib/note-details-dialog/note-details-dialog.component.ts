@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  ApplicationRef,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -25,7 +24,6 @@ import {
 import { TagFilterPipe } from '@app/client/notes/util';
 import { PopulateAzureImagesPipe } from '@app/client/opportunities/feature/related-notes';
 import { ShelfTemplateBase } from '@app/client/shared/dynamic-renderer/feature';
-import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import {
   ClipboardDirective,
   LoaderComponent,
@@ -125,11 +123,9 @@ export class NoteDetailsDialogComponent
   protected windowRef = inject(WindowRef);
 
   public constructor(
-    private appRef: ApplicationRef,
     private store: Store,
     private readonly noteStoreFacade: NoteStoreFacade,
     private actions$: Actions,
-    private imagePathDictionaryService: ImagePathDictionaryService,
     private readonly dialogService: DialogService,
   ) {
     super();

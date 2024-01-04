@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import { notesQuery } from '@app/client/notes/state';
 import {
-  NoteDetailsComponent,
   NotesTableComponent,
   QuickFiltersComponent,
 } from '@app/client/notes/ui';
@@ -81,7 +80,6 @@ export const selectNotesListViewModel = createSelector(
     QuickFiltersComponent,
     DialogModule,
     WindowModule,
-    NoteDetailsComponent,
     NotesTableContainerComponent,
     ButtongroupNavigationComponent,
     PageTemplateComponent,
