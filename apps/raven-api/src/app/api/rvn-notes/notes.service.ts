@@ -311,25 +311,29 @@ export class NotesService {
       },
     );
 
-    console.log({
-      complexTagsForOpportunity: complexTagsForOpportunity.map((ct) => ct.id),
-    });
-
     qb.leftJoinAndSelect('note.tags', 'allTags')
       .where(
-        new Brackets((qb) =>
-          qb
-            .where(
-              opportunity.tag
-                ? 'organisationTag.id IS NOT NULL AND opportunityTag.id IS NOT NULL'
-                : 'organisationTag.id IS NOT NULL',
-            )
-            .orWhere('complexTags.id IN (:complexTagIds)', {
+        new Brackets((qb) => {
+          qb.where(
+            new Brackets((qb) => {
+              qb.where('organisationTag.id IS NOT NULL');
+              if (opportunity.tag) {
+                qb.andWhere('opportunityTag.id IS NOT NULL');
+              }
+              return qb;
+            }),
+          );
+          if (complexTagsForOpportunity?.length > 0) {
+            qb.orWhere('complexTags.id = :complexTagIds', {
               complexTagIds: complexTagsForOpportunity
                 ?.map((ct) => ct.id)
+                .reverse() // TODO remove hack
                 .toString(),
-            }),
-        ),
+            });
+          }
+
+          return qb;
+        }),
       )
       .andWhere(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL')
@@ -338,7 +342,6 @@ export class NotesService {
     const relatedNotes = await qb.getMany();
 
     if (type === TemplateTypeEnum.Note) {
-      console.log({ relatedNotes });
       return relatedNotes
         .map((rn) => {
           delete rn.noteFieldGroups;
