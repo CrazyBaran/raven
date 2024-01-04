@@ -5,6 +5,7 @@ import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-t
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { StorageAccountModule } from '../rvn-storage-account/storage-account.module';
+import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
   OrganisationTagEntity,
   TagEntity,
@@ -32,6 +33,7 @@ import { NotesService } from './notes.service';
       OrganisationEntity,
       TemplateEntity,
       TeamEntity,
+      ComplexTagEntity,
     ]),
     EventEmitterModule,
     StorageAccountModule,

@@ -13,7 +13,7 @@ import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { cloneDeep } from 'lodash';
-import { Raw, Repository } from 'typeorm';
+import { Brackets, Raw, Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
@@ -74,6 +74,8 @@ export class NotesService {
     private readonly organisationTagRepository: Repository<OrganisationTagEntity>,
     @InjectRepository(TemplateEntity)
     private readonly templateRepository: Repository<TemplateEntity>,
+    @InjectRepository(ComplexTagEntity)
+    private readonly complexTagRepository: Repository<ComplexTagEntity>,
     private readonly storageAccountService: StorageAccountService,
     private readonly logger: RavenLogger,
   ) {
@@ -256,6 +258,26 @@ export class NotesService {
       );
     }
 
+    const complexTagsForOpportunity = await this.complexTagRepository
+      .createQueryBuilder('complexTag')
+      .innerJoin(
+        'complexTag.tags',
+        'opportunityComplexTag',
+        'opportunityComplexTag.id = :opportunityComplexTagId',
+        {
+          opportunityComplexTagId: opportunity.tagId,
+        },
+      )
+      .innerJoin(
+        'complexTag.tags',
+        'organisationComplexTag',
+        'organisationComplexTag.id = :organisationComplexTagId',
+        {
+          organisationComplexTagId: organisationTag.id,
+        },
+      )
+      .getMany();
+
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
       .select('MAX(note_sub.version)', 'maxVersion')
@@ -287,12 +309,28 @@ export class NotesService {
       {
         organisationTagId: organisationTag.id,
       },
-    )
-      .leftJoinAndSelect('note.tags', 'allTags')
+    );
+
+    qb.leftJoinAndSelect('note.tags', 'allTags')
       .where(
-        opportunity.tag
-          ? 'organisationTag.id IS NOT NULL AND opportunityTag.id IS NOT NULL'
-          : 'organisationTag.id IS NOT NULL',
+        new Brackets((qb) => {
+          qb.where(
+            new Brackets((qb) => {
+              qb.where('organisationTag.id IS NOT NULL');
+              if (opportunity.tag) {
+                qb.andWhere('opportunityTag.id IS NOT NULL');
+              }
+              return qb;
+            }),
+          );
+          if (complexTagsForOpportunity?.length > 0) {
+            qb.orWhere('complexTags.id IN (:...complexTagIds)', {
+              complexTagIds: complexTagsForOpportunity?.map((ct) => ct.id),
+            });
+          }
+
+          return qb;
+        }),
       )
       .andWhere(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL')
