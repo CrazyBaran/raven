@@ -324,11 +324,8 @@ export class NotesService {
             }),
           );
           if (complexTagsForOpportunity?.length > 0) {
-            qb.orWhere('complexTags.id = :complexTagIds', {
-              complexTagIds: complexTagsForOpportunity
-                ?.map((ct) => ct.id)
-                .reverse() // TODO remove hack
-                .toString(),
+            qb.orWhere('complexTags.id IN (:...complexTagIds)', {
+              complexTagIds: complexTagsForOpportunity?.map((ct) => ct.id),
             });
           }
 
