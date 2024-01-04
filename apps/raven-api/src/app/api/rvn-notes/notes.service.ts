@@ -944,7 +944,6 @@ export class NotesService {
         );
         foundTab.pipelineStages = tab.pipelineStages;
       }
-      // TODO add hideOnPipelineStages to correct fields
       if (tab.pipelineStages.find((ps) => ps.id === currentPipelineStageId)) {
         const emptyFields =
           foundTab?.noteFieldGroups?.reduce(
