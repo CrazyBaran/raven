@@ -12,4 +12,5 @@ export interface NoteFieldData {
   readonly createdAt: Date;
   readonly createdById: string;
   readonly updatedById: string;
+  hideOnPipelineStages?: { id: string }[];
 }

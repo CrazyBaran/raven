@@ -93,11 +93,6 @@ export class OpportunityDetailsPageComponent {
             id: opportunityId,
           }),
         );
-        this.store.dispatch(
-          NotesActions.getOpportunityNotes({
-            opportunityId,
-          }),
-        );
       });
   }
 

@@ -598,7 +598,9 @@ export class NotesService {
               'Updated note root version id does not match workflow note root version id',
             );
           }
+          delete opportunity.note;
           opportunity.noteId = savedNewNoteVersion.id;
+
           await tem.save(opportunity);
         }
         this.logger.debug(
@@ -922,12 +924,7 @@ export class NotesService {
   ): WorkflowNoteData {
     delete workflowNote.noteFieldGroups;
 
-    const filteredWorkflowNote = this.filterWorkflowNote(
-      workflowNote,
-      currentPipelineStageId,
-    );
-
-    const mappedNote = this.noteEntityToNoteData(filteredWorkflowNote);
+    const mappedNote = this.noteEntityToNoteData(workflowNote);
 
     const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template
@@ -970,6 +967,22 @@ export class NotesService {
         );
       }
     }
+
+    const fieldDefinitions =
+      workflowNote.template?.tabs
+        .flatMap((t) => t.fieldGroups)
+        .flatMap((fg) => fg.fieldDefinitions) || [];
+    for (const field of mappedNote.noteTabs
+      .flatMap((nt) => nt.noteFieldGroups)
+      .flatMap((nfg) => nfg.noteFields)) {
+      const fieldDefinition = fieldDefinitions.find(
+        (fd) => fd.id === field.templateFieldId,
+      );
+      if (fieldDefinition) {
+        field.hideOnPipelineStages = fieldDefinition.hideOnPipelineStages;
+      }
+    }
+
     (mappedNote as WorkflowNoteData).missingFields = missingFields;
     return mappedNote as WorkflowNoteData;
   }
