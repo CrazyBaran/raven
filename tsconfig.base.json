@@ -49,13 +49,13 @@
         "libs/client/notes/feature/notes-table/src/index.ts"
       ],
       "@app/client/notes/feaure/list": [
-        "libs/client/notes/feaure/list/src/index.ts"
+        "libs/client/notes/feature/list/src/index.ts"
       ],
       "@app/client/notes/feaure/notepad": [
-        "libs/client/notes/feaure/notepad/src/index.ts"
+        "libs/client/notes/feature/notepad/src/index.ts"
       ],
       "@app/client/notes/feaure/shell": [
-        "libs/client/notes/feaure/shell/src/index.ts"
+        "libs/client/notes/feature/shell/src/index.ts"
       ],
       "@app/client/notes/ui": ["libs/client/notes/ui/src/index.ts"],
       "@app/client/notes/util": ["libs/client/notes/util/src/index.ts"],
