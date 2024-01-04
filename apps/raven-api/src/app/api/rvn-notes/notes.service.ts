@@ -583,24 +583,12 @@ export class NotesService {
         new Date().getTime() - start,
       );
 
-      console.log({
-        notevals: JSON.stringify(
-          savedNewNoteVersion.noteTabs.flatMap((nt) =>
-            nt.noteFieldGroups.flatMap((nfg) =>
-              nfg.noteFields.map((f) => ({ name: f.name, value: f.value })),
-            ),
-          ),
-        ),
-        templateType,
-      });
-
       if (templateType === TemplateTypeEnum.Workflow) {
         start = new Date().getTime();
         const opportunity = await this.opportunityRepository.findOne({
           where: { noteId: noteEntity.id },
           relations: ['note'],
         });
-        console.log({ opportunity, noteEntity });
         if (opportunity) {
           if (
             opportunity.note &&
