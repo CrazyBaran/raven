@@ -32,6 +32,10 @@ export const selectNoteDetailsModel = createSelector(
     };
   },
 );
+export const selectNoteDetailsForm = createSelector(
+  selectNoteDetailsModel,
+  (noteDetails) => createNotepadForm(noteDetails),
+);
 
 export const selectNoteDetailsDialogViewModel = createSelector(
   routerQuery.selectNoteDetailsId,
@@ -39,7 +43,8 @@ export const selectNoteDetailsDialogViewModel = createSelector(
   selectNoteDetailsModel,
   authQuery.selectUserName,
   authQuery.selectUserEmail,
-  (noteId, isLoading, noteDetails, userName, userEmail) => ({
+  selectNoteDetailsForm,
+  (noteId, isLoading, noteDetails, userName, userEmail, form) => ({
     noteId,
     isLoading,
     noteDetails: {
@@ -53,7 +58,7 @@ export const selectNoteDetailsDialogViewModel = createSelector(
         })) ?? []),
       ],
     },
-    form: createNotepadForm(noteDetails),
+    form,
     canEditNote:
       noteDetails?.tags.some((t) => t.name === userName) ||
       noteDetails?.createdBy?.email === userEmail,

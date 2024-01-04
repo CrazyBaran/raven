@@ -1,0 +1,71 @@
+<div class="flex flex-row items-center justify-between gap-5">
+  @if (noteDetails?.templateName) {
+    <app-note-type-badge [type]="noteDetails.templateName" />
+  }
+
+  <span class="mr-auto font-bold">
+    {{ noteDetails?.name }}
+  </span>
+
+  <ui-tag size="medium" uiUserTag [label]="noteDetails?.createdBy?.name" />
+</div>
+
+@if (notPersonTags.length || personTags.length) {
+  <div class="flex flex-col gap-4">
+    @if (notPersonTags.length) {
+      <ul class="flex flex-row flex-wrap gap-[0_0.75rem]">
+        @for (tag of notPersonTags; track tag.id) {
+          <ui-tag [label]="tag.name" [style]="tag.type | tagTypeColor" />
+        }
+      </ul>
+    }
+    @if (personTags.length) {
+      <ul class="flex flex-row flex-wrap gap-[0_0.75rem]">
+        @for (tag of personTags; track tag.id) {
+          <ui-tag uiUserTag [label]="tag.name" />
+        }
+      </ul>
+    }
+  </div>
+}
+<div
+  class="border-grey-200 grid min-h-0 grow grid-cols-[auto_1fr] gap-6 overflow-hidden border-t border-solid pt-4"
+>
+  <div class="min-w-[160px]">
+    <p class="mb-4 overflow-auto text-xs">Quick scroll</p>
+
+    <ul>
+      @for (field of fields; track field.id) {
+        <li>
+          <kendo-button
+            (click)="handleScrollToField(field.id)"
+            fillMode="flat"
+            themeColor="secondary"
+          >
+            {{ field.name }}
+          </kendo-button>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <div class="overflow-auto">
+    @for (note of noteFields; track note.id) {
+      <kendo-expansionpanel
+        [expanded]="true"
+        [id]="note.id"
+        [title]="note.name"
+      >
+        @if (note.value) {
+          <div
+            *rxLet="note.value | populateAzureImages; let value"
+            [innerHTML]="value | safeHtml"
+            class="ProseMirror"
+          ></div>
+        } @else {
+          <div class="text-sm italic">Note is empty</div>
+        }
+      </kendo-expansionpanel>
+    }
+  </div>
+</div>
