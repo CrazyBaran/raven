@@ -4,8 +4,11 @@ import {
   WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { CreateNote, PatchNote } from '../domain/createNote';
-import { NoteQueryParams } from '../domain/get-notes.params';
+import {
+  CreateNote,
+  PatchNote,
+} from '../../../../data-access/src/lib/domain/createNote';
+import { NoteQueryParams } from '../../../../data-access/src/lib/domain/get-notes.params';
 
 export const NotesActions = createActionGroup({
   source: 'Notes/API',

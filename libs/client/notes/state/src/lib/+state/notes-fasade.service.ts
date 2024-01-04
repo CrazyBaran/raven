@@ -5,7 +5,10 @@ import { select, Store } from '@ngrx/store';
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { map, Observable } from 'rxjs';
-import { CreateNote, PatchNote } from '../domain/createNote';
+import {
+  CreateNote,
+  PatchNote,
+} from '../../../../data-access/src/lib/domain/createNote';
 import { NotesActions } from './notes.actions';
 import { notesFeature } from './notes.reducer';
 import { notesQuery } from './notes.selectors';

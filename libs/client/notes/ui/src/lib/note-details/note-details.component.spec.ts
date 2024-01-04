@@ -2,7 +2,7 @@
 //TODO: refactor notes table
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoteStoreFacade } from '@app/client/notes/data-access';
+import { NoteStoreFacade } from '@app/client/notes/state';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';

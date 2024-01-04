@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NoteStoreFacade, NotesActions } from '@app/client/notes/data-access';
+import { NoteStoreFacade, NotesActions } from '@app/client/notes/state';
 import { TagFilterPipe } from '@app/client/notes/util';
 import {
   ClipboardDirective,

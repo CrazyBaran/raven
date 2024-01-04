@@ -2,36 +2,11 @@ import { Routes } from '@angular/router';
 import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
 import { provideOrganisationFeature } from '@app/client/organisations/state';
 import { providePipelinesFeature } from '@app/client/pipelines/state';
-
 import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideFileFeature } from '@app/client/files/feature/state';
-import {
-  NotesEffects,
-  notesFeature,
-  NoteStoreFacade,
-} from '@app/client/notes/data-access';
-import { tagsEffects, tagsFeature } from '@app/client/tags/state';
-import { templateFeatureProviders } from '@app/client/templates/data-access';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-
-export const organisationProviders: Array<Provider | EnvironmentProviders> = [
-  NoteStoreFacade,
-  templateFeatureProviders,
-  provideFileFeature,
-  importProvidersFrom(
-    StoreModule.forFeature(OrganisationsFeature),
-    EffectsModule.forFeature([OrganisationsEffects]),
-    StoreModule.forFeature('opportunities', opportunitiesReducer),
-    EffectsModule.forFeature([OpportunitiesEffects]),
-    StoreModule.forFeature('pipelines', pipelinesReducer),
-    EffectsModule.forFeature([PipelinesEffects]),
-    StoreModule.forFeature(tagsFeature),
-    EffectsModule.forFeature([tagsEffects]),
-    StoreModule.forFeature(notesFeature),
-    EffectsModule.forFeature([NotesEffects]),
-  ),
-];
+import { provideNotesFeature } from '@app/client/notes/state';
+import { provideTagsFeature } from '@app/client/tags/state';
+import { provideTemplatesFeature } from '@app/client/templates/data-access';
 
 export const ORGANISATION_ROUTES: Routes = [
   {
@@ -44,7 +19,7 @@ export const ORGANISATION_ROUTES: Routes = [
       provideOpportunitiesFeature(),
       providePipelinesFeature(),
       provideTagsFeature(),
-      provideWebsocketEffects(),
+      provideWebsocketEffects()
     ],
     children: [
       {

@@ -1,6 +1,6 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 
-import { notesQuery } from '@app/client/notes/data-access';
+import { notesQuery } from '@app/client/notes/state';
 import { organisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';

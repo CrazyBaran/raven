@@ -1,5 +1,5 @@
 import { authQuery } from '@app/client/core/auth';
-import { notesQuery } from '@app/client/notes/data-access';
+import { notesQuery } from '@app/client/notes/state';
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import { organisationsFeature } from '@app/client/organisations/state';
 import { tagsQuery } from '@app/client/tags/state';

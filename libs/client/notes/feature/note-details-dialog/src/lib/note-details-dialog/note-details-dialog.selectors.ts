@@ -1,5 +1,5 @@
 import { authQuery } from '@app/client/core/auth';
-import { notesQuery } from '@app/client/notes/data-access';
+import { notesQuery } from '@app/client/notes/state';
 import { NotepadForm } from '@app/client/notes/ui';
 import { routerQuery } from '@app/client/shared/util-router';
 import {

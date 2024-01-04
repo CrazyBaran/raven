@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NoteQueryParams, NotesActions } from '@app/client/notes/data-access';
+import { NoteQueryParams } from '@app/client/notes/data-access';
+import { NotesActions } from '@app/client/notes/state';
 import { NotesTableComponent } from '@app/client/notes/ui';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { TemplateActions } from '@app/client/templates/data-access';

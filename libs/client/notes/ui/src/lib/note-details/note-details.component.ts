@@ -18,7 +18,7 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { NoteStoreFacade, NotesActions } from '@app/client/notes/data-access';
+import { NotesActions, NoteStoreFacade } from '@app/client/notes/state';
 import { TagFilterPipe } from '@app/client/notes/util';
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import { LoaderComponent, TagComponent } from '@app/client/shared/ui';
@@ -41,7 +41,7 @@ import { IconModule } from '@progress/kendo-angular-icons';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { xIcon } from '@progress/kendo-svg-icons';
 import { sortBy } from 'lodash';
-import { Subject, filter, take, takeUntil } from 'rxjs';
+import { filter, Subject, take, takeUntil } from 'rxjs';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 import {
   NotepadForm,

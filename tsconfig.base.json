@@ -48,6 +48,7 @@
       "@app/client/notes/feature/notes-table": [
         "libs/client/notes/feature/notes-table/src/index.ts"
       ],
+      "@app/client/notes/state": ["libs/client/notes/state/src/index.ts"],
       "@app/client/notes/feaure/list": [
         "libs/client/notes/feature/list/src/index.ts"
       ],

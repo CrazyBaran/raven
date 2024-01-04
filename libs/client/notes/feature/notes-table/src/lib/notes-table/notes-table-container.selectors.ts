@@ -1,4 +1,4 @@
-import { notesQuery } from '@app/client/notes/data-access';
+import { notesQuery } from '@app/client/notes/state';
 import { NoteTableRow } from '@app/client/notes/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import { createSelector } from '@ngrx/store';

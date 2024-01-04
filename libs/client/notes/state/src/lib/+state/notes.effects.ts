@@ -11,7 +11,7 @@ import { NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { catchError, concatMap, filter, map, of, switchMap } from 'rxjs';
-import { NotesService } from '../services/notes.service';
+import { NotesService } from '../../../../data-access/src/lib/services/notes.service';
 import { NotesActions } from './notes.actions';
 
 @Injectable()

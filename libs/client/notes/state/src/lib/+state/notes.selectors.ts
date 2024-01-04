@@ -9,7 +9,7 @@ import { NoteData, NoteTagData } from '@app/rvns-notes/data-access';
 import { TagType } from '@app/rvns-tags';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
-import { notesQueries } from '../domain/get-notes.params';
+import { notesQueries } from '../../../../data-access/src/lib/domain/get-notes.params';
 import { NotesState, notesAdapter, notesFeatureKey } from './notes.reducer';
 
 export const { selectAll, selectEntities } = notesAdapter.getSelectors();

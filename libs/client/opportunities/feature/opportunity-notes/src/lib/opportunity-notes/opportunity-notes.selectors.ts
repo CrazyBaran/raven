@@ -1,4 +1,4 @@
-import { notesQuery } from '@app/client/notes/data-access';
+import { notesQuery } from '@app/client/notes/state';
 import {
   selectAllNoteTemplates,
   selectTemplatesLoaded,

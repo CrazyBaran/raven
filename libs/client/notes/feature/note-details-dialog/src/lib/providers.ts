@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { provideNotesFeature } from '@app/client/notes/data-access';
+import { provideNotesFeature } from '@app/client/notes/state';
 import {
   ComponentData,
   DynamicModule,

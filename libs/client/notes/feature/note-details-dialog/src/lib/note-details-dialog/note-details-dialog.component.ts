@@ -15,7 +15,7 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotesActions, NoteStoreFacade } from '@app/client/notes/data-access';
+import { NotesActions, NoteStoreFacade } from '@app/client/notes/state';
 import {
   DeleteNoteComponent,
   NotepadForm,

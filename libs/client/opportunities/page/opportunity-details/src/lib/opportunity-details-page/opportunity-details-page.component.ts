@@ -4,7 +4,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { trigger } from '@angular/animations';
 import { JsonPipe, NgStyle } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NotesActions } from '@app/client/notes/data-access';
+import { NotesActions } from '@app/client/notes/state';
 import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import {
