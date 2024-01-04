@@ -97,17 +97,19 @@ export class NotesService {
     assignedTo?: string,
     role?: 'created' | 'tagged',
   ): Promise<{ items: NoteEntity[]; total: number }> {
-    const complexTagsForOrganisation = await this.complexTagRepository
-      .createQueryBuilder('complexTag')
-      .innerJoin(
-        'complexTag.tags',
-        'organisationComplexTag',
-        'organisationComplexTag.id = :organisationComplexTagId',
-        {
-          organisationComplexTagId: organisationTagEntity.id,
-        },
-      )
-      .getMany();
+    const complexTagsForOrganisation = organisationTagEntity
+      ? await this.complexTagRepository
+          .createQueryBuilder('complexTag')
+          .innerJoin(
+            'complexTag.tags',
+            'organisationComplexTag',
+            'organisationComplexTag.id = :organisationComplexTagId',
+            {
+              organisationComplexTagId: organisationTagEntity.id,
+            },
+          )
+          .getMany()
+      : [];
 
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
