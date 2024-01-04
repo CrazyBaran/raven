@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoteQueryParams } from '@app/client/notes/data-access';
-import { NotesActions } from '@app/client/notes/state';
+import { NotesActions, notesQuery } from '@app/client/notes/state';
 import { NotesTableComponent } from '@app/client/notes/ui';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, concatLatestFrom, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { map } from 'rxjs';
-import { selectNotesTableViewModel } from './notes-table-container.selectors';
+import { selectNotesGridModel } from './notes-table-container.selectors';
 
 @Component({
   selector: 'app-notes-table-container',
@@ -23,16 +22,12 @@ export class NotesTableContainerComponent {
   protected store = inject(Store);
   protected actions = inject(Actions);
 
-  protected vm = this.store.selectSignal(selectNotesTableViewModel);
+  protected gridModel = this.store.selectSignal(selectNotesGridModel);
 
   public constructor() {
     this.store
-      .select(selectNotesTableViewModel)
-      .pipe(
-        map(({ params }) => params),
-        distinctUntilChangedDeep(),
-        takeUntilDestroyed(),
-      )
+      .select(notesQuery.selectNotesTableParams)
+      .pipe(distinctUntilChangedDeep(), takeUntilDestroyed())
       .subscribe((params) => {
         this._loadNotes(params);
       });

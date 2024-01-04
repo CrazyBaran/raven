@@ -3,7 +3,7 @@ import { NoteTableRow } from '@app/client/notes/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import { createSelector } from '@ngrx/store';
 
-const selectNotesGridModel = createSelector(
+export const selectNotesGridModel = createSelector(
   notesQuery.selectNotesTableParams,
   notesQuery.selectIsTableLoading,
   notesQuery.selectAllNotesTableRows,
@@ -13,15 +13,5 @@ const selectNotesGridModel = createSelector(
     isLoading,
     data,
     total,
-  }),
-);
-
-export const selectNotesTableViewModel = createSelector(
-  notesQuery.selectNotesTableParams,
-  selectNotesGridModel,
-
-  (params, gridModel) => ({
-    params,
-    gridModel,
   }),
 );
