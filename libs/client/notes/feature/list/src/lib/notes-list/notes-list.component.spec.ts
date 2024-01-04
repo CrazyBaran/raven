@@ -8,18 +8,18 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import {
-  RvncNotesFeatureNotesListComponent,
+  NotesListComponent,
   selectNotesListViewModel,
-} from './rvnc-notes-feature-notes-list.component';
+} from './notes-list.component';
 
 describe('RvncNotesFeatureNotesListComponent', () => {
-  let component: RvncNotesFeatureNotesListComponent;
-  let fixture: ComponentFixture<RvncNotesFeatureNotesListComponent>;
+  let component: NotesListComponent;
+  let fixture: ComponentFixture<NotesListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RvncNotesFeatureNotesListComponent,
+        NotesListComponent,
         StoreModule.forRoot({}),
         EffectsModule.forRoot([]),
         RouterTestingModule,
@@ -43,7 +43,7 @@ describe('RvncNotesFeatureNotesListComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RvncNotesFeatureNotesListComponent);
+    fixture = TestBed.createComponent(NotesListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

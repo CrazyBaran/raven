@@ -8,14 +8,9 @@
       iconClass="fa-solid fa-square-plus"
       size="large"
       themeColor="secondary"
-      >Add New</kendo-button
     >
-    <!-- <kendo-button
-      iconClass="fa-solid fa-filter"
-      fillMode="clear"
-      themeColor="secondary"
-      >Filter</kendo-button
-    > -->
+      Add New
+    </kendo-button>
   </div>
   <div
     class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
@@ -23,11 +18,9 @@
   >
     <app-quick-filters-template>
       <div class="flex gap-6">
-        <app-buttongroup-navigation [model]="vm().buttonGroupAssignedTo">
-        </app-buttongroup-navigation>
+        <app-buttongroup-navigation [model]="vm().buttonGroupAssignedTo" />
 
-        <app-buttongroup-navigation [model]="vm().buttonGroupTemplates">
-        </app-buttongroup-navigation>
+        <app-buttongroup-navigation [model]="vm().buttonGroupTemplates" />
       </div>
     </app-quick-filters-template>
 
