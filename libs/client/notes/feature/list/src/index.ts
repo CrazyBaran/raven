@@ -1,1 +1,1 @@
-export * from './lib/rvnc-notes-feature-notes-list/rvnc-notes-feature-notes-list.component';
+export * from './lib/notes-list/notes-list.component';

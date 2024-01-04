@@ -7,10 +7,8 @@ import { ShelfStoreFacade } from '@app/client/shared/shelf';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import {
-  NotesListComponent,
-  selectNotesListViewModel,
-} from './notes-list.component';
+import { NotesListComponent } from './notes-list.component';
+import { selectNotesListViewModel } from './notes-list.selectors';
 
 describe('RvncNotesFeatureNotesListComponent', () => {
   let component: NotesListComponent;

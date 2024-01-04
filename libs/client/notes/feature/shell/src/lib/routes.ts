@@ -43,7 +43,7 @@ export const NOTES_ROUTES: Routes = [
         pathMatch: 'full',
         loadComponent: () =>
           import('@app/client/notes/feaure/list').then(
-            (m) => m.RvncNotesFeatureNotesListComponent,
+            (m) => m.NotesListComponent,
           ),
       },
       {
