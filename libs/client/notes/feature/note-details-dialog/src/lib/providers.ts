@@ -6,6 +6,7 @@ import {
 } from '@app/client/shared/dynamic-renderer/data-access';
 
 import { provideTagsFeature } from '@app/client/notes/api-tags';
+import { provideTemplatesFeature } from '@app/client/templates/data-access';
 import { NoteDetailsDialogComponent } from './note-details-dialog/note-details-dialog.component';
 
 @NgModule({
@@ -14,7 +15,7 @@ import { NoteDetailsDialogComponent } from './note-details-dialog/note-details-d
   providers: [
     provideNotesFeature(),
     provideTagsFeature(),
-    provideTagsFeature(),
+    provideTemplatesFeature(),
   ],
 })
 export class NotepadDialogModule implements DynamicModule {
