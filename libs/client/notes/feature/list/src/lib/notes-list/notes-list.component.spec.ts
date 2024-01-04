@@ -2,8 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { selectNotesTableViewModel } from '@app/client/notes/feature/notes-table';
-import { NoteStoreFacade } from '@app/client/notes/state';
-import { ShelfStoreFacade } from '@app/client/shared/shelf';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -24,8 +22,6 @@ describe('RvncNotesFeatureNotesListComponent', () => {
       ],
       providers: [
         provideAnimations(),
-        NoteStoreFacade,
-        ShelfStoreFacade,
         provideMockStore({
           selectors: [
             {

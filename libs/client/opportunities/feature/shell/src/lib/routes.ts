@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideFileFeature } from '@app/client/files/feature/state';
-import { notesProviders } from '@app/client/notes/feaure/shell';
+import { notesProviders } from '@app/client/notes/feature/shell';
 import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
 import { provideOrganisationFeature } from '@app/client/organisations/state';
 import { providePipelinesFeature } from '@app/client/pipelines/state';

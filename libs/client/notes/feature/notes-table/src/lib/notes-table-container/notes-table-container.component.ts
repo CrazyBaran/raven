@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoteQueryParams } from '@app/client/notes/data-access';
@@ -15,7 +14,7 @@ import { selectNotesTableViewModel } from './notes-table-container.selectors';
 @Component({
   selector: 'app-notes-table-container',
   standalone: true,
-  imports: [CommonModule, NotesTableComponent],
+  imports: [NotesTableComponent],
   templateUrl: './notes-table-container.component.html',
   styleUrls: ['./notes-table-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

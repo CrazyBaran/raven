@@ -25,7 +25,7 @@ export class ShelfEffects {
             template: {
               name: 'notepad',
               load: () =>
-                import('@app/client/notes/feaure/notepad').then(
+                import('@app/client/notes/feature/notepad').then(
                   (m) => m.NotepadDialogModule,
                 ),
               showLoading: true,

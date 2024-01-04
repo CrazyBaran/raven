@@ -42,14 +42,14 @@ export const NOTES_ROUTES: Routes = [
         path: '',
         pathMatch: 'full',
         loadComponent: () =>
-          import('@app/client/notes/feaure/list').then(
+          import('@app/client/notes/feature/list').then(
             (m) => m.NotesListComponent,
           ),
       },
       {
         path: 'create',
         loadComponent: () =>
-          import('@app/client/notes/feaure/notepad').then(
+          import('@app/client/notes/feature/notepad').then(
             (m) => m.NotepadContentComponent,
           ),
       },
