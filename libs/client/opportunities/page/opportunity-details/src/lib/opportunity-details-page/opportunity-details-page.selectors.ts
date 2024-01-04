@@ -1,7 +1,7 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 
 import { notesQuery } from '@app/client/notes/data-access';
-import { OrganisationsFeature } from '@app/client/organisations/state';
+import { organisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
@@ -65,7 +65,7 @@ export const selectOpportunityPageNavigation = createSelector(
   },
 );
 export const selectOpportunityDetails = createSelector(
-  OrganisationsFeature.selectCurrentOrganisation,
+  organisationsFeature.selectCurrentOrganisation,
   opportunitiesQuery.selectRouteOpportunityDetails,
   (organisation, opportunity) =>
     [
@@ -91,7 +91,7 @@ export const selectOpportunityDetails = createSelector(
 export const selectOpportunityPageLoadingState = createSelector(
   opportunitiesQuery.selectOpportunityDetailsIsLoading,
   notesQuery.selectOpportunityNotesIsLoading,
-  OrganisationsFeature.selectLoadingOrganisation,
+  organisationsFeature.selectLoadingOrganisation,
   opportunitiesQuery.selectIsLoadingUpdateStage,
   (
     opportunityIsLoading,
@@ -109,7 +109,7 @@ export const selectOpportunityPageLoadingState = createSelector(
 export const selectOpportunityDetailViewModel = createSelector(
   routerQuery.selectCurrentOpportunityId,
   opportunitiesQuery.selectRouteOpportunityDetails,
-  OrganisationsFeature.selectCurrentOrganisation,
+  organisationsFeature.selectCurrentOrganisation,
   routerQuery.selectCurrentOrganisationId,
   selectOpportunityPipelines,
   selectOpportunityPageNavigation,

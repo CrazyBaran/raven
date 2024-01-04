@@ -1,21 +1,7 @@
-import {
-  EnvironmentProviders,
-  importProvidersFrom,
-  Provider,
-} from '@angular/core';
 import { Routes } from '@angular/router';
-import {
-  OpportunitiesEffects,
-  opportunitiesReducer,
-} from '@app/client/opportunities/data-access';
-import {
-  OrganisationsEffects,
-  OrganisationsFeature,
-} from '@app/client/organisations/state';
-import {
-  PipelinesEffects,
-  pipelinesReducer,
-} from '@app/client/pipelines/state';
+import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
+import { provideOrganisationFeature } from '@app/client/organisations/state';
+import { providePipelinesFeature } from '@app/client/pipelines/state';
 
 import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideFileFeature } from '@app/client/files/feature/state';
@@ -33,7 +19,6 @@ export const organisationProviders: Array<Provider | EnvironmentProviders> = [
   NoteStoreFacade,
   templateFeatureProviders,
   provideFileFeature,
-  provideWebsocketEffects(),
   importProvidersFrom(
     StoreModule.forFeature(OrganisationsFeature),
     EffectsModule.forFeature([OrganisationsEffects]),
@@ -51,7 +36,16 @@ export const organisationProviders: Array<Provider | EnvironmentProviders> = [
 export const ORGANISATION_ROUTES: Routes = [
   {
     path: '',
-    providers: [organisationProviders],
+    providers: [
+      provideNotesFeature(),
+      provideTemplatesFeature(),
+      provideFileFeature(),
+      provideOrganisationFeature(),
+      provideOpportunitiesFeature(),
+      providePipelinesFeature(),
+      provideTagsFeature(),
+      provideWebsocketEffects(),
+    ],
     children: [
       {
         path: '',

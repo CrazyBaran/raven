@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Environment } from '@app/client/core/environment';
 import { FileEntity, filesQuery } from '@app/client/files/feature/state';
-import { OrganisationsFeature } from '@app/client/organisations/state';
+import { organisationsFeature } from '@app/client/organisations/state';
 import { routerQuery } from '@app/client/shared/util-router';
 import { tagsQuery } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
@@ -43,7 +43,7 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
   createSelector(
     filesQuery.selectAll,
     tagsQuery.tagsFeature.selectTabTags,
-    OrganisationsFeature.selectCurrentOrganisation,
+    organisationsFeature.selectCurrentOrganisation,
     filesQuery.selectLoadedFolders,
     filesQuery.selectFileTags,
     (files, tags, organisation, loadedFolders, fileTags) => {
@@ -61,7 +61,7 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
   );
 
 export const selectOrganisationDetails = createSelector(
-  OrganisationsFeature.selectCurrentOrganisation,
+  organisationsFeature.selectCurrentOrganisation,
   (organisation) =>
     [
       {
@@ -82,10 +82,10 @@ export const selectOrganisationDetails = createSelector(
 );
 
 export const selectOrganisationPageViewModel = createSelector(
-  OrganisationsFeature.selectCurrentOrganisation,
+  organisationsFeature.selectCurrentOrganisation,
   routerQuery.selectCurrentOrganisationId,
   selectOrganisationDetails,
-  OrganisationsFeature.selectLoadingOrganisation,
+  organisationsFeature.selectLoadingOrganisation,
   (currentOrganisation, currentOrganisationId, details, isLoading) => {
     return {
       currentOrganisationId,

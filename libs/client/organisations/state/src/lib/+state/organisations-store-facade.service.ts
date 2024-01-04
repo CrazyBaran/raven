@@ -3,13 +3,13 @@ import { Store } from '@ngrx/store';
 
 import { CreateOrganisation } from '@app/client/organisations/data-access';
 import { OrganisationsActions } from './organisations.actions';
-import { OrganisationsFeature } from './organisations.reducer';
+import { organisationsFeature } from './organisations.reducer';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrganisationsStoreFacade {
-  public loaded = this.store.selectSignal(OrganisationsFeature.selectLoaded);
+  public loaded = this.store.selectSignal(organisationsFeature.selectLoaded);
 
   public constructor(private store: Store) {}
 

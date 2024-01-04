@@ -1,7 +1,7 @@
 import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { tagsFeature, tagsQuery } from '@app/client/organisations/api-tags';
-import { OrganisationsFeature } from '@app/client/organisations/state';
+import { organisationsFeature } from '@app/client/organisations/state';
 import { OrganisationRow } from '@app/client/organisations/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
@@ -115,12 +115,12 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
 );
 
 export const selectIsLoadingOrganisationsTable = createSelector(
-  OrganisationsFeature.selectLoaded,
+  organisationsFeature.selectLoaded,
   (loaded) => !loaded,
 );
 
 export const selectOrganisationRows = createSelector(
-  OrganisationsFeature.selectAll,
+  organisationsFeature.selectAll,
   opportunitiesQuery.selectOpportunitiesDictionary,
   pipelinesQuery.selectStagePrimaryColorDictionary,
   (organisations, groupedDictionary, stageColorDictionary) => {
@@ -142,7 +142,7 @@ export const selectTableModel = createSelector(
   selectIsLoadingOrganisationsTable,
   selectOrganisationRows,
   selectOrganisationsTableParams,
-  OrganisationsFeature.selectTotalRows,
+  organisationsFeature.selectTotalRows,
   (
     isLoading,
     organisations,

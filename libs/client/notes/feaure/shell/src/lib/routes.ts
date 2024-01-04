@@ -1,39 +1,18 @@
-import {
-  EnvironmentProviders,
-  importProvidersFrom,
-  inject,
-  Provider,
-} from '@angular/core';
+import { EnvironmentProviders, inject, Provider } from '@angular/core';
 import { Routes } from '@angular/router';
 import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { FileTypeBadgeColorsResolver } from '@app/client/files/ui';
-import {
-  NotesEffects,
-  notesFeature,
-  notesQuery,
-  NoteStoreFacade,
-} from '@app/client/notes/data-access';
+import { notesQuery, provideNotesFeature } from '@app/client/notes/data-access';
 import { NOTE_TYPE_BADGE_COLORS } from '@app/client/notes/ui';
-import {
-  tagsEffects,
-  tagsFeature,
-  TagsStoreFacade,
-} from '@app/client/tags/state';
-import { templateFeatureProviders } from '@app/client/templates/data-access';
-import { EffectsModule } from '@ngrx/effects';
-import { Store, StoreModule } from '@ngrx/store';
+import { provideTagsFeature } from '@app/client/tags/state';
+import { provideTemplatesFeature } from '@app/client/templates/data-access';
+import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 
 export const notesProviders: Array<Provider | EnvironmentProviders> = [
-  NoteStoreFacade,
-  TagsStoreFacade,
-  importProvidersFrom(
-    StoreModule.forFeature(notesFeature),
-    EffectsModule.forFeature([NotesEffects]),
-    StoreModule.forFeature(tagsFeature),
-    EffectsModule.forFeature(tagsEffects),
-  ),
-  templateFeatureProviders,
+  provideNotesFeature(),
+  provideTagsFeature(),
+  provideTemplatesFeature(),
   provideWebsocketEffects(),
   {
     provide: NOTE_TYPE_BADGE_COLORS,
@@ -54,9 +33,6 @@ export const notesProviders: Array<Provider | EnvironmentProviders> = [
       };
     },
   },
-  // provideNoteTypeBadgeColors(() => {
-  //   return inject(Store).select(notesQuery.selectNotesTypeBadgeColors);
-  // }),
 ];
 
 export const NOTES_ROUTES: Routes = [

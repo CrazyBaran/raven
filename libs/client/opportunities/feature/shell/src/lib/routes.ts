@@ -1,45 +1,20 @@
-import {
-  EnvironmentProviders,
-  importProvidersFrom,
-  Provider,
-} from '@angular/core';
 import { Route } from '@angular/router';
 import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideFileFeature } from '@app/client/files/feature/state';
 import { notesProviders } from '@app/client/notes/feaure/shell';
-import {
-  OpportunitiesEffects,
-  OpportunitiesFacade,
-  opportunitiesFeature,
-} from '@app/client/opportunities/data-access';
-import {
-  OrganisationsEffects,
-  OrganisationsFeature,
-} from '@app/client/organisations/state';
-import {
-  PipelinesEffects,
-  pipelinesReducer,
-} from '@app/client/pipelines/state';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-
-const opportunitiesProviders: Array<Provider | EnvironmentProviders> = [
-  OpportunitiesFacade,
-  provideWebsocketEffects(),
-  importProvidersFrom(
-    StoreModule.forFeature(opportunitiesFeature),
-    EffectsModule.forFeature([OpportunitiesEffects]),
-    StoreModule.forFeature(OrganisationsFeature),
-    EffectsModule.forFeature([OrganisationsEffects]),
-    StoreModule.forFeature('pipelines', pipelinesReducer),
-    EffectsModule.forFeature([PipelinesEffects]),
-  ),
-];
+import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
+import { provideOrganisationFeature } from '@app/client/organisations/state';
+import { providePipelinesFeature } from '@app/client/pipelines/state';
 
 export const OPPORTUNITIES_ROUTES: Route[] = [
   {
     path: '',
-    providers: [opportunitiesProviders],
+    providers: [
+      provideOpportunitiesFeature(),
+      provideOrganisationFeature(),
+      providePipelinesFeature(),
+      provideWebsocketEffects(),
+    ],
     children: [
       {
         path: ':opportunityId',
@@ -63,7 +38,7 @@ export const OPPORTUNITIES_ROUTES: Route[] = [
           },
           {
             path: 'files',
-            providers: [provideFileFeature],
+            providers: [provideFileFeature()],
             loadComponent: () =>
               import('@app/client/files/feature/files-table').then(
                 (m) => m.FilesTableComponent,
