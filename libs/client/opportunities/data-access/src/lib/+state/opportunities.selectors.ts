@@ -117,14 +117,13 @@ export const selectNoteFields = createSelector(
         return _.chain(tab.noteFieldGroups)
           .map(({ noteFields, name, id }) => {
             return _.chain(noteFields)
-              .filter((noteField) => {
-                if (noteField.hideOnPipelineStages) {
-                  return !noteField.hideOnPipelineStages.some(
+              .filter(
+                (noteField) =>
+                  !noteField.hideOnPipelineStages ||
+                  !noteField.hideOnPipelineStages.some(
                     (stage) => stage.id === opportunity?.stage.id,
-                  );
-                }
-                return true;
-              })
+                  ),
+              )
               .orderBy('order')
               .map((field) => ({
                 type: 'field',
