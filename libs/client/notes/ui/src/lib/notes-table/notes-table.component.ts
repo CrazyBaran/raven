@@ -94,6 +94,6 @@ export class NotesTableComponent extends TableViewBaseComponent<NoteTableRow> {
   }
 
   public getNoteUrl(noteId: string): string {
-    return `${window.location.href}?note-detailsId=${noteId}`;
+    return `${window.location.href}?note-details=${noteId}`;
   }
 }

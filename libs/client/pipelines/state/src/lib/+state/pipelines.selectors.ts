@@ -20,41 +20,27 @@ export const selectIsLoading = createSelector(
   selectPipelinesState,
   (state: PipelinesState) => state.isLoading,
 );
-
-export const selectPipelinesDictionary = createSelector(
-  selectPipelinesState,
-  (state: PipelinesState) =>
-    pipelinesAdapter.getSelectors().selectEntities(state),
-);
-
-const selectStagePrimaryColorDictionary = createSelector(
-  selectAllPipelines,
-  (pipelines) =>
-    _.chain(pipelines)
-      .flatMap(({ stages }) => stages)
-      .keyBy('id')
-      .mapValues('primaryColor')
-      .value(),
-);
-
-const selectStageSecondaryColorDictionary = createSelector(
-  selectAllPipelines,
-  (pipelines) =>
-    _.chain(pipelines)
-      .flatMap(({ stages }) => stages)
-      .keyBy('id')
-      .mapValues('secondaryColor')
-      .value(),
-);
-
 export const selectAllPipelineStages = createSelector(
   selectAllPipelines,
   (pipelines) => pipelines.flatMap(({ stages }) => stages),
 );
 
+export const selectPipelinesStagesDictionary = createSelector(
+  selectAllPipelineStages,
+  (pipelines) => _.chain(pipelines).keyBy('id').value(),
+);
+
+const selectStagePrimaryColorDictionary = createSelector(
+  selectPipelinesStagesDictionary,
+  (stages) => _.chain(stages).mapValues('primaryColor').value(),
+);
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectPipelineById = (id: string) =>
-  createSelector(selectPipelinesDictionary, (dictionary) => dictionary[id]);
+  createSelector(
+    selectPipelinesStagesDictionary,
+    (dictionary) => dictionary?.[id],
+  );
 
 export const pipelinesQuery = {
   selectAllPipelines,
