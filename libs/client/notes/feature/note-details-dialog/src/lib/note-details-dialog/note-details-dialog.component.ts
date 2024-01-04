@@ -30,6 +30,7 @@ import {
   UserTagDirective,
 } from '@app/client/shared/ui';
 import { ToUrlPipe } from '@app/client/shared/ui-pipes';
+import { controlDragArea } from '@app/client/shared/util';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -43,7 +44,7 @@ import {
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { xIcon } from '@progress/kendo-svg-icons';
-import { filter, merge, take } from 'rxjs';
+import { filter, take } from 'rxjs';
 import {
   selectNoteDetailsDialogViewModel,
   selectNoteDetailsForm,
@@ -137,44 +138,7 @@ export class NoteDetailsDialogComponent
   }
 
   public ngOnInit(): void {
-    const instance = this.windowRef.window.instance;
-    const windowElement = this.windowRef.window.location.nativeElement;
-
-    merge(instance.topChange)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (instance.top < 0) {
-          instance.top = 0;
-          windowElement.style.top = '0px';
-        }
-      });
-
-    merge(instance.leftChange)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (instance.left < 0) {
-          instance.left = 0;
-          windowElement.style.left = '0px';
-        }
-
-        if (instance.left > window.innerWidth - instance.width) {
-          instance.left = window.innerWidth - instance.width;
-          windowElement.style.left = `${window.innerWidth - instance.width}px`;
-        }
-      });
-
-    merge(instance.dragEnd, instance.resizeEnd)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (instance.top < 0) {
-          instance.top = 0;
-        }
-
-        if (instance.left < 0) {
-          instance.left = 0;
-          windowElement.style.left = '0px';
-        }
-      });
+    controlDragArea(this.windowRef);
 
     this.store
       .select(selectNoteDetailsForm)
@@ -191,7 +155,12 @@ export class NoteDetailsDialogComponent
   public updateNote(): void {
     const payload = this.getPayload();
 
-    this.noteStoreFacade.updateNote(this.noteDetails()!.id!, payload);
+    this.store.dispatch(
+      NotesActions.updateNote({
+        noteId: this.noteDetails()!.id!,
+        data: payload,
+      }),
+    );
 
     this.actions$
       .pipe(

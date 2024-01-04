@@ -9,7 +9,6 @@ import { createSelector } from '@ngrx/store';
 export const selectNotesListViewModel = createSelector(
   notesQuery.selectNotesTableParams,
   templateQueries.selectAllNoteTemplates,
-
   (params, templates) => ({
     queryModel: buildInputNavigation({
       params,

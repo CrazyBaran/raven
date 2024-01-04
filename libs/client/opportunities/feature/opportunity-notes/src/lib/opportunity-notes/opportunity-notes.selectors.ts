@@ -1,7 +1,12 @@
 import { notesQuery } from '@app/client/notes/state';
 import {
+  buildButtonGroupNavigation,
+  buildDropdownNavigation,
+} from '@app/client/shared/util-router';
+import {
   selectAllNoteTemplates,
   selectTemplatesLoaded,
+  templateQueries,
 } from '@app/client/templates/data-access';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { createSelector } from '@ngrx/store';
@@ -53,12 +58,44 @@ const selectNoteFilters = createSelector(
 );
 
 export const selectOpportunityNotesViewModel = createSelector(
-  selectNoteTypesDropdown,
+  notesQuery.selectNotesTableParams,
   notesQuery.selectAllNotes,
-  selectNoteFilters,
-  (noteTypesDropdown, notes, filters) => ({
-    filters,
-    noteTypesDropdown,
+  templateQueries.selectAllNoteTemplates,
+  selectTemplatesLoaded,
+  (params, notes, templates, templateLoaded) => ({
     notes,
+    buttonGroupAssignedTo: buildButtonGroupNavigation({
+      params,
+      name: 'role',
+      toggleable: true,
+      buttons: [
+        {
+          id: null,
+          name: 'All Notes',
+        },
+        {
+          id: 'created',
+          name: 'Created by me',
+        },
+        {
+          id: 'tagged',
+          name: 'I am tagged',
+        },
+      ],
+      staticQueryParams: { skip: null },
+    }),
+    dropdownTemplates: buildDropdownNavigation({
+      params,
+      name: 'noteType',
+      data: templates.map((template) => ({
+        id: template.name,
+        name: template.name,
+      })),
+      loading: !templateLoaded,
+      defaultItem: {
+        name: 'All Notes Types',
+        id: null,
+      },
+    }),
   }),
 );
