@@ -86,11 +86,11 @@ export const notesReducer = createReducer(
       ids: [],
     },
   })),
-  on(NotesActions.getNotes, (state) => ({
+  on(NotesActions.getNotes, (state, action) => ({
     ...state,
     table: {
       ...state.table,
-      isLoading: true,
+      isLoading: !action.silently,
     },
   })),
   on(NotesActions.getNotesSuccess, (state, { data, total }) =>

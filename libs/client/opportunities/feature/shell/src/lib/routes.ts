@@ -4,6 +4,7 @@ import {
   Provider,
 } from '@angular/core';
 import { Route } from '@angular/router';
+import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideFileFeature } from '@app/client/files/feature/state';
 import { notesProviders } from '@app/client/notes/feaure/shell';
 import {
@@ -24,6 +25,7 @@ import { StoreModule } from '@ngrx/store';
 
 const opportunitiesProviders: Array<Provider | EnvironmentProviders> = [
   OpportunitiesFacade,
+  provideWebsocketEffects(),
   importProvidersFrom(
     StoreModule.forFeature(opportunitiesFeature),
     EffectsModule.forFeature([OpportunitiesEffects]),

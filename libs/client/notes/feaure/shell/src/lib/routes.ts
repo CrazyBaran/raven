@@ -5,6 +5,7 @@ import {
   Provider,
 } from '@angular/core';
 import { Routes } from '@angular/router';
+import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { FileTypeBadgeColorsResolver } from '@app/client/files/ui';
 import {
   NotesEffects,
@@ -33,6 +34,7 @@ export const notesProviders: Array<Provider | EnvironmentProviders> = [
     EffectsModule.forFeature(tagsEffects),
   ),
   templateFeatureProviders,
+  provideWebsocketEffects(),
   {
     provide: NOTE_TYPE_BADGE_COLORS,
     useFactory: (): FileTypeBadgeColorsResolver => {

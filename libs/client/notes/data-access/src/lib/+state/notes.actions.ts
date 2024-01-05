@@ -12,7 +12,7 @@ export const NotesActions = createActionGroup({
   events: {
     'Open Notes Table': emptyProps(),
 
-    'Get Notes': props<{ params: NoteQueryParams }>(),
+    'Get Notes': props<{ params: NoteQueryParams; silently?: boolean }>(),
     'Get Notes Success': props<{ data: NoteData[]; total: number }>(),
     'Get Notes Failure': props<{ error: string }>(),
 
@@ -53,5 +53,9 @@ export const NotesActions = createActionGroup({
       data: PatchNote;
       changedFields: string[];
     }>(),
+
+    //websocket events
+    'Live Create Note': props<{ id: string }>(),
+    'Live Change Note': props<{ data: NoteWithRelationsData }>(),
   },
 });

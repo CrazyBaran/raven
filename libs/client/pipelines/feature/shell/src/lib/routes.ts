@@ -1,5 +1,6 @@
 import { importProvidersFrom } from '@angular/core';
 import { Route } from '@angular/router';
+import { provideWebsocketEffects } from '@app/client/core/websockets';
 import {
   OpportunitiesEffects,
   OpportunitiesFacade,
@@ -16,6 +17,7 @@ export const PIPELINES_ROUTES: Route[] = [
   {
     path: '',
     providers: [
+      provideWebsocketEffects(),
       OpportunitiesFacade,
       importProvidersFrom(
         StoreModule.forFeature('opportunities', opportunitiesReducer),

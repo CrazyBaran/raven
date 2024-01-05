@@ -9,7 +9,6 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { WebsocketService } from '@app/client/core/websockets';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
@@ -33,7 +32,6 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
-import { distinctUntilChanged } from 'rxjs';
 import {
   selectAllOpportunitiesDictionary,
   selectOportunitiesStageDictionary,
@@ -77,10 +75,7 @@ export class PipelinesPageComponent implements OnInit {
     ),
   }));
 
-  public constructor(
-    private readonly store: Store,
-    private readonly websocketService: WebsocketService,
-  ) {
+  public constructor(private readonly store: Store) {
     this.store
       .select(selectPipelineBoardParams)
       .pipe(takeUntilDestroyed())
@@ -97,28 +92,6 @@ export class PipelinesPageComponent implements OnInit {
         tagTypes: ['people', 'opportunity'],
       }),
     );
-
-    this.websocketService.connect();
-
-    setTimeout(() => {
-      this.websocketService.joinResourceEvents('pipelines');
-    }, 2000);
-
-    this.websocketService
-      .events()
-      .pipe(distinctUntilChanged())
-      .subscribe((event) => {
-        if (event.eventType === 'pipeline-stage-changed') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const { opportunityId, stageId } = event.data as any;
-          this.store.dispatch(
-            OpportunitiesActions.liveChangeOpportunityPipelineStage({
-              id: opportunityId,
-              pipelineStageId: stageId,
-            }),
-          );
-        }
-      });
   }
 
   public onDragEvent($event: {
