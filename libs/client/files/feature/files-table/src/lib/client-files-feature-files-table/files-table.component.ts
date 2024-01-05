@@ -100,7 +100,16 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
     filesQuery.selectLoadedFolders,
     filesQuery.selectFileTags,
     selectOrganisationsTableParams,
-    (files, tags, opportunity, loadedFolders, fileTags, params) => {
+    opportunitiesQuery.selectIsTeamMemberForCurrentOpportunity,
+    (
+      files,
+      tags,
+      opportunity,
+      loadedFolders,
+      fileTags,
+      params,
+      isTeamMember,
+    ) => {
       return {
         source: files
           .filter((t) => t.folderId === opportunity?.sharepointDirectoryId)
@@ -112,6 +121,7 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
         fileTags,
         sharepointFolder: opportunity?.sharePointPath,
         rootFolder: opportunity?.sharepointDirectoryId,
+        canEditFiles: isTeamMember,
         filters: buildDropdownNavigation({
           params,
           name: 'tag',

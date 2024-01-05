@@ -3,14 +3,16 @@
     <div class="flex w-full items-center justify-between">
       <app-dropdown-navigation [model]="vm().filters" />
 
-      <app-picker
-        (selectFiles)="onPickerChange($event)"
-        [web]="sharepointWeb!"
-        [list]="sharepointList!"
-        [folder]="vm().sharepointFolder!"
-        [url]="sharepointUrl!"
-        name="Manage Files"
-      ></app-picker>
+      @if (vm().canEditFiles) {
+        <app-picker
+          (selectFiles)="onPickerChange($event)"
+          [web]="sharepointWeb!"
+          [list]="sharepointList!"
+          [folder]="vm().sharepointFolder!"
+          [url]="sharepointUrl!"
+          name="Manage Files"
+        />
+      }
     </div>
   </app-quick-filters-template>
 
@@ -92,11 +94,15 @@
                   iconClass="fa-solid fa-arrow-up-right-from-square"
                   (click)="openFileWebUrl(dataItem)"
                 />
-                <kendo-button
-                  class="mr-10"
-                  iconClass="fa-regular fa-tag"
-                  (click)="openFileManage(dataItem)"
-                />
+
+                @if (vm().canEditFiles) {
+                  <kendo-button
+                    class="mr-10"
+                    iconClass="fa-regular fa-tag"
+                    (click)="openFileManage(dataItem)"
+                  />
+                }
+
               </div>
             }
           </ng-template>
