@@ -92,6 +92,39 @@ export const environment = {
     },
   },
   database: {
+    dataWarehouse: {
+      type: 'mssql',
+      host: env.get('DWH_HOST').asString(),
+      port: env.get('DWH_PORT').default(1433).asPortNumber(),
+      database: env.get('DWH_DATABASE').asString(),
+      authentication: {
+        type: 'default',
+        options: {
+          userName: env.get('DWH_USERNAME').asString(),
+          password: env.get('DWH_PASSWORD').asString(),
+        },
+      },
+      synchronize: false,
+      logging: false,
+      debug: false,
+      trace: false,
+      entities: [],
+      subscribers: [],
+      autoLoadEntities: true,
+      options: {
+        enableArithAbort: true,
+        useUTC: true,
+        encrypt: true,
+      },
+      cache: {
+        type: 'ioredis',
+        options: redisConnectionOptions,
+      },
+      pool: {
+        max: 100,
+        min: 1,
+      },
+    } as SqlServerConnectionOptions,
     orm: {
       type: 'mssql',
       host: env.get('TYPEORM_HOST').default('localhost').asString(),
@@ -210,6 +243,12 @@ export const environment = {
       .asBoolStrict(),
     enabledOnInit: env
       .get('ENABLE_CREATE_OPPORTUNITY_ON_INIT')
+      .default('false')
+      .asBoolStrict(),
+  },
+  features: {
+    dataWareHouse: env
+      .get('FEATURE_DATA_WAREHOUSE')
       .default('false')
       .asBoolStrict(),
   },
