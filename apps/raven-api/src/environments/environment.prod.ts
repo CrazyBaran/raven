@@ -117,7 +117,7 @@ export const environment = {
       port: env.get('DWH_PORT').default(1433).asPortNumber(),
       database: env.get('DWH_DATABASE').asString(),
       authentication: {
-        type: 'azure-active-directory-default',
+        type: 'azure-active-directory-msi-app-service',
         options: {
           clientId: env.get('AD_CLIENT_ID').asString(),
         },
