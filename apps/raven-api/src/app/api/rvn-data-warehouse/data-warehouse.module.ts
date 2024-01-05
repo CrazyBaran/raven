@@ -8,12 +8,17 @@ import { environment } from '../../../environments/environment';
 @Module({})
 export class DataWarehouseModule {
   public static async forRootAsync(): Promise<DynamicModule> {
+    if (environment.features.dataWareHouse === false) {
+      return {
+        module: DataWarehouseModule,
+      };
+    }
+
     const dataWarehouseConfig = environment.database.dataWarehouse;
     const alteredConfig = {
       ...dataWarehouseConfig,
       authentication: {
         type: 'azure-active-directory-default',
-        options: { clientId: '' },
       } as SqlServerConnectionCredentialsAuthenticationOptions,
     } as SqlServerConnectionOptions;
 

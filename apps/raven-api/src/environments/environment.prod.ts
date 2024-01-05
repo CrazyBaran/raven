@@ -232,4 +232,10 @@ export const environment = {
       .default('false')
       .asBoolStrict(),
   },
+  features: {
+    dataWareHouse: env
+      .get('FEATURE_DATA_WAREHOUSE')
+      .default('false')
+      .asBoolStrict(),
+  },
 };
