@@ -1132,19 +1132,19 @@ export class NotesService {
   }
 
   private emitNoteCreatedEvent(note: NoteEntity): void {
-    this.gatewayEventService.emit('notes', {
+    this.gatewayEventService.emit('resource-notes', {
       eventType: 'note-created',
       data: note.id,
     });
   }
   private emitNoteUpdatedEvent(note: NoteEntity): void {
-    this.gatewayEventService.emit('notes', {
+    this.gatewayEventService.emit('resource-notes', {
       eventType: 'note-created',
       data: note.id,
     });
   }
   private emitNoteDeletedEvent(note: NoteEntity): void {
-    this.gatewayEventService.emit('notes', {
+    this.gatewayEventService.emit('resource-notes', {
       eventType: 'note-deleted',
       data: note.id,
     });
