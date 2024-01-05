@@ -20,6 +20,7 @@ export class DataWarehouseModule {
       .catch((err) => {
         succeeded = false;
         console.log(err);
+        console.log(environment.database.dataWarehouse);
       });
 
     if (succeeded) {
