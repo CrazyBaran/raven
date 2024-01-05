@@ -13,7 +13,7 @@ export class DataWarehouseModule {
       ...dataWarehouseConfig,
       authentication: {
         type: 'azure-active-directory-default',
-        options: {},
+        options: { clientId: '' },
       } as SqlServerConnectionCredentialsAuthenticationOptions,
     } as SqlServerConnectionOptions;
 
