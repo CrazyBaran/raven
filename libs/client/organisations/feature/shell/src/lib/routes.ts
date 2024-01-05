@@ -17,6 +17,7 @@ import {
   pipelinesReducer,
 } from '@app/client/pipelines/state';
 
+import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideFileFeature } from '@app/client/files/feature/state';
 import {
   NotesEffects,
@@ -32,6 +33,7 @@ export const organisationProviders: Array<Provider | EnvironmentProviders> = [
   NoteStoreFacade,
   templateFeatureProviders,
   provideFileFeature,
+  provideWebsocketEffects(),
   importProvidersFrom(
     StoreModule.forFeature(OrganisationsFeature),
     EffectsModule.forFeature([OrganisationsEffects]),

@@ -2,7 +2,8 @@ import { io, Socket } from 'socket.io-client';
 
 import { Injectable } from '@angular/core';
 
-import { WebsocketEvent } from '@app/rvns-web-sockets';
+import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import { WebsocketEvent, WebsocketResource } from '@app/rvns-web-sockets';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -17,6 +18,11 @@ export class WebsocketService {
   private authErrorEvents$: BehaviorSubject<boolean> = new BehaviorSubject(
     false,
   );
+  private _currentResource?: WebsocketResource;
+
+  public get currentResource(): WebsocketResource | undefined {
+    return this._currentResource;
+  }
 
   public connect(token?: string): void {
     this.socket = io('https://as-wa-mc-raven-dev.azurewebsites.net/', {
@@ -62,15 +68,18 @@ export class WebsocketService {
   public disconnect(): void {
     if (this.socket?.connected) {
       this.socket.disconnect();
+      this._currentResource = undefined;
     }
   }
 
-  public joinResourceEvents(resourceId: string): void {
+  public joinResourceEvents(resourceId: WebsocketResource): void {
     this.socket.emit('ws.join.resource', resourceId);
+    this._currentResource = resourceId;
   }
 
   public leaveResourceEvents(resourceId: string): void {
     this.socket.emit('ws.leave.resource', resourceId);
+    this._currentResource = undefined;
   }
 
   public events(): Observable<WebsocketEvent> {
@@ -82,6 +91,7 @@ export class WebsocketService {
     TEvent extends Extract<WebsocketEvent, { eventType: T }>,
   >(eventType: T): Observable<TEvent> {
     return this.events$.pipe(
+      distinctUntilChangedDeep(),
       filter((event) => event.eventType === eventType),
     ) as Observable<TEvent>;
   }
