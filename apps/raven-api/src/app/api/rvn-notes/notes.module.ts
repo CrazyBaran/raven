@@ -12,6 +12,7 @@ import {
 } from '../rvn-tags/entities/tag.entity';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
+import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
@@ -37,6 +38,8 @@ import { NotesService } from './notes.service';
     ]),
     EventEmitterModule,
     StorageAccountModule,
+    EventEmitterModule,
+    WebSocketsModule,
   ],
   controllers: [NotesController],
   providers: [
