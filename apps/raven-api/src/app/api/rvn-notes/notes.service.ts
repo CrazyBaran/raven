@@ -1139,8 +1139,8 @@ export class NotesService {
   }
   private emitNoteUpdatedEvent(note: NoteEntity): void {
     this.gatewayEventService.emit('resource-notes', {
-      eventType: 'note-created',
-      data: note.id,
+      eventType: 'note-updated',
+      data: { id: note.id, rootVersionId: note.rootVersionId },
     });
   }
   private emitNoteDeletedEvent(note: NoteEntity): void {

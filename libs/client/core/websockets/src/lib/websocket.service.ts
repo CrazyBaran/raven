@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { Injectable } from '@angular/core';
 
 import { WebsocketEvent } from '@app/rvns-web-sockets';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -75,6 +75,15 @@ export class WebsocketService {
 
   public events(): Observable<WebsocketEvent> {
     return this.events$.asObservable();
+  }
+
+  public eventsOfType<
+    T extends WebsocketEvent['eventType'],
+    TEvent extends Extract<WebsocketEvent, { eventType: T }>,
+  >(eventType: T): Observable<TEvent> {
+    return this.events$.pipe(
+      filter((event) => event.eventType === eventType),
+    ) as Observable<TEvent>;
   }
 
   public reconnectEffects(): Observable<boolean> {
