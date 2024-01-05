@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
 import { environment } from '../../../environments/environment';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { CCA_CONFIG, ccaConfig } from './cca.config';
 import { ConfidentialClientApplicationLogger } from './confidential-client-application.logger';
 import { CustomAuthenticationProvider } from './custom-authentication.provider';
@@ -17,7 +18,7 @@ import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CcaTokenCacheEntity]),
+    TypeOrmModule.forFeature([CcaTokenCacheEntity, OrganisationEntity]),
     ConfigModule,
     ClsModule.forFeature(),
     CryptoModule.register({

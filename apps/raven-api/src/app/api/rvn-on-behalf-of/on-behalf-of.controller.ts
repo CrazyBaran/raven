@@ -4,13 +4,35 @@ import {
   ConfidentialClientApplication,
   OnBehalfOfRequest,
 } from '@azure/msal-node';
-import { Controller, Get, Headers, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Headers,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { User } from '@microsoft/microsoft-graph-types';
-import { ApiOAuth2, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOAuth2,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
+import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { RavenLogger } from '../rvn-logger/raven.logger';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
+import { ParseOrganisationPipe } from '../rvn-opportunities/pipes/parse-organisation.pipe';
 
 @ApiTags('On Behalf Of Management')
 @Controller('on-behalf-of')
@@ -20,6 +42,8 @@ export class OnBehalfOfController {
     private readonly confidentialClientApplication: ConfidentialClientApplication,
     private readonly graphClient: Client,
     private readonly logger: RavenLogger,
+    @InjectRepository(OrganisationEntity)
+    private readonly organisationRepository: Repository<OrganisationEntity>,
   ) {
     this.logger.setContext(OnBehalfOfController.name);
   }
@@ -140,5 +164,48 @@ export class OnBehalfOfController {
       );
 
     return result;
+  }
+
+  @Post('/organisation/:id/directory')
+  @ApiOperation({ summary: 'Create sharepoint directory for organisation' })
+  @ApiResponse({
+    status: 201,
+    description:
+      'The organisation sharepoint directory has been successfully created.',
+  })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async createFolderForOrganisation(
+    @Param('id', ParseUUIDPipe, ParseOrganisationPipe)
+    organisation: OrganisationEntity,
+  ): Promise<string> {
+    const name =
+      SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
+        organisation,
+      );
+
+    if (organisation.sharepointDirectoryId) {
+      this.logger.log(`Directory ${name} already exists`);
+      return organisation.sharepointDirectoryId;
+    }
+
+    const driveItem = {
+      name,
+      folder: {},
+      '@microsoft.graph.conflictBehavior': 'fail',
+    };
+    const { siteId, driveId, rootDirectoryId } = environment.sharePoint;
+    const res = await this.graphClient
+      .api(
+        `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${rootDirectoryId}/children`,
+      )
+      .post(driveItem);
+
+    const directoryId = res.id;
+
+    organisation.sharepointDirectoryId = directoryId;
+    await this.organisationRepository.save(organisation);
+    return directoryId;
   }
 }
