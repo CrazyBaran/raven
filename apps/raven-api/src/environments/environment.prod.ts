@@ -119,7 +119,7 @@ export const environment = {
       authentication: {
         type: 'azure-active-directory-msi-app-service',
         options: {
-          clientId: env.get('AD_CLIENT_ID').asString(),
+          clientId: env.get('AZURE_MANAGED_IDENTITY_CLIENT_ID').asString(),
         },
       },
       synchronize: false,
