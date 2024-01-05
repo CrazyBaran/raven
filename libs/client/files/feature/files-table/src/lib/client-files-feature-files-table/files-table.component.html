@@ -94,6 +94,7 @@
                   iconClass="fa-solid fa-arrow-up-right-from-square"
                   (click)="openFileWebUrl(dataItem)"
                 />
+
                 @if (vm().canEditFiles) {
                   <kendo-button
                     class="mr-10"
@@ -101,6 +102,7 @@
                     (click)="openFileManage(dataItem)"
                   />
                 }
+
               </div>
             }
           </ng-template>

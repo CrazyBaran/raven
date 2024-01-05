@@ -20,7 +20,7 @@ export class SharepointDirectoryStructureGenerator {
   ): string {
     return `${organisation.name}(${this.removeLeadingProtocol(
       organisation.domains[0],
-    )})`;
+    )})`.trim();
   }
 
   public static getDirectoryNameForOpportunity(

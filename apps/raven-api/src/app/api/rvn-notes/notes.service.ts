@@ -13,7 +13,7 @@ import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { cloneDeep } from 'lodash';
-import { Raw, Repository } from 'typeorm';
+import { Brackets, Raw, Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
@@ -28,6 +28,7 @@ import { FieldGroupEntity } from '../rvn-templates/entities/field-group.entity';
 import { TabEntity } from '../rvn-templates/entities/tab.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
@@ -74,7 +75,10 @@ export class NotesService {
     private readonly organisationTagRepository: Repository<OrganisationTagEntity>,
     @InjectRepository(TemplateEntity)
     private readonly templateRepository: Repository<TemplateEntity>,
+    @InjectRepository(ComplexTagEntity)
+    private readonly complexTagRepository: Repository<ComplexTagEntity>,
     private readonly storageAccountService: StorageAccountService,
+    private readonly gatewayEventService: GatewayEventService,
     private readonly logger: RavenLogger,
   ) {
     this.logger.setContext(NotesService.name);
@@ -95,6 +99,20 @@ export class NotesService {
     assignedTo?: string,
     role?: 'created' | 'tagged',
   ): Promise<{ items: NoteEntity[]; total: number }> {
+    const complexTagsForOrganisation = organisationTagEntity
+      ? await this.complexTagRepository
+          .createQueryBuilder('complexTag')
+          .innerJoin(
+            'complexTag.tags',
+            'organisationComplexTag',
+            'organisationComplexTag.id = :organisationComplexTagId',
+            {
+              organisationComplexTagId: organisationTagEntity.id,
+            },
+          )
+          .getMany()
+      : [];
+
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
       .select('note_with_tag.id')
@@ -152,7 +170,10 @@ export class NotesService {
     if (organisationTagEntity) {
       queryBuilder
         .andWhere(`note.id IN (${orgTagSubQuery.getQuery()})`)
-        .setParameter('orgTagId', organisationTagEntity.id);
+        .setParameter('orgTagId', organisationTagEntity.id)
+        .orWhere('complexTags.id IN (:...complexTagIds)', {
+          complexTagIds: complexTagsForOrganisation?.map((ct) => ct.id),
+        });
     }
 
     if (tagEntities) {
@@ -256,6 +277,26 @@ export class NotesService {
       );
     }
 
+    const complexTagsForOpportunity = await this.complexTagRepository
+      .createQueryBuilder('complexTag')
+      .innerJoin(
+        'complexTag.tags',
+        'opportunityComplexTag',
+        'opportunityComplexTag.id = :opportunityComplexTagId',
+        {
+          opportunityComplexTagId: opportunity.tagId,
+        },
+      )
+      .innerJoin(
+        'complexTag.tags',
+        'organisationComplexTag',
+        'organisationComplexTag.id = :organisationComplexTagId',
+        {
+          organisationComplexTagId: organisationTag.id,
+        },
+      )
+      .getMany();
+
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
       .select('MAX(note_sub.version)', 'maxVersion')
@@ -287,12 +328,28 @@ export class NotesService {
       {
         organisationTagId: organisationTag.id,
       },
-    )
-      .leftJoinAndSelect('note.tags', 'allTags')
+    );
+
+    qb.leftJoinAndSelect('note.tags', 'allTags')
       .where(
-        opportunity.tag
-          ? 'organisationTag.id IS NOT NULL AND opportunityTag.id IS NOT NULL'
-          : 'organisationTag.id IS NOT NULL',
+        new Brackets((qb) => {
+          qb.where(
+            new Brackets((qb) => {
+              qb.where('organisationTag.id IS NOT NULL');
+              if (opportunity.tag) {
+                qb.andWhere('opportunityTag.id IS NOT NULL');
+              }
+              return qb;
+            }),
+          );
+          if (complexTagsForOpportunity?.length > 0) {
+            qb.orWhere('complexTags.id IN (:...complexTagIds)', {
+              complexTagIds: complexTagsForOpportunity?.map((ct) => ct.id),
+            });
+          }
+
+          return qb;
+        }),
       )
       .andWhere(`note.version = (${subQuery.getQuery()})`)
       .andWhere('note.deletedAt IS NULL')
@@ -453,7 +510,7 @@ export class NotesService {
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {
-      return await this.createNoteFromTemplate(
+      const createdNote = await this.createNoteFromTemplate(
         options.name,
         options.fields,
         options.tags,
@@ -463,6 +520,8 @@ export class NotesService {
         options.rootVersionId,
         options.companyOpportunityTags,
       );
+      this.emitNoteCreatedEvent(createdNote);
+      return createdNote;
     }
 
     const noteField = new NoteFieldEntity();
@@ -491,7 +550,9 @@ export class NotesService {
     note.updatedBy = options.userEntity;
     note.noteFieldGroups = [noteFieldGroup];
 
-    return await this.noteRepository.save(note);
+    const createdNote = await this.noteRepository.save(note);
+    this.emitNoteCreatedEvent(createdNote);
+    return createdNote;
   }
 
   public async updateNote(
@@ -521,7 +582,7 @@ export class NotesService {
       );
 
       if (options.templateEntity) {
-        return await this.createNoteFromTemplate(
+        const updatedNote = await this.createNoteFromTemplate(
           options.name,
           options.fields,
           options.tags,
@@ -532,6 +593,8 @@ export class NotesService {
           options.companyOpportunityTags,
           latestVersion.version + 1,
         );
+        this.emitNoteUpdatedEvent(updatedNote);
+        return updatedNote;
       }
 
       start = new Date().getTime();
@@ -598,7 +661,9 @@ export class NotesService {
               'Updated note root version id does not match workflow note root version id',
             );
           }
+          delete opportunity.note;
           opportunity.noteId = savedNewNoteVersion.id;
+
           await tem.save(opportunity);
         }
         this.logger.debug(
@@ -609,6 +674,9 @@ export class NotesService {
         savedNewNoteVersion.template = {
           type: TemplateTypeEnum.Workflow,
         } as TemplateEntity;
+      }
+      if (templateType === TemplateTypeEnum.Note) {
+        this.emitNoteUpdatedEvent(savedNewNoteVersion);
       }
       return savedNewNoteVersion;
     });
@@ -645,6 +713,7 @@ export class NotesService {
   public async deleteNotes(
     noteEntities: NoteEntity[],
     userEntity: UserEntity,
+    latestVersion: NoteEntity,
   ): Promise<void> {
     await this.noteRepository.manager.transaction(async (tem) => {
       for (const noteEntity of noteEntities) {
@@ -656,6 +725,7 @@ export class NotesService {
         await tem.save(noteEntity);
       }
     });
+    this.emitNoteDeletedEvent(latestVersion);
   }
 
   public async getNoteAttachments(
@@ -666,6 +736,7 @@ export class NotesService {
     );
   }
 
+  // TODO think about moving mapping loogic outside of service
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
     return {
       id: noteEntity.id,
@@ -922,12 +993,7 @@ export class NotesService {
   ): WorkflowNoteData {
     delete workflowNote.noteFieldGroups;
 
-    const filteredWorkflowNote = this.filterWorkflowNote(
-      workflowNote,
-      currentPipelineStageId,
-    );
-
-    const mappedNote = this.noteEntityToNoteData(filteredWorkflowNote);
+    const mappedNote = this.noteEntityToNoteData(workflowNote);
 
     const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template
@@ -970,6 +1036,22 @@ export class NotesService {
         );
       }
     }
+
+    const fieldDefinitions =
+      workflowNote.template?.tabs
+        .flatMap((t) => t.fieldGroups)
+        .flatMap((fg) => fg.fieldDefinitions) || [];
+    for (const field of mappedNote.noteTabs
+      .flatMap((nt) => nt.noteFieldGroups)
+      .flatMap((nfg) => nfg.noteFields)) {
+      const fieldDefinition = fieldDefinitions.find(
+        (fd) => fd.id === field.templateFieldId,
+      );
+      if (fieldDefinition) {
+        field.hideOnPipelineStages = fieldDefinition.hideOnPipelineStages;
+      }
+    }
+
     (mappedNote as WorkflowNoteData).missingFields = missingFields;
     return mappedNote as WorkflowNoteData;
   }
@@ -1047,5 +1129,24 @@ export class NotesService {
         .flat()
         .map(this.noteFieldEntityToNoteFieldData.bind(this)),
     };
+  }
+
+  private emitNoteCreatedEvent(note: NoteEntity): void {
+    this.gatewayEventService.emit('notes', {
+      eventType: 'note-created',
+      data: note.id,
+    });
+  }
+  private emitNoteUpdatedEvent(note: NoteEntity): void {
+    this.gatewayEventService.emit('notes', {
+      eventType: 'note-created',
+      data: note.id,
+    });
+  }
+  private emitNoteDeletedEvent(note: NoteEntity): void {
+    this.gatewayEventService.emit('notes', {
+      eventType: 'note-deleted',
+      data: note.id,
+    });
   }
 }

@@ -169,7 +169,7 @@
     "swagger-ui-express": "^5.0.0",
     "tmp-promise": "3.0.3",
     "tslib": "^2.6.2",
-    "typeorm": "^0.3.17",
+    "typeorm": "^0.3.19",
     "typeorm-naming-strategies": "4.1.0",
     "uuid": "9.0.0",
     "zone.js": "0.14.2"

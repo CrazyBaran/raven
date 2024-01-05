@@ -30,10 +30,10 @@
               {{ dataItem.name }}
             </p>
 
-            @if (dataItem.domains[0]){
-            <p [isEllipsisActive]="true" class="text-xs">
-              {{ dataItem.domains[0] }}
-            </p>
+            @if (dataItem.domains[0]) {
+              <p [isEllipsisActive]="true" class="text-xs">
+                {{ dataItem.domains[0] }}
+              </p>
             }
           </div>
           <i class="fa-solid fa-share"></i>

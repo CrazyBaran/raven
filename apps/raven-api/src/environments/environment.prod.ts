@@ -111,6 +111,38 @@ export const environment = {
         min: 1,
       },
     } as SqlServerConnectionOptions,
+    dataWarehouse: {
+      type: 'mssql',
+      host: env.get('DWH_HOST').asString(),
+      port: env.get('DWH_PORT').default(1433).asPortNumber(),
+      database: env.get('DWH_DATABASE').asString(),
+      authentication: {
+        type: 'azure-active-directory-default',
+        options: {
+          clientId: env.get('AD_CLIENT_ID').asString(),
+        },
+      },
+      synchronize: false,
+      logging: false,
+      debug: false,
+      trace: false,
+      entities: [],
+      subscribers: [],
+      autoLoadEntities: true,
+      options: {
+        enableArithAbort: true,
+        useUTC: true,
+        encrypt: true,
+      },
+      cache: {
+        type: 'ioredis',
+        options: redisConnectionOptions,
+      },
+      pool: {
+        max: 100,
+        min: 1,
+      },
+    } as SqlServerConnectionOptions,
     redis: {
       options: redisConnectionOptions,
     },

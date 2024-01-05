@@ -7,12 +7,14 @@ import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
+import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import { OrganisationTagEntity } from '../rvn-tags/entities/tag.entity';
 import { FieldDefinitionEntity } from '../rvn-templates/entities/field-definition.entity';
 import { FieldGroupEntity } from '../rvn-templates/entities/field-group.entity';
 import { TabEntity } from '../rvn-templates/entities/tab.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
@@ -57,8 +59,20 @@ describe('NotesService', () => {
           },
         },
         {
+          provide: getRepositoryToken(ComplexTagEntity),
+          useValue: {
+            save: jest.fn(),
+          },
+        },
+        {
           provide: StorageAccountService,
           useValue: {},
+        },
+        {
+          provide: GatewayEventService,
+          useValue: {
+            emit: jest.fn(),
+          },
         },
         {
           provide: RavenLogger,

@@ -7,13 +7,17 @@
     Please fill in the following fields with this company’s KPI information
   </p>
   <form [formGroup]="kpiForm" class="flex flex-1 flex-col gap-4 px-3">
-    @for (control of visibleControls() | keyvalue: comparatorFn; track
-    control.key ){
-    <ng-container
-      *rxLet="controlResolver.resolve(control.value.type); let outlet"
-      [ngComponentOutletInjector]="control.key | controlInjector: control.value"
-      [ngComponentOutlet]="outlet"
-    ></ng-container>
+    @for (
+      control of visibleControls() | keyvalue: comparatorFn;
+      track control.key
+    ) {
+      <ng-container
+        *rxLet="controlResolver.resolve(control.value.type); let outlet"
+        [ngComponentOutletInjector]="
+          control.key | controlInjector: control.value
+        "
+        [ngComponentOutlet]="outlet"
+      ></ng-container>
     }
   </form>
 </div>
@@ -25,8 +29,9 @@
     [disabled]="!kpiForm.valid || vm().isUpdating"
     themeColor="primary"
   >
-    @if (vm().isUpdating){
-    <kendo-loader class="!text-secondary-100 mr-1" size="small" />
-    } Save KPI Values
+    @if (vm().isUpdating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Save KPI Values
   </kendo-button>
 </kendo-dialog-actions>

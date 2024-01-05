@@ -10,15 +10,15 @@
     <kendo-tilelayout-item-header>
       <div class="flex items-center justify-between gap-2">
         <h5 class="k-card-title">Details</h5>
-        @if(vm().canEditOpportunity){
-        <kendo-button
-          [queryParams]="{ 'opportunity-edit': vm().id }"
-          [routerLink]="['./']"
-          iconClass="fa-sharp fa-solid fa-pen"
-          queryParamsHandling="merge"
-          size="small"
-          >Edit</kendo-button
-        >
+        @if (vm().canEditOpportunity) {
+          <kendo-button
+            [queryParams]="{ 'opportunity-edit': vm().id }"
+            [routerLink]="['./']"
+            iconClass="fa-sharp fa-solid fa-pen"
+            queryParamsHandling="merge"
+            size="small"
+            >Edit</kendo-button
+          >
         }
       </div>
     </kendo-tilelayout-item-header>

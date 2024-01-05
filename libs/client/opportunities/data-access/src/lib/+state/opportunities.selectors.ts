@@ -110,12 +110,20 @@ export const selectOpportunityNoteTabs = createSelector(
 export const selectNoteFields = createSelector(
   selectOpportunityNoteTabs,
   storageQuery.selectAzureImageDictionary,
-  (tabs, azureImageDictioanry) => {
+  selectRouteOpportunityDetails,
+  (tabs, azureImageDictionary, opportunity) => {
     return _.chain(tabs)
       .map((tab) => {
         return _.chain(tab.noteFieldGroups)
           .map(({ noteFields, name, id }) => {
             return _.chain(noteFields)
+              .filter(
+                (noteField) =>
+                  !noteField.hideOnPipelineStages ||
+                  !noteField.hideOnPipelineStages.some(
+                    (stage) => stage.id === opportunity?.stage.id,
+                  ),
+              )
               .orderBy('order')
               .map((field) => ({
                 type: 'field',
@@ -123,7 +131,7 @@ export const selectNoteFields = createSelector(
                 uniqId: field.templateFieldId,
                 id: field.id,
                 title: field.name,
-                value: Object.entries(azureImageDictioanry).reduce(
+                value: Object.entries(azureImageDictionary).reduce(
                   (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
                   field.value ?? '',
                 ),

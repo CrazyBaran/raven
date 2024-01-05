@@ -270,6 +270,10 @@ export class NotesController {
     if (noteEntity.createdById !== userEntity.id) {
       throw new ForbiddenException('Note can be deleted only by its creator.');
     }
-    return await this.notesService.deleteNotes(noteEntities, userEntity);
+    return await this.notesService.deleteNotes(
+      noteEntities,
+      userEntity,
+      noteEntity,
+    );
   }
 }
