@@ -28,6 +28,7 @@ import { FieldGroupEntity } from '../rvn-templates/entities/field-group.entity';
 import { TabEntity } from '../rvn-templates/entities/tab.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
 import { NoteFieldGroupEntity } from './entities/note-field-group.entity';
 import { NoteFieldEntity } from './entities/note-field.entity';
 import { NoteTabEntity } from './entities/note-tab.entity';
@@ -77,6 +78,7 @@ export class NotesService {
     @InjectRepository(ComplexTagEntity)
     private readonly complexTagRepository: Repository<ComplexTagEntity>,
     private readonly storageAccountService: StorageAccountService,
+    private readonly gatewayEventService: GatewayEventService,
     private readonly logger: RavenLogger,
   ) {
     this.logger.setContext(NotesService.name);
@@ -508,7 +510,7 @@ export class NotesService {
 
   public async createNote(options: CreateNoteOptions): Promise<NoteEntity> {
     if (options.templateEntity) {
-      return await this.createNoteFromTemplate(
+      const createdNote = await this.createNoteFromTemplate(
         options.name,
         options.fields,
         options.tags,
@@ -518,6 +520,8 @@ export class NotesService {
         options.rootVersionId,
         options.companyOpportunityTags,
       );
+      this.emitNoteCreatedEvent(createdNote);
+      return createdNote;
     }
 
     const noteField = new NoteFieldEntity();
@@ -546,7 +550,9 @@ export class NotesService {
     note.updatedBy = options.userEntity;
     note.noteFieldGroups = [noteFieldGroup];
 
-    return await this.noteRepository.save(note);
+    const createdNote = await this.noteRepository.save(note);
+    this.emitNoteCreatedEvent(createdNote);
+    return createdNote;
   }
 
   public async updateNote(
@@ -576,7 +582,7 @@ export class NotesService {
       );
 
       if (options.templateEntity) {
-        return await this.createNoteFromTemplate(
+        const updatedNote = await this.createNoteFromTemplate(
           options.name,
           options.fields,
           options.tags,
@@ -587,6 +593,8 @@ export class NotesService {
           options.companyOpportunityTags,
           latestVersion.version + 1,
         );
+        this.emitNoteUpdatedEvent(updatedNote);
+        return updatedNote;
       }
 
       start = new Date().getTime();
@@ -667,6 +675,9 @@ export class NotesService {
           type: TemplateTypeEnum.Workflow,
         } as TemplateEntity;
       }
+      if (templateType === TemplateTypeEnum.Note) {
+        this.emitNoteUpdatedEvent(savedNewNoteVersion);
+      }
       return savedNewNoteVersion;
     });
   }
@@ -702,6 +713,7 @@ export class NotesService {
   public async deleteNotes(
     noteEntities: NoteEntity[],
     userEntity: UserEntity,
+    latestVersion: NoteEntity,
   ): Promise<void> {
     await this.noteRepository.manager.transaction(async (tem) => {
       for (const noteEntity of noteEntities) {
@@ -713,6 +725,7 @@ export class NotesService {
         await tem.save(noteEntity);
       }
     });
+    this.emitNoteDeletedEvent(latestVersion);
   }
 
   public async getNoteAttachments(
@@ -723,6 +736,7 @@ export class NotesService {
     );
   }
 
+  // TODO think about moving mapping loogic outside of service
   public noteEntityToNoteData(noteEntity: NoteEntity): NoteWithRelationsData {
     return {
       id: noteEntity.id,
@@ -1115,5 +1129,24 @@ export class NotesService {
         .flat()
         .map(this.noteFieldEntityToNoteFieldData.bind(this)),
     };
+  }
+
+  private emitNoteCreatedEvent(note: NoteEntity): void {
+    this.gatewayEventService.emit('notes', {
+      eventType: 'note-created',
+      data: note.id,
+    });
+  }
+  private emitNoteUpdatedEvent(note: NoteEntity): void {
+    this.gatewayEventService.emit('notes', {
+      eventType: 'note-created',
+      data: note.id,
+    });
+  }
+  private emitNoteDeletedEvent(note: NoteEntity): void {
+    this.gatewayEventService.emit('notes', {
+      eventType: 'note-deleted',
+      data: note.id,
+    });
   }
 }
