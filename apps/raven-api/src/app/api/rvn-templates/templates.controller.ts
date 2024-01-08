@@ -170,8 +170,6 @@ export class TemplatesController {
   @ApiResponse(GenericResponseSchema())
   @Patch(':templateId/tabs/:id')
   public async updateTab(
-    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
-    template: TemplateEntity,
     @Param('id', ParseUUIDPipe, ParseTabPipe)
     tabEntity: TabEntity,
     @Body('pipelineStageIds', ParseOptionalPipelineStagePipe)
@@ -199,8 +197,6 @@ export class TemplatesController {
   @ApiResponse(GenericResponseSchema())
   @Delete(':templateId/tabs/:id')
   public async removeTab(
-    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
-    template: TemplateEntity,
     @Param('id', ParseUUIDPipe, ParseTabPipe)
     tabEntity: TabEntity,
   ): Promise<EmptyResponseData> {
@@ -235,8 +231,6 @@ export class TemplatesController {
   @ApiResponse(GenericResponseSchema())
   @Patch(':templateId/field-groups/:groupId')
   public async updateGroup(
-    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
-    template: TemplateEntity,
     @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
     group: FieldGroupEntity,
     @Body() dto: UpdateFieldGroupDto,
@@ -252,8 +246,6 @@ export class TemplatesController {
   @ApiResponse(GenericResponseSchema())
   @Delete(':templateId/field-groups/:groupId')
   public async removeGroup(
-    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
-    template: TemplateEntity,
     @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
     group: FieldGroupEntity,
   ): Promise<void> {
@@ -266,8 +258,6 @@ export class TemplatesController {
   @ApiResponse(GenericCreateResponseSchema())
   @Post(':templateId/field-groups/:groupId/field-definitions')
   public async createFieldDefinition(
-    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
-    template: TemplateEntity,
     @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
     group: FieldGroupEntity,
     @Body('hideOnPipelineStageIds', ParseOptionalPipelineStagePipe)
@@ -297,10 +287,6 @@ export class TemplatesController {
   @ApiResponse(GenericResponseSchema())
   @Patch(':templateId/field-groups/:groupId/field-definitions/:fieldId')
   public async updateFieldDefinition(
-    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
-    template: TemplateEntity,
-    @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
-    group: FieldGroupEntity,
     @Param('fieldId', ParseUUIDPipe, ParseFieldDefinitionPipe)
     field: FieldDefinitionEntity,
     @Body('hideOnPipelineStageIds', ParseOptionalPipelineStagePipe)
@@ -327,10 +313,6 @@ export class TemplatesController {
   @ApiResponse(GenericResponseSchema())
   @Delete(':templateId/field-groups/:groupId/field-definitions/:fieldId')
   public async removeFieldDefinition(
-    @Param('templateId', ParseUUIDPipe, ParseTemplatePipe)
-    template: TemplateEntity,
-    @Param('groupId', ParseUUIDPipe, ParseFieldGroupPipe)
-    group: FieldGroupEntity,
     @Param('fieldId', ParseUUIDPipe, ParseFieldDefinitionPipe)
     field: FieldDefinitionEntity,
   ): Promise<EmptyResponseData> {
