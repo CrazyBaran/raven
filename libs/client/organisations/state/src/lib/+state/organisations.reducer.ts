@@ -13,6 +13,7 @@ export interface OrganisationsState extends EntityState<OrganisationEntity> {
   loaded: boolean | null;
   error: string | null;
   loadingOrganisation: boolean;
+  creatingSharepointFolder: boolean;
 }
 
 export const OrganisationAdapter: EntityAdapter<OrganisationEntity> =
@@ -25,6 +26,7 @@ export const initialOrganisationState: OrganisationsState =
     error: null,
     selectedId: null,
     totalRows: 0,
+    creatingSharepointFolder: false,
   });
 
 export const organisationsFeature = createFeature({
@@ -99,6 +101,28 @@ export const organisationsFeature = createFeature({
               },
             )
           : state,
+    ),
+
+    on(OrganisationsActions.createOrganisationSharepointFolder, (state) => ({
+      ...state,
+      creatingSharepointFolder: true,
+    })),
+    on(
+      OrganisationsActions.createOrganisationSharepointFolderSuccess,
+      (state, { data }) =>
+        data
+          ? OrganisationAdapter.upsertOne(data, {
+              ...state,
+              creatingSharepointFolder: false,
+            })
+          : { ...state, creatingSharepointFolder: false },
+    ),
+    on(
+      OrganisationsActions.createOrganisationSharepointFolderFailure,
+      (state, { error }) => ({
+        ...state,
+        creatingSharepointFolder: false,
+      }),
     ),
   ),
   extraSelectors: ({ selectOrganisationsState }) => ({

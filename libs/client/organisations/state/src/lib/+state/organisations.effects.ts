@@ -122,3 +122,37 @@ export const createOrganisation = createEffect(
     functional: true,
   },
 );
+
+export const createOrganisationSharepointFolder = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsActions.createOrganisationSharepointFolder),
+      switchMap((action) =>
+        organisationsService.createOrganisationSharepointFolder(action.id).pipe(
+          switchMap(() => organisationsService.getOrganisation(action.id)),
+          map((response) => {
+            return OrganisationsActions.createOrganisationSharepointFolderSuccess(
+              {
+                data: response.data!,
+              },
+            );
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              OrganisationsActions.createOrganisationSharepointFolderFailure({
+                error,
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);

@@ -29,6 +29,14 @@ export const OrganisationsActions = createActionGroup({
     }>(),
     'Create Organisation Failure': props<{ error: string }>(),
 
+    'Create Organisation SharepointFolder': props<{
+      id: string;
+    }>(),
+    'Create Organisation SharepointFolder Success': props<{
+      data: Organisation;
+    }>(),
+    'Create Organisation SharepointFolder Failure': props<{ error: string }>(),
+
     'Add Opportunity to Organisation': props<{
       id: string;
       opportunityId: string;

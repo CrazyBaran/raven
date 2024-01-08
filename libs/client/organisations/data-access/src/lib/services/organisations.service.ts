@@ -37,4 +37,13 @@ export class OrganisationsService {
   ): Observable<GenericResponse<Organisation>> {
     return this.http.post<GenericResponse<Organisation>>(this.url, create);
   }
+
+  public createOrganisationSharepointFolder(
+    id: string,
+  ): Observable<GenericResponse<Organisation>> {
+    return this.http.post<any>(
+      `/api/on-behalf-of/organisation/${id}/directory`,
+      {},
+    );
+  }
 }

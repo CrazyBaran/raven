@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, from } from 'rxjs';
 import { NotesTableContainerComponent } from './notes-table-container.component';
-import { selectNotesTableViewModel } from './notes-table-container.selectors';
+import { selectNotesGridModel } from './notes-table-container.selectors';
 
 describe('ClientNotesFeatureNotesTableComponent', () => {
   let component: NotesTableContainerComponent;
@@ -28,7 +28,7 @@ describe('ClientNotesFeatureNotesTableComponent', () => {
         provideMockStore({
           selectors: [
             {
-              selector: selectNotesTableViewModel,
+              selector: selectNotesGridModel,
               value: {},
             },
           ],

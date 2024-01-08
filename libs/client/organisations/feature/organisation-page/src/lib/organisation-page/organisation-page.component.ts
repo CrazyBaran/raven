@@ -44,7 +44,10 @@ import {
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import { TagData } from '@app/rvns-tags';
-import { SkeletonModule } from '@progress/kendo-angular-indicators';
+import {
+  LoaderModule,
+  SkeletonModule,
+} from '@progress/kendo-angular-indicators';
 import {
   TreeListComponent,
   TreeListModule,
@@ -80,6 +83,7 @@ import {
     SkeletonModule,
     TreeListModule,
     NotesTableContainerComponent,
+    LoaderModule,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -189,5 +193,13 @@ export class OrganisationPageComponent {
 
   public openFileWebUrl(file: FileRow): void {
     window.open(file.url, '_blank');
+  }
+
+  public createOrganisationFolder(): void {
+    this.store.dispatch(
+      OrganisationsActions.createOrganisationSharepointFolder({
+        id: this.vm().currentOrganisationId!,
+      }),
+    );
   }
 }

@@ -86,13 +86,22 @@ export const selectOrganisationPageViewModel = createSelector(
   routerQuery.selectCurrentOrganisationId,
   selectOrganisationDetails,
   organisationsFeature.selectLoadingOrganisation,
-  (currentOrganisation, currentOrganisationId, details, isLoading) => {
+  organisationsFeature.selectCreatingSharepointFolder,
+  (
+    currentOrganisation,
+    currentOrganisationId,
+    details,
+    isLoading,
+    isCreatingSharepointFolder,
+  ) => {
     return {
       currentOrganisationId,
       currentOrganisation,
       details,
       isLoading,
       opportunities: currentOrganisation?.opportunities ?? [],
+      hasFileFolder: !!currentOrganisation?.sharepointDirectory,
+      isCreatingSharepointFolder,
     };
   },
 );
