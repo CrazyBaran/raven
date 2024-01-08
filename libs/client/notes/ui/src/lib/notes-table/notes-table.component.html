@@ -89,7 +89,7 @@
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column [width]="135">
+  <kendo-grid-column [width]="155">
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-row gap-1" kendoTooltip>
         <kendo-button
@@ -113,6 +113,13 @@
             themeColor="light"
           />
         </div>
+        @if (dataItem.newSyncId && dataItem.newSyncId !== dataItem.id) {
+          <kendo-button
+            (click)="handleSyncNote(dataItem.newSyncId, dataItem.id)"
+            iconClass="fa-solid fa-sync"
+            themeColor="light"
+          />
+        }
       </div>
     </ng-template>
   </kendo-grid-column>

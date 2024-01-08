@@ -9,7 +9,11 @@ import { NotesActions } from './notes.actions';
 
 export const notesFeatureKey = 'notes';
 
-export interface NotesState extends EntityState<NoteData> {
+export type NoteEntity = NoteData & {
+  newSyncId?: string;
+};
+
+export interface NotesState extends EntityState<NoteEntity> {
   // additional entities state properties
   isLoading: boolean;
   error: string | null;
@@ -41,8 +45,8 @@ export interface NotesState extends EntityState<NoteData> {
   };
 }
 
-export const notesAdapter: EntityAdapter<NoteData> =
-  createEntityAdapter<NoteData>();
+export const notesAdapter: EntityAdapter<NoteEntity> =
+  createEntityAdapter<NoteEntity>();
 
 export const initialState: NotesState = notesAdapter.getInitialState({
   // additional entity state properties
@@ -283,6 +287,18 @@ export const notesReducer = createReducer(
       isLoading: false,
     },
   })),
+
+  on(NotesActions.liveChangeNote, (state, { id, newSyncId }) =>
+    notesAdapter.updateOne(
+      {
+        id,
+        changes: {
+          newSyncId: newSyncId,
+        },
+      },
+      state,
+    ),
+  ),
 );
 
 export const notesFeature = createFeature({

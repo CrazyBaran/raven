@@ -181,6 +181,30 @@ export class NotesEffects {
     );
   });
 
+  private refreshNote$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(NotesActions.refreshNote),
+      switchMap(({ noteId, newSyncId }) =>
+        this.notesService.getNoteDetails(newSyncId).pipe(
+          switchMap(({ data }) => [
+            NotesActions.updateNoteSuccess({ data: data!, originId: noteId }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Note refreshed successfully.',
+            }),
+          ]),
+          catchError((error) =>
+            of(
+              NotesActions.updateNoteFailure({ error, originId: noteId }),
+              NotificationsActions.showErrorNotification({
+                content: 'Note refresh failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
   private deleteNote$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(NotesActions.deleteNote),

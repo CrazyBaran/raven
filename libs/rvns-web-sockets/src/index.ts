@@ -1,2 +1,2 @@
-export { WebsocketEvent } from './lib/data/websocket-event.interface';
-export { WebsocketResource } from './lib/data/websocket-resource.interface';
+export * from './lib/data/websocket-event.interface';
+export * from './lib/data/websocket-resource.interface';

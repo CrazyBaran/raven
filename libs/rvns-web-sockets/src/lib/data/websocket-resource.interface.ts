@@ -1,6 +1,7 @@
-export const websocketResources = [
-  'resource-notes',
-  'resource-pipelines',
-] as const;
+type Prefix<P extends string, S extends string> = `${P}${S}`;
 
-export type WebsocketResource = (typeof websocketResources)[number];
+export const websocketResources = ['notes', 'pipelines'] as const;
+
+export type WebsocketResourceType = (typeof websocketResources)[number];
+
+export type WebsocketResource = Prefix<'resource-', WebsocketResourceType>;

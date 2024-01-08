@@ -27,6 +27,11 @@ export const selectNotesDictionary = createSelector(
   (state: NotesState) => selectEntities(state),
 );
 
+export const selectNotesDictionaryByRootId = createSelector(
+  selectAllNotes,
+  (notes) => _.keyBy(notes, (n) => n.rootVersionId),
+);
+
 export const selectTableNotes = createSelector(
   selectNotesState,
   (state: NotesState) =>
@@ -186,6 +191,7 @@ export const notesQuery = {
   selectOpportunityNotes,
   selectOpportunityNotesIsLoading,
   selectNotesDictionary,
+  selectNotesDictionaryByRootId,
   selectNotesTableParams,
   selectTotal,
   selectNotesTypeBadgeColors,

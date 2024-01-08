@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NoteStoreFacade } from '@app/client/notes/data-access';
+import { NoteStoreFacade, NotesActions } from '@app/client/notes/data-access';
 import { TagFilterPipe } from '@app/client/notes/util';
 import {
   ClipboardDirective,
@@ -31,6 +31,7 @@ import {
   IsEllipsisActiveDirective,
   TableViewBaseComponent,
 } from '@app/client/shared/ui-directives';
+import { Store } from '@ngrx/store';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
@@ -78,6 +79,7 @@ export type NoteTableRow = Omit<NoteData, 'tags'> & {
 export class NotesTableComponent extends TableViewBaseComponent<NoteTableRow> {
   private dialogService = inject(DialogService);
   private noteFacade = inject(NoteStoreFacade);
+  private store = inject(Store);
 
   //todo: refactor to use url dynamic dialogs
   public handleDeleteNote(note: NoteData): void {
@@ -95,5 +97,9 @@ export class NotesTableComponent extends TableViewBaseComponent<NoteTableRow> {
 
   public getNoteUrl(noteId: string): string {
     return `${window.location.href}?note-details=${noteId}`;
+  }
+
+  public handleSyncNote(newSyncId: string, id: string): void {
+    this.store.dispatch(NotesActions.refreshNote({ newSyncId, noteId: id }));
   }
 }
