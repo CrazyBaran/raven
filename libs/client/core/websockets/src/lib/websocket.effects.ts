@@ -3,12 +3,21 @@
 
 import { Injectable } from '@angular/core';
 import { WebsocketService } from '@app/client/core/websockets';
-import { NotesActions } from '@app/client/notes/data-access';
+import { NotesActions, notesQuery } from '@app/client/notes/data-access';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { selectUrl } from '@app/client/shared/util-router';
-import { createEffect } from '@ngrx/effects';
+import { WebsocketResourceType } from '@app/rvns-web-sockets';
+import { concatLatestFrom, createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { filter, map, tap } from 'rxjs';
+
+const URL_RESOURCE_CONFIG: Record<
+  WebsocketResourceType,
+  (url: string) => boolean
+> = {
+  pipelines: (url) => url.includes('/companies/pipeline'),
+  notes: (url) => url.includes('/notes') || url.includes('/companies/'),
+};
 
 @Injectable()
 export class WebsocketEffects {
@@ -17,22 +26,13 @@ export class WebsocketEffects {
       this.store.select(selectUrl).pipe(
         filter((url) => !!url),
         tap((url) => {
-          if (url.includes('/companies/pipeline')) {
-            if (
-              this.websocketService.currentResource !== 'resource-pipelines'
-            ) {
-              this.websocketService.joinResourceEvents('resource-pipelines');
-            }
-            return;
-          }
-          if (url.includes('/notes') || url.includes('/companies/')) {
-            if (this.websocketService.currentResource !== 'resource-notes') {
-              this.websocketService.joinResourceEvents('resource-notes');
-            }
-            return;
-          }
+          const resource = Object.entries(URL_RESOURCE_CONFIG).find(
+            ([_, isMatch]) => isMatch(url),
+          )?.[0] as WebsocketResourceType;
 
-          if (this.websocketService.currentResource) {
+          if (resource) {
+            this.websocketService.joinResourceEvents(resource);
+          } else if (this.websocketService.currentResource) {
             this.websocketService.leaveResourceEvents(
               this.websocketService.currentResource,
             );
@@ -55,16 +55,20 @@ export class WebsocketEffects {
     ),
   );
 
-  private notesUpdateEvent$ = createEffect(
-    () =>
-      this.websocketService.eventsOfType('note-updated').pipe(
-        tap(({ data }) => {
-          const { id, rootVersionId } = data;
-
-          console.log('note-updated', data);
-        }),
+  private notesUpdateEvent$ = createEffect(() =>
+    this.websocketService.eventsOfType('note-updated').pipe(
+      concatLatestFrom(() =>
+        this.store.select(notesQuery.selectNotesDictionaryByRootId),
       ),
-    { dispatch: false },
+      map(([{ data }, dictionary]) => {
+        const { id, rootVersionId } = data;
+        const note = dictionary[rootVersionId];
+
+        return { id: note?.id, newSyncId: id };
+      }),
+      filter((note) => !!note.id),
+      map((data) => NotesActions.liveChangeNote({ ...data })),
+    ),
   );
 
   private notesCreateEvent$ = createEffect(() =>

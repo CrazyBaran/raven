@@ -8,7 +8,6 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
-import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { RelatedNotesTableComponent } from '@app/client/opportunities/ui';
 import {
@@ -44,6 +43,7 @@ import {
   selectFolderChildrenFactory,
 } from '@app/client/files/feature/files-table';
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
+import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import { TagData } from '@app/rvns-tags';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import {
@@ -73,7 +73,6 @@ import {
     PageTemplateComponent,
     GridModule,
     TileLayoutModule,
-    NotesTableContainerComponent,
     DealLeadsPipe,
     DealTeamPipe,
     TagComponent,
@@ -82,6 +81,7 @@ import {
     TimesPipe,
     SkeletonModule,
     TreeListModule,
+    NotesTableContainerComponent,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],

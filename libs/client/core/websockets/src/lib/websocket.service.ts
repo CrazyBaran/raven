@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { Injectable } from '@angular/core';
 
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
-import { WebsocketEvent, WebsocketResource } from '@app/rvns-web-sockets';
+import { WebsocketEvent, WebsocketResourceType } from '@app/rvns-web-sockets';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -18,9 +18,9 @@ export class WebsocketService {
   private authErrorEvents$: BehaviorSubject<boolean> = new BehaviorSubject(
     false,
   );
-  private _currentResource?: WebsocketResource;
+  private _currentResource?: WebsocketResourceType;
 
-  public get currentResource(): WebsocketResource | undefined {
+  public get currentResource(): WebsocketResourceType | undefined {
     return this._currentResource;
   }
 
@@ -72,7 +72,11 @@ export class WebsocketService {
     }
   }
 
-  public joinResourceEvents(resourceId: WebsocketResource): void {
+  public joinResourceEvents(resourceId: WebsocketResourceType): void {
+    if (this._currentResource === resourceId) {
+      return;
+    }
+
     this.socket.emit('ws.join.resource', resourceId);
     this._currentResource = resourceId;
   }

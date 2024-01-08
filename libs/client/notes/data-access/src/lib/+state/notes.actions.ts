@@ -38,6 +38,12 @@ export const NotesActions = createActionGroup({
     }>(),
     'Update Note Failure': props<{ error: string; originId: string }>(),
 
+    'Refresh Note': props<{ noteId: string; newSyncId: string }>(),
+    'Refresh Note Success': props<{
+      originId: string;
+    }>(),
+    'Refresh Note Failure': props<{ error: string; originId: string }>(),
+
     'Delete Note': props<{ noteId: string }>(),
     'Delete Note Success': props<{ noteId: string }>(),
     'Delete Note Failure': props<{ error: string }>(),
@@ -56,6 +62,6 @@ export const NotesActions = createActionGroup({
 
     //websocket events
     'Live Create Note': props<{ id: string }>(),
-    'Live Change Note': props<{ data: NoteWithRelationsData }>(),
+    'Live Change Note': props<{ id: string; newSyncId: string }>(),
   },
 });
