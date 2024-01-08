@@ -1,5 +1,5 @@
 import { FormControl, FormRecord } from '@angular/forms';
-import { notesQuery } from '@app/client/notes/data-access';
+import { notesQuery } from '@app/client/notes/state';
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
   DynamicControl,

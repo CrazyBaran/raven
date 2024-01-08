@@ -1,79 +1,73 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import {
-  ApplicationRef,
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
-  inject,
   Input,
   OnInit,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
+  computed,
+  inject,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotesActions, NoteStoreFacade } from '@app/client/notes/data-access';
+import { NoteStoreFacade, NotesActions } from '@app/client/notes/state';
 import {
   DeleteNoteComponent,
+  NoteDetailsComponent,
   NotepadForm,
   NotepadFormComponent,
   TITLE_FIELD,
 } from '@app/client/notes/ui';
-import { TagFilterPipe } from '@app/client/notes/util';
-import { PopulateAzureImagesPipe } from '@app/client/opportunities/feature/related-notes';
 import { ShelfTemplateBase } from '@app/client/shared/dynamic-renderer/feature';
-import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import {
   ClipboardDirective,
   LoaderComponent,
   TagComponent,
-  TagTypeColorPipe,
   UserTagDirective,
 } from '@app/client/shared/ui';
-import { SafeHtmlPipe, ToUrlPipe } from '@app/client/shared/ui-pipes';
+import { ToUrlPipe } from '@app/client/shared/ui-pipes';
+import { controlDragArea } from '@app/client/shared/util';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 import {
   DialogResult,
   DialogService,
-  WindowModule,
+  DialogsModule,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
-import { IconModule } from '@progress/kendo-angular-icons';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { xIcon } from '@progress/kendo-svg-icons';
-import { RxLet } from '@rx-angular/template/let';
-import { filter, map, merge, take } from 'rxjs';
-import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selectors';
+import { filter, take } from 'rxjs';
+import {
+  selectNoteDetailsDialogViewModel,
+  selectNoteDetailsForm,
+} from './note-details-dialog.selectors';
 
 @Component({
   selector: 'app-note-details-dialog',
   standalone: true,
   imports: [
-    CommonModule,
-    SafeHtmlPipe,
-    WindowModule,
     LoaderComponent,
-    ExpansionPanelModule,
-    ButtonsModule,
+    NgIf,
     NotepadFormComponent,
     ReactiveFormsModule,
-    TagFilterPipe,
+    ButtonModule,
+    DialogsModule,
     TagComponent,
-    IconModule,
+    ExpansionPanelModule,
     ClipboardDirective,
     ToUrlPipe,
-    TooltipModule,
-    TagTypeColorPipe,
+    DatePipe,
     UserTagDirective,
-    PopulateAzureImagesPipe,
-    RxLet,
+    TooltipModule,
+    NoteDetailsComponent,
   ],
   templateUrl: './note-details-dialog.component.html',
   styleUrls: ['./note-details-dialog.component.scss'],
@@ -102,11 +96,9 @@ export class NoteDetailsDialogComponent
     title: '',
   });
 
-  public vm$ = this.store.select(selectNoteDetailsDialogViewModel);
   public vm = this.store.selectSignal(selectNoteDetailsDialogViewModel);
 
   public noteDetails = computed(() => this.vm().noteDetails!);
-  public noteDetails$ = toObservable(this.noteDetails);
 
   public editMode = false;
 
@@ -125,11 +117,9 @@ export class NoteDetailsDialogComponent
   protected windowRef = inject(WindowRef);
 
   public constructor(
-    private appRef: ApplicationRef,
     private store: Store,
     private readonly noteStoreFacade: NoteStoreFacade,
     private actions$: Actions,
-    private imagePathDictionaryService: ImagePathDictionaryService,
     private readonly dialogService: DialogService,
   ) {
     super();
@@ -148,49 +138,12 @@ export class NoteDetailsDialogComponent
   }
 
   public ngOnInit(): void {
-    const instance = this.windowRef.window.instance;
-    const windowElement = this.windowRef.window.location.nativeElement;
+    controlDragArea(this.windowRef);
 
-    merge(instance.topChange)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (instance.top < 0) {
-          instance.top = 0;
-          windowElement.style.top = '0px';
-        }
-      });
-
-    merge(instance.leftChange)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (instance.left < 0) {
-          instance.left = 0;
-          windowElement.style.left = '0px';
-        }
-
-        if (instance.left > window.innerWidth - instance.width) {
-          instance.left = window.innerWidth - instance.width;
-          windowElement.style.left = `${window.innerWidth - instance.width}px`;
-        }
-      });
-
-    merge(instance.dragEnd, instance.resizeEnd)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (instance.top < 0) {
-          instance.top = 0;
-        }
-
-        if (instance.left < 0) {
-          instance.left = 0;
-          windowElement.style.left = '0px';
-        }
-      });
-
-    this.vm$
+    this.store
+      .select(selectNoteDetailsForm)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        map(({ form }) => form),
         filter((form) => !!form),
         distinctUntilChangedDeep(),
       )
@@ -202,7 +155,12 @@ export class NoteDetailsDialogComponent
   public updateNote(): void {
     const payload = this.getPayload();
 
-    this.noteStoreFacade.updateNote(this.noteDetails()!.id!, payload);
+    this.store.dispatch(
+      NotesActions.updateNote({
+        noteId: this.noteDetails()!.id!,
+        data: payload,
+      }),
+    );
 
     this.actions$
       .pipe(
@@ -214,12 +172,6 @@ export class NoteDetailsDialogComponent
         this.editMode = false;
         this.closeWindow();
       });
-  }
-
-  public handleScrollToField(fieldId: string): void {
-    document.getElementById(fieldId)?.scrollIntoView({
-      behavior: 'smooth',
-    });
   }
 
   public handleDeleteNote(noteId: string | undefined): void {

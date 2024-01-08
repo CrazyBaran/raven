@@ -1,7 +1,7 @@
 import { authQuery } from '@app/client/core/auth';
-import { notesQuery } from '@app/client/notes/data-access';
+import { notesQuery } from '@app/client/notes/state';
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
-import { OrganisationsFeature } from '@app/client/organisations/state';
+import { organisationsFeature } from '@app/client/organisations/state';
 import { tagsQuery } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
@@ -43,13 +43,13 @@ export const selectOpportunityOverviewTeam = createSelector(
 export const selectIsLoadingOpportunityOverview = createSelector(
   notesQuery.selectOpportunityNotesIsLoading,
   opportunitiesQuery.selectOpportunityDetailsIsLoading,
-  OrganisationsFeature.selectLoadingOrganisation,
+  organisationsFeature.selectLoadingOrganisation,
   (notes, opportunity, organisation) => notes || opportunity || organisation,
 );
 
 export const selectOpportunityOverviewViewModel = createSelector(
   opportunitiesQuery.selectRouteOpportunityDetails,
-  OrganisationsFeature.selectCurrentOrganisation,
+  organisationsFeature.selectCurrentOrganisation,
   opportunitiesQuery.selectNoteFields,
   tagsQuery.tagsFeature.selectPeopleTags,
   selectOpportunityOverviewTeam,

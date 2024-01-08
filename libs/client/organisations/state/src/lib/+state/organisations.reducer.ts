@@ -27,7 +27,7 @@ export const initialOrganisationState: OrganisationsState =
     totalRows: 0,
   });
 
-export const OrganisationsFeature = createFeature({
+export const organisationsFeature = createFeature({
   name: 'organisations',
   reducer: createReducer(
     initialOrganisationState,

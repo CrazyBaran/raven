@@ -137,7 +137,7 @@ export class RavenShelfService {
       0,
     );
 
-    if (index > 1 || sumPreviousWidths + width > window.innerWidth) {
+    if (index > 2 || sumPreviousWidths + width > window.innerWidth) {
       return null;
     }
 

@@ -1,4 +1,5 @@
 export * from './lib/click-outside.directive';
+export * from './lib/control-drag-area';
 export * from './lib/control-value.accessor';
 export * from './lib/get-deal.leads';
 export * from './lib/get-deal.team';

@@ -11,10 +11,11 @@ import {
   RouterLink,
   RouterOutlet,
 } from '@angular/router';
+import { NotesTableComponent } from '@app/client/notes/ui';
 import {
-  NoteDetailsComponent,
-  NotesTableComponent,
-} from '@app/client/notes/ui';
+  ButtongroupNavigationComponent,
+  DropdownNavigationComponent,
+} from '@app/client/shared/ui-router';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Store } from '@ngrx/store';
 import {
@@ -41,7 +42,8 @@ import { selectOpportunityNotesViewModel } from './opportunity-notes.selectors';
     RouterLink,
     RouterOutlet,
     NgIf,
-    NoteDetailsComponent,
+    ButtongroupNavigationComponent,
+    DropdownNavigationComponent,
   ],
   templateUrl: './opportunity-notes.component.html',
   styleUrls: ['./opportunity-notes.component.scss'],

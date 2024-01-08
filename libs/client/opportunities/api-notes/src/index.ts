@@ -1,1 +1,1 @@
-export * from '@app/client/notes/data-access';
+export * from '@app/client/notes/state';

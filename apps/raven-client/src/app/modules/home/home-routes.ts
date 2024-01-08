@@ -38,7 +38,7 @@ export const HOME_ROUTES: Routes = [
       {
         path: 'notes',
         loadChildren: () =>
-          import('@app/client/notes/feaure/shell').then((m) => m.NOTES_ROUTES),
+          import('@app/client/notes/feature/shell').then((m) => m.NOTES_ROUTES),
       },
       {
         path: 'templates',

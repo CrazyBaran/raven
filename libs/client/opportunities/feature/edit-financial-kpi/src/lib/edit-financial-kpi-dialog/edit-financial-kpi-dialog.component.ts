@@ -23,7 +23,7 @@ import {
 import { KeyValuePipe, NgComponentOutlet } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotesActions } from '@app/client/notes/data-access';
+import { NotesActions } from '@app/client/notes/state';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { RxLet } from '@rx-angular/template/let';
 import * as _ from 'lodash';

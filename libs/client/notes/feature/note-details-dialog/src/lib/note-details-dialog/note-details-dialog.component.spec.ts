@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { NoteStoreFacade } from '@app/client/notes/data-access';
+import { NoteStoreFacade } from '@app/client/notes/state';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { WindowRef } from '@progress/kendo-angular-dialog';

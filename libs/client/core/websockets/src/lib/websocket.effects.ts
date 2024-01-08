@@ -3,7 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { WebsocketService } from '@app/client/core/websockets';
-import { NotesActions, notesQuery } from '@app/client/notes/data-access';
+import { NotesActions, notesQuery } from '@app/client/notes/state';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { selectUrl } from '@app/client/shared/util-router';
 import { WebsocketResourceType } from '@app/rvns-web-sockets';

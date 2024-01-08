@@ -8,11 +8,10 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
-import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { RelatedNotesTableComponent } from '@app/client/opportunities/ui';
 import {
   OrganisationsActions,
-  OrganisationsFeature,
+  organisationsFeature,
 } from '@app/client/organisations/state';
 import { ShelfActions } from '@app/client/shared/shelf';
 import {
@@ -68,7 +67,6 @@ import {
     ButtonsModule,
     RelatedNotesTableComponent,
     RxFor,
-    NoteDetailsComponent,
     LoaderComponent,
     PageTemplateComponent,
     GridModule,
@@ -121,7 +119,7 @@ export class OrganisationPageComponent {
     );
 
     this.store
-      .select(OrganisationsFeature.selectCurrentOrganisation)
+      .select(organisationsFeature.selectCurrentOrganisation)
       .pipe(
         takeUntilDestroyed(),
         filter((o) => !!o),

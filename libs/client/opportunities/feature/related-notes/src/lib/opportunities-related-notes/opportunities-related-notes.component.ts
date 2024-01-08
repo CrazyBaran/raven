@@ -7,8 +7,6 @@ import {
   Component,
   HostListener,
   inject,
-  Pipe,
-  PipeTransform,
   QueryList,
   signal,
   ViewChildren,
@@ -22,16 +20,17 @@ import {
   imageUploader,
   RichTextComponent,
 } from '@app/client/shared/dynamic-form-util';
-import {
-  storageQuery,
-  UploadFileService,
-} from '@app/client/shared/storage/data-access';
+import { UploadFileService } from '@app/client/shared/storage/data-access';
 import {
   fadeIn,
   KendoDynamicPagingDirective,
   LoaderComponent,
 } from '@app/client/shared/ui';
-import { SafeHtmlPipe, TimesPipe } from '@app/client/shared/ui-pipes';
+import {
+  HearColorPipe,
+  SafeHtmlPipe,
+  TimesPipe,
+} from '@app/client/shared/ui-pipes';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -55,7 +54,7 @@ import {
   StatusIndicatorComponent,
   StatusIndicatorState,
 } from '@app/client/opportunities/ui';
-import { HearColorPipe } from '@app/client/shared/ui-pipes';
+import { PopulateAzureImagesPipe } from '@app/client/shared/ui-pipes';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
@@ -64,31 +63,12 @@ import {
   SkeletonModule,
 } from '@progress/kendo-angular-indicators';
 import * as _ from 'lodash';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import {
   selectOpportunitiesRelatedNotesViewModel,
   selectOpportunityFormRecord,
   selectRelatedNotesWithFields,
 } from './opportunities-related-notes.selectors';
-
-@Pipe({
-  name: 'populateAzureImages',
-  standalone: true,
-})
-export class PopulateAzureImagesPipe implements PipeTransform {
-  public store = inject(Store);
-
-  public transform(value: string): Observable<string> {
-    return this.store.select(storageQuery.selectAzureImageDictionary).pipe(
-      map((azureImageDictionary) => {
-        return Object.entries(azureImageDictionary).reduce(
-          (acc, [file, iamge]) => acc.replace(file, iamge?.url ?? ''),
-          value ?? '',
-        );
-      }),
-    );
-  }
-}
 
 @Component({
   selector: 'app-opportunities-related-notes',
