@@ -17,15 +17,13 @@ export class DataWarehouseModule {
     }
     const defaultCredential = new DefaultAzureCredential();
     let accessToken: AccessToken;
-    defaultCredential
-      .getToken('https://database.windows.net/')
-      .then((token) => {
-        accessToken = token;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
+    try {
+      accessToken = await defaultCredential.getToken(
+        'https://database.windows.net/',
+      );
+    } catch (err) {
+      console.log(err);
+    }
     if (!accessToken) {
       console.log(
         'DataWarehouse module initialisation stopped: no access token',
@@ -48,19 +46,16 @@ export class DataWarehouseModule {
     const dataWarehouseDataSource = new DataSource(alteredConfig);
 
     let succeeded = false;
-    await dataWarehouseDataSource
-      .initialize()
-      .then((dataSource) => {
-        succeeded = true;
-        console.log('DataWarehouse connection established');
-      })
-      .catch((err) => {
-        succeeded = false;
-        console.log(err);
-        console.log(alteredConfig);
-      });
+    try {
+      await dataWarehouseDataSource.initialize();
+      succeeded = true;
+    } catch (err) {
+      console.log(err);
+      succeeded = false;
+    }
 
     if (succeeded) {
+      console.log('DataWarehouse module initialised');
       await dataWarehouseDataSource.destroy();
       return {
         module: DataWarehouseModule,
