@@ -28,6 +28,7 @@ describe('ClientNotesFeatureNoteDetailsDialogComponent', () => {
           provide: WindowRef,
           useValue: {
             window: {
+              onDestroy: (): void => {},
               instance: {
                 topChange: of({}),
                 leftChange: of({}),
@@ -45,7 +46,11 @@ describe('ClientNotesFeatureNoteDetailsDialogComponent', () => {
           selectors: [
             {
               selector: selectNoteDetailsDialogViewModel,
-              value: {},
+              value: {
+                noteDetails: {
+                  tags: [],
+                },
+              },
             },
           ],
         }),

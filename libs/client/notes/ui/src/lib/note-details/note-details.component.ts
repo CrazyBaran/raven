@@ -48,12 +48,12 @@ export class NoteDetailsComponent {
   @Input() public noteFields: { id: string; value: string; name: string }[] =
     [];
 
-  protected get personTags(): { id: string; name: string; type: string }[] {
-    return this.noteDetails.tags.filter((tag) => tag.type === 'people');
+  protected get personTags(): NoteDetails['tags'] {
+    return this.noteDetails?.tags?.filter((tag) => tag.type === 'people') ?? [];
   }
 
-  protected get notPersonTags(): { id: string; name: string; type: string }[] {
-    return this.noteDetails.tags.filter((tag) => tag.type !== 'people');
+  protected get notPersonTags(): NoteDetails['tags'] {
+    return this.noteDetails?.tags?.filter((tag) => tag.type !== 'people') ?? [];
   }
 
   protected handleScrollToField(fieldId: string): void {

@@ -4,7 +4,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoteStoreFacade } from '@app/client/notes/data-access';
+import { NoteStoreFacade } from '@app/client/notes/state';
 import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
