@@ -1,11 +1,10 @@
-import { AccessToken } from '@azure/core-http';
-import { DefaultAzureCredential } from '@azure/identity';
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { SqlServerConnectionCredentialsAuthenticationOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionCredentialsOptions';
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
 import { environment } from '../../../environments/environment';
+import { DataWarehouseController } from './data-warehouse.controller';
 @Module({})
 export class DataWarehouseModule {
   public static async forRootAsync(): Promise<DynamicModule> {
@@ -15,6 +14,7 @@ export class DataWarehouseModule {
         module: DataWarehouseModule,
       };
     }
+    /*
     const defaultCredential = new DefaultAzureCredential();
     let accessToken: AccessToken;
     try {
@@ -32,14 +32,14 @@ export class DataWarehouseModule {
         module: DataWarehouseModule,
       };
     }
+
+     */
     const dataWarehouseConfig = environment.database.dataWarehouse;
     const alteredConfig = {
       ...dataWarehouseConfig,
+      name: 'dataWarehouse',
       authentication: {
-        type: 'azure-active-directory-access-token',
-        options: {
-          token: accessToken.token,
-        },
+        type: 'azure-active-directory-default',
       } as SqlServerConnectionCredentialsAuthenticationOptions,
     } as SqlServerConnectionOptions;
 
@@ -60,6 +60,7 @@ export class DataWarehouseModule {
       return {
         module: DataWarehouseModule,
         imports: [TypeOrmModule.forRoot(alteredConfig)],
+        controllers: [DataWarehouseController],
       };
     } else {
       console.log(
