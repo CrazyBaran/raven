@@ -19,8 +19,8 @@ import { selectNotesGridModel } from './notes-table-container.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesTableContainerComponent {
-  protected store = inject(Store);
   protected actions = inject(Actions);
+  protected store = inject(Store);
 
   protected gridModel = this.store.selectSignal(selectNotesGridModel);
 
@@ -36,9 +36,11 @@ export class NotesTableContainerComponent {
       .pipe(
         takeUntilDestroyed(),
         ofType(NotesActions.liveCreateNote),
-        concatLatestFrom(() => this.store.select(selectNotesTableViewModel)),
+        concatLatestFrom(() =>
+          this.store.select(notesQuery.selectNotesTableParams),
+        ),
       )
-      .subscribe(([action, { params }]) => {
+      .subscribe(([action, params]) => {
         this._loadNotes(params, true);
       });
 

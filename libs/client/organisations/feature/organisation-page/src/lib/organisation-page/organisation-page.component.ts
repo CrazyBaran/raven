@@ -8,8 +8,6 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
-import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
-import { NoteDetailsComponent } from '@app/client/notes/ui';
 import { RelatedNotesTableComponent } from '@app/client/opportunities/ui';
 import {
   OrganisationsActions,
