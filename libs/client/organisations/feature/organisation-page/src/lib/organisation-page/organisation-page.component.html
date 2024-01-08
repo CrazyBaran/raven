@@ -177,105 +177,117 @@
         <kendo-tilelayout-item-header>
           <div class="flex items-center justify-between gap-2">
             <h5 class="k-card-title">Company Files</h5>
-            <!--            <kendo-button-->
-            <!--                    (click)="openNoteShelf()"-->
-            <!--                    iconClass="fa-sharp fa-solid fa-pen"-->
-            <!--                    size="small"-->
-            <!--            >Add New</kendo-button-->
-            <!--            >-->
           </div>
         </kendo-tilelayout-item-header>
         <kendo-tilelayout-item-body>
-          <kendo-treelist
-            [data]="source()"
-            [fetchChildren]="fetchChildren"
-            [hasChildren]="hasChildren"
-            [loading]="vm().isLoading"
-            [rowClass]="rowCallback"
-            [trackBy]="trackBy"
-            class="grid-borderless h-full overflow-hidden"
-            kendoTreeListExpandable
-            scrollable="scrollable"
-          >
-            <kendo-treelist-column
-              [expandable]="true"
-              [headerStyle]="{ 'font-weight': '700' }"
-              title="Folder/File Name"
+          @if (vm().isLoading) {
+          } @else if (vm().hasFileFolder) {
+            <kendo-treelist
+              [data]="source()"
+              [fetchChildren]="fetchChildren"
+              [hasChildren]="hasChildren"
+              [loading]="vm().isLoading"
+              [rowClass]="rowCallback"
+              [trackBy]="trackBy"
+              class="grid-borderless h-full overflow-hidden"
+              kendoTreeListExpandable
+              scrollable="scrollable"
             >
-              <ng-template kendoTreeListCellTemplate let-dataItem>
-                <span
-                  [ngClass]="{
-                    'font-bold': dataItem.type === 'folder'
-                  }"
-                >
-                  <i
+              <kendo-treelist-column
+                [expandable]="true"
+                [headerStyle]="{ 'font-weight': '700' }"
+                title="Folder/File Name"
+              >
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                  <span
                     [ngClass]="{
-                      'fa-file': dataItem.type === 'file',
-                      'fa-folder': dataItem.type === 'folder'
+                      'font-bold': dataItem.type === 'folder'
                     }"
-                    class="fa-regular"
-                  ></i>
-                  <span class="ml-2">
-                    {{ dataItem.name }}
+                  >
+                    <i
+                      [ngClass]="{
+                        'fa-file': dataItem.type === 'file',
+                        'fa-folder': dataItem.type === 'folder'
+                      }"
+                      class="fa-regular"
+                    ></i>
+                    <span class="ml-2">
+                      {{ dataItem.name }}
+                    </span>
                   </span>
-                </span>
-              </ng-template>
-            </kendo-treelist-column>
+                </ng-template>
+              </kendo-treelist-column>
 
-            <kendo-treelist-column
-              [headerStyle]="{ 'font-weight': '700' }"
-              title="Tags"
-            >
-              <ng-template kendoTreeListCellTemplate let-dataItem>
-                @if (dataItem.type === 'file') {
-                  <div class="text-button flex flex-wrap gap-2 overflow-hidden">
+              <kendo-treelist-column
+                [headerStyle]="{ 'font-weight': '700' }"
+                title="Tags"
+              >
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                  @if (dataItem.type === 'file') {
+                    <div
+                      class="text-button flex flex-wrap gap-2 overflow-hidden"
+                    >
+                      <ui-tag
+                        class="text-buttons-button-text"
+                        *ngFor="let tag of getTagsSource(dataItem) | async"
+                        [label]="tag.name"
+                        [wrap]="false"
+                        size="medium"
+                        icon="fa-regular fa-tag"
+                      />
+                    </div>
+                  }
+                </ng-template>
+              </kendo-treelist-column>
+
+              <kendo-treelist-column
+                [headerStyle]="{ 'font-weight': '700' }"
+                title="Added by"
+              >
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                  @if (dataItem.type === 'file') {
                     <ui-tag
-                      class="text-buttons-button-text"
-                      *ngFor="let tag of getTagsSource(dataItem) | async"
-                      [label]="tag.name"
-                      [wrap]="false"
+                      uiUserTag
+                      [label]="dataItem.createdBy"
                       size="medium"
-                      icon="fa-regular fa-tag"
                     />
-                  </div>
-                }
-              </ng-template>
-            </kendo-treelist-column>
+                  }
+                </ng-template>
+              </kendo-treelist-column>
 
-            <kendo-treelist-column
-              [headerStyle]="{ 'font-weight': '700' }"
-              title="Added by"
-            >
-              <ng-template kendoTreeListCellTemplate let-dataItem>
-                @if (dataItem.type === 'file') {
-                  <ui-tag
-                    uiUserTag
-                    [label]="dataItem.createdBy"
-                    size="medium"
-                  />
-                }
-              </ng-template>
-            </kendo-treelist-column>
-
-            <kendo-treelist-column [width]="120" title="">
-              <ng-template kendoTreeListCellTemplate let-dataItem>
-                @if (dataItem.type === 'file') {
-                  <div class="flex gap-1">
-                    <kendo-button
-                      themeColor="primary"
-                      iconClass="fa-solid fa-arrow-up-right-from-square"
-                      (click)="openFileWebUrl(dataItem)"
-                    />
-                    <!--                  <kendo-button-->
-                    <!--                    class="mr-10"-->
-                    <!--                    iconClass="fa-regular fa-tag"-->
-                    <!--                    (click)="openFileManage(dataItem)"-->
-                    <!--                  />-->
-                  </div>
-                }
-              </ng-template>
-            </kendo-treelist-column>
-          </kendo-treelist>
+              <kendo-treelist-column [width]="120" title="">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                  @if (dataItem.type === 'file') {
+                    <div class="flex gap-1">
+                      <kendo-button
+                        themeColor="primary"
+                        iconClass="fa-solid fa-arrow-up-right-from-square"
+                        (click)="openFileWebUrl(dataItem)"
+                      />
+                    </div>
+                  }
+                </ng-template>
+              </kendo-treelist-column>
+            </kendo-treelist>
+          } @else {
+            <div class="flex h-full flex-col items-center justify-center">
+              <p class="text-subtle-text mb-1 text-sm italic">
+                There is no existing folder in SharePoint for this company. To
+                create one please click the button below.
+              </p>
+              <kendo-button
+                (click)="createOrganisationFolder()"
+                [disabled]="vm().isCreatingSharepointFolder"
+              >
+                <kendo-loader
+                  *ngIf="vm().isCreatingSharepointFolder"
+                  class="!text-secondary-100 mr-1"
+                  size="small"
+                />
+                Create Organisation Folder</kendo-button
+              >
+            </div>
+          }
         </kendo-tilelayout-item-body>
       </kendo-tilelayout-item>
 

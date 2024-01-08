@@ -71,6 +71,7 @@ module.exports = {
         'lighten-50': '#F0882D80',
       },
       disabledText: '#8F8F8F',
+      'subtle-text': '#666666',
       component: {
         border: '#EBEBEB',
         text: '#424242',
