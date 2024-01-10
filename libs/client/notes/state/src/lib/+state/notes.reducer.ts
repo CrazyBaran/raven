@@ -270,6 +270,7 @@ export const notesReducer = createReducer(
     ...state,
     opportunityNotes: {
       ...state.opportunityNotes,
+      data: [],
       isLoading: true,
     },
   })),
