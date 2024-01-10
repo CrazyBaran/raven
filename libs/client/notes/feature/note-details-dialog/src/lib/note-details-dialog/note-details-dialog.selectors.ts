@@ -80,8 +80,8 @@ function prepareAllNotes(notes: NoteFieldGroupsWithFieldData[]): {
     return res;
   }, [] as NoteFieldData[]);
 
-  const sortedFields = sortBy(noteFields, 'order').filter((note) =>
-    note.value.trim(),
+  const sortedFields = sortBy(noteFields, 'order').filter(
+    (note) => note.value?.trim(),
   );
 
   return {
