@@ -1,7 +1,8 @@
 // TODO: fix boundaries
 /* eslint-disable @nx/enforce-module-boundaries */
 
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { ENVIRONMENT, Environment } from '@app/client/core/environment';
 import { WebsocketService } from '@app/client/core/websockets';
 import { NotesActions, notesQuery } from '@app/client/notes/state';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
@@ -82,8 +83,10 @@ export class WebsocketEffects {
   public constructor(
     private store: Store,
     private websocketService: WebsocketService,
+    @Inject(ENVIRONMENT)
+    private environment: Environment,
   ) {
-    this.websocketService.connect();
+    this.websocketService.connect(this.environment.websocketUrl);
 
     this.websocketService
       .reconnectEffects()

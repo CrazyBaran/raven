@@ -219,13 +219,6 @@ export class OpportunityController {
   @ApiParam({ name: 'id', type: 'string' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
-  @CheckShare((ability: ShareAbility, context) =>
-    ability.can(
-      ShareAction.Edit,
-      'o',
-      (context.query.id as string)?.toString().toLowerCase(),
-    ),
-  )
   public async update(
     @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
     opportunity: OpportunityEntity,

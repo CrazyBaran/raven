@@ -11,4 +11,5 @@ export interface Environment {
   sharepointRootDirectoryId: string;
   sharepointWeb: string;
   sharepointList: string;
+  websocketUrl: string;
 }

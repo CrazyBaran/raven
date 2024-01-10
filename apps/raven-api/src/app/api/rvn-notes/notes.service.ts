@@ -170,10 +170,13 @@ export class NotesService {
     if (organisationTagEntity) {
       queryBuilder
         .andWhere(`note.id IN (${orgTagSubQuery.getQuery()})`)
-        .setParameter('orgTagId', organisationTagEntity.id)
-        .orWhere('complexTags.id IN (:...complexTagIds)', {
+        .setParameter('orgTagId', organisationTagEntity.id);
+
+      if (complexTagsForOrganisation && complexTagsForOrganisation.length > 0) {
+        queryBuilder.orWhere('complexTags.id IN (:...complexTagIds)', {
           complexTagIds: complexTagsForOrganisation?.map((ct) => ct.id),
         });
+      }
     }
 
     if (tagEntities) {

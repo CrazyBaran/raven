@@ -83,6 +83,7 @@ export const environment = {
   database: {
     orm: {
       type: 'mssql',
+      requestTimeout: 30000,
       host: env.get('TYPEORM_HOST').required().asString(),
       port: env.get('TYPEORM_PORT').default(1433).asPortNumber(),
       database: env.get('TYPEORM_DATABASE').required().asString(),

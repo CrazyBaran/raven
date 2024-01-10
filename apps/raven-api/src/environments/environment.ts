@@ -94,6 +94,7 @@ export const environment = {
   database: {
     dataWarehouse: {
       type: 'mssql',
+      requestTimeout: 30000,
       host: env.get('DWH_HOST').asString(),
       port: env.get('DWH_PORT').default(1433).asPortNumber(),
       database: env.get('DWH_DATABASE').asString(),
