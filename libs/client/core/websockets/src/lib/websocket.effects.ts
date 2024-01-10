@@ -84,5 +84,14 @@ export class WebsocketEffects {
     private websocketService: WebsocketService,
   ) {
     this.websocketService.connect();
+
+    this.websocketService
+      .reconnectEffects()
+      .pipe(filter((isReconnect) => isReconnect))
+      .subscribe(() => {
+        this.websocketService.joinResourceEvents(
+          this.websocketService.currentResource!,
+        );
+      });
   }
 }

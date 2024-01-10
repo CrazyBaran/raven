@@ -1,5 +1,6 @@
 import { EnvironmentProviders, inject, Provider } from '@angular/core';
 import { Routes } from '@angular/router';
+import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { FileTypeBadgeColorsResolver } from '@app/client/files/ui';
 import { notesQuery, provideNotesFeature } from '@app/client/notes/state';
 import { NOTE_TYPE_BADGE_COLORS } from '@app/client/notes/ui';
@@ -12,6 +13,7 @@ export const notesProviders: Array<Provider | EnvironmentProviders> = [
   provideNotesFeature(),
   provideTagsFeature(),
   provideTemplatesFeature(),
+  provideWebsocketEffects(),
   {
     provide: NOTE_TYPE_BADGE_COLORS,
     useFactory: (): FileTypeBadgeColorsResolver => {

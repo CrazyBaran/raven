@@ -38,7 +38,7 @@ export class WebsocketService {
     });
 
     this.socket.on('events', (message: string) => {
-      console.log('message', message);
+      // console.log('message', message);
       this.events$.next(JSON.parse(message));
     });
 
@@ -58,6 +58,7 @@ export class WebsocketService {
 
       if (reconnectMessages.includes(message)) {
         this.reconnectEvents$.next(true);
+
         return;
       }
 
@@ -68,22 +69,18 @@ export class WebsocketService {
   public disconnect(): void {
     if (this.socket?.connected) {
       this.socket.disconnect();
-      this._currentResource = undefined;
+      this.setCurrentResource(undefined);
     }
   }
 
   public joinResourceEvents(resourceId: WebsocketResourceType): void {
-    if (this._currentResource === resourceId) {
-      return;
-    }
-
     this.socket.emit('ws.join.resource', resourceId);
-    this._currentResource = resourceId;
+    this.setCurrentResource(resourceId);
   }
 
   public leaveResourceEvents(resourceId: string): void {
     this.socket.emit('ws.leave.resource', resourceId);
-    this._currentResource = undefined;
+    this.setCurrentResource(undefined);
   }
 
   public events(): Observable<WebsocketEvent> {
@@ -106,5 +103,11 @@ export class WebsocketService {
 
   public authErrorEffects(): Observable<boolean> {
     return this.authErrorEvents$.asObservable();
+  }
+
+  private setCurrentResource(
+    resourceId: WebsocketResourceType | undefined,
+  ): void {
+    this._currentResource = resourceId;
   }
 }
