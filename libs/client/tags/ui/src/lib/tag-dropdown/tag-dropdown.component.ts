@@ -5,7 +5,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   EventEmitter,
   forwardRef,
   inject,
@@ -89,13 +88,6 @@ export class TagDropdownComponent extends ControlValueAccessor<
 
   public override writeValue(value: TagDropdownValue[]): void {
     this.value.set(value);
-  }
-
-  public constructor() {
-    super();
-    effect(() => {
-      console.log(this.value());
-    });
   }
 
   @Output() public openTagDialog = new EventEmitter<{

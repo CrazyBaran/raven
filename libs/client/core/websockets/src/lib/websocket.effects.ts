@@ -87,5 +87,14 @@ export class WebsocketEffects {
     private environment: Environment,
   ) {
     this.websocketService.connect(this.environment.websocketUrl);
+
+    this.websocketService
+      .reconnectEffects()
+      .pipe(filter((isReconnect) => isReconnect))
+      .subscribe(() => {
+        this.websocketService.joinResourceEvents(
+          this.websocketService.currentResource!,
+        );
+      });
   }
 }
