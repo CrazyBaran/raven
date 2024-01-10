@@ -24,8 +24,8 @@ export class WebsocketService {
     return this._currentResource;
   }
 
-  public connect(token?: string): void {
-    this.socket = io('https://as-wa-mc-raven-dev.azurewebsites.net/', {
+  public connect(wsUrl: string, token?: string): void {
+    this.socket = io(wsUrl, {
       transports: ['websocket', 'polling'],
       query: {
         auth: 'token', // TODO handle auth later
