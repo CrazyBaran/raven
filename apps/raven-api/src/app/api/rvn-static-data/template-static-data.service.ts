@@ -335,17 +335,26 @@ export class TemplateStaticDataService {
             groupId: modifiedChange.newData.fieldGroupId,
           },
         );
+
         await transactionalEntityManager.query(
-          `DELETE FROM field_hide_pipeline_stage WHERE tab_id = ?`,
+          `DELETE FROM rvn_field_hide_pipeline_stage WHERE field_id = @0`,
           [modifiedChange.newData.id],
         );
-        await transactionalEntityManager.query(
-          `INSERT INTO field_hide_pipeline_stage (tab_id, pipeline_stage_id) VALUES (?, ?)`,
-          [
-            modifiedChange.newData.id,
-            modifiedChange.newData.hideOnPipelineStageIds,
-          ],
-        );
+        if (
+          modifiedChange.newData.hideOnPipelineStageIds &&
+          modifiedChange.newData.hideOnPipelineStageIds.length > 0
+        ) {
+          await transactionalEntityManager.query(
+            this.prepareMultiparamQuery(
+              `INSERT INTO rvn_field_hide_pipeline_stage (field_id, pipeline_stage_id) VALUES`,
+              modifiedChange.newData.hideOnPipelineStageIds,
+            ),
+            this.prepareMultiparamQueryParameters(
+              modifiedChange.newData.id,
+              modifiedChange.newData.hideOnPipelineStageIds,
+            ),
+          );
+        }
       }
 
       for (const change of changes.filter(
@@ -369,8 +378,14 @@ export class TemplateStaticDataService {
               data.hideOnPipelineStageIds.length > 0
             ) {
               await transactionalEntityManager.query(
-                `INSERT INTO field_hide_pipeline_stage (tab_id, pipeline_stage_id) VALUES (?, ?)`,
-                [data.id, data.hideOnPipelineStageIds],
+                this.prepareMultiparamQuery(
+                  `INSERT INTO rvn_field_hide_pipeline_stage (field_id, pipeline_stage_id) VALUES`,
+                  data.hideOnPipelineStageIds,
+                ),
+                this.prepareMultiparamQueryParameters(
+                  data.id,
+                  data.hideOnPipelineStageIds,
+                ),
               );
             }
             break;
@@ -380,7 +395,7 @@ export class TemplateStaticDataService {
               data.id,
             );
             await transactionalEntityManager.query(
-              `DELETE FROM field_hide_pipeline_stage WHERE tab_id = ?`,
+              `DELETE FROM rvn_field_hide_pipeline_stage WHERE field_id = @0`,
               [data.id],
             );
             break;
@@ -404,32 +419,65 @@ export class TemplateStaticDataService {
           },
         );
         await transactionalEntityManager.query(
-          `DELETE FROM tab_pipeline_stage WHERE tab_id = ?`,
+          `DELETE FROM rvn_tab_pipeline_stage WHERE tab_id = @0`,
           [modifiedChange.newData.id],
         );
         await transactionalEntityManager.query(
-          `DELETE FROM tab_related_field WHERE tab_id = ?`,
+          `DELETE FROM rvn_tab_related_field WHERE tab_id = @0`,
           [modifiedChange.newData.id],
         );
         await transactionalEntityManager.query(
-          `DELETE FROM tab_related_template WHERE tab_id = ?`,
+          `DELETE FROM rvn_tab_related_template WHERE tab_id = @0`,
           [modifiedChange.newData.id],
         );
-        await transactionalEntityManager.query(
-          `INSERT INTO tab_pipeline_stage (tab_id, pipeline_stage_id) VALUES (?, ?)`,
-          [modifiedChange.newData.id, modifiedChange.newData.pipelineStageIds],
-        );
-        await transactionalEntityManager.query(
-          `INSERT INTO tab_related_field (tab_id, field_definition_id) VALUES (?, ?)`,
-          [modifiedChange.newData.id, modifiedChange.newData.relatedFieldIds],
-        );
-        await transactionalEntityManager.query(
-          `INSERT INTO tab_related_template (tab_id, template_id) VALUES (?, ?)`,
-          [
-            modifiedChange.newData.id,
-            modifiedChange.newData.relatedTemplateIds,
-          ],
-        );
+
+        if (
+          modifiedChange.newData.pipelineStageIds &&
+          modifiedChange.newData.pipelineStageIds.length > 0
+        ) {
+          await transactionalEntityManager.query(
+            this.prepareMultiparamQuery(
+              'INSERT INTO rvn_tab_pipeline_stage (tab_id, pipeline_stage_id) VALUES',
+              modifiedChange.newData.pipelineStageIds,
+            ),
+            this.prepareMultiparamQueryParameters(
+              modifiedChange.newData.id,
+              modifiedChange.newData.pipelineStageIds,
+            ),
+          );
+        }
+
+        if (
+          modifiedChange.newData.relatedFieldIds &&
+          modifiedChange.newData.relatedFieldIds.length > 0
+        ) {
+          await transactionalEntityManager.query(
+            this.prepareMultiparamQuery(
+              `INSERT INTO rvn_tab_related_field (tab_id, field_definition_id) VALUES`,
+              modifiedChange.newData.relatedFieldIds,
+            ),
+            this.prepareMultiparamQueryParameters(
+              modifiedChange.newData.id,
+              modifiedChange.newData.relatedFieldIds,
+            ),
+          );
+        }
+
+        if (
+          modifiedChange.newData.relatedTemplateIds &&
+          modifiedChange.newData.relatedTemplateIds.length > 0
+        ) {
+          await transactionalEntityManager.query(
+            this.prepareMultiparamQuery(
+              `INSERT INTO rvn_tab_related_template (tab_id, template_id) VALUES`,
+              modifiedChange.newData.relatedTemplateIds,
+            ),
+            this.prepareMultiparamQueryParameters(
+              modifiedChange.newData.id,
+              modifiedChange.newData.relatedTemplateIds,
+            ),
+          );
+        }
       }
 
       for (const change of changes.filter(
@@ -444,30 +492,57 @@ export class TemplateStaticDataService {
               name: data.name,
               order: data.order,
             });
-            await transactionalEntityManager.query(
-              `INSERT INTO tab_pipeline_stage (tab_id, pipeline_stage_id) VALUES (?, ?)`,
-              [data.id, data.pipelineStageIds],
-            );
-            await transactionalEntityManager.query(
-              `INSERT INTO tab_related_field (tab_id, field_definition_id) VALUES (?, ?)`,
-              [data.id, data.relatedFieldIds],
-            );
-            await transactionalEntityManager.query(
-              `INSERT INTO tab_related_template (tab_id, template_id) VALUES (?, ?)`,
-              [data.id, data.relatedTemplateIds],
-            );
+
+            if (data.pipelineStageIds && data.pipelineStageIds.length > 0) {
+              await transactionalEntityManager.query(
+                this.prepareMultiparamQuery(
+                  `INSERT INTO rvn_tab_pipeline_stage (tab_id, pipeline_stage_id) VALUES`,
+                  data.pipelineStageIds,
+                ),
+                this.prepareMultiparamQueryParameters(
+                  data.id,
+                  data.pipelineStageIds,
+                ),
+              );
+            }
+
+            if (data.relatedFieldIds && data.relatedFieldIds.length > 0) {
+              await transactionalEntityManager.query(
+                this.prepareMultiparamQuery(
+                  `INSERT INTO rvn_tab_related_field (tab_id, field_definition_id) VALUES`,
+                  data.relatedFieldIds,
+                ),
+                this.prepareMultiparamQueryParameters(
+                  data.id,
+                  data.relatedFieldIds,
+                ),
+              );
+            }
+
+            if (data.relatedTemplateIds && data.relatedTemplateIds.length > 0) {
+              await transactionalEntityManager.query(
+                this.prepareMultiparamQuery(
+                  `INSERT INTO rvn_tab_related_template (tab_id, template_id) VALUES`,
+                  data.relatedTemplateIds,
+                ),
+                this.prepareMultiparamQueryParameters(
+                  data.id,
+                  data.relatedTemplateIds,
+                ),
+              );
+            }
             break;
           case ChangeType.Removed:
             await transactionalEntityManager.query(
-              `DELETE FROM tab_pipeline_stage WHERE tab_id = ?`,
+              `DELETE FROM rvn_tab_pipeline_stage WHERE tab_id = @0`,
               [data.id],
             );
             await transactionalEntityManager.query(
-              `DELETE FROM tab_related_field WHERE tab_id = ?`,
+              `DELETE FROM rvn_tab_related_field WHERE tab_id = @0`,
               [data.id],
             );
             await transactionalEntityManager.query(
-              `DELETE FROM tab_related_template WHERE tab_id = ?`,
+              `DELETE FROM rvn_tab_related_template WHERE tab_id = @0`,
               [data.id],
             );
             await transactionalEntityManager.delete(TabEntity, data.id);
@@ -475,5 +550,18 @@ export class TemplateStaticDataService {
         }
       }
     });
+  }
+
+  private prepareMultiparamQuery(baseQuery: string, ids: string[]): string {
+    return `${baseQuery} ${ids
+      .map((_, index) => `(@${index * 2}, @${index * 2 + 1})`)
+      .join(',')}`;
+  }
+
+  private prepareMultiparamQueryParameters(
+    singleId: string,
+    ids: string[],
+  ): string[] {
+    return ids.reduce((acc, id) => acc.concat([singleId, id]), []);
   }
 }
