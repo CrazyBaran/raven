@@ -13,9 +13,10 @@ import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { cloneDeep } from 'lodash';
-import { Brackets, Raw, Repository } from 'typeorm';
+import { Brackets, ILike, In, Raw, Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
@@ -77,6 +78,8 @@ export class NotesService {
     private readonly templateRepository: Repository<TemplateEntity>,
     @InjectRepository(ComplexTagEntity)
     private readonly complexTagRepository: Repository<ComplexTagEntity>,
+    @InjectRepository(OrganisationEntity)
+    private readonly organisationRepository: Repository<OrganisationEntity>,
     private readonly storageAccountService: StorageAccountService,
     private readonly gatewayEventService: GatewayEventService,
     private readonly logger: RavenLogger,
@@ -99,25 +102,46 @@ export class NotesService {
     assignedTo?: string,
     role?: 'created' | 'tagged',
   ): Promise<{ items: NoteEntity[]; total: number }> {
-    const complexTagsForOrganisation = organisationTagEntity
-      ? await this.complexTagRepository
-          .createQueryBuilder('complexTag')
-          .innerJoin(
-            'complexTag.tags',
-            'organisationComplexTag',
-            'organisationComplexTag.id = :organisationComplexTagId',
-            {
-              organisationComplexTagId: organisationTagEntity.id,
-            },
-          )
-          .getMany()
-      : [];
+    const organisationTagIds: string[] = [];
+    if (organisationTagEntity) {
+      organisationTagIds.push(organisationTagEntity.id);
+    }
+    if (query) {
+      const queryOrganisations = query
+        ? await this.organisationRepository.find({
+            where: { name: ILike(`%${query}%`) },
+          })
+        : [];
+      const organisationIds = queryOrganisations.map((o) => o.id);
+      const organisationTags = await this.organisationTagRepository.find({
+        where: { organisationId: In(organisationIds) },
+      });
+      if (organisationTags) {
+        organisationTagIds.push(...organisationTags.map((o) => o.id));
+        console.log({ organisationTags });
+      }
+    }
+
+    const complexTagsForOrganisations =
+      organisationTagIds.length > 0
+        ? await this.complexTagRepository
+            .createQueryBuilder('complexTag')
+            .innerJoin(
+              'complexTag.tags',
+              'organisationComplexTag',
+              'organisationComplexTag.id IN (:...organisationComplexTagIds)',
+              {
+                organisationComplexTagIds: organisationTagIds,
+              },
+            )
+            .getMany()
+        : [];
 
     const orgTagSubQuery = this.noteRepository
       .createQueryBuilder('note_with_tag')
       .select('note_with_tag.id')
       .innerJoin('note_with_tag.tags', 'tag')
-      .where('tag.id = :orgTagId');
+      .where('tag.id IN (:...orgTagIds)');
 
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
@@ -167,16 +191,26 @@ export class NotesService {
       if (tagAssignedTo) tagEntities = [...tagEntities, tagAssignedTo];
     }
 
-    if (organisationTagEntity) {
+    if (organisationTagIds.length > 0) {
       queryBuilder
         .andWhere(`note.id IN (${orgTagSubQuery.getQuery()})`)
-        .setParameter('orgTagId', organisationTagEntity.id);
+        .setParameter('orgTagIds', organisationTagIds);
 
-      if (complexTagsForOrganisation && complexTagsForOrganisation.length > 0) {
+      if (
+        complexTagsForOrganisations &&
+        complexTagsForOrganisations.length > 0
+      ) {
         queryBuilder.orWhere('complexTags.id IN (:...complexTagIds)', {
-          complexTagIds: complexTagsForOrganisation?.map((ct) => ct.id),
+          complexTagIds: complexTagsForOrganisations?.map((ct) => ct.id),
         });
       }
+    } else if (
+      complexTagsForOrganisations &&
+      complexTagsForOrganisations.length > 0
+    ) {
+      queryBuilder.where('complexTags.id IN (:...complexTagIds)', {
+        complexTagIds: complexTagsForOrganisations?.map((ct) => ct.id),
+      });
     }
 
     if (tagEntities) {

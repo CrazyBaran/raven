@@ -5,6 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
@@ -63,6 +64,10 @@ describe('NotesService', () => {
           useValue: {
             save: jest.fn(),
           },
+        },
+        {
+          provide: getRepositoryToken(OrganisationEntity),
+          useValue: {},
         },
         {
           provide: StorageAccountService,
