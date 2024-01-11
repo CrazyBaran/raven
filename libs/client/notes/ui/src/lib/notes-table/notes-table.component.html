@@ -110,7 +110,9 @@
             [class.!opacity-20]="dataItem.deleteButtonSettings?.disabled"
             [disabled]="dataItem.deleteButtonSettings?.disabled"
             iconClass="fa-solid fa-trash-can"
-            themeColor="light"
+            [themeColor]="
+              dataItem.deleteButtonSettings?.disabled ? 'light' : 'error'
+            "
           />
         </div>
         @if (dataItem.newSyncId && dataItem.newSyncId !== dataItem.id) {
