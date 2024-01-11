@@ -118,7 +118,6 @@ export class NotesService {
       });
       if (organisationTags) {
         organisationTagIds.push(...organisationTags.map((o) => o.id));
-        console.log({ organisationTags });
       }
     }
 
