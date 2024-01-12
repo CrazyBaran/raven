@@ -37,6 +37,30 @@ export class TemplateStaticDataService {
         'tabs.relatedFields',
         'tabs.relatedTemplates',
       ],
+      order: {
+        name: 'ASC',
+        fieldGroups: {
+          order: 'ASC',
+          fieldDefinitions: {
+            order: 'ASC',
+            hideOnPipelineStages: {
+              order: 'ASC',
+            },
+          },
+        },
+        tabs: {
+          order: 'ASC',
+          fieldGroups: {
+            order: 'ASC',
+          },
+          relatedFields: {
+            order: 'ASC',
+          },
+          relatedTemplates: {
+            name: 'ASC',
+          },
+        },
+      },
     });
 
     return templates.map((template) => {

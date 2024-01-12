@@ -1,0 +1,394 @@
+[
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "21b17d0e-949d-ee11-bea0-6045bdf23835",
+        "name": "Mubadala underwriting",
+        "type": "richText",
+        "order": 4,
+        "configuration": null,
+        "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "21b17d0e-949d-ee11-bea0-6045bdf23835",
+        "name": "Mubadala underwriting",
+        "type": "richText",
+        "order": 4,
+        "configuration": null,
+        "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+        "hideOnPipelineStageIds": [
+          "da55560e-7293-ee11-8927-6045bdd178c1",
+          "db55560e-7293-ee11-8927-6045bdd178c1",
+          "dc55560e-7293-ee11-8927-6045bdd178c1",
+          "dd55560e-7293-ee11-8927-6045bdd178c1",
+          "de55560e-7293-ee11-8927-6045bdd178c1",
+          "df55560e-7293-ee11-8927-6045bdd178c1",
+          "e055560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "368a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Monthly burn",
+        "type": "heatmap",
+        "order": 3,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":3,\"thresholds\":[0.4999,2]}",
+        "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "368a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Monthly burn",
+        "type": "heatmap",
+        "order": 3,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":15,\"thresholds\":[0.4999,2]}",
+        "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "378a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Cash",
+        "type": "heatmap",
+        "order": 4,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":100,\"thresholds\":[20.0001,9.9999]}",
+        "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "378a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Cash",
+        "type": "heatmap",
+        "order": 4,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":\"\",\"thresholds\":[20.0001,9.9999]}",
+        "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "388a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Runway",
+        "type": "heatmap",
+        "order": 5,
+        "configuration": "{\"unit\":\"\",\"min\":0,\"max\":24,\"thresholds\":[12.0001,5.9999],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"378A25C2-BC99-EE11-BEA0-6045BDF23835\",\"368A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+        "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "388a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Runway",
+        "type": "heatmap",
+        "order": 5,
+        "configuration": "{\"unit\":\"\",\"min\":0,\"max\":\"\",\"thresholds\":[12.0001,5.9999],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"378A25C2-BC99-EE11-BEA0-6045BDF23835\",\"368A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+        "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "3a8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "ARR",
+        "type": "heatmap",
+        "order": 1,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":100,\"thresholds\":[15.0001,4.9999]}",
+        "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "3a8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "ARR",
+        "type": "heatmap",
+        "order": 1,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":\"\",\"thresholds\":[15.0001,4.9999]}",
+        "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "3b8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "LTM growth",
+        "type": "heatmap",
+        "order": 2,
+        "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":300,\"thresholds\":[100.0001,50]}",
+        "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "3b8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "LTM growth",
+        "type": "heatmap",
+        "order": 2,
+        "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":400,\"thresholds\":[100.0001,50]}",
+        "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "3c8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "# of logos",
+        "type": "heatmap",
+        "order": 3,
+        "configuration": "{\"unit\":\"\",\"min\":0,\"max\":1000,\"thresholds\":[500.0001,49.9999],\"calculationConfig\":{\"type\":\"division_multiplied\",\"multiplier\": 1000,\"valueIds\":[\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3F8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+        "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "3c8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "# of logos",
+        "type": "heatmap",
+        "order": 3,
+        "configuration": "{\"unit\":\"\",\"min\":0,\"max\":\"\",\"thresholds\":[500.0001,49.9999],\"calculationConfig\":{\"type\":\"division_multiplied\",\"multiplier\": 1000,\"valueIds\":[\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3F8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+        "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "3f8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "ACV",
+        "type": "heatmap",
+        "order": 1,
+        "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[100.0001,49.9999]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "3f8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "ACV",
+        "type": "heatmap",
+        "order": 1,
+        "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":10000,\"thresholds\":[100.0001,49.9999]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "408a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Largest contract value",
+        "type": "heatmap",
+        "order": 2,
+        "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[500.0001,99.9999]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "408a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Largest contract value",
+        "type": "heatmap",
+        "order": 2,
+        "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":20000,\"thresholds\":[500.0001,99.9999]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "448a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "CAC",
+        "type": "heatmap",
+        "order": 6,
+        "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":100,\"thresholds\":[19.9999,50.0001]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "448a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "CAC",
+        "type": "heatmap",
+        "order": 6,
+        "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":2000,\"thresholds\":[19.9999,50.0001]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "458a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Gross churn",
+        "type": "heatmap",
+        "order": 7,
+        "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":50,\"thresholds\":[0.9999,10.0001]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "458a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Gross churn",
+        "type": "heatmap",
+        "order": 7,
+        "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[0.9999,10.0001]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "468a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "NRR",
+        "type": "heatmap",
+        "order": 8,
+        "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":200,\"thresholds\":[130.0001,109.9999]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "468a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "NRR",
+        "type": "heatmap",
+        "order": 8,
+        "configuration": "{\"unit\":\"%\",\"min\":-100,\"max\":300,\"thresholds\":[130.0001,109.9999]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "478a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "CAC payback",
+        "type": "heatmap",
+        "order": 9,
+        "configuration": "{\"unit\":\"\",\"min\":1,\"max\":24,\"thresholds\":[8.9999,18.0001]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "478a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "CAC payback",
+        "type": "heatmap",
+        "order": 9,
+        "configuration": "{\"unit\":\"\",\"min\":1,\"max\":36,\"thresholds\":[8.9999,18.0001]}",
+        "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "498a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Last round valuation",
+        "type": "heatmap",
+        "order": 1,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":10000,\"thresholds\":[249.9999,500.0001]}",
+        "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "498a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Last round valuation",
+        "type": "heatmap",
+        "order": 1,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":\"\",\"thresholds\":[249.9999,500.0001]}",
+        "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "4a8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Last round / ARR",
+        "type": "heatmap",
+        "order": 2,
+        "configuration": "{\"unit\":\"\",\"min\":1,\"max\":100,\"thresholds\":[9.9999,18.0001],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"498A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+        "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "4a8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Last round / ARR",
+        "type": "heatmap",
+        "order": 2,
+        "configuration": "{\"unit\":\"\",\"min\":1,\"max\":500,\"thresholds\":[9.9999,18.0001],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"498A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+        "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    },
+    {
+      "changeType": "Modified",
+      "entityClass": "FieldDefinitionEntity",
+      "oldData": {
+        "id": "4b8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Capital raised",
+        "type": "heatmap",
+        "order": 3,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":500,\"thresholds\":[19.9999,100.0001]}",
+        "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      },
+      "newData": {
+        "id": "4b8a25c2-bc99-ee11-bea0-6045bdf23835",
+        "name": "Capital raised",
+        "type": "heatmap",
+        "order": 3,
+        "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":\"\",\"thresholds\":[19.9999,100.0001]}",
+        "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+        "hideOnPipelineStageIds": [],
+        "correspondingEntity": "FieldDefinitionEntity"
+      }
+    }
+  ]
