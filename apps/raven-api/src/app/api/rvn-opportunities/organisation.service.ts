@@ -221,6 +221,11 @@ export class OrganisationService {
           SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
             organisation,
           );
+        data.sharePointPath = `${
+          environment.sharePoint.rootDirectory
+        }/${SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
+          organisation,
+        )}`;
         return data;
       },
     );
