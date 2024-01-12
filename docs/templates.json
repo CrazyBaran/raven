@@ -18,6 +18,7 @@
             "order": 10,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -27,6 +28,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -36,6 +38,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -45,6 +48,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -54,6 +58,7 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -63,6 +68,7 @@
             "order": 6,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -72,6 +78,7 @@
             "order": 7,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -81,6 +88,7 @@
             "order": 8,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -90,6 +98,7 @@
             "order": 9,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -99,6 +108,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "04f07851-2f6f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -128,6 +138,7 @@
             "order": 7,
             "configuration": null,
             "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -137,6 +148,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -146,6 +158,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -155,6 +168,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -164,6 +178,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -173,6 +188,7 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -182,6 +198,7 @@
             "order": 6,
             "configuration": null,
             "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -211,6 +228,7 @@
             "order": 10,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -220,6 +238,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -229,6 +248,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -238,6 +258,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -247,6 +268,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -256,6 +278,7 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -265,6 +288,7 @@
             "order": 6,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -274,6 +298,7 @@
             "order": 7,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -283,6 +308,7 @@
             "order": 8,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -292,6 +318,7 @@
             "order": 9,
             "configuration": null,
             "fieldGroupId": "71a79b0c-326f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -321,6 +348,7 @@
             "order": 9,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -330,6 +358,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -339,6 +368,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -348,6 +378,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -357,6 +388,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -366,6 +398,7 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -375,6 +408,7 @@
             "order": 6,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -384,6 +418,7 @@
             "order": 7,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -393,6 +428,7 @@
             "order": 8,
             "configuration": null,
             "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -422,6 +458,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -431,6 +468,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -440,6 +478,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -449,6 +488,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -458,6 +498,7 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "1651a36d-346f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -477,6 +518,7 @@
             "order": 6,
             "configuration": null,
             "fieldGroupId": "297d68bf-346f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -496,6 +538,7 @@
             "order": 7,
             "configuration": null,
             "fieldGroupId": "07addddc-346f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -525,6 +568,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "1d542f52-356f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -554,6 +598,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -563,6 +608,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -572,6 +618,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -581,6 +628,12 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -600,6 +653,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -609,6 +663,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -618,6 +673,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -627,6 +683,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -636,6 +693,12 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -655,6 +718,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -664,6 +728,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -673,6 +738,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -682,6 +748,12 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -701,6 +773,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -710,6 +783,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -719,6 +793,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -728,6 +803,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -737,6 +813,12 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -756,6 +838,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -765,6 +848,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -774,6 +858,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -783,6 +868,12 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -802,6 +893,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -811,6 +903,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -820,6 +913,7 @@
             "order": 6,
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -829,6 +923,7 @@
             "order": 7,
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -838,6 +933,12 @@
             "order": 8,
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -847,6 +948,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -856,6 +958,7 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -875,6 +978,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -884,6 +988,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -893,6 +998,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -902,6 +1008,7 @@
             "order": 4,
             "configuration": null,
             "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -911,6 +1018,12 @@
             "order": 5,
             "configuration": null,
             "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -930,6 +1043,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -939,15 +1053,32 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
             "id": "04de3a52-8c84-ee11-8927-6045bdd178c1",
-            "name": "Summary of Risks / Unknowns",
+            "name": "Summary of Risks",
             "type": "richText",
             "order": 3,
             "configuration": null,
             "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "5d89ceb8-25ae-ee11-bea0-6045bdf23835",
+            "name": "Unknowns",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -967,6 +1098,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -976,15 +1108,32 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
             "id": "4c93d16f-8684-ee11-8927-6045bdd178c1",
-            "name": "Summary of Risks / Unknowns",
+            "name": "Summary of Risks",
             "type": "richText",
             "order": 3,
             "configuration": null,
             "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "f72a8fdf-25ae-ee11-bea0-6045bdf23835",
+            "name": "Unknowns",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -1004,6 +1153,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "de08a991-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -1023,6 +1173,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "911e199a-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1032,6 +1183,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "911e199a-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1041,6 +1193,7 @@
             "order": 3,
             "configuration": null,
             "fieldGroupId": "911e199a-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -1060,6 +1213,7 @@
             "order": 1,
             "configuration": null,
             "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1069,6 +1223,7 @@
             "order": 2,
             "configuration": null,
             "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -1088,6 +1243,7 @@
             "order": 1,
             "configuration": "{\"unit\":\"\",\"min\":0,\"max\":5,\"thresholds\":[1,0.5], \"calculationConfig\":{\"type\":\"efficiency\",\"valueIds\":[\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3B8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"368A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
             "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1097,6 +1253,7 @@
             "order": 2,
             "configuration": "{\"unit\":\"\",\"min\":0,\"max\":3,\"thresholds\":[0.9999,2.0001]}",
             "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1106,6 +1263,7 @@
             "order": 3,
             "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":3,\"thresholds\":[0.4999,2]}",
             "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1115,6 +1273,7 @@
             "order": 4,
             "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":100,\"thresholds\":[20.0001,9.9999]}",
             "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1124,6 +1283,7 @@
             "order": 5,
             "configuration": "{\"unit\":\"\",\"min\":0,\"max\":24,\"thresholds\":[12.0001,5.9999],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"378A25C2-BC99-EE11-BEA0-6045BDF23835\",\"368A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
             "fieldGroupId": "338a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -1141,8 +1301,9 @@
             "name": "ARR",
             "type": "heatmap",
             "order": 1,
-            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":100,\"thresholds\":[15.0001,5]}",
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":100,\"thresholds\":[15.0001,4.9999]}",
             "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1152,6 +1313,7 @@
             "order": 2,
             "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":300,\"thresholds\":[100.0001,50]}",
             "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1159,8 +1321,9 @@
             "name": "# of logos",
             "type": "heatmap",
             "order": 3,
-            "configuration": "{\"unit\":\"\",\"min\":0,\"max\":1000,\"thresholds\":[500.0001,50],\"calculationConfig\":{\"type\":\"division_multiplied\",\"multiplier\": 1000,\"valueIds\":[\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3F8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+            "configuration": "{\"unit\":\"\",\"min\":0,\"max\":1000,\"thresholds\":[500.0001,49.9999],\"calculationConfig\":{\"type\":\"division_multiplied\",\"multiplier\": 1000,\"valueIds\":[\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3F8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
             "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1168,8 +1331,9 @@
             "name": "Share of US revenue",
             "type": "heatmap",
             "order": 4,
-            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[30.0001,1]}",
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[30.0001,0.9999]}",
             "fieldGroupId": "398a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -1187,8 +1351,9 @@
             "name": "ACV",
             "type": "heatmap",
             "order": 1,
-            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[100.0001,50]}",
+            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[100.0001,49.9999]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1196,8 +1361,9 @@
             "name": "Largest contract value",
             "type": "heatmap",
             "order": 2,
-            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[500.0001,100]}",
+            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":5000,\"thresholds\":[500.0001,99.9999]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1205,8 +1371,9 @@
             "name": "Gross margin",
             "type": "heatmap",
             "order": 3,
-            "configuration": "{\"unit\":\"%\",\"min\":-5,\"max\":100,\"thresholds\":[85.0001,50]}",
+            "configuration": "{\"unit\":\"%\",\"min\":-5,\"max\":100,\"thresholds\":[85.0001,49.9999]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1214,8 +1381,9 @@
             "name": "S&M % revenue",
             "type": "heatmap",
             "order": 4,
-            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[19.9999,50]}",
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[19.9999,50.0001]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1223,8 +1391,9 @@
             "name": "Inbound lead gen",
             "type": "heatmap",
             "order": 5,
-            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[50.0001,10]}",
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":100,\"thresholds\":[50.0001,9.9999]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1232,8 +1401,9 @@
             "name": "CAC",
             "type": "heatmap",
             "order": 6,
-            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":100,\"thresholds\":[19.9999,100]}",
+            "configuration": "{\"unit\":\"k$\",\"min\":0,\"max\":100,\"thresholds\":[19.9999,50.0001]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1241,8 +1411,9 @@
             "name": "Gross churn",
             "type": "heatmap",
             "order": 7,
-            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":50,\"thresholds\":[0.9999,10]}",
+            "configuration": "{\"unit\":\"%\",\"min\":0,\"max\":50,\"thresholds\":[0.9999,10.0001]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1250,8 +1421,9 @@
             "name": "NRR",
             "type": "heatmap",
             "order": 8,
-            "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":200,\"thresholds\":[130.0001,110]}",
+            "configuration": "{\"unit\":\"%\",\"min\":-50,\"max\":200,\"thresholds\":[130.0001,109.9999]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1259,8 +1431,9 @@
             "name": "CAC payback",
             "type": "heatmap",
             "order": 9,
-            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":24,\"thresholds\":[8.9999,18]}",
+            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":24,\"thresholds\":[8.9999,18.0001]}",
             "fieldGroupId": "3e8a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -1278,8 +1451,9 @@
             "name": "Last round valuation",
             "type": "heatmap",
             "order": 1,
-            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":10000,\"thresholds\":[249.9999,500]}",
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":10000,\"thresholds\":[249.9999,500.0001]}",
             "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1287,8 +1461,9 @@
             "name": "Last round / ARR",
             "type": "heatmap",
             "order": 2,
-            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":100,\"thresholds\":[9.9999,18],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"498A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":100,\"thresholds\":[9.9999,18.0001],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"498A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
             "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           },
           {
@@ -1296,8 +1471,9 @@
             "name": "Capital raised",
             "type": "heatmap",
             "order": 3,
-            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":500,\"thresholds\":[19.9999,100]}",
+            "configuration": "{\"unit\":\"m$\",\"min\":0,\"max\":500,\"thresholds\":[19.9999,100.0001]}",
             "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],

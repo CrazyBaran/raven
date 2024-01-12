@@ -196,8 +196,6 @@ export const environment = {
       .asBoolStrict(),
     webhookToken: env.get('AFFINITY_WEBHOOK_TOKEN').asString(),
     apiKey: env.get('AFFINITY_API_KEY').asString(),
-    defaultListId: env.get('AFFINITY_LIST_ID').asString(),
-    statusFieldId: env.get('AFFINITY_FIELD_ID').asString(),
     affinityUrl: env.get('AFFINITY_URL').asString(),
   },
   azureStorageAccount: {
