@@ -228,6 +228,17 @@ export class OpportunitiesRelatedNotesComponent {
           updatingField: null,
         }));
       });
+
+    this.actions
+      .pipe(takeUntilDestroyed(), ofType(NotesActions.liveCreateNote))
+      .subscribe(() => {
+        this.store.dispatch(
+          NotesActions.getOpportunityNotes({
+            opportunityId: this.vm().opportunityId!,
+            silently: true,
+          }),
+        );
+      });
   }
 
   @HostListener('window:beforeunload', ['$event'])

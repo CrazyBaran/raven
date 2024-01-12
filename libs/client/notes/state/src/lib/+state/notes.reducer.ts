@@ -266,12 +266,12 @@ export const notesReducer = createReducer(
     },
   })),
 
-  on(NotesActions.getOpportunityNotes, (state) => ({
+  on(NotesActions.getOpportunityNotes, (state, { silently }) => ({
     ...state,
     opportunityNotes: {
       ...state.opportunityNotes,
-      data: [],
-      isLoading: true,
+      data: silently ? state.opportunityNotes.data : [],
+      isLoading: !silently,
     },
   })),
   on(NotesActions.getOpportunityNotesSuccess, (state, action) => ({
