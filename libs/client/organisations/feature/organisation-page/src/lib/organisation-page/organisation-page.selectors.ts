@@ -102,6 +102,7 @@ export const selectOrganisationPageViewModel = createSelector(
       opportunities: currentOrganisation?.opportunities ?? [],
       hasFileFolder: !!currentOrganisation?.sharepointDirectory,
       isCreatingSharepointFolder,
+      sharepointFolder: currentOrganisation?.sharePointPath,
     };
   },
 );
