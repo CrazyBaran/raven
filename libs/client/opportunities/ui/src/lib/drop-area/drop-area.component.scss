@@ -1,0 +1,17 @@
+.drop-area {
+  background: #f3faf9;
+  border-color: #00a59b;
+  color: #00a59b;
+  border-radius: 8px;
+}
+
+.cdk-drop-list-dragging.drop-area {
+  border-style: dashed;
+  background: white;
+  font-size: 18px;
+  transition: all 0.2s ease-in-out;
+}
+
+::ng-deep .cdk-drag-placeholder {
+  display: none;
+}

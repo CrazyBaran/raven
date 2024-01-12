@@ -37,18 +37,13 @@
   </div>
 
   <div class="relative">
-    <div
-      *ngIf="data.team | dealLeads as dealLeads"
-      class="text-component-text overflow-hidden group-hover:invisible"
-    >
+    <!--          *ngIf="data.organisation. | dealLeads as dealLeads"-->
+    <div class="text-component-text overflow-hidden group-hover:invisible">
       <div>
-        <div
-          [class.invisible]="!dealLeads.length"
-          class="flex items-center gap-2"
-        >
+        <div [class.invisible]="true" class="flex items-center gap-2">
           <p class="w-20 text-sm">Deal Lead:</p>
           <p class="flex-1 overflow-hidden truncate text-lg">
-            {{ dealLeads[0] }}
+            <!--                {{ dealLeads[0] }}-->
           </p>
         </div>
       </div>

@@ -1,0 +1,20 @@
+<div
+  class="kendo-ui-kanban__title title flex items-center justify-between gap-4 rounded-lg bg-white p-2 px-4 text-lg shadow-md"
+>
+  <div
+    class="flex flex-1 items-center gap-4 overflow-hidden whitespace-nowrap text-lg"
+  >
+    <i [style.color]="color" class="fa-solid fa-circle text-xs"></i>
+    <p class="flex-1 truncate text-black">{{ name }}</p>
+  </div>
+
+  <span class="title__summary"> {{ length }} </span>
+
+  @if (expandable) {
+    <kendo-button
+      fillMode="flat"
+      iconClass="fa-solid fa-angle-{{ _expanded() ? 'up' : 'down' }}"
+      (click)="toggleExpand()"
+    />
+  }
+</div>

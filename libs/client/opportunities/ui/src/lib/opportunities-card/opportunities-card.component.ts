@@ -13,6 +13,10 @@ import { RxLet } from '@rx-angular/template/let';
 import { RxUnpatch } from '@rx-angular/template/unpatch';
 import { AffinityUrlButtonComponent } from '../affinity-url-button/affinity-url-button.component';
 
+export type OpportunityCard = Pick<
+  OpportunityData,
+  'id' | 'fields' | 'organisation'
+>;
 @Component({
   selector: 'app-opportunities-card',
   standalone: true,
@@ -31,7 +35,7 @@ import { AffinityUrlButtonComponent } from '../affinity-url-button/affinity-url-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpportunitiesCardComponent {
-  @Input() public data: OpportunityData;
+  @Input() public data: OpportunityCard;
 
   public get affinityUrl(): string {
     return this.data?.organisation.affinityUrl ?? '';

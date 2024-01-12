@@ -58,6 +58,7 @@ module.exports = {
       warning: '#EB8C00',
       error: '#C52A1A',
       info: '#5A74D8',
+      light: '#D9D9D6',
       link: {
         hover: `#008077`,
       },

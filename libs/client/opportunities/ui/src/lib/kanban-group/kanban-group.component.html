@@ -1,0 +1,52 @@
+<div
+  [class.p-2]="!withoutPadding"
+  [ngStyle]="{
+    'background-color': backgroundColor ?? '#D9D9D6'
+  }"
+  class="bg-light relative rounded-2xl"
+>
+  @if (!withoutHeader) {
+    <app-kanban-group-header
+      (expandedChange)="onExpandedChange($event)"
+      [color]="color"
+      [expandable]="expandable && group.length > 0"
+      [expanded]="expanded()"
+      [length]="group.length"
+      [name]="group.name"
+    />
+  }
+
+  <div
+    [ngClass]="{
+      'h-0 overflow-hidden': !expanded() && expandable
+    }"
+  >
+    <div cdkDropList>
+      <div>
+        <cdk-virtual-scroll-viewport itemSize="144" [maxBufferPx]="1000">
+          <div
+            *cdkVirtualFor="let card of group.cards!; trackBy: trackByFn"
+            style="height: 144px; overflow: hidden; width: 100%; min-width: 0"
+          >
+            <div
+              cdkDrag
+              [cdkDragData]="card"
+              (cdkDragStarted)="onDragStarted(card)"
+              (cdkDragEnded)="onDragEnded(card)"
+              class="mr-1 mt-4 block min-w-0"
+            >
+              <app-opportunities-card class="block" [data]="card" />
+            </div>
+          </div>
+        </cdk-virtual-scroll-viewport>
+
+        @if (loadingMore) {
+          <div class="flex h-20 items-center justify-center gap-2">
+            <kendo-loader />
+            <p class="italic">Loading...</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

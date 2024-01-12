@@ -1,28 +1,22 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 //TODO: create model library
 
-import { OpportunityData } from '@app/rvns-opportunities';
-import { Observable, Subject } from 'rxjs';
-
-export type OpportunityDetails = Pick<
-  OpportunityData,
-  'id' | 'fields' | 'organisation'
->;
+import { Observable } from 'rxjs';
+import { OpportunityCard } from '../opportunities-card/opportunities-card.component';
 
 export interface OpportunityRow {
   id: string;
-  source: Observable<OpportunityDetails>;
+  source: Observable<OpportunityCard>;
 }
 
 export interface ColumnData {
   id: string;
   name: string;
-  color: {
+  color?: {
     color: string;
     palette: string;
   };
-  length$: Observable<number>;
-  data$: Observable<OpportunityRow[]>;
-  renderSubject: Subject<void>;
-  onceRendered$: Observable<boolean>;
+  length: number;
+  cards?: OpportunityCard[];
+  backgroundColor?: string;
 }

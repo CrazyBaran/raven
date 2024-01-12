@@ -1,0 +1,8 @@
+<div
+  (cdkDropListDropped)="drop($event)"
+  [cdkDropListAutoScrollStep]="15"
+  cdkDropList
+  class="drop-area | bg-primary-400 border-primary-4 flex h-full w-full items-center justify-center rounded-md border-2 border-solid"
+>
+  {{ name | titlecase }}
+</div>
