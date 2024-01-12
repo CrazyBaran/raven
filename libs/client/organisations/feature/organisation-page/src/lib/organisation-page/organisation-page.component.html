@@ -177,6 +177,17 @@
         <kendo-tilelayout-item-header>
           <div class="flex items-center justify-between gap-2">
             <h5 class="k-card-title">Company Files</h5>
+
+            @if (vm().hasFileFolder) {
+              <app-picker
+                (selectFiles)="onPickerChange($event)"
+                [web]="sharepointWeb!"
+                [list]="sharepointList!"
+                [folder]="vm().sharepointFolder!"
+                [url]="sharepointUrl!"
+                name="Manage Files"
+              />
+            }
           </div>
         </kendo-tilelayout-item-header>
         <kendo-tilelayout-item-body>

@@ -37,12 +37,16 @@ import { RxIf } from '@rx-angular/template/if';
 import { trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ENVIRONMENT } from '@app/client/core/environment';
+import { FilesService } from '@app/client/files/feature/data-access';
 import {
+  PickerComponent,
   selectFileTags,
   selectFolderChildrenFactory,
 } from '@app/client/files/feature/files-table';
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
+import { SPItem } from '@app/client/files/sdk-pnptimeline';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
+import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { TagData } from '@app/rvns-tags';
 import {
   LoaderModule,
@@ -84,6 +88,7 @@ import {
     TreeListModule,
     NotesTableContainerComponent,
     LoaderModule,
+    PickerComponent,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -98,9 +103,15 @@ export class OrganisationPageComponent {
     },
   ];
   public environment = inject(ENVIRONMENT);
+
+  public sharepointUrl = this.environment.sharepointRoot;
+  public sharepointList = this.environment.sharepointList;
+  public sharepointWeb = this.environment.sharepointWeb;
+
   public source = computed(() => this.fileTable().source, { equal: _.isEqual });
   protected store = inject(Store);
   protected router = inject(Router);
+  protected filesService = inject(FilesService);
 
   protected vm = this.store.selectSignal(selectOrganisationPageViewModel);
 
@@ -201,5 +212,43 @@ export class OrganisationPageComponent {
         id: this.vm().currentOrganisationId!,
       }),
     );
+  }
+
+  public onPickerChange(event: SPItem[]): void {
+    const sharepointDirectoryId = this.vm().sharepointFolder!;
+
+    const parentReference = {
+      id: sharepointDirectoryId,
+      driveId: this.environment.sharepointDriveId,
+    };
+
+    event.forEach((file) => {
+      this.filesService
+        .copyFile(file.sharepointIds.siteId, file.id, {
+          parentReference,
+        })
+        .subscribe((res) => {
+          if (res.status === 'failed') {
+            this.store.dispatch(
+              NotificationsActions.showErrorNotification({
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                content: (res as any).error.message,
+              }),
+            );
+          } else {
+            this.store.dispatch(
+              FilesActions.getFiles({
+                directoryUrl: sharepointDirectoryId!,
+                folderId: '', //todo
+              }),
+            );
+            this.store.dispatch(
+              NotificationsActions.showSuccessNotification({
+                content: `'${file.name}' copied successfully`,
+              }),
+            );
+          }
+        });
+    });
   }
 }
