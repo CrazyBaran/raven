@@ -81,6 +81,8 @@ export class KanbanGroupComponent {
 
   @Output() public dragEnded = new EventEmitter<OpportunityCard>();
 
+  @Output() public expandedChange = new EventEmitter<boolean>();
+
   protected version = 1;
 
   protected expanded = signal(true);
@@ -103,5 +105,6 @@ export class KanbanGroupComponent {
 
   protected onExpandedChange($event: boolean): void {
     this.expanded.set($event);
+    this.expandedChange.emit($event);
   }
 }

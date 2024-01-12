@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/member-ordering,@angular-eslint/no-input-rename */
-import { state } from '@angular/animations';
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NgClass, NgStyle, TitleCasePipe } from '@angular/common';
@@ -107,5 +106,14 @@ export class KanbanColumnComponent implements AfterViewInit {
     this.groups?.forEach((group) => group.setExpanded($event));
   }
 
-  protected readonly state = state;
+  protected onExpandedChange(expanded: boolean): void {
+    if (!expanded) {
+      // force recalculation of virtual scroll
+      setTimeout(() => {
+        this.container?.nativeElement?.scrollTo({
+          top: this.container.nativeElement.offsetTop - 77,
+        });
+      }, 5);
+    }
+  }
 }

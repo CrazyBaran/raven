@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  inject,
   Input,
   Output,
   signal,
@@ -10,6 +11,7 @@ import {
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/overlay';
 import { NgClass } from '@angular/common';
+import { DialogResult, DialogService } from '@progress/kendo-angular-dialog';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
 import {
   KanbanColumn,
@@ -37,6 +39,8 @@ export interface KanbanBoard {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanBoardComponent {
+  public dialogService = inject(DialogService);
+
   @Output() public dragEndEvent = new EventEmitter<{
     pipelineStageId: string;
     opportunityId: string;
@@ -59,5 +63,28 @@ export class KanbanBoardComponent {
   protected dragEnded($event: OpportunityCard): void {
     this.receiveMode.set(false);
     this.showFooterAreas.set(false);
+  }
+
+  protected onFooterStageDrop($event: { opportunityId: string }): void {
+    this.receiveMode.set(true);
+    this.dialogService
+      .open({
+        title: 'Do you want to drop opportunity to this stage?',
+        width: 400,
+        content: 'Are you sure you want to continue?',
+        actions: [
+          { text: 'No' },
+          {
+            text: 'Yes, leave without publishing',
+            primary: true,
+            themeColor: 'primary',
+          },
+        ],
+      })
+      .result.subscribe((res: DialogResult) => {
+        this.receiveMode.set(false);
+        if ('text' in res && res.text === 'Yes, leave without publishing') {
+        }
+      });
   }
 }

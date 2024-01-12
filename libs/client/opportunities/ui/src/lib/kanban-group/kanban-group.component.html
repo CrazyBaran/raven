@@ -7,6 +7,9 @@
 >
   @if (!withoutHeader) {
     <app-kanban-group-header
+      class="sticky top-0 z-10 mr-1 block outline outline-4"
+      [style.outline-color]="backgroundColor ?? '#D9D9D6'"
+      [style.background-color]="backgroundColor ?? '#D9D9D6'"
       (expandedChange)="onExpandedChange($event)"
       [color]="color"
       [expandable]="expandable && group.length > 0"

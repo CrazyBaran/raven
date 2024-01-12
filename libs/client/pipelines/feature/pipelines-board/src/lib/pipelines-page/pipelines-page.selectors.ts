@@ -131,7 +131,7 @@ export const selectOpportunitiesCardsDictionary = createSelector(
           },
           name: o.tag?.name,
           createdAt: o.createdAt!.toString(),
-          dealLeads: [''],
+          dealLeads: o.team?.owners.map((owner) => owner.actorName) ?? [],
           affinityUrl: o.organisation.affinityUrl,
           timing: o.timing,
         }),
