@@ -1,17 +1,17 @@
 <div
-  class="opportunity-card | border-component-border group flex cursor-pointer flex-col rounded-lg bg-white p-4 hover:bg-opacity-80"
+  class="border-component-border group flex cursor-pointer flex-col rounded-lg bg-white p-4 hover:bg-opacity-80"
 >
   <div class="text-base-text mb-7 flex justify-between gap-2 overflow-hidden">
     <div
-      [routerLink]="['/companies', data.organisation.id]"
-      title="View Company Profile"
+      [routerLink]="['/companies', model.organisation.id]"
       class="hover:text-primary-600 flex-1 grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
+      title="View Company Profile"
     >
       <h1 class="mb-1 flex items-center gap-2 truncate text-lg">
-        {{ data.organisation.name }}
+        {{ model.organisation.name }}
       </h1>
       <p class="truncate text-sm">
-        {{ data.organisation.domains.join(', ') }}
+        {{ model.organisation.domains.join(', ') }}
       </p>
     </div>
     <div>
@@ -23,9 +23,9 @@
         <kendo-button
           [routerLink]="[
             '/companies',
-            data.organisation.id,
+            model.organisation.id,
             'opportunities',
-            data.id
+            model.id
           ]"
           fillMode="outline"
           themeColor="primary"
@@ -37,20 +37,36 @@
   </div>
 
   <div class="relative">
-    <!--          *ngIf="data.organisation. | dealLeads as dealLeads"-->
     <div class="text-component-text overflow-hidden group-hover:invisible">
-      <div>
-        <div [class.invisible]="true" class="flex items-center gap-2">
+      @if (model.dealLeads?.length) {
+        <div class="flex items-center gap-2">
           <p class="w-20 text-sm">Deal Lead:</p>
           <p class="flex-1 overflow-hidden truncate text-lg">
-            <!--                {{ dealLeads[0] }}-->
+            {{ model.dealLeads![0] }}
           </p>
         </div>
+      }
+      <div class="flex items-center gap-2">
+        <p class="w-20 text-sm">Created at:</p>
+        <p class="flex-1 overflow-hidden truncate text-lg">
+          {{ model.createdAt | date: 'MMM-dd, yyyy' }}
+        </p>
       </div>
+
+      @for (field of additionalFields; track field.label; let first = $first) {
+        <div class="flex items-center gap-2" [class.mt-7]="first">
+          <p class="w-20 text-sm">{{ field.label }}:</p>
+          <p class="flex-1 overflow-hidden truncate text-lg">
+            {{ field.value }}
+          </p>
+        </div>
+      }
     </div>
-    <div class="absolute top-0 hidden w-full justify-center group-hover:flex">
-      @if (affinityUrl) {
-        <app-affinity-url-button [url]="affinityUrl" />
+    <div
+      class="absolute top-0 hidden h-full w-full items-center justify-center group-hover:flex"
+    >
+      @if (model.affinityUrl) {
+        <app-affinity-url-button [url]="model.affinityUrl" />
       } @else {
         <p class="text-disabledText">Drop into preferred pipeline stage</p>
       }

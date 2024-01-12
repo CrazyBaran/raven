@@ -1,9 +1,13 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
-import { KanbanBoard, OpportunityCard } from '@app/client/opportunities/ui';
+import {
+  calculateOpportunityCardHeight,
+  KanbanBoard,
+  OpportunityCard,
+} from '@app/client/opportunities/ui';
 import {
   pipelinesQuery,
-  selectAllPipelineStages,
   selectAllPipelines,
+  selectAllPipelineStages,
 } from '@app/client/pipelines/state';
 import {
   ButtongroupNavigationModel,
@@ -113,17 +117,29 @@ export const selectPipelineBoardQueryModel = createSelector(
       placeholder: 'Search Pipeline',
     }),
 );
-export const selectAllOpportunitiesDictionary = createSelector(
+export const selectOpportunitiesCardsDictionary = createSelector(
   opportunitiesQuery.selectAllOpportunities,
   (opportunities) =>
     _.chain(opportunities)
       .map(
         (o): OpportunityCard => ({
           id: o.id,
-          fields: o.fields,
-          organisation: o.organisation,
+          organisation: {
+            name: o.organisation.name,
+            domains: o.organisation.domains,
+            id: o.organisation!.id!,
+          },
+          name: o.tag?.name,
+          createdAt: o.createdAt!.toString(),
+          dealLeads: [''],
+          affinityUrl: o.organisation.affinityUrl,
+          timing: o.timing,
         }),
       )
+      .map((card) => ({
+        ...card,
+        height: calculateOpportunityCardHeight(card),
+      }))
       .keyBy((o) => o.id)
       .value(),
 );
@@ -145,7 +161,6 @@ export const selectOportunitiesStageDictionary = createSelector(
 );
 
 export const selectPipelinesPageViewModel = createSelector(
-  selectAllOpportunitiesDictionary,
   selectOportunitiesStageDictionary,
   selectAllPipelines,
   selectIsLoadingPipelineBoard,
@@ -154,7 +169,6 @@ export const selectPipelinesPageViewModel = createSelector(
   selectPipelineBoardQueryModel,
   (
     opportunitiesDictionary,
-    opportunitiesStageDictionary,
     pipelines,
     isLoading,
     dropdowns,
@@ -162,7 +176,6 @@ export const selectPipelinesPageViewModel = createSelector(
     queryModel,
   ) => ({
     opportunitiesDictionary,
-    opportunitiesStageDictionary,
     pipelines,
     isLoading,
     dropdowns,
@@ -174,11 +187,11 @@ export const selectPipelinesPageViewModel = createSelector(
 export const selectKanbanBoard = createSelector(
   selectAllPipelineStages,
   selectOportunitiesStageDictionary,
-  opportunitiesQuery.selectOpportunitiesDictionary,
+  selectOpportunitiesCardsDictionary,
   (
     stages,
     opportunitiesStageDictionary,
-    opportunityDictionary,
+    opportunityCardsDictionary,
   ): KanbanBoard => {
     const columns = _.chain(stages)
       .map((stage) => ({
@@ -198,7 +211,7 @@ export const selectKanbanBoard = createSelector(
               name: stage.displayName,
               cards:
                 opportunitiesStageDictionary[stage.id]?.map(
-                  (id) => opportunityDictionary[id]!,
+                  (id) => opportunityCardsDictionary[id]!,
                 ) ?? [],
               length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
             }),

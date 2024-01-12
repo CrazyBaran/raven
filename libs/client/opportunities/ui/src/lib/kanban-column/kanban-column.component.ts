@@ -15,6 +15,7 @@ import {
   ViewChildren,
   signal,
 } from '@angular/core';
+import { RxVirtualScrollElementDirective } from '@rx-angular/template/experimental/virtual-scrolling';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
 import { KanbanGroupHeaderComponent } from '../kanban-group-header/kanban-group-header.component';
 import {
@@ -42,6 +43,7 @@ export interface KanbanColumn {
     CdkDropList,
     TitleCasePipe,
     DropAreaComponent,
+    RxVirtualScrollElementDirective,
   ],
   templateUrl: './kanban-column.component.html',
   styleUrls: ['./kanban-column.component.scss'],

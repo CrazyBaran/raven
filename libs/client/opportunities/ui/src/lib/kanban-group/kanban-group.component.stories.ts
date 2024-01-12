@@ -1,4 +1,5 @@
 import { componentWrapperDecorator, Meta, StoryObj } from '@storybook/angular';
+import * as OpportunityCardsStories from '../opportunities-card/opportunities-card.component.stories';
 import { KanbanGroupComponent } from './kanban-group.component';
 
 const meta: Meta<KanbanGroupComponent> = {
@@ -22,72 +23,18 @@ export const Primary: Story = {
       name: 'Pipeline name',
       length: 4,
       cards: [
-        {
-          id: '1',
-          fields: [],
-          organisation: {
-            name: 'Organisation name',
-            domains: ['domain.pl'],
-          },
-        },
-        {
-          id: '2',
-          fields: [],
-          organisation: {
-            name: 'Organisation name 2',
-            domains: ['domain.pl'],
-          },
-        },
-        {
-          id: '3',
-          fields: [],
-          organisation: {
-            name: 'Organisation name 3',
-            domains: ['domain.pl'],
-          },
-        },
-        {
-          id: '4',
-          fields: [],
-          organisation: {
-            name: 'Organisation name',
-            domains: ['domain.pl'],
-          },
-        },
-        // {
-        //   id: '5',
-        //   fields: [],
-        //   organisation: {
-        //     name: 'Organisation name 2',
-        //     domains: ['domain.pl'],
-        //   },
-        // },
-        // {
-        //   id: '6',
-        //   fields: [],
-        //   organisation: {
-        //     name: 'Organisation name 3',
-        //     domains: ['domain.pl'],
-        //   },
-        // },
-        // {
-        //   id: '4',
-        //   fields: [],
-        //   organisation: {
-        //     name: 'Organisation name 4',
-        //     domains: ['domain.pl'],
-        //   },
-        // },
+        OpportunityCardsStories.Primary.args!.model!,
+        OpportunityCardsStories.WithDealLeads.args!.model!,
+        OpportunityCardsStories.WithAllFields.args!.model!,
+        { ...OpportunityCardsStories.WithDealLeads.args!.model!, id: '2' },
       ],
     },
-    receiveMode: false,
   },
 };
 
 export const ReceiveMode: Story = {
   args: {
     ...Primary.args,
-    receiveMode: true,
   },
 };
 

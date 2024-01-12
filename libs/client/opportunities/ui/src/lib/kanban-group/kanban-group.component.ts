@@ -1,47 +1,62 @@
-import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { NgClass, NgStyle, TitleCasePipe } from '@angular/common';
+/* eslint-disable @typescript-eslint/member-ordering */
+import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
   Output,
-  ViewChildren,
+  ViewChild,
   signal,
 } from '@angular/core';
-import { OnResizeDirective } from '@app/client/shared/ui-directives';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
+import {
+  DynamicSizeVirtualScrollStrategy,
+  RxVirtualFor,
+  RxVirtualScrollViewportComponent,
+} from '@rx-angular/template/experimental/virtual-scrolling';
 import { ColumnData } from '../kanban-board/kanban-board.interface';
 import { KanbanGroupHeaderComponent } from '../kanban-group-header/kanban-group-header.component';
 import {
   OpportunitiesCardComponent,
   OpportunityCard,
+  calculateOpportunityCardHeight,
 } from '../opportunities-card/opportunities-card.component';
-
 export type KanbanGroup = ColumnData; // TODO:
 
 @Component({
   selector: 'app-kanban-group',
   standalone: true,
   imports: [
+    CommonModule,
     KanbanGroupHeaderComponent,
     CdkDrag,
     CdkDropList,
     OpportunitiesCardComponent,
     LoaderModule,
-    NgStyle,
-    ScrollingModule,
-    OnResizeDirective,
-    NgClass,
-    TitleCasePipe,
+    RxVirtualFor,
+    RxVirtualScrollViewportComponent,
+    DynamicSizeVirtualScrollStrategy,
   ],
   templateUrl: './kanban-group.component.html',
   styleUrls: ['./kanban-group.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanGroupComponent {
-  @ViewChildren(CdkDropList) public dropList: CdkDropList[];
+  @ViewChild(DynamicSizeVirtualScrollStrategy)
+  public scrollStrategy: DynamicSizeVirtualScrollStrategy<any>;
+
+  private _group: KanbanGroup;
+
+  @Input() public set group(value: KanbanGroup) {
+    this._group = value;
+    this.version++;
+  }
+
+  public get group(): KanbanGroup {
+    return this._group;
+  }
 
   @Input() public loading: boolean;
 
@@ -66,41 +81,27 @@ export class KanbanGroupComponent {
 
   @Output() public dragEnded = new EventEmitter<OpportunityCard>();
 
-  @Input() public group: KanbanGroup;
+  protected version = 1;
 
   protected expanded = signal(true);
-
-  protected _draggingSelf = signal<OpportunityCard | null>(null);
 
   public setExpanded(value: boolean): void {
     this.expanded.set(value);
   }
 
+  protected dynamicHeight: (item: OpportunityCard) => number = (item) => {
+    return item.height ?? calculateOpportunityCardHeight(item);
+  };
+
   protected onDragStarted(item: OpportunityCard): void {
-    this._draggingSelf.set(item);
     this.dragStarted.emit(item);
   }
 
   protected onDragEnded(item: OpportunityCard): void {
-    this._draggingSelf.set(null);
     this.dragEnded.emit(item);
   }
 
   protected onExpandedChange($event: boolean): void {
     this.expanded.set($event);
-  }
-
-  protected drop($event: CdkDragDrop<OpportunityCard>): void {
-    const opportunityId = $event.item.data.id;
-    if (!this.group.cards?.some((c) => c.id === opportunityId)) {
-      this.dropEvent.emit({
-        opportunityId,
-        pipelineStageId: this.group.id,
-      });
-    }
-  }
-
-  protected trackByFn(index: number, item: OpportunityCard): string {
-    return item.id;
   }
 }
