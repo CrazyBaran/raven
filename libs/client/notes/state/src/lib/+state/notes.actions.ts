@@ -1,3 +1,4 @@
+import { NoteQueryParams } from '@app/client/notes/data-access';
 import {
   NoteData,
   NoteWithRelationsData,
@@ -8,7 +9,6 @@ import {
   CreateNote,
   PatchNote,
 } from '../../../../data-access/src/lib/domain/createNote';
-import { NoteQueryParams } from '../../../../data-access/src/lib/domain/get-notes.params';
 
 export const NotesActions = createActionGroup({
   source: 'Notes/API',
@@ -51,7 +51,10 @@ export const NotesActions = createActionGroup({
     'Delete Note Success': props<{ noteId: string }>(),
     'Delete Note Failure': props<{ error: string }>(),
 
-    'Get Opportunity Notes': props<{ opportunityId: string }>(),
+    'Get Opportunity Notes': props<{
+      opportunityId: string;
+      silently?: boolean;
+    }>(),
     'Get Opportunity Notes Success': props<{
       data: WorkflowNoteData[];
     }>(),
