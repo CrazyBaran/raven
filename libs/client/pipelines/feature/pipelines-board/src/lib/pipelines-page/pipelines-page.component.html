@@ -1,60 +1,38 @@
 <div class="pipeline-page">
   <app-page-template pageIcon="fa-regular fa-fire" pageName="Pipeline">
     <div class="flex items-center gap-3" page-header-actions>
-      <app-text-box-navigation [model]="vm2().queryModel" />
-
-      <!-- <kendo-button
-        fillMode="flat"
-        iconClass="fa-solid fa-square-plus"
-        size="large"
-        themeColor="secondary"
-        (click)="openOpportunityDialog()"
-        >Add New</kendo-button
-      > -->
-      <!-- <kendo-button
-        fillMode="flat"
-        iconClass="fa-solid fa-filter"
-        size="large"
-        themeColor="secondary"
-        >Filters</kendo-button
-      > -->
+      <app-text-box-navigation [model]="vm().queryModel" />
     </div>
 
     <div class="flex h-full flex-col gap-10" page-content>
       <app-quick-filters-template>
         <div class="flex gap-6">
-          <app-buttongroup-navigation [model]="vm2().buttonGroups">
-          </app-buttongroup-navigation>
+          <app-buttongroup-navigation [model]="vm().buttonGroups" />
 
-          <app-dropdown-navigation
-            *ngFor="let dropdown of vm2().dropdowns"
-            [model]="dropdown"
-          >
-          </app-dropdown-navigation>
+          @for (dropdown of vm().dropdowns; track dropdown.queryParamName) {
+            <app-dropdown-navigation [model]="dropdown" />
+          }
         </div>
       </app-quick-filters-template>
 
-      <div class="flex-1 shrink-0">
-        <div
-          class="flex h-full w-full flex-col items-center justify-center"
-          *rxIf="vm2().isLoading"
-        >
-          <kendo-loader
-            class="mb-4"
-            themeColor="primary"
-            type="infinite-spinner"
-          />
-          Loading...
-        </div>
+      <div class="relative min-h-0 flex-1 shrink-0">
+        @if (vm().isLoading) {
+          <div
+            class="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center"
+          >
+            <kendo-loader
+              class="mb-4"
+              themeColor="primary"
+              type="infinite-spinner"
+            />
+            Loading...
+          </div>
+        }
 
         <app-kanban-board
-          *rxIf="!vm2().isLoading"
+          [board]="board()"
+          [class.opacity-50]="vm().isLoading"
           (dragEndEvent)="onDragEvent($event)"
-          [pipelines]="vm2().pipelines"
-          [opportunitiesStageDictionary]="
-            (vm().opportunitiesStageDictionary$ | async)!
-          "
-          [opportunitiesDictionary$]="vm().opportunitiesDictionary$"
         />
       </div>
     </div>

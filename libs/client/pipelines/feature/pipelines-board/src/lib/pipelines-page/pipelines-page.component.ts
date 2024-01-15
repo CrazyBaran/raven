@@ -1,18 +1,9 @@
-import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
-import { ShelfActions } from '@app/client/shared/shelf';
 import {
   ButtongroupNavigationComponent,
   DropdownNavigationComponent,
@@ -24,17 +15,9 @@ import {
 } from '@app/client/shared/ui-templates';
 import { TagsActions } from '@app/client/tags/state';
 import { Store } from '@ngrx/store';
+import { LoaderModule } from '@progress/kendo-angular-indicators';
 import {
-  ButtonGroupModule,
-  ButtonModule,
-} from '@progress/kendo-angular-buttons';
-import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { TextBoxModule } from '@progress/kendo-angular-inputs';
-import { RxFor } from '@rx-angular/template/for';
-import { RxIf } from '@rx-angular/template/if';
-import {
-  selectAllOpportunitiesDictionary,
-  selectOportunitiesStageDictionary,
+  selectKanbanBoard,
   selectPipelineBoardParams,
   selectPipelinesPageViewModel,
 } from './pipelines-page.selectors';
@@ -43,48 +26,23 @@ import {
   selector: 'app-pipelines-page',
   standalone: true,
   imports: [
-    CommonModule,
-    KanbanBoardComponent,
-    IndicatorsModule,
     PageTemplateComponent,
-    TextBoxModule,
-    ButtonModule,
-    QuickFiltersTemplateComponent,
-    ButtonGroupModule,
-    RxFor,
-    RouterLink,
-    DropdownNavigationComponent,
-    RxIf,
-    ReactiveFormsModule,
-    ButtongroupNavigationComponent,
     TextBoxNavigationComponent,
+    QuickFiltersTemplateComponent,
+    ButtongroupNavigationComponent,
+    LoaderModule,
+    KanbanBoardComponent,
+    DropdownNavigationComponent,
   ],
   templateUrl: './pipelines-page.component.html',
   styleUrls: ['./pipelines-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PipelinesPageComponent implements OnInit {
-  public vm2 = this.store.selectSignal(selectPipelinesPageViewModel);
-
-  public vm = computed(() => ({
-    opportunitiesDictionary$: this.store.select(
-      selectAllOpportunitiesDictionary,
-    ),
-    opportunitiesStageDictionary$: this.store.select(
-      selectOportunitiesStageDictionary,
-    ),
-  }));
+export class PipelinesPageComponent {
+  public vm = this.store.selectSignal(selectPipelinesPageViewModel);
+  public board = this.store.selectSignal(selectKanbanBoard);
 
   public constructor(private readonly store: Store) {
-    this.store
-      .select(selectPipelineBoardParams)
-      .pipe(takeUntilDestroyed())
-      .subscribe((params) => {
-        this.store.dispatch(OpportunitiesActions.getOpportunities({ params }));
-      });
-  }
-
-  public ngOnInit(): void {
     this.store.dispatch(PipelinesActions.getPipelines());
 
     this.store.dispatch(
@@ -92,6 +50,13 @@ export class PipelinesPageComponent implements OnInit {
         tagTypes: ['people', 'opportunity'],
       }),
     );
+
+    this.store
+      .select(selectPipelineBoardParams)
+      .pipe(takeUntilDestroyed())
+      .subscribe((params) => {
+        this.store.dispatch(OpportunitiesActions.getOpportunities({ params }));
+      });
   }
 
   public onDragEvent($event: {
@@ -104,9 +69,5 @@ export class PipelinesPageComponent implements OnInit {
         pipelineStageId: $event.pipelineStageId,
       }),
     );
-  }
-
-  public openOpportunityDialog(): void {
-    this.store.dispatch(ShelfActions.openOpportunityForm({}));
   }
 }

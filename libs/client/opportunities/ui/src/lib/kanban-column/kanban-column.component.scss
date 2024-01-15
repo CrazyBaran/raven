@@ -1,0 +1,19 @@
+.custom-container {
+  scrollbar-gutter: stable both-edges;
+
+  margin-left: -0.5rem;
+  padding-right: 0.25rem;
+  width: calc(100% + 1.125rem);
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #b9b9b9;
+    border-radius: 4px;
+  }
+}

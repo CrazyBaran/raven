@@ -1,106 +1,48 @@
-<div class="kendo-ui-kanban h-full pb-2">
-  <cdk-virtual-scroll-viewport
-    [appendOnly]="true"
-    [itemSize]="312 + 16"
-    cdkDropListGroup
-    class="kendo-ui-kanban__container | flex h-full"
-    orientation="horizontal"
-    style="width: 100%"
+<div
+  cdkDropListGroup
+  class="relative -mb-6 -mr-6 flex h-[calc(100%+24px)] w-[calc(100%+24px)] flex-col gap-4 pb-2"
+>
+  <div
+    cdkScrollable
+    class="relative flex min-h-0 w-full flex-1 gap-4 overflow-x-auto overflow-y-hidden"
   >
-    <ng-container *cdkVirtualFor="let column of columns(); let index = index">
-      <div
-        *rxLet="
-          column.onceRendered$;
-          let onceRendered;
-          strategy: 'immediate';
-          patchZone: false;
-          parent: false
-        "
-        [class.opacity-25]="!onceRendered"
-        [style.background]="column.color.palette"
-        class="mr-4 flex h-fit max-h-full w-[312px] shrink-0 flex-col rounded-3xl p-4"
-      >
-        <div
-          class="kendo-ui-kanban__title title {{ column }}
-         mb-4 flex justify-between gap-4 rounded-md bg-white p-2 px-4 text-lg shadow-md
-"
-        >
-          <div
-            class="flex flex-1 items-center gap-4 overflow-hidden whitespace-nowrap text-lg"
-          >
-            <i
-              class="fa-solid fa-circle text-xs"
-              [style.color]="column.color.color"
-            ></i>
-            <p class="flex-1 truncate text-black">{{ column.name }}</p>
-          </div>
+    <!--  TODO: footer stages-->
+    <!--    [class.pb-24]="receiveMode()"-->
+    @for (column of board.columns; track column.name; let last = $last) {
+      <app-kanban-column
+        class="block w-[352px] flex-shrink-0"
+        [column]="column"
+        (dragStarted)="dragStarted($event)"
+        (dragEnded)="dragEnded($event)"
+        (dropEvent)="dragEndEvent.emit($event)"
+        [receiveMode]="receiveMode()"
+        [class.mr-6]="last"
+      />
+    }
+  </div>
 
-          <span
-            class="title__summary"
-            *rxLet="column.length$; let length; patchZone: false; parent: false"
-          >
-            {{ length }}
-          </span>
-        </div>
-
-        <div
-          (scrolled)="onInfinityScroll(column.id)"
-          [infiniteScrollThrottle]="50"
-          [scrollWindow]="false"
-          class="custom-container | flex-1 overflow-y-auto"
-          infiniteScroll
-        >
-          <ng-container
-            *rxLet="column.data$; let data; patchZone: false; parent: false"
-          >
-            <div
-              (cdkDropListDropped)="drop($any($event))"
-              [cdkDropListAutoScrollStep]="15"
-              [cdkDropListData]="{
-                id: column.id,
-                data: data
-              }"
-              cdkDropList
-              class="card-list | relative flex min-h-[100px] flex-col gap-2"
-            >
-              <div *rxIf="!column.length$" class="absolute -z-10">
-                <p>Empty</p>
-              </div>
-
-              <ng-container
-                *rxFor="
-                  let row of $any(data);
-                  strategy: onceRendered ? 'native' : 'low';
-                  trackBy: 'id';
-                  renderCallback: column.renderSubject;
-                  patchZone: false;
-                  parent: false
-                "
-              >
-                <div
-                  cdkDrag
-                  *rxLet="
-                    $any(row).source;
-                    let item;
-                    strategy: 'native';
-                    patchZone: false;
-                    parent: false
-                  "
-                  [cdkDragData]="item"
-                  class="card"
-                >
-                  <app-opportunities-card
-                    [@simpleFadeAnimation]="'in'"
-                    [@.disabled]="$any(item).state !== 'updated'"
-                    class="block"
-                    [data]="$any(item)"
-                  />
-                </div>
-              </ng-container>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </ng-container>
-  </cdk-virtual-scroll-viewport>
+  <!--  TODO: footer stages-->
+  <!--  <div-->
+  <!--    [ngClass]="{-->
+  <!--      '-z-10 opacity-0': !receiveMode(),-->
+  <!--      'z-[100] opacity-100': receiveMode()-->
+  <!--    }"-->
+  <!--    class="absolute bottom-0 left-0 flex w-full gap-4 pb-6"-->
+  <!--  >-->
+  <!--    <app-drop-area-->
+  <!--      class="h-20 flex-1"-->
+  <!--      name="pass"-->
+  <!--      (dropEvent)="onFooterStageDrop($event)"-->
+  <!--    />-->
+  <!--    <app-drop-area-->
+  <!--      class="h-20 flex-1"-->
+  <!--      name="delete"-->
+  <!--      (dropEvent)="onFooterStageDrop($event)"-->
+  <!--    />-->
+  <!--    <app-drop-area-->
+  <!--      class="h-20 flex-1"-->
+  <!--      name="complete"-->
+  <!--      (dropEvent)="onFooterStageDrop($event)"-->
+  <!--    />-->
+  <!--  </div>-->
 </div>

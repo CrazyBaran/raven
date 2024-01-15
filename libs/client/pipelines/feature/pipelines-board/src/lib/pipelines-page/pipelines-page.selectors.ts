@@ -1,9 +1,14 @@
-import { authQuery } from '@app/client/core/auth';
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
-import { OpportunityDetails } from '@app/client/opportunities/ui';
+import {
+  calculateOpportunityCardHeight,
+  KanbanBoard,
+  KanbanColumn,
+  KanbanGroup,
+  OpportunityCard,
+} from '@app/client/opportunities/ui';
 import {
   pipelinesQuery,
-  selectAllPipelines,
+  selectAllPipelineStages,
 } from '@app/client/pipelines/state';
 import {
   ButtongroupNavigationModel,
@@ -16,7 +21,6 @@ import {
   buildPageParamsSelector,
 } from '@app/client/shared/util-router';
 import { tagsFeature, tagsQuery } from '@app/client/tags/state';
-import { getRouterSelectors } from '@ngrx/router-store';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 
@@ -112,17 +116,29 @@ export const selectPipelineBoardQueryModel = createSelector(
       placeholder: 'Search Pipeline',
     }),
 );
-export const selectAllOpportunitiesDictionary = createSelector(
+export const selectOpportunitiesCardsDictionary = createSelector(
   opportunitiesQuery.selectAllOpportunities,
   (opportunities) =>
     _.chain(opportunities)
       .map(
-        (o): OpportunityDetails => ({
+        (o): OpportunityCard => ({
           id: o.id,
-          fields: o.fields,
-          organisation: o.organisation,
+          organisation: {
+            name: o.organisation.name,
+            domains: o.organisation.domains,
+            id: o.organisation!.id!,
+          },
+          name: o.tag?.name,
+          createdAt: o.createdAt!.toString(),
+          dealLeads: o.team?.owners.map((owner) => owner.actorName) ?? [],
+          affinityUrl: o.organisation.affinityUrl,
+          timing: o.timing,
         }),
       )
+      .map((card) => ({
+        ...card,
+        height: calculateOpportunityCardHeight(card),
+      }))
       .keyBy((o) => o.id)
       .value(),
 );
@@ -130,15 +146,13 @@ export const selectAllOpportunitiesDictionary = createSelector(
 export const selectIsLoadingPipelineBoard = createSelector(
   pipelinesQuery.selectIsLoading,
   opportunitiesQuery.selectIsLoading,
+  // opportunitiesQuery.selectIsLoadingUpdateStage,
   (pipelines, opportunities) => pipelines || opportunities,
 );
 
 export const selectOportunitiesStageDictionary = createSelector(
   opportunitiesQuery.selectAllOpportunities,
-  getRouterSelectors().selectQueryParam('filter'),
-  authQuery.selectUserEmail,
-  getRouterSelectors().selectQueryParam('pipelineQuery'),
-  (opportunities, filter, userEmail, searchQuery) =>
+  (opportunities) =>
     _.chain(opportunities)
       .groupBy((o) => o.stage.id)
       .mapValues((opportunities) => opportunities.map(({ id }) => id))
@@ -146,28 +160,57 @@ export const selectOportunitiesStageDictionary = createSelector(
 );
 
 export const selectPipelinesPageViewModel = createSelector(
-  selectAllOpportunitiesDictionary,
-  selectOportunitiesStageDictionary,
-  selectAllPipelines,
   selectIsLoadingPipelineBoard,
   selectPipelineBoardNavigationDropdowns,
   selectPipelineBoardButtonGroupNavigation,
   selectPipelineBoardQueryModel,
-  (
-    opportunitiesDictionary,
-    opportunitiesStageDictionary,
-    pipelines,
-    isLoading,
-    dropdowns,
-    buttonGroups,
-    queryModel,
-  ) => ({
-    opportunitiesDictionary,
-    opportunitiesStageDictionary,
-    pipelines,
+  (isLoading, dropdowns, buttonGroups, queryModel) => ({
     isLoading,
     dropdowns,
     buttonGroups,
     queryModel,
   }),
+);
+
+export const selectKanbanBoard = createSelector(
+  selectAllPipelineStages,
+  selectOportunitiesStageDictionary,
+  selectOpportunitiesCardsDictionary,
+  (
+    stages,
+    opportunitiesStageDictionary,
+    opportunityCardsDictionary,
+  ): KanbanBoard => {
+    const columns = _.chain(stages)
+      .map((stage) => ({
+        ...stage,
+        prefix: stage.displayName.split(' - ')[0],
+        displayName: stage.displayName.split(' - ')[1] ?? stage.displayName,
+      }))
+      .groupBy('prefix')
+      .mapValues(
+        (stages): KanbanColumn => ({
+          name: stages[0].prefix,
+          backgroundColor: stages[0].secondaryColor ?? stages[0].primaryColor,
+          color: stages[0].primaryColor,
+          groups: stages.map(
+            (stage): KanbanGroup => ({
+              id: stage.id,
+              name: stage.displayName,
+              cards:
+                opportunitiesStageDictionary[stage.id]?.map(
+                  (id) => opportunityCardsDictionary[id]!,
+                ) ?? [],
+              length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
+            }),
+          ),
+        }),
+      )
+      .values()
+      .value();
+
+    return {
+      columns,
+    };
+  },
 );

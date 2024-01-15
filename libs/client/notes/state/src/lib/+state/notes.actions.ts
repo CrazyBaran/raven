@@ -1,14 +1,14 @@
-import { NoteQueryParams } from '@app/client/notes/data-access';
+import {
+  CreateNote,
+  NoteQueryParams,
+  PatchNote,
+} from '@app/client/notes/data-access';
 import {
   NoteData,
   NoteWithRelationsData,
   WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import {
-  CreateNote,
-  PatchNote,
-} from '../../../../data-access/src/lib/domain/createNote';
 
 export const NotesActions = createActionGroup({
   source: 'Notes/API',

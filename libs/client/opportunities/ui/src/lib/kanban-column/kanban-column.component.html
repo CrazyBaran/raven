@@ -1,0 +1,71 @@
+<div
+  [ngStyle]="{
+    background: column.backgroundColor ?? '#D9D9D6'
+  }"
+  class="bg-light relative flex h-full w-full flex-col gap-4 rounded-2xl p-4"
+>
+  <app-kanban-group-header
+    (expandedChange)="setExpanded($event)"
+    [color]="column.color"
+    [expandable]="column.groups.length > 1"
+    [expanded]="true"
+    [length]="length"
+    [name]="column.name"
+  />
+
+  <div
+    #container
+    [class.opacity-0]="receiveMode()"
+    class="custom-container flex h-full min-h-0 flex-1 flex-col gap-4 overflow-auto"
+    rxVirtualScrollElement
+  >
+    @if (column.groups.length === 1) {
+      <app-kanban-group
+        class="-mt-2"
+        [withoutHeader]="true"
+        [withoutPadding]="true"
+        [group]="column.groups[0]"
+        [color]="column.color"
+        backgroundColor="transparent"
+        [expandable]="false"
+        (dragStarted)="dragStarted.emit($event)"
+        (dragEnded)="dragEnded.emit($event)"
+        (dropEvent)="dropEvent.emit($event)"
+      />
+    } @else {
+      @for (group of column.groups; track group.id; let i = $index) {
+        <app-kanban-group
+          (expandedChange)="onExpandedChange($event)"
+          [class.flex-1]="receiveMode()"
+          [group]="group"
+          [color]="i === 0 ? 'green' : i === 1 ? 'yellow' : 'red'"
+          [expandable]="true"
+          (dragStarted)="dragStarted.emit($event)"
+          (dragEnded)="dragEnded.emit($event)"
+          (dropEvent)="dropEvent.emit($event)"
+        />
+      }
+    }
+  </div>
+
+  <div
+    [class.z-10]="receiveMode()"
+    class="absolute left-0 top-0 -z-50 h-full w-full p-4 pt-[72px]"
+  >
+    <div class="flex h-full flex-col gap-4">
+      @for (group of column.groups; track group.id) {
+        <div
+          class="h-full w-full flex-1"
+          [ngClass]="{
+            'bg-light rounded-2xl p-2': column.groups.length > 1
+          }"
+        >
+          <app-drop-area
+            [name]="group.name"
+            (dropEvent)="drop(group, $event)"
+          />
+        </div>
+      }
+    </div>
+  </div>
+</div>
