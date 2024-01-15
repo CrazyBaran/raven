@@ -32,11 +32,12 @@ export class WebsocketEffects {
           )?.[0] as WebsocketResourceType;
 
           if (resource) {
+            if (!this.websocketService.connected()) {
+              this.websocketService.connect(this.environment.websocketUrl);
+            }
             this.websocketService.joinResourceEvents(resource);
-          } else if (this.websocketService.currentResource) {
-            this.websocketService.leaveResourceEvents(
-              this.websocketService.currentResource,
-            );
+          } else if (this.websocketService.connected()) {
+            this.websocketService.disconnect();
           }
         }),
       ),
@@ -85,16 +86,5 @@ export class WebsocketEffects {
     private websocketService: WebsocketService,
     @Inject(ENVIRONMENT)
     private environment: Environment,
-  ) {
-    this.websocketService.connect(this.environment.websocketUrl);
-
-    this.websocketService
-      .reconnectEffects()
-      .pipe(filter((isReconnect) => isReconnect))
-      .subscribe(() => {
-        this.websocketService.joinResourceEvents(
-          this.websocketService.currentResource!,
-        );
-      });
-  }
+  ) {}
 }
