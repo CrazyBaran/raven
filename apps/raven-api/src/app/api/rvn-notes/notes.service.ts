@@ -13,9 +13,10 @@ import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { cloneDeep } from 'lodash';
-import { Brackets, Raw, Repository } from 'typeorm';
+import { Brackets, ILike, In, Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { StorageAccountService } from '../rvn-storage-account/storage-account.service';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
@@ -77,6 +78,8 @@ export class NotesService {
     private readonly templateRepository: Repository<TemplateEntity>,
     @InjectRepository(ComplexTagEntity)
     private readonly complexTagRepository: Repository<ComplexTagEntity>,
+    @InjectRepository(OrganisationEntity)
+    private readonly organisationRepository: Repository<OrganisationEntity>,
     private readonly storageAccountService: StorageAccountService,
     private readonly gatewayEventService: GatewayEventService,
     private readonly logger: RavenLogger,
@@ -197,42 +200,87 @@ export class NotesService {
 
     queryBuilder.skip(skip ? skip : 0).take(take ? take : 10);
     if (query) {
+      const queryOrganisations = await this.organisationRepository.find({
+        where: { name: ILike(`%${query}%`) },
+      });
+      const organisationIds = queryOrganisations.map((o) => o.id);
+      const organisationTags = await this.organisationTagRepository.find({
+        where: { organisationId: In(organisationIds) },
+      });
+      const organisationComplexTagIds = organisationTags.map((o) => o.id);
+
+      console.log({ organisationComplexTagIds });
+
+      const queryComplexTagsForOrganisation =
+        organisationComplexTagIds.length > 0
+          ? await this.complexTagRepository
+              .createQueryBuilder('complexTag')
+              .innerJoin(
+                'complexTag.tags',
+                'organisationComplexTag',
+                'organisationComplexTag.id IN (:...organisationComplexTagIds)',
+                {
+                  organisationComplexTagIds,
+                },
+              )
+              .getMany()
+          : [];
+
+      console.log({ queryComplexTagsForOrganisation });
+
+      const queryComplexTagsForOrganisationIds =
+        queryComplexTagsForOrganisation.map((ct) => ct.id);
+
       const searchString = `%${query.toLowerCase()}%`;
-      queryBuilder.andWhere([
-        {
-          name: Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+
+      // TODO wyjebać casta
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          qb.where(
+            `LOWER(CAST(note.name as NVARCHAR(100))) LIKE :searchString`,
             {
               searchString,
             },
-          ),
-        },
-        {
-          'createdBy.name': Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+          );
+          qb.orWhere(
+            `LOWER(CAST(createdBy.name as NVARCHAR(100))) LIKE :searchString`,
             {
               searchString,
             },
-          ),
-        },
-        {
-          'updatedBy.name': Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+          );
+          qb.orWhere(
+            `LOWER(CAST(updatedBy.name as NVARCHAR(100))) LIKE :searchString`,
             {
               searchString,
             },
-          ),
-        },
-        {
-          'template.name': Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(100))) LIKE :searchString`,
+          );
+          qb.orWhere(
+            `LOWER(CAST(template.name as NVARCHAR(100))) LIKE :searchString`,
             {
               searchString,
             },
-          ),
-        },
-      ]);
+          );
+          qb.orWhere(
+            'LOWER(CAST(tags.name as NVARCHAR(100))) LIKE :searchString',
+            {
+              searchString,
+            },
+          );
+          if (queryComplexTagsForOrganisationIds.length > 0) {
+            qb.orWhere(
+              'complexTags.id IN (:...queryComplexTagsForOrganisationIds)',
+              {
+                queryComplexTagsForOrganisationIds,
+              },
+            );
+          }
+        }),
+      );
     }
+
+    const finalQuery = queryBuilder.getQueryAndParameters();
+    console.log({ finalQuery });
+
     const [items, total] = await queryBuilder.getManyAndCount();
     return { items, total };
   }
