@@ -2,13 +2,10 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
+import { CreateNote, PatchNote } from '@app/client/notes/data-access';
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
 import { NoteData, NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { map, Observable } from 'rxjs';
-import {
-  CreateNote,
-  PatchNote,
-} from '../../../../data-access/src/lib/domain/createNote';
 import { NotesActions } from './notes.actions';
 import { notesFeature } from './notes.reducer';
 import { notesQuery } from './notes.selectors';

@@ -39,14 +39,14 @@ export interface KanbanBoard {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanBoardComponent {
-  public dialogService = inject(DialogService);
+  @Input() public board: KanbanBoard;
 
   @Output() public dragEndEvent = new EventEmitter<{
     pipelineStageId: string;
     opportunityId: string;
   }>();
 
-  @Input() public board: KanbanBoard;
+  public dialogService = inject(DialogService);
 
   protected receiveMode = signal(false);
 
@@ -77,6 +77,7 @@ export class KanbanBoardComponent {
       .result.subscribe((res: DialogResult) => {
         this.receiveMode.set(false);
         if ('text' in res && res.text === 'Yes, leave without publishing') {
+          //todo: add logic to drop opportunity to stage
         }
       });
   }

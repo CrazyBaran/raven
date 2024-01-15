@@ -1,4 +1,4 @@
-import { notesQuery } from '@app/client/notes/state';
+import { notesQuery } from '@app/client/opportunities/api-notes';
 import {
   buildButtonGroupNavigation,
   buildDropdownNavigation,

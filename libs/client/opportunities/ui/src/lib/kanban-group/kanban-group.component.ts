@@ -7,7 +7,6 @@ import {
   EventEmitter,
   Input,
   Output,
-  ViewChild,
   signal,
 } from '@angular/core';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -56,9 +55,6 @@ export type KanbanGroup = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanGroupComponent {
-  @ViewChild(DynamicSizeVirtualScrollStrategy)
-  public scrollStrategy: DynamicSizeVirtualScrollStrategy<any>;
-
   private _group: KanbanGroup;
 
   @Input() public set group(value: KanbanGroup) {
