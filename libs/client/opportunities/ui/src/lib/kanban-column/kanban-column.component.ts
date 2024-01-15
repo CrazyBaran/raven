@@ -3,7 +3,6 @@ import { CdkDropList } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NgClass, NgStyle, TitleCasePipe } from '@angular/common';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -48,7 +47,7 @@ export interface KanbanColumn {
   styleUrls: ['./kanban-column.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KanbanColumnComponent implements AfterViewInit {
+export class KanbanColumnComponent {
   @ViewChildren(KanbanGroupComponent) public groups: KanbanGroupComponent[];
 
   @Input() public column: KanbanColumn;
@@ -62,23 +61,11 @@ export class KanbanColumnComponent implements AfterViewInit {
     opportunityId: string;
   }>();
 
-  protected scrollSnapshot: number;
-
   @ViewChild('container', { read: ElementRef }) protected container: ElementRef;
 
   protected receiveMode = signal(false);
 
   @Input('receiveMode') public set _receiveMode(value: boolean) {
-    if (value) {
-      this.scrollSnapshot = this.container.nativeElement?.scrollTop ?? 0;
-    } else {
-      if (this.container?.nativeElement) {
-        setTimeout(() => {
-          this.container.nativeElement.scrollTop = this.scrollSnapshot;
-        }, 5);
-      }
-    }
-
     this.receiveMode.set(value);
   }
 
@@ -94,12 +81,6 @@ export class KanbanColumnComponent implements AfterViewInit {
         pipelineStageId: group.id,
       });
     }
-  }
-
-  public ngAfterViewInit(): void {
-    this.groups?.forEach((group) => {
-      group.setExpanded(true);
-    });
   }
 
   protected setExpanded($event: boolean): void {

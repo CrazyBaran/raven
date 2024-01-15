@@ -1,17 +1,9 @@
-/* eslint-disable @nx/enforce-module-boundaries */
-//TODO: create model library
-
 import { CommonModule } from '@angular/common';
 
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { AffinityUrlButtonComponent } from '../affinity-url-button/affinity-url-button.component';
-
-// export type OpportunityCard = Pick<
-//   OpportunityData,
-//   'id' | 'fields' | 'organisation'
-// >;
 
 export type OpportunityCard = {
   id: string;

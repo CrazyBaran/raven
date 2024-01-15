@@ -10,20 +10,31 @@ import {
   ViewChild,
   signal,
 } from '@angular/core';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import {
   DynamicSizeVirtualScrollStrategy,
   RxVirtualFor,
   RxVirtualScrollViewportComponent,
 } from '@rx-angular/template/experimental/virtual-scrolling';
-import { ColumnData } from '../kanban-board/kanban-board.interface';
 import { KanbanGroupHeaderComponent } from '../kanban-group-header/kanban-group-header.component';
 import {
   OpportunitiesCardComponent,
   OpportunityCard,
   calculateOpportunityCardHeight,
 } from '../opportunities-card/opportunities-card.component';
-export type KanbanGroup = ColumnData; // TODO:
+export type KanbanGroup = {
+  id: string;
+  name: string;
+  color?: {
+    color: string;
+    palette: string;
+  };
+  length: number;
+  cards?: OpportunityCard[];
+  backgroundColor?: string;
+  loadMore?: boolean;
+};
 
 @Component({
   selector: 'app-kanban-group',
@@ -38,6 +49,7 @@ export type KanbanGroup = ColumnData; // TODO:
     RxVirtualFor,
     RxVirtualScrollViewportComponent,
     DynamicSizeVirtualScrollStrategy,
+    ButtonModule,
   ],
   templateUrl: './kanban-group.component.html',
   styleUrls: ['./kanban-group.component.scss'],
@@ -83,6 +95,8 @@ export class KanbanGroupComponent {
 
   @Output() public expandedChange = new EventEmitter<boolean>();
 
+  @Output() public loadMore = new EventEmitter<void>();
+
   protected version = 1;
 
   protected expanded = signal(true);
@@ -106,5 +120,9 @@ export class KanbanGroupComponent {
   protected onExpandedChange($event: boolean): void {
     this.expanded.set($event);
     this.expandedChange.emit($event);
+  }
+
+  protected onLoadMore(): void {
+    this.loadMore.emit();
   }
 }

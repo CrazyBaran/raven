@@ -6,11 +6,7 @@ import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
 import { provideMockStore } from '@ngrx/store/testing';
 import { from } from 'rxjs';
 import { PipelinesPageComponent } from './pipelines-page.component';
-import {
-  selectAllOpportunitiesDictionary,
-  selectOportunitiesStageDictionary,
-  selectPipelinesPageViewModel,
-} from './pipelines-page.selectors';
+import { selectPipelinesPageViewModel } from './pipelines-page.selectors';
 
 describe('PipelinesPageComponent', () => {
   let component: PipelinesPageComponent;
@@ -35,14 +31,6 @@ describe('PipelinesPageComponent', () => {
               value: {
                 buttonGroups: {},
               },
-            },
-            {
-              selector: selectAllOpportunitiesDictionary,
-              value: {},
-            },
-            {
-              selector: selectOportunitiesStageDictionary,
-              value: {},
             },
           ],
         }),

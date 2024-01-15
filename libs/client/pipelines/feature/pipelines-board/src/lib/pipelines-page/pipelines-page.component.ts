@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
@@ -38,20 +38,11 @@ import {
   styleUrls: ['./pipelines-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PipelinesPageComponent implements OnInit {
+export class PipelinesPageComponent {
   public vm = this.store.selectSignal(selectPipelinesPageViewModel);
   public board = this.store.selectSignal(selectKanbanBoard);
 
   public constructor(private readonly store: Store) {
-    this.store
-      .select(selectPipelineBoardParams)
-      .pipe(takeUntilDestroyed())
-      .subscribe((params) => {
-        this.store.dispatch(OpportunitiesActions.getOpportunities({ params }));
-      });
-  }
-
-  public ngOnInit(): void {
     this.store.dispatch(PipelinesActions.getPipelines());
 
     this.store.dispatch(
@@ -59,6 +50,13 @@ export class PipelinesPageComponent implements OnInit {
         tagTypes: ['people', 'opportunity'],
       }),
     );
+
+    this.store
+      .select(selectPipelineBoardParams)
+      .pipe(takeUntilDestroyed())
+      .subscribe((params) => {
+        this.store.dispatch(OpportunitiesActions.getOpportunities({ params }));
+      });
   }
 
   public onDragEvent($event: {

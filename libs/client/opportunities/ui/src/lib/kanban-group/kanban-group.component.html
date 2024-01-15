@@ -49,12 +49,22 @@
             </div>
           </rx-virtual-scroll-viewport>
         }
-        @if (loadingMore) {
-          <div class="flex h-20 items-center justify-center gap-2">
-            <kendo-loader />
-            <p class="italic">Loading...</p>
-          </div>
-        }
+
+        <!--        TODO:implement load more  -->
+        <!--        @if (loadingMore) {-->
+        <!--          <div class="flex h-20 items-center justify-center gap-2">-->
+        <!--            <kendo-loader />-->
+        <!--            <p class="italic">Loading...</p>-->
+        <!--          </div>-->
+        <!--        }-->
+
+        <!--        @if (!group.loadMore) {-->
+        <!--          <div class="mt-4 flex items-center justify-center">-->
+        <!--            <kendo-button fillMode="flat" size="large" (click)="onLoadMore()"-->
+        <!--              >Load more</kendo-button-->
+        <!--            >-->
+        <!--          </div>-->
+        <!--        }-->
       </div>
     </div>
   </div>

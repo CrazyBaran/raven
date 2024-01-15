@@ -50,19 +50,12 @@ export class KanbanBoardComponent {
 
   protected receiveMode = signal(false);
 
-  protected showFooterAreas = signal(false);
-
   protected dragStarted($event: OpportunityCard): void {
     this.receiveMode.set(true);
-
-    setTimeout(() => {
-      this.showFooterAreas.set(true);
-    }, 505);
   }
 
   protected dragEnded($event: OpportunityCard): void {
     this.receiveMode.set(false);
-    this.showFooterAreas.set(false);
   }
 
   protected onFooterStageDrop($event: { opportunityId: string }): void {

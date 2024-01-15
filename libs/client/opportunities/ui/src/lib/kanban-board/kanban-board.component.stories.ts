@@ -1,12 +1,21 @@
-import { componentWrapperDecorator, Meta, StoryObj } from '@storybook/angular';
+import {
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular';
 import { KanbanBoardComponent } from './kanban-board.component';
 
+import { DialogModule } from '@progress/kendo-angular-dialog';
 import * as KanbanColumnStories from '../kanban-column/kanban-column.component.stories';
 
 const meta: Meta<KanbanBoardComponent> = {
   component: KanbanBoardComponent,
   title: 'Opportunities UI / Kanban Board  ',
   decorators: [
+    moduleMetadata({
+      imports: [DialogModule],
+    }),
     componentWrapperDecorator(
       (story) => `<div style=" height: 700px">${story}</div>`,
     ),

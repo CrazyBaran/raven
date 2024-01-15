@@ -2,11 +2,12 @@ import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
   calculateOpportunityCardHeight,
   KanbanBoard,
+  KanbanColumn,
+  KanbanGroup,
   OpportunityCard,
 } from '@app/client/opportunities/ui';
 import {
   pipelinesQuery,
-  selectAllPipelines,
   selectAllPipelineStages,
 } from '@app/client/pipelines/state';
 import {
@@ -22,8 +23,6 @@ import {
 import { tagsFeature, tagsQuery } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
-import { KanbanColumn } from '../../../../../../opportunities/ui/src/lib/kanban-column/kanban-column.component';
-import { KanbanGroup } from '../../../../../../opportunities/ui/src/lib/kanban-group/kanban-group.component';
 
 const pipelineBoardQueryParams = [
   'member',
@@ -161,22 +160,11 @@ export const selectOportunitiesStageDictionary = createSelector(
 );
 
 export const selectPipelinesPageViewModel = createSelector(
-  selectOportunitiesStageDictionary,
-  selectAllPipelines,
   selectIsLoadingPipelineBoard,
   selectPipelineBoardNavigationDropdowns,
   selectPipelineBoardButtonGroupNavigation,
   selectPipelineBoardQueryModel,
-  (
-    opportunitiesDictionary,
-    pipelines,
-    isLoading,
-    dropdowns,
-    buttonGroups,
-    queryModel,
-  ) => ({
-    opportunitiesDictionary,
-    pipelines,
+  (isLoading, dropdowns, buttonGroups, queryModel) => ({
     isLoading,
     dropdowns,
     buttonGroups,

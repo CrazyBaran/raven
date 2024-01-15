@@ -65,3 +65,23 @@ export const WithBackground: Story = {
     },
   },
 };
+
+export const WithLoadMoreButton: Story = {
+  args: {
+    ...Primary.args,
+    group: {
+      ...Primary.args!.group!,
+      loadMore: true,
+    },
+  },
+};
+
+export const WithLoadMoreSpinner: Story = {
+  args: {
+    ...Primary.args,
+    group: {
+      ...Primary.args!.group!,
+    },
+    loadingMore: true,
+  },
+};

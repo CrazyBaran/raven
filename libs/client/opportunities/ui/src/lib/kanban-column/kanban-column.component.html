@@ -34,7 +34,6 @@
       />
     } @else {
       @for (group of column.groups; track group.id; let i = $index) {
-        <!--        <div class="sticky-header">sticky header lol</div>-->
         <app-kanban-group
           (expandedChange)="onExpandedChange($event)"
           [class.flex-1]="receiveMode()"
