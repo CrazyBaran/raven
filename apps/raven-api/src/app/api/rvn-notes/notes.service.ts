@@ -209,8 +209,6 @@ export class NotesService {
       });
       const organisationComplexTagIds = organisationTags.map((o) => o.id);
 
-      console.log({ organisationComplexTagIds });
-
       const queryComplexTagsForOrganisation =
         organisationComplexTagIds.length > 0
           ? await this.complexTagRepository
@@ -226,46 +224,28 @@ export class NotesService {
               .getMany()
           : [];
 
-      console.log({ queryComplexTagsForOrganisation });
-
       const queryComplexTagsForOrganisationIds =
         queryComplexTagsForOrganisation.map((ct) => ct.id);
 
       const searchString = `%${query.toLowerCase()}%`;
 
-      // TODO wyjebać casta
       queryBuilder.andWhere(
         new Brackets((qb) => {
-          qb.where(
-            `LOWER(CAST(note.name as NVARCHAR(100))) LIKE :searchString`,
-            {
-              searchString,
-            },
-          );
-          qb.orWhere(
-            `LOWER(CAST(createdBy.name as NVARCHAR(100))) LIKE :searchString`,
-            {
-              searchString,
-            },
-          );
-          qb.orWhere(
-            `LOWER(CAST(updatedBy.name as NVARCHAR(100))) LIKE :searchString`,
-            {
-              searchString,
-            },
-          );
-          qb.orWhere(
-            `LOWER(CAST(template.name as NVARCHAR(100))) LIKE :searchString`,
-            {
-              searchString,
-            },
-          );
-          qb.orWhere(
-            'LOWER(CAST(tags.name as NVARCHAR(100))) LIKE :searchString',
-            {
-              searchString,
-            },
-          );
+          qb.where(`LOWER(note.name) LIKE :searchString`, {
+            searchString,
+          });
+          qb.orWhere(`LOWER(createdBy.name) LIKE :searchString`, {
+            searchString,
+          });
+          qb.orWhere(`LOWER(updatedBy.name) LIKE :searchString`, {
+            searchString,
+          });
+          qb.orWhere(`LOWER(template.name) LIKE :searchString`, {
+            searchString,
+          });
+          qb.orWhere('LOWER(tags.name) LIKE :searchString', {
+            searchString,
+          });
           if (queryComplexTagsForOrganisationIds.length > 0) {
             qb.orWhere(
               'complexTags.id IN (:...queryComplexTagsForOrganisationIds)',
@@ -277,9 +257,6 @@ export class NotesService {
         }),
       );
     }
-
-    const finalQuery = queryBuilder.getQueryAndParameters();
-    console.log({ finalQuery });
 
     const [items, total] = await queryBuilder.getManyAndCount();
     return { items, total };
