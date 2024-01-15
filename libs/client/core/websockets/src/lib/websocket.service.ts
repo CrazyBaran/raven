@@ -2,7 +2,7 @@ import { io, Socket } from 'socket.io-client';
 
 import { Injectable } from '@angular/core';
 
-import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import { distinctUntilChangedDeep, log } from '@app/client/shared/util-rxjs';
 import { WebsocketEvent, WebsocketResourceType } from '@app/rvns-web-sockets';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 
@@ -12,12 +12,15 @@ import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 export class WebsocketService {
   private socket: Socket;
   private events$: Subject<WebsocketEvent> = new Subject();
+
   private reconnectEvents$: BehaviorSubject<boolean> = new BehaviorSubject(
     false,
   );
+
   private authErrorEvents$: BehaviorSubject<boolean> = new BehaviorSubject(
     false,
   );
+
   private _currentResource?: WebsocketResourceType;
 
   public get currentResource(): WebsocketResourceType | undefined {
@@ -27,6 +30,10 @@ export class WebsocketService {
   public connect(wsUrl: string, token?: string): void {
     this.socket = io(wsUrl, {
       transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: Infinity,
       query: {
         auth: 'token', // TODO handle auth later
       },
@@ -38,7 +45,7 @@ export class WebsocketService {
     });
 
     this.socket.on('events', (message: string) => {
-      // console.log('message', message);
+      console.log('message', message);
       this.events$.next(JSON.parse(message));
     });
 
@@ -46,6 +53,14 @@ export class WebsocketService {
       console.log('connected');
       this.reconnectEvents$.next(false);
       this.authErrorEvents$.next(false);
+    });
+
+    this.socket.on('reconnect_attempt', () => {
+      console.log('reconnect_attempt');
+    });
+
+    this.socket.on('reconnect', () => {
+      console.log('reconnect');
     });
 
     this.socket.on('disconnect', async (message: Socket.DisconnectReason) => {
@@ -68,12 +83,14 @@ export class WebsocketService {
 
   public disconnect(): void {
     if (this.socket?.connected) {
+      console.log('disconnect');
       this.socket.disconnect();
       this.setCurrentResource(undefined);
     }
   }
 
   public joinResourceEvents(resourceId: WebsocketResourceType): void {
+    console.log('join resource Id', resourceId);
     this.socket.emit('ws.join.resource', resourceId);
     this.setCurrentResource(resourceId);
   }
@@ -92,6 +109,7 @@ export class WebsocketService {
     TEvent extends Extract<WebsocketEvent, { eventType: T }>,
   >(eventType: T): Observable<TEvent> {
     return this.events$.pipe(
+      log({ message: 'GET MESSAGE:' }),
       distinctUntilChangedDeep(),
       filter((event) => event.eventType === eventType),
     ) as Observable<TEvent>;
@@ -103,6 +121,10 @@ export class WebsocketService {
 
   public authErrorEffects(): Observable<boolean> {
     return this.authErrorEvents$.asObservable();
+  }
+
+  public connected(): boolean {
+    return this.socket?.connected ?? false;
   }
 
   private setCurrentResource(
