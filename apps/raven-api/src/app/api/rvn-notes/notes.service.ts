@@ -586,6 +586,7 @@ export class NotesService {
   public async updateNote(
     noteEntity: NoteEntity | WorkflowNoteData,
     userEntity: UserEntity,
+    updatedNoteId: string,
     options: UpdateNoteOptions,
   ): Promise<NoteEntity> {
     return await this.noteRepository.manager.transaction(async (tem) => {
@@ -677,7 +678,7 @@ export class NotesService {
       if (templateType === TemplateTypeEnum.Workflow) {
         start = new Date().getTime();
         const opportunity = await this.opportunityRepository.findOne({
-          where: { noteId: noteEntity.id },
+          where: { noteId: updatedNoteId },
           relations: ['note'],
         });
         if (opportunity) {
