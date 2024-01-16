@@ -245,7 +245,7 @@ export class NotesController {
       noteEntity = dto.origin;
     }
     return this.notesService.noteEntityToNoteData(
-      await this.notesService.updateNote(noteEntity, userEntity, {
+      await this.notesService.updateNote(noteEntity, userEntity, noteId, {
         tags,
         companyOpportunityTags,
         fields: dto.fields,
