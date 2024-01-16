@@ -1,4 +1,6 @@
 import {
+  AfterInsert,
+  AfterLoad,
   Column,
   Entity,
   JoinTable,
@@ -22,4 +24,10 @@ export class PipelineGroupEntity {
     inverseJoinColumn: { name: 'pipeline_stage_id' },
   })
   public stages: PipelineStageEntity[];
+
+  @AfterInsert()
+  @AfterLoad()
+  public lifecycleUuidLowerCase(): void {
+    this.id = this.id.toLowerCase();
+  }
 }

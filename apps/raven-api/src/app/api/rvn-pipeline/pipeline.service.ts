@@ -1,8 +1,10 @@
 import { PipelineDefinitionData, PipelineStageData } from '@app/rvns-pipelines';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PipelineGroupingDataInterface } from '../../../../../../libs/rvns-pipelines/src/data/pipeline-grouping-data.interface';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
+import { PipelineGroupEntity } from './entities/pipeline-group.entity';
 import { PipelineStageEntity } from './entities/pipeline-stage.entity';
 
 interface PipelineStage {
@@ -28,6 +30,16 @@ interface CreatePipelineStageOptions {
   readonly mappedFrom: string;
 }
 
+interface PipelineGroupsOptions {
+  readonly name: string;
+  readonly stageIds: string[];
+}
+
+interface UpdatePipelineGroupOptions {
+  readonly name?: string;
+  readonly stageIds?: string[];
+}
+
 type UpdatePipelineStageOptions = Partial<CreatePipelineStageOptions>;
 
 @Injectable()
@@ -37,6 +49,8 @@ export class PipelineService {
     private readonly pipelineDefinitionRepository: Repository<PipelineDefinitionEntity>,
     @InjectRepository(PipelineStageEntity)
     private readonly pipelineStageRepository: Repository<PipelineStageEntity>,
+    @InjectRepository(PipelineGroupEntity)
+    private readonly pipelineGroupRepository: Repository<PipelineGroupEntity>,
   ) {}
 
   public async createPipeline(
@@ -53,6 +67,75 @@ export class PipelineService {
       return pipelineStage;
     });
     return this.pipelineDefinitionRepository.save(pipeline);
+  }
+
+  public async createPipelineGroups(
+    pipelineDefinition: PipelineDefinitionEntity,
+    pipelineGroups: PipelineGroupsOptions[],
+  ): Promise<PipelineGroupEntity[]> {
+    this.validatePipelineGroups(pipelineDefinition, pipelineGroups);
+    const existingGroups = await this.getPipelineGroups(pipelineDefinition);
+    if (existingGroups.length > 0) {
+      throw new Error('Pipeline groups already exist for this pipeline');
+    }
+    const groups = pipelineGroups.map((group) => {
+      const pipelineGroup = new PipelineGroupEntity();
+      pipelineGroup.groupName = group.name;
+      pipelineGroup.stages = pipelineDefinition.stages.filter((stage) =>
+        group.stageIds.includes(stage.id),
+      );
+      return pipelineGroup;
+    });
+    return await this.pipelineGroupRepository.save(groups);
+  }
+
+  public async getPipelineGroups(
+    pipelineDefinition: PipelineDefinitionEntity,
+  ): Promise<PipelineGroupEntity[]> {
+    return await this.pipelineGroupRepository
+      .createQueryBuilder('pipelineGroup')
+      .innerJoinAndSelect('pipelineGroup.stages', 'stage')
+      .where('stage.pipelineDefinitionId = :pipelineDefinitionId', {
+        pipelineDefinitionId: pipelineDefinition.id,
+      })
+      .getMany();
+  }
+
+  public updatePipelineGroup(
+    pipelineEntity: PipelineDefinitionEntity,
+    pipelineGroupEntity: PipelineGroupEntity,
+    options: UpdatePipelineGroupOptions,
+  ): Promise<any> {
+    return this.pipelineGroupRepository.manager.transaction(async (tem) => {
+      if (options.name) {
+        pipelineGroupEntity.groupName = options.name;
+      }
+      const stagesToAdd =
+        options.stageIds && options.stageIds.length > 0
+          ? pipelineEntity.stages.filter((stage) =>
+              options.stageIds.includes(stage.id),
+            )
+          : [];
+      if (stagesToAdd.length > 0) {
+        await tem
+          .createQueryBuilder()
+          .relation(PipelineGroupEntity, 'stages')
+          .of(pipelineGroupEntity)
+          .addAndRemove(stagesToAdd, pipelineGroupEntity.stages);
+      }
+      const previousStages = pipelineGroupEntity.stages;
+      delete pipelineGroupEntity.stages;
+      const savedGroup =
+        await this.pipelineGroupRepository.save(pipelineGroupEntity);
+      savedGroup.stages = stagesToAdd.length > 0 ? stagesToAdd : previousStages;
+      return savedGroup;
+    });
+  }
+
+  public async deletePipelineGroup(
+    pipelineGroupEntity: PipelineGroupEntity,
+  ): Promise<void> {
+    await this.pipelineGroupRepository.remove(pipelineGroupEntity);
   }
 
   public async getAllPipelines(
@@ -143,5 +226,54 @@ export class PipelineService {
       order: entity.order,
       mappedFrom: entity.mappedFrom,
     };
+  }
+
+  public pipelineGroupsEntityToGroupingData(
+    pipelineEntity: PipelineDefinitionEntity,
+    groups: PipelineGroupEntity[],
+  ): PipelineGroupingDataInterface {
+    return {
+      pipelineId: pipelineEntity.id,
+      groups: groups.map((group) => ({
+        id: group.id,
+        name: group.groupName,
+        stageIds: group.stages?.map((stage) => stage.id),
+      })),
+    };
+  }
+
+  private validatePipelineGroups(
+    pipelineDefinition: PipelineDefinitionEntity,
+    pipelineGroups: PipelineGroupsOptions[],
+  ): void {
+    const validationErrors = [];
+    const pipelineStageIds = pipelineDefinition.stages.map((stage) => stage.id);
+    const pipelineGroupStageIds = pipelineGroups.reduce<string[]>(
+      (acc, group) => [...acc, ...group.stageIds],
+      [],
+    );
+    const missingStageIds = pipelineGroupStageIds.filter(
+      (stageId) => !pipelineStageIds.includes(stageId),
+    );
+    if (missingStageIds.length > 0) {
+      validationErrors.push(
+        `Pipeline definition is missing stages: ${missingStageIds.join(', ')}`,
+      );
+    }
+
+    const duplicateStageIds = pipelineGroupStageIds.filter(
+      (stageId, index, self) => self.indexOf(stageId) !== index,
+    );
+    if (duplicateStageIds.length > 0) {
+      validationErrors.push(
+        `Pipeline definition has duplicate stages: ${duplicateStageIds.join(
+          ', ',
+        )}`,
+      );
+    }
+    // TODO validate duplicate group names
+    if (validationErrors.length > 0) {
+      throw new BadRequestException(validationErrors.join('; '));
+    }
   }
 }

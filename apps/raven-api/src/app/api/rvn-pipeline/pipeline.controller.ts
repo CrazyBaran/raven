@@ -25,14 +25,19 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { PipelineGroupingDataInterface } from '../../../../../../libs/rvns-pipelines/src/data/pipeline-grouping-data.interface';
 import { ParsePipelineStagePipe } from '../../shared/pipes/parse-pipeline-stage.pipe';
+import { CreatePipelineGroupDto } from './dto/create-pipeline-group.dto';
 import { CreatePipelineStageDto } from './dto/create-pipeline-stage.dto';
 import { CreatePipelineDto } from './dto/create-pipeline.dto';
+import { UpdatePipelineGroupDto } from './dto/update-pipeline-group.dto';
 import { UpdatePipelineStageDto } from './dto/update-pipeline-stage.dto';
 import { UpdatePipelineDto } from './dto/update-pipeline.dto';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
+import { PipelineGroupEntity } from './entities/pipeline-group.entity';
 import { PipelineStageEntity } from './entities/pipeline-stage.entity';
 import { PipelineService } from './pipeline.service';
+import { ParsePipelineGroupWithStagesPipe } from './pipes/parse-pipeline-group-with-stages.pipe';
 import { ParsePipelineWithStagesPipe } from './pipes/parse-pipeline-with-stages.pipe';
 import { ParsePipelinePipe } from './pipes/parse-pipeline.pipe';
 
@@ -82,6 +87,64 @@ export class PipelineController {
     pipelineEntity: PipelineDefinitionEntity,
   ): Promise<PipelineDefinitionData> {
     return this.pipelineService.pipelineEntityToData(pipelineEntity);
+  }
+
+  @ApiOperation({ description: 'Create pipeline groups' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'pipelineId', type: 'string' })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin) // TODO change to only superAdmin
+  @Post(':pipelineId/groups')
+  public async createPipelineGroups(
+    @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
+    pipelineEntity: PipelineDefinitionEntity,
+    @Body() dto: CreatePipelineGroupDto,
+  ): Promise<PipelineGroupingDataInterface> {
+    const groups = await this.pipelineService.createPipelineGroups(
+      pipelineEntity,
+      dto.groups,
+    );
+    return this.pipelineService.pipelineGroupsEntityToGroupingData(
+      pipelineEntity,
+      groups,
+    );
+  }
+
+  @ApiOperation({ description: 'Update pipeline group' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'pipelineId', type: 'string' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin) // TODO change to only superAdmin
+  @Patch(':pipelineId/groups/:id')
+  public async updatePipelineGroups(
+    @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
+    pipelineEntity: PipelineDefinitionEntity,
+    @Param('id', ParseUUIDPipe, ParsePipelineGroupWithStagesPipe)
+    pipelineGroupEntity: PipelineGroupEntity,
+    @Body() dto: UpdatePipelineGroupDto,
+  ): Promise<any> {
+    return this.pipelineService.updatePipelineGroup(
+      pipelineEntity,
+      pipelineGroupEntity,
+      {
+        name: dto.name,
+        stageIds: dto.stageIds,
+      },
+    );
+  }
+
+  @ApiOperation({ description: 'Get pipeline groups' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'pipelineId', type: 'string' })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @Get(':pipelineId/groups')
+  public async getPipelineGroups(
+    @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
+    pipelineEntity: PipelineDefinitionEntity,
+  ): Promise<any> {
+    return this.pipelineService.pipelineGroupsEntityToGroupingData(
+      pipelineEntity,
+      await this.pipelineService.getPipelineGroups(pipelineEntity),
+    );
   }
 
   @ApiOperation({ description: 'Edit pipeline' })
