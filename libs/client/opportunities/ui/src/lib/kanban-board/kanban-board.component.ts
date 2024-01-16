@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  inject,
   Input,
   Output,
   signal,
@@ -10,17 +9,30 @@ import {
 
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/overlay';
-import { NgClass } from '@angular/common';
-import { DialogResult, DialogService } from '@progress/kendo-angular-dialog';
+import { LowerCasePipe, NgClass } from '@angular/common';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { DialogModule } from '@progress/kendo-angular-dialog';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { lowerCase } from 'lodash';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
+import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {
   KanbanColumn,
   KanbanColumnComponent,
 } from '../kanban-column/kanban-column.component';
 import { OpportunityCard } from '../opportunities-card/opportunities-card.component';
 
+export interface KanbanFooterGroup {
+  name: string;
+  id: string;
+  theme: 'warning' | 'success';
+  reminder: boolean;
+  removeSwitch: boolean;
+}
+
 export interface KanbanBoard {
   columns: KanbanColumn[];
+  footers: KanbanFooterGroup[];
 }
 
 @Component({
@@ -32,6 +44,11 @@ export interface KanbanBoard {
     CdkScrollable,
     DropAreaComponent,
     NgClass,
+    DialogModule,
+    ButtonModule,
+    InputsModule,
+    LowerCasePipe,
+    DropConfirmationComponent,
   ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
@@ -46,9 +63,12 @@ export class KanbanBoardComponent {
     opportunityId: string;
   }>();
 
-  public dialogService = inject(DialogService);
-
   protected receiveMode = signal(false);
+
+  protected confirmDrop = signal<{
+    footerGroup: KanbanFooterGroup;
+    opportunityId: string;
+  } | null>(null);
 
   protected dragStarted($event: OpportunityCard): void {
     this.receiveMode.set(true);
@@ -58,27 +78,27 @@ export class KanbanBoardComponent {
     this.receiveMode.set(false);
   }
 
-  protected onFooterStageDrop($event: { opportunityId: string }): void {
+  protected onFooterStageDrop(
+    $event: { opportunityId: string },
+    group: KanbanFooterGroup,
+  ): void {
     this.receiveMode.set(true);
-    this.dialogService
-      .open({
-        title: 'Do you want to drop opportunity to this stage?',
-        width: 400,
-        content: 'Are you sure you want to continue?',
-        actions: [
-          { text: 'No' },
-          {
-            text: 'Yes, leave without publishing',
-            primary: true,
-            themeColor: 'primary',
-          },
-        ],
-      })
-      .result.subscribe((res: DialogResult) => {
-        this.receiveMode.set(false);
-        if ('text' in res && res.text === 'Yes, leave without publishing') {
-          //todo: add logic to drop opportunity to stage
-        }
-      });
+    this.confirmDrop.set({
+      footerGroup: group,
+      opportunityId: $event.opportunityId,
+    });
   }
+
+  protected onCloseDialog(): void {
+    this.confirmDrop.set(null);
+    this.receiveMode.set(false);
+  }
+
+  protected onConfirmDialog(): void {
+    // this.dragEndEvent.emit(this.confirmDrop()!);
+    this.confirmDrop.set(null);
+    this.receiveMode.set(false);
+  }
+
+  protected readonly lowerCase = lowerCase;
 }

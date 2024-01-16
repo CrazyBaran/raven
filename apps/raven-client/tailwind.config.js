@@ -11,6 +11,7 @@ module.exports = {
   theme: {
     colors: {
       primary: {
+        DEFAULT: '#00A59B',
         4: '#00a59b0a',
         8: 'rgba(0, 165, 155, 0.08)',
         12: 'rgba(0, 165, 155, 0.12)',
@@ -54,9 +55,15 @@ module.exports = {
       white: '#FFFFFF',
       black: '#000000',
       text: '#252525',
-      success: '#3C672D',
+      success: {
+        DEFAULT: '#12861E',
+        16: '#12861E29',
+      },
       warning: '#EB8C00',
-      error: '#C52A1A',
+      error: {
+        DEFAULT: '#C52A1A',
+        8: '#C52A1A14',
+      },
       info: '#5A74D8',
       light: '#D9D9D6',
       link: {

@@ -1,5 +1,5 @@
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { TitleCasePipe } from '@angular/common';
+import { NgClass, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,13 +12,17 @@ import { OpportunityCard } from '../opportunities-card/opportunities-card.compon
 @Component({
   selector: 'app-drop-area',
   standalone: true,
-  imports: [CdkDropList, TitleCasePipe],
+  imports: [CdkDropList, TitleCasePipe, NgClass],
   templateUrl: './drop-area.component.html',
   styleUrls: ['./drop-area.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DropAreaComponent {
   @Input() public name: string;
+
+  @Input() public theme: 'default' | 'warning' | 'success' = 'default';
+
+  @Input() public disabled = false;
 
   @Output() public dropEvent = new EventEmitter<{ opportunityId: string }>();
 

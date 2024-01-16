@@ -41,6 +41,29 @@ export const Primary: Story = {
           ...KanbanColumnStories.StandaloneColumn.args!.column!,
         },
       ],
+      footers: [
+        {
+          name: 'Pass',
+          id: 'pass',
+          theme: 'warning',
+          reminder: true,
+          removeSwitch: true,
+        },
+        {
+          name: 'Lost',
+          id: 'lost',
+          theme: 'warning',
+          reminder: true,
+          removeSwitch: true,
+        },
+        {
+          name: 'Won',
+          id: 'won',
+          theme: 'success',
+          reminder: false,
+          removeSwitch: false,
+        },
+      ],
     },
   },
 };

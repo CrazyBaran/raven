@@ -1,0 +1,47 @@
+@if (footerGroup) {
+  <kendo-dialog
+    [width]="350"
+    (close)="onCancelDialog()"
+    [themeColor]="footerGroup.theme === 'success' ? 'primary' : 'light'"
+  >
+    <kendo-dialog-titlebar> Update status to Passed ? </kendo-dialog-titlebar>
+    <div class="flex flex-col gap-10 text-center">
+      <p>
+        This will update the status of the opportunity to
+        {{ footerGroup.name | lowercase }} and remove it from the pipeline view.
+      </p>
+
+      @if (footerGroup.reminder) {
+        <kendo-button
+          class="mx-auto w-fit"
+          themeColor="primary"
+          fillMode="outline"
+          iconClass="fa-solid fa-bell"
+          >Set a reminder</kendo-button
+        >
+      }
+
+      @if (footerGroup.removeSwitch) {
+        <div class="flex items-center justify-between">
+          <p>Remove company from all shortlists</p>
+          <kendo-switch>
+            <ng-template kendoSwitchOffLabel>Off</ng-template>
+            <ng-template kendoSwitchOnLabel>On</ng-template>
+          </kendo-switch>
+        </div>
+      }
+
+      <p>Are you sure you want to proceed?</p>
+    </div>
+    <kendo-dialog-actions>
+      <kendo-button (click)="onCancelDialog()"
+        >Keep existing status</kendo-button
+      >
+      <kendo-button
+        (click)="onConfirmDialog()"
+        [themeColor]="footerGroup.theme === 'success' ? 'primary' : 'secondary'"
+        >Mark status as {{ footerGroup.name }}</kendo-button
+      >
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}
