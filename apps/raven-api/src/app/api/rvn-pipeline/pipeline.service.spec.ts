@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
+import { PipelineGroupEntity } from './entities/pipeline-group.entity';
 import { PipelineStageEntity } from './entities/pipeline-stage.entity';
 import { PipelineService } from './pipeline.service';
 
@@ -17,6 +18,10 @@ describe('PipelineService', () => {
         },
         {
           provide: getRepositoryToken(PipelineStageEntity),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(PipelineGroupEntity),
           useValue: {},
         },
       ],
