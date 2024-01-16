@@ -100,7 +100,7 @@ export class PipelineController {
   @ApiOperation({ description: 'Create pipeline groups' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'pipelineId', type: 'string' })
-  @Roles(RoleEnum.User, RoleEnum.SuperAdmin) // TODO change to only superAdmin
+  @Roles(RoleEnum.SuperAdmin)
   @Post(':pipelineId/groups')
   public async createPipelineGroups(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
@@ -121,7 +121,7 @@ export class PipelineController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'pipelineId', type: 'string' })
   @ApiParam({ name: 'id', type: 'string' })
-  @Roles(RoleEnum.User, RoleEnum.SuperAdmin) // TODO change to only superAdmin
+  @Roles(RoleEnum.SuperAdmin)
   @Patch(':pipelineId/groups/:id')
   public async updatePipelineGroups(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
@@ -146,7 +146,7 @@ export class PipelineController {
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'pipelineId', type: 'string' })
   @ApiParam({ name: 'id', type: 'string' })
-  @Roles(RoleEnum.User, RoleEnum.SuperAdmin) // TODO change to only superAdmin
+  @Roles(RoleEnum.SuperAdmin)
   @Delete(':pipelineId/groups/:id')
   public async deletePipelineGroup(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelinePipe)
