@@ -172,45 +172,51 @@ export const selectPipelinesPageViewModel = createSelector(
   }),
 );
 
-export const selectKanbanBoard = createSelector(
-  selectAllPipelineStages,
-  selectOportunitiesStageDictionary,
-  selectOpportunitiesCardsDictionary,
-  (
-    stages,
-    opportunitiesStageDictionary,
-    opportunityCardsDictionary,
-  ): KanbanBoard => {
-    const columns = _.chain(stages)
-      .map((stage) => ({
-        ...stage,
-        prefix: stage.displayName.split(' - ')[0],
-        displayName: stage.displayName.split(' - ')[1] ?? stage.displayName,
-      }))
-      .groupBy('prefix')
-      .mapValues(
-        (stages): KanbanColumn => ({
-          name: stages[0].prefix,
-          backgroundColor: stages[0].secondaryColor ?? stages[0].primaryColor,
-          color: stages[0].primaryColor,
-          groups: stages.map(
-            (stage): KanbanGroup => ({
-              id: stage.id,
-              name: stage.displayName,
-              cards:
-                opportunitiesStageDictionary[stage.id]?.map(
-                  (id) => opportunityCardsDictionary[id]!,
-                ) ?? [],
-              length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
-            }),
-          ),
-        }),
-      )
-      .values()
-      .value();
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const selectKanbanBoard = (groupingEnabled: boolean) =>
+  createSelector(
+    selectAllPipelineStages,
+    selectOportunitiesStageDictionary,
+    selectOpportunitiesCardsDictionary,
+    (
+      stages,
+      opportunitiesStageDictionary,
+      opportunityCardsDictionary,
+    ): KanbanBoard => {
+      const columns = _.chain(stages)
+        .map((stage) => ({
+          ...stage,
+          prefix: groupingEnabled
+            ? stage.displayName.split(' - ')[0]
+            : stage.displayName,
+          displayName: groupingEnabled
+            ? stage.displayName.split(' - ')[1] ?? stage.displayName
+            : stage.displayName,
+        }))
+        .groupBy('prefix')
+        .mapValues(
+          (stages): KanbanColumn => ({
+            name: stages[0].prefix,
+            backgroundColor: stages[0].secondaryColor ?? stages[0].primaryColor,
+            color: stages[0].primaryColor,
+            groups: stages.map(
+              (stage): KanbanGroup => ({
+                id: stage.id,
+                name: stage.displayName,
+                cards:
+                  opportunitiesStageDictionary[stage.id]?.map(
+                    (id) => opportunityCardsDictionary[id]!,
+                  ) ?? [],
+                length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
+              }),
+            ),
+          }),
+        )
+        .values()
+        .value();
 
-    return {
-      columns,
-    };
-  },
-);
+      return {
+        columns,
+      };
+    },
+  );

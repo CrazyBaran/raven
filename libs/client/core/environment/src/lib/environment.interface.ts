@@ -12,4 +12,5 @@ export interface Environment {
   sharepointWeb: string;
   sharepointList: string;
   websocketUrl: string;
+  pipelineGrouping: boolean;
 }
