@@ -686,7 +686,7 @@ export class NotesService {
             opportunity.note &&
             opportunity.note.rootVersionId !== noteEntity.rootVersionId
           ) {
-            throw new Error(
+            throw new BadRequestException(
               'Updated note root version id does not match workflow note root version id',
             );
           }
