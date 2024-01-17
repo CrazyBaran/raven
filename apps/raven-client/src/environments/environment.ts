@@ -19,6 +19,7 @@ export const environment = {
     'b!RAtLR_rMHU6q6EHlSvfDLAASJHjBXgVDjdZqm3u-M8xaIH4wn66DSb1tnKWcYlEx',
   sharepointRootDirectoryId: '01RVXLZIUM2GLOT2SNUZDZBGFRP3ZBORTK',
   websocketUrl: 'https://as-wa-mc-raven-dev.azurewebsites.net/',
+  pipelineGrouping: true,
 };
 /*
  * For easier debugging in development mode, you can import the following file
