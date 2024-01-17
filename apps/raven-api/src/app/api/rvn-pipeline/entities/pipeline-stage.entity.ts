@@ -39,6 +39,9 @@ export class PipelineStageEntity {
   @Column()
   public order: number;
 
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public configuration: string;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
