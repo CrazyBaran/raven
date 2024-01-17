@@ -100,7 +100,7 @@ export class PipelineController {
   @ApiOperation({ description: 'Create pipeline groups' })
   @ApiResponse(GenericResponseSchema())
   @ApiParam({ name: 'pipelineId', type: 'string' })
-  @Roles(RoleEnum.User, RoleEnum.SuperAdmin) // TODO remove
+  @Roles(RoleEnum.SuperAdmin)
   @Post(':pipelineId/groups')
   public async createPipelineGroups(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
