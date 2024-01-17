@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PipelinesActions } from '@app/client/organisations/api-pipelines';
@@ -17,27 +16,21 @@ import {
 } from '@app/client/shared/ui-templates';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
-import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { LoaderModule } from '@progress/kendo-angular-indicators';
-import { RxFor } from '@rx-angular/template/for';
-import { RxIf } from '@rx-angular/template/if';
-import { map } from 'rxjs';
-import { selectOrganisationsTableViewModel } from './organisations-table.selectors';
+import {
+  selectOrganisationsTableParams,
+  selectOrganisationsTableViewModel,
+} from './organisations-table.selectors';
 
 @Component({
   selector: 'app-client-organisations-feature-organisations-table',
   standalone: true,
   imports: [
-    CommonModule,
-    ButtonModule,
-    ButtongroupNavigationComponent,
     PageTemplateComponent,
     TextBoxNavigationComponent,
     QuickFiltersTemplateComponent,
+    ButtongroupNavigationComponent,
     DropdownNavigationComponent,
-    RxFor,
-    LoaderModule,
-    RxIf,
+    OrganisationsTableViewComponent,
     OrganisationsTableViewComponent,
   ],
   templateUrl: './organisations-table.component.html',
@@ -47,7 +40,6 @@ import { selectOrganisationsTableViewModel } from './organisations-table.selecto
 export class OrganisationsTableComponent {
   protected store = inject(Store);
 
-  protected vm$ = this.store.select(selectOrganisationsTableViewModel)!;
   protected vm = this.store.selectSignal(selectOrganisationsTableViewModel);
 
   public constructor() {
@@ -58,10 +50,10 @@ export class OrganisationsTableComponent {
       }),
     );
 
-    this.vm$
+    this.store
+      .select(selectOrganisationsTableParams)
       .pipe(
         takeUntilDestroyed(),
-        map(({ params }) => params),
         distinctUntilChangedDeep({ ignoreOrder: true }),
       )
       .subscribe((params) => {
