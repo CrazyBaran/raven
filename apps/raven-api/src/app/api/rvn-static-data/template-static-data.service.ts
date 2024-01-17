@@ -15,6 +15,7 @@ import { FieldDefinitionStaticData } from './dto/field-definition.static-data.dt
 import { FieldGroupStaticData } from './dto/field-group.static-data.dto';
 import { TabStaticData } from './dto/tab.static-data.dto';
 import { TemplateStaticData } from './dto/template.static-data.dto';
+import { QueryUtils } from './query.utils';
 
 @Injectable()
 export class TemplateStaticDataService {
@@ -369,11 +370,11 @@ export class TemplateStaticDataService {
           modifiedChange.newData.hideOnPipelineStageIds.length > 0
         ) {
           await transactionalEntityManager.query(
-            this.prepareMultiparamQuery(
+            QueryUtils.prepareMultiparamQuery(
               `INSERT INTO rvn_field_hide_pipeline_stage (field_id, pipeline_stage_id) VALUES`,
               modifiedChange.newData.hideOnPipelineStageIds,
             ),
-            this.prepareMultiparamQueryParameters(
+            QueryUtils.prepareMultiparamQueryParameters(
               modifiedChange.newData.id,
               modifiedChange.newData.hideOnPipelineStageIds,
             ),
@@ -402,11 +403,11 @@ export class TemplateStaticDataService {
               data.hideOnPipelineStageIds.length > 0
             ) {
               await transactionalEntityManager.query(
-                this.prepareMultiparamQuery(
+                QueryUtils.prepareMultiparamQuery(
                   `INSERT INTO rvn_field_hide_pipeline_stage (field_id, pipeline_stage_id) VALUES`,
                   data.hideOnPipelineStageIds,
                 ),
-                this.prepareMultiparamQueryParameters(
+                QueryUtils.prepareMultiparamQueryParameters(
                   data.id,
                   data.hideOnPipelineStageIds,
                 ),
@@ -460,11 +461,11 @@ export class TemplateStaticDataService {
           modifiedChange.newData.pipelineStageIds.length > 0
         ) {
           await transactionalEntityManager.query(
-            this.prepareMultiparamQuery(
+            QueryUtils.prepareMultiparamQuery(
               'INSERT INTO rvn_tab_pipeline_stage (tab_id, pipeline_stage_id) VALUES',
               modifiedChange.newData.pipelineStageIds,
             ),
-            this.prepareMultiparamQueryParameters(
+            QueryUtils.prepareMultiparamQueryParameters(
               modifiedChange.newData.id,
               modifiedChange.newData.pipelineStageIds,
             ),
@@ -476,11 +477,11 @@ export class TemplateStaticDataService {
           modifiedChange.newData.relatedFieldIds.length > 0
         ) {
           await transactionalEntityManager.query(
-            this.prepareMultiparamQuery(
+            QueryUtils.prepareMultiparamQuery(
               `INSERT INTO rvn_tab_related_field (tab_id, field_definition_id) VALUES`,
               modifiedChange.newData.relatedFieldIds,
             ),
-            this.prepareMultiparamQueryParameters(
+            QueryUtils.prepareMultiparamQueryParameters(
               modifiedChange.newData.id,
               modifiedChange.newData.relatedFieldIds,
             ),
@@ -492,11 +493,11 @@ export class TemplateStaticDataService {
           modifiedChange.newData.relatedTemplateIds.length > 0
         ) {
           await transactionalEntityManager.query(
-            this.prepareMultiparamQuery(
+            QueryUtils.prepareMultiparamQuery(
               `INSERT INTO rvn_tab_related_template (tab_id, template_id) VALUES`,
               modifiedChange.newData.relatedTemplateIds,
             ),
-            this.prepareMultiparamQueryParameters(
+            QueryUtils.prepareMultiparamQueryParameters(
               modifiedChange.newData.id,
               modifiedChange.newData.relatedTemplateIds,
             ),
@@ -519,11 +520,11 @@ export class TemplateStaticDataService {
 
             if (data.pipelineStageIds && data.pipelineStageIds.length > 0) {
               await transactionalEntityManager.query(
-                this.prepareMultiparamQuery(
+                QueryUtils.prepareMultiparamQuery(
                   `INSERT INTO rvn_tab_pipeline_stage (tab_id, pipeline_stage_id) VALUES`,
                   data.pipelineStageIds,
                 ),
-                this.prepareMultiparamQueryParameters(
+                QueryUtils.prepareMultiparamQueryParameters(
                   data.id,
                   data.pipelineStageIds,
                 ),
@@ -532,11 +533,11 @@ export class TemplateStaticDataService {
 
             if (data.relatedFieldIds && data.relatedFieldIds.length > 0) {
               await transactionalEntityManager.query(
-                this.prepareMultiparamQuery(
+                QueryUtils.prepareMultiparamQuery(
                   `INSERT INTO rvn_tab_related_field (tab_id, field_definition_id) VALUES`,
                   data.relatedFieldIds,
                 ),
-                this.prepareMultiparamQueryParameters(
+                QueryUtils.prepareMultiparamQueryParameters(
                   data.id,
                   data.relatedFieldIds,
                 ),
@@ -545,11 +546,11 @@ export class TemplateStaticDataService {
 
             if (data.relatedTemplateIds && data.relatedTemplateIds.length > 0) {
               await transactionalEntityManager.query(
-                this.prepareMultiparamQuery(
+                QueryUtils.prepareMultiparamQuery(
                   `INSERT INTO rvn_tab_related_template (tab_id, template_id) VALUES`,
                   data.relatedTemplateIds,
                 ),
-                this.prepareMultiparamQueryParameters(
+                QueryUtils.prepareMultiparamQueryParameters(
                   data.id,
                   data.relatedTemplateIds,
                 ),
@@ -574,18 +575,5 @@ export class TemplateStaticDataService {
         }
       }
     });
-  }
-
-  private prepareMultiparamQuery(baseQuery: string, ids: string[]): string {
-    return `${baseQuery} ${ids
-      .map((_, index) => `(@${index * 2}, @${index * 2 + 1})`)
-      .join(',')}`;
-  }
-
-  private prepareMultiparamQueryParameters(
-    singleId: string,
-    ids: string[],
-  ): string[] {
-    return ids.reduce((acc, id) => acc.concat([singleId, id]), []);
   }
 }
