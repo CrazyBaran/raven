@@ -209,6 +209,9 @@ export class PipelineController {
         displayName: dto.displayName,
         order: dto.order,
         mappedFrom: dto.mappedFrom,
+        configuration: dto.configuration
+          ? JSON.stringify(dto.configuration)
+          : null,
       }),
     );
   }
@@ -229,6 +232,9 @@ export class PipelineController {
         displayName: dto.displayName,
         order: dto.order,
         mappedFrom: dto.mappedFrom,
+        configuration: dto.configuration
+          ? JSON.stringify(dto.configuration)
+          : null,
       }),
     );
   }

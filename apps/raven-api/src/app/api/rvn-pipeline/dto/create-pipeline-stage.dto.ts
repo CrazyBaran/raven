@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsNumber, IsString } from 'class-validator';
+import {
+  IsDefined,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { PipelineStageConfigurationDto } from './pipeline-stage-configuration.dto';
 
 export class CreatePipelineStageDto {
   @ApiProperty()
@@ -16,4 +24,10 @@ export class CreatePipelineStageDto {
   @IsDefined()
   @IsString()
   public readonly mappedFrom: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  public readonly configuration?: PipelineStageConfigurationDto | null;
 }

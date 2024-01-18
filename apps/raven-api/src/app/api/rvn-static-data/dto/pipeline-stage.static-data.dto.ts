@@ -9,6 +9,7 @@ export class PipelineStageStaticData
     public displayName: string,
     public order: number,
     public mappedFrom: string,
+    public configuration?: string,
     public pipelineDefinitionId?: string,
   ) {}
 
@@ -17,7 +18,9 @@ export class PipelineStageStaticData
       this.id === other.id &&
       this.displayName === other.displayName &&
       this.order === other.order &&
-      this.mappedFrom === other.mappedFrom
+      this.mappedFrom === other.mappedFrom &&
+      this.pipelineDefinitionId === other.pipelineDefinitionId &&
+      this.configuration === other.configuration
     );
   }
 

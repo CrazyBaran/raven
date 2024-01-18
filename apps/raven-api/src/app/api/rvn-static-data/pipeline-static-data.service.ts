@@ -30,7 +30,6 @@ export class PipelineStaticDataService {
     const pipelines = await this.entityManager.find(PipelineDefinitionEntity, {
       relations: ['stages'],
     });
-
     return Promise.all(
       pipelines.map(async (pipeline) => {
         const groupsForPipeline = await this.entityManager
@@ -52,6 +51,8 @@ export class PipelineStaticDataService {
               stage.displayName,
               stage.order,
               stage.mappedFrom,
+              stage.configuration,
+              pipeline.id,
             );
           }),
           groupsForPipeline.map((group) => {
@@ -82,6 +83,8 @@ export class PipelineStaticDataService {
             stage.displayName,
             stage.order,
             stage.mappedFrom,
+            stage.configuration,
+            pipeline.id,
           );
         }),
         pipeline.pipelineGroups.map((group) => {
@@ -254,6 +257,8 @@ export class PipelineStaticDataService {
             displayName: modifiedChange.newData.displayName,
             order: modifiedChange.newData.order,
             mappedFrom: modifiedChange.newData.mappedFrom,
+            configuration: modifiedChange.newData.configuration,
+            pipelineDefinitionId: modifiedChange.newData.pipelineDefinitionId,
           },
         );
       }
@@ -271,6 +276,8 @@ export class PipelineStaticDataService {
               displayName: data.displayName,
               order: data.order,
               mappedFrom: data.mappedFrom,
+              configuration: data.configuration,
+              pipelineDefinitionId: data.pipelineDefinitionId,
             });
             break;
           case ChangeType.Removed:
