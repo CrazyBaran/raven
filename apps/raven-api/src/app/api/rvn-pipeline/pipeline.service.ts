@@ -32,6 +32,7 @@ interface CreatePipelineStageOptions {
   readonly displayName: string;
   readonly order: number;
   readonly mappedFrom: string;
+  readonly configuration: string | null;
 }
 
 interface PipelineGroupsOptions {
@@ -199,6 +200,9 @@ export class PipelineService {
     if (options.mappedFrom) {
       pipelineStageEntity.mappedFrom = options.mappedFrom;
     }
+    if (options.configuration) {
+      pipelineStageEntity.configuration = options.configuration;
+    }
     return this.pipelineStageRepository.save(pipelineStageEntity);
   }
 
@@ -211,6 +215,7 @@ export class PipelineService {
     pipelineStage.order = options.order;
     pipelineStage.mappedFrom = options.mappedFrom;
     pipelineStage.pipelineDefinition = pipelineEntity;
+    pipelineStage.configuration = options.configuration;
     return this.pipelineStageRepository.save(pipelineStage);
   }
 
@@ -234,12 +239,9 @@ export class PipelineService {
       id: entity.id,
       name: entity.name,
       isDefault: entity.isDefault,
-      stages: entity.stages?.map((stage) => ({
-        id: stage.id,
-        displayName: stage.displayName,
-        order: stage.order,
-        mappedFrom: stage.mappedFrom,
-      })),
+      stages: entity.stages?.map((stage) =>
+        this.pipelineStageEntityToData(stage),
+      ),
       groups: groups?.map((group) => this.pipelineGroupEntityToData(group)),
     };
   }
@@ -252,6 +254,9 @@ export class PipelineService {
       displayName: entity.displayName,
       order: entity.order,
       mappedFrom: entity.mappedFrom,
+      configuration: entity.configuration
+        ? JSON.parse(entity.configuration)
+        : null,
     };
   }
 
