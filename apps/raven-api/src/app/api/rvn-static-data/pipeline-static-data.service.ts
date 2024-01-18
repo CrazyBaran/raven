@@ -40,6 +40,7 @@ export class PipelineStaticDataService {
             stage.order,
             stage.mappedFrom,
             stage.configuration,
+            pipeline.id,
           );
         }),
       );
@@ -63,6 +64,7 @@ export class PipelineStaticDataService {
             stage.order,
             stage.mappedFrom,
             stage.configuration,
+            pipeline.id,
           );
         }),
       );
@@ -201,6 +203,7 @@ export class PipelineStaticDataService {
             order: modifiedChange.newData.order,
             mappedFrom: modifiedChange.newData.mappedFrom,
             configuration: modifiedChange.newData.configuration,
+            pipelineDefinitionId: modifiedChange.newData.pipelineDefinitionId,
           },
         );
       }
@@ -219,6 +222,7 @@ export class PipelineStaticDataService {
               order: data.order,
               mappedFrom: data.mappedFrom,
               configuration: data.configuration,
+              pipelineDefinitionId: data.pipelineDefinitionId,
             });
             break;
           case ChangeType.Removed:
