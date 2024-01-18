@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
+import { PipelineGroupEntity } from '../rvn-pipeline/entities/pipeline-group.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { AbstractComparer } from './comparer';
 import {
@@ -10,7 +11,9 @@ import {
   ModifiedChange,
 } from './dto/change.dto';
 import { PipelineDefinitionStaticData } from './dto/pipeline-definition.static-data.dto';
+import { PipelineGroupStaticData } from './dto/pipeline-group.static-data.dto';
 import { PipelineStageStaticData } from './dto/pipeline-stage.static-data.dto';
+import { QueryUtils } from './query.utils';
 
 @Injectable()
 export class PipelineStaticDataService {
@@ -18,6 +21,7 @@ export class PipelineStaticDataService {
     private readonly entityManager: EntityManager,
     private readonly pipelineDefinitionComparer: AbstractComparer<PipelineDefinitionStaticData>,
     private readonly pipelineStageComparer: AbstractComparer<PipelineStageStaticData>,
+    private readonly pipelineGroupComparer: AbstractComparer<PipelineGroupStaticData>,
   ) {}
 
   public async getAllPipelineStaticData(): Promise<
@@ -26,23 +30,40 @@ export class PipelineStaticDataService {
     const pipelines = await this.entityManager.find(PipelineDefinitionEntity, {
       relations: ['stages'],
     });
-    return pipelines.map((pipeline) => {
-      return new PipelineDefinitionStaticData(
-        pipeline.id,
-        pipeline.name,
-        pipeline.isDefault,
-        pipeline.affinityListId,
-        pipeline.affinityStatusFieldId,
-        pipeline.stages.map((stage) => {
-          return new PipelineStageStaticData(
-            stage.id,
-            stage.displayName,
-            stage.order,
-            stage.mappedFrom,
-          );
-        }),
-      );
-    });
+
+    return Promise.all(
+      pipelines.map(async (pipeline) => {
+        const groupsForPipeline = await this.entityManager
+          .createQueryBuilder(PipelineGroupEntity, 'pipelineGroup')
+          .innerJoinAndSelect('pipelineGroup.stages', 'stage')
+          .where('stage.pipelineDefinitionId = :pipelineDefinitionId', {
+            pipelineDefinitionId: pipeline.id,
+          })
+          .getMany();
+        return new PipelineDefinitionStaticData(
+          pipeline.id,
+          pipeline.name,
+          pipeline.isDefault,
+          pipeline.affinityListId,
+          pipeline.affinityStatusFieldId,
+          pipeline.stages.map((stage) => {
+            return new PipelineStageStaticData(
+              stage.id,
+              stage.displayName,
+              stage.order,
+              stage.mappedFrom,
+            );
+          }),
+          groupsForPipeline.map((group) => {
+            return new PipelineGroupStaticData(
+              group.id,
+              group.groupName,
+              group.stages.map((stage) => stage.id),
+            );
+          }),
+        );
+      }),
+    );
   }
 
   public async compareExistingPipelineStaticData(
@@ -63,6 +84,13 @@ export class PipelineStaticDataService {
             stage.mappedFrom,
           );
         }),
+        pipeline.pipelineGroups.map((group) => {
+          return new PipelineGroupStaticData(
+            group.id,
+            group.groupName,
+            group.stageIds,
+          );
+        }),
       );
     });
 
@@ -78,13 +106,20 @@ export class PipelineStaticDataService {
       newPipelineStaticData,
     );
 
+    const pipelineGroupChanges = await this.getPipelineGroupChanges(
+      existingPipelineStaticData,
+      newPipelineStaticData,
+    );
+
     const changes = [
       ...pipelineDefinitionChanges,
       ...pipelineStageChanges,
+      ...pipelineGroupChanges,
     ] as BaseChange[];
 
     this.pipelineDefinitionComparer.unsetNestedProperties(changes);
     this.pipelineStageComparer.unsetNestedProperties(changes);
+    this.pipelineGroupComparer.unsetNestedProperties(changes);
     return changes;
   }
 
@@ -97,8 +132,13 @@ export class PipelineStaticDataService {
       (change) => change.entityClass === 'PipelineStageEntity',
     );
 
+    const pipelineGroupChanges = changes.filter(
+      (change) => change.entityClass === 'PipelineGroupEntity',
+    );
+
     await this.applyPipelineDefinitionChanges(pipelineDefinitionChanges);
     await this.applyPipelineStageChanges(pipelineStageChanges);
+    await this.applyPipelineGroupChanges(pipelineGroupChanges);
   }
 
   private async getPipelineDefinitionChanges(
@@ -130,6 +170,22 @@ export class PipelineStaticDataService {
     );
 
     changes.push(...pipelineStageChanges);
+
+    return changes;
+  }
+
+  private async getPipelineGroupChanges(
+    existingPipelineStaticData: PipelineDefinitionStaticData[],
+    pipelineStaticData: PipelineDefinitionStaticData[],
+  ): Promise<BaseChange[]> {
+    const changes: BaseChange[] = [];
+
+    const pipelineGroupChanges = this.pipelineGroupComparer.compareMany(
+      existingPipelineStaticData.flatMap((pipeline) => pipeline.pipelineGroups),
+      pipelineStaticData.flatMap((pipeline) => pipeline.pipelineGroups),
+    );
+
+    changes.push(...pipelineGroupChanges);
 
     return changes;
   }
@@ -220,6 +276,78 @@ export class PipelineStaticDataService {
           case ChangeType.Removed:
             await transactionalEntityManager.delete(
               PipelineStageEntity,
+              data.id,
+            );
+            break;
+        }
+      }
+    });
+  }
+  private async applyPipelineGroupChanges(
+    changes: BaseChange[],
+  ): Promise<void> {
+    await this.entityManager.transaction(async (transactionalEntityManager) => {
+      for (const change of changes.filter(
+        (change) => change.changeType === ChangeType.Modified,
+      )) {
+        const modifiedChange =
+          change as ModifiedChange<PipelineGroupStaticData>;
+        await transactionalEntityManager.update(
+          PipelineGroupEntity,
+          modifiedChange.newData.id,
+          {
+            groupName: modifiedChange.newData.groupName,
+          },
+        );
+        await transactionalEntityManager.query(
+          `DELETE FROM rvn_pipeline_stage_groups WHERE pipeline_stage_group_id = @0`,
+          [modifiedChange.newData.id],
+        );
+        if (
+          modifiedChange.newData.stageIds &&
+          modifiedChange.newData.stageIds.length > 0
+        ) {
+          await transactionalEntityManager.query(
+            QueryUtils.prepareMultiparamQuery(
+              `INSERT INTO rvn_pipeline_stage_groups (pipeline_stage_group_id, pipeline_stage_id) VALUES`,
+              modifiedChange.newData.stageIds,
+            ),
+            QueryUtils.prepareMultiparamQueryParameters(
+              modifiedChange.newData.id,
+              modifiedChange.newData.stageIds,
+            ),
+          );
+        }
+      }
+
+      for (const change of changes.filter(
+        (change) => change.changeType !== ChangeType.Modified,
+      )) {
+        const addedRemovedChange =
+          change as AddedRemovedChange<PipelineGroupStaticData>;
+        const data = addedRemovedChange.data as PipelineGroupStaticData;
+        switch (change.changeType) {
+          case ChangeType.Added:
+            await transactionalEntityManager.insert(PipelineGroupEntity, {
+              id: data.id,
+              groupName: data.groupName,
+            });
+            if (data.stageIds && data.stageIds.length > 0) {
+              await transactionalEntityManager.query(
+                QueryUtils.prepareMultiparamQuery(
+                  `INSERT INTO rvn_pipeline_stage_groups (pipeline_stage_group_id, pipeline_stage_id) VALUES`,
+                  data.stageIds,
+                ),
+                QueryUtils.prepareMultiparamQueryParameters(
+                  data.id,
+                  data.stageIds,
+                ),
+              );
+            }
+            break;
+          case ChangeType.Removed:
+            await transactionalEntityManager.delete(
+              PipelineGroupEntity,
               data.id,
             );
             break;
