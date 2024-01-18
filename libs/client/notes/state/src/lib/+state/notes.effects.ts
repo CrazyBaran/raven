@@ -19,12 +19,13 @@ export class NotesEffects {
   private loadNotes$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(NotesActions.getNotes),
-      switchMap(({ params }) =>
+      concatMap(({ params, append }) =>
         this.notesService.getNotes(params).pipe(
           map(({ data }) =>
             NotesActions.getNotesSuccess({
               data: data?.items || [],
               total: data?.total ?? 0,
+              append: append,
             }),
           ),
           catchError((error) => of(NotesActions.getNotesFailure({ error }))),

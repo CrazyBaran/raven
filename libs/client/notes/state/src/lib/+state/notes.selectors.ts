@@ -125,7 +125,7 @@ const selectOpportunityNotesIsLoading = createSelector(
 );
 
 const selectNotesTableParams = buildPageParamsSelector(notesQueries, {
-  take: '15',
+  take: '25',
   skip: '0',
   field: 'updatedAt',
   dir: 'desc',

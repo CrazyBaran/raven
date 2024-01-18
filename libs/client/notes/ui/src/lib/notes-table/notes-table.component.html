@@ -1,14 +1,12 @@
 <kendo-grid
+  (scrollBottom)="onLoadMore()"
   [data]="gridData"
   [loading]="isLoading"
-  [pageSize]="take"
-  [pageable]="pageable"
-  [skip]="skip"
   [sort]="sort"
   [sortable]="true"
+  [trackBy]="trackByItem"
   class="grid-borderless h-full"
   scrollable="scrollable"
-  uiKendoUrlPaging
   uiKendoUrlSorting
 >
   <ng-template kendoGridLoadingTemplate>
@@ -23,9 +21,9 @@
       <kendo-button
         [queryParams]="{ 'note-details': dataItem.id }"
         [routerLink]="['./']"
+        class="cropped-kendo-button max-w-full"
         fillMode="link"
         queryParamsHandling="merge"
-        class="cropped-kendo-button max-w-full"
       >
         <div [isEllipsisActive]="true" class="max-w-full">
           {{ dataItem?.name }}
@@ -109,10 +107,10 @@
             (click)="handleDeleteNote(dataItem)"
             [class.!opacity-20]="dataItem.deleteButtonSettings?.disabled"
             [disabled]="dataItem.deleteButtonSettings?.disabled"
-            iconClass="fa-solid fa-trash-can"
             [themeColor]="
               dataItem.deleteButtonSettings?.disabled ? 'light' : 'error'
             "
+            iconClass="fa-solid fa-trash-can"
           />
         </div>
         @if (dataItem.newSyncId && dataItem.newSyncId !== dataItem.id) {

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  ViewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoteQueryParams } from '@app/client/notes/data-access';
 import { NotesActions, notesQuery } from '@app/client/notes/state';
@@ -19,16 +24,20 @@ import { selectNotesGridModel } from './notes-table-container.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesTableContainerComponent {
+  @ViewChild(NotesTableComponent) public notesTable!: NotesTableComponent;
+
   protected actions = inject(Actions);
   protected store = inject(Store);
 
   protected gridModel = this.store.selectSignal(selectNotesGridModel);
+  protected params = this.store.selectSignal(notesQuery.selectNotesTableParams);
 
   public constructor() {
     this.store
       .select(notesQuery.selectNotesTableParams)
       .pipe(distinctUntilChangedDeep(), takeUntilDestroyed())
       .subscribe((params) => {
+        this.notesTable?.reset();
         this._loadNotes(params);
       });
 
@@ -48,7 +57,23 @@ export class NotesTableContainerComponent {
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
   }
 
-  private _loadNotes(params: NoteQueryParams, silently?: boolean): void {
+  protected onLoadMore($event: { offset: number; take: number }): void {
+    this._loadNotes(
+      {
+        ...this.params(),
+        skip: '' + $event.offset,
+        take: '' + $event.take,
+      },
+      false,
+      true,
+    );
+  }
+
+  private _loadNotes(
+    params: NoteQueryParams,
+    silently?: boolean,
+    append?: boolean,
+  ): void {
     this.store.dispatch(
       NotesActions.getNotes({
         params:
@@ -56,6 +81,7 @@ export class NotesTableContainerComponent {
             ? (_.omit(params, 'dir') as NoteQueryParams)
             : params,
         silently,
+        append,
       }),
     );
   }
