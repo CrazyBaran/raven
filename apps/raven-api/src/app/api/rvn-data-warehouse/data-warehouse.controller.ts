@@ -5,6 +5,8 @@ import { ApiOAuth2, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
+import { DataWarehouseService } from './data-warehouse.service';
+import { CompanyEntity } from './entities/company.entity';
 
 export class DwhCompanyDto {}
 
@@ -18,8 +20,19 @@ export class DataWarehouseController {
     @InjectEntityManager('dataWarehouse')
     private readonly entityManager: EntityManager,
     private readonly logger: RavenLogger,
+    private readonly dataWarehouseService: DataWarehouseService,
   ) {
     this.logger.setContext(DataWarehouseController.name);
+  }
+
+  @Get('companies')
+  @ApiOperation({ summary: 'Get all companies' })
+  @ApiResponse({ status: 200, description: 'The companies list' })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async getCompanies(): Promise<CompanyEntity[]> {
+    const response = await this.dataWarehouseService.getCompanies();
+    return response;
   }
 
   @Get('companies/:domain')

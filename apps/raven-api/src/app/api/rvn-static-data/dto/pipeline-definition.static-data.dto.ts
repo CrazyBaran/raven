@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Comparable } from '../interfaces/comparable';
+import { PipelineGroupStaticData } from './pipeline-group.static-data.dto';
 import { PipelineStageStaticData } from './pipeline-stage.static-data.dto';
 
 export class PipelineDefinitionStaticData
@@ -13,6 +14,7 @@ export class PipelineDefinitionStaticData
     public affinityListId: number,
     public affinityStatusFieldId: number,
     public pipelineStages: PipelineStageStaticData[],
+    public pipelineGroups?: PipelineGroupStaticData[],
   ) {}
 
   public isSame(other: PipelineDefinitionStaticData): boolean {
@@ -27,5 +29,6 @@ export class PipelineDefinitionStaticData
 
   public unsetNested(): void {
     _.unset(this, 'pipelineStages');
+    _.unset(this, 'pipelineGroups');
   }
 }

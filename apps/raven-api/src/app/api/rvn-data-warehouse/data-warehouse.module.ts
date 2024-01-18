@@ -5,6 +5,13 @@ import { SqlServerConnectionCredentialsAuthenticationOptions } from 'typeorm/dri
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
 import { environment } from '../../../environments/environment';
 import { DataWarehouseController } from './data-warehouse.controller';
+import { DataWarehouseService } from './data-warehouse.service';
+import { CompanyEntity } from './entities/company.entity';
+import { DealroomCompanyNumberOfEmployeesEntity } from './entities/dealroom-company-number-of-employees.entity';
+import { DealroomCompanyTagEntity } from './entities/dealroom-company-tags.entity';
+import { DealroomFundingRoundEntity } from './entities/dealroom-funding-rounds.entity';
+import { FounderEntity } from './entities/founder.entity';
+import { InvestorEntity } from './entities/investor.entity';
 @Module({})
 export class DataWarehouseModule {
   public static async forRootAsync(): Promise<DynamicModule> {
@@ -41,6 +48,7 @@ export class DataWarehouseModule {
       authentication: {
         type: 'azure-active-directory-default',
       } as SqlServerConnectionCredentialsAuthenticationOptions,
+      entities: [__dirname + '/entities/*.entity{.ts,.js}'],
     } as SqlServerConnectionOptions;
 
     const dataWarehouseDataSource = new DataSource(alteredConfig);
@@ -59,7 +67,21 @@ export class DataWarehouseModule {
       await dataWarehouseDataSource.destroy();
       return {
         module: DataWarehouseModule,
-        imports: [TypeOrmModule.forRoot(alteredConfig)],
+        imports: [
+          TypeOrmModule.forRoot(alteredConfig),
+          TypeOrmModule.forFeature(
+            [
+              CompanyEntity,
+              DealroomCompanyNumberOfEmployeesEntity,
+              DealroomCompanyTagEntity,
+              DealroomFundingRoundEntity,
+              FounderEntity,
+              InvestorEntity,
+            ],
+            'dataWarehouse',
+          ),
+        ],
+        providers: [DataWarehouseService],
         controllers: [DataWarehouseController],
       };
     } else {
