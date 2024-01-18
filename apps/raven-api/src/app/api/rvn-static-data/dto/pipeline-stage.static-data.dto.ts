@@ -9,7 +9,7 @@ export class PipelineStageStaticData
     public displayName: string,
     public order: number,
     public mappedFrom: string,
-    public pipelineDefinitionId?: string,
+    public configuration?: string,
   ) {}
 
   public isSame(other: PipelineStageStaticData): boolean {
@@ -17,7 +17,8 @@ export class PipelineStageStaticData
       this.id === other.id &&
       this.displayName === other.displayName &&
       this.order === other.order &&
-      this.mappedFrom === other.mappedFrom
+      this.mappedFrom === other.mappedFrom &&
+      this.configuration === other.configuration
     );
   }
 

@@ -39,6 +39,7 @@ export class PipelineStaticDataService {
             stage.displayName,
             stage.order,
             stage.mappedFrom,
+            stage.configuration,
           );
         }),
       );
@@ -61,6 +62,7 @@ export class PipelineStaticDataService {
             stage.displayName,
             stage.order,
             stage.mappedFrom,
+            stage.configuration,
           );
         }),
       );
@@ -198,6 +200,7 @@ export class PipelineStaticDataService {
             displayName: modifiedChange.newData.displayName,
             order: modifiedChange.newData.order,
             mappedFrom: modifiedChange.newData.mappedFrom,
+            configuration: modifiedChange.newData.configuration,
           },
         );
       }
@@ -215,6 +218,7 @@ export class PipelineStaticDataService {
               displayName: data.displayName,
               order: data.order,
               mappedFrom: data.mappedFrom,
+              configuration: data.configuration,
             });
             break;
           case ChangeType.Removed:
