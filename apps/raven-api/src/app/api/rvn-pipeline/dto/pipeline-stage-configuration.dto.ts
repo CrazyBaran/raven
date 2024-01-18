@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDefined, IsHexColor, IsNumber } from 'class-validator';
+import { IsDefined, IsHexColor, IsNumber, IsUUID } from 'class-validator';
 
 export class PipelineStageConfigurationDto {
   @ApiProperty()
@@ -14,6 +14,6 @@ export class PipelineStageConfigurationDto {
 
   @ApiProperty()
   @IsDefined()
-  @IsBoolean()
-  public readonly droppable: boolean;
+  @IsUUID(undefined, { each: true })
+  public readonly droppableFrom: string[];
 }
