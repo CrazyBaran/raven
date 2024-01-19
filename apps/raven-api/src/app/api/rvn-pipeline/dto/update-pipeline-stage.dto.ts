@@ -29,4 +29,9 @@ export class UpdatePipelineStageDto {
   @IsObject()
   @ValidateNested()
   public readonly configuration?: PipelineStageConfigurationDto | null;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString({ each: true })
+  public readonly showFields: string[];
 }

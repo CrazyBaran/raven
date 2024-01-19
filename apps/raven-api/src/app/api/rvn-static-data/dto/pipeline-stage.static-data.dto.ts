@@ -1,6 +1,8 @@
 import { Comparable } from '../interfaces/comparable';
+import { BaseArrayPropertiesStaticDataDto } from './base-array-properties.static-data.dto';
 
 export class PipelineStageStaticData
+  extends BaseArrayPropertiesStaticDataDto
   implements Comparable<PipelineStageStaticData>
 {
   public correspondingEntity: string = 'PipelineStageEntity';
@@ -10,8 +12,11 @@ export class PipelineStageStaticData
     public order: number,
     public mappedFrom: string,
     public configuration?: string,
+    public showFields?: string[],
     public pipelineDefinitionId?: string,
-  ) {}
+  ) {
+    super();
+  }
 
   public isSame(other: PipelineStageStaticData): boolean {
     return (
@@ -20,7 +25,8 @@ export class PipelineStageStaticData
       this.order === other.order &&
       this.mappedFrom === other.mappedFrom &&
       this.pipelineDefinitionId === other.pipelineDefinitionId &&
-      this.configuration === other.configuration
+      this.configuration === other.configuration &&
+      this.compareArray(this.showFields, other.showFields)
     );
   }
 

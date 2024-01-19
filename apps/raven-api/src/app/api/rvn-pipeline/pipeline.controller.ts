@@ -212,6 +212,7 @@ export class PipelineController {
         configuration: dto.configuration
           ? JSON.stringify(dto.configuration)
           : null,
+        showFields: dto.showFields,
       }),
     );
   }
@@ -235,6 +236,7 @@ export class PipelineController {
         configuration: dto.configuration
           ? JSON.stringify(dto.configuration)
           : null,
+        showFields: dto.showFields,
       }),
     );
   }

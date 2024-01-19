@@ -52,6 +52,7 @@ export class PipelineStaticDataService {
               stage.order,
               stage.mappedFrom,
               stage.configuration,
+              stage.showFields,
               pipeline.id,
             );
           }),
@@ -84,6 +85,7 @@ export class PipelineStaticDataService {
             stage.order,
             stage.mappedFrom,
             stage.configuration,
+            stage.showFields,
             pipeline.id,
           );
         }),
@@ -258,6 +260,7 @@ export class PipelineStaticDataService {
             order: modifiedChange.newData.order,
             mappedFrom: modifiedChange.newData.mappedFrom,
             configuration: modifiedChange.newData.configuration,
+            showFields: modifiedChange.newData.showFields,
             pipelineDefinitionId: modifiedChange.newData.pipelineDefinitionId,
           },
         );
@@ -277,6 +280,7 @@ export class PipelineStaticDataService {
               order: data.order,
               mappedFrom: data.mappedFrom,
               configuration: data.configuration,
+              showFields: data.showFields,
               pipelineDefinitionId: data.pipelineDefinitionId,
             });
             break;
