@@ -1,8 +1,15 @@
 <div
   (cdkDropListDropped)="drop($event)"
   [cdkDropListAutoScrollStep]="15"
+  [cdkDropListDisabled]="disabled"
   cdkDropList
-  class="drop-area | bg-primary-400 border-primary-4 flex h-full w-full items-center justify-center rounded-md border-2 border-solid"
+  class="drop-area | flex h-full w-full items-center justify-center rounded-lg border-2 border-solid"
+  [ngClass]="{
+    'drop-area-disabled opacity-40': disabled,
+    'text-error border-error bg-error-8': theme === 'warning',
+    'text-success border-success bg-success-16': theme === 'success',
+    'text-primary border-primary bg-[#f3faf9]': theme === 'default'
+  }"
 >
   {{ name | titlecase }}
 </div>

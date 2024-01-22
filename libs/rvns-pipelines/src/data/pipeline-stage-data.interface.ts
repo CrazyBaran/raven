@@ -2,6 +2,7 @@ export interface PipelineStageConfigurationData {
   readonly color: string;
   readonly order: number;
   readonly droppable: boolean;
+  readonly droppableFrom: string[];
 }
 
 export interface PipelineStageData {

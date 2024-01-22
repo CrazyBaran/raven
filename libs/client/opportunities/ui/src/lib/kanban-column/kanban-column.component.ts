@@ -11,7 +11,7 @@ import {
   Output,
   ViewChild,
   ViewChildren,
-  signal,
+  input,
 } from '@angular/core';
 import { RxVirtualScrollElementDirective } from '@rx-angular/template/experimental/virtual-scrolling';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
@@ -27,6 +27,11 @@ export interface KanbanColumn {
   color: string;
   backgroundColor: string;
   groups: KanbanGroup[];
+}
+
+export interface KanbanDragStartEvent {
+  card: OpportunityCard;
+  from: string;
 }
 
 @Component({
@@ -52,7 +57,7 @@ export class KanbanColumnComponent {
 
   @Input() public column: KanbanColumn;
 
-  @Output() public dragStarted = new EventEmitter<OpportunityCard>();
+  @Output() public dragStarted = new EventEmitter<KanbanDragStartEvent>();
 
   @Output() public dragEnded = new EventEmitter<OpportunityCard>();
 
@@ -63,11 +68,7 @@ export class KanbanColumnComponent {
 
   @ViewChild('container', { read: ElementRef }) protected container: ElementRef;
 
-  protected receiveMode = signal(false);
-
-  @Input('receiveMode') public set _receiveMode(value: boolean) {
-    this.receiveMode.set(value);
-  }
+  public receiveMode = input(false);
 
   protected get length(): number {
     return this.column?.groups?.reduce((acc, group) => acc + group.length, 0);
@@ -81,6 +82,13 @@ export class KanbanColumnComponent {
         pipelineStageId: group.id,
       });
     }
+  }
+
+  protected onDragStarted($event: OpportunityCard, stageId: string): void {
+    this.dragStarted.emit({
+      card: $event,
+      from: stageId,
+    });
   }
 
   protected setExpanded($event: boolean): void {

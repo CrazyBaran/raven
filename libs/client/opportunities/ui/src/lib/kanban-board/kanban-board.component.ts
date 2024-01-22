@@ -2,25 +2,57 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  inject,
   Input,
   Output,
+  Pipe,
+  PipeTransform,
   signal,
 } from '@angular/core';
 
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/overlay';
-import { NgClass } from '@angular/common';
-import { DialogResult, DialogService } from '@progress/kendo-angular-dialog';
+import { LowerCasePipe, NgClass } from '@angular/common';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { DialogModule } from '@progress/kendo-angular-dialog';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { isBoolean } from 'lodash';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
+import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {
   KanbanColumn,
   KanbanColumnComponent,
+  KanbanDragStartEvent,
 } from '../kanban-column/kanban-column.component';
 import { OpportunityCard } from '../opportunities-card/opportunities-card.component';
 
+export interface KanbanFooterGroup {
+  name: string;
+  id: string;
+  theme: 'warning' | 'success';
+  reminder: boolean;
+  removeSwitch: boolean;
+  droppableFrom: string[];
+}
+
 export interface KanbanBoard {
   columns: KanbanColumn[];
+  footers: KanbanFooterGroup[];
+}
+
+@Pipe({
+  name: 'disabledFooterGroup',
+  standalone: true,
+})
+export class DisabledFooterGroupPipe implements PipeTransform {
+  public transform(
+    value: KanbanFooterGroup,
+    receiveMode: KanbanDragStartEvent | boolean | null,
+  ): boolean {
+    if (!receiveMode || isBoolean(receiveMode)) {
+      return false;
+    }
+    return !value.droppableFrom.includes(receiveMode.from);
+  }
 }
 
 @Component({
@@ -32,6 +64,12 @@ export interface KanbanBoard {
     CdkScrollable,
     DropAreaComponent,
     NgClass,
+    DialogModule,
+    ButtonModule,
+    InputsModule,
+    LowerCasePipe,
+    DropConfirmationComponent,
+    DisabledFooterGroupPipe,
   ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
@@ -46,39 +84,43 @@ export class KanbanBoardComponent {
     opportunityId: string;
   }>();
 
-  public dialogService = inject(DialogService);
+  protected receiveMode = signal<KanbanDragStartEvent | boolean | null>(null);
 
-  protected receiveMode = signal(false);
+  protected confirmDrop = signal<{
+    footerGroup: KanbanFooterGroup;
+    opportunityId: string;
+  } | null>(null);
 
-  protected dragStarted($event: OpportunityCard): void {
-    this.receiveMode.set(true);
+  protected dragStarted($event: KanbanDragStartEvent): void {
+    this.receiveMode.set($event);
   }
 
   protected dragEnded($event: OpportunityCard): void {
+    this.receiveMode.set(null);
+  }
+
+  protected onFooterStageDrop(
+    $event: { opportunityId: string },
+    group: KanbanFooterGroup,
+  ): void {
+    this.receiveMode.set(true);
+    this.confirmDrop.set({
+      footerGroup: group,
+      opportunityId: $event.opportunityId,
+    });
+  }
+
+  protected onCloseDialog(): void {
+    this.confirmDrop.set(null);
     this.receiveMode.set(false);
   }
 
-  protected onFooterStageDrop($event: { opportunityId: string }): void {
-    this.receiveMode.set(true);
-    this.dialogService
-      .open({
-        title: 'Do you want to drop opportunity to this stage?',
-        width: 400,
-        content: 'Are you sure you want to continue?',
-        actions: [
-          { text: 'No' },
-          {
-            text: 'Yes, leave without publishing',
-            primary: true,
-            themeColor: 'primary',
-          },
-        ],
-      })
-      .result.subscribe((res: DialogResult) => {
-        this.receiveMode.set(false);
-        if ('text' in res && res.text === 'Yes, leave without publishing') {
-          //todo: add logic to drop opportunity to stage
-        }
-      });
+  protected onConfirmDialog(): void {
+    this.dragEndEvent.emit({
+      pipelineStageId: this.confirmDrop()!.footerGroup.id,
+      opportunityId: this.confirmDrop()!.opportunityId,
+    });
+    this.confirmDrop.set(null);
+    this.receiveMode.set(false);
   }
 }

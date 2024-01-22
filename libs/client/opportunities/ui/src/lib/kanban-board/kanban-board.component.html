@@ -4,10 +4,9 @@
 >
   <div
     cdkScrollable
+    [class.pb-24]="receiveMode() && board.footers.length > 0"
     class="relative flex min-h-0 w-full flex-1 gap-4 overflow-x-auto overflow-y-hidden"
   >
-    <!--  TODO: footer stages-->
-    <!--    [class.pb-24]="receiveMode()"-->
     @for (column of board.columns; track column.name; let last = $last) {
       <app-kanban-column
         class="block w-[352px] flex-shrink-0"
@@ -15,34 +14,33 @@
         (dragStarted)="dragStarted($event)"
         (dragEnded)="dragEnded($event)"
         (dropEvent)="dragEndEvent.emit($event)"
-        [receiveMode]="receiveMode()"
+        [receiveMode]="!!receiveMode()"
         [class.mr-6]="last"
       />
     }
   </div>
 
-  <!--  TODO: footer stages-->
-  <!--  <div-->
-  <!--    [ngClass]="{-->
-  <!--      '-z-10 opacity-0': !receiveMode(),-->
-  <!--      'z-[100] opacity-100': receiveMode()-->
-  <!--    }"-->
-  <!--    class="absolute bottom-0 left-0 flex w-full gap-4 pb-6"-->
-  <!--  >-->
-  <!--    <app-drop-area-->
-  <!--      class="h-20 flex-1"-->
-  <!--      name="pass"-->
-  <!--      (dropEvent)="onFooterStageDrop($event)"-->
-  <!--    />-->
-  <!--    <app-drop-area-->
-  <!--      class="h-20 flex-1"-->
-  <!--      name="delete"-->
-  <!--      (dropEvent)="onFooterStageDrop($event)"-->
-  <!--    />-->
-  <!--    <app-drop-area-->
-  <!--      class="h-20 flex-1"-->
-  <!--      name="complete"-->
-  <!--      (dropEvent)="onFooterStageDrop($event)"-->
-  <!--    />-->
-  <!--  </div>-->
+  <div
+    [ngClass]="{
+      '-z-10 opacity-0': !receiveMode(),
+      'z-[100] opacity-100': receiveMode()
+    }"
+    class="absolute bottom-0 left-0 flex w-full gap-4 pb-6"
+  >
+    @for (footerGroup of board.footers; track footerGroup.id) {
+      <app-drop-area
+        class="h-20 flex-1"
+        [name]="footerGroup.name"
+        [theme]="footerGroup.theme"
+        (dropEvent)="onFooterStageDrop($event, footerGroup)"
+        [disabled]="footerGroup | disabledFooterGroup: receiveMode()"
+      />
+    }
+  </div>
 </div>
+
+<app-drop-confirmation
+  [footerGroup]="confirmDrop()?.footerGroup!"
+  (confirmEvent)="onConfirmDialog()"
+  (cancelEvent)="onCloseDialog()"
+/>
