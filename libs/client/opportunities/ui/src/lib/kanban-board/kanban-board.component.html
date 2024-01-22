@@ -14,7 +14,7 @@
         (dragStarted)="dragStarted($event)"
         (dragEnded)="dragEnded($event)"
         (dropEvent)="dragEndEvent.emit($event)"
-        [receiveMode]="receiveMode()"
+        [receiveMode]="!!receiveMode()"
         [class.mr-6]="last"
       />
     }
@@ -33,6 +33,7 @@
         [name]="footerGroup.name"
         [theme]="footerGroup.theme"
         (dropEvent)="onFooterStageDrop($event, footerGroup)"
+        [disabled]="footerGroup | disabledFooterGroup: receiveMode()"
       />
     }
   </div>

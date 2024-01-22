@@ -1,4 +1,4 @@
-.cdk-drop-list-dragging.drop-area {
+.cdk-drop-list-dragging.drop-area:not(.drop-area-disabled) {
   border-style: dashed;
   font-size: 18px;
   filter: brightness(115%);

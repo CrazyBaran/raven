@@ -5,7 +5,7 @@
   cdkDropList
   class="drop-area | flex h-full w-full items-center justify-center rounded-lg border-2 border-solid"
   [ngClass]="{
-    'opacity-40': disabled,
+    'drop-area-disabled opacity-40': disabled,
     'text-error border-error bg-error-8': theme === 'warning',
     'text-success border-success bg-success-16': theme === 'success',
     'text-primary border-primary bg-[#f3faf9]': theme === 'default'

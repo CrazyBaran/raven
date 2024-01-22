@@ -4,6 +4,8 @@ import {
   EventEmitter,
   Input,
   Output,
+  Pipe,
+  PipeTransform,
   signal,
 } from '@angular/core';
 
@@ -13,12 +15,13 @@ import { LowerCasePipe, NgClass } from '@angular/common';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { InputsModule } from '@progress/kendo-angular-inputs';
-import { lowerCase } from 'lodash';
+import { isBoolean } from 'lodash';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
 import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {
   KanbanColumn,
   KanbanColumnComponent,
+  KanbanDragStartEvent,
 } from '../kanban-column/kanban-column.component';
 import { OpportunityCard } from '../opportunities-card/opportunities-card.component';
 
@@ -28,11 +31,28 @@ export interface KanbanFooterGroup {
   theme: 'warning' | 'success';
   reminder: boolean;
   removeSwitch: boolean;
+  droppableFrom: string[];
 }
 
 export interface KanbanBoard {
   columns: KanbanColumn[];
   footers: KanbanFooterGroup[];
+}
+
+@Pipe({
+  name: 'disabledFooterGroup',
+  standalone: true,
+})
+export class DisabledFooterGroupPipe implements PipeTransform {
+  public transform(
+    value: KanbanFooterGroup,
+    receiveMode: KanbanDragStartEvent | boolean | null,
+  ): boolean {
+    if (!receiveMode || isBoolean(receiveMode)) {
+      return false;
+    }
+    return !value.droppableFrom.includes(receiveMode.from);
+  }
 }
 
 @Component({
@@ -49,6 +69,7 @@ export interface KanbanBoard {
     InputsModule,
     LowerCasePipe,
     DropConfirmationComponent,
+    DisabledFooterGroupPipe,
   ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
@@ -63,19 +84,19 @@ export class KanbanBoardComponent {
     opportunityId: string;
   }>();
 
-  protected receiveMode = signal(false);
+  protected receiveMode = signal<KanbanDragStartEvent | boolean | null>(null);
 
   protected confirmDrop = signal<{
     footerGroup: KanbanFooterGroup;
     opportunityId: string;
   } | null>(null);
 
-  protected dragStarted($event: OpportunityCard): void {
-    this.receiveMode.set(true);
+  protected dragStarted($event: KanbanDragStartEvent): void {
+    this.receiveMode.set($event);
   }
 
   protected dragEnded($event: OpportunityCard): void {
-    this.receiveMode.set(false);
+    this.receiveMode.set(null);
   }
 
   protected onFooterStageDrop(
@@ -95,10 +116,11 @@ export class KanbanBoardComponent {
   }
 
   protected onConfirmDialog(): void {
-    // this.dragEndEvent.emit(this.confirmDrop()!);
+    this.dragEndEvent.emit({
+      pipelineStageId: this.confirmDrop()!.footerGroup.id,
+      opportunityId: this.confirmDrop()!.opportunityId,
+    });
     this.confirmDrop.set(null);
     this.receiveMode.set(false);
   }
-
-  protected readonly lowerCase = lowerCase;
 }

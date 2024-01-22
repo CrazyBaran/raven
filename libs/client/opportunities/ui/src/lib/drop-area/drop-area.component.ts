@@ -27,6 +27,10 @@ export class DropAreaComponent {
   @Output() public dropEvent = new EventEmitter<{ opportunityId: string }>();
 
   protected drop($event: CdkDragDrop<OpportunityCard>): void {
+    if (this.disabled) {
+      return;
+    }
+
     const opportunityId = $event.item.data.id;
     this.dropEvent.emit({ opportunityId });
   }

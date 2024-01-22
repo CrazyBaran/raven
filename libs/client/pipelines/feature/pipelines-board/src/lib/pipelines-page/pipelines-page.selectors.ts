@@ -3,6 +3,7 @@ import {
   calculateOpportunityCardHeight,
   KanbanBoard,
   KanbanColumn,
+  KanbanFooterGroup,
   KanbanGroup,
   OpportunityCard,
 } from '@app/client/opportunities/ui';
@@ -183,7 +184,20 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
       opportunitiesStageDictionary,
       opportunityCardsDictionary,
     ): KanbanBoard => {
+      const footers: KanbanFooterGroup[] = stages
+        .filter(({ configuration }) => configuration)
+        .map((stage) => ({
+          name: stage.displayName,
+          id: stage.id,
+          theme: stage.configuration!.color as 'warning' | 'success',
+          droppableFrom: stage.configuration!.droppableFrom ?? [],
+          //todo: implement when api ready
+          removeSwitch: false,
+          reminder: false,
+        }));
+
       const columns = _.chain(stages)
+        .filter(({ configuration }) => !configuration)
         .map((stage) => ({
           ...stage,
           prefix: groupingEnabled
@@ -215,31 +229,9 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
         .values()
         .value();
 
-    return {
-      columns,
-      footers: [
-        {
-          name: 'Pass',
-          id: 'pass',
-          theme: 'warning',
-          reminder: true,
-          removeSwitch: true,
-        },
-        {
-          name: 'Lost',
-          id: 'lost',
-          theme: 'warning',
-          reminder: true,
-          removeSwitch: true,
-        },
-        {
-          name: 'Won',
-          id: 'won',
-          theme: 'success',
-          reminder: false,
-          removeSwitch: false,
-        },
-      ],
-    };
-  },
-);
+      return {
+        columns,
+        footers: groupingEnabled ? footers : [],
+      };
+    },
+  );
