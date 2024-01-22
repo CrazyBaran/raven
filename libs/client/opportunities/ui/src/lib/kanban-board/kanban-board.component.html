@@ -4,7 +4,7 @@
 >
   <div
     cdkScrollable
-    [class.pb-24]="receiveMode()"
+    [class.pb-24]="receiveMode() && board.footers.length > 0"
     class="relative flex min-h-0 w-full flex-1 gap-4 overflow-x-auto overflow-y-hidden"
   >
     @for (column of board.columns; track column.name; let last = $last) {
