@@ -184,8 +184,9 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
       opportunitiesStageDictionary,
       opportunityCardsDictionary,
     ): KanbanBoard => {
-      const footers: KanbanFooterGroup[] = stages
-        .filter(({ configuration }) => configuration)
+      const footers: KanbanFooterGroup[] = _.chain(stages)
+        .filter(({ configuration }) => !!configuration)
+        .orderBy('configuration.order')
         .map((stage) => ({
           name: stage.displayName,
           id: stage.id,
@@ -194,10 +195,12 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
           //todo: implement when api ready
           removeSwitch: false,
           reminder: false,
-        }));
+        }))
+        .value();
 
       const columns = _.chain(stages)
         .filter(({ configuration }) => !configuration)
+        .orderBy('order')
         .map((stage) => ({
           ...stage,
           prefix: groupingEnabled
