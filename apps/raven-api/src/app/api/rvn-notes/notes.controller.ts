@@ -95,6 +95,7 @@ export class NotesController {
   @ApiResponse(GenericResponseSchema())
   @ApiQuery({ name: 'domain', type: String, required: false })
   @ApiQuery({ name: 'opportunityId', type: String, required: false })
+  @ApiQuery({ name: 'tabId', type: String, required: false })
   @ApiQuery({ name: 'organisationId', type: String, required: false })
   @ApiQuery({ name: 'type', enum: TemplateTypeEnum, required: false })
   @ApiQuery({ name: 'skip', type: Number, required: false })
@@ -118,6 +119,7 @@ export class NotesController {
     @Query('tagIds', ParseTagsPipe)
     tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
     @Query('opportunityId') opportunityId: string,
+    @Query('tabId') tabId: string,
     @Query('type') type: TemplateTypeEnum = TemplateTypeEnum.Note,
     @Query('organisationId') organisationId?: string,
     @Query('noteType') noteType?: string,
@@ -140,6 +142,7 @@ export class NotesController {
       const items = await this.notesService.getNotesForOpportunity(
         opportunityId,
         type,
+        tabId,
       );
       return {
         total: items.length,
