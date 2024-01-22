@@ -285,6 +285,7 @@ export class NotesService {
   public async getNotesForOpportunity(
     opportunityId: string,
     type: TemplateTypeEnum,
+    tabId: string,
   ): Promise<(WorkflowNoteData | NoteWithRelationsData)[]> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
@@ -474,6 +475,7 @@ export class NotesService {
       opportunity.note,
       relatedNotes,
       opportunity.pipelineStageId,
+      tabId,
     );
 
     if (type === TemplateTypeEnum.Workflow) {
@@ -1019,10 +1021,15 @@ export class NotesService {
     workflowNote: NoteEntity,
     relatedNotes: NoteEntity[],
     currentPipelineStageId: string,
+    tabId: string,
   ): WorkflowNoteData {
     delete workflowNote.noteFieldGroups;
 
     const mappedNote = this.noteEntityToNoteData(workflowNote);
+
+    if (tabId) {
+      mappedNote.noteTabs = mappedNote.noteTabs.filter((nt) => nt.id === tabId);
+    }
 
     const missingFields: { tabName: string; fieldName: string }[] = [];
     // we assume there is only one tab with given name and it won't change after being created from template
