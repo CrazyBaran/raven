@@ -97,12 +97,14 @@ export const notesReducer = createReducer(
       isLoading: !action.silently,
     },
   })),
-  on(NotesActions.getNotesSuccess, (state, { data, total }) =>
+  on(NotesActions.getNotesSuccess, (state, { data, total, append }) =>
     notesAdapter.upsertMany(data, {
       ...state,
       table: {
         isLoading: false,
-        ids: data.map((note) => note.id),
+        ids: append
+          ? [...(state.table.ids ?? []), ...data.map((note) => note.id)]
+          : data.map((note) => note.id),
         total: total,
       },
     }),

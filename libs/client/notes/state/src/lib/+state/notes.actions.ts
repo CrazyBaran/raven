@@ -15,8 +15,16 @@ export const NotesActions = createActionGroup({
   events: {
     'Open Notes Table': emptyProps(),
 
-    'Get Notes': props<{ params: NoteQueryParams; silently?: boolean }>(),
-    'Get Notes Success': props<{ data: NoteData[]; total: number }>(),
+    'Get Notes': props<{
+      params: NoteQueryParams;
+      silently?: boolean;
+      append?: boolean;
+    }>(),
+    'Get Notes Success': props<{
+      data: NoteData[];
+      total: number;
+      append?: boolean;
+    }>(),
     'Get Notes Failure': props<{ error: string }>(),
 
     'Get Note Attachments': props<{ id: string }>(),

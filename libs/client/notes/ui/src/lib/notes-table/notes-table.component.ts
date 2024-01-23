@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
+  Output,
+  ViewChild,
   ViewEncapsulation,
   inject,
 } from '@angular/core';
@@ -32,7 +35,11 @@ import {
   TableViewBaseComponent,
 } from '@app/client/shared/ui-directives';
 import { Store } from '@ngrx/store';
-import { GridModule } from '@progress/kendo-angular-grid';
+import {
+  GridComponent,
+  GridItem,
+  GridModule,
+} from '@progress/kendo-angular-grid';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
@@ -77,9 +84,17 @@ export type NoteTableRow = Omit<NoteData, 'tags'> & {
   encapsulation: ViewEncapsulation.None,
 })
 export class NotesTableComponent extends TableViewBaseComponent<NoteTableRow> {
+  @ViewChild(GridComponent) public grid!: GridComponent;
+
+  @Output() public loadMore = new EventEmitter<{
+    offset: number;
+    take: number;
+  }>();
+
   private dialogService = inject(DialogService);
   private noteFacade = inject(NoteStoreFacade);
   private store = inject(Store);
+  private page = 0;
 
   //todo: refactor to use url dynamic dialogs
   public handleDeleteNote(note: NoteData): void {
@@ -101,5 +116,29 @@ export class NotesTableComponent extends TableViewBaseComponent<NoteTableRow> {
 
   public handleSyncNote(newSyncId: string, id: string): void {
     this.store.dispatch(NotesActions.refreshNote({ newSyncId, noteId: id }));
+  }
+
+  public reset(): void {
+    this.grid?.scrollTo({
+      row: 0,
+    });
+    this.page = 0;
+  }
+
+  public onLoadMore(): void {
+    if (this.total <= this.data.length || this.model?.isLoading) {
+      return;
+    }
+
+    this.page++;
+    this.loadMore.emit({
+      offset: this.page * this.take,
+      take: this.take,
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public trackByItem(index: number, item: GridItem): any {
+    return 'id' in item.data ? item.data.id : index;
   }
 }
