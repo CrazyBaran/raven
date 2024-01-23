@@ -4,12 +4,12 @@
 >
   <div
     cdkScrollable
-    [class.pb-24]="receiveMode() && board.footers.length > 0"
+    [class.pb-28]="receiveMode() && board.footers.length > 0"
     class="relative flex min-h-0 w-full flex-1 gap-4 overflow-x-auto overflow-y-hidden"
   >
     @for (column of board.columns; track column.name; let last = $last) {
       <app-kanban-column
-        class="block w-[352px] flex-shrink-0"
+        class="block min-w-[352px] flex-1 flex-shrink-0"
         [column]="column"
         (dragStarted)="dragStarted($event)"
         (dragEnded)="dragEnded($event)"
