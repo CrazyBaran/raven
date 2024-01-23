@@ -45,6 +45,9 @@ export class PipelineStageEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public showFields: string;
 
+  @Column({ default: false })
+  public isHidden: boolean;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
