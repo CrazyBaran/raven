@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,10 +13,12 @@ import {
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/overlay';
 import { LowerCasePipe, NgClass } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { isBoolean } from 'lodash';
+import { delayWhen, filter, of } from 'rxjs';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
 import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {
@@ -77,7 +80,27 @@ export class DisabledFooterGroupPipe implements PipeTransform {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanBoardComponent {
-  @Input() public board: KanbanBoard;
+  private _board: KanbanBoard = {
+    columns: [],
+    footers: [],
+  };
+
+  @Input() public set board(value: KanbanBoard) {
+    // wait for the receiveMode to be set to null before setting the board
+    of(value)
+      .pipe(
+        delayWhen(() =>
+          this.receiveMode$.pipe(filter((mode) => mode === null)),
+        ),
+      )
+      .subscribe((board) => {
+        this._board = board;
+      });
+  }
+
+  public get board(): KanbanBoard {
+    return this._board;
+  }
 
   @Output() public dragEndEvent = new EventEmitter<{
     pipelineStageId: string;
@@ -85,6 +108,7 @@ export class KanbanBoardComponent {
   }>();
 
   protected receiveMode = signal<KanbanDragStartEvent | boolean | null>(null);
+  protected receiveMode$ = toObservable(this.receiveMode);
 
   protected confirmDrop = signal<{
     footerGroup: KanbanFooterGroup;
