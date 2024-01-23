@@ -102,7 +102,7 @@ export class KanbanGroupComponent {
   }
 
   protected dynamicHeight: (item: OpportunityCard) => number = (item) => {
-    return item.height ?? calculateOpportunityCardHeight(item);
+    return calculateOpportunityCardHeight(item);
   };
 
   protected onDragStarted(item: OpportunityCard): void {

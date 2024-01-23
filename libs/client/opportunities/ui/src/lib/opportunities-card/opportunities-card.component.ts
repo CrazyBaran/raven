@@ -13,13 +13,12 @@ export type OpportunityCard = {
     name: string;
     domains: string[];
   };
-
-  name?: string;
-  updatedAt?: string;
+  additionalFields: {
+    label: string;
+    value: string | undefined;
+  }[];
   dealLeads?: string[];
   affinityUrl?: string;
-  dealSize?: string;
-  timing?: string;
   height?: number;
 };
 
@@ -38,20 +37,7 @@ export class OpportunitiesCardComponent {
     label: string;
     value: string | undefined;
   }[] {
-    return [
-      {
-        label: 'Opportunity',
-        value: this.model.name,
-      },
-      {
-        label: 'Deal Size',
-        value: this.model.dealSize,
-      },
-      {
-        label: 'Timing',
-        value: this.model.timing,
-      },
-    ].filter((field) => field.value?.trim());
+    return this.model.additionalFields.filter((field) => field.value?.trim());
   }
 }
 
@@ -64,7 +50,7 @@ export const calculateOpportunityCardHeight = (
   const header = 48 + 28;
   const createdAt = 28;
 
-  const additionalFields = [item.name, item.dealSize, item.timing];
+  const additionalFields = item.additionalFields.map((field) => field.value);
 
   const hasAdditionalFields = !!additionalFields.filter((x) => x?.trim())
     .length;

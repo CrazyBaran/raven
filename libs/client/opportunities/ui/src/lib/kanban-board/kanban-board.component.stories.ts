@@ -48,6 +48,7 @@ export const Primary: Story = {
           theme: 'warning',
           reminder: true,
           removeSwitch: true,
+          droppableFrom: [],
         },
         {
           name: 'Lost',
@@ -55,6 +56,7 @@ export const Primary: Story = {
           theme: 'warning',
           reminder: true,
           removeSwitch: true,
+          droppableFrom: [],
         },
         {
           name: 'Won',
@@ -62,6 +64,7 @@ export const Primary: Story = {
           theme: 'success',
           reminder: false,
           removeSwitch: false,
+          droppableFrom: [],
         },
       ],
     },
