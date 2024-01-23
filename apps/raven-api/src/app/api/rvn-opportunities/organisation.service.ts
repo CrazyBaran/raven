@@ -3,16 +3,19 @@ import {
   OrganisationDataWithOpportunities,
   PagedOrganisationData,
 } from '@app/rvns-opportunities';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { CompanyDto } from '@app/shared/data-warehouse';
 import { EntityManager, Like, Raw, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
+import { DataWarehouseCacheService } from '../rvn-data-warehouse/cache/data-warehouse-cache.service';
+import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
@@ -36,15 +39,18 @@ interface UpdateOrganisationOptions {
 @Injectable()
 export class OrganisationService {
   public constructor(
+    private readonly logger: RavenLogger,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly opportunityTeamService: OpportunityTeamService,
     @InjectRepository(OrganisationEntity)
     private readonly organisationRepository: Repository<OrganisationEntity>,
     @InjectRepository(PipelineDefinitionEntity)
     private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly affinityEnricher: AffinityEnricher,
-    private readonly eventEmitter: EventEmitter2,
-    private readonly logger: RavenLogger,
-    private readonly opportunityTeamService: OpportunityTeamService,
+    @Optional() private readonly dataWarehouseEnricher: DataWarehouseEnricher,
+    @Optional()
+    private readonly dataWarehouseCacheService: DataWarehouseCacheService,
   ) {
     this.logger.setContext(OrganisationService.name);
   }
@@ -151,28 +157,34 @@ export class OrganisationService {
           .flat() as unknown as OpportunityEntity[],
       );
 
-    const enrichedData = await this.affinityEnricher.enrichOrganisations(
-      organisations,
-      (entity, data) => {
-        for (const opportunity of data.opportunities) {
-          const pipelineStage = this.getPipelineStage(
-            defaultPipeline,
-            opportunity.stage.id,
-          );
+    const affinityEnrichedData =
+      await this.affinityEnricher.enrichOrganisations(
+        organisations,
+        (entity, data) => {
+          for (const opportunity of data.opportunities) {
+            const pipelineStage = this.getPipelineStage(
+              defaultPipeline,
+              opportunity.stage.id,
+            );
 
-          opportunity.stage = {
-            ...opportunity.stage,
-            displayName: pipelineStage.displayName,
-            order: pipelineStage.order,
-            mappedFrom: pipelineStage.mappedFrom,
-          };
+            opportunity.stage = {
+              ...opportunity.stage,
+              displayName: pipelineStage.displayName,
+              order: pipelineStage.order,
+              mappedFrom: pipelineStage.mappedFrom,
+            };
 
-          opportunity.team = teamsForOpportunities[opportunity.id];
-        }
+            opportunity.team = teamsForOpportunities[opportunity.id];
+          }
 
-        return data;
-      },
-    );
+          return data;
+        },
+      );
+
+    const enrichedData =
+      await this.dataWarehouseEnricher?.enrichOrganisations(
+        affinityEnrichedData,
+      );
 
     return {
       items: enrichedData,
@@ -199,35 +211,40 @@ export class OrganisationService {
           .opportunities as unknown as OpportunityEntity[],
       );
 
-    return await this.affinityEnricher.enrichOrganisation(
-      organisation,
-      (entity, data) => {
-        for (const opportunity of data.opportunities) {
-          const pipelineStage = this.getPipelineStage(
-            defaultPipeline,
-            opportunity.stage.id,
-          );
+    const affinityEnrichedOrganisation =
+      await this.affinityEnricher.enrichOrganisation(
+        organisation,
+        (entity, data) => {
+          for (const opportunity of data.opportunities) {
+            const pipelineStage = this.getPipelineStage(
+              defaultPipeline,
+              opportunity.stage.id,
+            );
 
-          opportunity.stage = {
-            ...opportunity.stage,
-            displayName: pipelineStage.displayName,
-            order: pipelineStage.order,
-            mappedFrom: pipelineStage.mappedFrom,
-          };
+            opportunity.stage = {
+              ...opportunity.stage,
+              displayName: pipelineStage.displayName,
+              order: pipelineStage.order,
+              mappedFrom: pipelineStage.mappedFrom,
+            };
 
-          opportunity.team = teamsForOpportunities[opportunity.id];
-        }
-        data.sharepointDirectory =
-          SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
+            opportunity.team = teamsForOpportunities[opportunity.id];
+          }
+          data.sharepointDirectory =
+            SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
+              organisation,
+            );
+          data.sharePointPath = `${
+            environment.sharePoint.rootDirectory
+          }/${SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
             organisation,
-          );
-        data.sharePointPath = `${
-          environment.sharePoint.rootDirectory
-        }/${SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
-          organisation,
-        )}`;
-        return data;
-      },
+          )}`;
+          return data;
+        },
+      );
+
+    return await this.dataWarehouseEnricher?.enrichOrganisation(
+      affinityEnrichedOrganisation,
     );
   }
 
@@ -303,6 +320,48 @@ export class OrganisationService {
     this.logger.log(`Found non-existent organisations synced`);
   }
 
+  public async ensureAllDataWarehouseOrganisationsAsOrganisations(): Promise<void> {
+    const dataWarehouseCompanyCount =
+      await this.dataWarehouseCacheService.getCompanyCount();
+    const step = 2000;
+    for (let i = 0; i < dataWarehouseCompanyCount; i += step) {
+      const dataWarehouseData =
+        await this.dataWarehouseCacheService.getPagedCompanies(i, step);
+      const queryBuilder =
+        this.organisationRepository.createQueryBuilder('organisations');
+      queryBuilder.where('organisations.domains IN (:...domains)', {
+        domains: dataWarehouseData.map((company) => company.domain),
+      });
+      const existingOrganisations = await queryBuilder.getMany();
+
+      const nonExistentDataWarehouseData = this.getNonExistentDataWarehouseData(
+        dataWarehouseData,
+        existingOrganisations,
+      );
+
+      for (const organisation of nonExistentDataWarehouseData) {
+        await this.createFromDataWarehouse(organisation);
+      }
+
+      this.logger.log(
+        `Found ${nonExistentDataWarehouseData.length} non-existent organisations`,
+      );
+    }
+  }
+
+  public getNonExistentDataWarehouseData(
+    dataWarehouseData: CompanyDto[],
+    existingOrganisations: OrganisationEntity[],
+  ): CompanyDto[] {
+    return dataWarehouseData.filter((company) => {
+      return !existingOrganisations.some((opportunity) => {
+        return opportunity.domains.some((domain) => {
+          return company.domain === domain;
+        });
+      });
+    });
+  }
+
   public getNonExistentAffinityData(
     affinityData: OrganizationStageDto[],
     existingOrganisations: OrganisationEntity[],
@@ -342,6 +401,26 @@ export class OrganisationService {
             );
           }
         }
+
+        return savedOrganisation;
+      },
+    );
+  }
+
+  public async createFromDataWarehouse(
+    company: CompanyDto,
+  ): Promise<OrganisationEntity> {
+    return await this.organisationRepository.manager.transaction(
+      async (tem) => {
+        const organisation = new OrganisationEntity();
+        organisation.name = company.name;
+        organisation.domains = [company.domain];
+        const savedOrganisation = await tem.save(organisation);
+
+        this.eventEmitter.emit(
+          'organisation-created',
+          new OrganisationCreatedEvent(savedOrganisation),
+        );
 
         return savedOrganisation;
       },

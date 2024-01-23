@@ -4,6 +4,7 @@ import { Queue } from 'bull';
 import {
   ORGANISATION_QUEUE,
   ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS,
+  ORGANISATION_QUEUE__ENSURE_ALL_DWH_ENTRIES_AS_ORGANISATIONS,
 } from '../opportunities.const';
 
 @Injectable()
@@ -15,6 +16,13 @@ export class OrganisationProducer {
   public async ensureAllAffinityEntriesAsOrganisations(): Promise<void> {
     await this.organisationQueue.add(
       ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS,
+      {},
+    );
+  }
+
+  public async ensureAllDwhEntriesAsOrganisations(): Promise<void> {
+    await this.organisationQueue.add(
+      ORGANISATION_QUEUE__ENSURE_ALL_DWH_ENTRIES_AS_ORGANISATIONS,
       {},
     );
   }

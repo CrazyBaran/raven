@@ -1,11 +1,15 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { DWH_V1_SCHEMA } from '../data-warehouse.v1.const';
 
-@Entity({ name: 'DealRoomFundingRounds', schema: 'Raven' })
+@Entity({
+  name: DWH_V1_SCHEMA.views.fundingRounds.name,
+  schema: DWH_V1_SCHEMA.schemaName,
+})
 export class DealroomFundingRoundEntity {
-  @PrimaryColumn({ name: 'DealRoomCompanyID' })
+  @Column({ name: 'DealRoomCompanyID' })
   public companyId: number;
 
-  @Column({ name: 'DealRoomFundingRoundID' })
+  @PrimaryColumn({ name: 'DealRoomFundingRoundID' })
   public fundingRoundId: number;
 
   @Column({ name: 'Year' })

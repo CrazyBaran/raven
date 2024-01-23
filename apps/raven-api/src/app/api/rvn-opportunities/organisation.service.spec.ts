@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
+import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
@@ -31,6 +32,10 @@ describe('OrganisationService', () => {
         },
         {
           provide: AffinityEnricher,
+          useValue: {},
+        },
+        {
+          provide: DataWarehouseEnricher,
           useValue: {},
         },
         {

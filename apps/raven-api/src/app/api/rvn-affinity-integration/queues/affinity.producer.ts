@@ -14,10 +14,10 @@ import { WebhookPayloadDto } from '../api/dtos/webhook-payload.dto';
 @Injectable()
 export class AffinityProducer implements OnModuleInit {
   public constructor(
+    private readonly logger: RavenLogger,
     @InjectQueue(AFFINITY_QUEUE) private readonly affinityQueue: Queue,
-    private readonly affinityProducerLogger: RavenLogger,
   ) {
-    this.affinityProducerLogger.setContext(AffinityProducer.name);
+    this.logger.setContext(AffinityProducer.name);
   }
 
   public async enqueueRegenerateAffinityData(): Promise<void> {
@@ -28,16 +28,12 @@ export class AffinityProducer implements OnModuleInit {
     if (environment.affinity.enabledOnInit) {
       await this.enqueueRegenerateAffinityData();
     } else {
-      this.affinityProducerLogger.warn(
-        'Affinity is disabled. Skipping regenerating cache.',
-      );
+      this.logger.warn('Affinity is disabled. Skipping regenerating cache.');
     }
     if (environment.affinity.webhookToken) {
       await this.enqueueSetupWebhook();
     } else {
-      this.affinityProducerLogger.warn(
-        'Webhook token is not set. Skipping webhook setup.',
-      );
+      this.logger.warn('Webhook token is not set. Skipping webhook setup.');
     }
   }
 

@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Sentry from '@sentry/node';
@@ -92,6 +93,7 @@ import { TransformInterceptor } from './transform.interceptor';
     OnBehalfOfModule,
     FilesModule,
     StaticDataModule,
+    ScheduleModule.forRoot(),
   ],
   providers: [
     // core

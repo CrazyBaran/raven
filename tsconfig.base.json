@@ -209,6 +209,7 @@
         "libs/rvns-notes/data-access/src/index.ts"
       ],
       "@app/rvns-opportunities": ["libs/rvns-opportunities/src/index.ts"],
+      "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
       "@app/rvns-pipelines": ["libs/rvns-pipelines/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],

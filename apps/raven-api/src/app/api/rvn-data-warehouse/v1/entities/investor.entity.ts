@@ -1,9 +1,13 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { DWH_V1_SCHEMA } from '../data-warehouse.v1.const';
 
-@Entity({ name: 'Investors', schema: 'Raven' })
+@Entity({
+  name: DWH_V1_SCHEMA.views.investors.name,
+  schema: DWH_V1_SCHEMA.schemaName,
+})
 export class InvestorEntity {
   @PrimaryColumn({ name: 'DealRoomInvestorID' })
-  public founderId: number;
+  public investorId: number;
 
   @Column({ name: 'Name' })
   public name: string;

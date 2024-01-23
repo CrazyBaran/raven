@@ -5,6 +5,7 @@ import { RavenLogger } from '../../rvn-logger/raven.logger';
 import {
   ORGANISATION_QUEUE,
   ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS,
+  ORGANISATION_QUEUE__ENSURE_ALL_DWH_ENTRIES_AS_ORGANISATIONS,
 } from '../opportunities.const';
 import { OpportunityService } from '../opportunity.service';
 import { OrganisationService } from '../organisation.service';
@@ -33,6 +34,10 @@ export class OrganisationProcessor extends AbstractSimpleQueueProcessor<Affinity
       case ORGANISATION_QUEUE__ENSURE_ALL_AFFINITY_ENTRIES_AS_ORGANISATIONS: {
         await this.organisationService.ensureAllAffinityOrganisationsAsOrganisations();
         await this.opportunityService.ensureAllAffinityEntriesAsOpportunities();
+        return true;
+      }
+      case ORGANISATION_QUEUE__ENSURE_ALL_DWH_ENTRIES_AS_ORGANISATIONS: {
+        await this.organisationService.ensureAllDataWarehouseOrganisationsAsOrganisations();
         return true;
       }
       default: {

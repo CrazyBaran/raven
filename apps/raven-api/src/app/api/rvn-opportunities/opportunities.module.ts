@@ -18,11 +18,13 @@ import { AffinityOrganisationCreatedEventHandler } from './event-handlers/affini
 
 import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-template-with-groups-and-fields.pipe';
 import { ShareOpportunityEntity } from '../rvn-acl/entities/share-opportunity.entity';
+import { DataWarehouseModule } from '../rvn-data-warehouse/data-warehouse.module';
 import { FilesModule } from '../rvn-files/files.module';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
+import { DataWarehouseRegenerationFinishedEventHandler } from './event-handlers/data-warehouse-regeneration-finished.event-handler';
 import { ORGANISATION_QUEUE } from './opportunities.const';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityController } from './opportunity.controller';
@@ -34,6 +36,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
 
 @Module({
   imports: [
+    DataWarehouseModule.forRootAsync(),
     BullService.registerQueue([
       {
         name: ORGANISATION_QUEUE,
@@ -71,6 +74,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
     AffinityOrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,
     AffinityFieldChangedEventHandler,
+    DataWarehouseRegenerationFinishedEventHandler,
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,
   ],

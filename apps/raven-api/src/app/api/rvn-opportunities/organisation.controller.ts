@@ -29,12 +29,14 @@ import { UpdateOrganisationDto } from './dto/update-organisation.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
 import { ParseOrganisationPipe } from './pipes/parse-organisation.pipe';
+import { OrganisationProducer } from './queues/organisation.producer';
 
 @ApiTags('Organisations')
 @Controller('organisations')
 export class OrganisationController {
   public constructor(
     public readonly organisationService: OrganisationService,
+    public readonly organisationProducer: OrganisationProducer,
   ) {}
 
   @Get()
@@ -135,5 +137,17 @@ export class OrganisationController {
     organisation: OrganisationEntity,
   ): Promise<void> {
     return await this.organisationService.remove(organisation.id);
+  }
+
+  @Get('sync/dwh')
+  @ApiOperation({
+    summary:
+      'Queue a job to ensure that all organisations in the Data Warehouse are also in the Raven database.',
+  })
+  @ApiTags('DataWarehouse')
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async syncDwh(): Promise<void> {
+    await this.organisationProducer.ensureAllDwhEntriesAsOrganisations();
   }
 }
