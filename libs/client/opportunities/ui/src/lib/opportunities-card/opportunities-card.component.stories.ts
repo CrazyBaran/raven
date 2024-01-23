@@ -24,6 +24,7 @@ export const Primary: Story = {
         domains: ['domain.pl'],
       },
       createdAt: '2021-07-01T12:00:00.000Z',
+      additionalFields: [],
     },
   },
 };
@@ -44,9 +45,20 @@ export const WithAllFields: Story = {
       ...WithDealLeads.args!.model!,
       id: '3',
       affinityUrl: 'https://www.google.com',
-      name: 'Series A',
-      dealSize: '$15m',
-      timing: 'Q2 - 2024',
+      additionalFields: [
+        {
+          label: 'Deal Size',
+          value: '$15m',
+        },
+        {
+          label: 'Timing',
+          value: 'Q2 - 2024',
+        },
+        {
+          label: 'Series',
+          value: 'Series A',
+        },
+      ],
     },
   },
 };

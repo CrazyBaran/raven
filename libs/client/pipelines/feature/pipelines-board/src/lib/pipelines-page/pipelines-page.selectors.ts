@@ -1,6 +1,5 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
-  calculateOpportunityCardHeight,
   KanbanBoard,
   KanbanColumn,
   KanbanFooterGroup,
@@ -22,6 +21,8 @@ import {
   buildPageParamsSelector,
 } from '@app/client/shared/util-router';
 import { tagsFeature, tagsQuery } from '@app/client/tags/state';
+import { OpportunityData } from '@app/rvns-opportunities';
+import { PipelineStageData } from '@app/rvns-pipelines';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 
@@ -117,32 +118,6 @@ export const selectPipelineBoardQueryModel = createSelector(
       placeholder: 'Search Pipeline',
     }),
 );
-export const selectOpportunitiesCardsDictionary = createSelector(
-  opportunitiesQuery.selectAllOpportunities,
-  (opportunities) =>
-    _.chain(opportunities)
-      .map(
-        (o): OpportunityCard => ({
-          id: o.id,
-          organisation: {
-            name: o.organisation.name,
-            domains: o.organisation.domains,
-            id: o.organisation!.id!,
-          },
-          name: o.tag?.name,
-          createdAt: o.createdAt!.toString(),
-          dealLeads: o.team?.owners.map((owner) => owner.actorName) ?? [],
-          affinityUrl: o.organisation.affinityUrl,
-          timing: o.timing,
-        }),
-      )
-      .map((card) => ({
-        ...card,
-        height: calculateOpportunityCardHeight(card),
-      }))
-      .keyBy((o) => o.id)
-      .value(),
-);
 
 export const selectIsLoadingPipelineBoard = createSelector(
   pipelinesQuery.selectIsLoading,
@@ -156,7 +131,6 @@ export const selectOportunitiesStageDictionary = createSelector(
   (opportunities) =>
     _.chain(opportunities)
       .groupBy((o) => o.stage.id)
-      .mapValues((opportunities) => opportunities.map(({ id }) => id))
       .value(),
 );
 
@@ -173,29 +147,50 @@ export const selectPipelinesPageViewModel = createSelector(
   }),
 );
 
+function createCard(
+  opportunity: OpportunityData,
+  stage: PipelineStageData,
+): OpportunityCard {
+  return {
+    id: opportunity.id,
+    organisation: {
+      name: opportunity.organisation.name,
+      domains: opportunity.organisation.domains,
+      id: opportunity.organisation!.id!,
+    },
+    createdAt: opportunity.createdAt!.toString(),
+    dealLeads: opportunity.team?.owners.map((owner) => owner.actorName) ?? [],
+    affinityUrl: opportunity.organisation.affinityUrl,
+    additionalFields:
+      stage.showFields?.map(({ fieldName, displayName }) => ({
+        label: displayName,
+        value: _.get(opportunity, fieldName),
+      })) ?? [],
+  };
+}
+
+function toKanbanFooterGroup(stage: PipelineStageData): KanbanFooterGroup {
+  return {
+    name: stage.displayName,
+    id: stage.id,
+    theme: stage.configuration!.color as 'warning' | 'success',
+    droppableFrom: stage.configuration!.droppableFrom ?? [],
+    //todo: implement when api ready
+    removeSwitch: false,
+    reminder: false,
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectKanbanBoard = (groupingEnabled: boolean) =>
   createSelector(
     selectAllPipelineStages,
     selectOportunitiesStageDictionary,
-    selectOpportunitiesCardsDictionary,
-    (
-      stages,
-      opportunitiesStageDictionary,
-      opportunityCardsDictionary,
-    ): KanbanBoard => {
+    (stages, opportunitiesStageDictionary): KanbanBoard => {
       const footers: KanbanFooterGroup[] = _.chain(stages)
         .filter(({ configuration }) => !!configuration)
         .orderBy('configuration.order')
-        .map((stage) => ({
-          name: stage.displayName,
-          id: stage.id,
-          theme: stage.configuration!.color as 'warning' | 'success',
-          droppableFrom: stage.configuration!.droppableFrom ?? [],
-          //todo: implement when api ready
-          removeSwitch: false,
-          reminder: false,
-        }))
+        .map(toKanbanFooterGroup)
         .value();
 
       const columns = _.chain(stages)
@@ -221,8 +216,8 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
                 id: stage.id,
                 name: stage.displayName,
                 cards:
-                  opportunitiesStageDictionary[stage.id]?.map(
-                    (id) => opportunityCardsDictionary[id]!,
+                  opportunitiesStageDictionary[stage.id]?.map((opportunity) =>
+                    createCard(opportunity, stage),
                   ) ?? [],
                 length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
               }),
