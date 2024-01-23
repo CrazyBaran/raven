@@ -11,5 +11,5 @@ export interface PipelineStageData {
   readonly order: number;
   readonly mappedFrom: string;
   readonly configuration?: PipelineStageConfigurationData | null;
-  readonly showFields?: string[];
+  readonly showFields?: { displayName: string; fieldName: string }[];
 }

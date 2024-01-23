@@ -42,8 +42,8 @@ export class PipelineStageEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public configuration: string;
 
-  @Column('simple-array', { nullable: true })
-  public showFields: string[];
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public showFields: string;
 
   @AfterInsert()
   @AfterLoad()
