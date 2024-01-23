@@ -12,7 +12,7 @@ export class PipelineStageStaticData
     public order: number,
     public mappedFrom: string,
     public configuration?: string,
-    public showFields?: string[],
+    public showFields?: string,
     public pipelineDefinitionId?: string,
   ) {
     super();
@@ -26,7 +26,7 @@ export class PipelineStageStaticData
       this.mappedFrom === other.mappedFrom &&
       this.pipelineDefinitionId === other.pipelineDefinitionId &&
       this.configuration === other.configuration &&
-      this.compareArray(this.showFields, other.showFields)
+      this.showFields === other.showFields
     );
   }
 

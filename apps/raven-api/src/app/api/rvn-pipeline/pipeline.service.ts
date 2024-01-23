@@ -33,7 +33,7 @@ interface CreatePipelineStageOptions {
   readonly order: number;
   readonly mappedFrom: string;
   readonly configuration: string | null;
-  readonly showFields?: string[];
+  readonly showFields?: { fieldName: string; displayName: string }[];
 }
 
 interface PipelineGroupsOptions {
@@ -205,7 +205,7 @@ export class PipelineService {
       pipelineStageEntity.configuration = options.configuration;
     }
     if (options.showFields) {
-      pipelineStageEntity.showFields = options.showFields;
+      pipelineStageEntity.showFields = JSON.stringify(options.showFields);
     }
     return this.pipelineStageRepository.save(pipelineStageEntity);
   }
@@ -220,7 +220,9 @@ export class PipelineService {
     pipelineStage.mappedFrom = options.mappedFrom;
     pipelineStage.pipelineDefinition = pipelineEntity;
     pipelineStage.configuration = options.configuration;
-    pipelineStage.showFields = options.showFields;
+    if (options.showFields) {
+      pipelineStage.showFields = JSON.stringify(options.showFields);
+    }
     return this.pipelineStageRepository.save(pipelineStage);
   }
 
@@ -262,7 +264,7 @@ export class PipelineService {
       configuration: entity.configuration
         ? JSON.parse(entity.configuration)
         : null,
-      showFields: entity.showFields,
+      showFields: entity.showFields ? JSON.parse(entity.showFields) : null,
     };
   }
 
