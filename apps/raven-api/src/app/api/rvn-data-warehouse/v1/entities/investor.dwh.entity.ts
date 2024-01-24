@@ -5,7 +5,7 @@ import { DWH_V1_SCHEMA } from '../data-warehouse.v1.const';
   name: DWH_V1_SCHEMA.views.investors.name,
   schema: DWH_V1_SCHEMA.schemaName,
 })
-export class InvestorEntity {
+export class InvestorDwhEntity {
   @PrimaryColumn({ name: 'DealRoomInvestorID' })
   public investorId: number;
 

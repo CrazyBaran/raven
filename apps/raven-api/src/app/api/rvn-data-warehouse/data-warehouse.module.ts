@@ -18,12 +18,12 @@ import { DataWarehouseProcessor } from './queues/data-warehouse.processor';
 import { DataWarehouseProducer } from './queues/data-warehouse.producer';
 import { DataWarehouseScheduler } from './tasks/data-warehouse.scheduler';
 import { DataWarehouseAccessService } from './v1/data-warehouse.access.service';
-import { CompanyEntity } from './v1/entities/company.entity';
-import { DealroomCompanyNumberOfEmployeesEntity } from './v1/entities/dealroom-company-number-of-employees.entity';
-import { DealroomCompanyTagEntity } from './v1/entities/dealroom-company-tags.entity';
-import { DealroomFundingRoundEntity } from './v1/entities/dealroom-funding-rounds.entity';
-import { FounderEntity } from './v1/entities/founder.entity';
-import { InvestorEntity } from './v1/entities/investor.entity';
+import { CompanyDwhEntity } from './v1/entities/company.dwh.entity';
+import { DealroomCompanyNumberOfEmployeesDwhEntity } from './v1/entities/dealroom-company-number-of-employees.dwh.entity';
+import { DealroomCompanyTagEntity } from './v1/entities/dealroom-company-tags.dwh.entity';
+import { DealroomFundingRoundEntity } from './v1/entities/dealroom-funding-rounds.dwh.entity';
+import { FounderDwhEntity } from './v1/entities/founder.dwh.entity';
+import { InvestorDwhEntity } from './v1/entities/investor.dwh.entity';
 import { CompanyMapper } from './v1/mappers/company.mapper';
 import { FounderMapper } from './v1/mappers/founder.mapper';
 import { FundingRoundMapper } from './v1/mappers/funding-round.mapper';
@@ -150,12 +150,12 @@ export class DataWarehouseModule {
         ...module.imports,
         TypeOrmModule.forFeature(
           [
-            CompanyEntity,
-            DealroomCompanyNumberOfEmployeesEntity,
+            CompanyDwhEntity,
+            DealroomCompanyNumberOfEmployeesDwhEntity,
             DealroomCompanyTagEntity,
             DealroomFundingRoundEntity,
-            FounderEntity,
-            InvestorEntity,
+            FounderDwhEntity,
+            InvestorDwhEntity,
           ],
           DataWarehouseDataSourceName,
         ),

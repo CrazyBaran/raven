@@ -1,6 +1,6 @@
 import { FundingRoundDto } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
-import { DealroomFundingRoundEntity } from '../entities/dealroom-funding-rounds.entity';
+import { DealroomFundingRoundEntity } from '../entities/dealroom-funding-rounds.dwh.entity';
 
 @Injectable()
 export class FundingRoundMapper {

@@ -17,7 +17,7 @@ export default {
   debug: false,
   trace: false,
   entityPrefix: 'rvn_',
-  entities: ['./apps/raven-api/src/**/*.entity.ts'],
+  entities: ['./apps/raven-api/src/**/!(*.dwh).entity.ts'],
   migrations: ['./apps/raven-api/src/migrations/*.ts'],
   migrationsTableName: 'rvn_migrations',
   namingStrategy: new SnakeNamingStrategy(),

@@ -1,12 +1,12 @@
 import { FounderDto } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
 import { GroupedEntity } from '../../interfaces/grouped-entity.interface';
-import { FounderEntity } from '../entities/founder.entity';
+import { FounderDwhEntity } from '../entities/founder.dwh.entity';
 
 @Injectable()
 export class FounderMapper {
   public mapMany(
-    grouped: GroupedEntity<FounderEntity>[],
+    grouped: GroupedEntity<FounderDwhEntity>[],
   ): (FounderDto[] | FounderDto)[] {
     return grouped.map((founders) => {
       return this.mapOneOrMany(founders);
@@ -14,7 +14,7 @@ export class FounderMapper {
   }
 
   public mapOneOrMany(
-    grouped: GroupedEntity<FounderEntity>,
+    grouped: GroupedEntity<FounderDwhEntity>,
   ): FounderDto[] | FounderDto {
     if (grouped.entities.length > 1) {
       return grouped.entities.map((founder) => {
@@ -27,7 +27,7 @@ export class FounderMapper {
     }
   }
 
-  public mapOne(founder: FounderEntity): FounderDto {
+  public mapOne(founder: FounderDwhEntity): FounderDto {
     return {
       founderId: founder.founderId,
       name: founder.name,

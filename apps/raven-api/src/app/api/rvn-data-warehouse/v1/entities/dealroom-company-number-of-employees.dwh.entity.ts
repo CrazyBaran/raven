@@ -5,7 +5,7 @@ import { DWH_V1_SCHEMA } from '../data-warehouse.v1.const';
   name: DWH_V1_SCHEMA.views.numberOfEmployees.name,
   schema: DWH_V1_SCHEMA.schemaName,
 })
-export class DealroomCompanyNumberOfEmployeesEntity {
+export class DealroomCompanyNumberOfEmployeesDwhEntity {
   @PrimaryColumn({ name: 'DealRoomCompanyID' })
   public companyId: number;
 

@@ -8,10 +8,10 @@ import {
 import { Injectable } from '@nestjs/common';
 import { GroupedEntity } from '../../interfaces/grouped-entity.interface';
 import { DataWarehouseParser } from '../../utils/data-warehouse.parser';
-import { CompanyEntity } from '../entities/company.entity';
-import { DealroomCompanyNumberOfEmployeesEntity } from '../entities/dealroom-company-number-of-employees.entity';
-import { DealroomCompanyTagEntity } from '../entities/dealroom-company-tags.entity';
-import { DealroomFundingRoundEntity } from '../entities/dealroom-funding-rounds.entity';
+import { CompanyDwhEntity } from '../entities/company.dwh.entity';
+import { DealroomCompanyNumberOfEmployeesDwhEntity } from '../entities/dealroom-company-number-of-employees.dwh.entity';
+import { DealroomCompanyTagEntity } from '../entities/dealroom-company-tags.dwh.entity';
+import { DealroomFundingRoundEntity } from '../entities/dealroom-funding-rounds.dwh.entity';
 import { FounderMapper } from './founder.mapper';
 import { FundingRoundMapper } from './funding-round.mapper';
 import { InvestorMapper } from './investor.mapper';
@@ -27,8 +27,8 @@ export class CompanyMapper {
   ) {}
 
   public map(
-    entity: CompanyEntity,
-    numberOfEmployees: GroupedEntity<DealroomCompanyNumberOfEmployeesEntity>,
+    entity: CompanyDwhEntity,
+    numberOfEmployees: GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>,
     tags: GroupedEntity<DealroomCompanyTagEntity>,
     fundingRounds: GroupedEntity<DealroomFundingRoundEntity>,
   ): CompanyDto {
@@ -141,8 +141,8 @@ export class CompanyMapper {
   }
 
   public mapMany(
-    entities: CompanyEntity[],
-    numberOfEmployees: GroupedEntity<DealroomCompanyNumberOfEmployeesEntity>[],
+    entities: CompanyDwhEntity[],
+    numberOfEmployees: GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>[],
     tags: GroupedEntity<DealroomCompanyTagEntity>[],
     fundingRounds: GroupedEntity<DealroomFundingRoundEntity>[],
   ): CompanyDto[] {
