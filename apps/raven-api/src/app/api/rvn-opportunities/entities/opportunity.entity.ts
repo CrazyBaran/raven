@@ -19,7 +19,10 @@ import { FileEntity } from '../../rvn-files/entities/file.entity';
 import { NoteEntity } from '../../rvn-notes/entities/note.entity';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../../rvn-pipeline/entities/pipeline-stage.entity';
-import { TagEntity } from '../../rvn-tags/entities/tag.entity';
+import {
+  TagEntity,
+  VersionTagEntity,
+} from '../../rvn-tags/entities/tag.entity';
 import { OrganisationEntity } from './organisation.entity';
 
 @Entity({ name: 'opportunities' })
@@ -71,6 +74,18 @@ export class OpportunityEntity
   })
   @RelationId((opportunity: OpportunityEntity) => opportunity.tag)
   public tagId: string | null;
+
+  @ManyToOne(() => TagEntity, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'version_tag_id' })
+  public versionTag: VersionTagEntity | null;
+
+  @Column({
+    nullable: true,
+  })
+  @RelationId((opportunity: OpportunityEntity) => opportunity.versionTag)
+  public versionTagId: string | null;
 
   @OneToMany(() => FileEntity, (file) => file.opportunity)
   public files: FileEntity[];

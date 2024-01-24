@@ -43,7 +43,8 @@ export class TagEntity {
     }
     if (
       this.type === TagTypeEnum.Company ||
-      this.type === TagTypeEnum.Investor
+      this.type === TagTypeEnum.Investor ||
+      this.type === TagTypeEnum.Version
     ) {
       (this as unknown as OrganisationTagEntity).organisationId = (
         this as unknown as OrganisationTagEntity
@@ -53,6 +54,11 @@ export class TagEntity {
       (this as unknown as TabTagEntity).tabId = (
         this as unknown as TabTagEntity
       ).tabId.toLowerCase();
+    }
+    if (this.type === TagTypeEnum.Version) {
+      (this as unknown as VersionTagEntity).opportunityTagId = (
+        this as unknown as VersionTagEntity
+      ).opportunityTagId.toLowerCase();
     }
   }
 }
@@ -108,5 +114,32 @@ export class TabTagEntity extends TagEntity {
   public override lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
     this.tabId = this.tabId.toLowerCase();
+  }
+}
+
+@ChildEntity()
+export class VersionTagEntity extends TagEntity {
+  @ManyToOne(() => OrganisationEntity)
+  @JoinColumn({ name: 'organisation_id' })
+  public organisation: OrganisationEntity;
+
+  @Column()
+  @RelationId((t: OrganisationTagEntity) => t.organisation)
+  public organisationId: string;
+
+  @ManyToOne(() => TagEntity)
+  @JoinColumn({ name: 'opportunity_tag_id' })
+  public opportunityTag: TagEntity;
+
+  @Column()
+  @RelationId((t: VersionTagEntity) => t.opportunityTag)
+  public opportunityTagId: string;
+
+  @AfterInsert()
+  @AfterLoad()
+  public override lifecycleUuidLowerCase(): void {
+    this.id = this.id.toLowerCase();
+    this.organisationId = this.organisationId.toLowerCase();
+    this.opportunityTagId = this.opportunityTagId.toLowerCase();
   }
 }
