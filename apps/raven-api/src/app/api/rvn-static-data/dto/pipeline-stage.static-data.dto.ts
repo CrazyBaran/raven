@@ -11,6 +11,7 @@ export class PipelineStageStaticData
     public displayName: string,
     public order: number,
     public mappedFrom: string,
+    public isHidden: boolean,
     public configuration?: string,
     public showFields?: string,
     public pipelineDefinitionId?: string,
@@ -26,7 +27,8 @@ export class PipelineStageStaticData
       this.mappedFrom === other.mappedFrom &&
       this.pipelineDefinitionId === other.pipelineDefinitionId &&
       this.configuration === other.configuration &&
-      this.showFields === other.showFields
+      this.showFields === other.showFields &&
+      this.isHidden === other.isHidden
     );
   }
 

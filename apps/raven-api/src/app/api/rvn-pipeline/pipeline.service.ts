@@ -34,6 +34,7 @@ interface CreatePipelineStageOptions {
   readonly mappedFrom: string;
   readonly configuration: string | null;
   readonly showFields?: { fieldName: string; displayName: string }[];
+  readonly isHidden?: boolean;
 }
 
 interface PipelineGroupsOptions {
@@ -207,6 +208,9 @@ export class PipelineService {
     if (options.showFields) {
       pipelineStageEntity.showFields = JSON.stringify(options.showFields);
     }
+    if (Object.prototype.hasOwnProperty.call(options, 'isHidden')) {
+      pipelineStageEntity.isHidden = options.isHidden;
+    }
     return this.pipelineStageRepository.save(pipelineStageEntity);
   }
 
@@ -220,6 +224,7 @@ export class PipelineService {
     pipelineStage.mappedFrom = options.mappedFrom;
     pipelineStage.pipelineDefinition = pipelineEntity;
     pipelineStage.configuration = options.configuration;
+    pipelineStage.isHidden = options.isHidden || false;
     if (options.showFields) {
       pipelineStage.showFields = JSON.stringify(options.showFields);
     }

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsNumber,
   IsObject,
   IsOptional,
@@ -39,4 +40,9 @@ export class UpdatePipelineStageDto {
   @ValidateNested({ each: true })
   @Type(() => ShowFieldsConfigurationDto)
   public readonly showFields?: ShowFieldsConfigurationDto[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  public readonly isHidden?: boolean;
 }
