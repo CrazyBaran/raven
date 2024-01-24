@@ -1,5 +1,6 @@
 import { CompanyDto, FounderDto } from '@app/shared/data-warehouse';
 import { Inject, Injectable } from '@nestjs/common';
+import { JobPro } from '@taskforcesh/bullmq-pro';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { DataWarehouseCacheService } from './cache/data-warehouse-cache.service';
 import { DWH_SERVICE } from './data-warehouse.const';
@@ -16,9 +17,12 @@ export class DataWarehouseService {
     this.logger.setContext(DataWarehouseService.name);
   }
 
-  public async regenerateCache(options?: {
-    chunkSize?: number;
-  }): Promise<void> {
+  public async regenerateCache(
+    job: JobPro,
+    options?: {
+      chunkSize?: number;
+    },
+  ): Promise<void> {
     const chunkSize = options?.chunkSize ?? 2000;
 
     await this.dataWarehouseCacheService.reset();
@@ -32,6 +36,8 @@ export class DataWarehouseService {
         take: chunkSize,
       });
       await this.dataWarehouseCacheService.addOrReplaceMany(companies);
+
+      await job.updateProgress(Math.floor((i / chunks) * 100));
     }
 
     await this.dataWarehouseCacheService.setLastUpdated(

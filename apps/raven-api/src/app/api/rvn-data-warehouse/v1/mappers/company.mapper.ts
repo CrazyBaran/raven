@@ -83,7 +83,7 @@ export class CompanyMapper {
         acquisitionDate: entity.acquisitionDate,
         acquisitionPrice: entity.acquisitionPrice,
       },
-      ipoDetails: JSON.parse(entity.ipoDetails) as IpoDetailsDto[],
+      ipoDetails: this.parseJson<IpoDetailsDto[]>(entity.ipoDetails),
       companySize: entity.companySize,
       webVisits: entity.webVisits,
       topCountry: entity.topCountry,
@@ -166,5 +166,16 @@ export class CompanyMapper {
       dealRoom: dealRoomGrowthStage,
       evaluated: evaluated,
     };
+  }
+
+  private parseJson<T>(text: string): T {
+    if (!text) {
+      return null;
+    }
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      return null;
+    }
   }
 }

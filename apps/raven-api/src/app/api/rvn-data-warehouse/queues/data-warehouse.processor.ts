@@ -28,7 +28,7 @@ export class DataWarehouseProcessor extends AbstractSimpleQueueProcessor<DataWar
   public async process(job: JobPro): Promise<boolean> {
     switch (job.name) {
       case DWH_QUEUE.JOBS.REGENERATE: {
-        await this.dataWarehouseService.regenerateCache();
+        await this.dataWarehouseService.regenerateCache(job);
         this.eventEmitter.emit('data-warehouse.regeneration.finished');
         return true;
       }
