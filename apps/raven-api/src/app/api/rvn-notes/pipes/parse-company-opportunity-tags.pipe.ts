@@ -32,6 +32,8 @@ export class ParseCompanyOpportunityTagsPipe
       return [];
     }
 
+    console.log({ complexTagIds });
+
     const distinctCompanyIds = [
       ...new Set(
         complexTagIds.map((complexTagId) => complexTagId.companyTagId),
@@ -40,6 +42,14 @@ export class ParseCompanyOpportunityTagsPipe
     const distinctOpportunityIds = [
       ...new Set(
         complexTagIds.map((complexTagId) => complexTagId.opportunityTagId),
+      ),
+    ];
+
+    const distinctVersionIds = [
+      ...new Set(
+        complexTagIds
+          .map((complexTagId) => complexTagId.versionTagId)
+          .filter((id) => !!id),
       ),
     ];
 
@@ -56,6 +66,15 @@ export class ParseCompanyOpportunityTagsPipe
       },
     });
 
+    const versionTags = await this.entityManager.find(TagEntity, {
+      where: {
+        id: In(distinctVersionIds),
+      },
+    });
+
+    console.log({ versionTags });
+
+    // TODO adjust validation???
     this.validatePassedIds(
       distinctCompanyIds,
       distinctOpportunityIds,
@@ -70,9 +89,20 @@ export class ParseCompanyOpportunityTagsPipe
       const opportunityTag = opportunityTags.find(
         (opportunityTag) => opportunityTag.id === complexTagId.opportunityTagId,
       );
+      const versionTag = complexTagId.versionTagId
+        ? versionTags.find(
+            (versionTag) => versionTag.id === complexTagId.versionTagId,
+          )
+        : undefined;
+      console.log({
+        companyTag,
+        opportunityTag,
+        versionTag,
+      });
       return {
         companyTag,
         opportunityTag,
+        versionTag,
       };
     });
   }

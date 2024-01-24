@@ -1007,12 +1007,17 @@ export class NotesService {
   private getComplexNoteTags(
     companyOpportunityTags?: CompanyOpportunityTag[],
   ): ComplexTagEntity[] {
+    console.log({ companyOpportunityTags });
     return companyOpportunityTags?.map((companyOpportunityTag) => {
       const complexTag = new ComplexTagEntity();
-      complexTag.tags = [
+      const tags = [
         companyOpportunityTag.companyTag,
         companyOpportunityTag.opportunityTag,
       ];
+      if (companyOpportunityTag.versionTag) {
+        tags.push(companyOpportunityTag.versionTag);
+      }
+      complexTag.tags = tags;
       return complexTag;
     });
   }
