@@ -6,107 +6,63 @@ import { DWH_V1_SCHEMA } from '../data-warehouse.v1.const';
   schema: DWH_V1_SCHEMA.schemaName,
 })
 export class CompanyEntity {
-  // included
   @PrimaryColumn({ name: 'DealRoomCompanyID' })
   public companyId: number;
 
-  // included
   @Column({ name: 'Name' })
   public name: string;
 
-  // included
   @Column({ name: 'Domain' })
   public domain: string;
 
-  // NOT included
-  @Column({ name: 'Website' })
-  public website: string;
-
-  // included
   @Column({ name: 'Description' })
   public description: string;
 
-  // included
   @Column({ name: 'Tagline' })
   public tagline: string;
 
-  // included
   @Column({ name: 'Founded Year' })
   public foundedYear: number;
 
-  // included
   @Column({ name: 'Specter Growth Stage' })
   public specterGrowthStage: string;
 
-  // included
   @Column({ name: 'DealRoom Growth Stage' })
   public dealRoomGrowthStage: string;
 
-  // included
   @Column({ name: 'Specter Industry' })
   public specterIndustry: string;
 
-  // included
   @Column({ name: 'Specter Sub-Industry' })
   public specterSubIndustry: string;
 
-  // included
   @Column({ name: 'Specter HQ Location' })
   public specterHqLocation: string;
 
-  // included
   @Column({ name: 'Specter HQ Region' })
   public specterHqRegion: string;
 
-  // included
   @Column({ name: 'Total Funding Amount (USD)' })
   public totalFundingAmount: number;
 
-  // included
   @Column({ name: 'Last Funding Amount (USD)' })
   public lastFundingAmount: number;
 
-  // included
   @Column({ name: 'Last Funding Date' })
   public lastFundingDate: Date;
 
-  // included
   @Column({ name: 'Specter Last Funding Type' })
   public specterLastFundingType: string;
 
-  // included
-  // Suggestion: fill with DealRoom IDs instead or separate table
-  @Column({ name: 'Specter Investors' })
-  public specterInvestors: string;
-
-  // included
-  // Suggestion: fill with DealRoom IDs instead or separate table
-  @Column({ name: 'Specter Founders' })
-  public specterFounders: string;
-
-  // included
   @Column({ name: 'Post Money Valuation (in USD)' })
   public postMoneyValuation: number;
 
-  // Suggestion: remove this column
-  // Duplicate to data from DealRoomFundingRounds
-  @Column({ name: 'Number of Funding Rounds' })
-  public numberOfFundingRounds: number;
-
-  // Suggestion: remove this column
-  // Duplicate to specterInvestors length
-  @Column({ name: 'Number of Investors' })
-  public numberOfInvestors: number;
-
-  // included
   @Column({ name: 'Acquired By' })
   public acquiredBy: string;
 
-  // included
   @Column({ name: 'Acquisition Date' })
   public acquisitionDate: Date;
 
-  // included
   @Column({ name: 'Acquisition Price (in USD)' })
   public acquisitionPrice: number;
 
@@ -125,6 +81,7 @@ export class CompanyEntity {
   @Column({ name: 'Country Breakdown' })
   public countryBreakdown: string;
 
+  // Suggestions: inconsistent format with country breakdown (colon)
   @Column({ name: 'Traffic Sources' })
   public trafficSources: string;
 
@@ -151,9 +108,6 @@ export class CompanyEntity {
 
   @Column({ name: 'Website Popularity Rank' })
   public websitePopularityRank: string;
-
-  @Column({ name: 'Number of Employees' })
-  public numberOfEmployees: number;
 
   @Column({ name: 'DealRoom URL' })
   public dealRoomUrl: string;
@@ -233,9 +187,6 @@ export class CompanyEntity {
   @Column({ name: 'Specter Company Phone Number' })
   public specterCompanyPhoneNumber: string;
 
-  @Column({ name: 'DealRoom Client Focus' })
-  public dealRoomClientFocus: string;
-
   @Column({ name: 'DealRoom Delivery Method' })
   public dealRoomDeliveryMethod: string;
 
@@ -247,4 +198,41 @@ export class CompanyEntity {
 
   @Column({ name: 'DealRoom Last Updated' })
   public dealRoomLastUpdated: Date;
+
+  // included
+  // Suggestion: fill with DealRoom IDs instead or separate table
+  @Column({ name: 'Specter Investors' })
+  public specterInvestors: string;
+
+  // included
+  // Suggestion: fill with DealRoom IDs instead or separate table
+  @Column({ name: 'Specter Founders' })
+  public specterFounders: string;
+
+  // NOT included
+  @Column({ name: 'Website' })
+  public website: string;
+
+  // Suggestion: remove this column
+  // Duplicate to data from DealRoomFundingRounds
+  // NOT included
+  @Column({ name: 'Number of Funding Rounds' })
+  public numberOfFundingRounds: number;
+
+  // Suggestion: remove this column
+  // Duplicate to specterInvestors length
+  // NOT included
+  @Column({ name: 'Number of Investors' })
+  public numberOfInvestors: number;
+
+  // Suggestion: remove this column
+  // Duplicate to numberOfEmployees length
+  // NOT included
+  @Column({ name: 'Number of Employees' })
+  public numberOfEmployees: number;
+
+  // NOT included
+  // Suggestion: delete this column, always empty
+  @Column({ name: 'DealRoom Client Focus' })
+  public dealRoomClientFocus: string;
 }

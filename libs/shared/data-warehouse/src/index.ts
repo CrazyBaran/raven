@@ -9,4 +9,6 @@ export * from './lib/dtos/growth-stage.dto';
 export * from './lib/dtos/hq.dto';
 export * from './lib/dtos/industry.dto';
 export * from './lib/dtos/investor.dto';
+export * from './lib/dtos/ipo-details.dto';
 export * from './lib/dtos/number-of-employees-snapshot.dto';
+export * from './lib/dtos/urls.dto';
