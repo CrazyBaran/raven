@@ -12,4 +12,5 @@ export interface PipelineStageData {
   readonly mappedFrom: string;
   readonly configuration?: PipelineStageConfigurationData | null;
   readonly showFields?: { displayName: string; fieldName: string }[];
+  readonly isHidden?: boolean;
 }

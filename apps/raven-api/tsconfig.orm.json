@@ -7,6 +7,6 @@
     "target": "es2015",
     "module": "commonjs"
   },
-  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/rvn-data-warehouse/**"],
   "include": ["**/*.ts"]
 }

@@ -323,6 +323,21 @@ export class OpportunityService {
     userEntity: UserEntity,
   ): Promise<OpportunityEntity> {
     if (options.pipelineStage) {
+      if (
+        this.shouldUpdatePreviousPipelineStage(
+          opportunity,
+          options.pipelineStage,
+        )
+      ) {
+        opportunity.previousPipelineStage = opportunity.pipelineStage;
+      } else if (
+        this.shouldClearPreviousPipelineStage(
+          opportunity,
+          options.pipelineStage,
+        )
+      ) {
+        opportunity.previousPipelineStage = null;
+      }
       opportunity.pipelineStage = options.pipelineStage;
     }
     if (options.tagEntity) {
@@ -547,5 +562,25 @@ export class OpportunityService {
     this.assignOpportunityProperties(opportunity, options);
 
     return await this.opportunityRepository.save(opportunity);
+  }
+
+  private shouldUpdatePreviousPipelineStage(
+    opportunity: OpportunityEntity,
+    nextPipelineStage: PipelineStageEntity,
+  ): boolean {
+    return !!(
+      !opportunity.pipelineStage.configuration &&
+      nextPipelineStage.configuration
+    );
+  }
+
+  private shouldClearPreviousPipelineStage(
+    opportunity: OpportunityEntity,
+    nextPipelineStage: PipelineStageEntity,
+  ): boolean {
+    return (
+      opportunity.pipelineStage.configuration &&
+      !nextPipelineStage.configuration
+    );
   }
 }

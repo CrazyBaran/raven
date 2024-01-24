@@ -63,6 +63,20 @@ export class OpportunityEntity
   @RelationId((opportunity: OpportunityEntity) => opportunity.pipelineStage)
   public pipelineStageId: string;
 
+  @ManyToOne(() => PipelineStageEntity, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'previous_pipeline_stage_id' })
+  public previousPipelineStage: PipelineStageEntity | null;
+
+  @Column({
+    nullable: true,
+  })
+  @RelationId(
+    (opportunity: OpportunityEntity) => opportunity.previousPipelineStage,
+  )
+  public previousPipelineStageId: string | null;
+
   @ManyToOne(() => TagEntity, {
     nullable: true,
   })

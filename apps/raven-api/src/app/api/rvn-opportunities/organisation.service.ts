@@ -8,6 +8,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CompanyDto } from '@app/shared/data-warehouse';
+import { JobPro } from '@taskforcesh/bullmq-pro';
 import { EntityManager, Like, Raw, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
@@ -320,22 +321,30 @@ export class OrganisationService {
     this.logger.log(`Found non-existent organisations synced`);
   }
 
-  public async ensureAllDataWarehouseOrganisationsAsOrganisations(): Promise<void> {
+  public async ensureAllDataWarehouseOrganisationsAsOrganisations(
+    job: JobPro,
+  ): Promise<void> {
     const dataWarehouseCompanyCount =
       await this.dataWarehouseCacheService.getCompanyCount();
-    const step = 2000;
+    const step = 500;
     for (let i = 0; i < dataWarehouseCompanyCount; i += step) {
       const dataWarehouseData =
         await this.dataWarehouseCacheService.getPagedCompanies(i, step);
+
+      const sortedDataWarehouseData = dataWarehouseData.sort((a, b) =>
+        a.domain.localeCompare(b.domain),
+      );
+
       const queryBuilder =
         this.organisationRepository.createQueryBuilder('organisations');
       queryBuilder.where('organisations.domains IN (:...domains)', {
-        domains: dataWarehouseData.map((company) => company.domain),
+        domains: sortedDataWarehouseData.map((company) => company.domain),
       });
+      queryBuilder.orderBy('organisations.domains', 'ASC');
       const existingOrganisations = await queryBuilder.getMany();
 
       const nonExistentDataWarehouseData = this.getNonExistentDataWarehouseData(
-        dataWarehouseData,
+        sortedDataWarehouseData,
         existingOrganisations,
       );
 
@@ -345,6 +354,10 @@ export class OrganisationService {
 
       this.logger.log(
         `Found ${nonExistentDataWarehouseData.length} non-existent organisations`,
+      );
+
+      await job.updateProgress(
+        Math.round((i / dataWarehouseCompanyCount) * 100),
       );
     }
   }

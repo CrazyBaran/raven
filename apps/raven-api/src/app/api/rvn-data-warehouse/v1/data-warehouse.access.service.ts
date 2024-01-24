@@ -7,12 +7,12 @@ import { DataWarehouseCompanyOrderBy } from '../interfaces/data-warehouse-compan
 import { DataWarehouseFounderOrderBy } from '../interfaces/data-warehouse-founder-order-by.type';
 import { GroupedEntity } from '../interfaces/grouped-entity.interface';
 import { InjectDataWarehouseRepository } from '../utils/inject-data-warehouse-repository.decorator';
-import { CompanyEntity } from './entities/company.entity';
-import { DealroomCompanyNumberOfEmployeesEntity } from './entities/dealroom-company-number-of-employees.entity';
-import { DealroomCompanyTagEntity } from './entities/dealroom-company-tags.entity';
-import { DealroomFundingRoundEntity } from './entities/dealroom-funding-rounds.entity';
-import { FounderEntity } from './entities/founder.entity';
-import { InvestorEntity } from './entities/investor.entity';
+import { CompanyDwhEntity } from './entities/company.dwh.entity';
+import { DealroomCompanyNumberOfEmployeesDwhEntity } from './entities/dealroom-company-number-of-employees.dwh.entity';
+import { DealroomCompanyTagEntity } from './entities/dealroom-company-tags.dwh.entity';
+import { DealroomFundingRoundEntity } from './entities/dealroom-funding-rounds.dwh.entity';
+import { FounderDwhEntity } from './entities/founder.dwh.entity';
+import { InvestorDwhEntity } from './entities/investor.dwh.entity';
 import { CompanyMapper } from './mappers/company.mapper';
 import { FounderMapper } from './mappers/founder.mapper';
 
@@ -20,18 +20,18 @@ import { FounderMapper } from './mappers/founder.mapper';
 export class DataWarehouseAccessService implements DataWarehouseAccess {
   public constructor(
     private readonly logger: RavenLogger,
-    @InjectDataWarehouseRepository(CompanyEntity)
-    private readonly companyRepository: Repository<CompanyEntity>,
-    @InjectDataWarehouseRepository(DealroomCompanyNumberOfEmployeesEntity)
-    private readonly dealroomCompanyNumberOfEmployeesRepository: Repository<DealroomCompanyNumberOfEmployeesEntity>,
+    @InjectDataWarehouseRepository(CompanyDwhEntity)
+    private readonly companyRepository: Repository<CompanyDwhEntity>,
+    @InjectDataWarehouseRepository(DealroomCompanyNumberOfEmployeesDwhEntity)
+    private readonly dealroomCompanyNumberOfEmployeesRepository: Repository<DealroomCompanyNumberOfEmployeesDwhEntity>,
     @InjectDataWarehouseRepository(DealroomCompanyTagEntity)
     private readonly dealroomCompanyTagRepository: Repository<DealroomCompanyTagEntity>,
     @InjectDataWarehouseRepository(DealroomFundingRoundEntity)
     private readonly dealroomFundingRoundRepository: Repository<DealroomFundingRoundEntity>,
-    @InjectDataWarehouseRepository(FounderEntity)
-    private readonly founderRepository: Repository<FounderEntity>,
-    @InjectDataWarehouseRepository(InvestorEntity)
-    private readonly investorRepository: Repository<InvestorEntity>,
+    @InjectDataWarehouseRepository(FounderDwhEntity)
+    private readonly founderRepository: Repository<FounderDwhEntity>,
+    @InjectDataWarehouseRepository(InvestorDwhEntity)
+    private readonly investorRepository: Repository<InvestorDwhEntity>,
     private readonly companyMapper: CompanyMapper,
     private readonly founderMapper: FounderMapper,
   ) {
@@ -64,7 +64,7 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
         options,
       )}`,
     );
-    const findOptions: FindManyOptions<CompanyEntity> = {};
+    const findOptions: FindManyOptions<CompanyDwhEntity> = {};
 
     findOptions.where = {
       domain: And(Not(''), Not(IsNull())),
@@ -122,7 +122,7 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     skip?: number;
     take?: number;
   }): Promise<(FounderDto | FounderDto[])[]> {
-    const findOptions: FindManyOptions<FounderEntity> = {};
+    const findOptions: FindManyOptions<FounderDwhEntity> = {};
 
     findOptions.where = {
       name: And(Not(''), Not(IsNull())),
@@ -151,7 +151,7 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
 
   private async getNumberOfEmployees(
     companyIds: number[],
-  ): Promise<GroupedEntity<DealroomCompanyNumberOfEmployeesEntity>[]> {
+  ): Promise<GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>[]> {
     const entities = await this.dealroomCompanyNumberOfEmployeesRepository.find(
       {
         where: {

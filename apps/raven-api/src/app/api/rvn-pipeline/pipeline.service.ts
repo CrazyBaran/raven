@@ -270,6 +270,7 @@ export class PipelineService {
         ? JSON.parse(entity.configuration)
         : null,
       showFields: entity.showFields ? JSON.parse(entity.showFields) : null,
+      isHidden: entity.isHidden || false,
     };
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RavenLogger } from '../../../rvn-logger/raven.logger';
 
 import { NumberOfEmployeesSnapshotDto } from '@app/shared/data-warehouse';
-import { DealroomCompanyNumberOfEmployeesEntity } from '../entities/dealroom-company-number-of-employees.entity';
+import { DealroomCompanyNumberOfEmployeesDwhEntity } from '../entities/dealroom-company-number-of-employees.dwh.entity';
 
 @Injectable()
 export class NumberOfEmployeesMapper {
@@ -11,7 +11,7 @@ export class NumberOfEmployeesMapper {
   }
 
   public mapMany(
-    entities: DealroomCompanyNumberOfEmployeesEntity[],
+    entities: DealroomCompanyNumberOfEmployeesDwhEntity[],
   ): NumberOfEmployeesSnapshotDto[] {
     if (!entities) return null;
     return entities
@@ -24,7 +24,7 @@ export class NumberOfEmployeesMapper {
   }
 
   public map(
-    entity: DealroomCompanyNumberOfEmployeesEntity,
+    entity: DealroomCompanyNumberOfEmployeesDwhEntity,
   ): NumberOfEmployeesSnapshotDto {
     if (!entity) return null;
     return {
