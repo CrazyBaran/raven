@@ -426,18 +426,33 @@ export class OrganisationService {
       async (tem) => {
         const organisation = new OrganisationEntity();
         organisation.name = organisationDto.name;
-        organisation.domains = organisationDto.domains;
         const savedOrganisation = await tem.save(organisation);
+
+        for (const singleDomain in organisationDto.domains) {
+          const organisationDomain = new OrganisationDomainEntity();
+          organisationDomain.organisation = organisation;
+          organisationDomain.organisationId = organisation.id;
+          organisationDomain.domain = singleDomain;
+          await tem.save(organisationDomain);
+        }
+
+        const organisationEntityReloaded = await tem.findOne(
+          OrganisationEntity,
+          {
+            where: { id: organisation.id },
+            relations: ['organisationDomains'],
+          },
+        );
 
         this.eventEmitter.emit(
           'organisation-created',
-          new OrganisationCreatedEvent(savedOrganisation),
+          new OrganisationCreatedEvent(organisationEntityReloaded),
         );
 
         if (environment.opportunitySync.enabledOnInit) {
           if (organisationstageDto.stage) {
             await this.createOpportunityForOrganisation(
-              savedOrganisation,
+              organisationEntityReloaded,
               organisationstageDto.stage.text,
               tem,
             );
@@ -459,12 +474,27 @@ export class OrganisationService {
         organisation.domains = [company.domain];
         const savedOrganisation = await tem.save(organisation);
 
+        for (const singleDomain in company.domain.split(',')) {
+          const organisationDomain = new OrganisationDomainEntity();
+          organisationDomain.organisation = organisation;
+          organisationDomain.organisationId = organisation.id;
+          organisationDomain.domain = singleDomain;
+          await tem.save(organisationDomain);
+        }
+
+        const organisationEntityReloaded = await tem.findOne(
+          OrganisationEntity,
+          {
+            where: { id: organisation.id },
+            relations: ['organisationDomains'],
+          },
+        );
         this.eventEmitter.emit(
           'organisation-created',
-          new OrganisationCreatedEvent(savedOrganisation),
+          new OrganisationCreatedEvent(organisationEntityReloaded),
         );
 
-        return savedOrganisation;
+        return organisationEntityReloaded;
       },
     );
   }
