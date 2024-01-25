@@ -13,11 +13,11 @@ import { OpportunityEntity } from './opportunity.entity';
 
 export class SimpleArrayTransformer implements ValueTransformer {
   public to(value: string[]): string {
-    return value.join(',');
+    return value?.join(',');
   }
 
   public from(value: string): string[] {
-    return value.split(',');
+    return value?.split(',');
   }
 }
 

@@ -23,44 +23,49 @@ export class AffinityStatusChangedEventHandler {
 
   @OnEvent('affinity-status-changed')
   protected async process(event: AffinityStatusChangedEvent): Promise<void> {
-    const opportunities = await this.opportunityRepository.find({
-      where: {
-        organisation: { domains: Like(`%${event.organisationDomains[0]}%`) },
-      },
-      relations: ['organisation', 'pipelineDefinition'],
-      order: { createdAt: 'DESC' },
-    });
-    if (opportunities.length === 0) {
-      this.logger.debug(
-        `No opportunities found for organisation ${event.organisationDomains[0]}`,
+    try {
+      const opportunities = await this.opportunityRepository.find({
+        where: {
+          organisation: { domains: Like(`%${event.organisationDomains[0]}%`) },
+        },
+        relations: ['organisation', 'pipelineDefinition'],
+        order: { createdAt: 'DESC' },
+      });
+      if (opportunities.length === 0) {
+        this.logger.debug(
+          `No opportunities found for organisation ${event.organisationDomains[0]}`,
+        );
+        return;
+      }
+
+      const opportunity = opportunities[0];
+      const pipelineDefinition = opportunity.pipelineDefinition;
+      if (!pipelineDefinition) {
+        throw new Error(
+          `Cannot find pipeline definition for opportunity ${opportunities[0].id}!`,
+        );
+      }
+
+      const stage = pipelineDefinition.stages.find(
+        (stage) => stage.mappedFrom === event.targetStatusName,
       );
-      return;
+      if (!stage) {
+        throw new Error(
+          `Cannot find stage with mappedFrom ${event.targetStatusName}!`,
+        );
+      }
+
+      opportunity.pipelineStage = stage;
+      opportunity.pipelineStageId = stage.id;
+      await this.opportunityRepository.save(opportunity);
+
+      this.gatewayEventService.emit(`resource-pipelines`, {
+        eventType: 'pipeline-stage-changed',
+        data: { opportunityId: opportunity.id, stageId: stage.id },
+      });
+    } catch (err) {
+      this.logger.error(err);
+      throw err; // TODO remove debug
     }
-
-    const opportunity = opportunities[0];
-    const pipelineDefinition = opportunity.pipelineDefinition;
-    if (!pipelineDefinition) {
-      throw new Error(
-        `Cannot find pipeline definition for opportunity ${opportunities[0].id}!`,
-      );
-    }
-
-    const stage = pipelineDefinition.stages.find(
-      (stage) => stage.mappedFrom === event.targetStatusName,
-    );
-    if (!stage) {
-      throw new Error(
-        `Cannot find stage with mappedFrom ${event.targetStatusName}!`,
-      );
-    }
-
-    opportunity.pipelineStage = stage;
-    opportunity.pipelineStageId = stage.id;
-    await this.opportunityRepository.save(opportunity);
-
-    this.gatewayEventService.emit(`resource-pipelines`, {
-      eventType: 'pipeline-stage-changed',
-      data: { opportunityId: opportunity.id, stageId: stage.id },
-    });
   }
 }
