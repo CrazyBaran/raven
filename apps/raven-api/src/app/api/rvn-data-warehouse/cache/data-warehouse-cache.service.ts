@@ -40,16 +40,16 @@ export class DataWarehouseCacheService {
     return await this.store.client.hlen(DWH_CACHE.COMPANIES);
   }
 
-  public async getPagedCompanies(
-    skip: number = 0,
-    take: number = 500,
-  ): Promise<CompanyDto[]> {
-    const cursor = `${skip}`;
+  public async getPagedCompanies(options?: {
+    skip: number;
+    take: number;
+  }): Promise<CompanyDto[]> {
+    const cursor = `${options?.skip ?? 0}`;
     const [newCursor, fields] = await this.store.client.hscan(
       DWH_CACHE.COMPANIES,
       cursor,
       'COUNT',
-      take,
+      options?.take ?? 500,
     );
 
     const fieldsEven = fields.filter((_, index) => index % 2 === 1);
@@ -83,6 +83,10 @@ export class DataWarehouseCacheService {
       }
     }
     return items;
+  }
+
+  public async getCompanyKeys(): Promise<string[]> {
+    return await this.store.client.hkeys(DWH_CACHE.COMPANIES);
   }
 
   public async getFounders(names: string[]): Promise<FounderDto[]> {

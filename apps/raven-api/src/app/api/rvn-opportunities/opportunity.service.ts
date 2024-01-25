@@ -7,7 +7,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
@@ -246,8 +246,8 @@ export class OpportunityService {
 
   public async findByDomain(domain: string): Promise<PagedOpportunityData> {
     const opportunities = await this.opportunityRepository.find({
-      where: { organisation: { domains: Like(`%${domain}%`) } },
-      relations: ['organisation', 'tag'],
+      where: { organisation: { organisationDomains: { domain: domain } } },
+      relations: ['organisation', 'tag', 'organisation.organisationDomains'],
     });
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 

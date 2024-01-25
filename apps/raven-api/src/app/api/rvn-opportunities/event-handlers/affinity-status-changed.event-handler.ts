@@ -2,7 +2,7 @@ import { AffinityStatusChangedEvent } from '@app/rvns-affinity-integration';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Any, Repository } from 'typeorm';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
 import { GatewayEventService } from '../../rvn-web-sockets/gateway/gateway-event.service';
@@ -25,9 +25,15 @@ export class AffinityStatusChangedEventHandler {
   protected async process(event: AffinityStatusChangedEvent): Promise<void> {
     const opportunities = await this.opportunityRepository.find({
       where: {
-        organisation: { domains: Like(`%${event.organisationDomains[0]}%`) },
+        organisation: {
+          organisationDomains: { domain: Any(event.organisationDomains) },
+        },
       },
-      relations: ['organisation', 'pipelineDefinition'],
+      relations: [
+        'organisation',
+        'pipelineDefinition',
+        'organisation.organisationDomains',
+      ],
       order: { createdAt: 'DESC' },
     });
     if (opportunities.length === 0) {

@@ -1,4 +1,4 @@
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,7 +16,8 @@ export class FindOrganizationByDomainPipe
       return null;
     }
     const organisation = await this.organizationRepository.find({
-      where: { domains: Like(`%${domain}%`) },
+      relations: ['organisationDomains'],
+      where: { organisationDomains: { domain: domain } },
     });
 
     if (organisation.length > 1) {

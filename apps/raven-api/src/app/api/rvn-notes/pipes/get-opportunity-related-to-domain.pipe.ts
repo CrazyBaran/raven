@@ -16,7 +16,8 @@ export class GetOpportunityRelatedToDomainPipe
       return await this.opportunityRepository
         .createQueryBuilder('opportunity')
         .innerJoin('opportunity.organisation', 'organisation')
-        .where(`organisation.domains LIKE :domain`, { domain: `%${domain}%` })
+        .innerJoin('organisation.organisationDomains', 'organisationDomains')
+        .where(`organisationDomains.domain = :domain`, { domain })
         .getMany();
     }
     return null;

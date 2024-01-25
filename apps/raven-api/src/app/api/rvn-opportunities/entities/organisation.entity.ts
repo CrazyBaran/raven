@@ -34,13 +34,6 @@ export class OrganisationEntity implements SharepointEnabledEntity {
   @Column()
   public name: string;
 
-  @Column('nvarchar', {
-    nullable: false,
-    length: 1024,
-    transformer: new SimpleArrayTransformer(),
-  })
-  public domains: string[];
-
   @OneToMany(
     (type) => OpportunityEntity,
     (opportunity) => opportunity.organisation,
@@ -56,9 +49,13 @@ export class OrganisationEntity implements SharepointEnabledEntity {
   )
   public organisationDomains: OrganisationDomainEntity[];
 
+  public domains: string[];
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
+    this.domains = this.organisationDomains?.map((organisationDomain) =>
+      organisationDomain.domain.toLowerCase(),
+    );
   }
 }

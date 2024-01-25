@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { JobPro } from '@taskforcesh/bullmq-pro';
-import { EntityManager, Like, Raw, Repository } from 'typeorm';
+import { Any, EntityManager, In, Raw, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
@@ -22,6 +22,7 @@ import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-defi
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
+import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
 import { OpportunityTeamService } from './opportunity-team.service';
@@ -100,6 +101,10 @@ export class OrganisationService {
       .leftJoinAndSelect(
         'opportunities.pipelineDefinition',
         'pipelineDefinition',
+      )
+      .leftJoinAndSelect(
+        'organisations.organisationDomains',
+        'organisationDomains',
       );
 
     if (options.skip || options.take) {
@@ -201,6 +206,7 @@ export class OrganisationService {
         'opportunities.pipelineStage',
         'opportunities.pipelineDefinition',
         'opportunities.tag',
+        'organisationDomains',
       ],
     });
 
@@ -251,7 +257,8 @@ export class OrganisationService {
 
   public async findByDomain(domain: string): Promise<OrganisationEntity> {
     const organisation = await this.organisationRepository.findOne({
-      where: { domains: Like(`%${domain}%`) },
+      relations: ['organisationDomains'],
+      where: { organisationDomains: { domain } },
     });
 
     return organisation;
@@ -264,12 +271,28 @@ export class OrganisationService {
       async (tem) => {
         const organisation = new OrganisationEntity();
         organisation.name = options.name;
-        organisation.domains = [options.domain];
+
         const organisationEntity = await tem.save(organisation);
+
+        for (const singleDomain in options.domain.split(',')) {
+          const organisationDomain = new OrganisationDomainEntity();
+          organisationDomain.organisation = organisationEntity;
+          organisationDomain.organisationId = organisationEntity.id;
+          organisationDomain.domain = singleDomain;
+          await tem.save(organisationDomain);
+        }
+
+        const organisationEntityReloaded = await tem.findOne(
+          OrganisationEntity,
+          {
+            where: { id: organisationEntity.id },
+            relations: ['organisationDomains'],
+          },
+        );
 
         this.eventEmitter.emit(
           'organisation-created',
-          new OrganisationCreatedEvent(organisationEntity),
+          new OrganisationCreatedEvent(organisationEntityReloaded),
         );
 
         if (options.createOpportunity) {
@@ -277,7 +300,7 @@ export class OrganisationService {
             await this.affinityCacheService.getByDomains([options.domain]);
 
           await this.createOpportunityForOrganisation(
-            organisationEntity,
+            organisationEntityReloaded,
             organizationStageDtos[0].stage?.text || null,
             tem,
           );
@@ -295,7 +318,7 @@ export class OrganisationService {
       organisation.name = options.name;
     }
     if (options.domains) {
-      organisation.domains = options.domains;
+      await this.updateDomains(organisation, options.domains);
     }
     return await this.organisationRepository.save(organisation);
   }
@@ -306,7 +329,9 @@ export class OrganisationService {
 
   public async ensureAllAffinityOrganisationsAsOrganisations(): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll();
-    const existingOrganisations = await this.organisationRepository.find();
+    const existingOrganisations = await this.organisationRepository.find({
+      relations: ['organisationDomains'],
+    });
     const nonExistentAffinityData = this.getNonExistentAffinityData(
       affinityData,
       existingOrganisations,
@@ -326,34 +351,39 @@ export class OrganisationService {
   ): Promise<void> {
     const dataWarehouseCompanyCount =
       await this.dataWarehouseCacheService.getCompanyCount();
+
+    const dataWarehouseCompanyKeys =
+      await this.dataWarehouseCacheService.getCompanyKeys();
     const step = 500;
     for (let i = 0; i < dataWarehouseCompanyCount; i += step) {
+      const pagedKeys = dataWarehouseCompanyKeys.slice(i, i + step);
+
       const dataWarehouseData =
-        await this.dataWarehouseCacheService.getPagedCompanies(i, step);
+        await this.dataWarehouseCacheService.getCompanies(pagedKeys);
 
       const sortedDataWarehouseData = dataWarehouseData.sort((a, b) =>
         a.domain.localeCompare(b.domain),
       );
-      const domainsList = sortedDataWarehouseData
-        .map((company) => `('${company.domain}')`)
-        .join(', ');
 
-      const query = `
-        SELECT DISTINCT *
-        FROM (VALUES ${domainsList}) AS input(Domain)
-        WHERE input.Domain NOT IN (
-            SELECT value
-            FROM dbo.rvn_organisations
-            CROSS APPLY STRING_SPLIT(domains, ',')
-        )
-    `;
+      const domains = sortedDataWarehouseData.map((company) => company.domain);
 
-      const result = await this.organisationRepository.query(query);
-      for (const organisation of result) {
+      const existingOrganisations = await this.organisationRepository.find({
+        relations: ['organisationDomains'],
+        where: { organisationDomains: { domain: In(domains) } },
+      });
+
+      const nonExistentDataWarehouseData = this.getNonExistentDataWarehouseData(
+        sortedDataWarehouseData,
+        existingOrganisations,
+      );
+
+      for (const organisation of nonExistentDataWarehouseData) {
         await this.createFromDataWarehouse(organisation);
       }
 
-      this.logger.log(`Found ${result.length} non-existent organisations`);
+      this.logger.log(
+        `Found ${nonExistentDataWarehouseData.length} non-existent organisations`,
+      );
 
       await job.updateProgress(
         Math.round((i / dataWarehouseCompanyCount) * 100),
@@ -379,8 +409,8 @@ export class OrganisationService {
     existingOrganisations: OrganisationEntity[],
   ): OrganizationStageDto[] {
     return affinityData.filter((affinity) => {
-      return !existingOrganisations.some((opportunity) => {
-        return opportunity.domains.some((domain) => {
+      return !existingOrganisations.some((organisation) => {
+        return organisation.domains.some((domain) => {
           if (affinity?.organizationDto?.domains?.length === 0) return true;
           return affinity.organizationDto.domains.includes(domain);
         });
@@ -453,7 +483,8 @@ export class OrganisationService {
     domains: string[],
   ): Promise<OrganisationEntity | null> {
     return await this.organisationRepository.findOne({
-      where: { domains: Like(`%${domains[0]}%`) },
+      relations: ['organisationDomains'],
+      where: { organisationDomains: { domain: Any(domains) } },
     });
   }
 
@@ -514,5 +545,40 @@ export class OrganisationService {
       },
     });
     return pipelineDefinition;
+  }
+
+  private async updateDomains(
+    organisation: OrganisationEntity,
+    domains: string[],
+  ): Promise<void> {
+    const existingDomains = organisation.domains;
+    const domainsToAdd = domains.filter(
+      (domain) => !existingDomains.includes(domain),
+    );
+    const domainsToRemove = existingDomains.filter(
+      (domain) => !domains.includes(domain),
+    );
+
+    await this.organisationRepository.manager.transaction(async (tem) => {
+      if (domainsToAdd.length > 0) {
+        await tem.insert(
+          OrganisationDomainEntity,
+          domainsToAdd.map((d) => ({
+            domain: d,
+            organisation: organisation,
+          })),
+        );
+      }
+
+      if (domainsToRemove.length > 0) {
+        await tem.delete(
+          OrganisationDomainEntity,
+          domainsToRemove.map((d) => ({
+            domain: d,
+            organisation: organisation,
+          })),
+        );
+      }
+    });
   }
 }
