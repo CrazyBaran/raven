@@ -3,13 +3,13 @@
   class="relative -mb-6 -mr-6 flex h-[calc(100%+24px)] w-[calc(100%+24px)] flex-col gap-4 pb-2"
 >
   <div
-    cdkScrollable
     [class.pb-28]="receiveMode() && board.footers.length > 0"
+    cdkScrollable
     class="relative flex min-h-0 w-full flex-1 gap-4 overflow-x-auto overflow-y-hidden"
   >
     @for (column of board.columns; track column.name; let last = $last) {
       <app-kanban-column
-        class="block min-w-[352px] flex-1 flex-shrink-0"
+        class="block min-w-[328px] flex-1 flex-shrink-0"
         [column]="column"
         (dragStarted)="dragStarted($event)"
         (dragEnded)="dragEnded($event)"
@@ -23,7 +23,7 @@
   <div
     [ngClass]="{
       '-z-10 opacity-0': !receiveMode(),
-      'z-[100] opacity-100': receiveMode()
+      'z-[100] ': receiveMode()
     }"
     class="absolute bottom-0 left-0 flex w-full gap-4 pb-6 pr-6"
   >
@@ -40,7 +40,7 @@
 </div>
 
 <app-drop-confirmation
-  [footerGroup]="confirmDrop()?.footerGroup!"
-  (confirmEvent)="onConfirmDialog()"
   (cancelEvent)="onCloseDialog()"
+  (confirmEvent)="onConfirmDialog()"
+  [footerGroup]="confirmDrop()?.footerGroup!"
 />
