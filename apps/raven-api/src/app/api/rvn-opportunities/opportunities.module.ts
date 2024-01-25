@@ -21,6 +21,7 @@ import { ShareOpportunityEntity } from '../rvn-acl/entities/share-opportunity.en
 import { DataWarehouseModule } from '../rvn-data-warehouse/data-warehouse.module';
 import { FilesModule } from '../rvn-files/files.module';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
+import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
@@ -57,6 +58,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
       TagEntity,
       TemplateEntity,
       ShareOpportunityEntity,
+      OrganisationDomainEntity,
     ]),
     AffinityIntegrationModule,
     EventEmitterModule,
