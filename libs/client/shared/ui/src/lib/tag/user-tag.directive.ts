@@ -52,6 +52,9 @@ export const tagTypeStyleDictionary: Record<TagType, Record<string, string>> = {
   tab: {
     color: '#5a5a5a',
   },
+  version: {
+    color: '#5a5a5a',
+  },
 };
 
 @Pipe({
