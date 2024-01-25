@@ -89,6 +89,7 @@ export class OpportunityService {
     const queryBuilder = this.opportunityRepository
       .createQueryBuilder('opportunity')
       .leftJoinAndSelect('opportunity.organisation', 'organisation')
+      .leftJoinAndSelect('organisation.organisationDomains', 'od')
       .leftJoinAndSelect('opportunity.pipelineStage', 'pipelineStage')
       .leftJoinAndSelect('opportunity.tag', 'tag')
       .leftJoinAndSelect('opportunity.files', 'files')
@@ -197,6 +198,7 @@ export class OpportunityService {
       where: { id },
       relations: [
         'organisation',
+        'organisation.organisationDomains',
         'pipelineDefinition',
         'pipelineStage',
         'tag',

@@ -26,11 +26,16 @@ export class OrganisationTagSyncService implements OnModuleInit {
   private async ensureTagsForOrganisations(): Promise<void> {
     const organisationsWithoutTags = await this.organisationRepository
       .createQueryBuilder('organisation')
+      .leftJoinAndSelect(
+        'organisation.organisationDomains',
+        'organisationDomains',
+      )
       .where((qb) => {
         const subQuery = qb
           .subQuery()
           .select('1')
           .from(TagEntity, 'tag')
+
           .where('tag.organisation_id = organisation.id')
           .getQuery();
         return 'NOT EXISTS ' + subQuery;
