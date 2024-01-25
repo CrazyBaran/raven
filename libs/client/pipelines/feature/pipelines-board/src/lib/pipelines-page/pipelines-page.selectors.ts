@@ -194,7 +194,7 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
         .value();
 
       const columns = _.chain(stages)
-        .filter(({ configuration }) => !configuration)
+        .filter(({ configuration, isHidden }) => !configuration && !isHidden)
         .orderBy('order')
         .map((stage) => ({
           ...stage,

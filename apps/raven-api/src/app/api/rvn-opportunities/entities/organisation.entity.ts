@@ -12,12 +12,15 @@ import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-e
 import { OpportunityEntity } from './opportunity.entity';
 
 export class SimpleArrayTransformer implements ValueTransformer {
-  public to(value: string[]): string {
-    return value.join(',');
+  public to(value: string[] | string): string {
+    if ((value as string[])?.join) {
+      return (value as string[])?.join(',');
+    }
+    return value as string;
   }
 
   public from(value: string): string[] {
-    return value.split(',');
+    return value?.split(',');
   }
 }
 

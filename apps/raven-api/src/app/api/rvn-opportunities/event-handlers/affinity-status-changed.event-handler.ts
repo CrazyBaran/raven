@@ -36,7 +36,6 @@ export class AffinityStatusChangedEventHandler {
       );
       return;
     }
-
     const opportunity = opportunities[0];
     const pipelineDefinition = opportunity.pipelineDefinition;
     if (!pipelineDefinition) {
