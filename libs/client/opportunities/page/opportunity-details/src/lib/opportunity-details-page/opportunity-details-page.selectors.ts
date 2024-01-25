@@ -5,6 +5,8 @@ import { organisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
+import { ItemDisabledFn } from '@progress/kendo-angular-dropdowns';
+import { ItemArgs } from '@progress/kendo-angular-dropdowns/common/disabled-items/item-disabled';
 
 const OPPORTUNITY_DETAILS_ROUTES = [
   {
@@ -44,10 +46,17 @@ export const selectOpportunityPipelines = createSelector(
   opportunitiesQuery.selectHasPermissionForCurrentOpportunity,
   opportunitiesQuery.selectIsLoadingUpdateStage,
   (stages, isLoading, opportunity, hasPermission, isLoadingUpdateState) => ({
-    data: stages,
+    data: stages.filter(({ isHidden }) => !isHidden),
     value: opportunity?.stage.id,
     disabled: isLoading || isLoadingUpdateState, // todo: add permission check
     isLoading: isLoading || isLoadingUpdateState,
+    disabledItem: ((item: ItemArgs): boolean =>
+      Boolean(
+        item.dataItem.configuration &&
+          !item.dataItem.configuration.droppableFrom.includes(
+            opportunity?.stage.id ?? '',
+          ),
+      )) as ItemDisabledFn,
   }),
 );
 

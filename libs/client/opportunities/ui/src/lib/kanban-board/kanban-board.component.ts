@@ -32,8 +32,8 @@ export interface KanbanFooterGroup {
   name: string;
   id: string;
   theme: 'warning' | 'success';
-  reminder: boolean;
-  removeSwitch: boolean;
+  reminder?: boolean;
+  removeSwitch?: boolean;
   droppableFrom: string[];
 }
 
