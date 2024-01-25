@@ -6,6 +6,7 @@ import { OrganisationEntity } from '../../rvn-opportunities/entities/organisatio
 import {
   OrganisationTagEntity,
   TagEntity,
+  VersionTagEntity,
 } from '../../rvn-tags/entities/tag.entity';
 
 @Injectable()
@@ -22,9 +23,13 @@ export class FindTagByOgranisationPipe
     if (!organisationEntity) {
       return null;
     }
-    const tag = await this.tagRepository.find({
+    const tags = await this.tagRepository.find({
       where: { organisationId: organisationEntity.id },
     });
+
+    const tag = tags.filter(
+      (tag) => (tag as VersionTagEntity).opportunityTagId === null,
+    );
 
     if (tag.length > 1) {
       throw new Error(
