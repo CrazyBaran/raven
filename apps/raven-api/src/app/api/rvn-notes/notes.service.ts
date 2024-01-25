@@ -336,9 +336,15 @@ export class NotesService {
       );
     }
 
-    const complexTagsForOpportunity = await complexTagsQb
+    const allComplexTagsForOpportunity = await complexTagsQb
       .leftJoinAndSelect('complexTag.tags', 'tags')
       .getMany();
+
+    const complexTagsForOpportunity = opportunity.versionTag
+      ? allComplexTagsForOpportunity
+      : allComplexTagsForOpportunity.filter(
+          (ct) => !ct.tags.some((t) => t.type === 'version'),
+        );
 
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
