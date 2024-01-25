@@ -7,6 +7,7 @@ export const tagTypes = [
   'investor',
   'business-model',
   'tab',
+  'version',
 ] as const;
 
 export type TagType = (typeof tagTypes)[number];
@@ -20,4 +21,5 @@ export enum TagTypeEnum {
   Investor = 'investor',
   BusinessModel = 'business-model',
   Tab = 'tab',
+  Version = 'version',
 }

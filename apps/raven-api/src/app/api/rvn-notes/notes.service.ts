@@ -289,7 +289,7 @@ export class NotesService {
   ): Promise<(WorkflowNoteData | NoteWithRelationsData)[]> {
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
-      relations: ['organisation', 'tag'],
+      relations: ['organisation', 'tag', 'versionTag'],
     });
     if (!opportunity) {
       throw new BadRequestException(
@@ -306,7 +306,7 @@ export class NotesService {
       );
     }
 
-    const complexTagsForOpportunity = await this.complexTagRepository
+    const complexTagsQb = this.complexTagRepository
       .createQueryBuilder('complexTag')
       .innerJoin(
         'complexTag.tags',
@@ -323,8 +323,28 @@ export class NotesService {
         {
           organisationComplexTagId: organisationTag.id,
         },
-      )
+      );
+
+    if (opportunity.versionTag) {
+      complexTagsQb.innerJoin(
+        'complexTag.tags',
+        'versionComplexTag',
+        'versionComplexTag.id = :versionComplexTagId',
+        {
+          versionComplexTagId: opportunity.versionTag.id,
+        },
+      );
+    }
+
+    const allComplexTagsForOpportunity = await complexTagsQb
+      .leftJoinAndSelect('complexTag.tags', 'tags')
       .getMany();
+
+    const complexTagsForOpportunity = opportunity.versionTag
+      ? allComplexTagsForOpportunity
+      : allComplexTagsForOpportunity.filter(
+          (ct) => !ct.tags.some((t) => t.type === 'version'),
+        );
 
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
@@ -1007,12 +1027,17 @@ export class NotesService {
   private getComplexNoteTags(
     companyOpportunityTags?: CompanyOpportunityTag[],
   ): ComplexTagEntity[] {
+    console.log({ companyOpportunityTags });
     return companyOpportunityTags?.map((companyOpportunityTag) => {
       const complexTag = new ComplexTagEntity();
-      complexTag.tags = [
+      const tags = [
         companyOpportunityTag.companyTag,
         companyOpportunityTag.opportunityTag,
       ];
+      if (companyOpportunityTag.versionTag) {
+        tags.push(companyOpportunityTag.versionTag);
+      }
+      complexTag.tags = tags;
       return complexTag;
     });
   }

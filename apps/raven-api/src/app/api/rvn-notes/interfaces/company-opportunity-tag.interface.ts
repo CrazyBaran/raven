@@ -6,4 +6,5 @@ import {
 export interface CompanyOpportunityTag {
   companyTag: OrganisationTagEntity;
   opportunityTag: TagEntity;
+  versionTag?: TagEntity;
 }

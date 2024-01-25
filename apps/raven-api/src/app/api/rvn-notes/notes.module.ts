@@ -9,6 +9,7 @@ import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
 import {
   OrganisationTagEntity,
   TagEntity,
+  VersionTagEntity,
 } from '../rvn-tags/entities/tag.entity';
 import { TeamEntity } from '../rvn-teams/entities/team.entity';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
@@ -35,6 +36,7 @@ import { NotesService } from './notes.service';
       TemplateEntity,
       TeamEntity,
       ComplexTagEntity,
+      VersionTagEntity,
     ]),
     EventEmitterModule,
     StorageAccountModule,
