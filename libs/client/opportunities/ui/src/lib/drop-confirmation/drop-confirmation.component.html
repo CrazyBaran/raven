@@ -4,7 +4,9 @@
     (close)="onCancelDialog()"
     [themeColor]="footerGroup.theme === 'success' ? 'primary' : 'light'"
   >
-    <kendo-dialog-titlebar> Update status to Passed ? </kendo-dialog-titlebar>
+    <kendo-dialog-titlebar>
+      Update status to {{ footerGroup.name }} ?
+    </kendo-dialog-titlebar>
     <div class="flex flex-col gap-10 text-center">
       <p>
         This will update the status of the opportunity to

@@ -1,13 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { trigger } from '@angular/animations';
 import { JsonPipe, NgStyle } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NotesActions } from '@app/client/opportunities/api-notes';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import {
   AffinityUrlButtonComponent,
+  DropConfirmationComponent,
+  KanbanFooterGroup,
   StatusIndicatorComponent,
 } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
@@ -38,6 +46,8 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     FadeInOutDirective,
     DropDownsModule,
     AffinityUrlButtonComponent,
+    DropConfirmationComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
@@ -50,6 +60,9 @@ export class OpportunityDetailsPageComponent {
   protected actions = inject(Actions);
 
   protected vm = this.store.selectSignal(selectOpportunityDetailViewModel);
+
+  protected footerGroup = signal<KanbanFooterGroup | null>(null);
+  protected pipelineStageFormControl = new FormControl<string | null>(null);
 
   public constructor() {
     const opportunityId = this.vm().opportunityId;
@@ -94,21 +107,39 @@ export class OpportunityDetailsPageComponent {
       });
   }
 
-  public handleClosePreview(): void {
-    this.router.navigate([], {
-      queryParams: {
-        noteId: null,
-      },
-      queryParamsHandling: 'merge',
-    });
+  public onStageChange(stageId: string): void {
+    const stage = this.vm().lines.data.find((s) => s.id === stageId);
+    if (stage && stage.configuration) {
+      this.footerGroup.set({
+        id: stageId,
+        name: stage.displayName,
+        theme: stage.configuration.color as 'success' | 'warning',
+        droppableFrom: stage.configuration.droppableFrom,
+      });
+    } else {
+      this.store.dispatch(
+        OpportunitiesActions.changeOpportunityPipelineStage({
+          id: this.vm().opportunityId!,
+          pipelineStageId: stageId,
+        }),
+      );
+    }
   }
 
-  public onStageChange(stageId: string): void {
+  protected onCloseDialog(): void {
+    this.pipelineStageFormControl.setValue(this.vm().lines.value ?? null, {
+      emitEvent: false,
+    });
+    this.footerGroup.set(null);
+  }
+
+  protected onConfirmDialog(): void {
     this.store.dispatch(
       OpportunitiesActions.changeOpportunityPipelineStage({
         id: this.vm().opportunityId!,
-        pipelineStageId: stageId,
+        pipelineStageId: this.footerGroup()!.id,
       }),
     );
+    this.footerGroup.set(null);
   }
 }

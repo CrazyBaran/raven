@@ -40,6 +40,8 @@
       (valueChange)="onStageChange($event)"
       [data]="vm().lines.data"
       [disabled]="vm().lines.disabled"
+      [formControl]="pipelineStageFormControl"
+      [itemDisabled]="vm().lines.disabledItem"
       [loading]="vm().lines.isLoading"
       [valuePrimitive]="true"
       [value]="vm().lines.value"
@@ -120,3 +122,9 @@
     </ng-container>
   </div>
 </app-page-template>
+
+<app-drop-confirmation
+  (cancelEvent)="onCloseDialog()"
+  (confirmEvent)="onConfirmDialog()"
+  [footerGroup]="footerGroup()"
+/>
