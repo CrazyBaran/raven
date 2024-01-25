@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
 import { OpportunityEntity } from './opportunity.entity';
+import { OrganisationDomainEntity } from './organisation-domain.entity';
 
 export class SimpleArrayTransformer implements ValueTransformer {
   public to(value: string[] | string): string {
@@ -48,6 +49,12 @@ export class OrganisationEntity implements SharepointEnabledEntity {
 
   @Column({ nullable: true })
   public sharepointDirectoryId: string | null;
+
+  @OneToMany(
+    (type) => OrganisationDomainEntity,
+    (organisationDomain) => organisationDomain.organisation,
+  )
+  public organisationDomains: OrganisationDomainEntity[];
 
   @AfterInsert()
   @AfterLoad()

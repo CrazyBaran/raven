@@ -334,27 +334,26 @@ export class OrganisationService {
       const sortedDataWarehouseData = dataWarehouseData.sort((a, b) =>
         a.domain.localeCompare(b.domain),
       );
+      const domainsList = sortedDataWarehouseData
+        .map((company) => `('${company.domain}')`)
+        .join(', ');
 
-      const queryBuilder =
-        this.organisationRepository.createQueryBuilder('organisations');
-      queryBuilder.where('organisations.domains IN (:...domains)', {
-        domains: sortedDataWarehouseData.map((company) => company.domain),
-      });
-      queryBuilder.orderBy('organisations.domains', 'ASC');
-      const existingOrganisations = await queryBuilder.getMany();
+      const query = `
+        SELECT DISTINCT *
+        FROM (VALUES ${domainsList}) AS input(Domain)
+        WHERE input.Domain NOT IN (
+            SELECT value
+            FROM dbo.rvn_organisations
+            CROSS APPLY STRING_SPLIT(domains, ',')
+        )
+    `;
 
-      const nonExistentDataWarehouseData = this.getNonExistentDataWarehouseData(
-        sortedDataWarehouseData,
-        existingOrganisations,
-      );
-
-      for (const organisation of nonExistentDataWarehouseData) {
+      const result = await this.organisationRepository.query(query);
+      for (const organisation of result) {
         await this.createFromDataWarehouse(organisation);
       }
 
-      this.logger.log(
-        `Found ${nonExistentDataWarehouseData.length} non-existent organisations`,
-      );
+      this.logger.log(`Found ${result.length} non-existent organisations`);
 
       await job.updateProgress(
         Math.round((i / dataWarehouseCompanyCount) * 100),
