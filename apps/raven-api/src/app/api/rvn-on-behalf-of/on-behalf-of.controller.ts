@@ -195,18 +195,45 @@ export class OnBehalfOfController {
       folder: {},
       '@microsoft.graph.conflictBehavior': 'fail',
     };
-    const { siteId, driveId, rootDirectoryId } = environment.sharePoint;
-    const res = await this.graphClient
-      .api(
-        `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${rootDirectoryId}/children`,
-      )
-      .post(driveItem);
+    const { siteId, driveId, rootDirectoryId, rootDirectory } =
+      environment.sharePoint;
 
-    const directoryId = res.id;
+    let directoryId = await this.getDirectoryIdForName(name);
+
+    if (!directoryId) {
+      const res = await this.graphClient
+        .api(
+          `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${rootDirectoryId}/children`,
+        )
+        .post(driveItem);
+
+      directoryId = res.id;
+    }
 
     organisation.sharepointDirectoryId = directoryId;
     delete organisation.organisationDomains; // this is to avoid messing with relations
     await this.organisationRepository.save(organisation);
     return directoryId;
+  }
+
+  // TODO abstract away to service - it's duplicated from OpportunityCreatedEventHandler
+  private async getDirectoryIdForName(name: string): Promise<string | null> {
+    const { siteId, driveId, rootDirectory } = environment.sharePoint;
+    try {
+      const response = await this.graphClient
+        .api(
+          `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${rootDirectory}/${name}`,
+        )
+        .get();
+      return response.id;
+    } catch (e) {
+      if (e.statusCode === 404) {
+        return null;
+      }
+      this.logger.log(
+        `Could not fetch directory information for name: ${name}: ${e}`,
+      );
+      throw e;
+    }
   }
 }
