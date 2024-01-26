@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { JobPro } from '@taskforcesh/bullmq-pro';
-import { Any, EntityManager, In, Repository } from 'typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
@@ -510,7 +510,7 @@ export class OrganisationService {
   ): Promise<OrganisationEntity | null> {
     return await this.organisationRepository.findOne({
       relations: ['organisationDomains'],
-      where: { organisationDomains: { domain: Any(domains) } },
+      where: { organisationDomains: { domain: In(domains) } },
     });
   }
 
