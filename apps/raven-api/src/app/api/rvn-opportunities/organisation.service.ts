@@ -428,7 +428,7 @@ export class OrganisationService {
         organisation.name = organisationDto.name;
         const savedOrganisation = await tem.save(organisation);
 
-        for (const singleDomain in organisationDto.domains) {
+        for (const singleDomain of organisationDto.domains) {
           const organisationDomain = new OrganisationDomainEntity();
           organisationDomain.organisation = organisation;
           organisationDomain.organisationId = organisation.id;
@@ -471,10 +471,10 @@ export class OrganisationService {
       async (tem) => {
         const organisation = new OrganisationEntity();
         organisation.name = company.name;
-        organisation.domains = [company.domain];
         const savedOrganisation = await tem.save(organisation);
 
-        for (const singleDomain in company.domain.split(',')) {
+        const domains = company.domain.split(',');
+        for (const singleDomain of domains) {
           const organisationDomain = new OrganisationDomainEntity();
           organisationDomain.organisation = organisation;
           organisationDomain.organisationId = organisation.id;
