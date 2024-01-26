@@ -112,13 +112,13 @@ export class OpportunityService {
       const searchString = `%${options.query.toLowerCase()}%`;
       const organisationSubQuery = this.opportunityRepository.manager
         .createQueryBuilder(OrganisationEntity, 'subOrganisation')
-        .select('subOrganisation.id')
-        .where(
-          '(CAST(subOrganisation.name as NVARCHAR(255))) LIKE :searchString',
+        .leftJoinAndSelect(
+          'subOrganisation.organisationDomains',
+          'organisationDomains',
         )
-        .orWhere(
-          '(CAST(subOrganisation.domains as NVARCHAR(1024))) LIKE :searchString',
-        );
+        .select('subOrganisation.id', 'organisationDomains.domain')
+        .where('LOWER(subOrganisation.name) LIKE :searchString')
+        .orWhere('LOWER(organisationDomains.domain) LIKE :searchString');
 
       queryBuilder
         .andWhere(
