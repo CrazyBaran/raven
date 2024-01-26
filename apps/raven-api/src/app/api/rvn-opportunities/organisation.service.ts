@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { JobPro } from '@taskforcesh/bullmq-pro';
-import { Any, EntityManager, In, Raw, Repository } from 'typeorm';
+import { Any, EntityManager, In, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
@@ -70,27 +70,6 @@ export class OrganisationService {
   ): Promise<PagedOrganisationData> {
     const queryBuilder =
       this.organisationRepository.createQueryBuilder('organisations');
-    if (options.query) {
-      const searchString = `%${options.query.toLowerCase()}%`;
-      queryBuilder.where([
-        {
-          name: Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(255))) LIKE :searchString`,
-            {
-              searchString,
-            },
-          ),
-        },
-        {
-          domains: Raw(
-            (alias) => `(CAST(${alias} as NVARCHAR(255))) LIKE :searchString`,
-            {
-              searchString,
-            },
-          ),
-        },
-      ]);
-    }
 
     queryBuilder
       .leftJoinAndSelect('organisations.opportunities', 'opportunities')
@@ -106,6 +85,20 @@ export class OrganisationService {
         'organisations.organisationDomains',
         'organisationDomains',
       );
+
+    const searchString = options.query
+      ? `%${options.query.toLowerCase()}%`
+      : undefined;
+
+    if (searchString) {
+      queryBuilder
+        .where(`LOWER(organisations.name) LIKE :searchString`, {
+          searchString,
+        })
+        .orWhere(`LOWER(organisationDomains.domain) LIKE :searchString`, {
+          searchString,
+        });
+    }
 
     if (options.skip || options.take) {
       queryBuilder.skip(options.skip ?? 0).take(options.take ?? 10);
@@ -154,6 +147,8 @@ export class OrganisationService {
 
     const [organisations, count] = await queryBuilder.getManyAndCount();
 
+    console.log({ organisations, count });
+
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
     const teamsForOpportunities =
@@ -187,10 +182,11 @@ export class OrganisationService {
         },
       );
 
-    const enrichedData =
-      await this.dataWarehouseEnricher?.enrichOrganisations(
-        affinityEnrichedData,
-      );
+    const enrichedData = this.dataWarehouseEnricher
+      ? await this.dataWarehouseEnricher?.enrichOrganisations(
+          affinityEnrichedData,
+        )
+      : affinityEnrichedData;
 
     return {
       items: enrichedData,
