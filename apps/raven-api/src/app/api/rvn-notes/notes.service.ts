@@ -1056,8 +1056,8 @@ export class NotesService {
   private async getComplexNoteTags(
     companyOpportunityTags?: CompanyOpportunityTag[],
   ): Promise<ComplexTagEntity[]> {
-    let complexTagsToReturn = [];
-    for (let complexTag of companyOpportunityTags) {
+    const complexTagsToReturn = [];
+    for (const complexTag of companyOpportunityTags) {
       const ids = [complexTag.companyTag.id, complexTag.opportunityTag.id];
       if (complexTag.versionTag) {
         ids.push(complexTag.versionTag.id);
