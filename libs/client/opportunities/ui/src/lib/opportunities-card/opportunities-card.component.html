@@ -1,11 +1,13 @@
 <div
   class="border-component-border group flex cursor-pointer flex-col rounded-lg bg-white p-4 hover:bg-opacity-80"
+  data-testid="opportunity-card"
 >
   <div class="text-base-text mb-7 flex justify-between gap-2 overflow-hidden">
     <div
       [routerLink]="['/companies', model.organisation.id]"
       class="hover:text-primary-600 flex-1 grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
       title="View Company Profile"
+      data-testid="company-profile-link"
     >
       <h1 class="mb-1 flex items-center gap-2 truncate text-lg">
         {{ model.organisation.name }}
@@ -18,6 +20,7 @@
       <i
         class="fa-regular fa-buildings group-hover:hidden"
         style="font-size: 27px"
+        data-testid="open-details-icon"
       ></i>
       <div class="hidden group-hover:block">
         <kendo-button
@@ -29,6 +32,7 @@
           ]"
           fillMode="outline"
           themeColor="primary"
+          data-testid="open-details-button"
         >
           Open Details
         </kendo-button>
