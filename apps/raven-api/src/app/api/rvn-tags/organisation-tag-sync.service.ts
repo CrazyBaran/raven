@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { TagTypeEnum } from '@app/rvns-tags';
 import { Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
