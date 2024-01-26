@@ -127,12 +127,7 @@ export class VersionTagEntity extends TagEntity {
   @RelationId((t: OrganisationTagEntity) => t.organisation)
   public organisationId: string;
 
-  @ManyToOne(() => TagEntity)
-  @JoinColumn({ name: 'opportunity_tag_id' })
-  public opportunityTag: TagEntity;
-
   @Column()
-  @RelationId((t: VersionTagEntity) => t.opportunityTag)
   public opportunityTagId: string;
 
   @AfterInsert()

@@ -287,6 +287,7 @@ export class NotesService {
     type: TemplateTypeEnum,
     tabId: string,
   ): Promise<(WorkflowNoteData | NoteWithRelationsData)[]> {
+    let s = Date.now();
     const opportunity = await this.opportunityRepository.findOne({
       where: { id: opportunityId },
       relations: ['organisation', 'tag', 'versionTag'],
@@ -296,7 +297,9 @@ export class NotesService {
         `Opportunity with id ${opportunityId} not found`,
       );
     }
+    this.logger.debug('get opportunity took: ', new Date().getTime() - s, 'ms');
 
+    s = Date.now();
     const organisationTag = await this.organisationTagRepository.findOne({
       where: { organisationId: opportunity.organisation.id },
     });
@@ -305,7 +308,13 @@ export class NotesService {
         `Organisation tag for opportunity with id ${opportunityId} not found`,
       );
     }
+    this.logger.debug(
+      'get organisation tag took: ',
+      new Date().getTime() - s,
+      'ms',
+    );
 
+    s = Date.now();
     const complexTagsQb = this.complexTagRepository
       .createQueryBuilder('complexTag')
       .innerJoin(
@@ -340,6 +349,12 @@ export class NotesService {
       .leftJoinAndSelect('complexTag.tags', 'tags')
       .getMany();
 
+    this.logger.debug(
+      'get complex tags for opportunity took: ',
+      new Date().getTime() - s,
+      'ms',
+    );
+
     const complexTagsForOpportunity = opportunity.versionTag
       ? allComplexTagsForOpportunity
       : allComplexTagsForOpportunity.filter(
@@ -351,6 +366,12 @@ export class NotesService {
       .select('MAX(note_sub.version)', 'maxVersion')
       .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
 
+    console.log({
+      complexTagsForOpportunity,
+      l: complexTagsForOpportunity.length,
+    });
+
+    s = Date.now();
     const qb = this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.createdBy', 'createdBy')
@@ -405,6 +426,12 @@ export class NotesService {
       .andWhere('template.type = :type', { type: TemplateTypeEnum.Note });
 
     const relatedNotes = await qb.getMany();
+
+    this.logger.debug(
+      'get related notes took: ',
+      new Date().getTime() - s,
+      'ms',
+    );
 
     if (type === TemplateTypeEnum.Note) {
       return relatedNotes
@@ -595,7 +622,9 @@ export class NotesService {
       note.rootVersionId = options.rootVersionId;
     }
     note.tags = options.tags;
-    note.complexTags = this.getComplexNoteTags(options.companyOpportunityTags);
+    note.complexTags = await this.getComplexNoteTags(
+      options.companyOpportunityTags,
+    );
     note.createdBy = options.userEntity;
     note.updatedBy = options.userEntity;
     note.noteFieldGroups = [noteFieldGroup];
@@ -654,7 +683,7 @@ export class NotesService {
       newNoteVersion.rootVersionId = noteEntity.rootVersionId;
       newNoteVersion.version = latestVersion.version + 1;
       newNoteVersion.tags = options.tags;
-      newNoteVersion.complexTags = this.getComplexNoteTags(
+      newNoteVersion.complexTags = await this.getComplexNoteTags(
         options.companyOpportunityTags,
       );
       newNoteVersion.templateId = noteEntity.templateId;
@@ -923,7 +952,7 @@ export class NotesService {
     note.name = name;
     note.version = version;
     note.tags = tags;
-    note.complexTags = this.getComplexNoteTags(companyOpportunityTags);
+    note.complexTags = await this.getComplexNoteTags(companyOpportunityTags);
     note.template = templateEntity;
     note.createdBy = originalCreator ? originalCreator : userEntity;
     note.updatedBy = userEntity;
@@ -1024,22 +1053,39 @@ export class NotesService {
     return fieldUpdate ? fieldUpdate.value : defaultValue;
   }
 
-  private getComplexNoteTags(
+  private async getComplexNoteTags(
     companyOpportunityTags?: CompanyOpportunityTag[],
-  ): ComplexTagEntity[] {
-    console.log({ companyOpportunityTags });
-    return companyOpportunityTags?.map((companyOpportunityTag) => {
-      const complexTag = new ComplexTagEntity();
-      const tags = [
-        companyOpportunityTag.companyTag,
-        companyOpportunityTag.opportunityTag,
-      ];
-      if (companyOpportunityTag.versionTag) {
-        tags.push(companyOpportunityTag.versionTag);
+  ): Promise<ComplexTagEntity[]> {
+    let complexTagsToReturn = [];
+    for (let complexTag of companyOpportunityTags) {
+      const ids = [complexTag.companyTag.id, complexTag.opportunityTag.id];
+      if (complexTag.versionTag) {
+        ids.push(complexTag.versionTag.id);
       }
-      complexTag.tags = tags;
-      return complexTag;
-    });
+      const existingComplexTags = await this.complexTagRepository.find({
+        where: { tags: { id: In(ids) } },
+        relations: ['tags'],
+      });
+      const filteredTags = existingComplexTags.filter(
+        (ct) =>
+          ct.tags.length === ids.length &&
+          ct.tags.every((t) => ids.includes(t.id)),
+      );
+      console.log({ existingComplexTags, filteredTags, ids });
+      if (filteredTags.length > 0) {
+        complexTagsToReturn.push(filteredTags[0]);
+        console.log('EXISTING TAG FOUBND!!!!!!!! good');
+      } else {
+        const newComplexTag = new ComplexTagEntity();
+        newComplexTag.tags = [complexTag.companyTag, complexTag.opportunityTag];
+        if (complexTag.versionTag) {
+          newComplexTag.tags.push(complexTag.versionTag);
+        }
+        complexTagsToReturn.push(newComplexTag);
+      }
+    }
+
+    return complexTagsToReturn;
   }
 
   private transformNotesToNoteWithRelatedData(
