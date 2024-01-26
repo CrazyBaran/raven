@@ -8,7 +8,6 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
-import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -128,12 +127,6 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(
-      TagsActions.getTagsByTypesIfNotLoaded({
-        tagTypes: ['opportunity', 'company'],
-      }),
-    );
-
     if (this.vmSignal().organisationId) {
       this.opportunityForm.controls.organisationId.setValue(
         this.vmSignal().organisationId!,

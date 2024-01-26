@@ -24,6 +24,7 @@ import {
   ClickOutsideDirective,
   ControlValueAccessor,
 } from '@app/client/shared/util';
+import { TagsService } from '@app/client/tags/data-access';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
@@ -32,10 +33,12 @@ import { isEqual } from 'lodash';
 import { unique } from 'ng-packagr/lib/utils/array';
 import {
   combineLatest,
+  debounceTime,
   distinctUntilChanged,
   map,
   Observable,
   startWith,
+  switchMap,
 } from 'rxjs';
 import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
 
@@ -83,6 +86,8 @@ export type TagDropdownValue =
 export class TagDropdownComponent extends ControlValueAccessor<
   TagDropdownValue[]
 > {
+  protected tagService = inject(TagsService);
+
   protected value: WritableSignal<TagDropdownValue[]> = signal([]);
   protected value$ = toObservable(this.value);
 
@@ -124,10 +129,23 @@ export class TagDropdownComponent extends ControlValueAccessor<
   );
   protected opportunityTags$ = toObservable(this.oportunityTags);
 
-  protected companyTags = computed(() =>
-    this.tagsSignal().filter((item) => item.type === 'company'),
+  protected filter$ = toObservable(this.filterValue);
+  protected companyTags$ = this.filter$.pipe(
+    debounceTime(250),
+    distinctUntilChanged(),
+    switchMap((filter) =>
+      this.tagService.getTags({ type: 'company', query: filter, take: 50 }),
+    ),
+    map(
+      (response): DropdownTag[] =>
+        response.data?.map((item) => ({
+          ...item,
+          type: 'company',
+        })) ?? [],
+    ),
   );
 
+  protected companyTags = toSignal(this.companyTags$);
   protected hasChildren = (dataItem: object): boolean =>
     'type' in dataItem && dataItem.type === 'company_root';
 
@@ -171,15 +189,10 @@ export class TagDropdownComponent extends ControlValueAccessor<
     const type = this.type();
 
     if (type === 'company') {
-      return this.companyTags()
-        .filter((item) =>
-          item.name.toLowerCase().includes(this.filterValue().toLowerCase()),
-        )
-        .slice(0, 15)
-        .map((item) => ({
-          ...item,
-          type: 'company_root',
-        }));
+      return (this.companyTags() ?? []).map((item) => ({
+        ...item,
+        type: 'company_root',
+      }));
     }
 
     return this.tagsSignal().filter((item) => {
