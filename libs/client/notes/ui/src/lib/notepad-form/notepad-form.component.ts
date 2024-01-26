@@ -304,10 +304,11 @@ export class NotepadFormComponent
   protected dialogService = inject(DialogService);
 
   public ngOnInit(): void {
-    this.templateFacade.getTemplatesIfNotLoaded();
-    if (!this.tagFacade.loaded()) {
-      this.tagFacade.init();
-    }
+    this.store.dispatch(
+      TagsActions.getTagsByTypesIfNotLoaded({
+        tagTypes: ['opportunity', 'industry', 'investor', 'business-model'],
+      }),
+    );
   }
 
   public openTagDialog($event: { type: string; search: string }): void {
