@@ -40,16 +40,26 @@ export class TagsController {
   @ApiQuery({ name: 'type', enum: TagTypeEnum, required: false })
   @ApiQuery({ name: 'query', type: String, required: false })
   @ApiQuery({ name: 'organisationId', type: String, required: false })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
   @Get()
   public async getAllTags(
     @Query('type') type?: TagTypeEnum | null,
     @Query('query') query?: string,
     @Query('organisationId') organisationId?: string,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
   ): Promise<TagData[]> {
     return await Promise.all(
-      (await this.tagsService.getAllTags(type, query, organisationId)).map(
-        (tag) => this.tagsService.tagEntityToTagData(tag),
-      ),
+      (
+        await this.tagsService.getAllTags(
+          type,
+          query,
+          organisationId,
+          skip,
+          take,
+        )
+      ).map((tag) => this.tagsService.tagEntityToTagData(tag)),
     );
   }
 

@@ -44,17 +44,17 @@ export class OrganisationTagSyncService implements OnModuleInit {
     this.logger.log(
       `Found ${organisationsWithoutTags.length} organisations without tags`,
     );
-    // if (organisationsWithoutTags.length > 0) {
-    //   await this.tagsRepository.manager.transaction(async (tem) => {
-    //     for (const organisation of organisationsWithoutTags) {
-    //       const tag = new OrganisationTagEntity();
-    //       tag.name = `${organisation.name} (${organisation.domains[0]})`;
-    //       tag.type = TagTypeEnum.Company;
-    //       tag.organisationId = organisation.id;
-    //       await tem.save(tag);
-    //     }
-    //   });
-    // } todo disbaled for now
+    if (organisationsWithoutTags.length > 0) {
+      await this.tagsRepository.manager.transaction(async (tem) => {
+        for (const organisation of organisationsWithoutTags) {
+          const tag = new OrganisationTagEntity();
+          tag.name = `${organisation.name} (${organisation.domains[0]})`;
+          tag.type = TagTypeEnum.Company;
+          tag.organisationId = organisation.id;
+          await tem.save(tag);
+        }
+      });
+    }
     this.logger.log(
       `${organisationsWithoutTags.length} organisation tags created`,
     );

@@ -32,6 +32,8 @@ export class TagsService {
     type: TagTypeEnum | null,
     query: string,
     organisationId?: string,
+    skip?: number,
+    take?: number,
   ): Promise<TagEntity[]> {
     const where = type ? { type } : {};
     if (query) {
@@ -40,7 +42,11 @@ export class TagsService {
     if (organisationId) {
       where['organisationId'] = organisationId;
     }
-    return this.tagsRepository.find({ where });
+    return await this.tagsRepository.find({
+      where,
+      skip: skip || 0,
+      take: take || 0,
+    });
   }
 
   public async createTag(options: CreateTagOptions): Promise<TagEntity> {
