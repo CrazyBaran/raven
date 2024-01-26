@@ -244,9 +244,11 @@ export class OrganisationService {
         },
       );
 
-    return await this.dataWarehouseEnricher?.enrichOrganisation(
-      affinityEnrichedOrganisation,
-    );
+    return this.dataWarehouseEnricher
+      ? await this.dataWarehouseEnricher?.enrichOrganisation(
+          affinityEnrichedOrganisation,
+        )
+      : affinityEnrichedOrganisation;
   }
 
   public async findByDomain(domain: string): Promise<OrganisationEntity> {

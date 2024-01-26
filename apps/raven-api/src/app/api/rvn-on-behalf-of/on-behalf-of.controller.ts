@@ -205,6 +205,7 @@ export class OnBehalfOfController {
     const directoryId = res.id;
 
     organisation.sharepointDirectoryId = directoryId;
+    delete organisation.organisationDomains; // this is to avoid messing with relations
     await this.organisationRepository.save(organisation);
     return directoryId;
   }
