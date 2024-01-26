@@ -147,8 +147,6 @@ export class OrganisationService {
 
     const [organisations, count] = await queryBuilder.getManyAndCount();
 
-    console.log({ organisations, count });
-
     const defaultPipeline = await this.getDefaultPipelineDefinition();
 
     const teamsForOpportunities =
