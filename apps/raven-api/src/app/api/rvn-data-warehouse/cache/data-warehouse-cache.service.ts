@@ -73,6 +73,29 @@ export class DataWarehouseCacheService {
     return lastUpdated ? new Date(Date.parse(lastUpdated)) : null;
   }
 
+  public async getLastChecked(): Promise<Date> {
+    const lastChecked = await this.store.client.get(DWH_CACHE.LAST_CHECKED);
+    return lastChecked ? new Date(Date.parse(lastChecked)) : null;
+  }
+
+  public async setLastChecked(date: Date): Promise<void> {
+    await this.store.client.set(DWH_CACHE.LAST_CHECKED, date.toISOString());
+  }
+
+  public async getNewestEntryDate(): Promise<Date> {
+    const newestEntryDate = await this.store.client.get(
+      DWH_CACHE.NEWEST_ENTRY_DATE,
+    );
+    return newestEntryDate ? new Date(Date.parse(newestEntryDate)) : null;
+  }
+
+  public async setNewestEntryDate(date: Date): Promise<void> {
+    await this.store.client.set(
+      DWH_CACHE.NEWEST_ENTRY_DATE,
+      date.toISOString(),
+    );
+  }
+
   public async getCompanies(domains: string[]): Promise<CompanyDto[]> {
     const items: CompanyDto[] = [];
 

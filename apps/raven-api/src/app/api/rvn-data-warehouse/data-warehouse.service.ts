@@ -1,4 +1,8 @@
-import { CompanyDto, FounderDto } from '@app/shared/data-warehouse';
+import {
+  CompanyDto,
+  DataWarehouseLastUpdatedDto,
+  FounderDto,
+} from '@app/shared/data-warehouse';
 import { Inject, Injectable } from '@nestjs/common';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { RavenLogger } from '../rvn-logger/raven.logger';
@@ -40,8 +44,10 @@ export class DataWarehouseService {
       await job.updateProgress(Math.floor((i / chunks) * 100));
     }
 
-    await this.dataWarehouseCacheService.setLastUpdated(
-      await this.dataWarehouseAccessService.getLastUpdated(),
+    await this.dataWarehouseCacheService.setLastChecked(new Date(Date.now()));
+    await this.dataWarehouseCacheService.setLastUpdated(new Date(Date.now()));
+    await this.dataWarehouseCacheService.setNewestEntryDate(
+      (await this.dataWarehouseAccessService.getLastUpdated()).lastUpdated,
     );
   }
 
@@ -98,7 +104,9 @@ export class DataWarehouseService {
     const lastUpdated = await this.dataWarehouseAccessService.getLastUpdated();
     const lastUpdatedCached =
       await this.dataWarehouseCacheService.getLastUpdated();
-    return lastUpdatedCached ? lastUpdatedCached < lastUpdated : true;
+    return lastUpdatedCached
+      ? lastUpdatedCached < lastUpdated.lastUpdated
+      : true;
   }
 
   public async regenerationForced(): Promise<boolean> {
@@ -112,5 +120,19 @@ export class DataWarehouseService {
 
   public async forceRegeneration(): Promise<void> {
     await this.dataWarehouseCacheService.forceRegeneration();
+  }
+
+  public async getLastUpdated(): Promise<DataWarehouseLastUpdatedDto> {
+    return {
+      lastChecked: await this.dataWarehouseCacheService.getLastChecked(),
+      lastUpdated: await this.dataWarehouseCacheService.getLastUpdated(),
+      companyCount: await this.dataWarehouseCacheService.getCompanyCount(),
+      newestEntryDate:
+        await this.dataWarehouseCacheService.getNewestEntryDate(),
+    };
+  }
+
+  public async updateLastChecked(): Promise<void> {
+    await this.dataWarehouseCacheService.setLastChecked(new Date(Date.now()));
   }
 }

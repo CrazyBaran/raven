@@ -8,6 +8,8 @@ export const DWH_CACHE = {
   INVESTORS: 'DataWarehouseInvestorsCache',
   LAST_UPDATED: 'DataWarehouseLastUpdatedCache',
   FORCED_REGENERATION: 'DataWarehouseForcedRegenerationCache',
+  LAST_CHECKED: 'DataWarehouseLastCheckedCache',
+  NEWEST_ENTRY_DATE: 'DataWarehouseNewestEntryDateCache',
 };
 
 export const DWH_QUEUE = {

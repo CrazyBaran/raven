@@ -38,9 +38,12 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     this.logger.setContext(DataWarehouseAccessService.name);
   }
 
-  public async getLastUpdated(): Promise<Date> {
-    const result = await this.companyRepository.find({
-      take: 1,
+  public async getLastUpdated(): Promise<{
+    lastUpdated: Date;
+    specter: Date;
+    dealRoom: Date;
+  }> {
+    const lastUpdatedDealRoom = await this.companyRepository.findOne({
       order: {
         dealRoomLastUpdated: 'DESC',
       },
@@ -49,7 +52,25 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
       },
     });
 
-    return result[0]?.dealRoomLastUpdated;
+    const lastUpdatedSpecter = await this.companyRepository.findOne({
+      order: {
+        specterLastUpdated: 'DESC',
+      },
+      where: {
+        specterLastUpdated: Not(IsNull()),
+      },
+    });
+
+    return {
+      lastUpdated: new Date(
+        Math.max(
+          lastUpdatedDealRoom.dealRoomLastUpdated.getTime(),
+          lastUpdatedSpecter.specterLastUpdated.getTime(),
+        ),
+      ),
+      specter: lastUpdatedSpecter.specterLastUpdated,
+      dealRoom: lastUpdatedDealRoom.dealRoomLastUpdated,
+    };
   }
 
   public async getCompanies(options?: {

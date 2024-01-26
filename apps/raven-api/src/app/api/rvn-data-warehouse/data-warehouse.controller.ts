@@ -1,5 +1,6 @@
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
+import { DataWarehouseLastUpdatedDto } from '@app/shared/data-warehouse';
 import { Controller, Get } from '@nestjs/common';
 import { ApiOAuth2, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RavenLogger } from '../rvn-logger/raven.logger';
@@ -39,5 +40,16 @@ export class DataWarehouseController {
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async regenerate(): Promise<void> {
     await this.dataWarehouseProducer.enqueueRegenerateDataWarehouse();
+  }
+
+  @Get('last-updated')
+  @ApiOperation({
+    summary: 'Get the last updated timestamp for the Data Warehouse cache.',
+  })
+  @ApiTags('DataWarehouse')
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async lastUpdated(): Promise<DataWarehouseLastUpdatedDto> {
+    return await this.dataWarehouseService.getLastUpdated();
   }
 }

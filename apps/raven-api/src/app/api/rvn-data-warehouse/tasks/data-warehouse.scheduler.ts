@@ -43,5 +43,7 @@ export class DataWarehouseScheduler {
       await this.dataWarehouseProducer.enqueueRegenerateDataWarehouse();
       await this.dataWarehouseService.clearForceRegeneration();
     }
+
+    await this.dataWarehouseService.updateLastChecked();
   }
 }

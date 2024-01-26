@@ -1,6 +1,7 @@
 export * from './lib/dtos/acquisition.dto';
 export * from './lib/dtos/actors.dto';
 export * from './lib/dtos/company.dto';
+export * from './lib/dtos/data-warehouse-last-updated.dto';
 export * from './lib/dtos/data-warehouse.dto';
 export * from './lib/dtos/founder.dto';
 export * from './lib/dtos/funding-round.dto';
