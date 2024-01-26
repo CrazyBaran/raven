@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { TagTypeEnum } from '@app/rvns-tags';
 import { Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
@@ -44,17 +45,17 @@ export class OrganisationTagSyncService implements OnModuleInit {
     this.logger.log(
       `Found ${organisationsWithoutTags.length} organisations without tags`,
     );
-    // if (organisationsWithoutTags.length > 0) {
-    //   await this.tagsRepository.manager.transaction(async (tem) => {
-    //     for (const organisation of organisationsWithoutTags) {
-    //       const tag = new OrganisationTagEntity();
-    //       tag.name = `${organisation.name} (${organisation.domains[0]})`;
-    //       tag.type = TagTypeEnum.Company;
-    //       tag.organisationId = organisation.id;
-    //       await tem.save(tag);
-    //     }
-    //   });
-    // } todo disbaled for now
+    if (organisationsWithoutTags.length > 0) {
+      await this.tagsRepository.manager.transaction(async (tem) => {
+        for (const organisation of organisationsWithoutTags) {
+          const tag = new OrganisationTagEntity();
+          tag.name = `${organisation.name} (${organisation.domains[0]})`;
+          tag.type = TagTypeEnum.Company;
+          tag.organisationId = organisation.id;
+          await tem.save(tag);
+        }
+      });
+    }
     this.logger.log(
       `${organisationsWithoutTags.length} organisation tags created`,
     );
