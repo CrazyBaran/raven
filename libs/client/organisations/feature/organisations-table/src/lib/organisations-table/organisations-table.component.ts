@@ -1,8 +1,12 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PipelinesActions } from '@app/client/organisations/api-pipelines';
 import { TagsActions } from '@app/client/organisations/api-tags';
-import { OrganisationsUrlActions } from '@app/client/organisations/state';
+import {
+  OrganisationsActions,
+  OrganisationsUrlActions,
+} from '@app/client/organisations/state';
 import { OrganisationsTableViewComponent } from '@app/client/organisations/ui';
 import { ShelfActions } from '@app/client/shared/shelf';
 import {
@@ -32,6 +36,7 @@ import {
     DropdownNavigationComponent,
     OrganisationsTableViewComponent,
     OrganisationsTableViewComponent,
+    DatePipe,
   ],
   templateUrl: './organisations-table.component.html',
   styleUrls: ['./organisations-table.component.scss'],
@@ -49,6 +54,7 @@ export class OrganisationsTableComponent {
         tagTypes: ['opportunity', 'people'],
       }),
     );
+    this.store.dispatch(OrganisationsActions.getDataWarehouseLastUpdated());
 
     this.store
       .select(selectOrganisationsTableParams)

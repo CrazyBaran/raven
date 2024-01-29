@@ -123,6 +123,37 @@ export const createOrganisation = createEffect(
   },
 );
 
+export const getDataWarehouseLastUpdated = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsActions.getDataWarehouseLastUpdated),
+      switchMap(() =>
+        organisationsService.getDataWarehouseLastUpdated().pipe(
+          map((response) => {
+            return OrganisationsActions.getDataWarehouseLastUpdatedSuccess({
+              data: response.data!,
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              OrganisationsActions.getDataWarehouseLastUpdatedFailure({
+                error,
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
 export const createOrganisationSharepointFolder = createEffect(
   (
     actions$ = inject(Actions),

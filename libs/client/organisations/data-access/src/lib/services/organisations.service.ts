@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
 import { Observable } from 'rxjs';
 import { CreateOrganisation } from '../models/create-organisation.model';
+import { DataWarehouseLastUpdated } from '../models/data-warehouse-last-updated';
 import { Organisation } from '../models/organisation.model';
 
 export type OrganisationsResponse = {
@@ -42,6 +43,14 @@ export class OrganisationsService {
     return this.http.post<unknown>(
       `/api/on-behalf-of/organisation/${id}/directory`,
       {},
+    );
+  }
+
+  public getDataWarehouseLastUpdated(): Observable<
+    GenericResponse<DataWarehouseLastUpdated>
+  > {
+    return this.http.get<GenericResponse<DataWarehouseLastUpdated>>(
+      `/api/dwh/last-updated`,
     );
   }
 }

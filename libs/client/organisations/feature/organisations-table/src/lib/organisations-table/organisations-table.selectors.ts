@@ -162,18 +162,20 @@ export const selectOrganisationsTableViewModel = createSelector(
   selectOrganisationTableQueryModel,
   selectOrganisationsTableParams,
   selectTableModel,
-
+  organisationsFeature.selectDataWarehouseLastUpdated,
   (
     buttonGroupNavigation,
     navigationDropdowns,
     queryModel,
     params,
     tableModel,
+    dataWarehouseLastUpdated,
   ) => ({
     buttonGroupNavigation,
     navigationDropdowns,
     queryModel,
     tableModel,
     params,
+    lastUpdated: dataWarehouseLastUpdated?.lastUpdated,
   }),
 );

@@ -1,4 +1,8 @@
-import { Organisation } from '@app/client/organisations/data-access';
+import {
+  DataWarehouseLastUpdated,
+  Organisation,
+} from '@app/client/organisations/data-access';
 
 export type OrganisationEntity = Organisation;
-1;
+
+export type DataWarehouseLastUpdatedEntity = DataWarehouseLastUpdated;

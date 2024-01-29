@@ -1,105 +1,190 @@
 <kendo-grid
-  #grid
   [data]="gridData"
-  [expandedDetailKeys]="collapsedRows()"
   [loading]="isLoading"
   [pageSize]="take"
   [pageable]="pageable"
-  [rowClass]="rowCallback"
   [skip]="skip"
   [sort]="sort"
   [sortable]="true"
-  class="organisation-table h-full"
-  kendoGridExpandDetailsBy="id"
+  class="grid-borderless h-full"
   scrollable="scrollable"
   uiKendoUrlPaging
   uiKendoUrlSorting
 >
-  <kendo-grid-column [width]="85" headerClass="!font-bold" title="Shortlist">
-    <ng-template kendoGridCellTemplate let-organisation>
-      <div class="flex w-full justify-center">
-        <i
-          [ngClass]="{
-            'fa-solid': organisation.shortList,
-            'fa-regular': !organisation.shortList
-          }"
-          class="fa-star"
-        ></i>
-      </div>
-    </ng-template>
-  </kendo-grid-column>
-
   <kendo-grid-column
     [sortable]="true"
+    class="!align-text-top"
     field="name"
     headerClass="!font-bold"
     title="Company"
   >
-    <ng-template kendoGridCellTemplate let-organisation>
+    <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex items-center gap-3">
         <i class="fa-regular fa-image text-xl"></i>
         <div
-          [routerLink]="['/companies', organisation.id]"
+          [routerLink]="['/companies', dataItem.id]"
           class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
+          data-testid="company-profile-link"
         >
           <div class="grow overflow-hidden">
             <p [isEllipsisActive]="true" class="group-hover:font-bold">
-              {{ organisation.name }}
+              {{ dataItem.name }}
             </p>
 
-            @if (organisation.domains[0]) {
+            @if (dataItem.domains[0]) {
               <p [isEllipsisActive]="true" class="text-xs">
-                {{ organisation.domains[0] }}
+                {{ dataItem.domains[0] }}
               </p>
             }
           </div>
+          <i class="fa-solid fa-share"></i>
         </div>
       </div>
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column headerClass="!font-bold" title="Status">
-    <ng-template kendoGridCellTemplate let-organisation>
-      <div class="flex items-center gap-3">
-        <i
-          [style.color]="organisation.status.color"
-          class="fa-solid fa-circle text-xs"
-        ></i>
-        <p [isEllipsisActive]="true" class="flex-1 text-black">
-          {{ organisation.status.name ?? '' }}
-        </p>
+  <kendo-grid-column headerClass="!font-bold" title="Funding Round">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-4">
+        <div
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
+          class="flex h-10 items-center"
+        >
+          <p>{{ opportunity?.tag?.name || 'No Opportunity' }}</p>
+        </div>
       </div>
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column field="score" headerClass="!font-bold" title="MCV Score" />
-
-  <kendo-grid-column
-    field="specterRank"
-    headerClass="!font-bold"
-    title="Specter Rank"
-  />
-
-  <kendo-grid-column field="domain" headerClass="!font-bold" title="Domain" />
-
-  <kendo-grid-column field="hq" headerClass="!font-bold" title="HQ" />
-
-  <kendo-grid-column [width]="60" title="">
-    <ng-template kendoGridCellTemplate let-organisation>
-      @if (organisation.opportunities.length > 0) {
-        <kendo-button
-          (click)="toggleRow(organisation.id)"
-          [iconClass]="
-            'fa-solid fa-caret-' +
-            (isRowCollapsed(organisation.id) ? 'up' : 'down')
+  <kendo-grid-column headerClass="!font-bold" title="Pipeline Status">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-4">
+        <div
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
           "
-          fillMode="link"
-        />
-      }
+          class="flex h-10 items-center gap-3"
+        >
+          <i
+            [style.color]="opportunity.stageColor"
+            class="fa-solid fa-circle text-xs"
+          ></i>
+          <p [isEllipsisActive]="true" class="flex-1 text-black">
+            {{ opportunity.stage?.displayName ?? '' }}
+          </p>
+        </div>
+      </div>
     </ng-template>
   </kendo-grid-column>
 
-  <ng-template kendoGridDetailTemplate let-organisation>
-    <app-opportunities-table [rows]="organisation.opportunities" />
-  </ng-template>
+  <kendo-grid-column headerClass="!font-bold" title="Deal Lead">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-4">
+        <div
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
+          class="flex h-10 items-center gap-1"
+        >
+          <ui-tags-container
+            [rows]="1"
+            [tags]="opportunity.team | dealLeads | toUserTag"
+            class="w-full"
+          ></ui-tags-container>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Deal Team">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-4">
+        <div
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate';
+            trackBy: 'id'
+          "
+          class="flex h-10 items-center gap-1"
+        >
+          <ui-tags-container
+            [rows]="1"
+            [tags]="opportunity.team | dealTeam | toUserTag"
+            class="w-full"
+          ></ui-tags-container>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <!--  TODO: Implement when company tags ready -->
+  <!--  <kendo-grid-column headerClass="!font-bold" title="Tags">-->
+  <!--    <ng-template kendoGridCellTemplate let-dataItem>-->
+  <!--      <div class="flex flex-col gap-4">-->
+  <!--        <div-->
+  <!--          *rxFor="-->
+  <!--            let opportunity of dataItem | expandableList: collapsedRows();-->
+  <!--            strategy: 'immediate'-->
+  <!--          "-->
+  <!--          class="flex h-10 items-center gap-1"-->
+  <!--        >-->
+  <!--          <i class="fa-solid fa-circle-user mr-1"></i>-->
+  <!--          <p class="flex-1 truncate text-black">-->
+  <!--            {{ 'Shaun Lee' }}-->
+  <!--          </p>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </ng-template>-->
+  <!--  </kendo-grid-column>-->
+
+  <kendo-grid-column [width]="90" class="!align-text-top" title="">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-4">
+        <div
+          *rxFor="
+            let opportunity of dataItem | expandableList: collapsedRows();
+            strategy: 'immediate'
+          "
+          class="flex h-10 items-center gap-1"
+        >
+          <div class="flex gap-1">
+            <kendo-button
+              [routerLink]="[
+                '/companies',
+                dataItem.id,
+                'opportunities',
+                opportunity.id
+              ]"
+              iconClass="fa-solid fa-eye"
+              themeColor="primary"
+            ></kendo-button>
+            <kendo-button
+              [uiClipboard]="
+                ['companies', dataItem.id, 'opportunities', opportunity.id]
+                  | toUrl
+              "
+              iconClass="fa-solid fa-link"
+            ></kendo-button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column [width]="60" class="!align-text-top" title="">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <kendo-button
+        (click)="toggleRow(dataItem.id)"
+        *rxIf="dataItem.opportunities.length > 1"
+        [iconClass]="
+          'fa-solid fa-caret-' + (isRowCollapsed(dataItem.id) ? 'up' : 'down')
+        "
+        fillMode="link"
+      ></kendo-button>
+    </ng-template>
+  </kendo-grid-column>
 </kendo-grid>
