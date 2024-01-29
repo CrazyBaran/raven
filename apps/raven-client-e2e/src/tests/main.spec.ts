@@ -8,6 +8,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('Raven Regression: Pages', () => {
+  test.describe.configure({ mode: 'serial' });
   test('Raven Regression: Pages: Home Dashboard', async ({ page }) => {
     // Arrange
     const getToken = await page.request.get(
