@@ -5,7 +5,7 @@
   <div class="flex items-center gap-3" page-header-actions>
     @if (vm().lastUpdated) {
       <p class="text-subtle-text text-xs">
-        Last DW sync: {{ vm().lastUpdated | date: 'dd/MM/yyyy hh:mm a' }}
+        Last DW sync: {{ vm().lastChecked | date: 'dd/MM/yyyy hh:mm a' }}
       </p>
     }
     <app-text-box-navigation [model]="vm().queryModel" />
