@@ -28,9 +28,11 @@ export class TagsService {
     query?: string;
     type?: string;
     organisationId?: string;
+    take?: number;
   }): Observable<GenericResponse<Tag[]>> {
     return this.http.get<GenericResponse<Tag[]>>(this.url, {
       params: {
+        take: 500,
         ...params,
       },
     });

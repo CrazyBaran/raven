@@ -202,16 +202,20 @@ export const environment = {
       .asBoolStrict(),
   },
   dataWarehouse: {
+    authType: env
+      .get('DWH_AUTH_TYPE')
+      .default('azure-active-directory-default')
+      .asString(),
     version: env.get('DWH_VERSION').default('v1').asString(),
+    defaultAuth: {
+      userName: env.get('DWH_USERNAME').asString(),
+      password: env.get('DWH_PASSWORD').asString(),
+    },
     database: {
       type: 'mssql',
       host: env.get('DWH_HOST').asString(),
       port: env.get('DWH_PORT').default(1433).asPortNumber(),
       database: env.get('DWH_DATABASE').asString(),
-      authentication: {
-        type: 'azure-active-directory-default',
-        options: {},
-      },
       synchronize: false,
       logging: false,
       debug: false,

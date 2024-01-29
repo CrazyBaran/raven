@@ -26,7 +26,7 @@ export class OpportunityCreatedEventHandler {
       OpportunityEntity,
       {
         where: { id: event.opportunityEntityId },
-        relations: ['organisation', 'tag'],
+        relations: ['organisation', 'tag', 'organisation.organisationDomains'],
       },
     );
     const ogranisationFolderId =
@@ -43,6 +43,7 @@ export class OpportunityCreatedEventHandler {
     opportunityEntity.sharepointDirectoryId = opportunityFolderId;
 
     await this.entityManager.transaction(async (tem) => {
+      delete opportunityEntity.organisation.organisationDomains; // we don't want to save this relation
       await tem.save(opportunityEntity.organisation);
       await tem.save(opportunityEntity);
     });

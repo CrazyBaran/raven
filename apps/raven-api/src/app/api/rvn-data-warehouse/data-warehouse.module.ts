@@ -131,16 +131,32 @@ export class DataWarehouseModule {
 
   private static async buildConfig(): Promise<DataSourceOptions> {
     const dataWarehouseConfig = environment.dataWarehouse.database;
-    const alteredConfig = {
-      ...dataWarehouseConfig,
-      name: DataWarehouseDataSourceName,
-      authentication: {
-        type: 'azure-active-directory-default',
-      } as SqlServerConnectionCredentialsAuthenticationOptions,
-      entities: [__dirname + '/entities/*.entity{.ts,.js}'],
-    } as SqlServerConnectionOptions;
+    const dataWarehouseConfigAuthenticationType =
+      environment.dataWarehouse.authType;
 
-    return alteredConfig;
+    switch (dataWarehouseConfigAuthenticationType) {
+      case 'azure-active-directory-default':
+        return {
+          ...dataWarehouseConfig,
+          name: DataWarehouseDataSourceName,
+          authentication: {
+            type: 'azure-active-directory-default',
+          } as SqlServerConnectionCredentialsAuthenticationOptions,
+        } as SqlServerConnectionOptions;
+      case 'default':
+        return {
+          ...dataWarehouseConfig,
+          name: DataWarehouseDataSourceName,
+          authentication: {
+            type: 'default',
+            options: environment.dataWarehouse.defaultAuth,
+          } as SqlServerConnectionCredentialsAuthenticationOptions,
+        } as SqlServerConnectionOptions;
+      default:
+        throw new Error(
+          `DataWarehouse authentication type ${dataWarehouseConfigAuthenticationType} not supported`,
+        );
+    }
   }
 
   private static buildV1Module(module: DynamicModule): DynamicModule {
