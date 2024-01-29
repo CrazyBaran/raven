@@ -1,0 +1,112 @@
+$border: 2px solid #b3e4e1 !important;
+
+.organisation-table {
+  .k-table-th {
+    border: none !important;
+  }
+  .k-table-td {
+    border: none !important;
+  }
+
+  &.k-grid {
+    border-inline: none !important;
+    border-top: none !important;
+  }
+
+  col.k-sorted,
+  .k-table-th.k-sorted {
+    background: initial !important;
+  }
+
+  td {
+    border: none !important;
+    border-bottom: none !important;
+  }
+
+  //.k-grid-table {
+  //border-collapse: collapse;
+  //}
+
+  .k-hierarchy-cell a {
+    opacity: 0;
+  }
+  .k-detail-row {
+    background: white !important;
+  }
+
+  tr[row-active='true'] {
+    background-color: #00a59b14 !important;
+
+    td {
+      border-top: $border;
+      border-bottom: $border;
+    }
+
+    td:first-child {
+      border-radius: 8px 0 0 8px !important;
+      border-left: $border;
+    }
+
+    td:last-child {
+      border-radius: 0 8px 8px 0 !important;
+      border-right: $border;
+    }
+  }
+
+  .k-detail-row {
+    .k-hierarchy-cell.k-table-td {
+      display: none;
+    }
+
+    .k-detail-cell.k-table-td {
+      //border-right: $border;
+      //border-bottom: $border;
+      //border-bottom-right-radius: 8px;
+      overflow: visible;
+      padding: 0 !important;
+    }
+  }
+}
+
+app-opportunities-table {
+  display: block;
+  border-right: $border;
+  border-left: $border;
+  border-bottom: $border;
+  width: calc(100% + 60px);
+  position: relative;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-bottom: 2px;
+
+  padding-left: 115px;
+
+  kendo-grid {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+}
+
+app-opportunities-table::before {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 49px;
+  position: absolute;
+  background: #b3e4e1;
+  left: -2px;
+  top: -40px;
+  border-top-left-radius: 8px;
+}
+
+app-opportunities-table::after {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 49px;
+  position: absolute;
+  background: #b3e4e1;
+  right: -2px;
+  top: -40px;
+  border-top-left-radius: 8px;
+}

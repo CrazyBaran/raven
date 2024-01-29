@@ -1,0 +1,26 @@
+.opportunity-table {
+  border: none !important;
+  overflow: auto !important;
+  padding: 0 !important;
+
+  .k-grid-header {
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .k-table-thead {
+    background-color: white !important;
+  }
+
+  .k-table-row {
+    background-color: transparent !important;
+
+    td {
+      border: none !important;
+    }
+  }
+
+  .k-grid-content {
+    overflow: auto;
+  }
+}

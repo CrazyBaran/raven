@@ -1,0 +1,54 @@
+<kendo-grid
+  [data]="rows"
+  [trackBy]="trackByFn"
+  class="grid-borderless opportunity-table"
+>
+  <kendo-grid-column headerClass="!font-bold" title="Funding Round">
+    <ng-template kendoGridCellTemplate let-opportunity>
+      <p [isEllipsisActive]="true">{{ opportunity.name }}</p>
+      <p>{{ opportunity.updatedAt | date: 'dd/MM/yyyy' }}</p>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Opportunity Status">
+    <ng-template kendoGridCellTemplate let-opportunity>
+      <div class="flex items-center gap-3">
+        <i
+          [style.color]="opportunity.status.color"
+          class="fa-solid fa-circle text-xs"
+        ></i>
+        <p [isEllipsisActive]="true" class="flex-1 text-black">
+          {{ opportunity.status.name ?? '' }}
+        </p>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Deal Lead">
+    <ng-template kendoGridCellTemplate let-opportunity>
+      <ui-tags-container
+        [rows]="1"
+        [tags]="opportunity.dealLeads | toUserTags"
+        class="w-full"
+      />
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Deal Team">
+    <ng-template kendoGridCellTemplate let-opportunity>
+      <ui-tags-container
+        [rows]="1"
+        [tags]="opportunity.dealTeam | toUserTags"
+        class="w-full"
+      />
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column title="">
+    <ng-template kendoGridCellTemplate let-opportunity>
+      <div class="flex gap-2">
+        <kendo-button themeColor="primary">Open Opportunity</kendo-button>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
