@@ -8,7 +8,10 @@ import {
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { OpportunityData } from '@app/rvns-opportunities';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { OrganisationEntity } from './organisations.model';
+import {
+  DataWarehouseLastUpdatedEntity,
+  OrganisationEntity,
+} from './organisations.model';
 
 export const OrganisationsActions = createActionGroup({
   source: 'Organisations/API',
@@ -42,6 +45,12 @@ export const OrganisationsActions = createActionGroup({
       opportunityId: string;
       opportunity?: OpportunityData;
     }>(),
+
+    'Get Data Warehouse Last Updated': emptyProps(),
+    'Get Data Warehouse Last Updated Success': props<{
+      data: DataWarehouseLastUpdatedEntity;
+    }>(),
+    'Get Data Warehouse Last Updated Failure': props<{ error: string }>(),
   },
 });
 

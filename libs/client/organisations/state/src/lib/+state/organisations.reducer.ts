@@ -6,7 +6,10 @@ import {
   OrganisationsActions,
   OrganisationsUrlActions,
 } from './organisations.actions';
-import { OrganisationEntity } from './organisations.model';
+import {
+  DataWarehouseLastUpdatedEntity,
+  OrganisationEntity,
+} from './organisations.model';
 
 export interface OrganisationsState extends EntityState<OrganisationEntity> {
   totalRows: number;
@@ -14,6 +17,7 @@ export interface OrganisationsState extends EntityState<OrganisationEntity> {
   error: string | null;
   loadingOrganisation: boolean;
   creatingSharepointFolder: boolean;
+  dataWarehouseLastUpdated: DataWarehouseLastUpdatedEntity | null;
 }
 
 export const OrganisationAdapter: EntityAdapter<OrganisationEntity> =
@@ -27,6 +31,7 @@ export const initialOrganisationState: OrganisationsState =
     selectedId: null,
     totalRows: 0,
     creatingSharepointFolder: false,
+    dataWarehouseLastUpdated: null,
   });
 
 export const organisationsFeature = createFeature({
@@ -122,6 +127,13 @@ export const organisationsFeature = createFeature({
       (state, { error }) => ({
         ...state,
         creatingSharepointFolder: false,
+      }),
+    ),
+    on(
+      OrganisationsActions.getDataWarehouseLastUpdatedSuccess,
+      (state, { data }) => ({
+        ...state,
+        dataWarehouseLastUpdated: data,
       }),
     ),
   ),
