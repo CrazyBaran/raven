@@ -447,7 +447,7 @@ export class OpportunityService {
       (data) => data.stage != null && data.stage.text != null,
     );
     const opportunities = await this.opportunityRepository.find({
-      relations: ['organisation'],
+      relations: ['organisation', 'organisation.organisationDomains'],
     });
 
     for (const affinityEntry of affinityData) {
