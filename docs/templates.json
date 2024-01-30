@@ -1119,7 +1119,7 @@
             "name": "Last round / ARR",
             "type": "heatmap",
             "order": 2,
-            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":500,\"thresholds\":[9.9999,18.0001],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"498A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
+            "configuration": "{\"unit\":\"\",\"min\":1,\"max\":\"\",\"thresholds\":[9.9999,18.0001],\"calculationConfig\":{\"type\":\"division\",\"valueIds\":[\"498A25C2-BC99-EE11-BEA0-6045BDF23835\",\"3A8A25C2-BC99-EE11-BEA0-6045BDF23835\"]}}",
             "fieldGroupId": "488a25c2-bc99-ee11-bea0-6045bdf23835",
             "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
@@ -1158,9 +1158,7 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": [
-          "327abb74-2f6f-ee11-b007-6045bdd17462"
-        ],
+        "relatedFieldIds": ["327abb74-2f6f-ee11-b007-6045bdd17462"],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1183,9 +1181,7 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": [
-          "9760a07d-2f6f-ee11-b007-6045bdd17462"
-        ],
+        "relatedFieldIds": ["9760a07d-2f6f-ee11-b007-6045bdd17462"],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1208,9 +1204,7 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": [
-          "9860a07d-2f6f-ee11-b007-6045bdd17462"
-        ],
+        "relatedFieldIds": ["9860a07d-2f6f-ee11-b007-6045bdd17462"],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1233,9 +1227,7 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": [
-          "6c9c9e87-2f6f-ee11-b007-6045bdd17462"
-        ],
+        "relatedFieldIds": ["6c9c9e87-2f6f-ee11-b007-6045bdd17462"],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1258,9 +1250,7 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": [
-          "9760a07d-2f6f-ee11-b007-6045bdd17462"
-        ],
+        "relatedFieldIds": ["9760a07d-2f6f-ee11-b007-6045bdd17462"],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1283,9 +1273,7 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": [
-          "6d9c9e87-2f6f-ee11-b007-6045bdd17462"
-        ],
+        "relatedFieldIds": ["6d9c9e87-2f6f-ee11-b007-6045bdd17462"],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1320,9 +1308,7 @@
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
         "relatedFieldIds": [],
-        "relatedTemplateIds": [
-          "0b9474fd-316f-ee11-b007-6045bdd17462"
-        ],
+        "relatedTemplateIds": ["0b9474fd-316f-ee11-b007-6045bdd17462"],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
       },
@@ -1339,9 +1325,7 @@
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
         "relatedFieldIds": [],
-        "relatedTemplateIds": [
-          "dd396795-336f-ee11-b007-6045bdd17462"
-        ],
+        "relatedTemplateIds": ["dd396795-336f-ee11-b007-6045bdd17462"],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
       },
