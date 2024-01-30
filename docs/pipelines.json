@@ -11,6 +11,10 @@
         "displayName": "Shortlist",
         "order": 1,
         "mappedFrom": "Shortlist",
+        "isHidden": true,
+        "configuration": null,
+        "showFields": "[]",
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -18,6 +22,10 @@
         "displayName": "Outreach - Planned",
         "order": 2,
         "mappedFrom": "Outreach - Planned",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -25,6 +33,10 @@
         "displayName": "Outreach - In progress",
         "order": 3,
         "mappedFrom": "Outreach - In progress",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -32,6 +44,10 @@
         "displayName": "Outreach - Scheduling",
         "order": 4,
         "mappedFrom": "Outreach - Scheduling",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -39,20 +55,32 @@
         "displayName": "Met",
         "order": 5,
         "mappedFrom": "Met",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
         "id": "df55560e-7293-ee11-8927-6045bdd178c1",
-        "displayName": "Preliminary DD - in progress",
+        "displayName": "Preliminary DD - In progress",
         "order": 6,
         "mappedFrom": "Preliminary DD - in progress",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
         "id": "e055560e-7293-ee11-8927-6045bdd178c1",
-        "displayName": "Preliminary DD - ready for socialisation",
+        "displayName": "Preliminary DD - Ready for socialisation",
         "order": 7,
         "mappedFrom": "Preliminary DD - ready for socialisation",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -60,6 +88,10 @@
         "displayName": "DD - In Progress",
         "order": 8,
         "mappedFrom": "DD - In Progress",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -67,6 +99,10 @@
         "displayName": "DD - Ready for Local IC",
         "order": 9,
         "mappedFrom": "DD - Ready for Local IC",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -74,6 +110,10 @@
         "displayName": "IC - Prepping for Capital IC",
         "order": 10,
         "mappedFrom": "IC - prepping for Capital IC",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -81,21 +121,55 @@
         "displayName": "IC - Ready for Capital IC",
         "order": 11,
         "mappedFrom": "IC - ready for Capital IC",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
         "id": "e555560e-7293-ee11-8927-6045bdd178c1",
-        "displayName": "Portfolio",
+        "displayName": "Won",
         "order": 12,
         "mappedFrom": "Portfolio",
+        "isHidden": false,
+        "configuration": "{\"color\":\"success\",\"order\":3,\"droppableFrom\":[\"df55560e-7293-ee11-8927-6045bdd178c1\",\"e055560e-7293-ee11-8927-6045bdd178c1\",\"e155560e-7293-ee11-8927-6045bdd178c1\",\"e255560e-7293-ee11-8927-6045bdd178c1\",\"e355560e-7293-ee11-8927-6045bdd178c1\",\"e455560e-7293-ee11-8927-6045bdd178c1\"]}",
+        "showFields": null,
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
         "id": "e655560e-7293-ee11-8927-6045bdd178c1",
-        "displayName": "Passed",
+        "displayName": "Pass",
         "order": 13,
         "mappedFrom": "Passed",
+        "isHidden": false,
+        "configuration": "{\"color\":\"warning\",\"order\":1,\"droppableFrom\":[\"db55560e-7293-ee11-8927-6045bdd178c1\",\"dc55560e-7293-ee11-8927-6045bdd178c1\",\"dd55560e-7293-ee11-8927-6045bdd178c1\",\"de55560e-7293-ee11-8927-6045bdd178c1\",\"df55560e-7293-ee11-8927-6045bdd178c1\",\"e055560e-7293-ee11-8927-6045bdd178c1\",\"e155560e-7293-ee11-8927-6045bdd178c1\",\"e255560e-7293-ee11-8927-6045bdd178c1\",\"e355560e-7293-ee11-8927-6045bdd178c1\",\"e455560e-7293-ee11-8927-6045bdd178c1\"]}",
+        "showFields": null,
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "correspondingEntity": "PipelineStageEntity"
+      },
+      {
+        "id": "caf5c41d-1eb9-ee11-b660-6045bdd17e16",
+        "displayName": "Lost",
+        "order": 14,
+        "mappedFrom": "Lost",
+        "isHidden": false,
+        "configuration": "{\"color\":\"warning\",\"order\":2,\"droppableFrom\":[\"df55560e-7293-ee11-8927-6045bdd178c1\",\"e055560e-7293-ee11-8927-6045bdd178c1\",\"e155560e-7293-ee11-8927-6045bdd178c1\",\"e255560e-7293-ee11-8927-6045bdd178c1\",\"e355560e-7293-ee11-8927-6045bdd178c1\",\"e455560e-7293-ee11-8927-6045bdd178c1\"]}",
+        "showFields": null,
+        "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "PipelineStageEntity"
+      }
+    ],
+    "pipelineGroups": [
+      {
+        "id": "54b1c4a2-0fb5-ee11-b660-6045bdd17e16",
+        "groupName": "test group migration",
+        "stageIds": [
+          "e555560e-7293-ee11-8927-6045bdd178c1",
+          "e655560e-7293-ee11-8927-6045bdd178c1"
+        ],
+        "correspondingEntity": "PipelineGroupEntity"
       }
     ],
     "correspondingEntity": "PipelineDefinitionEntity"
@@ -112,6 +186,10 @@
         "displayName": "Lead",
         "order": 1,
         "mappedFrom": "Lead",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -119,6 +197,10 @@
         "displayName": "Screening",
         "order": 2,
         "mappedFrom": "Screening",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -126,6 +208,10 @@
         "displayName": "1st Call / Meeting",
         "order": 3,
         "mappedFrom": "1st Call / Meeting",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -133,6 +219,10 @@
         "displayName": "Initial DD",
         "order": 4,
         "mappedFrom": "Initial DD",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -140,6 +230,10 @@
         "displayName": "Active / Live",
         "order": 5,
         "mappedFrom": "Active / Live",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -147,6 +241,10 @@
         "displayName": "Portfolio",
         "order": 6,
         "mappedFrom": "Portfolio",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -154,6 +252,10 @@
         "displayName": "Passed - 1st Meeting / Call",
         "order": 7,
         "mappedFrom": "Passed - 1st Meeting / Call",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -161,6 +263,10 @@
         "displayName": "Passed - No Deck/website Only",
         "order": 8,
         "mappedFrom": "Passed - No Deck/website Only",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -168,6 +274,10 @@
         "displayName": "Passed - Reviewed Deck",
         "order": 9,
         "mappedFrom": "Passed - Reviewed Deck",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -175,6 +285,10 @@
         "displayName": "Passed - Company Not Engaged",
         "order": 10,
         "mappedFrom": "Passed - Company Not Engaged",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -182,6 +296,10 @@
         "displayName": "Passed - Activation",
         "order": 11,
         "mappedFrom": "Passed - Activation",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -189,6 +307,10 @@
         "displayName": "Passed - Intial DD",
         "order": 12,
         "mappedFrom": "Passed - Intial DD",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -196,6 +318,10 @@
         "displayName": "Passed - Intel From Another Fund",
         "order": 13,
         "mappedFrom": "Passed - Intel From Another Fund",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       },
       {
@@ -203,9 +329,14 @@
         "displayName": "Lost - Term Sheet",
         "order": 14,
         "mappedFrom": "Lost - Term Sheet",
+        "isHidden": false,
+        "configuration": null,
+        "showFields": null,
+        "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
         "correspondingEntity": "PipelineStageEntity"
       }
     ],
+    "pipelineGroups": [],
     "correspondingEntity": "PipelineDefinitionEntity"
   }
 ]
