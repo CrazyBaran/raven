@@ -3,7 +3,7 @@
   pageName="All Companies"
 >
   <div class="flex items-center gap-3" page-header-actions>
-    @if (vm().lastUpdated) {
+    @if (vm().lastChecked) {
       <p class="text-subtle-text text-xs">
         Last DW sync: {{ vm().lastChecked | date: 'dd/MM/yyyy hh:mm a' }}
       </p>
