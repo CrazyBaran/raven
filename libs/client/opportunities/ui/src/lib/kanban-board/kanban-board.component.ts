@@ -186,6 +186,8 @@ export class KanbanBoardComponent {
     );
 
     if (
+      !column!.name.includes('Outreach') &&
+      !column!.name.includes('Met') &&
       !opportunity.created &&
       (originColumn!.name.includes('Outreach') ||
         originColumn!.name.includes('Met'))
