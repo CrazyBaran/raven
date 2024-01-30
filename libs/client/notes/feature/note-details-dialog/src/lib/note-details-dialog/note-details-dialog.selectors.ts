@@ -1,6 +1,11 @@
 import { authQuery } from '@app/client/core/auth';
 import { notesQuery } from '@app/client/notes/state';
 import { NotepadForm } from '@app/client/notes/ui';
+import {
+  AzureImageEntity,
+  storageQuery,
+} from '@app/client/shared/storage/data-access';
+import { populateAzureImages } from '@app/client/shared/ui-pipes';
 import { routerQuery } from '@app/client/shared/util-router';
 import {
   NoteFieldData,
@@ -8,6 +13,7 @@ import {
   NoteWithRelationsData,
 } from '@app/rvns-notes/data-access';
 import { TemplateWithRelationsData } from '@app/rvns-templates';
+import { Dictionary } from '@ngrx/entity';
 import { createSelector } from '@ngrx/store';
 import { sortBy } from 'lodash';
 
@@ -34,7 +40,9 @@ export const selectNoteDetailsModel = createSelector(
 );
 export const selectNoteDetailsForm = createSelector(
   selectNoteDetailsModel,
-  (noteDetails) => createNotepadForm(noteDetails),
+  storageQuery.selectAzureImageDictionary,
+  (noteDetails, azureImageDictionary) =>
+    createNotepadForm(noteDetails, azureImageDictionary),
 );
 
 export const selectNoteDetailsDialogViewModel = createSelector(
@@ -95,6 +103,7 @@ function prepareAllNotes(notes: NoteFieldGroupsWithFieldData[]): {
 
 function createNotepadForm(
   note: NoteWithRelationsData | null,
+  azureImageDictionary: Dictionary<AzureImageEntity>,
 ): NotepadForm | null {
   if (!note) {
     return null;
@@ -106,7 +115,10 @@ function createNotepadForm(
       fieldGroups:
         note?.noteFieldGroups?.map((group) => ({
           ...group,
-          fieldDefinitions: group.noteFields,
+          fieldDefinitions: group.noteFields.map((field) => ({
+            ...field,
+            value: populateAzureImages(field.value, azureImageDictionary),
+          })),
         })) ?? [],
       name: note?.templateName,
     } as unknown as TemplateWithRelationsData,
