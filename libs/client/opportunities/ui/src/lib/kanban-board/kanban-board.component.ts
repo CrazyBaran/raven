@@ -13,12 +13,13 @@ import {
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/overlay';
 import { LowerCasePipe, NgClass } from '@angular/common';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { isBoolean } from 'lodash';
-import { delayWhen, filter, of } from 'rxjs';
+import { Subject, delayWhen, filter } from 'rxjs';
+import { CreateOpportunityDialogComponent } from '../../../../feature/update-dialog/src/lib/create-opportunity-dialog/create-opportunity-dialog.component';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
 import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {
@@ -40,6 +41,7 @@ export interface KanbanFooterGroup {
 export interface KanbanBoard {
   columns: KanbanColumn[];
   footers: KanbanFooterGroup[];
+  preliminiaryColumn: KanbanColumn | null;
 }
 
 @Pipe({
@@ -58,6 +60,7 @@ export class DisabledFooterGroupPipe implements PipeTransform {
   }
 }
 
+import * as _ from 'lodash';
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
@@ -73,6 +76,7 @@ export class DisabledFooterGroupPipe implements PipeTransform {
     LowerCasePipe,
     DropConfirmationComponent,
     DisabledFooterGroupPipe,
+    CreateOpportunityDialogComponent,
   ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
@@ -83,15 +87,21 @@ export class KanbanBoardComponent {
   private _board: KanbanBoard = {
     columns: [],
     footers: [],
+    preliminiaryColumn: null,
   };
 
+  private value$ = new Subject<KanbanBoard>();
+
   @Input() public set board(value: KanbanBoard) {
+    this.value$.next(value);
+  }
+
+  public constructor() {
     // wait for the receiveMode to be set to null before setting the board
-    of(value)
+    this.value$
       .pipe(
-        delayWhen(() =>
-          this.receiveMode$.pipe(filter((mode) => mode === null)),
-        ),
+        takeUntilDestroyed(),
+        delayWhen(() => this.receiveMode$.pipe(filter((mode) => !mode))),
       )
       .subscribe((board) => {
         this._board = board;
@@ -109,6 +119,12 @@ export class KanbanBoardComponent {
 
   protected receiveMode = signal<KanbanDragStartEvent | boolean | null>(null);
   protected receiveMode$ = toObservable(this.receiveMode);
+
+  protected paramsEditId = signal<{
+    opportunityId: string;
+    organisationId: string;
+  } | null>(null);
+  protected destinationStageId = signal<string | null>(null);
 
   protected confirmDrop = signal<{
     footerGroup: KanbanFooterGroup;
@@ -145,6 +161,63 @@ export class KanbanBoardComponent {
       opportunityId: this.confirmDrop()!.opportunityId,
     });
     this.confirmDrop.set(null);
+    this.receiveMode.set(false);
+  }
+
+  protected onDrop(
+    $event: {
+      pipelineStageId: string;
+      opportunityId: string;
+    },
+    columnIndex: number,
+    column: KanbanColumn,
+  ): void {
+    const opportunity = _.chain(this._board.columns)
+      .flatMap(({ groups }) => groups)
+      .flatMap(({ cards }) => cards)
+      .find({ id: $event.opportunityId })
+      .value();
+    const group = _.chain(this._board.columns)
+      .flatMap(({ groups }) => groups)
+      .value()
+      .find((g) => g.cards?.includes(opportunity) ?? false);
+    const originColumn = this._board.columns.find((c) =>
+      c.groups.includes(group!),
+    );
+
+    if (
+      (column.name === this._board.preliminiaryColumn!.name &&
+        originColumn!.name.includes('Outreach')) ||
+      originColumn!.name.includes('Met')
+    ) {
+      this.receiveMode.set(true);
+      this.paramsEditId.set({
+        opportunityId: $event.opportunityId,
+        organisationId: _.chain(this._board.columns)
+          .flatMap(({ groups }) => groups)
+          .flatMap(({ cards }) => cards)
+          .find({ id: $event.opportunityId })
+          .value().organisation.id,
+      });
+      this.destinationStageId.set($event.pipelineStageId);
+    } else {
+      this.dragEndEvent.emit($event);
+    }
+  }
+
+  protected onOpportunityEditCancel(): void {
+    this.paramsEditId.set(null);
+    this.destinationStageId.set(null);
+    this.receiveMode.set(false);
+  }
+
+  protected onOpportunityEditSubmit(): void {
+    this.dragEndEvent.emit({
+      pipelineStageId: this.destinationStageId()!,
+      opportunityId: this.paramsEditId()!.opportunityId,
+    });
+    this.paramsEditId.set(null);
+    this.destinationStageId.set(null);
     this.receiveMode.set(false);
   }
 }

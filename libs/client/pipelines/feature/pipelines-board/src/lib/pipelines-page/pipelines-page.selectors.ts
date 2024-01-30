@@ -230,6 +230,9 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
       return {
         columns,
         footers: groupingEnabled ? footers : [],
+        preliminiaryColumn: columns!.find(
+          ({ name }) => name.toLowerCase().includes('preliminary dd')!,
+        )!,
       };
     },
   );

@@ -139,6 +139,16 @@ export const organisationsFeature = createFeature({
   ),
   extraSelectors: ({ selectOrganisationsState }) => ({
     ...OrganisationAdapter.getSelectors(selectOrganisationsState),
+    selectOrganisation: createSelector(
+      selectOrganisationsState,
+      routerQuery.selectCurrentOrganisationId,
+      (state, id) => {
+        const org = state.entities[id!];
+        return org
+          ? { ...org, opportunities: org.opportunities.filter(Boolean) }
+          : null;
+      },
+    ),
     selectCurrentOrganisation: createSelector(
       routerQuery.selectCurrentOrganisationId,
       selectOrganisationsState,
