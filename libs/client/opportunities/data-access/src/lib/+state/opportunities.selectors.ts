@@ -52,6 +52,23 @@ export const selectOpportunitiesGroupedByOrganisation = createSelector(
 export const selectOpportunityById = (id: string) =>
   createSelector(selectOpportunitiesDictionary, (dictionary) => dictionary[id]);
 
+export const selectOpportunityDetails = (opportunityId: string) =>
+  createSelector(selectOpportunitiesDictionary, (opportunities) => {
+    const opportunity = opportunities?.[opportunityId ?? ''];
+
+    return (
+      (opportunity && {
+        ...opportunity,
+        dealLeads: getDealLeads(opportunity?.team),
+        dealTeam: getDealTeam(opportunity?.team),
+        ndaTerminationDate: opportunity?.ndaTerminationDate
+          ? new Date(opportunity?.ndaTerminationDate)
+          : null,
+      }) ??
+      null
+    );
+  });
+
 export const selectRouteOpportunityDetails = createSelector(
   selectOpportunitiesDictionary,
   routerQuery.selectCurrentOpportunityId,
@@ -305,4 +322,5 @@ export const opportunitiesQuery = {
   selectIsLoadingUpdateStage,
   selectFinancialGroups,
   selectIsTeamMemberForCurrentOpportunity,
+  selectOpportunityDetails,
 };
