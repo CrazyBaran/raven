@@ -49,7 +49,7 @@ import { EditorView } from '@progress/kendo-angular-editor';
 
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
 import { TagComponent, TagTypeColorPipe } from '@app/client/shared/ui';
-import { TagsActions } from '@app/client/tags/state';
+import { TagsActions, tagsQuery } from '@app/client/tags/state';
 import { TagDropdownValue } from '@app/client/tags/ui';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -114,6 +114,7 @@ export class NotepadFormComponent
 
   public constructor() {
     super();
+
     this.notepadForm.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe((value) => {
@@ -147,7 +148,13 @@ export class NotepadFormComponent
   protected noteTemplates = this.templateFacade.notesTemplates;
   protected defaultTemplate = this.templateFacade.defaultTemplate;
   protected templateLoaded = this.templateFacade.loaded;
-  protected tagLoaded = this.tagFacade.loaded;
+  protected tagLoading = this.store.selectSignal(
+    tagsQuery.selectIsLoadingTags('opportunity'),
+  );
+
+  protected peopleTagLoading = this.store.selectSignal(
+    tagsQuery.selectIsLoadingTags('people'),
+  );
   protected tags = this.tagFacade.allTagsWithCompanyRelation;
 
   protected peopleTags = this.tagFacade.peopleTags;
@@ -240,6 +247,7 @@ export class NotepadFormComponent
     return (
       this.addedTagIds()
         ?.map((tag) => {
+          debugger;
           if (typeof tag === 'string') {
             return this.tags().find((t) => t?.id === tag) as TagData;
           }
@@ -306,7 +314,13 @@ export class NotepadFormComponent
   public ngOnInit(): void {
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({
-        tagTypes: ['opportunity', 'industry', 'investor', 'business-model'],
+        tagTypes: [
+          'opportunity',
+          'industry',
+          'investor',
+          'business-model',
+          'people',
+        ],
       }),
     );
   }
