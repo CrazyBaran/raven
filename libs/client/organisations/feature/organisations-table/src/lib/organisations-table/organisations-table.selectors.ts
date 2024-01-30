@@ -177,5 +177,6 @@ export const selectOrganisationsTableViewModel = createSelector(
     tableModel,
     params,
     lastUpdated: dataWarehouseLastUpdated?.lastUpdated,
+    lastChecked: dataWarehouseLastUpdated?.lastChecked,
   }),
 );
