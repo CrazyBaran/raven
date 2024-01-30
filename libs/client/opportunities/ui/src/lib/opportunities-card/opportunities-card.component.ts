@@ -20,6 +20,7 @@ export type OpportunityCard = {
   dealLeads?: string[];
   affinityUrl?: string;
   height?: number;
+  created?: boolean;
 };
 
 @Component({

@@ -186,9 +186,9 @@ export class KanbanBoardComponent {
     );
 
     if (
-      (column.name === this._board.preliminiaryColumn!.name &&
-        originColumn!.name.includes('Outreach')) ||
-      originColumn!.name.includes('Met')
+      !opportunity.created &&
+      (originColumn!.name.includes('Outreach') ||
+        originColumn!.name.includes('Met'))
     ) {
       this.receiveMode.set(true);
       this.paramsEditId.set({
