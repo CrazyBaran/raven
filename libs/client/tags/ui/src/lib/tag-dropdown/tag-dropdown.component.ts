@@ -25,6 +25,8 @@ import {
   ControlValueAccessor,
 } from '@app/client/shared/util';
 import { TagsService } from '@app/client/tags/data-access';
+import { TagsActions } from '@app/client/tags/state';
+import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
@@ -39,6 +41,7 @@ import {
   Observable,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs';
 import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
 
@@ -87,6 +90,7 @@ export class TagDropdownComponent extends ControlValueAccessor<
   TagDropdownValue[]
 > {
   protected tagService = inject(TagsService);
+  protected store = inject(Store);
 
   protected value: WritableSignal<TagDropdownValue[]> = signal([]);
   protected value$ = toObservable(this.value);
@@ -136,6 +140,14 @@ export class TagDropdownComponent extends ControlValueAccessor<
     switchMap((filter) =>
       this.tagService.getTags({ type: 'company', query: filter, take: 50 }),
     ),
+    tap((response) => {
+      this.store.dispatch(
+        TagsActions.getTagsByTypesSuccess({
+          data: response.data!,
+          tagTypes: ['company'],
+        }),
+      );
+    }),
     map(
       (response): DropdownTag[] =>
         response.data?.map((item) => ({

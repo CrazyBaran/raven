@@ -16,7 +16,7 @@
     <!--        TAGS       -->
     <app-tag-dropdown
       (openTagDialog)="openTagDialog($event)"
-      [loading]="!tagLoaded()"
+      [loading]="tagLoading()!"
       [tags]="$any(tags())"
       formControlName="tags"
     >
@@ -27,7 +27,7 @@
       [data]="peopleTagsWithoutSelected()"
       [filterable]="true"
       [kendoDropDownFilter]="{ caseSensitive: false, operator: 'contains' }"
-      [loading]="!tagLoaded()"
+      [loading]="peopleTagLoading()!"
       [virtual]="true"
       fillMode="outline"
       placeholder="Select people..."
