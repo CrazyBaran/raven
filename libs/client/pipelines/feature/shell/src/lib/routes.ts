@@ -1,7 +1,9 @@
 import { Route } from '@angular/router';
+import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
 import { providePipelinesFeature } from '@app/client/pipelines/state';
-import { provideWebsocketEffects } from '@app/client/core/websockets';
+import { provideTagsFeature } from '@app/client/tags/state';
+import { provideTemplatesFeature } from '@app/client/templates/data-access';
 
 export const PIPELINES_ROUTES: Route[] = [
   {
@@ -9,7 +11,9 @@ export const PIPELINES_ROUTES: Route[] = [
     providers: [
       provideWebsocketEffects(),
       provideOpportunitiesFeature(),
-      providePipelinesFeature()
+      providePipelinesFeature(),
+      provideTagsFeature(),
+      provideTemplatesFeature(),
     ],
     children: [
       {

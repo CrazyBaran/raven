@@ -11,7 +11,10 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NoteStoreFacade } from '@app/client/notes/state';
 import { ComponentData } from '@app/client/shared/dynamic-renderer/data-access';
 
-import { TemplatesStoreFacade } from '@app/client/templates/data-access';
+import {
+  TemplateActions,
+  TemplatesStoreFacade,
+} from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import {
   DialogResult,
@@ -26,6 +29,7 @@ import {
   TITLE_FIELD,
 } from '@app/client/notes/ui';
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
+import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import * as _ from 'lodash';
@@ -52,6 +56,7 @@ export class NotepadContentComponent {
 
   protected templateFacade = inject(TemplatesStoreFacade);
   protected noteFacade = inject(NoteStoreFacade);
+  protected store = inject(Store);
   protected actions$ = inject(Actions);
   protected windowRef = inject(WindowRef, { optional: true });
   protected dialogService = inject(DialogService);
@@ -68,6 +73,10 @@ export class NotepadContentComponent {
     peopleTags: [],
     tags: [],
   });
+
+  public constructor() {
+    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
+  }
 
   public get hasChanges(): boolean {
     const { notes, template, tags, peopleTags } = this.notepadForm.value ?? {};

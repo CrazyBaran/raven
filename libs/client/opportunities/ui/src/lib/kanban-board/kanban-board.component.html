@@ -7,13 +7,18 @@
     cdkScrollable
     class="relative flex min-h-0 w-full flex-1 gap-4 overflow-x-auto overflow-y-hidden"
   >
-    @for (column of board.columns; track column.name; let last = $last) {
+    @for (
+      column of board.columns;
+      track column.name;
+      let last = $last;
+      let index = $index
+    ) {
       <app-kanban-column
         class="block min-w-[328px] flex-1 flex-shrink-0"
         [column]="column"
         (dragStarted)="dragStarted($event)"
         (dragEnded)="dragEnded($event)"
-        (dropEvent)="dragEndEvent.emit($event)"
+        (dropEvent)="onDrop($event, index, column)"
         [receiveMode]="!!receiveMode()"
         [class.mr-6]="last"
       />
@@ -44,3 +49,11 @@
   (confirmEvent)="onConfirmDialog()"
   [footerGroup]="confirmDrop()?.footerGroup!"
 />
+
+@if (paramsEditId()) {
+  <app-create-opportunity-dialog
+    [params]="paramsEditId()!"
+    (onCancel)="onOpportunityEditCancel()"
+    (onSubmit)="onOpportunityEditSubmit()"
+  />
+}

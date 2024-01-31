@@ -166,6 +166,7 @@ function createCard(
         label: displayName,
         value: _.get(opportunity, fieldName),
       })) ?? [],
+    created: !!opportunity.tag,
   };
 }
 
@@ -230,6 +231,9 @@ export const selectKanbanBoard = (groupingEnabled: boolean) =>
       return {
         columns,
         footers: groupingEnabled ? footers : [],
+        preliminiaryColumn: columns!.find(
+          ({ name }) => name.toLowerCase().includes('preliminary dd')!,
+        )!,
       };
     },
   );
