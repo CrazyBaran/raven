@@ -136,6 +136,7 @@ describe('NotesService', () => {
       note.createdBy = userEntity;
       note.updatedBy = userEntity;
       note.noteFieldGroups = [noteFieldGroup];
+      note.complexTags = [];
 
       jest.spyOn(mockNoteRepository, 'save').mockResolvedValue(note);
 
@@ -145,6 +146,7 @@ describe('NotesService', () => {
         templateEntity: null,
         tags: [],
         fields: [],
+        companyOpportunityTags: [],
       });
 
       expect(mockNoteRepository.save).toHaveBeenCalledWith(note);

@@ -43,7 +43,7 @@ interface CreateNoteOptions {
   tags: TagEntity[];
   fields: FieldUpdate[];
   rootVersionId?: string;
-  companyOpportunityTags?: CompanyOpportunityTag[];
+  companyOpportunityTags: CompanyOpportunityTag[];
 }
 
 interface UpdateNoteFieldOptions {
