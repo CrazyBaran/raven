@@ -366,11 +366,6 @@ export class NotesService {
       .select('MAX(note_sub.version)', 'maxVersion')
       .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
 
-    console.log({
-      complexTagsForOpportunity,
-      l: complexTagsForOpportunity.length,
-    });
-
     s = Date.now();
     const qb = this.noteRepository
       .createQueryBuilder('note')
@@ -1071,10 +1066,9 @@ export class NotesService {
           ct.tags.length === ids.length &&
           ct.tags.every((t) => ids.includes(t.id)),
       );
-      console.log({ existingComplexTags, filteredTags, ids });
+
       if (filteredTags.length > 0) {
         complexTagsToReturn.push(filteredTags[0]);
-        console.log('EXISTING TAG FOUBND!!!!!!!! good');
       } else {
         const newComplexTag = new ComplexTagEntity();
         newComplexTag.tags = [complexTag.companyTag, complexTag.opportunityTag];
