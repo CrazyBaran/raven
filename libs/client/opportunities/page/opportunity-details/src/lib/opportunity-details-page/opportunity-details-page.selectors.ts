@@ -47,7 +47,7 @@ export const selectOpportunityPipelines = createSelector(
   opportunitiesQuery.selectIsLoadingUpdateStage,
   (stages, isLoading, opportunity, hasPermission, isLoadingUpdateState) => ({
     data: stages.filter(({ isHidden }) => !isHidden),
-    value: opportunity?.stage.id,
+    value: isLoading ? null : opportunity?.stage.id,
     disabled: isLoading || isLoadingUpdateState, // todo: add permission check
     isLoading: isLoading || isLoadingUpdateState,
     disabledItem: ((item: ItemArgs): boolean =>
