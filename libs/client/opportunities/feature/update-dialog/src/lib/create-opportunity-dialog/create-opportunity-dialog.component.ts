@@ -150,7 +150,7 @@ export class CreateOpportunityDialogComponent implements OnInit {
       }),
     );
 
-    this.opporunityDetails$.subscribe((data: any) => {
+    this.opporunityDetails$?.subscribe((data: any) => {
       // fix pathValue typing
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.opportunityForm.patchValue({
