@@ -32,8 +32,6 @@ export class ParseCompanyOpportunityTagsPipe
       return [];
     }
 
-    console.log({ complexTagIds });
-
     const distinctCompanyIds = [
       ...new Set(
         complexTagIds.map((complexTagId) => complexTagId.companyTagId),
@@ -72,8 +70,6 @@ export class ParseCompanyOpportunityTagsPipe
       },
     });
 
-    console.log({ versionTags });
-
     // TODO adjust validation???
     this.validatePassedIds(
       distinctCompanyIds,
@@ -94,11 +90,7 @@ export class ParseCompanyOpportunityTagsPipe
             (versionTag) => versionTag.id === complexTagId.versionTagId,
           )
         : undefined;
-      console.log({
-        companyTag,
-        opportunityTag,
-        versionTag,
-      });
+
       return {
         companyTag,
         opportunityTag,
