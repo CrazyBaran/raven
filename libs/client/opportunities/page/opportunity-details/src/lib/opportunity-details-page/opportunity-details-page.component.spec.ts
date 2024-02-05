@@ -29,7 +29,9 @@ describe('OpportunityDetailsPageComponent', () => {
               value: {
                 opportunityId: '1',
                 currentOrganisationId: '1',
-                lines: {},
+                lines: {
+                  disabledItem: (): boolean => true,
+                },
               },
             },
           ],

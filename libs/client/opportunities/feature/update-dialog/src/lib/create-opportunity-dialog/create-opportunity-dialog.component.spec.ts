@@ -30,7 +30,10 @@ describe('UpdateDialogComponent', () => {
         provideMockStore({
           selectors: [
             {
-              selector: selectCreateOpportunityDialogViewModel,
+              selector: selectCreateOpportunityDialogViewModel({
+                organisationId: '',
+                opportunityId: '',
+              }),
               value: {
                 opportunityDropdown: {},
               },
