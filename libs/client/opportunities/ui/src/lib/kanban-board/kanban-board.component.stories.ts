@@ -67,6 +67,7 @@ export const Primary: Story = {
           droppableFrom: [],
         },
       ],
+      preliminiaryColumn: null,
     },
   },
 };

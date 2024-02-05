@@ -10,6 +10,7 @@ import { createSelector } from '@ngrx/store';
 export const selectCreateOpportunityDialogViewModel = (params: {
   opportunityId: string;
   organisationId: string;
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) =>
   createSelector(
     tagsFeature.selectOpportunityTags,

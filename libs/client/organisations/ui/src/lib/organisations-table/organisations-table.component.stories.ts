@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Meta, StoryObj } from '@storybook/angular';
 import * as OpportunitiesTableStories from '../opportunities-table/opportunities-table.component.stories';
 import { OrganisationsTableComponent } from './organisations-table.component';
@@ -21,57 +22,16 @@ export const Primary: Story = {
             name: 'Outreach',
             color: '#FF0000',
           },
-          score: 'A',
-          specterRank: 'A',
-          domain: 'organisation1.com',
-          hq: 'London',
           opportunities: OpportunitiesTableStories.Primary!.args!.rows!,
-          shortList: true,
-        },
-        {
-          id: '2',
-          name: 'Organisation 2',
-          domains: ['organisation1.com'],
-          status: {
-            name: 'Outreach',
-            color: '#FF0000',
+          data: {
+            score: 'A',
+            hq: {
+              localization: 'London',
+            },
+            industry: {
+              industries: ['Tech', 'Finance'],
+            },
           },
-          score: 'A',
-          specterRank: 'A',
-          domain: 'organisation1.com',
-          hq: 'London',
-          opportunities: OpportunitiesTableStories.Primary!.args!.rows!,
-          shortList: false,
-        },
-        {
-          id: '3',
-          name: 'Organisation 3',
-          domains: ['organisation1.com'],
-          status: {
-            name: 'Outreach',
-            color: '#FF0000',
-          },
-          score: 'A',
-          specterRank: 'A',
-          domain: 'organisation1.com',
-          hq: 'London',
-          opportunities: OpportunitiesTableStories.Primary!.args!.rows!,
-          shortList: true,
-        },
-        {
-          id: '4',
-          name: 'Organisation 4',
-          domains: ['organisation1.com'],
-          status: {
-            name: 'Outreach',
-            color: '#FF0000',
-          },
-          score: 'A',
-          specterRank: 'A',
-          domain: 'organisation1.com',
-          hq: 'London',
-          opportunities: OpportunitiesTableStories.Primary!.args!.rows!,
-          shortList: false,
         },
       ],
       isLoading: false,
@@ -81,5 +41,10 @@ export const Primary: Story = {
       field: 'none',
       dir: 'asc',
     },
+    filters: {
+      Country: ['United Kingdom', 'Poland'],
+      City: ['London', 'Warsaw'],
+      Status: ['Met'],
+    } as any,
   },
 };

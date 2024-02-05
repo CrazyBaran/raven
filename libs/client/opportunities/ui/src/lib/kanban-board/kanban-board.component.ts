@@ -14,12 +14,14 @@ import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/overlay';
 import { LowerCasePipe, NgClass } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+// TODO: fix boundaries
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { CreateOpportunityDialogComponent } from '@app/client/opportunities/feature/update-dialog';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { isBoolean } from 'lodash';
 import { Subject, delayWhen, filter } from 'rxjs';
-import { CreateOpportunityDialogComponent } from '../../../../feature/update-dialog/src/lib/create-opportunity-dialog/create-opportunity-dialog.component';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
 import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {

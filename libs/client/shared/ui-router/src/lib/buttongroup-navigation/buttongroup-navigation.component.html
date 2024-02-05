@@ -1,16 +1,14 @@
 <kendo-buttongroup class="flex gap-0.5" selection="single">
-  <kendo-button
-    *rxFor="
-      let filter of model?.filters ?? [];
-      trackBy: 'id';
-      strategy: 'immediate'
-    "
-    (click)="onClick(filter)"
-    [selected]="filter.selected"
-    [toggleable]="true"
-    [size]="model.size ?? 'medium'"
-    [togglable]="model.toggleable!"
-  >
-    {{ filter.name }}
-  </kendo-button>
+  @for (filter of model?.filters ?? []; track filter.id) {
+    <kendo-button
+      (click)="onClick(filter)"
+      [selected]="filter.selected"
+      [toggleable]="true"
+      [size]="model.size ?? 'medium'"
+      [togglable]="model.toggleable!"
+      [iconClass]="filter.iconClass!"
+    >
+      {{ filter.name }}
+    </kendo-button>
+  }
 </kendo-buttongroup>

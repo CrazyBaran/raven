@@ -1,9 +1,14 @@
 <ui-tiles-container
+  class="block"
+  (appOnResize)="onContainerWidthChange($event)"
   [itemTemplate]="itemTemplate"
   [rows]="rows"
   [tiles]="tags"
   [tooltipTemplate]="tooltipTemplate"
   [trackBy]="trackByFn"
+  [staticTilesWidth]="tagsWidth"
+  [staticTooltipWidth]="28"
+  [staticContainerWidth]="width ?? containerWidth()"
 />
 
 <ng-template #itemTemplate let-tag>
@@ -20,7 +25,7 @@
     <p
       [tooltipTemplate]="tooltip"
       tooltipClass="tag-tooltip"
-      class="text-disabledText w-8 cursor-pointer"
+      class="text-disabledText w-6 cursor-pointer"
       kendoTooltip
       title="test"
     >

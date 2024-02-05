@@ -1,0 +1,33 @@
+<ul cdkVirtualScrollingElement class="h-[200px] overflow-y-scroll pl-0 pr-3">
+  <li class="px-3 py-2">
+    <kendo-textbox [formControl]="searchForm">
+      <ng-template kendoTextBoxSuffixTemplate>
+        @if (isLoading()) {
+          <kendo-loader />
+        }
+      </ng-template>
+    </kendo-textbox>
+  </li>
+
+  <cdk-virtual-scroll-viewport itemSize="40">
+    <li
+      *cdkVirtualFor="let item of currentData()"
+      class="h-10 px-3 py-2"
+      #itemElement
+      (click)="onSelectionChange(valueAccessor(item), itemElement)"
+      [ngClass]="{ 'k-selected': isItemSelected(item) }"
+    >
+      <input
+        type="checkbox"
+        #notification
+        kendoCheckBox
+        [checked]="isItemSelected(item)"
+      />
+      <kendo-label
+        class="pointer-events-none"
+        [for]="notification"
+        [text]="textAccessor(item)"
+      />
+    </li>
+  </cdk-virtual-scroll-viewport>
+</ul>

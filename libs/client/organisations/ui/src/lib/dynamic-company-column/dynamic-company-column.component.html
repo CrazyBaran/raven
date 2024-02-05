@@ -1,0 +1,19 @@
+<div class="flex items-center gap-3">
+  <i class="fa-regular fa-image text-xl"></i>
+  <div
+    [routerLink]="['/companies', field.id]"
+    class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
+  >
+    <div class="grow overflow-hidden">
+      <p [isEllipsisActive]="true" class="text-base group-hover:font-bold">
+        {{ field.name }}
+      </p>
+
+      @if (field.domains[0]) {
+        <p [isEllipsisActive]="true" class="text-xs">
+          {{ field.domains[0] }}
+        </p>
+      }
+    </div>
+  </div>
+</div>

@@ -86,6 +86,9 @@ module.exports = {
         borderHover: '#D6D6D6',
       },
       buttons: {
+        'button-text-90': '#002C3CE5',
+        'button-text-8': '#002C3C14',
+        'button-text-30': '#002C3C4D',
         'button-text-50': '#002c3c80',
         'button-text': '#002C3CE5',
       },

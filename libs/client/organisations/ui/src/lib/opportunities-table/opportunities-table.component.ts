@@ -3,30 +3,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  Pipe,
-  PipeTransform,
   TrackByFunction,
   ViewEncapsulation,
 } from '@angular/core';
-import { TagItem, TagsContainerComponent } from '@app/client/shared/ui';
+import { TagsContainerComponent } from '@app/client/shared/ui';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridItem, GridModule } from '@progress/kendo-angular-grid';
-
-@Pipe({
-  name: 'toUserTags',
-  standalone: true,
-})
-export class ToUserTagPipe implements PipeTransform {
-  public transform(users: string[]): TagItem[] {
-    return users.map((user) => ({
-      name: user,
-      icon: 'fa-solid fa-user',
-      id: user,
-      size: 'medium',
-    }));
-  }
-}
+import { ToUserTagPipe } from '../organisations-table-view-legacy/organisations-table-view.component';
 
 export type OpportunityRow = {
   id: string;

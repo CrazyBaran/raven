@@ -28,7 +28,7 @@
     <ng-template kendoGridCellTemplate let-opportunity>
       <ui-tags-container
         [rows]="1"
-        [tags]="opportunity.dealLeads | toUserTags"
+        [tags]="opportunity.dealLeads | toUserTag"
         class="w-full"
       />
     </ng-template>
@@ -38,7 +38,7 @@
     <ng-template kendoGridCellTemplate let-opportunity>
       <ui-tags-container
         [rows]="1"
-        [tags]="opportunity.dealTeam | toUserTags"
+        [tags]="opportunity.dealTeam | toUserTag"
         class="w-full"
       />
     </ng-template>

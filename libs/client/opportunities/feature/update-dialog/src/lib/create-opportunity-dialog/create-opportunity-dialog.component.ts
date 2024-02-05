@@ -1,3 +1,6 @@
+/* eslint-disable @angular-eslint/no-output-on-prefix,@typescript-eslint/no-explicit-any */
+// TODO: Fix types
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
