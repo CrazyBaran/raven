@@ -123,7 +123,7 @@ export const organisationTableConfiguration: TableColumn[] = [
     name: 'Investors',
     field: 'actors.investors',
     type: 'string',
-    filter: 'string',
+    filter: null,
     sortable: false,
   },
 ];
