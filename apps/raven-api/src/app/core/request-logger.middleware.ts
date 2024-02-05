@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import * as morgan from 'morgan';
-import { TokenIndexer } from 'morgan';
+import morgan, { TokenIndexer } from 'morgan';
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { environment } from '../../environments/environment';

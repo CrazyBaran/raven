@@ -1,4 +1,4 @@
-import * as expressBasicAuth from 'express-basic-auth';
+import expressBasicAuth from 'express-basic-auth';
 import * as _ from 'lodash';
 
 import { createBullBoard } from '@bull-board/api';

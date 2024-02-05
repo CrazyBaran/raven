@@ -54,6 +54,7 @@ export class OpportunityCreatedNoteEventHandler {
       rootVersionId,
       tags: [],
       fields: [],
+      companyOpportunityTags: [],
     });
     opportunityEntity.noteId = note.id;
 
