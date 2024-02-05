@@ -39,11 +39,21 @@ export class FilterTilesComponent {
     });
   }
 
-  public getFieldText(pair: KeyValue<string, FilterParam>): string {
-    const fieldConfig = organisationTableConfiguration.find(
-      (c) => c.field === pair.key,
-    );
+  public onTileClick(key: string): void {
+    const config = this.getFilterConfig(key);
 
+    //dirty way to open the filter menu but kendo doesn't expose a public API for this
+    const el = document.querySelector(
+      `.k-grid-filter-menu[title="${config?.name} Filter Menu"]`,
+    ) as HTMLElement;
+
+    setTimeout(() => {
+      el?.click();
+    });
+  }
+
+  public getFieldText(pair: KeyValue<string, FilterParam>): string {
+    const fieldConfig = this.getFilterConfig(pair.key);
     const fieldName = fieldConfig?.name;
 
     const type = organisationTableConfiguration.find(
@@ -81,5 +91,11 @@ export class FilterTilesComponent {
   private getNumberRangeText(value: FilterParam): string {
     const [start, end] = value as [number, number];
     return `${start} - ${end ?? 'any'}`;
+  }
+
+  private getFilterConfig(
+    key: string,
+  ): (typeof organisationTableConfiguration)[number] | undefined {
+    return organisationTableConfiguration.find((c) => c.field === key);
   }
 }
