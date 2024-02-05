@@ -1,7 +1,8 @@
 <div class="flex flex-wrap gap-4">
   @for (pair of filters() | keyvalue; track pair.key) {
     <div
-      class="border-buttons-button-text-30 bg-buttons-button-text-8 text-buttons-button-text-90 flex flex-nowrap items-center gap-2 rounded border pl-2 pr-1"
+      class="border-buttons-button-text-30 bg-buttons-button-text-8 text-buttons-button-text-90 flex cursor-pointer flex-nowrap items-center gap-2 rounded border pl-2 pr-1"
+      (click)="onTileClick(pair.key)"
     >
       <span class="text-base">
         {{ getFieldText(pair) }}
@@ -10,7 +11,7 @@
         fillMode="clear"
         class="!p-0 !text-xl"
         iconClass="fa-sharp fa-solid fa-circle-xmark"
-        (click)="removeFilter(pair.key)"
+        (click)="$event.stopPropagation(); removeFilter(pair.key)"
       >
       </kendo-button>
     </div>
