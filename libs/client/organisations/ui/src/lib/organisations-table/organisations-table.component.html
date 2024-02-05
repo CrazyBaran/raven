@@ -1,7 +1,9 @@
 <kendo-grid
   #grid
+  (filterChange)="filterChange($event)"
   [data]="gridData"
   [expandedDetailKeys]="collapsedRows()"
+  [filter]="filters!"
   [loading]="isLoading"
   [pageSize]="take"
   [pageable]="pageable"
@@ -10,79 +12,65 @@
   [sort]="sort"
   [sortable]="true"
   class="organisation-table h-full"
+  filterable="menu"
   kendoGridExpandDetailsBy="id"
   scrollable="scrollable"
   uiKendoUrlPaging
   uiKendoUrlSorting
 >
-  <kendo-grid-column [width]="85" headerClass="!font-bold" title="Shortlist">
-    <ng-template kendoGridCellTemplate let-organisation>
-      <div class="flex w-full justify-center">
-        <i
-          [ngClass]="{
-            'fa-solid': organisation.shortList,
-            'fa-regular': !organisation.shortList
-          }"
-          class="fa-star"
-        ></i>
-      </div>
-    </ng-template>
-  </kendo-grid-column>
-
-  <kendo-grid-column
-    [sortable]="true"
-    field="name"
-    headerClass="!font-bold"
-    title="Company"
-  >
-    <ng-template kendoGridCellTemplate let-organisation>
-      <div class="flex items-center gap-3">
-        <i class="fa-regular fa-image text-xl"></i>
-        <div
-          [routerLink]="['/companies', organisation.id]"
-          class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
-        >
-          <div class="grow overflow-hidden">
-            <p [isEllipsisActive]="true" class="group-hover:font-bold">
-              {{ organisation.name }}
-            </p>
-
-            @if (organisation.domains[0]) {
-              <p [isEllipsisActive]="true" class="text-xs">
-                {{ organisation.domains[0] }}
-              </p>
-            }
-          </div>
+  @for (columnTemplate of additionalFields; track columnTemplate.name) {
+    <kendo-grid-column
+      [field]="columnTemplate.field"
+      [title]="columnTemplate.name"
+      headerClass="!font-bold"
+      [width]="140"
+      [filterable]="!!columnTemplate.filter"
+      [sortable]="columnTemplate.sortable"
+    >
+      <ng-template kendoGridCellTemplate let-organisation>
+        <div class="text-xs">
+          <app-render-template
+            [component]="columnTemplate | dynamicColumn: organisation"
+          />
         </div>
-      </div>
-    </ng-template>
-  </kendo-grid-column>
+      </ng-template>
 
-  <kendo-grid-column headerClass="!font-bold" title="Status">
-    <ng-template kendoGridCellTemplate let-organisation>
-      <div class="flex items-center gap-3">
-        <i
-          [style.color]="organisation.status.color"
-          class="fa-solid fa-circle text-xs"
-        ></i>
-        <p [isEllipsisActive]="true" class="flex-1 text-black">
-          {{ organisation.status.name ?? '' }}
-        </p>
-      </div>
-    </ng-template>
-  </kendo-grid-column>
-
-  <kendo-grid-column field="score" headerClass="!font-bold" title="MCV Score" />
-
-  <kendo-grid-column
-    field="specterRank"
-    headerClass="!font-bold"
-    title="Specter Rank"
-  />
-
-  <kendo-grid-column field="domain" headerClass="!font-bold" title="Domain" />
-
-  <kendo-grid-column field="hq" headerClass="!font-bold" title="HQ" />
+      @if (columnTemplate.filter) {
+        <ng-template
+          kendoGridFilterMenuTemplate
+          let-filter
+          let-column="column"
+          let-filterService="filterService"
+        >
+          @switch (columnTemplate.filter) {
+            @case ('date') {
+              <app-date-range-filter
+                [field]="column.field"
+                [filter]="filter"
+                [filterService]="filterService"
+              />
+            }
+            @case ('string') {
+              <app-multicheck-filter
+                [sourceFn]="columnTemplate | sourceFn"
+                [field]="column.field"
+                [filterService]="filterService"
+                [currentFilter]="filter"
+                [isPrimitive]="true"
+              />
+            }
+            @case ('number') {
+              <app-number-range-filter
+                [field]="column.field"
+                [filter]="filter"
+                [filterService]="filterService"
+              />
+            }
+          }
+        </ng-template>
+      }
+    </kendo-grid-column>
+  }
 
   <kendo-grid-column [width]="60" title="">
     <ng-template kendoGridCellTemplate let-organisation>
@@ -100,6 +88,9 @@
   </kendo-grid-column>
 
   <ng-template kendoGridDetailTemplate let-organisation>
-    <app-opportunities-table [rows]="organisation.opportunities" />
+    <app-opportunities-table
+      [rows]="organisation.opportunities"
+      [style.width]="tableWidth"
+    />
   </ng-template>
 </kendo-grid>

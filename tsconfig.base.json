@@ -8,6 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "esModuleInterop": true,
     "target": "es2015",
     "module": "esnext",
     "typeRoots": ["node_modules/@types"],
@@ -123,6 +124,9 @@
       "@app/client/organisations/feature/organisations-table": [
         "libs/client/organisations/feature/organisations-table/src/index.ts"
       ],
+      "@app/client/organisations/feature/organisations-table-v2": [
+        "libs/client/organisations/feature/organisations-table-v2/src/index.ts"
+      ],
       "@app/client/organisations/feature/shell": [
         "libs/client/organisations/feature/shell/src/index.ts"
       ],
@@ -209,7 +213,6 @@
         "libs/rvns-notes/data-access/src/index.ts"
       ],
       "@app/rvns-opportunities": ["libs/rvns-opportunities/src/index.ts"],
-      "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
       "@app/rvns-pipelines": ["libs/rvns-pipelines/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],
@@ -217,6 +220,8 @@
       "@app/rvns-teams": ["libs/rvns-teams/src/index.ts"],
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"],
+      "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
+
       "rvns-shared": ["libs/rvns-shared/src/index.ts"]
     }
   },

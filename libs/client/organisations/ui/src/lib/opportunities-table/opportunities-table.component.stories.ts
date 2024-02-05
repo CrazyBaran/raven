@@ -1,9 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/angular';
+import { componentWrapperDecorator, Meta, StoryObj } from '@storybook/angular';
 import { OpportunitiesTableComponent } from './opportunities-table.component';
 
 const meta: Meta<OpportunitiesTableComponent> = {
   component: OpportunitiesTableComponent,
   title: 'Organisations / Organisations Table / Opportunities Table',
+  decorators: [
+    componentWrapperDecorator(
+      (story) => `<div style=" height: 700px">${story}</div>`,
+    ),
+  ],
 };
 export default meta;
 type Story = StoryObj<OpportunitiesTableComponent>;

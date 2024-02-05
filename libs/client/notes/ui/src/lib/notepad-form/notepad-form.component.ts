@@ -247,7 +247,6 @@ export class NotepadFormComponent
     return (
       this.addedTagIds()
         ?.map((tag) => {
-          debugger;
           if (typeof tag === 'string') {
             return this.tags().find((t) => t?.id === tag) as TagData;
           }

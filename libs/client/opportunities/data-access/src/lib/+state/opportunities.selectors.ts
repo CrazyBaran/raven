@@ -52,6 +52,7 @@ export const selectOpportunitiesGroupedByOrganisation = createSelector(
 export const selectOpportunityById = (id: string) =>
   createSelector(selectOpportunitiesDictionary, (dictionary) => dictionary[id]);
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const selectOpportunityDetails = (opportunityId: string) =>
   createSelector(selectOpportunitiesDictionary, (opportunities) => {
     const opportunity = opportunities?.[opportunityId ?? ''];

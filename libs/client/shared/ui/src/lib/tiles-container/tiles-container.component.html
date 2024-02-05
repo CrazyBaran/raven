@@ -1,11 +1,9 @@
 <ul
-  (appOnResize)="onContainerWidthChange($event)"
   #placeholder
   class="m-0 flex list-none flex-wrap items-start justify-start overflow-hidden p-0"
 >
-  @for (tile of tilesSignal(); track trackBy; let i = $index) {
+  @for (tile of tiles(); track trackBy; let i = $index) {
     <li
-      (appOnResize)="onTileListWidthChange()"
       class="tile-list max-w-full p-1 pl-0 pr-2 last:pr-0"
       [ngClass]="{
         'invisible order-last h-0 !py-0': i > maxIndexSignal()!
@@ -22,7 +20,6 @@
       'invisible order-last h-0 !p-0': hiddenTilesLengthSignal() < 1
     }"
     class="p-1 first:pl-0 last:pr-0"
-    (appOnResize)="onTooltipTileWidthChange($event)"
   >
     <ng-container
       [ngTemplateOutlet]="tooltipTemplate"

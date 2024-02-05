@@ -1,0 +1,20 @@
+<div class="k-form">
+  <label class="k-form-field">
+    <span>Min Value</span>
+    <kendo-numerictextbox
+      (valueChange)="onStartChange($event)"
+      [(ngModel)]="start"
+      [max]="max!"
+      [autoCorrect]="true"
+    />
+  </label>
+  <label class="k-form-field">
+    <span>Max Value</span>
+    <kendo-numerictextbox
+      (valueChange)="onEndChange($event)"
+      [(ngModel)]="end"
+      [min]="min!"
+      [autoCorrect]="true"
+    />
+  </label>
+</div>

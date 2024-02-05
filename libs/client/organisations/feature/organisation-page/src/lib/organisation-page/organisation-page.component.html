@@ -135,11 +135,9 @@
               title="Deal Team"
             >
               <ng-template kendoGridCellTemplate let-dataItem>
-                <ui-tag
-                  *rxFor="let name of dataItem.team | dealTeam"
-                  [label]="name"
-                  uiUserTag
-                />
+                @for (name of dataItem.team | dealTeam; track name) {
+                  <ui-tag [label]="name" uiUserTag />
+                }
               </ng-template>
             </kendo-grid-column>
 

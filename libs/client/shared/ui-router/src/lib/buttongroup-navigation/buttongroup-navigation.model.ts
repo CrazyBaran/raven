@@ -6,6 +6,7 @@ export type ButtongroupNavigationModel = {
     name: string;
     selected: boolean;
     queryParams: Record<string, string | null>;
+    iconClass?: string;
   }[];
   // paramName: string;
   queryParamsHandling?: 'merge' | 'preserve';

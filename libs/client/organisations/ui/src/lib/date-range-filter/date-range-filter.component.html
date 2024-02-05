@@ -1,0 +1,22 @@
+<div class="k-form">
+  <label class="k-form-field">
+    <span>After</span>
+    <kendo-datepicker
+      (valueChange)="onStartChange($event)"
+      [(ngModel)]="start"
+      [max]="max!"
+      [popupSettings]="popupSettings"
+    >
+    </kendo-datepicker>
+  </label>
+  <label class="k-form-field">
+    <span>Before</span>
+    <kendo-datepicker
+      (valueChange)="onEndChange($event)"
+      [(ngModel)]="end"
+      [min]="min!"
+      [popupSettings]="popupSettings"
+    >
+    </kendo-datepicker>
+  </label>
+</div>

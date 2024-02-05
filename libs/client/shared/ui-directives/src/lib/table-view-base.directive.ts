@@ -1,6 +1,9 @@
 import { Directive, Input } from '@angular/core';
 import { GridDataResult, PagerSettings } from '@progress/kendo-angular-grid';
-import { SortDescriptor } from '@progress/kendo-data-query';
+import {
+  CompositeFilterDescriptor,
+  SortDescriptor,
+} from '@progress/kendo-data-query';
 
 export interface TableViewModel<T> {
   data: T[];
@@ -11,6 +14,7 @@ export interface TableViewModel<T> {
   field: string;
   dir: 'asc' | 'desc' | string;
   pageable?: PagerSettings | boolean;
+  filters?: CompositeFilterDescriptor;
 }
 
 @Directive()
@@ -74,5 +78,9 @@ export abstract class TableViewBaseComponent<T> {
         ),
       }
     );
+  }
+
+  public get filters(): CompositeFilterDescriptor | null {
+    return this.model?.filters ?? null;
   }
 }

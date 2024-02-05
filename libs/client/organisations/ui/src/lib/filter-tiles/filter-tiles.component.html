@@ -1,0 +1,23 @@
+<div class="flex flex-wrap gap-4">
+  @for (pair of filters() | keyvalue; track pair.key) {
+    <div
+      class="border-buttons-button-text-30 bg-buttons-button-text-8 text-buttons-button-text-90 flex flex-nowrap items-center gap-2 rounded border pl-2 pr-1"
+    >
+      <span class="text-base">
+        {{ getFieldText(pair) }}
+      </span>
+      <kendo-button
+        fillMode="clear"
+        class="!p-0 !text-xl"
+        iconClass="fa-sharp fa-solid fa-circle-xmark"
+        (click)="removeFilter(pair.key)"
+      >
+      </kendo-button>
+    </div>
+  }
+  @if ((filters() | keyvalue).length > 0) {
+    <kendo-button fillMode="outline" (click)="clearFilters()">
+      Clear All
+    </kendo-button>
+  }
+</div>

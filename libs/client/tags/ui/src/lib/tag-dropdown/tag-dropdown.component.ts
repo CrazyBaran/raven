@@ -24,7 +24,11 @@ import {
   ClickOutsideDirective,
   ControlValueAccessor,
 } from '@app/client/shared/util';
+
+//TODO: rethink the boundaries
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { TagsService } from '@app/client/tags/data-access';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { TagsActions } from '@app/client/tags/state';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';

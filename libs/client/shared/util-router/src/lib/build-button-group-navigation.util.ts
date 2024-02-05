@@ -7,7 +7,11 @@ export type BuildButtonGroupNavigation<
 > = {
   params: T;
   name: keyof T;
-  buttons: { id: string | null | undefined; name: string }[];
+  buttons: {
+    id: string | null | undefined;
+    name: string;
+    iconClass?: string;
+  }[];
   toggleable?: boolean;
   staticQueryParams?: Record<string, string | null>;
 };
@@ -30,6 +34,7 @@ export function buildButtonGroupNavigation<
         [name as string]: b.id!,
         ...(staticQueryParams ?? {}),
       },
+      iconClass: b.iconClass,
     })),
     toggleable,
   };

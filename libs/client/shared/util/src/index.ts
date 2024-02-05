@@ -1,3 +1,4 @@
+export * from './lib/calculate-text';
 export * from './lib/click-outside.directive';
 export * from './lib/control-drag-area';
 export * from './lib/control-value.accessor';
