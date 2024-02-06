@@ -18,6 +18,7 @@ import {
   fadeIn,
   LoaderComponent,
   TagComponent,
+  TilelayoutItemComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
 import {
@@ -46,6 +47,8 @@ import {
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
 import { SPItem } from '@app/client/files/sdk-pnptimeline';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
+import { PipelinesActions } from '@app/client/pipelines/state';
+import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { TagData } from '@app/rvns-tags';
 import {
@@ -89,6 +92,8 @@ import {
     NotesTableContainerComponent,
     LoaderModule,
     PickerComponent,
+    TilelayoutItemComponent,
+    IsEllipsisActiveDirective,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -132,6 +137,8 @@ export class OrganisationPageComponent {
     this.store.dispatch(
       OrganisationsActions.getOrganisation({ id: organizationId }),
     );
+
+    this.store.dispatch(PipelinesActions.getPipelines());
 
     this.store
       .select(organisationsFeature.selectCurrentOrganisation)
