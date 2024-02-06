@@ -4,7 +4,6 @@ import {
   Component,
   EventEmitter,
   inject,
-  input,
   Output,
   signal,
 } from '@angular/core';
@@ -59,8 +58,6 @@ import { DomainValidators } from './domainValidators';
 export class CreateOrganisationDialogComponent {
   @Output() public closeDialog = new EventEmitter<void>();
 
-  public showCreateDialog = input.required<boolean>();
-
   public organisationFormGroup = inject(FormBuilder).group({
     name: ['', Validators.required],
     domain: [
@@ -80,8 +77,9 @@ export class CreateOrganisationDialogComponent {
 
   public companies = toSignal(
     toObservable(this.filter).pipe(
-      distinctUntilChanged(),
       debounceTime(500),
+      startWith(''),
+      distinctUntilChanged(),
       tap(() => this.loading.set(true)),
       switchMap((name) =>
         this.tagService
