@@ -1,21 +1,18 @@
 <kendo-grid
   #grid
+  (scrollBottom)="onLoadMore()"
   (filterChange)="filterChange($event)"
   [data]="gridData"
   [expandedDetailKeys]="collapsedRows()"
   [filter]="filters!"
   [loading]="isLoading"
-  [pageSize]="take"
-  [pageable]="pageable"
   [rowClass]="rowCallback"
-  [skip]="skip"
   [sort]="sort"
   [sortable]="true"
   class="organisation-table h-full"
   filterable="menu"
   kendoGridExpandDetailsBy="id"
   scrollable="scrollable"
-  uiKendoUrlPaging
   uiKendoUrlSorting
 >
   @for (columnTemplate of additionalFields; track columnTemplate.name) {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { CreateOrganisation } from '../models/create-organisation.model';
 import { DataWarehouseLastUpdated } from '../models/data-warehouse-last-updated';
 import { Organisation } from '../models/organisation.model';
@@ -51,6 +51,19 @@ export class OrganisationsService {
   > {
     return this.http.get<GenericResponse<DataWarehouseLastUpdated>>(
       `/api/dwh/last-updated`,
+    );
+  }
+
+  public checkIfDomainExists(value: string): Observable<boolean> {
+    return this.getOrganisations({ take: '100', skip: '0', query: value }).pipe(
+      map(
+        (response) =>
+          response.data?.items.some((organisation) =>
+            organisation.domains
+              .map((d) => d.toLowerCase())
+              .includes(value.toLowerCase()),
+          ) ?? false,
+      ),
     );
   }
 }

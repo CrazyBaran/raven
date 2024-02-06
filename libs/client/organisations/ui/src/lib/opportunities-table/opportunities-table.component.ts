@@ -6,6 +6,7 @@ import {
   TrackByFunction,
   ViewEncapsulation,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TagsContainerComponent } from '@app/client/shared/ui';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -14,6 +15,7 @@ import { ToUserTagPipe } from '../organisations-table-view-legacy/organisations-
 
 export type OpportunityRow = {
   id: string;
+  companyId: string;
   name: string;
   status: {
     name: string;
@@ -34,6 +36,7 @@ export type OpportunityRow = {
     DatePipe,
     ButtonModule,
     ToUserTagPipe,
+    RouterLink,
   ],
   templateUrl: './opportunities-table.component.html',
   styleUrls: ['./opportunities-table.component.scss'],

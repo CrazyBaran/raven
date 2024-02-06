@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, concatMap, map, of, switchMap } from 'rxjs';
 import {
   OrganisationsActions,
   OrganisationsUrlActions,
@@ -84,6 +84,35 @@ export const loadOrganisations = createEffect(
           catchError((error) => {
             console.error('Error', error);
             return of(OrganisationsActions.getOrganisationsFailure({ error }));
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const loadMoreOrganisations = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsActions.loadMoreOrganisations),
+      concatMap(({ params }) =>
+        organisationsService.getOrganisations(params).pipe(
+          map((response) => {
+            return OrganisationsActions.loadMoreOrganisationsSuccess({
+              data: response.data || { items: [], total: 0 },
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              OrganisationsActions.loadMoreOrganisationsFailure({ error }),
+            );
           }),
         ),
       ),
