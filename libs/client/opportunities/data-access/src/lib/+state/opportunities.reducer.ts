@@ -61,14 +61,17 @@ export const opportunitiesReducer = createReducer(
     opportunitiesAdapter.setAll(data, { ...state, isLoading: false }),
   ),
 
-  on(OrganisationsActions.getOrganisationsSuccess, (state, { data }) =>
-    opportunitiesAdapter.upsertMany(
-      _.chain(data.items)
-        .map((d) => d.opportunities.map((o) => ({ ...o, organisation: d })))
-        .flatMap()
-        .value(),
-      { ...state },
-    ),
+  on(
+    OrganisationsActions.getOrganisationsSuccess,
+    OrganisationsActions.loadMoreOrganisationsSuccess,
+    (state, { data }) =>
+      opportunitiesAdapter.upsertMany(
+        _.chain(data.items)
+          .map((d) => d.opportunities.map((o) => ({ ...o, organisation: d })))
+          .flatMap()
+          .value(),
+        { ...state },
+      ),
   ),
 
   on(OpportunitiesActions.getOpportunitiesFailure, (state, { error }) => ({

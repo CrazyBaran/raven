@@ -47,7 +47,16 @@
   <kendo-grid-column title="">
     <ng-template kendoGridCellTemplate let-opportunity>
       <div class="flex gap-2">
-        <kendo-button themeColor="primary">Open Opportunity</kendo-button>
+        <kendo-button
+          [routerLink]="[
+            '/companies',
+            opportunity.companyId,
+            'opportunities',
+            opportunity.id
+          ]"
+          themeColor="primary"
+          >Open Opportunity</kendo-button
+        >
       </div>
     </ng-template>
   </kendo-grid-column>

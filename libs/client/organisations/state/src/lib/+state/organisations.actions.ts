@@ -26,6 +26,12 @@ export const OrganisationsActions = createActionGroup({
     'Get Organisations Success': props<{ data: OrganisationsResponse }>(),
     'Get Organisations Failure': props<{ error: string }>(),
 
+    'Load More Organisations': props<{
+      params: Record<string, string | string[]>;
+    }>(),
+    'Load More Organisations Success': props<{ data: OrganisationsResponse }>(),
+    'Load More Organisations Failure': props<{ error: string }>(),
+
     'Create Organisation': props<{ data: CreateOrganisation }>(),
     'Create Organisation Success': props<{
       data: Organisation;

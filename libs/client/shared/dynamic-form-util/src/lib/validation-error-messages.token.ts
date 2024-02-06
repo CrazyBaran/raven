@@ -26,6 +26,8 @@ export const ERROR_MESSAGES: Record<string, (args?: unknown) => string> = {
   pattern: () => `Wrong format`,
   dynamicError: (args: unknown) =>
     hasProp(args, 'message') ? String(args.message) : '',
+  domainAlreadyExists: () => `Domain already exists`,
+  invalidDomain: () => `Invalid domain`,
 };
 
 export const VALIDATION_ERROR_MESSAGES = new InjectionToken(

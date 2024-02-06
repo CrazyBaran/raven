@@ -39,11 +39,15 @@ export const organisationsFeature = createFeature({
   reducer: createReducer(
     initialOrganisationState,
 
-    on(OrganisationsActions.getOrganisation, (state) => ({
-      ...state,
-      loadingOrganisation: true,
-      error: null,
-    })),
+    on(
+      OrganisationsActions.getOrganisation,
+
+      (state) => ({
+        ...state,
+        loadingOrganisation: true,
+        error: null,
+      }),
+    ),
     on(OrganisationsActions.getOrganisationSuccess, (state, { data }) =>
       data
         ? OrganisationAdapter.upsertOne(data, {
@@ -60,6 +64,7 @@ export const organisationsFeature = createFeature({
 
     on(
       OrganisationsActions.getOrganisations,
+      OrganisationsActions.loadMoreOrganisations,
       OrganisationsUrlActions.queryParamsChanged,
       (state) => ({
         ...state,
@@ -74,11 +79,22 @@ export const organisationsFeature = createFeature({
         totalRows: data.total,
       }),
     ),
-    on(OrganisationsActions.getOrganisationsFailure, (state, { error }) => ({
-      ...state,
-      error,
-      loaded: true,
-    })),
+    on(OrganisationsActions.loadMoreOrganisationsSuccess, (state, { data }) =>
+      OrganisationAdapter.upsertMany([...data.items], {
+        ...state,
+        loaded: true,
+        totalRows: data.total,
+      }),
+    ),
+    on(
+      OrganisationsActions.getOrganisationsFailure,
+      OrganisationsActions.loadMoreOrganisationsFailure,
+      (state, { error }) => ({
+        ...state,
+        error,
+        loaded: true,
+      }),
+    ),
 
     on(OrganisationsActions.createOrganisationSuccess, (state, { data }) =>
       OrganisationAdapter.addOne(data, { ...state, loaded: true }),

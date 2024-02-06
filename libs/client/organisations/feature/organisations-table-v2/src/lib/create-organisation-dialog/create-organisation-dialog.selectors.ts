@@ -34,14 +34,13 @@ export const organisationsQueryParams = [
   'take',
   'field',
   'dir',
-  'filters',
 ] as const;
 
 export const selectOrganisationsTableParams = buildPageParamsSelector(
   organisationsQueryParams,
   {
     skip: '0',
-    take: '25',
+    take: '15',
   },
 );
 

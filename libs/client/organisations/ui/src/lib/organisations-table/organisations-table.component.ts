@@ -11,10 +11,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  IsEllipsisActiveDirective,
-  TableViewBaseComponent,
-} from '@app/client/shared/ui-directives';
+import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridModule, RowClassFn } from '@progress/kendo-angular-grid';
@@ -31,6 +28,7 @@ import { TagsService } from '@app/client/tags/data-access';
 import param from 'jquery-param';
 import * as _ from 'lodash';
 import { map, Observable } from 'rxjs';
+import { InfinityTableViewBaseComponent } from '../../../../../shared/ui-directives/src/lib/infinity-table-view-base.directive';
 import { DateRangeFilterComponent } from '../date-range-filter/date-range-filter.component';
 import { MultiCheckFilterComponent } from '../multicheck-filter/multicheck-filter.component';
 import { NumberRangeFilterComponent } from '../number-range-filter/number-range-filter.component';
@@ -126,8 +124,8 @@ export type OrganisationRowV2 = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class OrganisationsTableComponent extends TableViewBaseComponent<OrganisationRowV2> {
-  @ViewChild('grid', { read: ElementRef }) public grid: ElementRef;
+export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<OrganisationRowV2> {
+  @ViewChild('grid', { read: ElementRef }) public gridRef: ElementRef;
 
   public router = inject(Router);
   public activedRoute = inject(ActivatedRoute);
@@ -144,14 +142,14 @@ export class OrganisationsTableComponent extends TableViewBaseComponent<Organisa
 
   public toggleRow(id: string): void {
     if (this.isRowCollapsed(id)) {
-      this.grid.nativeElement
+      this.gridRef.nativeElement
         .getElementsByClassName(`row-${id}`)[0]
         .setAttribute('row-active', false);
       this.collapsedRows.update((value) =>
         value.filter((rowId) => rowId !== id),
       );
     } else {
-      this.grid.nativeElement
+      this.gridRef.nativeElement
         .getElementsByClassName(`row-${id}`)[0]
         .setAttribute('row-active', true);
       this.collapsedRows.update((value) => [...value, id]);

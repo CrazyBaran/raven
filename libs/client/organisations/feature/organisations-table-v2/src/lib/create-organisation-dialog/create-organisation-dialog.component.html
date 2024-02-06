@@ -1,0 +1,62 @@
+@if (showCreateDialog()) {
+  <kendo-dialog
+    title="Add New Company to Raven"
+    [width]="424"
+    (close)="onCloseDialog()"
+  >
+    <div class="flex flex-col gap-4 p-10">
+      <p>
+        If you can’t find a company in the list, add it by providing the details
+        below. Please ensure the domain is correct so that automatic updates
+        work correctly in the future.
+      </p>
+      <form [formGroup]="organisationFormGroup">
+        <kendo-formfield>
+          <kendo-label text="Company Name" for="name" />
+          <kendo-combobox
+            [filterable]="true"
+            formControlName="name"
+            [data]="companies()"
+            [valuePrimitive]="true"
+            [allowCustom]="true"
+            [loading]="loading()"
+            (filterChange)="onFilterChange($event)"
+          />
+          @for (
+            error of organisationFormGroup.controls.name.errors ?? []
+              | keyvalue;
+            track error.key
+          ) {
+            <kendo-formerror>
+              {{ error.key | errorMessage: error.value }}
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+        <kendo-formfield>
+          <kendo-label text="Company Domain" for="domain" />
+          <kendo-textbox formControlName="domain">
+            <ng-template kendoTextBoxSuffixTemplate>
+              @if (isDomainPending()) {
+                <kendo-loader />
+              }
+            </ng-template>
+          </kendo-textbox>
+          @for (error of domainErrors() ?? [] | keyvalue; track error.key) {
+            <kendo-formerror>
+              {{ error.key | errorMessage: error.value }}
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+      </form>
+    </div>
+    <kendo-dialog-actions>
+      <kendo-button (click)="onCloseDialog()">Cancel</kendo-button>
+      <kendo-button
+        [disabled]="!organisationFormGroup.valid"
+        (click)="save()"
+        themeColor="primary"
+        >Add Company</kendo-button
+      >
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}
