@@ -8,7 +8,7 @@
       >All Companies</kendo-button
     >
 
-    <ng-container *ngIf="vm().currentOrganisation?.name">
+    @if (vm().currentOrganisation?.name) {
       <i
         [@fadeIn]
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
@@ -20,7 +20,7 @@
         themeColor="primary"
         >{{ vm().currentOrganisation?.name }}</kendo-button
       >
-    </ng-container>
+    }
   </div>
 
   <div class="flex gap-1" page-header-actions></div>
@@ -29,81 +29,71 @@
     class="organisation-details | bg-base-background flex h-full flex-col overflow-auto"
     page-content
   >
-    <!--    TILES       -->
-    <kendo-tilelayout
-      [columns]="12"
-      [draggable]="false"
-      [gap]="24"
-      class="h-full !p-0"
-      rowHeight="minmax(400px,1fr)"
-    >
-      <!--  DETAILS   -->
-      <kendo-tilelayout-item [colSpan]="6" [col]="1" class="h-full w-full">
-        <kendo-tilelayout-item-header>
-          <div class="flex items-center justify-between gap-2">
-            <h5 class="k-card-title">Company details</h5>
-            <kendo-button
-              [disabled]="true || vm().isLoading"
-              [queryParams]="{
-                'organisation-edit': vm().currentOrganisationId
-              }"
-              [routerLink]="['./']"
-              iconClass="fa-sharp fa-solid fa-pen"
-              queryParamsHandling="merge"
-              size="small"
-              >Edit</kendo-button
-            >
-          </div>
-        </kendo-tilelayout-item-header>
-        <kendo-tilelayout-item-body>
-          <div class="bg-grey-100 h-full overflow-auto">
-            <div
-              class="bg-grey-100 grid grid-cols-2 gap-3 bg-opacity-50 px-6 py-5"
-            >
-              <ng-template #details>
-                <div
-                  *rxFor="let detail of vm().details; trackBy: 'label'"
-                  [@fadeIn]
-                  class="px-2 py-3"
-                >
-                  <h1 class="text-lg">{{ detail.label }}</h1>
-                  <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
-                </div>
-              </ng-template>
-              <ng-container *ngIf="vm().isLoading; else details">
-                <div *ngFor="let i of 4 | times" class="px-2 py-3">
+    <div class="organisation-page-grid | grid h-full gap-6">
+      <!--      rowHeight="minmax(400px,1fr)"-->
+      <ui-tilelayout-item id="organisation-details">
+        <div header class="flex items-center justify-between gap-2">
+          <h5 class="k-card-title">Company details</h5>
+          <kendo-button
+            [disabled]="true || vm().isLoading"
+            [queryParams]="{
+              'organisation-edit': vm().currentOrganisationId
+            }"
+            [routerLink]="['./']"
+            iconClass="fa-sharp fa-solid fa-pen"
+            queryParamsHandling="merge"
+            size="small"
+            >Edit</kendo-button
+          >
+        </div>
+        <div body class="bg-grey-100 h-full overflow-auto">
+          <div
+            class="bg-grey-100 grid grid-cols-2 gap-3 bg-opacity-50 px-6 py-5"
+          >
+            @if (vm().isLoading) {
+              @for (i of 4 | times; track i) {
+                <div class="px-2 py-3">
                   <kendo-skeleton class="mb-1" height="20" width="80%" />
                   <kendo-skeleton height="10" width="75%" />
                 </div>
-              </ng-container>
-            </div>
+              }
+            } @else {
+              @for (detail of vm().details; track detail.label) {
+                <div [@fadeIn] class="px-2 py-3">
+                  <h1 class="text-lg">{{ detail.label }}</h1>
+                  <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
+                </div>
+              }
+            }
           </div>
-        </kendo-tilelayout-item-body>
-      </kendo-tilelayout-item>
+        </div>
+      </ui-tilelayout-item>
 
       <!--  Opportunities   -->
-      <kendo-tilelayout-item [colSpan]="6" [col]="7" class="h-full w-full">
-        <kendo-tilelayout-item-header>
-          <div class="flex items-center justify-between gap-2">
-            <h5 class="k-card-title">Pipeline</h5>
-            <!-- <kendo-button
-              [queryParams]="{
-                'opportunity-create': vm().currentOrganisationId
-              }"
-              [routerLink]="['./']"
-              iconClass="fa-sharp fa-solid fa-pen"
-              size="small"
-              >Add new</kendo-button
-            > -->
-          </div>
-        </kendo-tilelayout-item-header>
-        <kendo-tilelayout-item-body>
+      <!--      class="self-start"-->
+      <ui-tilelayout-item id="organisation-opportunities">
+        <div header class="flex items-center justify-between gap-2">
+          <h5 class="k-card-title">Opportunities</h5>
+          <kendo-button
+            [queryParams]="{
+              'opportunity-create': vm().currentOrganisationId
+            }"
+            [routerLink]="['./']"
+            iconClass="fa-sharp fa-solid fa-pen"
+            size="small"
+            >Add new</kendo-button
+          >
+        </div>
+        <!--            [skipLocationChange]="true"-->
+
+        @if (vm().opportunities.length || vm().isLoading) {
           <kendo-grid
+            body
             [kendoGridBinding]="vm().opportunities"
             [loading]="vm().isLoading"
             [sort]="sort"
             [sortable]="true"
-            class="grid-borderless h-full"
+            class="grid-borderless max-h-full"
           >
             <ng-template kendoGridLoadingTemplate>
               <ui-loader [disableInfo]="true" class="bg-white bg-opacity-60" />
@@ -114,6 +104,26 @@
             >
               <ng-template kendoGridCellTemplate let-dataItem>
                 <p>{{ dataItem.tag?.name ?? 'No Opportunity' }}</p>
+                <p class="text-xs">
+                  Updated: {{ dataItem?.createdAt || '' | date: 'dd/MM/yyyy' }}
+                </p>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              [headerStyle]="{ 'font-weight': '700' }"
+              title="Status"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="flex items-center gap-3">
+                  <i
+                    [style.color]="dataItem.status?.color"
+                    class="fa-solid fa-circle text-xs"
+                  ></i>
+                  <p [isEllipsisActive]="true" class="flex-1 text-black">
+                    {{ dataItem.status?.name ?? '' }}
+                  </p>
+                </div>
               </ng-template>
             </kendo-grid-column>
 
@@ -122,36 +132,9 @@
               title="Deal Lead"
             >
               <ng-template kendoGridCellTemplate let-dataItem>
-                <ui-tag
-                  *rxFor="let name of dataItem.team | dealLeads"
-                  [label]="name"
-                  uiUserTag
-                />
-              </ng-template>
-            </kendo-grid-column>
-
-            <kendo-grid-column
-              [headerStyle]="{ 'font-weight': '700' }"
-              title="Deal Team"
-            >
-              <ng-template kendoGridCellTemplate let-dataItem>
-                @for (name of dataItem.team | dealTeam; track name) {
+                @for (name of dataItem.team | dealLeads; track name) {
                   <ui-tag [label]="name" uiUserTag />
                 }
-              </ng-template>
-            </kendo-grid-column>
-
-            <kendo-grid-column
-              [headerStyle]="{ 'font-weight': '700' }"
-              field="createdAt"
-              title="Created"
-            >
-              <ng-template kendoGridCellTemplate let-dataItem>
-                <div class="flex flex-col gap-1">
-                  <p>
-                    {{ dataItem?.createdAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
-                  </p>
-                </div>
               </ng-template>
             </kendo-grid-column>
 
@@ -167,28 +150,35 @@
               </ng-template>
             </kendo-grid-column>
           </kendo-grid>
-        </kendo-tilelayout-item-body>
-      </kendo-tilelayout-item>
+        } @else {
+          <div class="flex items-center gap-3 px-16 py-9">
+            <i class="fa-regular fa-circle-info"></i>
+            <p class="text-subtle-text !m-0 text-sm italic">
+              There are no existing pipeline items or opportunities for this
+              company. Select Add to Outreach to create a new pipeline item.
+            </p>
+          </div>
+        }
+      </ui-tilelayout-item>
 
       <!--  Files   -->
-      <kendo-tilelayout-item [colSpan]="12" [col]="1" class="h-full w-full">
-        <kendo-tilelayout-item-header>
-          <div class="flex items-center justify-between gap-2">
-            <h5 class="k-card-title">Company Files</h5>
+      <ui-tilelayout-item id="organisation-files">
+        <div header class="flex items-center justify-between gap-2">
+          <h5 class="k-card-title">Company Files</h5>
 
-            @if (vm().hasFileFolder) {
-              <app-picker
-                (selectFiles)="onPickerChange($event)"
-                [web]="sharepointWeb!"
-                [list]="sharepointList!"
-                [folder]="vm().sharepointFolder!"
-                [url]="sharepointUrl!"
-                name="Manage Files"
-              />
-            }
-          </div>
-        </kendo-tilelayout-item-header>
-        <kendo-tilelayout-item-body>
+          @if (vm().hasFileFolder) {
+            <app-picker
+              (selectFiles)="onPickerChange($event)"
+              [web]="sharepointWeb!"
+              [list]="sharepointList!"
+              [folder]="vm().sharepointFolder!"
+              [url]="sharepointUrl!"
+              name="Manage Files"
+            />
+          }
+        </div>
+
+        <ng-container body>
           @if (vm().isLoading) {
           } @else if (vm().hasFileFolder) {
             <kendo-treelist
@@ -236,14 +226,18 @@
                     <div
                       class="text-button flex flex-wrap gap-2 overflow-hidden"
                     >
-                      <ui-tag
-                        class="text-buttons-button-text"
-                        *ngFor="let tag of getTagsSource(dataItem) | async"
-                        [label]="tag.name"
-                        [wrap]="false"
-                        size="medium"
-                        icon="fa-regular fa-tag"
-                      />
+                      @for (
+                        tag of getTagsSource(dataItem) | async;
+                        track tag.id
+                      ) {
+                        <ui-tag
+                          class="text-buttons-button-text"
+                          [label]="tag.name"
+                          [wrap]="false"
+                          size="medium"
+                          icon="fa-regular fa-tag"
+                        />
+                      }
                     </div>
                   }
                 </ng-template>
@@ -288,39 +282,29 @@
                 (click)="createOrganisationFolder()"
                 [disabled]="vm().isCreatingSharepointFolder"
               >
-                <kendo-loader
-                  *ngIf="vm().isCreatingSharepointFolder"
-                  class="!text-secondary-100 mr-1"
-                  size="small"
-                />
+                @if (vm().isCreatingSharepointFolder) {
+                  <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+                }
                 Create Organisation Folder</kendo-button
               >
             </div>
           }
-        </kendo-tilelayout-item-body>
-      </kendo-tilelayout-item>
+        </ng-container>
+      </ui-tilelayout-item>
 
       <!--  Notes   -->
-      <kendo-tilelayout-item [colSpan]="12" [col]="1" class="h-full w-full">
-        <kendo-tilelayout-item-header>
-          <div class="flex items-center justify-between gap-2">
-            <h5 class="k-card-title">Related Notes</h5>
-            <kendo-button
-              (click)="openNoteShelf()"
-              iconClass="fa-sharp fa-solid fa-pen"
-              size="small"
-              >Add New</kendo-button
-            >
-          </div>
-        </kendo-tilelayout-item-header>
-        <kendo-tilelayout-item-body>
-          <app-notes-table-container />
-        </kendo-tilelayout-item-body>
-      </kendo-tilelayout-item>
-    </kendo-tilelayout>
+      <ui-tilelayout-item id="organisation-notes">
+        <div header class="flex items-center justify-between gap-2">
+          <h5 class="k-card-title">Related Notes</h5>
+          <kendo-button
+            (click)="openNoteShelf()"
+            iconClass="fa-sharp fa-solid fa-pen"
+            size="small"
+            >Add New</kendo-button
+          >
+        </div>
+        <app-notes-table-container body />
+      </ui-tilelayout-item>
+    </div>
   </div>
 </app-page-template>
-
-<ng-template #loader>
-  <ui-loader />
-</ng-template>

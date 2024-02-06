@@ -30,6 +30,7 @@ import { LabelModule } from '@progress/kendo-angular-label';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
+import { TagsActions } from '@app/client/tags/state';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { xIcon } from '@progress/kendo-svg-icons';
@@ -124,6 +125,9 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
         queryParamsHandling: 'merge',
       });
     });
+    this.store.dispatch(
+      TagsActions.getTagsByTypesIfNotLoaded({ tagTypes: ['opportunity'] }),
+    );
   }
 
   public ngOnInit(): void {

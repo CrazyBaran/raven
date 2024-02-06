@@ -2,6 +2,7 @@
 import { Environment } from '@app/client/core/environment';
 import { FileEntity, filesQuery } from '@app/client/files/feature/state';
 import { organisationsFeature } from '@app/client/organisations/state';
+import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery } from '@app/client/shared/util-router';
 import { tagsQuery } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
@@ -87,19 +88,28 @@ export const selectOrganisationPageViewModel = createSelector(
   selectOrganisationDetails,
   organisationsFeature.selectLoadingOrganisation,
   organisationsFeature.selectCreatingSharepointFolder,
+  pipelinesQuery.selectStagePrimaryColorDictionary,
   (
     currentOrganisation,
     currentOrganisationId,
     details,
     isLoading,
     isCreatingSharepointFolder,
+    stageColorDictionary,
   ) => {
     return {
       currentOrganisationId,
       currentOrganisation,
       details,
       isLoading,
-      opportunities: currentOrganisation?.opportunities ?? [],
+      opportunities:
+        currentOrganisation?.opportunities?.map((opportunity) => ({
+          ...opportunity,
+          status: {
+            name: opportunity!.stage?.displayName ?? '',
+            color: stageColorDictionary?.[opportunity!.stage?.id] ?? '#000',
+          },
+        })) ?? [],
       hasFileFolder: !!currentOrganisation?.sharepointDirectory,
       isCreatingSharepointFolder,
       sharepointFolder: currentOrganisation?.sharePointPath,
