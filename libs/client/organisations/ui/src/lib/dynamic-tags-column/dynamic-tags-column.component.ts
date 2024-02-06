@@ -19,6 +19,9 @@ export class DynamicTagsColumnComponent extends DynamicColumnBase<string[]> {
         icon: 'fa-solid fa-tag',
         id: tag,
         size: 'small',
+        style: {
+          color: 'black',
+        },
       })) ?? []
     );
   }

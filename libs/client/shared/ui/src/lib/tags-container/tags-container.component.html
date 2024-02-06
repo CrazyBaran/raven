@@ -1,22 +1,23 @@
+<!--  (appOnResize)="onContainerWidthChange($event)"-->
 <ui-tiles-container
-  class="block"
-  (appOnResize)="onContainerWidthChange($event)"
+  #container
   [itemTemplate]="itemTemplate"
   [rows]="rows"
+  [staticContainerWidth]="width ?? containerWidth()"
+  [staticTilesWidth]="tagsWidth"
+  [staticTooltipWidth]="28"
   [tiles]="tags"
   [tooltipTemplate]="tooltipTemplate"
   [trackBy]="trackByFn"
-  [staticTilesWidth]="tagsWidth"
-  [staticTooltipWidth]="28"
-  [staticContainerWidth]="width ?? containerWidth()"
+  class="block"
 />
 
 <ng-template #itemTemplate let-tag>
   <ui-tag
     [icon]="tag.icon"
     [label]="tag.name"
-    [style]="tag.style"
     [size]="tag.size"
+    [style]="tag.style"
   />
 </ng-template>
 

@@ -57,14 +57,14 @@ export const selectOrganisationsTableButtonGroupNavigation = createSelector(
           id: null,
           name: 'All Companies',
         },
-        {
-          id: 'shortlisted',
-          name: 'Shortlisted',
-          iconClass: 'fa fa-star',
-        },
+        // {
+        //   id: 'shortlisted',
+        //   name: 'Shortlisted',
+        //   iconClass: 'fa fa-star',
+        // },
         {
           id: userTag?.userId ?? 'unknown',
-          name: 'My Companies',
+          name: 'My Deals',
           iconClass: 'fa-solid fa-circle-user',
         },
       ],

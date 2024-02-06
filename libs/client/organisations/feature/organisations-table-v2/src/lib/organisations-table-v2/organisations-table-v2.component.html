@@ -42,7 +42,6 @@
   </div>
 </app-page-template>
 
-<app-create-organisation-dialog
-  [showCreateDialog]="showCreateDialog()"
-  (closeDialog)="showCreateDialog.set(false)"
-/>
+@if (showCreateDialog()) {
+  <app-create-organisation-dialog (closeDialog)="showCreateDialog.set(false)" />
+}

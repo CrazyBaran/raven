@@ -1,14 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   Input,
+  OnInit,
   signal,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  OnResizeDirective,
-  ResizedEvent,
-} from '@app/client/shared/ui-directives';
+import { OnResizeDirective } from '@app/client/shared/ui-directives';
 import { calculateSize } from '@app/client/shared/util';
 import { ButtonSize } from '@progress/kendo-angular-buttons';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
@@ -37,8 +37,12 @@ export interface TagItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class TagsContainerComponent {
+export class TagsContainerComponent implements OnInit {
+  @ViewChild('container', { read: ElementRef, static: true })
+  public containerRef: ElementRef;
+
   @Input() public rows = 1;
+
   @Input() public tags: TagItem[] = [];
 
   @Input() public width: number;
@@ -60,9 +64,9 @@ export class TagsContainerComponent {
     });
   }
 
-  public trackByFn = (index: number, item: TagItem): string => item.id;
-
-  public onContainerWidthChange($event: ResizedEvent): void {
-    this.containerWidth.set($event.newRect.width);
+  public ngOnInit(): void {
+    this.containerWidth.set(this.containerRef.nativeElement.clientWidth);
   }
+
+  public trackByFn = (index: number, item: TagItem): string => item.id;
 }
