@@ -18,11 +18,19 @@
     </div>
     <div>
       <i
-        class="fa-regular fa-buildings group-hover:hidden"
+        [ngClass]="{
+          'group-hover:hidden': model.showOpenDetailsButton
+        }"
+        class="fa-regular fa-buildings"
         style="font-size: 27px"
         data-testid="open-details-icon"
       ></i>
-      <div class="hidden group-hover:block">
+      <div
+        [ngClass]="{
+          'group-hover:block': model.showOpenDetailsButton
+        }"
+        class="hidden"
+      >
         <kendo-button
           [routerLink]="[
             '/companies',

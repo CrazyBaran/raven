@@ -167,6 +167,7 @@ function createCard(
         value: _.get(opportunity, fieldName),
       })) ?? [],
     created: !!opportunity.tag,
+    showOpenDetailsButton: !!opportunity.tag,
   };
 }
 
