@@ -1,6 +1,5 @@
-import { FounderDto } from '@app/shared/data-warehouse';
+import { FounderDto, GroupedEntity } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
-import { GroupedEntity } from '../../interfaces/grouped-entity.interface';
 import { FounderDwhEntity } from '../entities/founder.dwh.entity';
 
 @Injectable()

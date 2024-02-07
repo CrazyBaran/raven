@@ -28,6 +28,7 @@ import { CreateOrganisationDto } from './dto/create-organisation.dto';
 import { UpdateOrganisationDto } from './dto/update-organisation.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationService } from './organisation.service';
+import { ParseGetOrganisationsOptionsPipe } from './pipes/parse-get-organisations-options.pipe';
 import { ParseOrganisationPipe } from './pipes/parse-organisation.pipe';
 import { OrganisationProducer } from './queues/organisation.producer';
 
@@ -48,28 +49,14 @@ export class OrganisationController {
   @ApiQuery({ name: 'query', type: String, required: false })
   @ApiQuery({ name: 'member', type: String, required: false })
   @ApiQuery({ name: 'round', type: String, required: false })
+  @ApiQuery({ name: 'filters', type: String, required: false })
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async findAll(
-    @Query('skip') skip?: number,
-    @Query('take') take?: number,
-    @Query('dir') dir?: 'asc' | 'desc',
-    @Query('field') field?: 'name' | 'id',
-    @Query('query') query?: string,
-    @Query('member') member?: string,
-    @Query('round') round?: string,
+    // Workaround for a NestJS bug. 'options' is actually of type GetOrganisationsOptions, but it has to be set as Record<string, string> to make it properly transform in a pipe.
+    @Query(ParseGetOrganisationsOptionsPipe) options?: Record<string, string>,
   ): Promise<PagedOrganisationData> {
-    const options = {
-      skip: skip ?? 0,
-      take: take ?? 10,
-      dir: (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
-      field: field ?? 'name',
-      query: query ?? '',
-      member: member ?? null,
-      round: round ?? null,
-    };
-
     return await this.organisationService.findAll(options);
   }
 

@@ -9,6 +9,7 @@ import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
+import { ParseGetOrganisationsOptionsPipe } from './pipes/parse-get-organisations-options.pipe';
 
 describe('OpportunityController', () => {
   let controller: OpportunityController;
@@ -60,6 +61,10 @@ describe('OpportunityController', () => {
         },
         {
           provide: OpportunityTeamService,
+          useValue: {},
+        },
+        {
+          provide: ParseGetOrganisationsOptionsPipe,
           useValue: {},
         },
       ],

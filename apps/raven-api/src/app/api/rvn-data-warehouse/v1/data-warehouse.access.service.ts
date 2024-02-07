@@ -1,11 +1,17 @@
-import { CompanyDto, FounderDto } from '@app/shared/data-warehouse';
+import {
+  CompanyDto,
+  CompanyFilterOptions,
+  DataWarehouseAccess,
+  DataWarehouseCompanyOrderBy,
+  DataWarehouseFounderOrderBy,
+  FounderDto,
+  GetCompaniesOptions,
+  GroupedEntity,
+} from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
 import { And, FindManyOptions, In, IsNull, Not, Repository } from 'typeorm';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
-import { DataWarehouseAccess } from '../interfaces/data-warehouse-access.interface';
-import { DataWarehouseCompanyOrderBy } from '../interfaces/data-warehouse-company-order-by.type';
-import { DataWarehouseFounderOrderBy } from '../interfaces/data-warehouse-founder-order-by.type';
-import { GroupedEntity } from '../interfaces/grouped-entity.interface';
+import { defaultGetOrganisationsOptions } from '../../rvn-opportunities/interfaces/get-organisations.options';
 import { InjectDataWarehouseRepository } from '../utils/inject-data-warehouse-repository.decorator';
 import { CompanyDwhEntity } from './entities/company.dwh.entity';
 import { DealroomCompanyNumberOfEmployeesDwhEntity } from './entities/dealroom-company-number-of-employees.dwh.entity';
@@ -15,6 +21,7 @@ import { FounderDwhEntity } from './entities/founder.dwh.entity';
 import { InvestorDwhEntity } from './entities/investor.dwh.entity';
 import { CompanyMapper } from './mappers/company.mapper';
 import { FounderMapper } from './mappers/founder.mapper';
+import { DataWarehouseOrderByMapper } from './mappers/order-by.mapper';
 
 @Injectable()
 export class DataWarehouseAccessService implements DataWarehouseAccess {
@@ -34,6 +41,7 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     private readonly investorRepository: Repository<InvestorDwhEntity>,
     private readonly companyMapper: CompanyMapper,
     private readonly founderMapper: FounderMapper,
+    private readonly orderByMapper: DataWarehouseOrderByMapper,
   ) {
     this.logger.setContext(DataWarehouseAccessService.name);
   }
@@ -70,6 +78,107 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
       ),
       specter: lastUpdatedSpecter.specterLastUpdated,
       dealRoom: lastUpdatedDealRoom.dealRoomLastUpdated,
+    };
+  }
+
+  public async filterCompanies(
+    options?: GetCompaniesOptions,
+    filterOptions?: CompanyFilterOptions,
+  ): Promise<{ items: CompanyDto[]; count: number }> {
+    const queryBuilder = this.companyRepository.createQueryBuilder('company');
+
+    queryBuilder.where('company.domain IS NOT NULL');
+
+    if (options?.take || options?.skip) {
+      queryBuilder
+        .take(options?.take ?? defaultGetOrganisationsOptions.take)
+        .skip(options?.skip ?? defaultGetOrganisationsOptions.skip);
+    } else {
+      queryBuilder.skip(0).take(defaultGetOrganisationsOptions.take);
+    }
+
+    if (options?.orderBy) {
+      const orderBy = `company.${this.orderByMapper.map(options?.orderBy)}`;
+      const direction =
+        options?.direction ?? defaultGetOrganisationsOptions.direction;
+      queryBuilder.orderBy(orderBy, direction);
+    }
+
+    if (options?.query) {
+      queryBuilder.andWhere('company.name LIKE :query', {
+        query: `%${options.query}%`,
+      });
+
+      queryBuilder.orWhere('company.domain LIKE :query', {
+        query: `%${options.query}%`,
+      });
+
+      queryBuilder.orWhere('company.specterIndustry LIKE :query', {
+        query: `%${options.query}%`,
+      });
+
+      queryBuilder.orWhere('company.specterSubIndustry LIKE :query', {
+        query: `%${options.query}%`,
+      });
+
+      queryBuilder.orWhere('company.specterHqLocation LIKE :query', {
+        query: `%${options.query}%`,
+      });
+    }
+
+    if (filterOptions?.totalFundingAmount) {
+      if (filterOptions.totalFundingAmount.min) {
+        queryBuilder.andWhere('company.totalFundingAmount >= :min', {
+          min: filterOptions.totalFundingAmount.min,
+        });
+      }
+
+      if (filterOptions.totalFundingAmount.max) {
+        queryBuilder.andWhere('company.totalFundingAmount <= :max', {
+          max: filterOptions.totalFundingAmount.max,
+        });
+      }
+    }
+
+    if (filterOptions?.lastFundingAmount) {
+      if (filterOptions.lastFundingAmount.min) {
+        queryBuilder.andWhere('company.lastFundingAmount >= :min', {
+          min: filterOptions.lastFundingAmount.min,
+        });
+      }
+
+      if (filterOptions.lastFundingAmount.max) {
+        queryBuilder.andWhere('company.lastFundingAmount <= :max', {
+          max: filterOptions.lastFundingAmount.max,
+        });
+      }
+    }
+
+    if (filterOptions?.lastFundingDate) {
+      if (filterOptions.lastFundingDate.min) {
+        queryBuilder.andWhere('company.lastFundingDate >= :min', {
+          min: filterOptions.lastFundingDate.min,
+        });
+      }
+
+      if (filterOptions.lastFundingDate.max) {
+        queryBuilder.andWhere('company.lastFundingDate <= :max', {
+          max: filterOptions.lastFundingDate.max,
+        });
+      }
+    }
+
+    if (filterOptions?.lastFundingType) {
+      queryBuilder.andWhere('company.specterLastFundingType = :type', {
+        type: filterOptions.lastFundingType,
+      });
+    }
+
+    const companies = await queryBuilder.getManyAndCount();
+
+    return {
+      items: this.companyMapper.mapMany(companies[0]),
+      count: companies[1],
     };
   }
 

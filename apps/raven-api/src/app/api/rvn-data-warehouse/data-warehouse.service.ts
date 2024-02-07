@@ -1,7 +1,9 @@
 import {
   CompanyDto,
+  CompanyFilterOptions,
   DataWarehouseLastUpdatedDto,
   FounderDto,
+  GetCompaniesOptions,
 } from '@app/shared/data-warehouse';
 import { Inject, Injectable } from '@nestjs/common';
 import { JobPro } from '@taskforcesh/bullmq-pro';
@@ -134,5 +136,15 @@ export class DataWarehouseService {
 
   public async updateLastChecked(): Promise<void> {
     await this.dataWarehouseCacheService.setLastChecked(new Date(Date.now()));
+  }
+
+  public async getFilteredCompanies(
+    options: GetCompaniesOptions,
+    filterOptions?: CompanyFilterOptions,
+  ): Promise<{ items: CompanyDto[]; count: number }> {
+    return await this.dataWarehouseAccessService.filterCompanies(
+      options,
+      filterOptions,
+    );
   }
 }

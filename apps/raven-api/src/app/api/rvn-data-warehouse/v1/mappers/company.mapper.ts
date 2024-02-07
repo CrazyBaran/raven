@@ -1,12 +1,12 @@
 import {
   CompanyDto,
   DealRoomGrowthStage,
+  GroupedEntity,
   GrowthStageDto,
   IpoDetailsDto,
   SpecterGrowthStage,
 } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
-import { GroupedEntity } from '../../interfaces/grouped-entity.interface';
 import { DataWarehouseParser } from '../../utils/data-warehouse.parser';
 import { CompanyDwhEntity } from '../entities/company.dwh.entity';
 import { DealroomCompanyNumberOfEmployeesDwhEntity } from '../entities/dealroom-company-number-of-employees.dwh.entity';
@@ -142,16 +142,16 @@ export class CompanyMapper {
 
   public mapMany(
     entities: CompanyDwhEntity[],
-    numberOfEmployees: GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>[],
-    tags: GroupedEntity<DealroomCompanyTagEntity>[],
-    fundingRounds: GroupedEntity<DealroomFundingRoundEntity>[],
+    numberOfEmployees?: GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>[],
+    tags?: GroupedEntity<DealroomCompanyTagEntity>[],
+    fundingRounds?: GroupedEntity<DealroomFundingRoundEntity>[],
   ): CompanyDto[] {
     return entities.map((entity) =>
       this.map(
         entity,
-        numberOfEmployees.find((g) => g.id === entity.companyId),
-        tags.find((g) => g.id === entity.companyId),
-        fundingRounds.find((g) => g.id === entity.companyId),
+        numberOfEmployees?.find((g) => g.id === entity.companyId),
+        tags?.find((g) => g.id === entity.companyId),
+        fundingRounds?.find((g) => g.id === entity.companyId),
       ),
     );
   }
