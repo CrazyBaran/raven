@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { JobPro } from '@taskforcesh/bullmq-pro';
+import { CompanyStatus } from 'rvns-shared';
 import { EntityManager, In, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
@@ -38,6 +39,7 @@ interface CreateOrganisationOptions {
 interface UpdateOrganisationOptions {
   name?: string;
   domains?: string[];
+  companyStatus?: CompanyStatus | null;
 }
 
 @Injectable()
@@ -113,6 +115,7 @@ export class OrganisationService {
               displayName: pipelineStage.displayName,
               order: pipelineStage.order,
               mappedFrom: pipelineStage.mappedFrom,
+              relatedCompanyStatus: pipelineStage.relatedCompanyStatus,
             };
 
             opportunity.team = teamsForOpportunities[opportunity.id];
@@ -126,6 +129,8 @@ export class OrganisationService {
           }/${SharepointDirectoryStructureGenerator.getDirectoryNameForOrganisation(
             organisation,
           )}`;
+          data.companyStatus = this.evaluateCompanyStatus(entity, data);
+
           return data;
         },
       );
@@ -202,6 +207,10 @@ export class OrganisationService {
     if (options.domains) {
       await this.updateDomains(organisation, options.domains);
     }
+    if (Object.prototype.hasOwnProperty.call(options, 'companyStatus')) {
+      organisation.companyStatusOverride = options.companyStatus;
+    }
+
     return await this.organisationRepository.save(organisation);
   }
 
@@ -388,6 +397,7 @@ export class OrganisationService {
       id: entity.id,
       name: entity.name,
       domains: entity.domains,
+      companyStatus: entity.companyStatusOverride,
     };
   }
 
@@ -604,10 +614,13 @@ export class OrganisationService {
               displayName: pipelineStage.displayName,
               order: pipelineStage.order,
               mappedFrom: pipelineStage.mappedFrom,
+              relatedCompanyStatus: pipelineStage.relatedCompanyStatus,
             };
 
             opportunity.team = teamsForOpportunities[opportunity.id];
           }
+
+          data.companyStatus = this.evaluateCompanyStatus(entity, data);
 
           return data;
         },
@@ -702,10 +715,13 @@ export class OrganisationService {
               displayName: pipelineStage.displayName,
               order: pipelineStage.order,
               mappedFrom: pipelineStage.mappedFrom,
+              relatedCompanyStatus: pipelineStage.relatedCompanyStatus,
             };
 
             opportunity.team = teamsForOpportunities[opportunity.id];
           }
+
+          data.companyStatus = this.evaluateCompanyStatus(entity, data);
 
           return data;
         },
@@ -729,5 +745,24 @@ export class OrganisationService {
       }),
       total: dataWarehouseData.count,
     } as PagedOrganisationData;
+  }
+
+  private evaluateCompanyStatus(
+    entity: OrganisationEntity,
+    data: OrganisationDataWithOpportunities,
+  ): CompanyStatus | null {
+    if (entity.companyStatusOverride) {
+      return entity.companyStatusOverride;
+    }
+
+    if (!data.opportunities.length) {
+      return null;
+    }
+
+    const latestOpportunity = data.opportunities.sort((x, y) => {
+      return y.createdAt.getTime() - x.createdAt.getTime();
+    })[0];
+
+    return latestOpportunity.stage.relatedCompanyStatus;
   }
 }

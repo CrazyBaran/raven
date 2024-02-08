@@ -1,3 +1,4 @@
+import { CompanyStatus } from 'rvns-shared';
 import {
   AfterInsert,
   AfterLoad,
@@ -48,6 +49,15 @@ export class OrganisationEntity implements SharepointEnabledEntity {
     (organisationDomain) => organisationDomain.organisation,
   )
   public organisationDomains: OrganisationDomainEntity[];
+
+  @Column({
+    nullable: true,
+    default: null,
+    enum: CompanyStatus,
+    type: 'nvarchar',
+    length: '30',
+  })
+  public companyStatusOverride: CompanyStatus | null;
 
   public domains: string[];
   @AfterInsert()

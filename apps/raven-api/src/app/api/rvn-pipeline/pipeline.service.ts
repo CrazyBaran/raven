@@ -6,6 +6,7 @@ import {
 } from '@app/rvns-pipelines';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CompanyStatus } from 'rvns-shared';
 import { Repository } from 'typeorm';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
 import { PipelineGroupEntity } from './entities/pipeline-group.entity';
@@ -15,6 +16,7 @@ interface PipelineStage {
   readonly displayName: string;
   readonly order: number;
   readonly mappedFrom: string;
+  readonly relatedCompanyStatus?: CompanyStatus | null;
 }
 
 interface CreatePipelineOptions {
@@ -35,6 +37,7 @@ interface CreatePipelineStageOptions {
   readonly configuration: string | null;
   readonly showFields?: { fieldName: string; displayName: string }[];
   readonly isHidden?: boolean;
+  readonly relatedCompanyStatus?: CompanyStatus | null;
 }
 
 interface PipelineGroupsOptions {
@@ -71,6 +74,8 @@ export class PipelineService {
       pipelineStage.displayName = stage.displayName;
       pipelineStage.order = stage.order;
       pipelineStage.mappedFrom = stage.mappedFrom;
+      pipelineStage.relatedCompanyStatus = stage.relatedCompanyStatus || null;
+
       return pipelineStage;
     });
     return this.pipelineDefinitionRepository.save(pipeline);
@@ -211,6 +216,10 @@ export class PipelineService {
     if (Object.prototype.hasOwnProperty.call(options, 'isHidden')) {
       pipelineStageEntity.isHidden = options.isHidden;
     }
+    if (Object.prototype.hasOwnProperty.call(options, 'relatedCompanyStatus')) {
+      pipelineStageEntity.relatedCompanyStatus = options.relatedCompanyStatus;
+    }
+
     return this.pipelineStageRepository.save(pipelineStageEntity);
   }
 
@@ -228,6 +237,8 @@ export class PipelineService {
     if (options.showFields) {
       pipelineStage.showFields = JSON.stringify(options.showFields);
     }
+    pipelineStage.relatedCompanyStatus = options.relatedCompanyStatus || null;
+
     return this.pipelineStageRepository.save(pipelineStage);
   }
 
@@ -271,6 +282,7 @@ export class PipelineService {
         : null,
       showFields: entity.showFields ? JSON.parse(entity.showFields) : null,
       isHidden: entity.isHidden || false,
+      relatedCompanyStatus: entity.relatedCompanyStatus,
     };
   }
 

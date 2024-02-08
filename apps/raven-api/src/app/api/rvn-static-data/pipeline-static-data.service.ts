@@ -55,6 +55,7 @@ export class PipelineStaticDataService {
               stage.configuration,
               stage.showFields,
               pipeline.id,
+              stage.relatedCompanyStatus,
             );
           }),
           groupsForPipeline.map((group) => {
@@ -89,6 +90,7 @@ export class PipelineStaticDataService {
             stage.configuration,
             stage.showFields,
             pipeline.id,
+            stage.relatedCompanyStatus,
           );
         }),
         pipeline.pipelineGroups.map((group) => {
@@ -265,6 +267,7 @@ export class PipelineStaticDataService {
             configuration: modifiedChange.newData.configuration,
             showFields: modifiedChange.newData.showFields,
             pipelineDefinitionId: modifiedChange.newData.pipelineDefinitionId,
+            relatedCompanyStatus: modifiedChange.newData.relatedCompanyStatus,
           },
         );
       }
@@ -286,6 +289,7 @@ export class PipelineStaticDataService {
               configuration: data.configuration,
               showFields: data.showFields,
               pipelineDefinitionId: data.pipelineDefinitionId,
+              relatedCompanyStatus: data.relatedCompanyStatus,
             });
             break;
           case ChangeType.Removed:

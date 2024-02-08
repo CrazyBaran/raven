@@ -1,6 +1,7 @@
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { CompanyStatus } from 'rvns-shared';
 
 export class UpdateOrganisationDto {
   @ApiProperty()
@@ -12,4 +13,13 @@ export class UpdateOrganisationDto {
   @IsOptional()
   @IsString()
   public readonly name?: string;
+
+  @ApiProperty({
+    type: 'enum',
+    enum: CompanyStatus,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsEnum(CompanyStatus)
+  public readonly companyStatus?: CompanyStatus | null;
 }

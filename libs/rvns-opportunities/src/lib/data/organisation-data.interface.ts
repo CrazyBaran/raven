@@ -1,5 +1,5 @@
 import { CompanyDto } from '@app/shared/data-warehouse';
-import { PagedData } from 'rvns-shared';
+import { CompanyStatus, PagedData } from 'rvns-shared';
 import { OpportunityDataWithoutOrganisation } from './opportunity-data.interface';
 
 export interface PagedOrganisationData
@@ -11,6 +11,7 @@ export interface OrganisationData {
   readonly name: string;
   readonly domains: string[];
   readonly affinityUrl?: string;
+  companyStatus?: CompanyStatus | null;
   sharepointDirectory?: string;
   sharePointPath?: string;
   data?: CompanyDto;

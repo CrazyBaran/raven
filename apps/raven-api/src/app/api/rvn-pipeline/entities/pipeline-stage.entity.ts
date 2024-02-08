@@ -1,3 +1,4 @@
+import { CompanyStatus } from 'rvns-shared';
 import {
   AfterInsert,
   AfterLoad,
@@ -47,6 +48,15 @@ export class PipelineStageEntity {
 
   @Column({ default: false })
   public isHidden: boolean;
+
+  @Column({
+    nullable: true,
+    default: null,
+    enum: CompanyStatus,
+    type: 'nvarchar',
+    length: '30',
+  })
+  public relatedCompanyStatus: CompanyStatus | null;
 
   @AfterInsert()
   @AfterLoad()

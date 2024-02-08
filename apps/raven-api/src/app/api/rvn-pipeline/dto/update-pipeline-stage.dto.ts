@@ -3,12 +3,14 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsNumber,
   IsObject,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { CompanyStatus } from 'rvns-shared';
 import { PipelineStageConfigurationDto } from './pipeline-stage-configuration.dto';
 import { ShowFieldsConfigurationDto } from './show-fields-configuration.dto';
 
@@ -45,4 +47,13 @@ export class UpdatePipelineStageDto {
   @IsOptional()
   @IsBoolean()
   public readonly isHidden?: boolean;
+
+  @ApiProperty({
+    type: 'enum',
+    enum: CompanyStatus,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsEnum(CompanyStatus)
+  public readonly relatedCompanyStatus?: CompanyStatus | null;
 }

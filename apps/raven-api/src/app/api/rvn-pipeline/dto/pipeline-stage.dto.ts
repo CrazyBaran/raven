@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsNumber, IsString, Min } from 'class-validator';
+import {
+  IsDefined,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
+import { CompanyStatus } from 'rvns-shared';
 
 export class PipelineStageDto {
   @ApiProperty()
@@ -17,4 +25,13 @@ export class PipelineStageDto {
   @IsNumber()
   @Min(1)
   public order: number;
+
+  @ApiProperty({
+    type: 'enum',
+    enum: CompanyStatus,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsEnum(CompanyStatus)
+  public readonly relatedCompanyStatus?: CompanyStatus | null;
 }

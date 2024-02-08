@@ -1,3 +1,4 @@
+import { CompanyStatus } from 'rvns-shared';
 import { Comparable } from '../interfaces/comparable';
 import { BaseArrayPropertiesStaticDataDto } from './base-array-properties.static-data.dto';
 
@@ -15,6 +16,7 @@ export class PipelineStageStaticData
     public configuration?: string,
     public showFields?: string,
     public pipelineDefinitionId?: string,
+    public relatedCompanyStatus?: CompanyStatus | null,
   ) {
     super();
   }
@@ -28,7 +30,8 @@ export class PipelineStageStaticData
       this.pipelineDefinitionId === other.pipelineDefinitionId &&
       this.configuration === other.configuration &&
       this.showFields === other.showFields &&
-      this.isHidden === other.isHidden
+      this.isHidden === other.isHidden &&
+      this.relatedCompanyStatus === other.relatedCompanyStatus
     );
   }
 
