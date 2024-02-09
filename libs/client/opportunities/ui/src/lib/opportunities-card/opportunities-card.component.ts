@@ -21,6 +21,7 @@ export type OpportunityCard = {
   affinityUrl?: string;
   height?: number;
   created?: boolean;
+  showOpenDetailsButton?: boolean;
 };
 
 @Component({
