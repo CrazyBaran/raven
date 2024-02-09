@@ -11,7 +11,7 @@ export class AffinitySettingsService {
   ) {}
 
   public async getListSettings(): Promise<{
-    defaultListId: number;
+    listId: number;
     statusFieldId: number;
   }> {
     const pipelineDefinition = await this.getDefaultPipelineDefinition();
@@ -27,7 +27,7 @@ export class AffinitySettingsService {
     }
 
     return {
-      defaultListId: pipelineDefinition.affinityListId,
+      listId: pipelineDefinition.affinityListId,
       statusFieldId: pipelineDefinition.affinityStatusFieldId,
     };
   }

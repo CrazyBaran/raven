@@ -49,7 +49,12 @@ export class OrganisationController {
   @ApiQuery({ name: 'query', type: String, required: false })
   @ApiQuery({ name: 'member', type: String, required: false })
   @ApiQuery({ name: 'round', type: String, required: false })
-  @ApiQuery({ name: 'filters', type: String, required: false })
+  @ApiQuery({
+    name: 'filters',
+    type: String,
+    required: false,
+    allowReserved: true,
+  })
   @ApiResponse({ status: 200, description: 'List of organisations' })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)

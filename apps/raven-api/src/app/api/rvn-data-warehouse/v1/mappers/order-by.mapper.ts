@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 export class DataWarehouseOrderByMapper {
   public map(value: DataWarehouseCompanyOrderBy): string {
     switch (value) {
+      case 'name':
+        return 'name';
       case 'funding.totalFundingAmount':
         return 'totalFundingAmount';
       case 'funding.lastFundingAmount':

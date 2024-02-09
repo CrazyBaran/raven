@@ -2,9 +2,10 @@ import { OpportunityStageChangedEvent } from '@app/rvns-opportunities';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AffinitySettingsService } from '../affinity-settings.service';
-import { STATUS_FIELD_NAME } from '../affinity.const';
 import { AffinityApiService } from '../api/affinity-api.service';
+import { DropdownOptionDto } from '../api/dtos/dropdown-option.dto';
 import { AffinityCacheService } from '../cache/affinity-cache.service';
+import { OrganizationStageDto } from '../dtos/organisation-stage.dto';
 
 @Injectable()
 export class OpportunityStageChangedEventHandler {
@@ -16,37 +17,82 @@ export class OpportunityStageChangedEventHandler {
 
   @OnEvent('opportunity-stage-changed')
   protected async process(event: OpportunityStageChangedEvent): Promise<void> {
-    const companies = await this.affinityCacheService.getByDomains(
+    const company = await this.getOrCreateCompany(
+      event.organisationName,
       event.organisationDomains,
     );
-    if (!companies || companies.length === 0) {
-      // if there is no company in cache, we can't update it in Affinity, so we return early
-      return;
-    }
-    const company = companies[0];
 
-    const { defaultListId, statusFieldId } =
+    const { listId, statusFieldId } =
       await this.affinitySettingsService.getListSettings();
 
-    const listFields = await this.affinityCacheService.getListFields();
-    if (!listFields.some((field) => field.name === STATUS_FIELD_NAME)) {
-      throw new Error(
-        `Incorrect Affinity configuration - cannot find field with name ${STATUS_FIELD_NAME}`,
-      );
-    }
-    const stageOptions = listFields.find(
-      (field) => field.name === STATUS_FIELD_NAME,
-    )?.dropdown_options;
-
-    const stageOption = stageOptions.find(
-      (option) => option.text === event.targetPipelineMappedFrom,
+    const stage = await this.getStage(
+      listId,
+      statusFieldId,
+      event.targetPipelineMappedFrom,
     );
-    if (!stageOption) {
-      throw new Error(
-        `Incorrect Affinity configuration - cannot find stage option with text ${event.targetPipelineMappedFrom}`,
-      );
-    }
 
+    const isOnTheList = await this.isOnTheList(company, listId);
+    if (!isOnTheList) {
+      await this.addCompanyToList(company, listId);
+    }
+    await this.updateCompanyStatus(company, statusFieldId, stage);
+  }
+
+  private async getOrCreateCompany(
+    name: string,
+    domains: string[],
+  ): Promise<OrganizationStageDto> {
+    const companies = await this.affinityCacheService.getByDomains(domains);
+    if (!companies || companies.length === 0) {
+      return await this.createAffinityCompany(name, domains);
+    }
+    // TODO: handle multiple companies with the same domain
+    const company = companies[0];
+    return company;
+  }
+
+  private async createAffinityCompany(
+    name: string,
+    domains: string[],
+  ): Promise<OrganizationStageDto> {
+    const company = await this.affinityApiService.createOrganization(
+      name,
+      domains[0],
+    );
+    const companyWithStage = {
+      organizationDto: company,
+      stage: null,
+      fields: [],
+      entityId: null,
+      listEntryId: null,
+      entryAdded: null,
+    } as OrganizationStageDto;
+    await this.affinityCacheService.addOrReplaceMany([companyWithStage]);
+    return companyWithStage;
+  }
+
+  private async isOnTheList(
+    company: OrganizationStageDto,
+    listId: number,
+  ): Promise<boolean> {
+    return company.stage !== null;
+  }
+
+  private async addCompanyToList(
+    company: OrganizationStageDto,
+    listId: number,
+  ): Promise<void> {
+    const listEntry = await this.affinityApiService.createListEntry(
+      listId,
+      company.organizationDto.id,
+    );
+  }
+
+  private async updateCompanyStatus(
+    company: OrganizationStageDto,
+    statusFieldId: number,
+    stage: DropdownOptionDto,
+  ): Promise<void> {
     const fieldValues = await this.affinityApiService.getFieldValues(
       company.listEntryId,
     );
@@ -56,10 +102,34 @@ export class OpportunityStageChangedEventHandler {
     );
 
     await this.affinityApiService.updateFieldValue(statusValue.id, {
-      value: stageOption.id,
+      value: stage.id,
     });
 
-    company.stage = stageOption;
+    company.stage = stage;
     await this.affinityCacheService.addOrReplaceMany([company]);
+  }
+
+  private async getStage(
+    listId: number,
+    statusFieldId: number,
+    stage: string,
+  ): Promise<DropdownOptionDto> {
+    const listFields = await this.affinityCacheService.getListFields();
+    const statusField = listFields.find((field) => field.id === statusFieldId);
+    if (!statusField) {
+      throw new Error(
+        `Incorrect Affinity configuration or cache issue - cannot find field with id ${statusFieldId}`,
+      );
+    }
+
+    const stageOption = statusField.dropdown_options.find(
+      (option) => option.text === stage,
+    );
+    if (!stageOption) {
+      throw new Error(
+        `Incorrect Affinity configuration or pipeline definition - cannot find stage option with text ${stage}`,
+      );
+    }
+    return stageOption;
   }
 }

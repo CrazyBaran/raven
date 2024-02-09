@@ -211,7 +211,15 @@ export class OrganisationService {
       organisation.companyStatusOverride = options.companyStatus;
     }
 
-    return await this.organisationRepository.save(organisation);
+    delete organisation.organisationDomains;
+    await this.organisationRepository.save(organisation);
+
+    const updatedOrganisation = await this.organisationRepository.findOne({
+      where: { id: organisation.id },
+      relations: ['organisationDomains'],
+    });
+
+    return updatedOrganisation;
   }
 
   public async remove(id: string): Promise<void> {

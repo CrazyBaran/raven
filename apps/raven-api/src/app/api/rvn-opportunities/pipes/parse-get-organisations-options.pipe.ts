@@ -53,6 +53,7 @@ export class ParseGetOrganisationsOptionsPipe
     options.filters = this.getFilters(values);
 
     options.primaryDataSource = this.evaluatePrimaryDataSource(options);
+
     return options;
   }
 
@@ -73,6 +74,21 @@ export class ParseGetOrganisationsOptionsPipe
         'funding.lastFundingDate',
         'funding.lastFundingType',
       ].includes(options.orderBy)
+    ) {
+      return 'dwh';
+    }
+    if (
+      options.filters !== null &&
+      ((options.filters.totalFundingAmount !== undefined &&
+        (options.filters.totalFundingAmount.max !== undefined ||
+          options.filters.totalFundingAmount.min !== undefined)) ||
+        (options.filters.lastFundingAmount !== undefined &&
+          (options.filters.lastFundingAmount.max !== undefined ||
+            options.filters.lastFundingAmount.min !== undefined)) ||
+        (options.filters.lastFundingDate !== undefined &&
+          (options.filters.lastFundingDate.max !== undefined ||
+            options.filters.lastFundingDate.min !== undefined)) ||
+        options.filters.lastFundingType !== undefined)
     ) {
       return 'dwh';
     }

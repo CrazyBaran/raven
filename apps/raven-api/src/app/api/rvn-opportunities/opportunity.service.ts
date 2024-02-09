@@ -17,44 +17,18 @@ import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
-import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
+import {
+  CommonCreateOpportunityOptions,
+  CommonUpdateOptions,
+  CreateOpportunityForNonExistingOrganisationOptions,
+  CreateOpportunityForOrganisationOptions,
+  UpdateOpportunityOptions,
+} from './interfaces/create-update-organisation.options';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OrganisationService } from './organisation.service';
-
-interface CreateOpportunityForNonExistingOrganisationOptions
-  extends CommonCreateOpportunityOptions {
-  domain: string;
-  name: string;
-}
-
-interface CreateOpportunityForOrganisationOptions
-  extends CommonCreateOpportunityOptions {
-  organisation: OrganisationEntity;
-}
-
-interface CommonCreateOpportunityOptions extends CommonCreateAndUpdateOptions {
-  workflowTemplateEntity: TemplateEntity | null;
-  userEntity: UserEntity;
-  tagEntity: TagEntity;
-}
-
-interface UpdateOpportunityOptions extends CommonCreateAndUpdateOptions {
-  pipelineStage?: PipelineStageEntity;
-  tagEntity?: TagEntity;
-}
-
-interface CommonCreateAndUpdateOptions {
-  roundSize?: string;
-  valuation?: string;
-  proposedInvestment?: string;
-  positioning?: string;
-  timing?: string;
-  underNda?: string;
-  ndaTerminationDate?: Date;
-}
 
 @Injectable()
 export class OpportunityService {
@@ -68,7 +42,6 @@ export class OpportunityService {
     private readonly affinityEnricher: AffinityEnricher,
     private readonly organisationService: OrganisationService,
     private readonly opportunityTeamService: OpportunityTeamService,
-
     private readonly eventEmitter: EventEmitter2,
   ) {
     this.logger.setContext(OpportunityService.name);
@@ -283,21 +256,23 @@ export class OpportunityService {
     const { pipeline, pipelineStage } =
       await this.getDefaultPipelineAndFirstStage();
 
-    const affinityOrganisation = await this.affinityCacheService.getByDomains(
-      options.organisation.domains,
-    );
-
-    const affinityPipelineStage = this.organisationService.mapPipelineStage(
-      pipeline,
-      affinityOrganisation[0]?.stage?.text,
-    );
-
-    return await this.createOpportunity(
+    const opportunity = await this.createOpportunity(
       options.organisation,
       pipeline,
-      affinityPipelineStage ? affinityPipelineStage : pipelineStage,
+      pipelineStage,
       options,
     );
+
+    this.eventEmitter.emit(
+      'opportunity-stage-changed',
+      new OpportunityStageChangedEvent(
+        opportunity.organisation.name,
+        opportunity.organisation.domains,
+        pipelineStage.mappedFrom,
+      ),
+    );
+
+    return opportunity;
   }
 
   public async createForNonExistingOrganisation(
@@ -311,12 +286,27 @@ export class OpportunityService {
       name: options.name,
     });
 
-    return await this.createOpportunity(
-      organisation,
+    const createdOrganisation = await this.organisationService.findByDomain(
+      options.domain,
+    );
+
+    const opportunity = await this.createOpportunity(
+      createdOrganisation,
       pipeline,
       pipelineStage,
       options,
     );
+
+    this.eventEmitter.emit(
+      'opportunity-stage-changed',
+      new OpportunityStageChangedEvent(
+        createdOrganisation.name,
+        createdOrganisation.domains,
+        pipelineStage.mappedFrom,
+      ),
+    );
+
+    return opportunity;
   }
 
   public async update(
@@ -357,6 +347,7 @@ export class OpportunityService {
       this.eventEmitter.emit(
         'opportunity-stage-changed',
         new OpportunityStageChangedEvent(
+          opportunity.organisation.name,
           opportunityEntity.organisation.domains,
           options.pipelineStage.mappedFrom,
         ),
@@ -468,9 +459,7 @@ export class OpportunityService {
         );
 
         await this.createOpportunity(organisation, pipeline, pipelineStage, {
-          workflowTemplateEntity: null,
           userEntity: null,
-          tagEntity: null,
         });
       }
     }
@@ -525,7 +514,7 @@ export class OpportunityService {
 
   private assignOpportunityProperties(
     opportunity: OpportunityEntity,
-    options: CommonCreateAndUpdateOptions,
+    options: CommonUpdateOptions,
   ): void {
     if (options.roundSize !== undefined) {
       opportunity.roundSize = options.roundSize;
@@ -560,8 +549,6 @@ export class OpportunityService {
     opportunity.organisation = organisation;
     opportunity.pipelineDefinition = pipeline;
     opportunity.pipelineStage = pipelineStage;
-    opportunity.tag = options.tagEntity;
-    this.assignOpportunityProperties(opportunity, options);
 
     return await this.opportunityRepository.save(opportunity);
   }

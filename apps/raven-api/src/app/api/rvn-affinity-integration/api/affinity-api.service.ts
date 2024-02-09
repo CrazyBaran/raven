@@ -7,7 +7,9 @@ import { DetailedListDto } from './dtos/detailed-list.dto';
 import { FieldValueChangeDto } from './dtos/field-value-change.dto';
 import { FieldValueDto } from './dtos/field-value.dto';
 import { FieldDto } from './dtos/field.dto';
+import { ListEntryDto } from './dtos/list-entry.dto';
 import { ListDto } from './dtos/list.dto';
+import { OrganizationDto } from './dtos/organization.dto';
 import { PaginatedListEntriesDto } from './dtos/paginated-list-entries.dto';
 import { PaginatedOrganizationsDto } from './dtos/paginated-organizations.dto';
 import { PersonDto } from './dtos/person.dto';
@@ -169,6 +171,23 @@ export class AffinityApiService {
       .toPromise();
   }
 
+  public async createOrganization(
+    name: string,
+    domain: string,
+  ): Promise<OrganizationDto> {
+    return await this.httpService
+      .post<OrganizationDto>(
+        `/organizations`,
+        { name, domain },
+        {
+          baseURL: this.baseURL,
+          headers: this.headers,
+        },
+      )
+      .pipe(map((response) => response.data))
+      .toPromise();
+  }
+
   public async whoAmI(): Promise<WhoAmIDto> {
     return await this.httpService
       .get<WhoAmIDto>('/auth/whoami', {
@@ -220,6 +239,23 @@ export class AffinityApiService {
         baseURL: this.baseURL,
         headers: this.headers,
       })
+      .pipe(map((response) => response.data))
+      .toPromise();
+  }
+
+  public async createListEntry(
+    defaultListId: number,
+    entity_id: number,
+  ): Promise<ListEntryDto> {
+    return await this.httpService
+      .post<ListEntryDto>(
+        `/lists/${defaultListId}/list-entries`,
+        { entity_id },
+        {
+          baseURL: this.baseURL,
+          headers: this.headers,
+        },
+      )
       .pipe(map((response) => response.data))
       .toPromise();
   }

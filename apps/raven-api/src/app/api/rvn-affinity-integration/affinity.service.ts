@@ -27,21 +27,20 @@ export class AffinityService {
 
   public async regenerateAffinityData(): Promise<void> {
     this.logger.debug('Fetching for list and field from Affinity settings');
-    const { defaultListId, statusFieldId } =
+    const { listId, statusFieldId } =
       await this.affinitySettingsService.getListSettings();
-    this.logger.debug(`List id: ${defaultListId}, field id: ${statusFieldId}`);
-    const listDetails =
-      await this.affinityApiService.getListDetails(defaultListId);
+    this.logger.debug(`List id: ${listId}, field id: ${statusFieldId}`);
+    const listDetails = await this.affinityApiService.getListDetails(listId);
     if (!listDetails) {
-      this.logger.error(`List with ID ${defaultListId} not found`);
-      throw new Error(`List with ID ${defaultListId} not found`);
+      this.logger.error(`List with ID ${listId} not found`);
+      throw new Error(`List with ID ${listId} not found`);
     }
     if (!listDetails.fields.some((field) => field.id === statusFieldId)) {
       this.logger.error(
-        `Field with ID ${statusFieldId} not found in list ${defaultListId}`,
+        `Field with ID ${statusFieldId} not found in list ${listId}`,
       );
       throw new Error(
-        `Field with ID ${statusFieldId} not found in list ${defaultListId}`,
+        `Field with ID ${statusFieldId} not found in list ${listId}`,
       );
     }
 
@@ -51,7 +50,7 @@ export class AffinityService {
     const organizations = await this.getAllOrganizations();
 
     this.logger.debug('Fetching all entries from Affinity');
-    const listEntries = await this.getListEntries(defaultListId);
+    const listEntries = await this.getListEntries(listId);
     this.logger.debug(`Fetched ${listEntries.length} entries from Affinity`);
 
     this.logger.debug(
@@ -74,7 +73,7 @@ export class AffinityService {
       }`,
     );
 
-    const fields = await this.affinityApiService.getFields(defaultListId);
+    const fields = await this.affinityApiService.getFields(listId);
 
     const mappedFields = FIELD_MAPPING.map((requiredField) => {
       return {
