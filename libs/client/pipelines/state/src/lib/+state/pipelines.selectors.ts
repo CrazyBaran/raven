@@ -22,7 +22,11 @@ export const selectIsLoading = createSelector(
 );
 export const selectAllPipelineStages = createSelector(
   selectAllPipelines,
-  (pipelines) => pipelines.flatMap(({ stages }) => stages),
+  (pipelines) =>
+    _.chain(pipelines)
+      .flatMap(({ stages }) => stages)
+      .sortBy('order')
+      .value(),
 );
 
 export const selectPipelinesStagesDictionary = createSelector(

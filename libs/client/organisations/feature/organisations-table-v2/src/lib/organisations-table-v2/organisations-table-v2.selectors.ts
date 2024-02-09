@@ -9,6 +9,7 @@ import {
   OrganisationRowV2,
   parseToFilters,
 } from '@app/client/organisations/ui';
+import { DialogQueryParams } from '@app/client/shared/shelf';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
   ButtongroupNavigationModel,
@@ -21,6 +22,7 @@ import {
   buildPageParamsSelector,
   selectQueryParam,
 } from '@app/client/shared/util-router';
+import { OpportunityData } from '@app/rvns-opportunities';
 import { createSelector } from '@ngrx/store';
 import deparam from 'jquery-deparam';
 
@@ -177,6 +179,11 @@ export const selectIsLoadingOrganisationsTable = createSelector(
   (loaded) => !loaded,
 );
 
+export const isOpportunityClosed = (opportunity: OpportunityData): boolean =>
+  ['pass', 'won', 'lost'].some(
+    (status) => status === opportunity.stage.displayName.toLowerCase(),
+  );
+
 export const selectOrganisationRows = createSelector(
   organisationsFeature.selectAll,
   opportunitiesQuery.selectOpportunitiesDictionary,
@@ -212,6 +219,31 @@ export const selectOrganisationRows = createSelector(
                   opportunity!.team?.owners.map((owner) => owner.actorName) ??
                   [],
                 updatedAt: opportunity!.createdAt?.toString() ?? '',
+                actionData: isOpportunityClosed(opportunity!)
+                  ? [
+                      {
+                        text: 'Reopen Opportunity',
+                        queryParamsHandling: 'merge',
+                        routerLink: ['./'],
+                        queryParams: {
+                          [DialogQueryParams.reopenOpportunity]:
+                            opportunity!.id,
+                        },
+                        skipLocationChange: true,
+                      },
+                    ]
+                  : [
+                      {
+                        text: 'Update Opportunity Status',
+                        queryParamsHandling: 'merge',
+                        routerLink: ['./'],
+                        queryParams: {
+                          [DialogQueryParams.updateOpportunityStage]:
+                            opportunity!.id,
+                        },
+                        skipLocationChange: true,
+                      },
+                    ],
               }),
             ),
         }) ?? [],

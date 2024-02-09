@@ -2,17 +2,53 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 
 import { Injectable } from '@angular/core';
-import { selectQueryParam, selectUrl } from '@app/client/shared/util-router';
+import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
+import {
+  selectQueryParam,
+  selectQueryParams,
+  selectUrl,
+} from '@app/client/shared/util-router';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import {
   DialogResult,
   DialogService,
+  DialogSettings,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
 import { exhaustMap, filter, map, tap } from 'rxjs';
 import { ShelfActions } from './actions/shelf.actions';
 import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
+
+export class DialogQueryParams {
+  public static readonly reopenOpportunity = 'reopen-opportunity';
+  public static readonly updateOpportunityStage = 'update-opportunity-stage';
+}
+
+export const dynamicDialogsConfig: Record<
+  string,
+  {
+    settings?: Omit<DialogSettings, 'content'>;
+    template: Omit<ComponentTemplate, 'name'>;
+  }
+> = {
+  [DialogQueryParams.reopenOpportunity]: {
+    template: {
+      load: () =>
+        import('@app/client/opportunities/feature/update-dialog').then(
+          (m) => m.ReopenOpportunityDialogModule,
+        ),
+    },
+  },
+  [DialogQueryParams.updateOpportunityStage]: {
+    template: {
+      load: () =>
+        import('@app/client/opportunities/feature/update-dialog').then(
+          (m) => m.UpdateOpportunityStageModule,
+        ),
+    },
+  },
+};
 
 @Injectable()
 export class ShelfEffects {
@@ -93,6 +129,34 @@ export class ShelfEffects {
                     '@app/client/opportunities/feature/update-dialog'
                   ).then((m) => m.CreateOpportunityDialogModule),
                 showLoading: true,
+              },
+            }).result,
+        ),
+      );
+    },
+    { dispatch: false },
+  );
+
+  private showRouteDialog = createEffect(
+    () => {
+      return this.store.select(selectQueryParams).pipe(
+        map((params) => {
+          const dialog = Object.keys(params).find((key) =>
+            Object.keys(dynamicDialogsConfig).includes(key),
+          );
+          return dialog ? { dialog, ...dynamicDialogsConfig[dialog] } : null;
+        }),
+        filter((settings) => !!settings),
+        exhaustMap(
+          (config) =>
+            this.dynamicDialogService.openDynamicDialog({
+              width: 480,
+              maxHeight: '95vh',
+              cssClass: 'raven-custom-dialog',
+              ...config!.settings,
+              template: {
+                name: config!.dialog,
+                ...config!.template,
               },
             }).result,
         ),

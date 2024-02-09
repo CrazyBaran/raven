@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
+import { PipelinesService } from '@app/client/pipelines/data-access';
 import { GenericResponse } from '@app/rvns-api';
 import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';
-import { Observable } from 'rxjs';
+import { Observable, switchMap, tap } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export type OpportunityChanges = {
   pipelineStageId?: string;
@@ -29,7 +31,10 @@ export type CreateOpportunity = any & {
 export class OpportunitiesService {
   private url = '/api/opportunities';
 
-  public constructor(private readonly http: HttpClient) {}
+  public constructor(
+    private readonly http: HttpClient,
+    private pipelineService: PipelinesService,
+  ) {}
 
   public getOpportunities(
     params: Params,
@@ -87,6 +92,25 @@ export class OpportunitiesService {
     return this.http.post<GenericResponse<OpportunityTeamData>>(
       `${this.url}/${opportunityId}/team`,
       payload,
+    );
+  }
+
+  public reopenOpportunity(
+    opportunityId: string,
+  ): Observable<GenericResponse<OpportunityData>> {
+    return this.pipelineService.getPipelines().pipe(
+      map(
+        (response) =>
+          response.data?.[0]?.stages.find(
+            (stage) =>
+              stage.displayName.toLowerCase().includes('preliminary') &&
+              stage.displayName.toLowerCase().includes('in progress'),
+          ),
+      ),
+      tap((stage) => !stage && console.error('No preliminary stage found')),
+      switchMap((stage) =>
+        this.patchOpportunity(opportunityId, { pipelineStageId: stage!.id }),
+      ),
     );
   }
 }

@@ -1,0 +1,68 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Reopen Opportunity?</span>
+</kendo-dialog-titlebar>
+
+<div class="p-10">
+  <p>
+    Performing this action will reopen the opportunity and return it to an
+    active state on the pipeline.
+  </p>
+
+  <form class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10">
+    <kendo-formfield>
+      <kendo-label text="Company Name" />
+      <kendo-textbox
+        [placeholder]="vm().organisation.name!"
+        [disabled]="true"
+      />
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Funding Round" />
+      <kendo-textbox
+        [placeholder]="vm().organisation.tag.name!"
+        [disabled]="true"
+      />
+    </kendo-formfield>
+    <!--    orientation="horizontal"-->
+    <kendo-formfield>
+      <kendo-label text="Available Options" />
+      <ul class="k-radio-list k-list-horizontal">
+        <!--        <li class="k-radio-item">-->
+        <!--          <input-->
+        <!--            #lead-->
+        <!--            formControlName="option"-->
+        <!--            kendoRadioButton-->
+        <!--            type="radio"-->
+        <!--            value="duplicate"-->
+        <!--          />-->
+        <!--          <kendo-label-->
+        <!--            [for]="lead"-->
+        <!--            text="Duplicate and start again (open with empty details)"-->
+        <!--          ></kendo-label>-->
+        <!--        </li>-->
+
+        <li class="k-radio-item">
+          <input
+            #follower
+            kendoRadioButton
+            type="radio"
+            value="existing"
+            [checked]="true"
+          />
+          <kendo-label [for]="follower" text="Use existing details" />
+        </li>
+      </ul>
+    </kendo-formfield>
+  </form>
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button (click)="onCreate()" themeColor="primary">
+    @if (vm().isCreating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Reopen Opportunity
+  </kendo-button>
+</kendo-dialog-actions>

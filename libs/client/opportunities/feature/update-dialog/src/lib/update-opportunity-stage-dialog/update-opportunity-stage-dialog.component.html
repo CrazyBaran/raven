@@ -1,0 +1,52 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Update Opportunity Status</span>
+</kendo-dialog-titlebar>
+
+<div class="p-10">
+  <p>Please select the new status for the opportunity as listed below.</p>
+
+  <form class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10">
+    <kendo-formfield>
+      <kendo-label text="Company Name" />
+      <kendo-textbox
+        [placeholder]="vm().organisation.name!"
+        [disabled]="true"
+      />
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Funding Round" />
+      <kendo-textbox
+        [placeholder]="vm().organisation.tag.name!"
+        [disabled]="true"
+      />
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Opportunity Status" />
+      <kendo-dropdownlist
+        [formControl]="stageControl"
+        [valuePrimitive]="true"
+        [defaultItem]="vm().stages.defaultItem"
+        [textField]="vm().stages.textField"
+        [valueField]="vm().stages.valueField"
+        [data]="vm().stages.data"
+      />
+      <kendo-formerror>Opportunity status is required</kendo-formerror>
+    </kendo-formfield>
+  </form>
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="!stageControl.valid || vm().isCreating"
+    themeColor="primary"
+  >
+    @if (vm().isCreating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Update Opportunity Status
+  </kendo-button>
+</kendo-dialog-actions>

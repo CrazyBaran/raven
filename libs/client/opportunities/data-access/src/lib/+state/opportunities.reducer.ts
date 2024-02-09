@@ -25,6 +25,9 @@ export interface OpportunitiesState extends EntityState<OpportunityData> {
   updateStage: {
     isLoading: boolean;
   };
+  reopen: {
+    isLoading: boolean;
+  };
 }
 
 export const opportunitiesAdapter: EntityAdapter<OpportunityData> =
@@ -48,6 +51,9 @@ export const initialState: OpportunitiesState =
       isLoading: false,
     },
     updateStage: {
+      isLoading: false,
+    },
+    reopen: {
       isLoading: false,
     },
   });
@@ -106,15 +112,25 @@ export const opportunitiesReducer = createReducer(
   })),
 
   on(
-    OpportunitiesActions.changeOpportunityPipelineStageFailure,
     OpportunitiesActions.changeOpportunityPipelineStageSuccess,
-    (state) => ({
-      ...state,
-      updateStage: {
-        isLoading: false,
-      },
-    }),
+    (state, { data }) =>
+      opportunitiesAdapter.updateOne(
+        {
+          id: data!.id,
+          changes: {
+            stage: data?.stage,
+          },
+        },
+        { ...state, isLoading: false },
+      ),
   ),
+
+  on(OpportunitiesActions.changeOpportunityPipelineStageFailure, (state) => ({
+    ...state,
+    updateStage: {
+      isLoading: false,
+    },
+  })),
 
   on(OpportunitiesActions.getOpportunityDetails, (state) => ({
     ...state,
@@ -186,6 +202,32 @@ export const opportunitiesReducer = createReducer(
       {
         ...state,
         update: {
+          isLoading: false,
+        },
+      },
+    ),
+  ),
+
+  on(OpportunitiesActions.reopenOpportunity, (state) => ({
+    ...state,
+    reopen: {
+      isLoading: true,
+    },
+  })),
+
+  on(OpportunitiesActions.reopenOpportunityFailure, (state, { error }) => ({
+    ...state,
+    reopen: {
+      isLoading: false,
+    },
+  })),
+
+  on(OpportunitiesActions.reopenOpportunitySuccess, (state, { data }) =>
+    opportunitiesAdapter.updateOne(
+      { id: data!.id, changes: data },
+      {
+        ...state,
+        reopen: {
           isLoading: false,
         },
       },

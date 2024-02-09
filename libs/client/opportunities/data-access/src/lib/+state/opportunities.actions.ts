@@ -65,5 +65,11 @@ export const OpportunitiesActions = createActionGroup({
     'Create Opportunity': props<{ payload: CreateOpportunity }>(),
     'Create Opportunity Success': props<{ data: OpportunityData }>(),
     'Create Opportunity Failure': props<{ error: string }>(),
+
+    'Reopen Opportunity': props<{
+      id: string;
+    }>(),
+    'Reopen Opportunity Failure': props<{ error: string }>(),
+    'Reopen Opportunity Success': props<{ data: OpportunityData }>(),
   },
 });
