@@ -214,6 +214,7 @@ export class PipelineController {
           : null,
         showFields: dto.showFields,
         isHidden: dto.isHidden,
+        isDefault: dto.isDefault,
         relatedCompanyStatus: dto.relatedCompanyStatus,
       }),
     );
@@ -240,6 +241,7 @@ export class PipelineController {
           : null,
         showFields: dto.showFields,
         isHidden: dto.isHidden,
+        isDefault: dto.isDefault,
       }),
     );
   }

@@ -15,5 +15,6 @@ export interface PipelineStageData {
   readonly configuration?: PipelineStageConfigurationData | null;
   readonly showFields?: { displayName: string; fieldName: string }[];
   readonly isHidden?: boolean;
+  readonly isDefault?: boolean;
   readonly relatedCompanyStatus?: CompanyStatus | null;
 }

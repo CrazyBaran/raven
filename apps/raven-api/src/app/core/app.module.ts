@@ -37,6 +37,7 @@ import { TagsModule } from '../api/rvn-tags/tags.module';
 import { TeamsModule } from '../api/rvn-teams/teams.module';
 import { TemplatesModule } from '../api/rvn-templates/templates.module';
 import { UsersModule } from '../api/rvn-users/users.module';
+import { UtilsModule } from '../api/rvn-utils/utils.module';
 import { WebSocketsModule } from '../api/rvn-web-sockets/web-sockets.module';
 import { BullService } from './bull.service';
 import { HttpCacheInterceptor } from './http-cache.interceptor';
@@ -77,6 +78,7 @@ import { TransformInterceptor } from './transform.interceptor';
     }),
     AuditLogsModule,
     LoggerModule,
+    UtilsModule,
     // api
     AuthModule,
     AclModule,

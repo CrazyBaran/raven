@@ -37,6 +37,7 @@ interface CreatePipelineStageOptions {
   readonly configuration: string | null;
   readonly showFields?: { fieldName: string; displayName: string }[];
   readonly isHidden?: boolean;
+  readonly isDefault?: boolean;
   readonly relatedCompanyStatus?: CompanyStatus | null;
 }
 
@@ -282,6 +283,7 @@ export class PipelineService {
         : null,
       showFields: entity.showFields ? JSON.parse(entity.showFields) : null,
       isHidden: entity.isHidden || false,
+      isDefault: entity.isDefault || false,
       relatedCompanyStatus: entity.relatedCompanyStatus,
     };
   }

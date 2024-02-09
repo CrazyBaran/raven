@@ -49,6 +49,9 @@ export class PipelineStageEntity {
   @Column({ default: false })
   public isHidden: boolean;
 
+  @Column({ default: false })
+  public isDefault: boolean;
+
   @Column({
     nullable: true,
     default: null,

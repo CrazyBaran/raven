@@ -13,6 +13,7 @@ export class PipelineStageStaticData
     public order: number,
     public mappedFrom: string,
     public isHidden: boolean,
+    public isDefault: boolean,
     public configuration?: string,
     public showFields?: string,
     public pipelineDefinitionId?: string,
@@ -31,6 +32,7 @@ export class PipelineStageStaticData
       this.configuration === other.configuration &&
       this.showFields === other.showFields &&
       this.isHidden === other.isHidden &&
+      this.isDefault === other.isDefault &&
       this.relatedCompanyStatus === other.relatedCompanyStatus
     );
   }

@@ -12,16 +12,15 @@ import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
-import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
+import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import {
-  CommonCreateOpportunityOptions,
   CommonUpdateOptions,
   CreateOpportunityForNonExistingOrganisationOptions,
   CreateOpportunityForOrganisationOptions,
@@ -36,13 +35,12 @@ export class OpportunityService {
     private readonly logger: RavenLogger,
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
-    @InjectRepository(PipelineDefinitionEntity)
-    private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly affinityEnricher: AffinityEnricher,
     private readonly organisationService: OrganisationService,
     private readonly opportunityTeamService: OpportunityTeamService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly pipelineUtilityService: PipelineUtilityService,
   ) {
     this.logger.setContext(OpportunityService.name);
   }
@@ -139,15 +137,16 @@ export class OpportunityService {
     const teamsForOpportunities =
       await this.opportunityTeamService.getOpportunitiesTeams(result[0]);
 
-    const defaultPipeline = await this.getDefaultPipelineDefinition();
-
+    const defaultPipelineDefinition =
+      await this.pipelineUtilityService.getDefaultPipelineDefinition();
     const items = await this.affinityEnricher.enrichOpportunities(
       result[0],
-      (entity, data) => {
-        const pipelineStage = this.getPipelineStage(
-          defaultPipeline,
-          entity.pipelineStageId,
-        );
+      async (entity, data) => {
+        const pipelineStage =
+          await this.pipelineUtilityService.getPipelineStageOrDefault(
+            entity.pipelineStageId,
+            defaultPipelineDefinition,
+          );
 
         data = {
           ...data,
@@ -180,18 +179,20 @@ export class OpportunityService {
       ],
     });
 
-    const defaultPipeline = await this.getDefaultPipelineDefinition();
-
     const teamForOpportunity =
       await this.opportunityTeamService.getOpportunityTeam(opportunity);
 
+    const defaultPipelineDefinition =
+      await this.pipelineUtilityService.getDefaultPipelineDefinition();
+
     return await this.affinityEnricher.enrichOpportunity(
       opportunity,
-      (entity, data) => {
-        const pipelineStage = this.getPipelineStage(
-          defaultPipeline,
-          entity.pipelineStageId,
-        );
+      async (entity, data) => {
+        const pipelineStage =
+          await this.pipelineUtilityService.getPipelineStageOrDefault(
+            entity.pipelineStageId,
+            defaultPipelineDefinition,
+          );
 
         data = {
           ...data,
@@ -224,15 +225,17 @@ export class OpportunityService {
       where: { organisation: { organisationDomains: { domain: domain } } },
       relations: ['organisation', 'tag', 'organisation.organisationDomains'],
     });
-    const defaultPipeline = await this.getDefaultPipelineDefinition();
 
+    const defaultPipelineDefinition =
+      await this.pipelineUtilityService.getDefaultPipelineDefinition();
     const items = await this.affinityEnricher.enrichOpportunities(
       opportunities,
-      (entity, data) => {
-        const pipelineStage = this.getPipelineStage(
-          defaultPipeline,
-          entity.pipelineStageId,
-        );
+      async (entity, data) => {
+        const pipelineStage =
+          await this.pipelineUtilityService.getPipelineStageOrDefault(
+            entity.pipelineStageId,
+            defaultPipelineDefinition,
+          );
 
         data = {
           ...data,
@@ -253,14 +256,15 @@ export class OpportunityService {
   public async createFromOrganisation(
     options: CreateOpportunityForOrganisationOptions,
   ): Promise<OpportunityEntity> {
-    const { pipeline, pipelineStage } =
-      await this.getDefaultPipelineAndFirstStage();
+    const defaultPipeline =
+      await this.pipelineUtilityService.getDefaultPipelineDefinition();
+    const defaultPipelineStage =
+      await this.pipelineUtilityService.getDefaultPipelineStage();
 
     const opportunity = await this.createOpportunity(
       options.organisation,
-      pipeline,
-      pipelineStage,
-      options,
+      defaultPipeline,
+      defaultPipelineStage,
     );
 
     this.eventEmitter.emit(
@@ -268,7 +272,7 @@ export class OpportunityService {
       new OpportunityStageChangedEvent(
         opportunity.organisation.name,
         opportunity.organisation.domains,
-        pipelineStage.mappedFrom,
+        defaultPipelineStage.mappedFrom,
       ),
     );
 
@@ -278,8 +282,10 @@ export class OpportunityService {
   public async createForNonExistingOrganisation(
     options: CreateOpportunityForNonExistingOrganisationOptions,
   ): Promise<OpportunityEntity> {
-    const { pipeline, pipelineStage } =
-      await this.getDefaultPipelineAndFirstStage();
+    const defaultPipeline =
+      await this.pipelineUtilityService.getDefaultPipelineDefinition();
+    const defaultPipelineStage =
+      await this.pipelineUtilityService.getDefaultPipelineStage();
 
     const organisation = await this.organisationService.create({
       domain: options.domain,
@@ -292,9 +298,8 @@ export class OpportunityService {
 
     const opportunity = await this.createOpportunity(
       createdOrganisation,
-      pipeline,
-      pipelineStage,
-      options,
+      defaultPipeline,
+      defaultPipelineStage,
     );
 
     this.eventEmitter.emit(
@@ -302,7 +307,7 @@ export class OpportunityService {
       new OpportunityStageChangedEvent(
         createdOrganisation.name,
         createdOrganisation.domains,
-        pipelineStage.mappedFrom,
+        defaultPipelineStage.mappedFrom,
       ),
     );
 
@@ -369,41 +374,6 @@ export class OpportunityService {
     await this.opportunityRepository.delete(id);
   }
 
-  public entityToData(
-    entity?: OpportunityEntity,
-    affinityDto?: OrganizationStageDto,
-  ): OpportunityData {
-    return {
-      id: entity?.id,
-      organisation: {
-        affinityInternalId: affinityDto?.organizationDto?.id,
-        id: entity?.organisationId,
-        name: affinityDto?.organizationDto?.name,
-        domains: affinityDto?.organizationDto?.domains,
-        affinityUrl: affinityDto?.organizationDto
-          ? `${environment.affinity.affinityUrl}companies/${affinityDto.organizationDto.id}`
-          : '',
-      },
-      stage: {
-        id: entity?.pipelineStage?.id,
-        displayName: entity?.pipelineStage?.displayName,
-        order: entity?.pipelineStage?.order,
-        mappedFrom: entity?.pipelineStage?.mappedFrom,
-      },
-      tag: entity.tag && {
-        id: entity.tag.id,
-        name: entity.tag.name,
-      },
-      createdAt: entity?.createdAt,
-      fields: affinityDto?.fields.map((field) => {
-        return {
-          displayName: field.displayName,
-          value: field.value,
-        };
-      }),
-    };
-  }
-
   public opportunityEntityToData(entity: OpportunityEntity): OpportunityData {
     return {
       id: entity.id,
@@ -452,64 +422,16 @@ export class OpportunityService {
           affinityEntry.organizationDto.domain,
         );
 
-        const pipeline = await this.getDefaultPipelineDefinition();
-        const pipelineStage = this.getPipelineStage(
-          pipeline,
-          affinityEntry.stage.text,
-        );
+        const pipeline =
+          await this.pipelineUtilityService.getDefaultPipelineDefinition();
+        const pipelineStage =
+          await this.pipelineUtilityService.mapStageForDefaultPipeline(
+            affinityEntry.stage?.text,
+          );
 
-        await this.createOpportunity(organisation, pipeline, pipelineStage, {
-          userEntity: null,
-        });
+        await this.createOpportunity(organisation, pipeline, pipelineStage);
       }
     }
-
-    const defaultPipeline = await this.getDefaultPipelineDefinition();
-  }
-
-  private async getDefaultPipelineDefinition(): Promise<PipelineDefinitionEntity> {
-    const pipelineDefinition = await this.pipelineRepository.findOne({
-      relations: ['stages'],
-      where: {
-        isDefault: true,
-      },
-    });
-    return pipelineDefinition;
-  }
-
-  private getPipelineStage(
-    pipelineDefinition: PipelineDefinitionEntity,
-    id: string,
-  ): PipelineStageEntity {
-    const pipelineStage = pipelineDefinition.stages.find(
-      (s: { id: string }) => s.id === id,
-    );
-    if (!pipelineStage) {
-      if (!pipelineStage) {
-        const defaultStage = pipelineDefinition.stages.find(
-          (s: { order: number }) => s.order === 1,
-        );
-
-        return defaultStage;
-      }
-    }
-    return pipelineStage;
-  }
-
-  private async getDefaultPipelineAndFirstStage(): Promise<{
-    pipeline: PipelineDefinitionEntity;
-    pipelineStage: PipelineStageEntity;
-  }> {
-    const pipeline = await this.getDefaultPipelineDefinition();
-    const pipelineStage = pipeline.stages.find(
-      (s: { order: number }) => s.order === 1,
-    );
-    if (!pipelineStage) {
-      throw new Error(
-        'Pipeline stage with order = 1 not found! Incorrect configuration',
-      );
-    }
-    return { pipeline, pipelineStage };
   }
 
   private assignOpportunityProperties(
@@ -543,7 +465,6 @@ export class OpportunityService {
     organisation: OrganisationEntity,
     pipeline: PipelineDefinitionEntity,
     pipelineStage: PipelineStageEntity,
-    options: CommonCreateOpportunityOptions,
   ): Promise<OpportunityEntity> {
     const opportunity = new OpportunityEntity();
     opportunity.organisation = organisation;

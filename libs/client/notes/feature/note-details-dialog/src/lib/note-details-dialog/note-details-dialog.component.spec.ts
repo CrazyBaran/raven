@@ -4,6 +4,7 @@ import { NoteStoreFacade } from '@app/client/notes/state';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { WindowRef } from '@progress/kendo-angular-dialog';
+import { NotificationService } from '@progress/kendo-angular-notification';
 import { Observable, from, of } from 'rxjs';
 import { NoteDetailsDialogComponent } from './note-details-dialog.component';
 import { selectNoteDetailsDialogViewModel } from './note-details-dialog.selectors';
@@ -22,6 +23,12 @@ describe('ClientNotesFeatureNoteDetailsDialogComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             params: from([]),
+          },
+        },
+        {
+          provide: NotificationService,
+          useValue: {
+            show: jest.fn(),
           },
         },
         {

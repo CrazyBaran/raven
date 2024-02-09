@@ -49,6 +49,11 @@ export class CreatePipelineStageDto {
   @IsBoolean()
   public readonly isHidden?: boolean;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  public readonly isDefault?: boolean;
+
   @ApiProperty({
     type: 'enum',
     enum: CompanyStatus,

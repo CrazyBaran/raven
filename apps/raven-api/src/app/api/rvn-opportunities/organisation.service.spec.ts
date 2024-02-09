@@ -7,6 +7,8 @@ import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisat
 import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
+import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
+import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OrganisationService } from './organisation.service';
@@ -48,9 +50,16 @@ describe('OrganisationService', () => {
             setContext: jest.fn(),
           },
         },
-
         {
           provide: OpportunityTeamService,
+          useValue: {},
+        },
+        {
+          provide: DomainResolver,
+          useValue: {},
+        },
+        {
+          provide: PipelineUtilityService,
           useValue: {},
         },
       ],

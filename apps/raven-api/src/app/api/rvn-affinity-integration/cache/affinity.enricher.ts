@@ -22,7 +22,7 @@ export class AffinityEnricher {
     additionalProcessing?: (
       entity: OrganisationEntity,
       data: OrganisationDataWithOpportunities,
-    ) => OrganisationDataWithOpportunities,
+    ) => Promise<OrganisationDataWithOpportunities>,
   ): Promise<OrganisationDataWithOpportunities[]> {
     const affinityData = await this.affinityCacheService.getByDomains(
       organisations.flatMap((organisation) => organisation.domains),
@@ -53,7 +53,7 @@ export class AffinityEnricher {
     additionalProcessing?: (
       entity: OrganisationEntity,
       data: OrganisationDataWithOpportunities,
-    ) => OrganisationDataWithOpportunities,
+    ) => Promise<OrganisationDataWithOpportunities>,
     affinityDataFetched?: OrganizationStageDto[],
   ): Promise<OrganisationDataWithOpportunities> {
     const affinityData = affinityDataFetched
@@ -68,7 +68,7 @@ export class AffinityEnricher {
       this.buildOrganisationData(organisation, matchedOrganization);
 
     return additionalProcessing
-      ? additionalProcessing(organisation, result)
+      ? await additionalProcessing(organisation, result)
       : result;
   }
 
@@ -77,7 +77,7 @@ export class AffinityEnricher {
     additionalProcessing?: (
       entity: OpportunityEntity,
       data: OpportunityData,
-    ) => OpportunityData,
+    ) => Promise<OpportunityData>,
   ): Promise<OpportunityData[]> {
     const affinityData = await this.affinityCacheService.getByDomains(
       opportunities.flatMap((opportunity) => opportunity.organisation.domains),
@@ -107,7 +107,7 @@ export class AffinityEnricher {
     additionalProcessing?: (
       entity: OpportunityEntity,
       data: OpportunityData,
-    ) => OpportunityData,
+    ) => Promise<OpportunityData>,
     affinityDataFetched?: OrganizationStageDto[],
   ): Promise<OpportunityData> {
     const affinityData = affinityDataFetched

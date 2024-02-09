@@ -4,15 +4,12 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
-import { PipelineDefinitionEntity } from '../../rvn-pipeline/entities/pipeline-definition.entity';
 import { GatewayEventService } from '../../rvn-web-sockets/gateway/gateway-event.service';
 import { OpportunityEntity } from '../entities/opportunity.entity';
 
 @Injectable()
 export class AffinityStatusChangedEventHandler {
   public constructor(
-    @InjectRepository(PipelineDefinitionEntity)
-    private readonly pipelineRepository: Repository<PipelineDefinitionEntity>,
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
     private readonly logger: RavenLogger,

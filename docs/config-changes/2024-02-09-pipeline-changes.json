@@ -1,0 +1,295 @@
+[
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineDefinitionEntity",
+    "data": {
+      "id": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "name": "default pipeline 1",
+      "isDefault": false,
+      "affinityListId": 90186,
+      "affinityStatusFieldId": 766787,
+      "correspondingEntity": "PipelineDefinitionEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "936e91f9-9166-ee11-b004-6045bdd179fd",
+      "displayName": "Lead",
+      "order": 1,
+      "mappedFrom": "Lead",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "946e91f9-9166-ee11-b004-6045bdd179fd",
+      "displayName": "Screening",
+      "order": 2,
+      "mappedFrom": "Screening",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "956e91f9-9166-ee11-b004-6045bdd179fd",
+      "displayName": "1st Call / Meeting",
+      "order": 3,
+      "mappedFrom": "1st Call / Meeting",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "966e91f9-9166-ee11-b004-6045bdd179fd",
+      "displayName": "Initial DD",
+      "order": 4,
+      "mappedFrom": "Initial DD",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "976e91f9-9166-ee11-b004-6045bdd179fd",
+      "displayName": "Active / Live",
+      "order": 5,
+      "mappedFrom": "Active / Live",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "986e91f9-9166-ee11-b004-6045bdd179fd",
+      "displayName": "Portfolio",
+      "order": 6,
+      "mappedFrom": "Portfolio",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "996e91f9-9166-ee11-b004-6045bdd179fd",
+      "displayName": "Passed - 1st Meeting / Call",
+      "order": 7,
+      "mappedFrom": "Passed - 1st Meeting / Call",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "576cdf42-9266-ee11-b004-6045bdd179fd",
+      "displayName": "Passed - No Deck/website Only",
+      "order": 8,
+      "mappedFrom": "Passed - No Deck/website Only",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "d4d34c4d-9466-ee11-b004-6045bdd179fd",
+      "displayName": "Passed - Reviewed Deck",
+      "order": 9,
+      "mappedFrom": "Passed - Reviewed Deck",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "6323c777-9466-ee11-b004-6045bdd179fd",
+      "displayName": "Passed - Company Not Engaged",
+      "order": 10,
+      "mappedFrom": "Passed - Company Not Engaged",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "7d720fba-9466-ee11-b004-6045bdd179fd",
+      "displayName": "Passed - Activation",
+      "order": 11,
+      "mappedFrom": "Passed - Activation",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "705b5c2f-9566-ee11-b004-6045bdd179fd",
+      "displayName": "Passed - Intial DD",
+      "order": 12,
+      "mappedFrom": "Passed - Intial DD",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "22541087-9566-ee11-b004-6045bdd179fd",
+      "displayName": "Passed - Intel From Another Fund",
+      "order": 13,
+      "mappedFrom": "Passed - Intel From Another Fund",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "23541087-9566-ee11-b004-6045bdd179fd",
+      "displayName": "Lost - Term Sheet",
+      "order": 14,
+      "mappedFrom": "Lost - Term Sheet",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "274ed02a-9166-ee11-b004-6045bdd179fd",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "db55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Outreach - Planned",
+      "order": 2,
+      "mappedFrom": "Outreach - Planned",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "outreach",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "db55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Outreach - Planned",
+      "order": 2,
+      "mappedFrom": "Outreach - Planned",
+      "isHidden": false,
+      "isDefault": true,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "outreach",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineGroupEntity",
+    "data": {
+      "id": "54b1c4a2-0fb5-ee11-b660-6045bdd17e16",
+      "groupName": "test group migration",
+      "stageIds": [
+        "e555560e-7293-ee11-8927-6045bdd178c1",
+        "e655560e-7293-ee11-8927-6045bdd178c1"
+      ],
+      "correspondingEntity": "PipelineGroupEntity"
+    }
+  }
+]
