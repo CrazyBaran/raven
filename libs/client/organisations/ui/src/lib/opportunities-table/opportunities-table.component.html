@@ -48,15 +48,30 @@
     <ng-template kendoGridCellTemplate let-opportunity>
       <div class="flex gap-2">
         <kendo-button
-          [routerLink]="[
-            '/companies',
-            opportunity.companyId,
-            'opportunities',
-            opportunity.id
-          ]"
+          [routerLink]="getRouterLink(opportunity)"
           themeColor="primary"
           >Open Opportunity</kendo-button
         >
+
+        <kendo-dropdownbutton
+          iconClass="fa-solid fa-ellipsis-vertical"
+          [data]="getActionData(opportunity)"
+        >
+          <ng-template kendoDropDownButtonItemTemplate let-item>
+            @if (item.routerLink) {
+              <div
+                [routerLink]="item.routerLink"
+                [queryParamsHandling]="item.queryParamsHandling"
+                [queryParams]="item.queryParams"
+                [skipLocationChange]="item.skipLocationChange"
+              >
+                {{ item.text }}
+              </div>
+            } @else {
+              <div>{{ item.text }}</div>
+            }
+          </ng-template>
+        </kendo-dropdownbutton>
       </div>
     </ng-template>
   </kendo-grid-column>

@@ -7,11 +7,30 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TagsContainerComponent } from '@app/client/shared/ui';
+import {
+  ClipboardService,
+  TagsContainerComponent,
+} from '@app/client/shared/ui';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
-import { ButtonModule } from '@progress/kendo-angular-buttons';
+import {
+  ButtonModule,
+  DropDownButtonModule,
+} from '@progress/kendo-angular-buttons';
 import { GridItem, GridModule } from '@progress/kendo-angular-grid';
 import { ToUserTagPipe } from '../organisations-table-view-legacy/organisations-table-view.component';
+
+export type DropdownAction =
+  | {
+      text: string;
+      click: () => void;
+    }
+  | {
+      text: string;
+      routerLink: string[];
+      queryParamsHandling?: 'merge' | 'preserve';
+      queryParams?: { [k: string]: string };
+      skipLocationChange?: boolean;
+    };
 
 export type OpportunityRow = {
   id: string;
@@ -24,6 +43,7 @@ export type OpportunityRow = {
   dealLeads: string[];
   dealTeam: string[];
   updatedAt: string;
+  actionData: DropdownAction[];
 };
 
 @Component({
@@ -37,6 +57,7 @@ export type OpportunityRow = {
     ButtonModule,
     ToUserTagPipe,
     RouterLink,
+    DropDownButtonModule,
   ],
   templateUrl: './opportunities-table.component.html',
   styleUrls: ['./opportunities-table.component.scss'],
@@ -46,6 +67,33 @@ export type OpportunityRow = {
 export class OpportunitiesTableComponent {
   @Input() public rows: OpportunityRow[] = [];
 
-  protected trackByFn: TrackByFunction<GridItem> = (index, item) =>
+  public constructor(private clipboardService: ClipboardService) {}
+
+  protected trackByFn: TrackByFunction<GridItem> = (index, item: GridItem) =>
     'id' in item ? item.id : index;
+
+  protected getActionData(opportunity: OpportunityRow): DropdownAction[] {
+    const fullUrlToOpportunity = `${window.location.origin}${this.getRouterLink(
+      opportunity,
+    ).join('/')}`;
+
+    return [
+      ...opportunity.actionData,
+      {
+        text: 'Copy Link to Opportunity Details',
+        click: (): void => {
+          this.clipboardService.copyToClipboard(fullUrlToOpportunity);
+        },
+      },
+    ];
+  }
+
+  protected getRouterLink(opportunity: OpportunityRow): string[] {
+    return [
+      '/companies',
+      opportunity.companyId,
+      'opportunities',
+      opportunity.id,
+    ];
+  }
 }

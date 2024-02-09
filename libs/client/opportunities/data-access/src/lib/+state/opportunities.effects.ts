@@ -54,6 +54,31 @@ export class OpportunitiesEffects {
     );
   });
 
+  private reopenOpportunity$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OpportunitiesActions.reopenOpportunity),
+      concatMap(({ id }) =>
+        this.opportunitiesService.reopenOpportunity(id).pipe(
+          switchMap(({ data }) => [
+            OpportunitiesActions.reopenOpportunitySuccess({
+              data: data!,
+            }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Opportunity reopened.',
+            }),
+          ]),
+          catchError((error) =>
+            of(
+              OpportunitiesActions.reopenOpportunityFailure({
+                error,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
   private updateOpportunityTeam$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.updateOpportunityTeam),

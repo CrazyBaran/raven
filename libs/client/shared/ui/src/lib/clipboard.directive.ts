@@ -2,41 +2,34 @@ import {
   Directive,
   HostListener,
   inject,
-  InjectionToken,
+  Injectable,
   Input,
 } from '@angular/core';
 import { NotificationService } from '@progress/kendo-angular-notification';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 
-export const CLIPBOARD_DIRECTIVE_SETTINGS = new InjectionToken(
-  'Clipboard Directive Settings',
-  {
-    providedIn: 'root',
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    factory: () => {
-      const notificationService = inject(NotificationService, {
-        optional: true,
-      });
+@Injectable({
+  providedIn: 'root',
+})
+export class ClipboardService {
+  private clipBoard = inject(Clipboard);
+  private notificationService = inject(NotificationService);
 
-      return {
-        onClipboardCopyFn: (message: string): void => {
-          if (notificationService) {
-            notificationService.show({
-              content: message,
-              cssClass: 'success',
-              animation: { type: 'slide', duration: 400 },
-              position: { horizontal: 'center', vertical: 'top' },
-              type: { style: 'success', icon: true },
-            });
-          } else {
-            console.log(message);
-          }
-        },
-      };
-    },
-  },
-);
+  public copyToClipboard(
+    payload: string,
+    notificationSuccess: string = 'Copied to clipboard.',
+  ): void {
+    this.clipBoard.copy(payload);
+    this.notificationService.show({
+      content: notificationSuccess,
+      cssClass: 'success',
+      animation: { type: 'slide', duration: 400 },
+      position: { horizontal: 'center', vertical: 'top' },
+      type: { style: 'success', icon: true },
+    });
+  }
+}
 
 @Directive({
   selector: '[uiClipboard]',
@@ -48,13 +41,12 @@ export class ClipboardDirective {
 
   @Input() public clipboardMessage = 'Copied to clipboard.';
 
-  public clipboardSettings = inject(CLIPBOARD_DIRECTIVE_SETTINGS);
+  public clipboardService = inject(ClipboardService);
 
   public constructor(private readonly clipBoard: Clipboard) {}
 
   @HostListener('click')
   public handleCopyLink(): void {
-    this.clipBoard.copy(this.payload);
-    this.clipboardSettings?.onClipboardCopyFn?.(this.clipboardMessage);
+    this.clipboardService.copyToClipboard(this.payload, this.clipboardMessage);
   }
 }
