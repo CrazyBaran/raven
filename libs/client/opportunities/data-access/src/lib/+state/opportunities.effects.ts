@@ -57,7 +57,10 @@ export class OpportunitiesEffects {
   private reopenOpportunity$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.reopenOpportunity),
-      concatMap(({ id }) =>
+      concatLatestFrom(({ id }) =>
+        this.store.select(opportunitiesQuery.selectOpportunityById(id)),
+      ),
+      concatMap(([{ id }, opportunity]) =>
         this.opportunitiesService.reopenOpportunity(id).pipe(
           switchMap(({ data }) => [
             OpportunitiesActions.reopenOpportunitySuccess({
@@ -67,13 +70,27 @@ export class OpportunitiesEffects {
               content: 'Opportunity reopened.',
             }),
           ]),
-          catchError((error) =>
-            of(
-              OpportunitiesActions.reopenOpportunityFailure({
+          catchError((error) => {
+            if (error.status === 409) {
+              return of(
+                NotificationsActions.showErrorNotification({
+                  content:
+                    'There already is an active item in the pipeline for this organisation',
+                }),
+                OpportunitiesActions.reopenOpportunityFailure({
+                  error,
+                }),
+              );
+            }
+
+            return of(
+              OpportunitiesActions.changeOpportunityPipelineStageFailure({
                 error,
+                id,
+                prevPipelineStageId: opportunity?.stage.id ?? '',
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
     );
@@ -114,7 +131,10 @@ export class OpportunitiesEffects {
   private updateOpportunityPipeline$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.changeOpportunityPipelineStage),
-      concatMap(({ id, pipelineStageId }) =>
+      concatLatestFrom(({ id }) =>
+        this.store.select(opportunitiesQuery.selectOpportunityById(id)),
+      ),
+      concatMap(([{ id, pipelineStageId }, opportunity]) =>
         this.opportunitiesService
           .patchOpportunity(id, { pipelineStageId })
           .pipe(
@@ -126,13 +146,29 @@ export class OpportunitiesEffects {
                 content: 'Opportunity pipeline stage changed successfully',
               }),
             ]),
-            catchError((error) =>
-              of(
+            catchError((error) => {
+              if (error.status === 409) {
+                return of(
+                  NotificationsActions.showErrorNotification({
+                    content:
+                      'There already is an active item in the pipeline for this organisation',
+                  }),
+                  OpportunitiesActions.changeOpportunityPipelineStageFailure({
+                    error,
+                    id,
+                    prevPipelineStageId: opportunity?.stage.id ?? '',
+                  }),
+                );
+              }
+
+              return of(
                 OpportunitiesActions.changeOpportunityPipelineStageFailure({
                   error,
+                  id,
+                  prevPipelineStageId: opportunity?.stage.id ?? '',
                 }),
-              ),
-            ),
+              );
+            }),
           ),
       ),
     );

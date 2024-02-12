@@ -48,7 +48,11 @@ export const selectOpportunityPipelines = createSelector(
   (stages, isLoading, opportunity, hasPermission, isLoadingUpdateState) => ({
     data: stages.filter(({ isHidden }) => !isHidden),
     value: isLoading ? null : opportunity?.stage.id,
-    disabled: isLoading || isLoadingUpdateState, // todo: add permission check
+    disabled:
+      isLoading ||
+      isLoadingUpdateState ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      !!(opportunity as any)?.['pipelineStage'].configuration, // todo: add permission check
     isLoading: isLoading || isLoadingUpdateState,
     disabledItem: ((item: ItemArgs): boolean =>
       Boolean(

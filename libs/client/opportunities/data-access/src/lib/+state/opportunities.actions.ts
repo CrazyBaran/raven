@@ -48,7 +48,11 @@ export const OpportunitiesActions = createActionGroup({
     'Change Opportunity Pipeline Stage Success': props<{
       data: OpportunityData | null;
     }>(),
-    'Change Opportunity Pipeline Stage Failure': props<{ error: string }>(),
+    'Change Opportunity Pipeline Stage Failure': props<{
+      id: string;
+      prevPipelineStageId: string;
+      error: string;
+    }>(),
 
     'Live Change Opportunity Pipeline Stage': props<{
       id: string;

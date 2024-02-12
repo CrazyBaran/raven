@@ -130,12 +130,22 @@ export const opportunitiesReducer = createReducer(
       ),
   ),
 
-  on(OpportunitiesActions.changeOpportunityPipelineStageFailure, (state) => ({
-    ...state,
-    updateStage: {
-      isLoading: false,
-    },
-  })),
+  on(
+    OpportunitiesActions.changeOpportunityPipelineStageFailure,
+    (state, { id, prevPipelineStageId }) =>
+      opportunitiesAdapter.updateOne(
+        {
+          id,
+          changes: {
+            stage: {
+              ...state.entities[id]!.stage,
+              id: prevPipelineStageId,
+            },
+          },
+        },
+        { ...state, isLoading: false },
+      ),
+  ),
 
   on(OpportunitiesActions.getOpportunityDetails, (state) => ({
     ...state,

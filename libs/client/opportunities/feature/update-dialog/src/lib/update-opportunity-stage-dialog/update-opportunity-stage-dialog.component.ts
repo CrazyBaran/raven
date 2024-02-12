@@ -86,7 +86,10 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
 
     this.actions$
       .pipe(
-        ofType(OpportunitiesActions.changeOpportunityPipelineStageSuccess),
+        ofType(
+          OpportunitiesActions.changeOpportunityPipelineStageSuccess,
+          OpportunitiesActions.changeOpportunityPipelineStageFailure,
+        ),
         take(1),
       )
       .subscribe((data) => {
