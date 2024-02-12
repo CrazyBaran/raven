@@ -12,6 +12,7 @@ import { Injectable } from '@nestjs/common';
 import { And, FindManyOptions, In, IsNull, Not, Repository } from 'typeorm';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { defaultGetOrganisationsOptions } from '../../rvn-opportunities/interfaces/get-organisations.options';
+import { DWH_COMPANY_SELECT_COLUMNS } from '../data-warehouse.const';
 import { InjectDataWarehouseRepository } from '../utils/inject-data-warehouse-repository.decorator';
 import { CompanyDwhEntity } from './entities/company.dwh.entity';
 import { DealroomCompanyNumberOfEmployeesDwhEntity } from './entities/dealroom-company-number-of-employees.dwh.entity';
@@ -84,8 +85,10 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
   public async filterCompanies(
     options?: GetCompaniesOptions,
     filterOptions?: CompanyFilterOptions,
-  ): Promise<{ items: CompanyDto[]; count: number }> {
+  ): Promise<{ items: Partial<CompanyDto>[]; count: number }> {
     const queryBuilder = this.companyRepository.createQueryBuilder('company');
+
+    queryBuilder.select('company.domain');
 
     queryBuilder.where('company.domain IS NOT NULL');
 
@@ -188,14 +191,17 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     skip?: number;
     take?: number;
     domains?: string[];
-  }): Promise<CompanyDto[]> {
+  }): Promise<Partial<CompanyDto>[]> {
     this.logger.debug(
       `Getting companies from data warehouse, options: ${JSON.stringify(
         options,
       )}`,
     );
-    const findOptions: FindManyOptions<CompanyDwhEntity> = {};
 
+    const findOptions: FindManyOptions<CompanyDwhEntity> = {};
+    if (DWH_COMPANY_SELECT_COLUMNS && !!DWH_COMPANY_SELECT_COLUMNS.length) {
+      findOptions.select = DWH_COMPANY_SELECT_COLUMNS;
+    }
     findOptions.where = {
       domain: And(Not(''), Not(IsNull())),
     };

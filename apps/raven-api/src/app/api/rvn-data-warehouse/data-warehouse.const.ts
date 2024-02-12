@@ -1,3 +1,5 @@
+import { CompanyDwhEntity } from './v1/entities/company.dwh.entity';
+
 export const DataWarehouseDataSourceName = 'dataWarehouse';
 
 export const DWH_SERVICE = 'DWH_SERVICE';
@@ -18,3 +20,20 @@ export const DWH_QUEUE = {
     REGENERATE: 'DataWarehouseQueue-Regenerate',
   },
 };
+
+export const DWH_COMPANY_SELECT_COLUMNS: Partial<keyof CompanyDwhEntity>[] = [
+  'name',
+  'specterFounders',
+  'specterInvestors',
+  'companyId',
+  'dealRoomLastUpdated',
+  'description',
+  'domain',
+  'totalFundingAmount',
+  'lastFundingAmount',
+  'lastFundingDate',
+  'specterLastFundingType',
+  'specterHqLocation',
+  'specterHqRegion',
+  'specterIndustry',
+];

@@ -19,7 +19,9 @@ export class DataWarehouseCacheService {
     return this.cacheManager.store as RedisStore;
   }
 
-  public async addOrReplaceMany(organisations: CompanyDto[]): Promise<void> {
+  public async addOrReplaceMany(
+    organisations: Partial<CompanyDto>[],
+  ): Promise<void> {
     this.logger.debug(`Adding ${organisations.length} organisations to cache`);
     const pipeline = this.store.client.pipeline();
     for (const organisation of organisations) {

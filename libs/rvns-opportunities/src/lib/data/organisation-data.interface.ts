@@ -14,7 +14,7 @@ export interface OrganisationData {
   companyStatus?: CompanyStatus | null;
   sharepointDirectory?: string;
   sharePointPath?: string;
-  data?: CompanyDto;
+  data?: Partial<CompanyDto>;
 }
 
 export interface OrganisationDataWithOpportunities extends OrganisationData {

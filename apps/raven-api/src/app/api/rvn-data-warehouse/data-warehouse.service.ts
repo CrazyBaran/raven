@@ -53,7 +53,9 @@ export class DataWarehouseService {
     );
   }
 
-  public async getCompanyByDomain(domain: string): Promise<CompanyDto> {
+  public async getCompanyByDomain(
+    domain: string,
+  ): Promise<Partial<CompanyDto>> {
     const company = await this.dataWarehouseCacheService.getCompany(domain);
     if (company) {
       return company;
@@ -72,7 +74,9 @@ export class DataWarehouseService {
     return companyFromApi[0];
   }
 
-  public async getCompaniesByDomains(domains: string[]): Promise<CompanyDto[]> {
+  public async getCompaniesByDomains(
+    domains: string[],
+  ): Promise<Partial<CompanyDto>[]> {
     const companies =
       await this.dataWarehouseCacheService.getCompanies(domains);
 
@@ -141,7 +145,7 @@ export class DataWarehouseService {
   public async getFilteredCompanies(
     options: GetCompaniesOptions,
     filterOptions?: CompanyFilterOptions,
-  ): Promise<{ items: CompanyDto[]; count: number }> {
+  ): Promise<{ items: Partial<CompanyDto>[]; count: number }> {
     return await this.dataWarehouseAccessService.filterCompanies(
       options,
       filterOptions,

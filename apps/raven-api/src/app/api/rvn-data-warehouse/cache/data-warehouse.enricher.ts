@@ -37,7 +37,7 @@ export class DataWarehouseEnricher {
 
   public async enrichOrganisation(
     organisation: OrganisationDataWithOpportunities,
-    dataWarehouseDataFetched?: CompanyDto[],
+    dataWarehouseDataFetched?: Partial<CompanyDto>[],
   ): Promise<OrganisationDataWithOpportunities> {
     const dataWarehouseData = dataWarehouseDataFetched
       ? dataWarehouseDataFetched
@@ -59,7 +59,7 @@ export class DataWarehouseEnricher {
 
   private buildOrganisationData(
     organisation: OrganisationDataWithOpportunities,
-    dataWarehouseOrganisation: CompanyDto,
+    dataWarehouseOrganisation: Partial<CompanyDto>,
   ): OrganisationDataWithOpportunities {
     return {
       ...organisation,
