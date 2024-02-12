@@ -11,6 +11,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   RelationId,
+  UpdateDateColumn,
 } from 'typeorm';
 import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
 import { ShareResource } from '../../rvn-acl/contracts/share-resource.interface';
@@ -118,6 +119,9 @@ export class OpportunityEntity
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   public createdAt: Date;
+
+  @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
+  public updatedAt: Date;
 
   @Column({ nullable: true })
   public roundSize: string | null;

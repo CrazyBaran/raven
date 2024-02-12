@@ -416,6 +416,7 @@ export class OpportunityService {
         : undefined,
       fields: [],
       createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
       roundSize: entity.roundSize,
       valuation: entity.valuation,
       proposedInvestment: entity.proposedInvestment,

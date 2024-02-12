@@ -34,4 +34,5 @@ export interface OpportunityDataWithoutOrganisation {
   readonly sharepointDirectoryId?: string;
   readonly sharePointPath?: string;
   team?: OpportunityTeamData;
+  readonly updatedAt?: Date;
 }
