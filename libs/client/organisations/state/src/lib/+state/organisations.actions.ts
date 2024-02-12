@@ -38,6 +38,13 @@ export const OrganisationsActions = createActionGroup({
     }>(),
     'Create Organisation Failure': props<{ error: string }>(),
 
+    'Update Organisation': props<{
+      id: string;
+      changes: Partial<OrganisationEntity>;
+    }>(),
+    'Update Organisation Failure': props<{ error: string }>(),
+    'Update Organisation Success': props<{ data: Organisation }>(),
+
     'Create Organisation SharepointFolder': props<{
       id: string;
     }>(),

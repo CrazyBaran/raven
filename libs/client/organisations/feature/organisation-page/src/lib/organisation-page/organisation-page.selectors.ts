@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Environment } from '@app/client/core/environment';
 import { FileEntity, filesQuery } from '@app/client/files/feature/state';
-import { organisationsFeature } from '@app/client/organisations/state';
+import { opportunitiesFeature } from '@app/client/opportunities/data-access';
+import {
+  organisationStatusColorDictionary,
+  organisationsFeature,
+} from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery } from '@app/client/shared/util-router';
 import { tagsQuery } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
+import { CompanyStatus } from 'rvns-shared';
 
 export type FileRow = {
   type: 'file' | 'folder';
@@ -89,6 +94,8 @@ export const selectOrganisationPageViewModel = createSelector(
   organisationsFeature.selectLoadingOrganisation,
   organisationsFeature.selectCreatingSharepointFolder,
   pipelinesQuery.selectStagePrimaryColorDictionary,
+  organisationsFeature.selectUpdateLoading,
+  opportunitiesFeature.selectCreate,
   (
     currentOrganisation,
     currentOrganisationId,
@@ -96,23 +103,48 @@ export const selectOrganisationPageViewModel = createSelector(
     isLoading,
     isCreatingSharepointFolder,
     stageColorDictionary,
+    updateLoading,
+    { isLoading: createLoading },
   ) => {
+    const opportunities =
+      currentOrganisation?.opportunities?.map((opportunity) => ({
+        ...opportunity,
+        status: {
+          name: opportunity!.stage?.displayName ?? '',
+          color: stageColorDictionary?.[opportunity!.stage?.id] ?? '#000',
+        },
+      })) ?? [];
+
+    const companyStatusDisplayName = currentOrganisation?.companyStatus
+      ?.split('_')
+      .join(' ');
+
+    const status = {
+      name: companyStatusDisplayName,
+      color:
+        organisationStatusColorDictionary[
+          currentOrganisation?.companyStatus as CompanyStatus
+        ],
+    };
+
     return {
       currentOrganisationId,
       currentOrganisation,
       details,
       isLoading,
-      opportunities:
-        currentOrganisation?.opportunities?.map((opportunity) => ({
-          ...opportunity,
-          status: {
-            name: opportunity!.stage?.displayName ?? '',
-            color: stageColorDictionary?.[opportunity!.stage?.id] ?? '#000',
-          },
-        })) ?? [],
-      hasFileFolder: !!currentOrganisation?.sharepointDirectory,
+      opportunities,
       isCreatingSharepointFolder,
+      status,
+      createLoading,
+      updateLoading,
       sharepointFolder: currentOrganisation?.sharePointPath,
+      hasFileFolder: !!currentOrganisation?.sharepointDirectory,
+      showPassButton:
+        ![CompanyStatus.PASSED, CompanyStatus.PORTFOLIO].some(
+          (status) => status === currentOrganisation?.companyStatus,
+        ) && !isLoading,
+      showStatus: !isLoading && companyStatusDisplayName,
+      showOutreachButton: !isLoading && !currentOrganisation?.companyStatus,
     };
   },
 );

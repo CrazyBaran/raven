@@ -1,17 +1,54 @@
+@use 'sass:color';
+
 $primary-color: #00a59b;
 $secondary-color: #002c3c;
 $tertiary-color: #9bcbeb;
+$light: #d9d9d6;
 
 $error-color: #f31700;
 $info-color: #0058e9;
 $success-color: #37b400;
 $warning-color: #ffc000;
 
+$kendo-series-a: #00ccbe;
+$kendo-series-b: #004b66;
+$kendo-series-c: #b4e4e2;
+$kendo-series-d: #77b8e4;
+$kendo-series-e: #f0882d;
+$kendo-series-f: #d84661;
+$kendo-series-g: #d281d9;
+$kendo-series-h: #fddc49;
+
+$series-variables: (
+  series-a: $kendo-series-a,
+  series-b: $kendo-series-b,
+  series-c: $kendo-series-c,
+  series-d: $kendo-series-d,
+  series-e: $kendo-series-e,
+  series-f: $kendo-series-f,
+  series-g: $kendo-series-g,
+  series-h: $kendo-series-h,
+);
+
+@function k-color-mix($color1, $color2, $weight: 50%) {
+  @return color.mix($color1, $color2, $weight);
+}
+
 :root {
+  @each $name, $value in $series-variables {
+    --#{$name}: #{$value};
+    --#{$name}-darken-75: #{k-color-mix(black, $value, 25%)};
+    --#{$name}-darken-50: #{k-color-mix(black, $value, 50%)};
+    --#{$name}-lighten-75: #{k-color-mix(white, $value, 25%)};
+    --#{$name}-lighten-50: #{k-color-mix(white, $value, 50%)};
+    //@debug k-color-mix(black, #{$value}, 25%);
+  }
+
   // APP MAIN COLORS
   --rv-primary: #{$primary-color};
   --rv-secondary: #{$secondary-color};
   --rv-tertiary: #{$tertiary-color};
+  --rv-light: #{$light};
 
   --rv-error: #{$error-color};
   --rv-info: #{$info-color};
@@ -27,14 +64,6 @@ $warning-color: #ffc000;
   --rv-button-text-20: #002c3c;
 
   // RAVEN COLORS
-
-  --series-b: #004b66;
-  --series-f: #d84661;
-
-  --series-a-darken-75: #00ccbebf;
-  --series-g-darken-75: #d281d9bf;
-  --series-d-darken-75: #77b8e4bf;
-  --series-e-darken-75: #f0882dbf;
 
   --informational-success: #12861e;
   --informational-success-50: #12861e80;

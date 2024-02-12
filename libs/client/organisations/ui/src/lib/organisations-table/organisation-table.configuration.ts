@@ -1,4 +1,5 @@
 import { CompanyColumn } from '../dynamic-company-column/dynamic-company-column.component';
+import { CompanyStatusColumn } from '../dynamic-company-status-column/dynamic-company-status-column.component';
 import { TableColumn } from './organisations-table.component';
 
 /**
@@ -20,17 +21,17 @@ export const organisationTableConfiguration: TableColumn[] = [
       domains: row.domains,
     }),
   },
-  // {
-  //   componentPath: () =>
-  //     import(
-  //       '../dynamic-company-status-column/dynamic-company-status-column.component'
-  //     ).then((m) => m.DynamicCompanyStatusColumnComponent),
-  //   name: 'Status',
-  //   field: 'status',
-  //   filter: 'string',
-  //   sortable: false,
-  //   dataFn: (row): CompanyStatusColumn => row.status,
-  // },
+  {
+    componentPath: () =>
+      import(
+        '../dynamic-company-status-column/dynamic-company-status-column.component'
+      ).then((m) => m.DynamicCompanyStatusColumnComponent),
+    name: 'Status',
+    field: 'status',
+    filter: 'string',
+    sortable: false,
+    dataFn: (row): CompanyStatusColumn => row.status,
+  },
   // {
   //   componentPath: () =>
   //     import('../dynamic-string-column/dynamic-string-column.component').then(

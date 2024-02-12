@@ -14,14 +14,14 @@ import { Clipboard } from '@angular/cdk/clipboard';
 })
 export class ClipboardService {
   private clipBoard = inject(Clipboard);
-  private notificationService = inject(NotificationService);
+  private notificationService = inject(NotificationService, { optional: true });
 
   public copyToClipboard(
     payload: string,
     notificationSuccess: string = 'Copied to clipboard.',
   ): void {
     this.clipBoard.copy(payload);
-    this.notificationService.show({
+    this.notificationService?.show({
       content: notificationSuccess,
       cssClass: 'success',
       animation: { type: 'slide', duration: 400 },
