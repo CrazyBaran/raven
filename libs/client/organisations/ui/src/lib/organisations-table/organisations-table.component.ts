@@ -8,26 +8,35 @@ import {
   Pipe,
   PipeTransform,
   signal,
+  TrackByFunction,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { GridModule, RowClassFn } from '@progress/kendo-angular-grid';
+import { GridItem, GridModule, RowClassFn } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
 import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';
+import { DialogQueryParams } from '@app/client/shared/shelf';
 import {
+  ClipboardService,
   KendoUrlPagingDirective,
   KendoUrlSortingDirective,
 } from '@app/client/shared/ui';
+import {
+  DropdownAction,
+  DropdownButtonNavigationComponent,
+  DropdownbuttonNavigationModel,
+} from '@app/client/shared/ui-router';
 import { TagsService } from '@app/client/tags/data-access';
 import { lastFundingTypes } from '@app/shared/data-warehouse';
 import param from 'jquery-param';
 import * as _ from 'lodash';
+import { CompanyStatus } from 'rvns-shared';
 import { map, Observable, of } from 'rxjs';
 import { InfinityTableViewBaseComponent } from '../../../../../shared/ui-directives/src/lib/infinity-table-view-base.directive';
 import { DateRangeFilterComponent } from '../date-range-filter/date-range-filter.component';
@@ -127,6 +136,7 @@ export type OrganisationRowV2 = {
     KendoUrlSortingDirective,
     NumberRangeFilterComponent,
     SourceFnPipe,
+    DropdownButtonNavigationComponent,
   ],
   templateUrl: './organisations-table.component.html',
   styleUrls: ['./organisations-table.component.scss'],
@@ -138,6 +148,7 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
 
   public router = inject(Router);
   public activedRoute = inject(ActivatedRoute);
+  public clipboardService = inject(ClipboardService);
 
   public collapsedRows = signal<string[]>([]);
 
@@ -169,6 +180,9 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
     return this.collapsedRows().includes(id);
   }
 
+  public trackByFn: TrackByFunction<GridItem> = (index, item: GridItem) =>
+    'id' in item ? item.id : index;
+
   public filterChange($event: CompositeFilterDescriptor): void {
     const mapFilters = parseToFilterObject($event);
     const filters = _.isEmpty(mapFilters) ? null : param(mapFilters);
@@ -183,4 +197,42 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
   protected rowCallback: RowClassFn = (context) => {
     return `row-${context.dataItem.id}`;
   };
+
+  protected getOutreachQueryParam(
+    organisation: OrganisationRowV2,
+  ): Record<string, string> {
+    return { [DialogQueryParams.moveToOutreachCompany]: organisation.id };
+  }
+  protected getActionsModel(
+    organisation: OrganisationRowV2,
+  ): DropdownbuttonNavigationModel {
+    const passAction: DropdownAction = {
+      text: 'Pass on Company',
+      routerLink: ['./'],
+      queryParams: {
+        [DialogQueryParams.passCompany]: organisation.id,
+      },
+      skipLocationChange: true,
+      queryParamsHandling: 'merge',
+    };
+
+    const copyLinkAction: DropdownAction = {
+      text: 'Copy Link to Company Details',
+      click: (): void => {
+        const url = this.router.serializeUrl(
+          this.router.createUrlTree(['/companies', organisation.id]),
+        );
+        this.clipboardService.copyToClipboard(
+          `${window.location.origin}${url}`,
+        );
+      },
+    };
+
+    return {
+      actions:
+        organisation.status.name !== CompanyStatus.PASSED
+          ? [passAction, copyLinkAction]
+          : [copyLinkAction],
+    };
+  }
 }

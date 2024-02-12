@@ -23,6 +23,8 @@ import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
 export class DialogQueryParams {
   public static readonly reopenOpportunity = 'reopen-opportunity';
   public static readonly updateOpportunityStage = 'update-opportunity-stage';
+  public static readonly passCompany = 'pass-company';
+  public static readonly moveToOutreachCompany = 'move-to-outreach-company';
 }
 
 export const dynamicDialogsConfig: Record<
@@ -45,6 +47,25 @@ export const dynamicDialogsConfig: Record<
       load: () =>
         import('@app/client/opportunities/feature/update-dialog').then(
           (m) => m.UpdateOpportunityStageModule,
+        ),
+    },
+  },
+  [DialogQueryParams.passCompany]: {
+    template: {
+      load: () =>
+        import('@app/client/organisations/feature/dialogs').then(
+          (m) => m.PassCompanyDialogModule,
+        ),
+    },
+    settings: {
+      cssClass: 'raven-custom-dialog k-dialog-secondary',
+    },
+  },
+  [DialogQueryParams.moveToOutreachCompany]: {
+    template: {
+      load: () =>
+        import('@app/client/organisations/feature/dialogs').then(
+          (m) => m.MoveToOutreachCompanyDialogModule,
         ),
     },
   },

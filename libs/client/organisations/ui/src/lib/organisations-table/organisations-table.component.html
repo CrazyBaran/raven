@@ -1,7 +1,7 @@
 <kendo-grid
   #grid
-  (scrollBottom)="onLoadMore()"
   (filterChange)="filterChange($event)"
+  (scrollBottom)="onLoadMore()"
   [data]="gridData"
   [expandedDetailKeys]="collapsedRows()"
   [filter]="filters!"
@@ -9,6 +9,7 @@
   [rowClass]="rowCallback"
   [sort]="sort"
   [sortable]="true"
+  [trackBy]="trackByFn"
   class="organisation-table h-full"
   filterable="menu"
   kendoGridExpandDetailsBy="id"
@@ -69,9 +70,22 @@
     </kendo-grid-column>
   }
 
-  <kendo-grid-column [width]="60" title="">
+  <kendo-grid-column [width]="150" title="">
     <ng-template kendoGridCellTemplate let-organisation>
-      @if (organisation.opportunities.length > 0) {
+      <div class="flex justify-end gap-2">
+        @if (!organisation.status.name) {
+          <kendo-button
+            iconClass="fa-solid fa-plus"
+            [routerLink]="['./']"
+            [queryParams]="getOutreachQueryParam(organisation)"
+            [skipLocationChange]="true"
+            queryParamsHandling="merge"
+            >Outreach</kendo-button
+          >
+        }
+        <app-dropdownbutton-navigation
+          [model]="getActionsModel(organisation)"
+        />
         <kendo-button
           (click)="toggleRow(organisation.id)"
           [iconClass]="
@@ -79,8 +93,9 @@
             (isRowCollapsed(organisation.id) ? 'up' : 'down')
           "
           fillMode="link"
+          [class.invisible]="organisation.opportunities.length === 0"
         />
-      }
+      </div>
     </ng-template>
   </kendo-grid-column>
 

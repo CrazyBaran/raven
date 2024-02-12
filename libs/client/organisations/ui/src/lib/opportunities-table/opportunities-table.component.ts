@@ -13,24 +13,13 @@ import {
 } from '@app/client/shared/ui';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import {
-  ButtonModule,
-  DropDownButtonModule,
-} from '@progress/kendo-angular-buttons';
+  DropdownAction,
+  DropdownButtonNavigationComponent,
+  DropdownbuttonNavigationModel,
+} from '@app/client/shared/ui-router';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridItem, GridModule } from '@progress/kendo-angular-grid';
 import { ToUserTagPipe } from '../organisations-table-view-legacy/organisations-table-view.component';
-
-export type DropdownAction =
-  | {
-      text: string;
-      click: () => void;
-    }
-  | {
-      text: string;
-      routerLink: string[];
-      queryParamsHandling?: 'merge' | 'preserve';
-      queryParams?: { [k: string]: string };
-      skipLocationChange?: boolean;
-    };
 
 export type OpportunityRow = {
   id: string;
@@ -57,7 +46,7 @@ export type OpportunityRow = {
     ButtonModule,
     ToUserTagPipe,
     RouterLink,
-    DropDownButtonModule,
+    DropdownButtonNavigationComponent,
   ],
   templateUrl: './opportunities-table.component.html',
   styleUrls: ['./opportunities-table.component.scss'],
@@ -72,20 +61,24 @@ export class OpportunitiesTableComponent {
   protected trackByFn: TrackByFunction<GridItem> = (index, item: GridItem) =>
     'id' in item ? item.id : index;
 
-  protected getActionData(opportunity: OpportunityRow): DropdownAction[] {
+  protected getActionData(
+    opportunity: OpportunityRow,
+  ): DropdownbuttonNavigationModel {
     const fullUrlToOpportunity = `${window.location.origin}${this.getRouterLink(
       opportunity,
     ).join('/')}`;
 
-    return [
-      ...opportunity.actionData,
-      {
-        text: 'Copy Link to Opportunity Details',
-        click: (): void => {
-          this.clipboardService.copyToClipboard(fullUrlToOpportunity);
+    return {
+      actions: [
+        ...opportunity.actionData,
+        {
+          text: 'Copy Link to Opportunity Details',
+          click: (): void => {
+            this.clipboardService.copyToClipboard(fullUrlToOpportunity);
+          },
         },
-      },
-    ];
+      ],
+    };
   }
 
   protected getRouterLink(opportunity: OpportunityRow): string[] {
