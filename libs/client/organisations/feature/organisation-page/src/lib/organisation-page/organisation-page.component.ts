@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  signal,
   TrackByFunction,
 } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
@@ -37,6 +38,7 @@ import { RxIf } from '@rx-angular/template/if';
 
 import { trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import { FilesService } from '@app/client/files/feature/data-access';
 import {
@@ -47,19 +49,27 @@ import {
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
 import { SPItem } from '@app/client/files/sdk-pnptimeline';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
+import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { PipelinesActions } from '@app/client/pipelines/state';
+import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { TagData } from '@app/rvns-tags';
+import { Actions, ofType } from '@ngrx/effects';
+import { DialogModule } from '@progress/kendo-angular-dialog';
+import { ComboBoxModule } from '@progress/kendo-angular-dropdowns';
 import {
   LoaderModule,
   SkeletonModule,
 } from '@progress/kendo-angular-indicators';
+import { FormFieldModule, TextBoxModule } from '@progress/kendo-angular-inputs';
+import { LabelModule } from '@progress/kendo-angular-label';
 import {
   TreeListComponent,
   TreeListModule,
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
+import { CompanyStatus } from 'rvns-shared';
 import { filter, first, map, Observable } from 'rxjs';
 import {
   FileRow,
@@ -94,6 +104,13 @@ import {
     PickerComponent,
     TilelayoutItemComponent,
     IsEllipsisActiveDirective,
+    DialogModule,
+    ComboBoxModule,
+    ErrorMessagePipe,
+    FormFieldModule,
+    LabelModule,
+    ReactiveFormsModule,
+    TextBoxModule,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -113,9 +130,23 @@ export class OrganisationPageComponent {
   public sharepointList = this.environment.sharepointList;
   public sharepointWeb = this.environment.sharepointWeb;
 
-  public source = computed(() => this.fileTable().source, { equal: _.isEqual });
+  public outreachDialog = signal(false);
+
+  public passDialog = signal(false);
+
+  public dropdownButtonActions = [
+    {
+      text: 'Pass',
+      click: (): void => this.passDialog.set(true),
+    },
+  ];
+
   protected store = inject(Store);
+
+  protected actions$ = inject(Actions);
+
   protected router = inject(Router);
+
   protected filesService = inject(FilesService);
 
   protected vm = this.store.selectSignal(selectOrganisationPageViewModel);
@@ -124,6 +155,8 @@ export class OrganisationPageComponent {
   protected fileTable = this.store.selectSignal(
     selectFilesTableViewModelFactory(this.environment),
   );
+
+  public source = computed(() => this.fileTable().source, { equal: _.isEqual });
 
   public constructor() {
     const organizationId = this.vm().currentOrganisationId;
@@ -257,5 +290,43 @@ export class OrganisationPageComponent {
           }
         });
     });
+  }
+
+  public moveToOutreachClick(): void {
+    this.store.dispatch(
+      OpportunitiesActions.createOpportunity({
+        payload: {
+          organisationId: this.vm().currentOrganisationId!,
+        },
+      }),
+    );
+
+    this.actions$
+      .pipe(ofType(OpportunitiesActions.createOpportunitySuccess), first())
+      .subscribe(() => {
+        this.store.dispatch(
+          OrganisationsActions.getOrganisation({
+            id: this.vm().currentOrganisationId,
+          }),
+        );
+        this.outreachDialog.set(false);
+      });
+  }
+
+  public moveToPassClick(): void {
+    this.store.dispatch(
+      OrganisationsActions.updateOrganisation({
+        id: this.vm().currentOrganisationId!,
+        changes: {
+          companyStatus: CompanyStatus.PASSED,
+        },
+      }),
+    );
+
+    this.actions$
+      .pipe(ofType(OrganisationsActions.updateOrganisationSuccess), first())
+      .subscribe(() => {
+        this.passDialog.set(false);
+      });
   }
 }

@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { OrganisationsService } from '@app/client/organisations/data-access';
+import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, concatMap, map, of, switchMap } from 'rxjs';
 import {
@@ -143,6 +144,39 @@ export const createOrganisation = createEffect(
               OrganisationsActions.createOrganisationFailure({ error }),
             );
           }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const updateOrganisation$ = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsActions.updateOrganisation),
+      switchMap(({ id, changes }) =>
+        organisationsService.patchOrganisation(id, changes).pipe(
+          switchMap(({ data }) => [
+            OrganisationsActions.updateOrganisationSuccess({
+              data: data!,
+            }),
+            NotificationsActions.showSuccessNotification({
+              content: 'Organisation changed.',
+            }),
+          ]),
+          catchError((error) =>
+            of(
+              OrganisationsActions.updateOrganisationFailure({
+                error,
+              }),
+            ),
+          ),
         ),
       ),
     );

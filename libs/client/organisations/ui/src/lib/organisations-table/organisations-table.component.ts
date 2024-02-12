@@ -25,9 +25,10 @@ import {
   KendoUrlSortingDirective,
 } from '@app/client/shared/ui';
 import { TagsService } from '@app/client/tags/data-access';
+import { lastFundingTypes } from '@app/shared/data-warehouse';
 import param from 'jquery-param';
 import * as _ from 'lodash';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { InfinityTableViewBaseComponent } from '../../../../../shared/ui-directives/src/lib/infinity-table-view-base.directive';
 import { DateRangeFilterComponent } from '../date-range-filter/date-range-filter.component';
 import { MultiCheckFilterComponent } from '../multicheck-filter/multicheck-filter.component';
@@ -59,6 +60,14 @@ export class SourceFnPipe implements PipeTransform {
   public transform(
     column: TableColumn,
   ): (filter: string) => Observable<string[]> {
+    if (column.field === 'funding.lastFundingType') {
+      return (filter: string) =>
+        of(
+          lastFundingTypes.filter((x) =>
+            x.toLowerCase().includes(filter.toLowerCase()),
+          ),
+        );
+    }
     return (filter: string) =>
       this.tagService
         .getTags({ type: 'industry', query: filter, take: 100 })

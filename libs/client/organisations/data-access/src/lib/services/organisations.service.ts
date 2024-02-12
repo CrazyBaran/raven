@@ -66,4 +66,14 @@ export class OrganisationsService {
       ),
     );
   }
+
+  public patchOrganisation(
+    id: string,
+    changes: Partial<Organisation>,
+  ): Observable<GenericResponse<Organisation>> {
+    return this.http.patch<GenericResponse<Organisation>>(
+      `${this.url}/${id}`,
+      changes,
+    );
+  }
 }

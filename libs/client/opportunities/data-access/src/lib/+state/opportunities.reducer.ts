@@ -121,7 +121,12 @@ export const opportunitiesReducer = createReducer(
             stage: data?.stage,
           },
         },
-        { ...state, isLoading: false },
+        {
+          ...state,
+          updateStage: {
+            isLoading: false,
+          },
+        },
       ),
   ),
 

@@ -1,7 +1,10 @@
 import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { tagsFeature, tagsQuery } from '@app/client/organisations/api-tags';
-import { organisationsFeature } from '@app/client/organisations/state';
+import {
+  organisationStatusColorDictionary,
+  organisationsFeature,
+} from '@app/client/organisations/state';
 
 import {
   FilterParam,
@@ -25,6 +28,7 @@ import {
 import { OpportunityData } from '@app/rvns-opportunities';
 import { createSelector } from '@ngrx/store';
 import deparam from 'jquery-deparam';
+import { CompanyStatus } from 'rvns-shared';
 
 export const organisationsQueryParams = [
   'query',
@@ -196,8 +200,11 @@ export const selectOrganisationRows = createSelector(
           name: company.name,
           domains: company.domains,
           status: {
-            name: 'todo',
-            color: '#000',
+            name: company.companyStatus?.split('_').join(' ') ?? '',
+            color:
+              organisationStatusColorDictionary[
+                company.companyStatus as CompanyStatus
+              ] ?? '',
           },
           data: company.data,
           opportunities: company.opportunities

@@ -23,7 +23,32 @@
     }
   </div>
 
-  <div class="flex gap-1" page-header-actions></div>
+  <div class="flex gap-2" page-header-actions>
+    @if (vm().showStatus) {
+      <div class="flex items-center gap-3">
+        <i
+          [style.color]="vm().status.color"
+          class="fa-solid fa-circle text-xs"
+        ></i>
+        <p [isEllipsisActive]="true" class="flex-1 text-black">
+          {{ vm().status.name | titlecase }}
+        </p>
+      </div>
+    }
+
+    @if (vm().showOutreachButton) {
+      <kendo-button (click)="outreachDialog.set(true)" themeColor="primary"
+        >Add To Outreach</kendo-button
+      >
+    }
+
+    @if (vm().showPassButton) {
+      <kendo-dropdownbutton
+        iconClass="fa-solid fa-ellipsis-vertical"
+        [data]="dropdownButtonActions"
+      />
+    }
+  </div>
 
   <div
     class="organisation-details | bg-base-background flex h-full flex-col overflow-auto"
@@ -32,7 +57,7 @@
     <div class="organisation-page-grid | grid h-full gap-6">
       <!--      rowHeight="minmax(400px,1fr)"-->
       <ui-tilelayout-item id="organisation-details">
-        <div header class="flex items-center justify-between gap-2">
+        <div class="flex items-center justify-between gap-2" header>
           <h5 class="k-card-title">Company details</h5>
           <kendo-button
             [disabled]="true || vm().isLoading"
@@ -72,7 +97,7 @@
       <!--  Opportunities   -->
       <!--      class="self-start"-->
       <ui-tilelayout-item id="organisation-opportunities">
-        <div header class="flex items-center justify-between gap-2">
+        <div class="flex items-center justify-between gap-2" header>
           <h5 class="k-card-title">Opportunities</h5>
           <kendo-button
             [queryParams]="{
@@ -163,7 +188,7 @@
 
       <!--  Files   -->
       <ui-tilelayout-item id="organisation-files">
-        <div header class="flex items-center justify-between gap-2">
+        <div class="flex items-center justify-between gap-2" header>
           <h5 class="k-card-title">Company Files</h5>
 
           @if (vm().hasFileFolder) {
@@ -294,7 +319,7 @@
 
       <!--  Notes   -->
       <ui-tilelayout-item id="organisation-notes">
-        <div header class="flex items-center justify-between gap-2">
+        <div class="flex items-center justify-between gap-2" header>
           <h5 class="k-card-title">Related Notes</h5>
           <kendo-button
             (click)="openNoteShelf()"
@@ -308,3 +333,58 @@
     </div>
   </div>
 </app-page-template>
+
+@if (outreachDialog()) {
+  <kendo-dialog
+    (close)="outreachDialog.set(false)"
+    title="Update Company Status"
+    [width]="480"
+    class="k-dialog-primary"
+  >
+    <div class="flex flex-col gap-6 p-10">
+      <p>
+        You have selected to move this company to Outreach. This will create a
+        new pipeline item for this company and update the company status to:
+        Outreach.
+      </p>
+      <p>Please confirm if you are happy to proceed.</p>
+    </div>
+    <kendo-dialog-actions>
+      <kendo-button (click)="outreachDialog.set(false)">Cancel</kendo-button>
+      <kendo-button
+        (click)="moveToOutreachClick()"
+        [disabled]="vm().createLoading!"
+        themeColor="primary"
+        >Move to Outreach</kendo-button
+      >
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}
+
+@if (passDialog()) {
+  <kendo-dialog
+    (close)="passDialog.set(false)"
+    title="Update Company Status"
+    [width]="480"
+  >
+    <div class="flex flex-col gap-6 p-10">
+      <p>
+        You have selected to pass on this company. This will update the company
+        status to: Passed. If there are existing live opportunities for this
+        company, these will also be marked as passed and closed if you continue
+        with this step.
+      </p>
+
+      <p>Please confirm if you are happy to proceed.</p>
+    </div>
+    <kendo-dialog-actions>
+      <kendo-button (click)="passDialog.set(false)">Cancel</kendo-button>
+      <kendo-button
+        (click)="moveToPassClick()"
+        [disabled]="vm().updateLoading!"
+        themeColor="secondary"
+        >Pass on Company</kendo-button
+      >
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}

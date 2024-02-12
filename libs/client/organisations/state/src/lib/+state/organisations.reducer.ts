@@ -18,6 +18,7 @@ export interface OrganisationsState extends EntityState<OrganisationEntity> {
   loadingOrganisation: boolean;
   creatingSharepointFolder: boolean;
   dataWarehouseLastUpdated: DataWarehouseLastUpdatedEntity | null;
+  updateLoading: boolean;
 }
 
 export const OrganisationAdapter: EntityAdapter<OrganisationEntity> =
@@ -32,6 +33,7 @@ export const initialOrganisationState: OrganisationsState =
     totalRows: 0,
     creatingSharepointFolder: false,
     dataWarehouseLastUpdated: null,
+    updateLoading: false,
   });
 
 export const organisationsFeature = createFeature({
@@ -151,6 +153,25 @@ export const organisationsFeature = createFeature({
         ...state,
         dataWarehouseLastUpdated: data,
       }),
+    ),
+    on(OrganisationsActions.updateOrganisation, (state) => ({
+      ...state,
+      updateLoading: true,
+    })),
+
+    on(OrganisationsActions.updateOrganisationFailure, (state, { error }) => ({
+      ...state,
+      updateLoading: false,
+    })),
+
+    on(OrganisationsActions.updateOrganisationSuccess, (state, { data }) =>
+      OrganisationAdapter.updateOne(
+        { id: data.id!, changes: data },
+        {
+          ...state,
+          updateLoading: false,
+        },
+      ),
     ),
   ),
   extraSelectors: ({ selectOrganisationsState }) => ({
