@@ -3,7 +3,6 @@ import {
   Component,
   computed,
   inject,
-  signal,
   TrackByFunction,
 } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
@@ -14,7 +13,7 @@ import {
   OrganisationsActions,
   organisationsFeature,
 } from '@app/client/organisations/state';
-import { ShelfActions } from '@app/client/shared/shelf';
+import { DialogQueryParams, ShelfActions } from '@app/client/shared/shelf';
 import {
   fadeIn,
   LoaderComponent,
@@ -49,13 +48,16 @@ import {
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
 import { SPItem } from '@app/client/files/sdk-pnptimeline';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
-import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { PipelinesActions } from '@app/client/pipelines/state';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
+import {
+  DropdownAction,
+  DropdownButtonNavigationComponent,
+} from '@app/client/shared/ui-router';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { TagData } from '@app/rvns-tags';
-import { Actions, ofType } from '@ngrx/effects';
+import { Actions } from '@ngrx/effects';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { ComboBoxModule } from '@progress/kendo-angular-dropdowns';
 import {
@@ -69,7 +71,6 @@ import {
   TreeListModule,
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
-import { CompanyStatus } from 'rvns-shared';
 import { filter, first, map, Observable } from 'rxjs';
 import {
   FileRow,
@@ -111,6 +112,7 @@ import {
     LabelModule,
     ReactiveFormsModule,
     TextBoxModule,
+    DropdownButtonNavigationComponent,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -130,17 +132,6 @@ export class OrganisationPageComponent {
   public sharepointList = this.environment.sharepointList;
   public sharepointWeb = this.environment.sharepointWeb;
 
-  public outreachDialog = signal(false);
-
-  public passDialog = signal(false);
-
-  public dropdownButtonActions = [
-    {
-      text: 'Pass',
-      click: (): void => this.passDialog.set(true),
-    },
-  ];
-
   protected store = inject(Store);
 
   protected actions$ = inject(Actions);
@@ -150,6 +141,20 @@ export class OrganisationPageComponent {
   protected filesService = inject(FilesService);
 
   protected vm = this.store.selectSignal(selectOrganisationPageViewModel);
+
+  public dropdownButtonActions = {
+    actions: [
+      {
+        text: 'Pass on Company',
+        routerLink: ['./'],
+        queryParams: {
+          [DialogQueryParams.passCompany]: this.vm().currentOrganisationId,
+        },
+        skipLocationChange: true,
+        queryParamsHandling: 'merge',
+      } as DropdownAction,
+    ],
+  };
 
   // files
   protected fileTable = this.store.selectSignal(
@@ -290,43 +295,5 @@ export class OrganisationPageComponent {
           }
         });
     });
-  }
-
-  public moveToOutreachClick(): void {
-    this.store.dispatch(
-      OpportunitiesActions.createOpportunity({
-        payload: {
-          organisationId: this.vm().currentOrganisationId!,
-        },
-      }),
-    );
-
-    this.actions$
-      .pipe(ofType(OpportunitiesActions.createOpportunitySuccess), first())
-      .subscribe(() => {
-        this.store.dispatch(
-          OrganisationsActions.getOrganisation({
-            id: this.vm().currentOrganisationId,
-          }),
-        );
-        this.outreachDialog.set(false);
-      });
-  }
-
-  public moveToPassClick(): void {
-    this.store.dispatch(
-      OrganisationsActions.updateOrganisation({
-        id: this.vm().currentOrganisationId!,
-        changes: {
-          companyStatus: CompanyStatus.PASSED,
-        },
-      }),
-    );
-
-    this.actions$
-      .pipe(ofType(OrganisationsActions.updateOrganisationSuccess), first())
-      .subscribe(() => {
-        this.passDialog.set(false);
-      });
   }
 }

@@ -1,0 +1,28 @@
+<kendo-dialog-titlebar class="secondary-dialog" (close)="onDialogClose()">
+  <span class="k-window-title">Update Company Status</span>
+</kendo-dialog-titlebar>
+
+<div class="flex flex-col gap-6 p-10">
+  <p>
+    You have selected to pass on this company. This will update the company
+    status to: Passed. If there are existing live opportunities for this
+    company, these will also be marked as passed and closed if you continue with
+    this step.
+  </p>
+
+  <p>Please confirm if you are happy to proceed.</p>
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="vm().isLoading!"
+    themeColor="secondary"
+  >
+    @if (vm().isLoading) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Pass on Company
+  </kendo-button>
+</kendo-dialog-actions>

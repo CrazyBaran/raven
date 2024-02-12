@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -17,11 +18,12 @@ import {
   LoadedRenderItems,
 } from '@app/client/shared/dynamic-renderer/data-access';
 import { LoaderComponent } from '@app/client/shared/ui';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-render-template',
   template: `
-    <ui-loader *ngIf="!componentRef && component.showLoading"></ui-loader>
+    <ui-loader *ngIf="!componentRef && component!.showLoading"></ui-loader>
     <ng-template #container></ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,8 +34,6 @@ import { LoaderComponent } from '@app/client/shared/ui';
 export class RenderTemplateComponent<T = unknown>
   implements AfterViewInit, OnDestroy
 {
-  @Input({ required: true }) public component: ComponentTemplate;
-
   @ViewChild('container', { read: ViewContainerRef })
   protected container: ViewContainerRef;
 
@@ -43,6 +43,25 @@ export class RenderTemplateComponent<T = unknown>
     private cdr: ChangeDetectorRef,
     private dynamicComponentsService: DynamicComponentsService,
   ) {}
+
+  private _component: ComponentTemplate | undefined;
+
+  public get component(): ComponentTemplate | undefined {
+    return this._component;
+  }
+
+  @Input({ required: true }) public set component(value: ComponentTemplate) {
+    const previousComponent = this._component;
+    this._component = value;
+
+    if (
+      previousComponent &&
+      value &&
+      !_.isEqual(previousComponent.componentData, value.componentData)
+    ) {
+      this.createComponent();
+    }
+  }
 
   public get properties(): T | undefined {
     return this.componentRef?.instance;
@@ -57,23 +76,26 @@ export class RenderTemplateComponent<T = unknown>
   }
 
   public async ngAfterViewInit(): Promise<void> {
+    this.createComponent();
+  }
+
+  private createComponent(): void {
     if (!this.container || !this.component) {
       return;
     }
 
     this.componentRef?.destroy();
 
-    const itemRef =
-      await this.dynamicComponentsService.loadComponentConstructor(
-        this.component,
-      );
+    this.dynamicComponentsService
+      .loadComponentConstructor(this.component)
+      .then((item) => {
+        this.container?.clear();
 
-    this.container?.clear();
-
-    this.renderComponent({
-      renderItemRef: itemRef,
-      componentTemplate: this.component,
-    });
+        this.renderComponent({
+          renderItemRef: item,
+          componentTemplate: this.component!,
+        });
+      });
   }
 
   private renderComponent(item: LoadedRenderItems): void {

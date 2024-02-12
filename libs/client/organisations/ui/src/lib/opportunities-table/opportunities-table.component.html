@@ -53,25 +53,7 @@
           >Open Opportunity</kendo-button
         >
 
-        <kendo-dropdownbutton
-          iconClass="fa-solid fa-ellipsis-vertical"
-          [data]="getActionData(opportunity)"
-        >
-          <ng-template kendoDropDownButtonItemTemplate let-item>
-            @if (item.routerLink) {
-              <div
-                [routerLink]="item.routerLink"
-                [queryParamsHandling]="item.queryParamsHandling"
-                [queryParams]="item.queryParams"
-                [skipLocationChange]="item.skipLocationChange"
-              >
-                {{ item.text }}
-              </div>
-            } @else {
-              <div>{{ item.text }}</div>
-            }
-          </ng-template>
-        </kendo-dropdownbutton>
+        <app-dropdownbutton-navigation [model]="getActionData(opportunity)" />
       </div>
     </ng-template>
   </kendo-grid-column>
