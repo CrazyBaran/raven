@@ -17,7 +17,7 @@ export class OpportunityStageChangedEventHandler {
 
   @OnEvent('opportunity-stage-changed')
   protected async process(event: OpportunityStageChangedEvent): Promise<void> {
-    const company = await this.getOrCreateCompany(
+    let company = await this.getOrCreateCompany(
       event.organisationName,
       event.organisationDomains,
     );
@@ -31,11 +31,14 @@ export class OpportunityStageChangedEventHandler {
       event.targetPipelineMappedFrom,
     );
 
-    const isOnTheList = await this.isOnTheList(company, listId);
-    if (!isOnTheList) {
-      await this.addCompanyToList(company, listId);
+    const isOnTheList = this.isOnTheList(company, listId);
+    if (isOnTheList) {
+      await this.updateCompanyStatus(company, statusFieldId, stage);
+      return;
+    } else {
+      company = await this.addCompanyToList(company, listId);
+      await this.updateCompanyStatus(company, statusFieldId, stage);
     }
-    await this.updateCompanyStatus(company, statusFieldId, stage);
   }
 
   private async getOrCreateCompany(
@@ -71,21 +74,23 @@ export class OpportunityStageChangedEventHandler {
     return companyWithStage;
   }
 
-  private async isOnTheList(
-    company: OrganizationStageDto,
-    listId: number,
-  ): Promise<boolean> {
-    return company.stage !== null;
+  private isOnTheList(company: OrganizationStageDto, listId: number): boolean {
+    return !!company.stage;
   }
 
   private async addCompanyToList(
     company: OrganizationStageDto,
     listId: number,
-  ): Promise<void> {
+  ): Promise<OrganizationStageDto> {
     const listEntry = await this.affinityApiService.createListEntry(
       listId,
       company.organizationDto.id,
     );
+    await this.affinityCacheService.addOrReplaceMany([
+      { ...company, listEntryId: listEntry.id },
+    ]);
+
+    return { ...company, listEntryId: listEntry.id };
   }
 
   private async updateCompanyStatus(

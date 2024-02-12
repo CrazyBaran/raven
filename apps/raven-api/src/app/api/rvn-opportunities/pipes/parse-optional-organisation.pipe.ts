@@ -5,4 +5,5 @@ export class ParseOptionalOrganisationPipe extends AbstractEntityPipe<Organisati
   public readonly entityClass = OrganisationEntity;
   public readonly resource = 'organisation';
   public readonly optional = true;
+  public readonly relations = ['organisationDomains'];
 }
