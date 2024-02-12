@@ -6,6 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationStart, Router } from '@angular/router';
 import { PipelinesActions } from '@app/client/organisations/api-pipelines';
 import { TagsActions } from '@app/client/organisations/api-tags';
 import {
@@ -27,6 +28,7 @@ import {
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { Subject, filter, takeUntil } from 'rxjs';
 import { CreateOrganisationDialogComponent } from '../create-organisation-dialog/create-organisation-dialog.component';
 import {
   selectOrganisationsTableParams,
@@ -61,7 +63,12 @@ export class OrganisationsTableV2Component {
   protected vm = this.store.selectSignal(selectOrganisationsTableViewModel);
   protected params = this.store.selectSignal(selectOrganisationsTableParams);
 
-  public constructor(private store: Store) {
+  private navigatedAway$ = new Subject<boolean>();
+
+  public constructor(
+    private store: Store,
+    private router: Router,
+  ) {
     this.store.dispatch(PipelinesActions.getPipelines());
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({
@@ -70,10 +77,24 @@ export class OrganisationsTableV2Component {
     );
     this.store.dispatch(OrganisationsActions.getDataWarehouseLastUpdated());
 
+    this.router.events
+      .pipe(
+        takeUntilDestroyed(),
+        filter((event) => event instanceof NavigationStart),
+      )
+      .subscribe(() => {
+        const currentNavigation = router.getCurrentNavigation();
+        if (currentNavigation && !currentNavigation.extras?.relativeTo) {
+          this.navigatedAway$?.next(true);
+          this.navigatedAway$?.complete();
+        }
+      });
+
     this.store
       .select(selectOrganisationsTableParams)
       .pipe(
         takeUntilDestroyed(),
+        takeUntil(this.navigatedAway$),
         distinctUntilChangedDeep({ ignoreOrder: true }),
       )
       .subscribe((params) => {
