@@ -4,51 +4,59 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
+import { PipelineUtilityService } from '../../rvn-pipeline/pipeline-utility.service';
 import { GatewayEventService } from '../../rvn-web-sockets/gateway/gateway-event.service';
 import { OpportunityEntity } from '../entities/opportunity.entity';
+import { OrganisationEntity } from '../entities/organisation.entity';
+import { OpportunityChecker } from '../opportunity.checker';
 
 @Injectable()
 export class AffinityStatusChangedEventHandler {
   public constructor(
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
+    @InjectRepository(OrganisationEntity)
+    private readonly organisationRepository: Repository<OrganisationEntity>,
     private readonly logger: RavenLogger,
     private readonly gatewayEventService: GatewayEventService,
+    private readonly opportunityChecker: OpportunityChecker,
+    private readonly pipelineUtilityService: PipelineUtilityService,
   ) {
     this.logger.setContext(AffinityStatusChangedEventHandler.name);
   }
 
   @OnEvent('affinity-status-changed')
   protected async process(event: AffinityStatusChangedEvent): Promise<void> {
-    const opportunities = await this.opportunityRepository.find({
+    const organisation = await this.organisationRepository.findOne({
       where: {
-        organisation: {
-          organisationDomains: { domain: In(event.organisationDomains) },
-        },
+        organisationDomains: { domain: In(event.organisationDomains) },
       },
       relations: [
-        'organisation',
-        'pipelineDefinition',
-        'organisation.organisationDomains',
+        'organisationDomains',
+        'opportunities',
+        'opportunities.pipelineStage',
       ],
-      order: { createdAt: 'DESC' },
     });
-    if (opportunities.length === 0) {
+
+    if (!organisation) {
       this.logger.debug(
-        `No opportunities found for organisation ${event.organisationDomains[0]}`,
+        `No organisation found for domain ${event.organisationDomains[0]}`,
       );
       return;
     }
-    const opportunity = opportunities[0];
-    const pipelineDefinition = opportunity.pipelineDefinition;
-    if (!pipelineDefinition) {
-      throw new Error(
-        `Cannot find pipeline definition for opportunity ${opportunities[0].id}!`,
+
+    const activeOrNewestOpportunity =
+      await this.opportunityChecker.getActiveOrNewestOpportunity(organisation);
+
+    if (!activeOrNewestOpportunity) {
+      this.logger.debug(
+        `No active or newest opportunity found for organisation ${event.organisationDomains[0]}`,
       );
+      return;
     }
 
-    const stage = pipelineDefinition.stages.find(
-      (stage) => stage.mappedFrom === event.targetStatusName,
+    const stage = await this.pipelineUtilityService.mapStageForDefaultPipeline(
+      event.targetStatusName,
     );
     if (!stage) {
       throw new Error(
@@ -56,13 +64,13 @@ export class AffinityStatusChangedEventHandler {
       );
     }
 
-    opportunity.pipelineStage = stage;
-    opportunity.pipelineStageId = stage.id;
-    await this.opportunityRepository.save(opportunity);
+    activeOrNewestOpportunity.pipelineStage = stage;
+    activeOrNewestOpportunity.pipelineStageId = stage.id;
+    await this.opportunityRepository.save(activeOrNewestOpportunity);
 
     this.gatewayEventService.emit(`resource-pipelines`, {
       eventType: 'pipeline-stage-changed',
-      data: { opportunityId: opportunity.id, stageId: stage.id },
+      data: { opportunityId: activeOrNewestOpportunity.id, stageId: stage.id },
     });
   }
 }

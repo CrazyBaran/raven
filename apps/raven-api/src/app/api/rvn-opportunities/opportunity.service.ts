@@ -27,6 +27,7 @@ import {
   UpdateOpportunityOptions,
 } from './interfaces/create-update-organisation.options';
 import { OpportunityTeamService } from './opportunity-team.service';
+import { OpportunityChecker } from './opportunity.checker';
 import { OrganisationService } from './organisation.service';
 
 @Injectable()
@@ -41,6 +42,7 @@ export class OpportunityService {
     private readonly opportunityTeamService: OpportunityTeamService,
     private readonly eventEmitter: EventEmitter2,
     private readonly pipelineUtilityService: PipelineUtilityService,
+    private readonly opportunityChecker: OpportunityChecker,
   ) {
     this.logger.setContext(OpportunityService.name);
   }
@@ -256,6 +258,10 @@ export class OpportunityService {
   public async createFromOrganisation(
     options: CreateOpportunityForOrganisationOptions,
   ): Promise<OpportunityEntity> {
+    await this.opportunityChecker.ensureNoConflictingOpportunity(
+      options.organisation,
+    );
+
     const defaultPipeline =
       await this.pipelineUtilityService.getDefaultPipelineDefinition();
     const defaultPipelineStage =
@@ -320,6 +326,12 @@ export class OpportunityService {
     userEntity: UserEntity,
   ): Promise<OpportunityEntity> {
     if (options.pipelineStage) {
+      await this.opportunityChecker.ensureNoConflictingOpportunity(
+        opportunity.organisation,
+        opportunity,
+        options.pipelineStage,
+      );
+
       if (
         this.shouldUpdatePreviousPipelineStage(
           opportunity,
@@ -347,8 +359,19 @@ export class OpportunityService {
     const opportunityEntity =
       await this.opportunityRepository.save(opportunity);
 
+    const reloadedOpportunity = await this.opportunityRepository.findOne({
+      where: { id: opportunityEntity.id },
+      relations: ['organisation', 'organisation.organisationDomains'],
+    });
+
     // if pipeline stage was changed, emit event
-    if (options.pipelineStage) {
+    if (
+      options.pipelineStage &&
+      !(await this.opportunityChecker.hasActivePipelineItemOtherThan(
+        reloadedOpportunity.organisation,
+        reloadedOpportunity,
+      ))
+    ) {
       this.eventEmitter.emit(
         'opportunity-stage-changed',
         new OpportunityStageChangedEvent(

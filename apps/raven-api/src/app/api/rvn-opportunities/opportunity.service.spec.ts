@@ -9,6 +9,7 @@ import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-defi
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
+import { OpportunityChecker } from './opportunity.checker';
 import { OpportunityService } from './opportunity.service';
 import { OrganisationService } from './organisation.service';
 
@@ -61,6 +62,10 @@ describe('OpportunityService', () => {
         },
         {
           provide: PipelineUtilityService,
+          useValue: {},
+        },
+        {
+          provide: OpportunityChecker,
           useValue: {},
         },
       ],

@@ -26,6 +26,7 @@ import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-sta
 import { DataWarehouseRegenerationFinishedEventHandler } from './event-handlers/data-warehouse-regeneration-finished.event-handler';
 import { ORGANISATION_QUEUE } from './opportunities.const';
 import { OpportunityTeamService } from './opportunity-team.service';
+import { OpportunityChecker } from './opportunity.checker';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
 import { OrganisationController } from './organisation.controller';
@@ -75,6 +76,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
     DataWarehouseRegenerationFinishedEventHandler,
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,
+    OpportunityChecker,
   ],
   controllers: [OrganisationController, OpportunityController],
 })
