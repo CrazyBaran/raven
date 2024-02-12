@@ -36,4 +36,8 @@ export const DWH_COMPANY_SELECT_COLUMNS: Partial<keyof CompanyDwhEntity>[] = [
   'specterHqLocation',
   'specterHqRegion',
   'specterIndustry',
+  'city',
+  'country',
+  'mcvLeadScore',
+  'dealRoomLastFundingRound',
 ];

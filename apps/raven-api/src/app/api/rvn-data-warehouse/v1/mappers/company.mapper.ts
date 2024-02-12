@@ -30,6 +30,7 @@ export class CompanyMapper {
     'fundingRounds',
     'hq',
     'industry',
+    'mcvLeadScore',
   ];
 
   public constructor(
@@ -51,6 +52,7 @@ export class CompanyMapper {
         domain: entity.domain,
         name: entity.name,
         description: entity.description,
+        mcvLeadScore: entity.mcvLeadScore,
         tagline: entity.tagline,
         foundedYear: entity.foundedYear,
         growthStage: this.calculateGrowthStage(
@@ -68,6 +70,8 @@ export class CompanyMapper {
         hq: {
           location: entity.specterHqLocation,
           region: entity.specterHqRegion,
+          city: entity.city,
+          country: entity.country,
         },
         numberOfEmployees: this.numberOfEmployeesMapper.mapMany(
           numberOfEmployees?.entities,
@@ -81,6 +85,7 @@ export class CompanyMapper {
           lastFundingAmount: entity.lastFundingAmount,
           lastFundingDate: entity.lastFundingDate,
           lastFundingType: entity.specterLastFundingType,
+          lastFundingRound: entity.dealRoomLastFundingRound,
         },
 
         postMoneyValuation: entity.postMoneyValuation,

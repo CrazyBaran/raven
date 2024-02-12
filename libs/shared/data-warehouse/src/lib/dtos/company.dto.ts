@@ -14,6 +14,7 @@ export class CompanyDto {
 
   public domain: string;
   public name: string;
+  public mcvLeadScore?: number;
   public description?: string;
   public tagline?: string;
   public foundedYear?: number;

@@ -199,6 +199,18 @@ export class CompanyDwhEntity {
   @Column({ name: 'DealRoom Last Updated' })
   public dealRoomLastUpdated: Date;
 
+  @Column({ name: 'MCV Lead Score' })
+  public mcvLeadScore: number;
+
+  @Column({ name: 'City' })
+  public city: string;
+
+  @Column({ name: 'Country' })
+  public country: string;
+
+  @Column({ name: 'DealRoom Last Funding Round' })
+  public dealRoomLastFundingRound: string;
+
   // included
   // Suggestion: fill with DealRoom IDs instead or separate table
   @Column({ name: 'Specter Investors' })
