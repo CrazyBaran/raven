@@ -47,14 +47,19 @@ export class OpportunityChecker {
       return false;
     }
 
-    return organisationWithOpportunities.opportunities
-      .filter((opportunity) => opportunity.id !== processedOpportunity?.id)
-      .some(
-        async (opportunity) =>
-          await this.pipelineUtilityService.isActivePipelineItemStage(
-            opportunity.pipelineStage,
-          ),
+    const opportunitiesWithoutProcessed =
+      organisationWithOpportunities.opportunities.filter(
+        (opportunity) => opportunity.id !== processedOpportunity?.id,
       );
+
+    const anyOpportunityWithActiveItemStage =
+      opportunitiesWithoutProcessed.filter((opportunity) =>
+        this.pipelineUtilityService.isActivePipelineItemStage(
+          opportunity.pipelineStage,
+        ),
+      );
+
+    return anyOpportunityWithActiveItemStage.length > 0;
   }
 
   public async getActiveOrNewestOpportunity(
@@ -62,11 +67,10 @@ export class OpportunityChecker {
   ): Promise<OpportunityEntity | null> {
     if (organisation.opportunities.length === 0) return null;
 
-    const activeOpportunity = organisation.opportunities.find(
-      async (opportunity) =>
-        await this.pipelineUtilityService.isActivePipelineItemStage(
-          opportunity.pipelineStage,
-        ),
+    const activeOpportunity = organisation.opportunities.find((opportunity) =>
+      this.pipelineUtilityService.isActivePipelineItemStage(
+        opportunity.pipelineStage,
+      ),
     );
 
     if (activeOpportunity) return activeOpportunity;
@@ -83,9 +87,7 @@ export class OpportunityChecker {
   ): Promise<void> {
     if (pipelineStage) {
       if (
-        !(await this.pipelineUtilityService.isActivePipelineItemStage(
-          pipelineStage,
-        ))
+        !this.pipelineUtilityService.isActivePipelineItemStage(pipelineStage)
       ) {
         return;
       }

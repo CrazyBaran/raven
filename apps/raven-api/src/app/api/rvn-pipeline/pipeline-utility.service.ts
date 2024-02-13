@@ -72,9 +72,9 @@ export class PipelineUtilityService {
     return pipelineStage ?? (await this.getDefaultPipelineStage());
   }
 
-  public async isActivePipelineItemStage(
+  public isActivePipelineItemStage(
     pipelineStage: PipelineStageEntity,
-  ): Promise<boolean> {
+  ): boolean {
     if (pipelineStage.isHidden) {
       return false;
     }
