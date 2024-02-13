@@ -30,3 +30,45 @@ export const lastFundingTypes = [
 ] as const;
 
 export type LastFundingType = (typeof lastFundingTypes)[number];
+
+export const dealRoomLastFundingTypes = [
+  'ACQUISITION',
+  'ANGEL',
+  'BUYOUT',
+  'CONVERTIBLE',
+  'CORPORATE SPINOUT',
+  'DEBT',
+  'EARLY VC',
+  'GRANT',
+  'GROWTH EQUITY NON VC',
+  'GROWTH EQUITY VC',
+  'ICO',
+  'IPO',
+  'LATE VC',
+  'LENDING CAPITAL',
+  'MEDIA FOR EQUITY',
+  'MERGER',
+  'POST IPO CONVERTIBLE',
+  'POST IPO DEBT',
+  'POST IPO EQUITY',
+  'POST IPO SECONDARY',
+  'PRIVATE PLACEMENT NON VC',
+  'PRIVATE PLACEMENT VC',
+  'PROJECT, REAL ESTATE, INFRASTRUCTURE FINANCE',
+  'SECONDARY',
+  'SEED',
+  'SERIES A',
+  'SERIES B',
+  'SERIES C',
+  'SERIES D',
+  'SERIES E',
+  'SERIES F',
+  'SERIES G',
+  'SERIES H',
+  'SPAC IPO',
+  'SPAC PRIVATE PLACEMENT',
+  'SPINOUT',
+  'SUPPORT PROGRAM',
+] as const;
+
+export type DealRoomLastFundingType = (typeof dealRoomLastFundingTypes)[number];

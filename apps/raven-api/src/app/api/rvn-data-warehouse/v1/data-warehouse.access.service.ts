@@ -189,6 +189,12 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
       });
     }
 
+    if (filterOptions?.lastFundingRound) {
+      queryBuilder.andWhere('company.dealRoomLastFundingRound = :type', {
+        type: filterOptions.lastFundingRound,
+      });
+    }
+
     if (filterOptions?.countries) {
       queryBuilder.andWhere('company.country IN (:...countries)', {
         countries: filterOptions.countries,

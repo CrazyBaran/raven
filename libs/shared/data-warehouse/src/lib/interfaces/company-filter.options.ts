@@ -1,5 +1,9 @@
+import { CompanyStatus } from 'rvns-shared';
 import { DataWarehouseCompanyOrderBy } from './data-warehouse-company-order-by.type';
-import { LastFundingType } from './last-funding-type.type';
+import {
+  DealRoomLastFundingType,
+  LastFundingType,
+} from './last-funding-type.type';
 
 export class GetCompaniesOptions {
   public orderBy?: DataWarehouseCompanyOrderBy;
@@ -24,7 +28,10 @@ export class CompanyFilterOptions {
   };
   public lastFundingType?: LastFundingType;
 
+  public lastFundingRound?: DealRoomLastFundingType;
+
   public countries?: string[];
 
   public mcvLeadScore?: { min?: number; max?: number };
+  public status?: CompanyStatus[];
 }

@@ -14,7 +14,9 @@ export class DataWarehouseOrderByMapper {
       case 'funding.lastFundingDate':
         return 'lastFundingDate';
       case 'funding.lastFundingType':
-        return 'lastFundingDate';
+        return 'specterLastFundingType';
+      case 'funding.lastFundingRound':
+        return 'dealRoomLastFundingRound';
       case 'hq.country':
         return 'country';
       case 'mcvLeadScore':

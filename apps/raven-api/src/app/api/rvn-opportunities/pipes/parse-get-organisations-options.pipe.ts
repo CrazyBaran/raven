@@ -1,10 +1,12 @@
 import {
   CompanyFilterOptions,
   CountryType,
+  DealRoomLastFundingType,
   LastFundingType,
 } from '@app/shared/data-warehouse';
 import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
 import deparam from 'jquery-deparam';
+import { CompanyStatus } from 'rvns-shared';
 import {
   Direction,
   GetOrganisationsOptions,
@@ -68,7 +70,7 @@ export class ParseGetOrganisationsOptionsPipe
   private evaluatePrimaryDataSource(
     options: GetOrganisationsOptions,
   ): PrimaryDataSource {
-    if (options.query !== undefined) {
+    if (options.query) {
       return 'dwh';
     }
     if (
@@ -77,6 +79,7 @@ export class ParseGetOrganisationsOptionsPipe
         'funding.lastFundingAmount',
         'funding.lastFundingDate',
         'funding.lastFundingType',
+        'funding.lastFundingRound',
         'hq.country',
         'mcvLeadScore',
       ].includes(options.orderBy)
@@ -94,11 +97,12 @@ export class ParseGetOrganisationsOptionsPipe
         (options.filters.lastFundingDate !== undefined &&
           (options.filters.lastFundingDate.max !== undefined ||
             options.filters.lastFundingDate.min !== undefined)) ||
-        options.filters.lastFundingType !== undefined)
+        options.filters.lastFundingType !== undefined ||
+        options.filters.lastFundingRound !== undefined)
     ) {
       return 'dwh';
     }
-    if (options.member !== undefined || options.round !== undefined) {
+    if (options.member || options.round || options.filters?.status) {
       return 'raven';
     }
 
@@ -129,11 +133,33 @@ export class ParseGetOrganisationsOptionsPipe
     filters.lastFundingType = filterValues[
       'funding.lastFundingType'
     ] as LastFundingType;
+
+    filters.lastFundingRound = filterValues[
+      'funding.lastFundingRound'
+    ] as DealRoomLastFundingType;
+
     filters.countries = filterValues['hq.country'] as CountryType[];
 
     filters.mcvLeadScore = this.handleMinMaxNumber(
       filterValues['mcvLeadScore'],
     );
+
+    filters.status = (filterValues['status'] as string[]).map((status) => {
+      switch (status.toLowerCase()) {
+        case 'met':
+          return CompanyStatus.MET;
+        case 'outreach':
+          return CompanyStatus.OUTREACH;
+        case 'live opportunity':
+          return CompanyStatus.LIVE_OPPORTUNITY;
+        case 'passed':
+          return CompanyStatus.PASSED;
+        case 'portfolio':
+          return CompanyStatus.PORTFOLIO;
+        default:
+          return null;
+      }
+    });
 
     return filters;
   }

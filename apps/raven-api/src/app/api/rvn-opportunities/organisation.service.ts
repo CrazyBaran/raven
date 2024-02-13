@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { CompanyStatus } from 'rvns-shared';
-import { EntityManager, In, Repository } from 'typeorm';
+import { Brackets, EntityManager, In, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
@@ -558,6 +558,22 @@ export class OrganisationService {
       );
     } else {
       queryBuilder.addOrderBy('organisations.name', 'DESC');
+    }
+
+    if (options.filters?.status) {
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          qb.where('organisations.companyStatusOverride IN (:status)', {
+            status: options.filters.status.join(','),
+          }).orWhere(
+            new Brackets((qb) => {
+              qb.where('pipelineStage.relatedCompanyStatus IN (:status)', {
+                status: options.filters.status.join(','),
+              }).andWhere('organisations.companyStatusOverride is null');
+            }),
+          );
+        }),
+      );
     }
 
     const [organisations, count] = await queryBuilder.getManyAndCount();

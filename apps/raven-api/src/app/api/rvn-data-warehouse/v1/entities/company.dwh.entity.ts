@@ -199,7 +199,7 @@ export class CompanyDwhEntity {
   @Column({ name: 'DealRoom Last Updated' })
   public dealRoomLastUpdated: Date;
 
-  @Column({ name: 'MCV Lead Score' })
+  @Column({ name: 'MCV Lead Score', type: 'float' })
   public mcvLeadScore: number;
 
   @Column({ name: 'City' })
