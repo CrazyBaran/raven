@@ -33,7 +33,7 @@ import {
   DropdownbuttonNavigationModel,
 } from '@app/client/shared/ui-router';
 import { TagsService } from '@app/client/tags/data-access';
-import { lastFundingTypes } from '@app/shared/data-warehouse';
+import { countryTypes, lastFundingTypes } from '@app/shared/data-warehouse';
 import param from 'jquery-param';
 import * as _ from 'lodash';
 import { CompanyStatus } from 'rvns-shared';
@@ -81,7 +81,7 @@ export class SourceFnPipe implements PipeTransform {
     if (column.field === 'hq.country') {
       return (filter: string) =>
         of(
-          lastFundingTypes.filter((x) =>
+          countryTypes.filter((x) =>
             x.toLowerCase().includes(filter.toLowerCase()),
           ),
         );
