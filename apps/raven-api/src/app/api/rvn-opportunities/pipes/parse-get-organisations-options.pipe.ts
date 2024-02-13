@@ -1,5 +1,6 @@
 import {
   CompanyFilterOptions,
+  CountryType,
   LastFundingType,
 } from '@app/shared/data-warehouse';
 import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
@@ -67,12 +68,17 @@ export class ParseGetOrganisationsOptionsPipe
   private evaluatePrimaryDataSource(
     options: GetOrganisationsOptions,
   ): PrimaryDataSource {
+    if (options.query !== undefined) {
+      return 'dwh';
+    }
     if (
       [
         'funding.totalFundingAmount',
         'funding.lastFundingAmount',
         'funding.lastFundingDate',
         'funding.lastFundingType',
+        'hq.country',
+        'mcvLeadScore',
       ].includes(options.orderBy)
     ) {
       return 'dwh';
@@ -95,9 +101,7 @@ export class ParseGetOrganisationsOptionsPipe
     if (options.member !== undefined || options.round !== undefined) {
       return 'raven';
     }
-    if (options.query !== undefined) {
-      return 'dwh';
-    }
+
     return 'raven';
   }
 
@@ -125,6 +129,11 @@ export class ParseGetOrganisationsOptionsPipe
     filters.lastFundingType = filterValues[
       'funding.lastFundingType'
     ] as LastFundingType;
+    filters.countries = filterValues['hq.country'] as CountryType[];
+
+    filters.mcvLeadScore = this.handleMinMaxNumber(
+      filterValues['mcvLeadScore'],
+    );
 
     return filters;
   }

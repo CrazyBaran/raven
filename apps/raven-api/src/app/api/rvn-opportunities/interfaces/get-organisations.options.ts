@@ -9,6 +9,7 @@ export const sortableFields = [
   'funding.lastFundingAmount',
   'funding.lastFundingDate',
   'funding.lastFundingType',
+  'hq.country',
 ] as const;
 export type SortableField = (typeof sortableFields)[number];
 

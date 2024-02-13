@@ -14,6 +14,7 @@ export * from './lib/dtos/ipo-details.dto';
 export * from './lib/dtos/number-of-employees-snapshot.dto';
 export * from './lib/dtos/urls.dto';
 export * from './lib/interfaces/company-filter.options';
+export * from './lib/interfaces/country.type';
 export * from './lib/interfaces/data-warehouse-access.interface';
 export * from './lib/interfaces/data-warehouse-company-order-by.type';
 export * from './lib/interfaces/data-warehouse-founder-order-by.type';

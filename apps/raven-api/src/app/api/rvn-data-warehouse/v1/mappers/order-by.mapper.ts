@@ -15,6 +15,10 @@ export class DataWarehouseOrderByMapper {
         return 'lastFundingDate';
       case 'funding.lastFundingType':
         return 'lastFundingDate';
+      case 'hq.country':
+        return 'country';
+      case 'mcvLeadScore':
+        return 'mcvLeadScore';
       default:
         throw new Error(`Unknown order by value: ${value}`);
     }

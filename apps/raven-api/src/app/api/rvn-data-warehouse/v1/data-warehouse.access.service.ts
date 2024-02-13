@@ -9,7 +9,15 @@ import {
   GroupedEntity,
 } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
-import { And, FindManyOptions, In, IsNull, Not, Repository } from 'typeorm';
+import {
+  And,
+  Brackets,
+  FindManyOptions,
+  In,
+  IsNull,
+  Not,
+  Repository,
+} from 'typeorm';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { defaultGetOrganisationsOptions } from '../../rvn-opportunities/interfaces/get-organisations.options';
 import { DWH_COMPANY_SELECT_COLUMNS } from '../data-warehouse.const';
@@ -108,25 +116,29 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     }
 
     if (options?.query) {
-      queryBuilder.andWhere('company.name LIKE :query', {
-        query: `%${options.query}%`,
-      });
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          qb.where('company.name LIKE :query', {
+            query: `%${options.query}%`,
+          });
 
-      queryBuilder.orWhere('company.domain LIKE :query', {
-        query: `%${options.query}%`,
-      });
+          qb.orWhere('company.domain LIKE :query', {
+            query: `%${options.query}%`,
+          });
 
-      queryBuilder.orWhere('company.specterIndustry LIKE :query', {
-        query: `%${options.query}%`,
-      });
+          qb.orWhere('company.specterIndustry LIKE :query', {
+            query: `%${options.query}%`,
+          });
 
-      queryBuilder.orWhere('company.specterSubIndustry LIKE :query', {
-        query: `%${options.query}%`,
-      });
+          qb.orWhere('company.specterSubIndustry LIKE :query', {
+            query: `%${options.query}%`,
+          });
 
-      queryBuilder.orWhere('company.specterHqLocation LIKE :query', {
-        query: `%${options.query}%`,
-      });
+          qb.orWhere('company.specterInvestors LIKE :query', {
+            query: `%${options.query}%`,
+          });
+        }),
+      );
     }
 
     if (filterOptions?.totalFundingAmount) {
@@ -175,6 +187,26 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
       queryBuilder.andWhere('company.specterLastFundingType = :type', {
         type: filterOptions.lastFundingType,
       });
+    }
+
+    if (filterOptions?.countries) {
+      queryBuilder.andWhere('company.country IN (:...countries)', {
+        countries: filterOptions.countries,
+      });
+    }
+
+    if (filterOptions?.mcvLeadScore) {
+      if (filterOptions.mcvLeadScore.min) {
+        queryBuilder.andWhere('company.mcvLeadScore >= :min', {
+          min: filterOptions.mcvLeadScore.min,
+        });
+      }
+
+      if (filterOptions.mcvLeadScore.max) {
+        queryBuilder.andWhere('company.mcvLeadScore <= :max', {
+          max: filterOptions.mcvLeadScore.max,
+        });
+      }
     }
 
     const companies = await queryBuilder.getManyAndCount();

@@ -23,4 +23,8 @@ export class CompanyFilterOptions {
     max?: Date;
   };
   public lastFundingType?: LastFundingType;
+
+  public countries?: string[];
+
+  public mcvLeadScore?: { min?: number; max?: number };
 }

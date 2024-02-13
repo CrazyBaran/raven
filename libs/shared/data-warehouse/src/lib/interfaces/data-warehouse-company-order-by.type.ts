@@ -6,4 +6,7 @@ export type DataWarehouseCompanyOrderBy =
   | 'funding.totalFundingAmount'
   | 'funding.lastFundingAmount'
   | 'funding.lastFundingDate'
-  | 'funding.lastFundingType';
+  | 'funding.lastFundingType'
+  | 'funding.lastFundingRound'
+  | 'hq.country'
+  | 'mcvLeadScore';
