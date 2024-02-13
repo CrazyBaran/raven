@@ -166,5 +166,11 @@ export class CreateDialogComponent extends DialogContentBase implements OnInit {
         }
         this.dialog?.close();
       });
+
+    this.actions$
+      .pipe(ofType(OpportunitiesActions.createOpportunityFailure), take(1))
+      .subscribe((data) => {
+        this.dialog?.close();
+      });
   }
 }

@@ -39,16 +39,32 @@ export const selectDynamicOpportunityTabs = createSelector(
     ),
 );
 
+export const selectOpportunityStage = createSelector(
+  pipelinesQuery.selectAllPipelineStages,
+  opportunitiesQuery.selectRouteOpportunityDetails,
+  (stages, opportunity) => {
+    return stages.find(({ id }) => id === opportunity?.stage.id);
+  },
+);
+
 export const selectOpportunityPipelines = createSelector(
   pipelinesQuery.selectAllPipelineStages,
   pipelinesQuery.selectIsLoading,
   opportunitiesQuery.selectRouteOpportunityDetails,
   opportunitiesQuery.selectHasPermissionForCurrentOpportunity,
   opportunitiesQuery.selectIsLoadingUpdateStage,
-  (stages, isLoading, opportunity, hasPermission, isLoadingUpdateState) => ({
+  selectOpportunityStage,
+  (
+    stages,
+    isLoading,
+    opportunity,
+    hasPermission,
+    isLoadingUpdateState,
+    stage,
+  ) => ({
     data: stages.filter(({ isHidden }) => !isHidden),
     value: isLoading ? null : opportunity?.stage.id,
-    disabled: isLoading || isLoadingUpdateState, // todo: add permission check
+    disabled: isLoading || isLoadingUpdateState,
     isLoading: isLoading || isLoadingUpdateState,
     disabledItem: ((item: ItemArgs): boolean =>
       Boolean(
@@ -57,6 +73,7 @@ export const selectOpportunityPipelines = createSelector(
             opportunity?.stage.id ?? '',
           ),
       )) as ItemDisabledFn,
+    hasConfiguration: !!stage?.configuration,
   }),
 );
 

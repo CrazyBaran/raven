@@ -9,7 +9,6 @@ export const opportunitiesFeatureKey = 'opportunities';
 
 export interface OpportunitiesState extends EntityState<OpportunityData> {
   isLoading: boolean;
-  error: string | null;
   details: {
     isLoading: boolean;
   };
@@ -37,7 +36,6 @@ export const initialState: OpportunitiesState =
   opportunitiesAdapter.getInitialState({
     // additional entity state properties
     isLoading: false,
-    error: null,
     create: {
       isLoading: false,
     },
@@ -130,12 +128,27 @@ export const opportunitiesReducer = createReducer(
       ),
   ),
 
-  on(OpportunitiesActions.changeOpportunityPipelineStageFailure, (state) => ({
-    ...state,
-    updateStage: {
-      isLoading: false,
-    },
-  })),
+  on(
+    OpportunitiesActions.changeOpportunityPipelineStageFailure,
+    (state, { id, prevPipelineStageId }) =>
+      opportunitiesAdapter.updateOne(
+        {
+          id,
+          changes: {
+            stage: {
+              ...state.entities[id]!.stage,
+              id: prevPipelineStageId,
+            },
+          },
+        },
+        {
+          ...state,
+          updateStage: {
+            isLoading: false,
+          },
+        },
+      ),
+  ),
 
   on(OpportunitiesActions.getOpportunityDetails, (state) => ({
     ...state,
@@ -156,7 +169,6 @@ export const opportunitiesReducer = createReducer(
   ),
   on(OpportunitiesActions.getOpportunityDetailsFailure, (state, { error }) => ({
     ...state,
-    error,
     details: {
       isLoading: false,
     },

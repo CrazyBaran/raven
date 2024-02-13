@@ -3,6 +3,7 @@ import { pipelinesQuery } from '@app/client/opportunities/api-pipelines';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import { combineLatest, mergeMap, of, switchMap } from 'rxjs';
 import { catchError, concatMap, filter, map } from 'rxjs/operators';
 import { OpportunitiesService } from '../services/opportunities.service';
@@ -57,7 +58,10 @@ export class OpportunitiesEffects {
   private reopenOpportunity$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.reopenOpportunity),
-      concatMap(({ id }) =>
+      concatLatestFrom(({ id }) =>
+        this.store.select(opportunitiesQuery.selectOpportunityById(id)),
+      ),
+      concatMap(([{ id }, opportunity]) =>
         this.opportunitiesService.reopenOpportunity(id).pipe(
           switchMap(({ data }) => [
             OpportunitiesActions.reopenOpportunitySuccess({
@@ -114,7 +118,10 @@ export class OpportunitiesEffects {
   private updateOpportunityPipeline$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.changeOpportunityPipelineStage),
-      concatMap(({ id, pipelineStageId }) =>
+      concatLatestFrom(({ id }) =>
+        this.store.select(opportunitiesQuery.selectOpportunityById(id)),
+      ),
+      concatMap(([{ id, pipelineStageId }, opportunity]) =>
         this.opportunitiesService
           .patchOpportunity(id, { pipelineStageId })
           .pipe(
@@ -130,6 +137,8 @@ export class OpportunitiesEffects {
               of(
                 OpportunitiesActions.changeOpportunityPipelineStageFailure({
                   error,
+                  id,
+                  prevPipelineStageId: opportunity?.stage.id ?? '',
                 }),
               ),
             ),
@@ -199,10 +208,31 @@ export class OpportunitiesEffects {
             }),
           ]),
           catchError((error) =>
-            of(OpportunitiesActions.createOpportunityFailure({ error })),
+            of(
+              OpportunitiesActions.createOpportunityFailure({
+                error,
+              }),
+            ),
           ),
         ),
       ),
+    );
+  });
+
+  private showAlreadyActiveItemInPipelineError$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        OpportunitiesActions.createOpportunityFailure,
+        OpportunitiesActions.reopenOpportunityFailure,
+        OpportunitiesActions.changeOpportunityPipelineStageFailure,
+      ),
+      filter(({ error }) => _.get(error, 'status') === 409),
+      map(() => {
+        return NotificationsActions.showErrorNotification({
+          content:
+            'There already is an active item in the pipeline for this organisation',
+        });
+      }),
     );
   });
 

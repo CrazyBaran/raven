@@ -39,7 +39,7 @@
     <kendo-dropdownlist
       (valueChange)="onStageChange($event)"
       [data]="vm().lines.data"
-      [disabled]="vm().lines.disabled"
+      [disabled]="vm().lines.disabled || vm().lines.hasConfiguration!"
       [formControl]="pipelineStageFormControl"
       [itemDisabled]="vm().lines.disabledItem"
       [loading]="vm().lines.isLoading"
@@ -50,6 +50,9 @@
       textField="displayName"
       valueField="id"
     />
+    @if (vm().lines.hasConfiguration) {
+      <app-dropdownbutton-navigation [model]="dropdownButtonActions" />
+    }
   </div>
   <div
     class="opportunity-details | bg-base-background flex h-full flex-col"

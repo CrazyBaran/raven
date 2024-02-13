@@ -22,7 +22,7 @@ import { take } from 'rxjs';
 import { selectCreateOpportunityDialogViewModel } from './reopen-opportunity-dialog.selectors';
 
 @Component({
-  selector: 'app-update-dialog',
+  selector: 'app-reopen-opportunity-dialog',
   standalone: true,
   imports: [
     DialogModule,
@@ -77,7 +77,13 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
     );
 
     this.actions$
-      .pipe(ofType(OpportunitiesActions.reopenOpportunitySuccess), take(1))
+      .pipe(
+        ofType(
+          OpportunitiesActions.reopenOpportunitySuccess,
+          OpportunitiesActions.reopenOpportunityFailure,
+        ),
+        take(1),
+      )
       .subscribe((data) => {
         this.dialog?.close();
       });

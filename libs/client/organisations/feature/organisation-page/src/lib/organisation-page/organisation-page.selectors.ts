@@ -108,13 +108,20 @@ export const selectOrganisationPageViewModel = createSelector(
     { isLoading: createLoading },
   ) => {
     const opportunities =
-      currentOrganisation?.opportunities?.map((opportunity) => ({
-        ...opportunity,
-        status: {
-          name: opportunity!.stage?.displayName ?? '',
-          color: stageColorDictionary?.[opportunity!.stage?.id] ?? '#000',
-        },
-      })) ?? [];
+      currentOrganisation?.opportunities
+        ?.filter(({ stage }) =>
+          ['preliminary', 'dd', 'ic', 'pass', 'lost', 'won'].some(
+            (allowedStage) =>
+              stage.displayName.toLowerCase().includes(allowedStage),
+          ),
+        )
+        .map((opportunity) => ({
+          ...opportunity,
+          status: {
+            name: opportunity!.stage?.displayName ?? '',
+            color: stageColorDictionary?.[opportunity!.stage?.id] ?? '#000',
+          },
+        })) ?? [];
 
     const companyStatusDisplayName = currentOrganisation?.companyStatus
       ?.split('_')

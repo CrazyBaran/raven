@@ -26,14 +26,6 @@ export const ORGANISATION_ROUTES: Routes = [
         path: '',
         pathMatch: 'full',
         loadComponent: () =>
-          import('@app/client/organisations/feature/organisations-table').then(
-            (m) => m.OrganisationsTableComponent,
-          ),
-      },
-      {
-        path: 'v2',
-        pathMatch: 'full',
-        loadComponent: () =>
           import(
             '@app/client/organisations/feature/organisations-table-v2'
           ).then((m) => m.OrganisationsTableV2Component),

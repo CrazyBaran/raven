@@ -20,8 +20,13 @@ import {
 } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { PipelinesActions } from '@app/client/pipelines/state';
+import { DialogQueryParams } from '@app/client/shared/shelf';
 import { FadeInOutDirective, fadeIn } from '@app/client/shared/ui';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
+import {
+  DropdownAction,
+  DropdownButtonNavigationComponent,
+} from '@app/client/shared/ui-router';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -48,6 +53,7 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     AffinityUrlButtonComponent,
     DropConfirmationComponent,
     ReactiveFormsModule,
+    DropdownButtonNavigationComponent,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
@@ -63,6 +69,20 @@ export class OpportunityDetailsPageComponent {
 
   protected footerGroup = signal<KanbanFooterGroup | null>(null);
   protected pipelineStageFormControl = new FormControl<string | null>(null);
+
+  protected dropdownButtonActions = {
+    actions: [
+      {
+        text: 'Reopen Opportunity',
+        queryParamsHandling: 'merge',
+        routerLink: ['./'],
+        queryParams: {
+          [DialogQueryParams.reopenOpportunity]: this.vm().opportunityId!,
+        },
+        skipLocationChange: true,
+      } as DropdownAction,
+    ],
+  };
 
   public constructor() {
     const opportunityId = this.vm().opportunityId;

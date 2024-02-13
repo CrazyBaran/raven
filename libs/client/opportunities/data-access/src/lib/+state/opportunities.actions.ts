@@ -18,7 +18,7 @@ export const OpportunitiesActions = createActionGroup({
       id: string;
       changes: OpportunityChanges;
     }>(),
-    'Update Opportunity Failure': props<{ error: string }>(),
+    'Update Opportunity Failure': props<{ error: unknown }>(),
     'Update Opportunity Success': props<{ data: OpportunityData }>(),
 
     'Update Opportunity Team': props<{
@@ -29,7 +29,7 @@ export const OpportunitiesActions = createActionGroup({
       };
       method: 'patch' | 'post';
     }>(),
-    'Update Opportunity Team Failure': props<{ error: string }>(),
+    'Update Opportunity Team Failure': props<{ error: unknown }>(),
     'Update Opportunity Team Success': props<{
       id: string;
       data: OpportunityTeamData;
@@ -39,7 +39,7 @@ export const OpportunitiesActions = createActionGroup({
     'Get Opportunity Details Success': props<{
       data: OpportunityData | null;
     }>(),
-    'Get Opportunity Details Failure': props<{ error: string }>(),
+    'Get Opportunity Details Failure': props<{ error: unknown }>(),
 
     'Change Opportunity Pipeline Stage': props<{
       id: string;
@@ -48,7 +48,11 @@ export const OpportunitiesActions = createActionGroup({
     'Change Opportunity Pipeline Stage Success': props<{
       data: OpportunityData | null;
     }>(),
-    'Change Opportunity Pipeline Stage Failure': props<{ error: string }>(),
+    'Change Opportunity Pipeline Stage Failure': props<{
+      id: string;
+      prevPipelineStageId: string;
+      error: unknown;
+    }>(),
 
     'Live Change Opportunity Pipeline Stage': props<{
       id: string;
@@ -64,12 +68,12 @@ export const OpportunitiesActions = createActionGroup({
 
     'Create Opportunity': props<{ payload: CreateOpportunity }>(),
     'Create Opportunity Success': props<{ data: OpportunityData }>(),
-    'Create Opportunity Failure': props<{ error: string }>(),
+    'Create Opportunity Failure': props<{ error: unknown }>(),
 
     'Reopen Opportunity': props<{
       id: string;
     }>(),
-    'Reopen Opportunity Failure': props<{ error: string }>(),
+    'Reopen Opportunity Failure': props<{ error: unknown }>(),
     'Reopen Opportunity Success': props<{ data: OpportunityData }>(),
   },
 });
