@@ -63,6 +63,12 @@ export class AffinityStatusChangedEventHandler {
         `Cannot find stage with mappedFrom ${event.targetStatusName}!`,
       );
     }
+    if (stage.isHidden) {
+      this.logger.debug(
+        `Stage ${event.targetStatusName} is hidden, skipping status change`,
+      );
+      return;
+    }
 
     activeOrNewestOpportunity.pipelineStage = stage;
     activeOrNewestOpportunity.pipelineStageId = stage.id;
