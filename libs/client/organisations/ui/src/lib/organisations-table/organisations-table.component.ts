@@ -77,6 +77,29 @@ export class SourceFnPipe implements PipeTransform {
           ),
         );
     }
+
+    if (column.field === 'hq.country') {
+      return (filter: string) =>
+        of(
+          lastFundingTypes.filter((x) =>
+            x.toLowerCase().includes(filter.toLowerCase()),
+          ),
+        );
+    }
+
+    if (column.field === 'status') {
+      return (filter: string) =>
+        of(
+          Object.keys(CompanyStatus)
+            .map((status) =>
+              status
+                .split('_')
+                .map((x) => _.capitalize(x))
+                .join(' '),
+            )
+            .filter((x) => x.toLowerCase().includes(filter.toLowerCase())),
+        );
+    }
     return (filter: string) =>
       this.tagService
         .getTags({ type: 'industry', query: filter, take: 100 })

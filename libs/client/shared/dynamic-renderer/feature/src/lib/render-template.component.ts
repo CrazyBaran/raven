@@ -23,7 +23,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-render-template',
   template: `
-    <ui-loader *ngIf="!componentRef && component!.showLoading"></ui-loader>
+    <ui-loader *ngIf="!componentRef && component?.showLoading"></ui-loader>
     <ng-template #container></ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

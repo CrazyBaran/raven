@@ -3,6 +3,7 @@ import { pipelinesQuery } from '@app/client/opportunities/api-pipelines';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import { combineLatest, mergeMap, of, switchMap } from 'rxjs';
 import { catchError, concatMap, filter, map } from 'rxjs/operators';
 import { OpportunitiesService } from '../services/opportunities.service';
@@ -70,27 +71,13 @@ export class OpportunitiesEffects {
               content: 'Opportunity reopened.',
             }),
           ]),
-          catchError((error) => {
-            if (error.status === 409) {
-              return of(
-                NotificationsActions.showErrorNotification({
-                  content:
-                    'There already is an active item in the pipeline for this organisation',
-                }),
-                OpportunitiesActions.reopenOpportunityFailure({
-                  error,
-                }),
-              );
-            }
-
-            return of(
-              OpportunitiesActions.changeOpportunityPipelineStageFailure({
+          catchError((error) =>
+            of(
+              OpportunitiesActions.reopenOpportunityFailure({
                 error,
-                id,
-                prevPipelineStageId: opportunity?.stage.id ?? '',
               }),
-            );
-          }),
+            ),
+          ),
         ),
       ),
     );
@@ -146,29 +133,15 @@ export class OpportunitiesEffects {
                 content: 'Opportunity pipeline stage changed successfully',
               }),
             ]),
-            catchError((error) => {
-              if (error.status === 409) {
-                return of(
-                  NotificationsActions.showErrorNotification({
-                    content:
-                      'There already is an active item in the pipeline for this organisation',
-                  }),
-                  OpportunitiesActions.changeOpportunityPipelineStageFailure({
-                    error,
-                    id,
-                    prevPipelineStageId: opportunity?.stage.id ?? '',
-                  }),
-                );
-              }
-
-              return of(
+            catchError((error) =>
+              of(
                 OpportunitiesActions.changeOpportunityPipelineStageFailure({
                   error,
                   id,
                   prevPipelineStageId: opportunity?.stage.id ?? '',
                 }),
-              );
-            }),
+              ),
+            ),
           ),
       ),
     );
@@ -235,10 +208,31 @@ export class OpportunitiesEffects {
             }),
           ]),
           catchError((error) =>
-            of(OpportunitiesActions.createOpportunityFailure({ error })),
+            of(
+              OpportunitiesActions.createOpportunityFailure({
+                error,
+              }),
+            ),
           ),
         ),
       ),
+    );
+  });
+
+  private showAlreadyActiveItemInPipelineError$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        OpportunitiesActions.createOpportunityFailure,
+        OpportunitiesActions.reopenOpportunityFailure,
+        OpportunitiesActions.changeOpportunityPipelineStageFailure,
+      ),
+      filter(({ error }) => _.get(error, 'status') === 409),
+      map(() => {
+        return NotificationsActions.showErrorNotification({
+          content:
+            'There already is an active item in the pipeline for this organisation',
+        });
+      }),
     );
   });
 
