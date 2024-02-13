@@ -5,7 +5,9 @@
 >
   <kendo-grid-column headerClass="!font-bold" title="Funding Round">
     <ng-template kendoGridCellTemplate let-opportunity>
-      <p [isEllipsisActive]="true">{{ opportunity.name }}</p>
+      <p [isEllipsisActive]="true">
+        {{ opportunity.name || 'No Opportunity' }}
+      </p>
       <p>{{ opportunity.updatedAt | date: 'dd/MM/yyyy' }}</p>
     </ng-template>
   </kendo-grid-column>

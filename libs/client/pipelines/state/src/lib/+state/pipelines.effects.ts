@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { PipelinesService } from '@app/client/pipelines/data-access';
+import { PipelineStageData } from '@app/rvns-pipelines';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, concatMap, map, of } from 'rxjs';
 import { colorDictionary } from './pipeline-colors.constants';
 import { PipelinesActions } from './pipelines.actions';
 
 export const getPipelineColors = (
-  stage: { displayName: string },
+  stage: PipelineStageData,
   index: number,
 ): {
   primaryColor: string;
   secondaryColor: string;
 } => {
-  const name = stage.displayName.toLowerCase();
-  if (['passed', 'lost'].some((n) => name.includes(n))) {
+  if (stage.configuration) {
     return {
       primaryColor: '#D9D9D6',
       secondaryColor: '#D9D9D6',
