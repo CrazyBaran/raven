@@ -563,12 +563,15 @@ export class OrganisationService {
     if (options.filters?.status) {
       queryBuilder.andWhere(
         new Brackets((qb) => {
+          const statuses = options.filters.status
+            .filter((status) => status != null)
+            .join(',');
           qb.where('organisations.companyStatusOverride IN (:status)', {
-            status: options.filters.status.join(','),
+            status: statuses,
           }).orWhere(
             new Brackets((qb) => {
               qb.where('pipelineStage.relatedCompanyStatus IN (:status)', {
-                status: options.filters.status.join(','),
+                status: statuses,
               }).andWhere('organisations.companyStatusOverride is null');
             }),
           );

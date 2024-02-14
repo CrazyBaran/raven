@@ -55,6 +55,12 @@ export class ParseGetOrganisationsOptionsPipe
 
     options.filters = this.getFilters(values);
 
+    if (values['status']) {
+      options.filters.status = options.filters.status
+        ? [...options.filters.status, this.mapStatus(values['status'])]
+        : [this.mapStatus(values['status'])];
+    }
+
     options.primaryDataSource = this.evaluatePrimaryDataSource(options);
 
     return options;
@@ -98,7 +104,9 @@ export class ParseGetOrganisationsOptionsPipe
           (options.filters.lastFundingDate.max !== undefined ||
             options.filters.lastFundingDate.min !== undefined)) ||
         options.filters.lastFundingType !== undefined ||
-        options.filters.lastFundingRound !== undefined)
+        options.filters.lastFundingRound !== undefined ||
+        options.filters.countries !== undefined ||
+        options.filters.mcvLeadScore !== undefined)
     ) {
       return 'dwh';
     }
@@ -111,10 +119,10 @@ export class ParseGetOrganisationsOptionsPipe
 
   private getFilters(values: Record<string, string>): CompanyFilterOptions {
     if (!values) {
-      return null;
+      return {};
     }
     if (values['filters'] === undefined || values['filters'] === '') {
-      return null;
+      return {};
     }
 
     const filters = new CompanyFilterOptions();
@@ -144,22 +152,11 @@ export class ParseGetOrganisationsOptionsPipe
       filterValues['mcvLeadScore'],
     );
 
-    filters.status = (filterValues['status'] as string[]).map((status) => {
-      switch (status.toLowerCase()) {
-        case 'met':
-          return CompanyStatus.MET;
-        case 'outreach':
-          return CompanyStatus.OUTREACH;
-        case 'live opportunity':
-          return CompanyStatus.LIVE_OPPORTUNITY;
-        case 'passed':
-          return CompanyStatus.PASSED;
-        case 'portfolio':
-          return CompanyStatus.PORTFOLIO;
-        default:
-          return null;
-      }
-    });
+    filters.status = ((filterValues['status'] as string[]) ?? []).map(
+      (status) => {
+        return this.mapStatus(status);
+      },
+    );
 
     return filters;
   }
@@ -206,5 +203,25 @@ export class ParseGetOrganisationsOptionsPipe
       return value.toUpperCase() as Direction;
     }
     return null;
+  }
+
+  private mapStatus(status: string): CompanyStatus {
+    switch (status.toLowerCase()) {
+      case 'met':
+        return CompanyStatus.MET;
+      case 'outreach':
+        return CompanyStatus.OUTREACH;
+      case 'live-opportunity':
+      case 'live opportunity':
+        return CompanyStatus.LIVE_OPPORTUNITY;
+      case 'pass':
+      case 'passed':
+        return CompanyStatus.PASSED;
+      case 'portfolio':
+        return CompanyStatus.PORTFOLIO;
+      case 'empty':
+      default:
+        return null;
+    }
   }
 }
