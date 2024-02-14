@@ -16,6 +16,7 @@ import {
 import { LabelModule } from '@progress/kendo-angular-label';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import { OrganisationsActions } from '@app/client/organisations/state';
 import { DialogQueryParams } from '@app/client/shared/shelf';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { take } from 'rxjs';
@@ -85,6 +86,11 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
         take(1),
       )
       .subscribe((data) => {
+        this.store.dispatch(
+          OrganisationsActions.getOrganisation({
+            id: this.vm().organisation.id!,
+          }),
+        );
         this.dialog?.close();
       });
   }

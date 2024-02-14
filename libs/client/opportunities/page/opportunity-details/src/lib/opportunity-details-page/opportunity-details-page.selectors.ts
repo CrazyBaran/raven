@@ -1,12 +1,11 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 
 import { notesQuery } from '@app/client/opportunities/api-notes';
+import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { organisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
-import { ItemDisabledFn } from '@progress/kendo-angular-dropdowns';
-import { ItemArgs } from '@progress/kendo-angular-dropdowns/common/disabled-items/item-disabled';
 
 const OPPORTUNITY_DETAILS_ROUTES = [
   {
@@ -66,13 +65,7 @@ export const selectOpportunityPipelines = createSelector(
     value: isLoading ? null : opportunity?.stage.id,
     disabled: isLoading || isLoadingUpdateState,
     isLoading: isLoading || isLoadingUpdateState,
-    disabledItem: ((item: ItemArgs): boolean =>
-      Boolean(
-        item.dataItem.configuration &&
-          !item.dataItem.configuration.droppableFrom.includes(
-            opportunity?.stage.id ?? '',
-          ),
-      )) as ItemDisabledFn,
+    disabledItem: OpportunityUtils.getDisabledItemFn(opportunity?.stage.id),
     hasConfiguration: !!stage?.configuration,
   }),
 );

@@ -91,8 +91,10 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
       (x) => (x as FilterDescriptor).field === this.field,
     );
     this.start =
-      start?.value && start.value !== 'any' ? new Date(start.value) : null;
-    this.end = end?.value ? new Date(end.value) : null;
+      start?.value && start.value !== 'any'
+        ? new Date(Number(start.value))
+        : null;
+    this.end = end?.value ? new Date(Number(end.value)) : null;
   }
 
   public ngOnDestroy(): void {
@@ -114,7 +116,7 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
       filters.push({
         field: this.field,
         operator: 'gte',
-        value: start?.toLocaleDateString() ?? 'any',
+        value: start?.getTime() ?? 'any',
       });
       this.start = start;
     }
@@ -123,11 +125,16 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
       filters.push({
         field: this.field,
         operator: 'lte',
-        value: end?.toLocaleDateString(),
+        value: end?.getTime(),
       });
       this.end = end;
     }
 
+    console.log({
+      start,
+      end,
+      filters,
+    });
     this.filterService.filter({
       logic: 'and',
       filters: filters,
