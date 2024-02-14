@@ -32,12 +32,15 @@ import {
   DropdownButtonNavigationComponent,
   DropdownbuttonNavigationModel,
 } from '@app/client/shared/ui-router';
-import { TagsService } from '@app/client/tags/data-access';
-import { countryTypes, lastFundingTypes } from '@app/shared/data-warehouse';
+import {
+  countryTypes,
+  dealRoomLastFundingTypes,
+  lastFundingTypes,
+} from '@app/shared/data-warehouse';
 import param from 'jquery-param';
 import * as _ from 'lodash';
 import { CompanyStatus } from 'rvns-shared';
-import { map, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { InfinityTableViewBaseComponent } from '../../../../../shared/ui-directives/src/lib/infinity-table-view-base.directive';
 import { DateRangeFilterComponent } from '../date-range-filter/date-range-filter.component';
 import { MultiCheckFilterComponent } from '../multicheck-filter/multicheck-filter.component';
@@ -64,46 +67,21 @@ export type TableColumn = {
   standalone: true,
 })
 export class SourceFnPipe implements PipeTransform {
-  protected tagService = inject(TagsService);
+  protected sourceDictionary: Record<string, readonly string[]> = {
+    'funding.lastFundingType': lastFundingTypes,
+    'hq.country': countryTypes,
+    'funding.lastFundingRound': dealRoomLastFundingTypes,
+  };
 
   public transform(
     column: TableColumn,
   ): (filter: string) => Observable<string[]> {
-    if (column.field === 'funding.lastFundingType') {
-      return (filter: string) =>
-        of(
-          lastFundingTypes.filter((x) =>
-            x.toLowerCase().includes(filter.toLowerCase()),
-          ),
-        );
-    }
-
-    if (column.field === 'hq.country') {
-      return (filter: string) =>
-        of(
-          countryTypes.filter((x) =>
-            x.toLowerCase().includes(filter.toLowerCase()),
-          ),
-        );
-    }
-
-    if (column.field === 'status') {
-      return (filter: string) =>
-        of(
-          Object.keys(CompanyStatus)
-            .map((status) =>
-              status
-                .split('_')
-                .map((x) => _.capitalize(x))
-                .join(' '),
-            )
-            .filter((x) => x.toLowerCase().includes(filter.toLowerCase())),
-        );
-    }
     return (filter: string) =>
-      this.tagService
-        .getTags({ type: 'industry', query: filter, take: 100 })
-        .pipe(map((x) => x.data?.map((y) => y.name) || []));
+      of(
+        (this.sourceDictionary[column.field] ?? []).filter((x) =>
+          x.toLowerCase().includes(filter.toLowerCase()),
+        ),
+      );
   }
 }
 
@@ -205,6 +183,18 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
 
   public trackByFn: TrackByFunction<GridItem> = (index, item: GridItem) =>
     'id' in item ? item.id : index;
+
+  public override reset(): void {
+    this.grid?.scrollTo({
+      row: 0,
+    });
+    this.page = 0;
+    this.collapsedRows.set([]);
+
+    this.gridRef.nativeElement
+      .querySelectorAll(`[row-active=true]`)
+      .forEach((x: any) => x.setAttribute('row-active', false));
+  }
 
   public filterChange($event: CompositeFilterDescriptor): void {
     const mapFilters = parseToFilterObject($event);

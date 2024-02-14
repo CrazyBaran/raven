@@ -225,7 +225,7 @@ export const selectOrganisationRows = createSelector(
                 dealLeads:
                   opportunity!.team?.owners.map((owner) => owner.actorName) ??
                   [],
-                updatedAt: opportunity!.createdAt?.toString() ?? '',
+                updatedAt: opportunity!.updatedAt?.toString() ?? '',
                 actionData: isOpportunityClosed(opportunity!)
                   ? [
                       {

@@ -132,7 +132,7 @@
               <ng-template kendoGridCellTemplate let-dataItem>
                 <p>{{ dataItem.tag?.name ?? 'No Opportunity' }}</p>
                 <p class="text-xs">
-                  Updated: {{ dataItem?.createdAt || '' | date: 'dd/MM/yyyy' }}
+                  Updated: {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy' }}
                 </p>
               </ng-template>
             </kendo-grid-column>

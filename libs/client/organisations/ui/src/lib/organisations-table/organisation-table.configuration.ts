@@ -29,7 +29,7 @@ export const organisationTableConfiguration: TableColumn[] = [
       ).then((m) => m.DynamicCompanyStatusColumnComponent),
     name: 'Status',
     field: 'status',
-    filter: 'string',
+    filter: null,
     sortable: false,
     dataFn: (row): CompanyStatusColumn => row.status,
   },
@@ -63,7 +63,7 @@ export const organisationTableConfiguration: TableColumn[] = [
     name: 'Industry',
     field: 'industry.industries',
     type: 'string',
-    filter: 'string',
+    filter: null,
     sortable: false,
   },
   {
