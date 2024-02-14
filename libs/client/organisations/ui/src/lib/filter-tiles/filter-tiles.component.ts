@@ -84,8 +84,8 @@ export class FilterTilesComponent {
   private getDateRangeText(value: FilterParam): string {
     const [start, end] = value as [string, string];
     return `${
-      start === 'any' ? 'any' : new Date(start).toLocaleDateString()
-    } - ${end ? new Date(end).toLocaleDateString() : 'any'} `;
+      start === 'any' ? 'any' : new Date(Number(start)).toLocaleDateString()
+    } - ${end ? new Date(Number(end)).toLocaleDateString() : 'any'} `;
   }
 
   private getNumberRangeText(value: FilterParam): string {
