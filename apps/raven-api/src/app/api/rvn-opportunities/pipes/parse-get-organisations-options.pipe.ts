@@ -185,10 +185,10 @@ export class ParseGetOrganisationsOptionsPipe
     const result = { min: undefined, max: undefined };
     if (filterValue) {
       if (filterValue[0] !== 'any') {
-        result.min = new Date(this.getTimestamp(filterValue[0]));
+        result.min = new Date(parseInt(filterValue[0]));
       }
       if (filterValue[1] !== 'any') {
-        result.max = new Date(this.getTimestamp(filterValue[1]));
+        result.max = new Date(parseInt(filterValue[1]));
       }
     }
 
