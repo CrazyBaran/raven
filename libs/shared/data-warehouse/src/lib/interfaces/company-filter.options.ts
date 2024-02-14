@@ -26,9 +26,9 @@ export class CompanyFilterOptions {
     min?: Date;
     max?: Date;
   };
-  public lastFundingType?: LastFundingType;
+  public lastFundingType?: LastFundingType[];
 
-  public lastFundingRound?: DealRoomLastFundingType;
+  public lastFundingRound?: DealRoomLastFundingType[];
 
   public countries?: string[];
 

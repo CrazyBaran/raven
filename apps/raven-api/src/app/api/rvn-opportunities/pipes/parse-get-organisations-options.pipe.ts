@@ -140,11 +140,11 @@ export class ParseGetOrganisationsOptionsPipe
     );
     filters.lastFundingType = filterValues[
       'funding.lastFundingType'
-    ] as LastFundingType;
+    ] as LastFundingType[];
 
     filters.lastFundingRound = filterValues[
       'funding.lastFundingRound'
-    ] as DealRoomLastFundingType;
+    ] as DealRoomLastFundingType[];
 
     filters.countries = filterValues['hq.country'] as CountryType[];
 
@@ -185,10 +185,10 @@ export class ParseGetOrganisationsOptionsPipe
     const result = { min: undefined, max: undefined };
     if (filterValue) {
       if (filterValue[0] !== 'any') {
-        result.min = new Date(filterValue[0]);
+        result.min = new Date(this.getTimestamp(filterValue[0]));
       }
       if (filterValue[1] !== 'any') {
-        result.max = new Date(filterValue[1]);
+        result.max = new Date(this.getTimestamp(filterValue[1]));
       }
     }
 
@@ -223,5 +223,10 @@ export class ParseGetOrganisationsOptionsPipe
       default:
         return null;
     }
+  }
+
+  private getTimestamp(date: string): number {
+    const parts = date.split('/');
+    return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime();
   }
 }

@@ -172,26 +172,26 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     if (filterOptions?.lastFundingDate) {
       if (filterOptions.lastFundingDate.min) {
         queryBuilder.andWhere('company.lastFundingDate >= :min', {
-          min: filterOptions.lastFundingDate.min,
+          min: filterOptions.lastFundingDate.min.toISOString(),
         });
       }
 
       if (filterOptions.lastFundingDate.max) {
         queryBuilder.andWhere('company.lastFundingDate <= :max', {
-          max: filterOptions.lastFundingDate.max,
+          max: filterOptions.lastFundingDate.max.toISOString(),
         });
       }
     }
 
     if (filterOptions?.lastFundingType) {
-      queryBuilder.andWhere('company.specterLastFundingType = :type', {
+      queryBuilder.andWhere('company.specterLastFundingType in (:...type)', {
         type: filterOptions.lastFundingType,
       });
     }
 
     if (filterOptions?.lastFundingRound) {
-      queryBuilder.andWhere('company.dealRoomLastFundingRound = :type', {
-        type: filterOptions.lastFundingRound,
+      queryBuilder.andWhere('company.dealRoomLastFundingRound in (:...round)', {
+        round: filterOptions.lastFundingRound,
       });
     }
 
