@@ -25,6 +25,7 @@ import {
   PageTemplateComponent,
   QuickFiltersTemplateComponent,
 } from '@app/client/shared/ui-templates';
+import { isNavigatingAway } from '@app/client/shared/util-router';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -84,7 +85,7 @@ export class OrganisationsTableV2Component {
       )
       .subscribe(() => {
         const currentNavigation = router.getCurrentNavigation();
-        if (currentNavigation && !currentNavigation.extras?.relativeTo) {
+        if (isNavigatingAway(currentNavigation, '/companies')) {
           this.navigatedAway$?.next(true);
           this.navigatedAway$?.complete();
         }
