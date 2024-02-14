@@ -125,6 +125,7 @@ export class KanbanBoardComponent {
   protected paramsEditId = signal<{
     opportunityId: string;
     organisationId: string;
+    pipelineStageId?: string;
   } | null>(null);
   protected destinationStageId = signal<string | null>(null);
 
@@ -202,6 +203,7 @@ export class KanbanBoardComponent {
           .flatMap(({ cards }) => cards)
           .find({ id: $event.opportunityId })
           .value().organisation.id,
+        pipelineStageId: $event.pipelineStageId || undefined,
       });
       this.destinationStageId.set($event.pipelineStageId);
     } else {
@@ -216,10 +218,6 @@ export class KanbanBoardComponent {
   }
 
   protected onOpportunityEditSubmit(): void {
-    this.dragEndEvent.emit({
-      pipelineStageId: this.destinationStageId()!,
-      opportunityId: this.paramsEditId()!.opportunityId,
-    });
     this.paramsEditId.set(null);
     this.destinationStageId.set(null);
     this.receiveMode.set(false);

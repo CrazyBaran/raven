@@ -89,6 +89,8 @@ export class CreateOpportunityDialogComponent implements OnInit {
   protected opporunityDetails$: any;
   protected readonly xIcon = xIcon;
 
+  protected newPipelineStageId: string | undefined;
+
   protected opportunityForm = this.fb.group({
     organisationId: [{ value: null, disabled: true }, Validators.required],
     opportunityTagId: [null, [Validators.required]],
@@ -130,6 +132,7 @@ export class CreateOpportunityDialogComponent implements OnInit {
   @Input() public set params(value: {
     opportunityId: string;
     organisationId: string;
+    pipelineStageId?: string;
   }) {
     this.vmSignal = this.store.selectSignal(
       selectCreateOpportunityDialogViewModel(value),
@@ -144,6 +147,8 @@ export class CreateOpportunityDialogComponent implements OnInit {
       map((data: any) => data.opportunityDetails),
       first((data) => !!data),
     );
+
+    this.newPipelineStageId = value?.pipelineStageId;
   }
 
   public ngOnInit(): void {
@@ -176,6 +181,7 @@ export class CreateOpportunityDialogComponent implements OnInit {
         id: this.vmSignal()!.opportunityDetails!.id,
         changes: {
           ...this.opportunityForm.getRawValue(),
+          pipelineStageId: this.newPipelineStageId || undefined,
         },
       }),
     );
