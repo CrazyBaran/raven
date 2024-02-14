@@ -103,6 +103,9 @@
       "@app/client/opportunities/ui": [
         "libs/client/opportunities/ui/src/index.ts"
       ],
+      "@app/client/opportunities/utils": [
+        "libs/client/opportunities/utils/src/index.ts"
+      ],
       "@app/client/organisations/api-opportunities": [
         "libs/client/organisations/api-opportunities/src/index.ts"
       ],
@@ -118,13 +121,15 @@
       "@app/client/organisations/feature/companies-table-container": [
         "libs/client/organisations/feature/companies-table-container/src/index.ts"
       ],
+      "@app/client/organisations/feature/dialogs": [
+        "libs/client/organisations/feature/dialogs/src/index.ts"
+      ],
       "@app/client/organisations/feature/organisation-page": [
         "libs/client/organisations/feature/organisation-page/src/index.ts"
       ],
       "@app/client/organisations/feature/organisations-table": [
         "libs/client/organisations/feature/organisations-table/src/index.ts"
       ],
-      "@app/client/organisations/feature/dialogs": ["libs/client/organisations/feature/dialogs/src/index.ts"],
       "@app/client/organisations/feature/organisations-table-v2": [
         "libs/client/organisations/feature/organisations-table-v2/src/index.ts"
       ],

@@ -5,10 +5,14 @@
 <div class="p-10">
   <p>Please select the new status for the opportunity as listed below.</p>
 
-  <form class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10">
+  <form
+    class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10"
+    [formGroup]="formGroup"
+  >
     <kendo-formfield>
       <kendo-label text="Company Name" />
       <kendo-textbox
+        formControlName="name"
         [placeholder]="vm().organisation.name!"
         [disabled]="true"
       />
@@ -16,21 +20,29 @@
 
     <kendo-formfield>
       <kendo-label text="Funding Round" />
-      <kendo-textbox
-        [placeholder]="vm().organisation.tag.name!"
-        [disabled]="true"
+      <kendo-dropdownlist
+        [data]="vm().opportunityDropdown.data"
+        [defaultItem]="vm().opportunityDropdown.defaultItem"
+        [textField]="vm().opportunityDropdown.textField"
+        [valueField]="vm().opportunityDropdown.valueField"
+        [valuePrimitive]="true"
+        [virtual]="true"
+        [disabled]="vm().disabledOpportunityDropdown"
+        formControlName="round"
       />
+      <kendo-formerror>Funding Round is required</kendo-formerror>
     </kendo-formfield>
 
     <kendo-formfield>
       <kendo-label text="Opportunity Status" />
       <kendo-dropdownlist
-        [formControl]="stageControl"
+        formControlName="stage"
         [valuePrimitive]="true"
         [defaultItem]="vm().stages.defaultItem"
         [textField]="vm().stages.textField"
         [valueField]="vm().stages.valueField"
         [data]="vm().stages.data"
+        [itemDisabled]="vm().stages.itemDisabled"
       />
       <kendo-formerror>Opportunity status is required</kendo-formerror>
     </kendo-formfield>
@@ -41,7 +53,7 @@
   <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
   <kendo-button
     (click)="submit()"
-    [disabled]="!stageControl.valid || vm().isCreating"
+    [disabled]="!formGroup.valid || vm().isCreating"
     themeColor="primary"
   >
     @if (vm().isCreating) {

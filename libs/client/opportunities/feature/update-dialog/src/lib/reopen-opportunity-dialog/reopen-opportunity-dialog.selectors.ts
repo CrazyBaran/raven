@@ -2,9 +2,9 @@ import {
   opportunitiesFeature,
   opportunitiesQuery,
 } from '@app/client/opportunities/data-access';
+import { DialogQueryParams } from '@app/client/shared/shelf';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
-import { DialogQueryParams } from '../../../../../../shared/shelf/src/lib/shelf.effects';
 
 export const selectCreateOpportunityDialogViewModel = createSelector(
   selectQueryParam(DialogQueryParams.reopenOpportunity),
@@ -16,6 +16,7 @@ export const selectCreateOpportunityDialogViewModel = createSelector(
     return {
       opportunityId: id,
       organisation: {
+        id: opportunity?.organisation.id,
         name: opportunity?.organisation.name,
         tag: { name: opportunity?.tag?.name },
       },

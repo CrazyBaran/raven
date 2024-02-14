@@ -88,12 +88,12 @@
         />
         <kendo-button
           (click)="toggleRow(organisation.id)"
+          [class.invisible]="organisation.opportunities.length === 0"
           [iconClass]="
             'fa-solid fa-caret-' +
             (isRowCollapsed(organisation.id) ? 'up' : 'down')
           "
           fillMode="link"
-          [class.invisible]="organisation.opportunities.length === 0"
         />
       </div>
     </ng-template>
