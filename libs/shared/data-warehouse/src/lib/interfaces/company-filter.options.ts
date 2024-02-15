@@ -34,4 +34,5 @@ export class CompanyFilterOptions {
 
   public mcvLeadScore?: { min?: number; max?: number };
   public status?: CompanyStatus[];
+  public industries?: string[];
 }

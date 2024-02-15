@@ -128,25 +128,25 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
           });
 
           qb.orWhere(
-            `company.specterIndustry ${collate} LIKE :query ${collate}`,
-            {
-              query: `%${options.query}%`,
-            },
-          );
-
-          qb.orWhere(
-            `company.specterSubIndustry ${collate} LIKE :query ${collate}`,
-            {
-              query: `%${options.query}%`,
-            },
-          );
-
-          qb.orWhere(
             `company.specterInvestors ${collate} LIKE :query ${collate}`,
             {
               query: `%${options.query}%`,
             },
           );
+        }),
+      );
+    }
+
+    if (filterOptions?.industries && filterOptions.industries.length > 0) {
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          qb.where('company.specterIndustry IN (:...industries)', {
+            industries: filterOptions.industries,
+          });
+
+          qb.orWhere('company.specterSubIndustry IN (:...industries)', {
+            industries: filterOptions.industries,
+          });
         }),
       );
     }

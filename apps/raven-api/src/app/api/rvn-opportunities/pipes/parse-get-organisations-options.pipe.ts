@@ -106,7 +106,8 @@ export class ParseGetOrganisationsOptionsPipe
         options.filters.lastFundingType !== undefined ||
         options.filters.lastFundingRound !== undefined ||
         options.filters.countries !== undefined ||
-        options.filters.mcvLeadScore !== undefined)
+        options.filters.mcvLeadScore !== undefined ||
+        options.filters.industries !== undefined)
     ) {
       return 'dwh';
     }
@@ -145,6 +146,8 @@ export class ParseGetOrganisationsOptionsPipe
     filters.lastFundingRound = filterValues[
       'funding.lastFundingRound'
     ] as DealRoomLastFundingType[];
+
+    filters.industries = filterValues['industry'] as string[];
 
     filters.countries = filterValues['hq.country'] as CountryType[];
 
