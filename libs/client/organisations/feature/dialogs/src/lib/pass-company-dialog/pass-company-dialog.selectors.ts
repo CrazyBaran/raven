@@ -3,13 +3,15 @@ import { DialogQueryParams } from '@app/client/shared/shelf';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
 
-export const selectCreateOpportunityDialogViewModel = createSelector(
+export const selectPassCompanyDialogViewModel = createSelector(
   selectQueryParam(DialogQueryParams.passCompany),
+  organisationsFeature.selectEntities,
   organisationsFeature.selectUpdateLoading,
-  (id, isLoading) => {
+  (id, organisations, isLoading) => {
     return {
       organisationId: id,
       isLoading,
+      organisationDisplayName: organisations[id!]?.name,
     };
   },
 );
