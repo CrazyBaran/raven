@@ -35,4 +35,5 @@ export interface OpportunityDataWithoutOrganisation {
   readonly sharePointPath?: string;
   team?: OpportunityTeamData;
   readonly updatedAt?: Date;
+  readonly previousPipelineStageId?: string;
 }

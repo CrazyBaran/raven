@@ -21,7 +21,7 @@
       [field]="columnTemplate.field"
       [title]="columnTemplate.name"
       headerClass="!font-bold"
-      [width]="140"
+      [width]="columnTemplate.width ?? 160"
       [filterable]="!!columnTemplate.filter"
       [sortable]="columnTemplate.sortable"
     >
@@ -70,7 +70,7 @@
     </kendo-grid-column>
   }
 
-  <kendo-grid-column [width]="190" title="">
+  <kendo-grid-column [width]="100" title="">
     <ng-template kendoGridCellTemplate let-organisation>
       <div class="flex justify-end gap-2">
         @if (!organisation.status.name) {

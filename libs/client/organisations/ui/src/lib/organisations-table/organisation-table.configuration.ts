@@ -1,3 +1,4 @@
+import { transformToThousands } from '@app/client/shared/ui-pipes';
 import { CompanyColumn } from '../dynamic-company-column/dynamic-company-column.component';
 import { CompanyStatusColumn } from '../dynamic-company-status-column/dynamic-company-status-column.component';
 import { DateColumn } from '../dynamic-date-column/dynamic-date-column.component';
@@ -43,6 +44,7 @@ export const organisationTableConfiguration: TableColumn[] = [
     type: 'number',
     filter: null,
     sortable: true,
+    width: 105,
   },
   {
     componentPath: () =>
@@ -76,6 +78,8 @@ export const organisationTableConfiguration: TableColumn[] = [
     type: 'number',
     filter: 'number',
     sortable: true,
+    dataFn: (row): number =>
+      transformToThousands(row.data?.funding?.totalFundingAmount, 2),
   },
   {
     componentPath: () =>
@@ -87,6 +91,8 @@ export const organisationTableConfiguration: TableColumn[] = [
     type: 'number',
     filter: 'number',
     sortable: true,
+    dataFn: (row): number =>
+      transformToThousands(row.data?.funding?.lastFundingAmount, 2),
   },
   {
     componentPath: () =>
