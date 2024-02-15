@@ -115,6 +115,7 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
       queryBuilder.orderBy(orderBy, direction);
     }
 
+    const collate = 'COLLATE SQL_Latin1_General_CP1_CI_AS';
     if (options?.query) {
       queryBuilder.andWhere(
         new Brackets((qb) => {
@@ -122,21 +123,30 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
             query: `%${options.query}%`,
           });
 
-          qb.orWhere('company.domain LIKE :query', {
+          qb.orWhere(`company.domain ${collate} LIKE :query ${collate}`, {
             query: `%${options.query}%`,
           });
 
-          qb.orWhere('company.specterIndustry LIKE :query', {
-            query: `%${options.query}%`,
-          });
+          qb.orWhere(
+            `company.specterIndustry ${collate} LIKE :query ${collate}`,
+            {
+              query: `%${options.query}%`,
+            },
+          );
 
-          qb.orWhere('company.specterSubIndustry LIKE :query', {
-            query: `%${options.query}%`,
-          });
+          qb.orWhere(
+            `company.specterSubIndustry ${collate} LIKE :query ${collate}`,
+            {
+              query: `%${options.query}%`,
+            },
+          );
 
-          qb.orWhere('company.specterInvestors LIKE :query', {
-            query: `%${options.query}%`,
-          });
+          qb.orWhere(
+            `company.specterInvestors ${collate} LIKE :query ${collate}`,
+            {
+              query: `%${options.query}%`,
+            },
+          );
         }),
       );
     }
