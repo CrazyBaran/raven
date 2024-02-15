@@ -6,7 +6,7 @@
   <p>Please select the new status for the opportunity as listed below.</p>
 
   <form
-    class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10"
+    class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10 pb-0"
     [formGroup]="formGroup"
   >
     <kendo-formfield>
@@ -46,6 +46,23 @@
       />
       <kendo-formerror>Opportunity status is required</kendo-formerror>
     </kendo-formfield>
+
+    <div class="mt-4 flex flex-col gap-4" [class.invisible]="!showActions()">
+      <kendo-button
+        class="mx-auto w-fit"
+        themeColor="primary"
+        fillMode="outline"
+        iconClass="fa-solid fa-bell"
+        >Set a reminder</kendo-button
+      >
+      <div class="flex items-center justify-between">
+        <p>Remove company from all shortlists</p>
+        <kendo-switch>
+          <ng-template kendoSwitchOffLabel>Off</ng-template>
+          <ng-template kendoSwitchOnLabel>On</ng-template>
+        </kendo-switch>
+      </div>
+    </div>
   </form>
 </div>
 
@@ -54,11 +71,11 @@
   <kendo-button
     (click)="submit()"
     [disabled]="!formGroup.valid || vm().isCreating"
-    themeColor="primary"
+    [themeColor]="submitButtonTheme()"
   >
     @if (vm().isCreating) {
       <kendo-loader class="!text-secondary-100 mr-1" size="small" />
     }
-    Update Opportunity Status
+    {{ submitButtonText() }}
   </kendo-button>
 </kendo-dialog-actions>
