@@ -12,6 +12,7 @@ export const DWH_CACHE = {
   FORCED_REGENERATION: 'DataWarehouseForcedRegenerationCache',
   LAST_CHECKED: 'DataWarehouseLastCheckedCache',
   NEWEST_ENTRY_DATE: 'DataWarehouseNewestEntryDateCache',
+  INDUSTRIES: 'DataWarehouseIndustriesCache',
 };
 
 export const DWH_QUEUE = {

@@ -323,6 +323,52 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     return this.founderMapper.mapMany(grouped);
   }
 
+  public async getIndustries(): Promise<string[]> {
+    const chunkSize = 10000;
+
+    const count = await this.companyRepository.count();
+
+    const chunks = Math.ceil(count / chunkSize);
+
+    const industries: string[] = [];
+
+    for (let i = 0; i < chunks; i++) {
+      const offset = i * chunkSize;
+      const companies = await this.companyRepository.find({
+        select: ['specterIndustry'],
+        where: {
+          specterIndustry: Not(IsNull()),
+        },
+        skip: offset,
+        take: chunkSize,
+      });
+      const industriesFlattened = companies.flatMap((i) =>
+        i.specterIndustry.split('; '),
+      );
+      industries.push(...new Set([...industriesFlattened]));
+    }
+
+    for (let i = 0; i < chunks; i++) {
+      const offset = i * chunkSize;
+      const companies = await this.companyRepository.find({
+        select: ['specterSubIndustry'],
+        where: {
+          specterSubIndustry: Not(IsNull()),
+        },
+        skip: offset,
+        take: chunkSize,
+      });
+      const industriesFlattened = companies.flatMap((i) =>
+        i.specterSubIndustry.split('; '),
+      );
+      industries.push(...industriesFlattened);
+    }
+
+    const industriesFlattenedDistinct = [...new Set([...industries])];
+
+    return industriesFlattenedDistinct;
+  }
+
   private async getNumberOfEmployees(
     companyIds: number[],
   ): Promise<GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>[]> {

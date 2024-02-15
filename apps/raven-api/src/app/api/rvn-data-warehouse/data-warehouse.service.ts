@@ -31,7 +31,7 @@ export class DataWarehouseService {
   ): Promise<void> {
     const chunkSize = options?.chunkSize ?? 2000;
 
-    await this.dataWarehouseCacheService.reset();
+    await this.dataWarehouseCacheService.resetCompanies();
 
     const count = await this.dataWarehouseAccessService.getCount();
     const chunks = Math.ceil(count / chunkSize);
@@ -51,6 +51,10 @@ export class DataWarehouseService {
     await this.dataWarehouseCacheService.setNewestEntryDate(
       (await this.dataWarehouseAccessService.getLastUpdated()).lastUpdated,
     );
+
+    await this.dataWarehouseCacheService.resetIndustries();
+    const industries = await this.dataWarehouseAccessService.getIndustries();
+    await this.dataWarehouseCacheService.setIndustries(industries);
   }
 
   public async getCompanyByDomain(
@@ -150,5 +154,15 @@ export class DataWarehouseService {
       options,
       filterOptions,
     );
+  }
+
+  public async getIndustries(query: string): Promise<string[]> {
+    const industries = await this.dataWarehouseCacheService.getIndustries();
+    if (query) {
+      return industries.filter((industry) =>
+        industry.toLowerCase().includes(query.toLowerCase()),
+      );
+    }
+    return industries;
   }
 }

@@ -149,9 +149,35 @@ export class DataWarehouseCacheService {
     }
   }
 
-  public async reset(): Promise<void> {
+  public async setIndustries(industries: string[]): Promise<void> {
+    await this.store.client.lpushx(DWH_CACHE.INDUSTRIES, ...industries);
+  }
+
+  public async getIndustries(): Promise<string[]> {
+    return await this.store.client.lrange(DWH_CACHE.INDUSTRIES, 0, -1);
+  }
+
+  public async resetCompanies(): Promise<void> {
     if (await this.store.client.exists(DWH_CACHE.COMPANIES)) {
       await this.store.client.del(DWH_CACHE.COMPANIES);
+    }
+    if (await this.store.client.exists(DWH_CACHE.LAST_CHECKED)) {
+      await this.store.client.del(DWH_CACHE.LAST_CHECKED);
+    }
+    if (await this.store.client.exists(DWH_CACHE.LAST_UPDATED)) {
+      await this.store.client.del(DWH_CACHE.LAST_UPDATED);
+    }
+    if (await this.store.client.exists(DWH_CACHE.NEWEST_ENTRY_DATE)) {
+      await this.store.client.del(DWH_CACHE.NEWEST_ENTRY_DATE);
+    }
+    if (await this.store.client.exists(DWH_CACHE.FORCED_REGENERATION)) {
+      await this.store.client.del(DWH_CACHE.FORCED_REGENERATION);
+    }
+  }
+
+  public async resetIndustries(): Promise<void> {
+    if (await this.store.client.exists(DWH_CACHE.INDUSTRIES)) {
+      await this.store.client.del(DWH_CACHE.INDUSTRIES);
     }
   }
 

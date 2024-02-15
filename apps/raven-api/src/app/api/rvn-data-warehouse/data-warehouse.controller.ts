@@ -1,8 +1,8 @@
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import { DataWarehouseLastUpdatedDto } from '@app/shared/data-warehouse';
-import { Controller, Get } from '@nestjs/common';
-import { ApiOAuth2, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiOAuth2, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { DataWarehouseService } from './data-warehouse.service';
 import { DataWarehouseProducer } from './queues/data-warehouse.producer';
@@ -51,5 +51,17 @@ export class DataWarehouseController {
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async lastUpdated(): Promise<DataWarehouseLastUpdatedDto> {
     return await this.dataWarehouseService.getLastUpdated();
+  }
+
+  @Get('industries')
+  @ApiOperation({
+    summary: 'Get all industries in the Data Warehouse.',
+  })
+  @ApiTags('DataWarehouse')
+  @ApiOAuth2(['openid'])
+  @ApiQuery({ name: 'query', required: false })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async industries(@Query('query') query: string): Promise<string[]> {
+    return await this.dataWarehouseService.getIndustries(query);
   }
 }
