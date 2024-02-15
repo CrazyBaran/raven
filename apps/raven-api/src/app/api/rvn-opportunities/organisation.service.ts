@@ -563,18 +563,29 @@ export class OrganisationService {
     if (options.filters?.status) {
       queryBuilder.andWhere(
         new Brackets((qb) => {
+          if (options.filters.status.includes(null)) {
+            qb.orWhere(
+              new Brackets((qb) => {
+                qb.where(
+                  'organisations.companyStatusOverride IS NULL',
+                ).andWhere('pipelineStage.relatedCompanyStatus IS NULL');
+              }),
+            );
+          }
           const statuses = options.filters.status
             .filter((status) => status != null)
             .join(',');
-          qb.where('organisations.companyStatusOverride IN (:status)', {
-            status: statuses,
-          }).orWhere(
-            new Brackets((qb) => {
-              qb.where('pipelineStage.relatedCompanyStatus IN (:status)', {
-                status: statuses,
-              }).andWhere('organisations.companyStatusOverride is null');
-            }),
-          );
+          if (statuses) {
+            qb.andWhere('organisations.companyStatusOverride IN (:status)', {
+              status: statuses,
+            }).orWhere(
+              new Brackets((qb) => {
+                qb.where('pipelineStage.relatedCompanyStatus IN (:status)', {
+                  status: statuses,
+                }).andWhere('organisations.companyStatusOverride is null');
+              }),
+            );
+          }
         }),
       );
     }
