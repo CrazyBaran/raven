@@ -35,4 +35,36 @@ export class OpportunityUtils {
       stage.displayName.toLowerCase().includes(s),
     );
   }
+
+  public static isLostStage(stage?: { displayName: string }): boolean {
+    if (!stage) {
+      return false;
+    }
+    return ['lost'].some((s) => stage.displayName.toLowerCase().includes(s));
+  }
+
+  public static isWonStage(stage?: { displayName: string }): boolean {
+    if (!stage) {
+      return false;
+    }
+    return ['won'].some((s) => stage.displayName.toLowerCase().includes(s));
+  }
+
+  public static isPassStage(stage?: { displayName: string }): boolean {
+    if (!stage) {
+      return false;
+    }
+    return ['pass'].some((s) => stage.displayName.toLowerCase().includes(s));
+  }
+
+  public static isTerminalStage(stage?: { displayName: string }): boolean {
+    if (!stage) {
+      return false;
+    }
+    return (
+      this.isLostStage(stage) ||
+      this.isPassStage(stage) ||
+      this.isWonStage(stage)
+    );
+  }
 }

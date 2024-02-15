@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
 } from '@angular/core';
@@ -16,12 +17,13 @@ import {
 import {
   FormFieldModule,
   RadioButtonModule,
+  SwitchModule,
   TextBoxModule,
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 
 import { KeyValuePipe } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
@@ -30,7 +32,7 @@ import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
 import { DialogQueryParams } from '@app/client/shared/shelf';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
-import { take } from 'rxjs';
+import { startWith, take } from 'rxjs';
 import { selectUpdateOpportunityStageViewModel } from './update-opportunity-stage-dialog.selectors';
 
 @Component({
@@ -48,6 +50,7 @@ import { selectUpdateOpportunityStageViewModel } from './update-opportunity-stag
     DropDownListModule,
     ErrorMessagePipe,
     KeyValuePipe,
+    SwitchModule,
   ],
   templateUrl: './update-opportunity-stage-dialog.component.html',
   styleUrls: ['./update-opportunity-stage-dialog.component.scss'],
@@ -63,6 +66,40 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
     name: [<string | null>null],
     round: [<string | null>null],
     stage: [<string | null>null, Validators.required],
+  });
+
+  protected stageId = toSignal(
+    this.formGroup.controls.stage.valueChanges.pipe(
+      startWith(this.formGroup.controls.stage.value),
+    ),
+  );
+
+  protected stage = computed(() => {
+    return this.vm().stages.data.find((s) => s.id === this.stageId());
+  });
+
+  protected showActions = computed(() => {
+    return (
+      OpportunityUtils.isLostStage(this.stage()) ||
+      OpportunityUtils.isPassStage(this.stage())
+    );
+  });
+
+  protected submitButtonTheme = computed(() => {
+    return OpportunityUtils.isLostStage(this.stage()) ||
+      OpportunityUtils.isPassStage(this.stage())
+      ? 'secondary'
+      : 'primary';
+  });
+
+  protected submitButtonText = computed(() => {
+    return OpportunityUtils.isLostStage(this.stage())
+      ? 'Mark status as Lost'
+      : OpportunityUtils.isPassStage(this.stage())
+        ? 'Mark status as Passed'
+        : OpportunityUtils.isWonStage(this.stage())
+          ? 'Mark status as Won/Portfolio'
+          : 'Update Opportunity Status';
   });
 
   protected vm = this.store.selectSignal(selectUpdateOpportunityStageViewModel);
