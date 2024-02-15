@@ -60,6 +60,7 @@ export type TableColumn = {
   sortable: boolean;
   type?: string;
   dataFn?: (row: OrganisationRowV2) => any;
+  width?: number;
 };
 
 @Pipe({

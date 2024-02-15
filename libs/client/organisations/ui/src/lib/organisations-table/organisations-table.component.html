@@ -21,7 +21,7 @@
       [field]="columnTemplate.field"
       [title]="columnTemplate.name"
       headerClass="!font-bold"
-      [width]="140"
+      [width]="columnTemplate.width ?? 160"
       [filterable]="!!columnTemplate.filter"
       [sortable]="columnTemplate.sortable"
     >
