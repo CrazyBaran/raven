@@ -111,17 +111,28 @@ export const selectIsTeamMemberForCurrentOpportunity = createSelector(
     ),
 );
 
+/**
+ * Select previousStageId for opportunities in terminal stage
+ */
+export const selectCurrentOpportunityStageId = createSelector(
+  selectRouteOpportunityDetails,
+  (opportunity) => {
+    const previousStageId = opportunity?.previousPipelineStageId?.toLowerCase();
+    return previousStageId ?? opportunity?.stage.id ?? 'NONE';
+  },
+);
+
 export const selectOpportunityNoteTabs = createSelector(
   notesQuery.selectOpportunityNotes,
   selectRouteOpportunityDetails,
-  (opportunityNotes, opportunity) =>
+  selectCurrentOpportunityStageId,
+  (opportunityNotes, opportunity, stageId) =>
     opportunityNotes?.[0]?.noteTabs.filter(
       (tab) =>
         (tab.pipelineStages &&
-          opportunity &&
           tab.pipelineStages
             .map((p) => String(_.get(p, 'id')))
-            .includes(opportunity.stage.id)) ??
+            .includes(stageId)) ??
         [],
     ) ?? [],
 );
@@ -129,7 +140,8 @@ export const selectNoteFields = createSelector(
   selectOpportunityNoteTabs,
   storageQuery.selectAzureImageDictionary,
   selectRouteOpportunityDetails,
-  (tabs, azureImageDictionary, opportunity) => {
+  selectCurrentOpportunityStageId,
+  (tabs, azureImageDictionary, opportunity, stageId) => {
     return _.chain(tabs)
       .map((tab) => {
         return _.chain(tab.noteFieldGroups)
@@ -139,7 +151,7 @@ export const selectNoteFields = createSelector(
                 (noteField) =>
                   !noteField.hideOnPipelineStages ||
                   !noteField.hideOnPipelineStages.some(
-                    (stage) => stage.id === opportunity?.stage.id,
+                    (stage) => stage.id === stageId,
                   ),
               )
               .orderBy('order')
