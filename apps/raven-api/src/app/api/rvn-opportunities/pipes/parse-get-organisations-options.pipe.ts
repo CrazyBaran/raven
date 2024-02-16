@@ -77,7 +77,7 @@ export class ParseGetOrganisationsOptionsPipe
     options: GetOrganisationsOptions,
   ): PrimaryDataSource {
     if (options.query) {
-      return 'raven';
+      return 'dwh';
     }
     if (
       [

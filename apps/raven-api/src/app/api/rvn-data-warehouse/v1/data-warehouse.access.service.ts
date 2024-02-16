@@ -126,6 +126,13 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
           qb.orWhere(`company.domain ${collate} LIKE :query ${collate}`, {
             query: `%${options.query}%`,
           });
+
+          qb.orWhere(
+            `company.specterInvestors ${collate} LIKE :query ${collate}`,
+            {
+              query: `%${options.query}%`,
+            },
+          );
         }),
       );
     }
