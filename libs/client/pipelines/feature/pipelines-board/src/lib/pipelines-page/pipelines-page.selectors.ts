@@ -159,6 +159,7 @@ function createCard(
       id: opportunity.organisation!.id!,
     },
     createdAt: opportunity.createdAt!.toString(),
+    updatedAt: opportunity.updatedAt!.toString(),
     dealLeads: opportunity.team?.owners.map((owner) => owner.actorName) ?? [],
     affinityUrl: opportunity.organisation.affinityUrl,
     additionalFields:

@@ -8,6 +8,7 @@ import { AffinityUrlButtonComponent } from '../affinity-url-button/affinity-url-
 export type OpportunityCard = {
   id: string;
   createdAt: string;
+  updatedAt: string;
   organisation: {
     id: string;
     name: string;
