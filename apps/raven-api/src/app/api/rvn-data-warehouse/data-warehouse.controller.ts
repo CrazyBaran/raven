@@ -42,6 +42,17 @@ export class DataWarehouseController {
     await this.dataWarehouseProducer.enqueueRegenerateDataWarehouse();
   }
 
+  @Get('regenerate-static-cache')
+  @ApiOperation({
+    summary: 'Regenerate the static data, like investors and industries.',
+  })
+  @ApiTags('DataWarehouse')
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async regenerateStatic(): Promise<void> {
+    await this.dataWarehouseProducer.enqueueRegenerateStatic();
+  }
+
   @Get('last-updated')
   @ApiOperation({
     summary: 'Get the last updated timestamp for the Data Warehouse cache.',
@@ -61,7 +72,7 @@ export class DataWarehouseController {
   @ApiOAuth2(['openid'])
   @ApiQuery({ name: 'query', required: false })
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
-  public async industries(@Query('query') query: string): Promise<string[]> {
+  public async getIndustries(@Query('query') query: string): Promise<string[]> {
     return await this.dataWarehouseService.getIndustries(query);
   }
 }

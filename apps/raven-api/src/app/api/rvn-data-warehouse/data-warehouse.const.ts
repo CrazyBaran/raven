@@ -19,6 +19,7 @@ export const DWH_QUEUE = {
   NAME: 'DataWarehouseQueue',
   JOBS: {
     REGENERATE: 'DataWarehouseQueue-Regenerate',
+    REGENERATE_STATIC: 'DataWarehouseQueue-RegenerateStatic',
   },
 };
 

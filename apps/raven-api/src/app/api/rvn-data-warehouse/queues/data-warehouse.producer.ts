@@ -12,4 +12,8 @@ export class DataWarehouseProducer {
   public async enqueueRegenerateDataWarehouse(): Promise<void> {
     await this.queue.add(DWH_QUEUE.JOBS.REGENERATE, {});
   }
+
+  public async enqueueRegenerateStatic(): Promise<void> {
+    await this.queue.add(DWH_QUEUE.JOBS.REGENERATE_STATIC, {});
+  }
 }

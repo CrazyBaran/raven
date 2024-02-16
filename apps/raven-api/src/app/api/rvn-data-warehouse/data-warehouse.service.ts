@@ -51,10 +51,23 @@ export class DataWarehouseService {
     await this.dataWarehouseCacheService.setNewestEntryDate(
       (await this.dataWarehouseAccessService.getLastUpdated()).lastUpdated,
     );
+  }
 
+  public async regenerateStaticCache(
+    job: JobPro,
+    options?: {
+      chunkSize?: number;
+    },
+  ): Promise<void> {
     await this.dataWarehouseCacheService.resetIndustries();
     const industries = await this.dataWarehouseAccessService.getIndustries();
     await this.dataWarehouseCacheService.setIndustries(industries);
+
+    await job.updateProgress(50);
+
+    await this.dataWarehouseCacheService.resetInvestors();
+    const investors = await this.dataWarehouseAccessService.getInvestors();
+    await this.dataWarehouseCacheService.setInvestors(investors);
   }
 
   public async getCompanyByDomain(
@@ -164,5 +177,13 @@ export class DataWarehouseService {
       );
     }
     return industries;
+  }
+
+  public async getInvestors(skip: number, take: number): Promise<string[]> {
+    const investors = await this.dataWarehouseCacheService.getInvestors(
+      skip,
+      take,
+    );
+    return investors;
   }
 }

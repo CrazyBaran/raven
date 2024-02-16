@@ -32,6 +32,10 @@ export class DataWarehouseProcessor extends AbstractSimpleQueueProcessor<DataWar
         this.eventEmitter.emit('data-warehouse.regeneration.finished');
         return true;
       }
+      case DWH_QUEUE.JOBS.REGENERATE_STATIC: {
+        await this.dataWarehouseService.regenerateStaticCache(job);
+        return true;
+      }
       default: {
         throw new Error(`Unknown job name: ${job.name}`);
       }

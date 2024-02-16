@@ -150,11 +150,23 @@ export class DataWarehouseCacheService {
   }
 
   public async setIndustries(industries: string[]): Promise<void> {
-    await this.store.client.lpushx(DWH_CACHE.INDUSTRIES, ...industries);
+    await this.store.client.lpush(DWH_CACHE.INDUSTRIES, ...industries);
+  }
+
+  public async setInvestors(investors: string[]): Promise<void> {
+    await this.store.client.lpush(DWH_CACHE.INVESTORS, ...investors);
   }
 
   public async getIndustries(): Promise<string[]> {
     return await this.store.client.lrange(DWH_CACHE.INDUSTRIES, 0, -1);
+  }
+
+  public async getInvestors(skip?: number, take?: number): Promise<string[]> {
+    return await this.store.client.lrange(
+      DWH_CACHE.INVESTORS,
+      skip,
+      skip + take,
+    );
   }
 
   public async resetCompanies(): Promise<void> {
@@ -178,6 +190,12 @@ export class DataWarehouseCacheService {
   public async resetIndustries(): Promise<void> {
     if (await this.store.client.exists(DWH_CACHE.INDUSTRIES)) {
       await this.store.client.del(DWH_CACHE.INDUSTRIES);
+    }
+  }
+
+  public async resetInvestors(): Promise<void> {
+    if (await this.store.client.exists(DWH_CACHE.INVESTORS)) {
+      await this.store.client.del(DWH_CACHE.INVESTORS);
     }
   }
 

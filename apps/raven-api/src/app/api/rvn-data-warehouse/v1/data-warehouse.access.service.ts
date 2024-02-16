@@ -126,13 +126,6 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
           qb.orWhere(`company.domain ${collate} LIKE :query ${collate}`, {
             query: `%${options.query}%`,
           });
-
-          qb.orWhere(
-            `company.specterInvestors ${collate} LIKE :query ${collate}`,
-            {
-              query: `%${options.query}%`,
-            },
-          );
         }),
       );
     }
@@ -149,6 +142,12 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
           });
         }),
       );
+    }
+
+    if (filterOptions?.investors && filterOptions.investors.length > 0) {
+      queryBuilder.andWhere('company.specterInvestors IN (:...investors)', {
+        investors: filterOptions.investors,
+      });
     }
 
     if (filterOptions?.totalFundingAmount) {
@@ -377,6 +376,36 @@ export class DataWarehouseAccessService implements DataWarehouseAccess {
     const industriesFlattenedDistinct = [...new Set([...industries])];
 
     return industriesFlattenedDistinct;
+  }
+
+  public async getInvestors(): Promise<string[]> {
+    const chunkSize = 10000;
+
+    const count = await this.companyRepository.count();
+
+    const chunks = Math.ceil(count / chunkSize);
+
+    const investors: string[] = [];
+
+    for (let i = 0; i < chunks; i++) {
+      const offset = i * chunkSize;
+      const companies = await this.companyRepository.find({
+        select: ['specterInvestors'],
+        where: {
+          specterInvestors: Not(IsNull()),
+        },
+        skip: offset,
+        take: chunkSize,
+      });
+      const investorsFlattened = companies.flatMap((i) =>
+        i.specterInvestors.split('; '),
+      );
+      investors.push(...new Set([...investorsFlattened]));
+    }
+
+    const investorsFlattenedDistinct = [...new Set([...investors])];
+
+    return investorsFlattenedDistinct;
   }
 
   private async getNumberOfEmployees(

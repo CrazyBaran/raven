@@ -77,7 +77,7 @@ export class ParseGetOrganisationsOptionsPipe
     options: GetOrganisationsOptions,
   ): PrimaryDataSource {
     if (options.query) {
-      return 'dwh';
+      return 'raven';
     }
     if (
       [
@@ -107,7 +107,8 @@ export class ParseGetOrganisationsOptionsPipe
         options.filters.lastFundingRound !== undefined ||
         options.filters.countries !== undefined ||
         options.filters.mcvLeadScore !== undefined ||
-        options.filters.industries !== undefined)
+        options.filters.industries !== undefined ||
+        options.filters.investors !== undefined)
     ) {
       return 'dwh';
     }
@@ -148,6 +149,7 @@ export class ParseGetOrganisationsOptionsPipe
     ] as DealRoomLastFundingType[];
 
     filters.industries = filterValues['industry'] as string[];
+    filters.industries = filterValues['investor'] as string[];
 
     filters.countries = filterValues['hq.country'] as CountryType[];
 
