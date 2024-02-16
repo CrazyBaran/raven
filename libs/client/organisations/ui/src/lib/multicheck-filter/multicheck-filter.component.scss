@@ -1,8 +1,16 @@
-ul li {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-bottom: none;
-}
+:host {
+  ul li {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: none;
+  }
 
-ul li:last-of-type {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  ul li:last-of-type {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  ::ng-deep {
+    .cdk-virtual-scroll-content-wrapper {
+      width: 100%;
+    }
+  }
 }

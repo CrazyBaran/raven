@@ -12,11 +12,11 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { tapResponse } from '@ngrx/component-store';
 import { FilterService } from '@progress/kendo-angular-grid';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { CheckBoxModule, TextBoxModule } from '@progress/kendo-angular-inputs';
-import { LabelModule } from '@progress/kendo-angular-label';
 import {
   CompositeFilterDescriptor,
   FilterDescriptor,
@@ -39,7 +39,6 @@ import {
   styleUrls: ['./multicheck-filter.component.scss'],
   standalone: true,
   imports: [
-    LabelModule,
     NgClass,
     CheckBoxModule,
     ReactiveFormsModule,
@@ -47,6 +46,7 @@ import {
     ScrollingModule,
     JsonPipe,
     LoaderModule,
+    IsEllipsisActiveDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

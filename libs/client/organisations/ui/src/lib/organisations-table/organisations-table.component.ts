@@ -2,6 +2,7 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
@@ -12,13 +13,18 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
+import {
+  IsEllipsisActiveDirective,
+  OnResizeDirective,
+  ResizedEvent,
+} from '@app/client/shared/ui-directives';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridItem, GridModule, RowClassFn } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { OrganisationsService } from '@app/client/organisations/data-access';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
 import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';
 import { DialogQueryParams } from '@app/client/shared/shelf';
@@ -40,7 +46,7 @@ import {
 import param from 'jquery-param';
 import * as _ from 'lodash';
 import { CompanyStatus } from 'rvns-shared';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { InfinityTableViewBaseComponent } from '../../../../../shared/ui-directives/src/lib/infinity-table-view-base.directive';
 import { DateRangeFilterComponent } from '../date-range-filter/date-range-filter.component';
 import { MultiCheckFilterComponent } from '../multicheck-filter/multicheck-filter.component';
@@ -68,6 +74,8 @@ export type TableColumn = {
   standalone: true,
 })
 export class SourceFnPipe implements PipeTransform {
+  protected organisationService = inject(OrganisationsService);
+
   protected sourceDictionary: Record<string, readonly string[]> = {
     'funding.lastFundingType': lastFundingTypes,
     'hq.country': countryTypes,
@@ -77,6 +85,13 @@ export class SourceFnPipe implements PipeTransform {
   public transform(
     column: TableColumn,
   ): (filter: string) => Observable<string[]> {
+    if (column.field === 'industry.industries') {
+      return (filter: string) =>
+        this.organisationService
+          .getIndustries(filter)
+          .pipe(map(({ data }) => data ?? []));
+    }
+
     return (filter: string) =>
       of(
         (this.sourceDictionary[column.field] ?? []).filter((x) =>
@@ -139,6 +154,7 @@ export type OrganisationRowV2 = {
     NumberRangeFilterComponent,
     SourceFnPipe,
     DropdownButtonNavigationComponent,
+    OnResizeDirective,
   ],
   templateUrl: './organisations-table.component.html',
   styleUrls: ['./organisations-table.component.scss'],
@@ -155,6 +171,8 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
   public collapsedRows = signal<string[]>([]);
 
   public additionalFields = organisationTableConfiguration;
+
+  private cdr = inject(ChangeDetectorRef);
 
   public get tableWidth(): string {
     return (
@@ -208,15 +226,14 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
     });
   }
 
+  public onResize($event: ResizedEvent): void {
+    this.cdr.detectChanges();
+  }
+
   protected rowCallback: RowClassFn = (context) => {
     return `row-${context.dataItem.id}`;
   };
 
-  protected getOutreachQueryParam(
-    organisation: OrganisationRowV2,
-  ): Record<string, string> {
-    return { [DialogQueryParams.moveToOutreachCompany]: organisation.id };
-  }
   protected getActionsModel(
     organisation: OrganisationRowV2,
   ): DropdownbuttonNavigationModel {

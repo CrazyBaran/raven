@@ -10,23 +10,25 @@
   [sort]="sort"
   [sortable]="true"
   [trackBy]="trackByFn"
+  [clearNoneSort]="true"
   class="organisation-table h-full"
   filterable="menu"
   kendoGridExpandDetailsBy="id"
   scrollable="scrollable"
   uiKendoUrlSorting
+  (appOnResize)="onResize($event)"
 >
   @for (columnTemplate of additionalFields; track columnTemplate.name) {
     <kendo-grid-column
       [field]="columnTemplate.field"
       [title]="columnTemplate.name"
-      headerClass="!font-bold"
+      headerClass="!font-bold text-sm"
       [width]="columnTemplate.width ?? 160"
       [filterable]="!!columnTemplate.filter"
       [sortable]="columnTemplate.sortable"
     >
       <ng-template kendoGridCellTemplate let-organisation>
-        <div class="text-xs">
+        <div class="text-sm">
           <app-render-template
             [component]="columnTemplate | dynamicColumn: organisation"
           />
@@ -70,19 +72,9 @@
     </kendo-grid-column>
   }
 
-  <kendo-grid-column [width]="190" title="">
+  <kendo-grid-column [width]="100" title="">
     <ng-template kendoGridCellTemplate let-organisation>
       <div class="flex justify-end gap-2">
-        @if (!organisation.status.name) {
-          <kendo-button
-            iconClass="fa-solid fa-plus"
-            [routerLink]="['./']"
-            [queryParams]="getOutreachQueryParam(organisation)"
-            [skipLocationChange]="true"
-            queryParamsHandling="merge"
-            >Outreach</kendo-button
-          >
-        }
         <app-dropdownbutton-navigation
           [model]="getActionsModel(organisation)"
         />
