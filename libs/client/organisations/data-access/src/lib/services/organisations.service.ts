@@ -54,6 +54,14 @@ export class OrganisationsService {
     );
   }
 
+  public getIndustries(query?: string): Observable<GenericResponse<string[]>> {
+    return this.http.get<GenericResponse<string[]>>(`/api/dwh/industries`, {
+      params: {
+        query: query ?? '',
+      },
+    });
+  }
+
   public checkIfDomainExists(value: string): Observable<boolean> {
     return this.getOrganisations({ take: '100', skip: '0', query: value }).pipe(
       map(

@@ -1,3 +1,4 @@
+import { DialogQueryParams } from '@app/client/shared/shelf';
 import { transformToThousands } from '@app/client/shared/ui-pipes';
 import { CompanyColumn } from '../dynamic-company-column/dynamic-company-column.component';
 import { CompanyStatusColumn } from '../dynamic-company-status-column/dynamic-company-status-column.component';
@@ -32,7 +33,14 @@ export const organisationTableConfiguration: TableColumn[] = [
     field: 'status',
     filter: null,
     sortable: false,
-    dataFn: (row): CompanyStatusColumn => row.status,
+    dataFn: (row): CompanyStatusColumn => {
+      return {
+        ...row.status,
+        queryParam: {
+          [DialogQueryParams.moveToOutreachCompany]: row.id,
+        },
+      };
+    },
   },
   {
     componentPath: () =>
@@ -65,7 +73,7 @@ export const organisationTableConfiguration: TableColumn[] = [
     name: 'Industry',
     field: 'industry.industries',
     type: 'string',
-    filter: null,
+    filter: 'string',
     sortable: false,
   },
   {
@@ -73,7 +81,7 @@ export const organisationTableConfiguration: TableColumn[] = [
       import('../dynamic-string-column/dynamic-string-column.component').then(
         (m) => m.DynamicStringColumnComponent,
       ),
-    name: 'Total Funding (USD)',
+    name: 'Total Funding $',
     field: 'funding.totalFundingAmount',
     type: 'number',
     filter: 'number',
@@ -86,7 +94,7 @@ export const organisationTableConfiguration: TableColumn[] = [
       import('../dynamic-string-column/dynamic-string-column.component').then(
         (m) => m.DynamicStringColumnComponent,
       ),
-    name: 'Last Funding (USD)',
+    name: 'Last Funding $',
     field: 'funding.lastFundingAmount',
     type: 'number',
     filter: 'number',
@@ -108,17 +116,17 @@ export const organisationTableConfiguration: TableColumn[] = [
       value: row.data?.funding?.lastFundingDate,
     }),
   },
-  {
-    componentPath: () =>
-      import('../dynamic-string-column/dynamic-string-column.component').then(
-        (m) => m.DynamicStringColumnComponent,
-      ),
-    name: 'Last Funding Type',
-    field: 'funding.lastFundingType',
-    type: 'string',
-    filter: 'string',
-    sortable: true,
-  },
+  // {
+  //   componentPath: () =>
+  //     import('../dynamic-string-column/dynamic-string-column.component').then(
+  //       (m) => m.DynamicStringColumnComponent,
+  //     ),
+  //   name: 'Last Funding Type',
+  //   field: 'funding.lastFundingType',
+  //   type: 'string',
+  //   filter: 'string',
+  //   sortable: true,
+  // },
   {
     componentPath: () =>
       import('../dynamic-string-column/dynamic-string-column.component').then(
