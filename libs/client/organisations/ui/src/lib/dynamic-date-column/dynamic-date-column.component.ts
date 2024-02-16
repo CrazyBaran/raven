@@ -17,6 +17,6 @@ export type DateColumn = {
 })
 export class DynamicDateColumnComponent extends DynamicColumnBase<DateColumn> {
   public get format(): string {
-    return this.field.format ?? 'dd/MM/yyyy hh:mm a';
+    return this.field.format ?? 'dd/MM/yyyy';
   }
 }
