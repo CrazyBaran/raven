@@ -11,7 +11,7 @@ export class AffinityDataWatchdogProducer implements OnModuleInit{
     private readonly logger: RavenLogger,
     @InjectQueue(AFFINITY_DATA_WATCHDOG) private readonly affinityDataWatchdogQueue: Queue,
   ) {
-
+      this.logger.setContext(AffinityDataWatchdogProducer.name);
   }
 
   public async onModuleInit(): Promise<void> {

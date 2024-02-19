@@ -11,7 +11,7 @@ const redisConnectionOptions = {
   password: env.get('REDIS_PASSWORD').default('').asString(),
   db: env.get('REDIS_DB_INDEX').default(1).asInt(),
   tls: { minVersion: 'TLSv1.2' },
-  keepAlive: 1000 * 60 * 5, // 5 minutes
+  keepAlive: 1000 * 60 * 5 // 5 minutes
 } as RedisOptions;
 
 export const environment = {
@@ -29,23 +29,22 @@ export const environment = {
       .replace(/\/$/, ''),
     apiPrefix: env.get('API_PREFIX').default('api').asString(),
     enableSwagger: env.get('SWAGGER_ENABLE').default('true').asBoolStrict(),
-    sentryDsn: env.get('SENTRY_DSN').asUrlString(),
-    applicationInsightsConnectionString: env.get('APPLICATIONINSIGHTS_CONNECTION_STRING').asString(),
+    sentryDsn: env.get('SENTRY_DSN').asUrlString()
   },
   logs: {
     audit: {
-      excludedEndpoints: ['platform/health'],
+      excludedEndpoints: ['platform/health']
     },
     request: {
-      excludedEndpoints: ['platform/health'],
-    },
+      excludedEndpoints: ['platform/health']
+    }
   },
   cache: {
     store: {
       redis: {
-        options: { ...redisConnectionOptions, keyPrefix: 'rvn:cache:' },
-      },
-    },
+        options: { ...redisConnectionOptions, keyPrefix: 'rvn:cache:' }
+      }
+    }
   },
   security: {
     acl: {
@@ -55,28 +54,28 @@ export const environment = {
           cacheKey: env
             .get('ACL_CACHE_REDIS_CACHE_KEY')
             .default('acl')
-            .asString(),
-        },
-      },
+            .asString()
+        }
+      }
     },
     cookies: {
       secret: env
         .get('SECURITY_COOKIES_SECRET')
         .default('cookieSecret')
-        .asString(),
+        .asString()
     },
     rateLimiting: {
       ttl: env.get('API_RATE_LIMITING_TTL').default('1').asInt(),
-      limit: env.get('API_RATE_LIMITING_TTL').default('15').asInt(),
+      limit: env.get('API_RATE_LIMITING_TTL').default('15').asInt()
     },
-    bcryptSaltRounds: 10,
+    bcryptSaltRounds: 10
   },
   bull: {
     config: {
       connection: {
         ...redisConnectionOptions,
-        skipVersionCheck: true, // mute Redis 6.2 recommendation from BullMQ
-      },
+        skipVersionCheck: true // mute Redis 6.2 recommendation from BullMQ
+      }
     } as Bull.QueueProOptions,
     board: {
       enable: env.get('BULL_BOARD_ENABLE').default('true').asBoolStrict(),
@@ -89,8 +88,8 @@ export const environment = {
       basicAuthPassword: env
         .get('BULL_BOARD_AUTH_PASSWORD')
         .default('***')
-        .asString(),
-    },
+        .asString()
+    }
   },
   database: {
     orm: {
@@ -112,20 +111,20 @@ export const environment = {
       options: {
         enableArithAbort: true,
         useUTC: true,
-        encrypt: true,
+        encrypt: true
       },
       cache: {
         type: 'ioredis',
-        options: redisConnectionOptions,
+        options: redisConnectionOptions
       },
       pool: {
         max: 100,
-        min: 1,
-      },
+        min: 1
+      }
     } as SqlServerConnectionOptions,
     redis: {
-      options: redisConnectionOptions,
-    },
+      options: redisConnectionOptions
+    }
   },
   azureAd: {
     identityMetadata: env
@@ -133,7 +132,7 @@ export const environment = {
       .default(
         `https://login.microsoftonline.com/${env
           .get('AD_TENANT_ID')
-          .asString()}/v2.0/.well-known/openid-configuration`,
+          .asString()}/v2.0/.well-known/openid-configuration`
       )
       .asString(),
     clientId: env.get('AD_CLIENT_ID').asString(),
@@ -148,7 +147,7 @@ export const environment = {
       .default(
         `https://login.microsoftonline.com/${env
           .get('AD_TENANT_ID')
-          .asString()}`,
+          .asString()}`
       )
       .asString(),
     redirectUri: env.get('AD_REDIRECT_URI').asString(),
@@ -156,7 +155,7 @@ export const environment = {
       azureId: env.get('AD_TOKEN_KEYS_AZURE_ID').default('oid').asString(),
       name: env.get('AD_TOKEN_KEYS_NAME').default('name').asString(),
       email: env.get('AD_TOKEN_KEYS_EMAIL').default('unique_name').asString(),
-      roles: env.get('AD_TOKEN_KEYS_ROLES').default('roles').asString(),
+      roles: env.get('AD_TOKEN_KEYS_ROLES').default('roles').asString()
     },
     shouldEncryptCcaCache: env
       .get('AD_SHOULD_ENCRYPT_CCA_CACHE')
@@ -165,10 +164,10 @@ export const environment = {
     ccaCacheEncryptionKey: env.get('AD_CCA_CACHE_ENCRYPTION_KEY').asString(),
     ccaCacheEncryptionInitVector: env
       .get('AD_CCA_CACHE_ENCRYPTION_INIT_VECTOR')
-      .asString(),
+      .asString()
   },
   scopes: {
-    apiAccess: env.get('SCOPES_API_ACCESS').asString(),
+    apiAccess: env.get('SCOPES_API_ACCESS').asString()
   },
   affinity: {
     enabledOnInit: env
@@ -181,7 +180,7 @@ export const environment = {
       .asBoolStrict(),
     webhookToken: env.get('AFFINITY_WEBHOOK_TOKEN').asString(),
     apiKey: env.get('AFFINITY_API_KEY').asString(),
-    affinityUrl: env.get('AFFINITY_URL').asString(),
+    affinityUrl: env.get('AFFINITY_URL').asString()
   },
   azureStorageAccount: {
     name: env.get('AZURE_STORAGE_ACCOUNT_NAME').asString(),
@@ -191,7 +190,7 @@ export const environment = {
     createIfNotExists: env
       .get('AZURE_STORAGE_ACCOUNT_CREATE_IF_NOT_EXISTS')
       .default('true')
-      .asBoolStrict(),
+      .asBoolStrict()
   },
   sharePoint: {
     rootDirectory: env
@@ -204,7 +203,7 @@ export const environment = {
     companyDirectories: env
       .get('SHAREPOINT_COMPANY_DIRECTORIES')
       .default('VDR,Research,Analysis,Output,LegalTax')
-      .asArray(),
+      .asArray()
   },
   opportunitySync: {
     enabledOnWebhook: env
@@ -214,7 +213,7 @@ export const environment = {
     enabledOnInit: env
       .get('ENABLE_CREATE_OPPORTUNITY_ON_INIT')
       .default('false')
-      .asBoolStrict(),
+      .asBoolStrict()
   },
   dataWarehouse: {
     authType: env
@@ -224,7 +223,7 @@ export const environment = {
     version: env.get('DWH_VERSION').default('v1').asString(),
     defaultAuth: {
       userName: env.get('DWH_USERNAME').asString(),
-      password: env.get('DWH_PASSWORD').asString(),
+      password: env.get('DWH_PASSWORD').asString()
     },
     database: {
       type: 'mssql',
@@ -242,22 +241,22 @@ export const environment = {
       options: {
         enableArithAbort: true,
         useUTC: true,
-        encrypt: true,
+        encrypt: true
       },
       cache: {
         type: 'ioredis',
-        options: redisConnectionOptions,
+        options: redisConnectionOptions
       },
       pool: {
         max: 100,
-        min: 1,
-      },
-    } as SqlServerConnectionOptions,
+        min: 1
+      }
+    } as SqlServerConnectionOptions
   },
   features: {
     dataWareHouse: env
       .get('FEATURE_DATA_WAREHOUSE')
       .default('false')
-      .asBoolStrict(),
-  },
+      .asBoolStrict()
+  }
 };
