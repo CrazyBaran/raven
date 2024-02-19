@@ -201,6 +201,17 @@
       "@app/client/templates/data-access": [
         "libs/client/templates/data-access/src/index.ts"
       ],
+      "@app/client/shortlists/data-access": [
+        "libs/client/shortlists/data-access/src/index.ts"
+      ],
+      "@app/client/shortlists/feature/shell": [
+        "libs/client/shortlists/feature/shell/src/index.ts"
+      ],
+      "@app/client/shortlists/feature/table": [
+        "libs/client/shortlists/feature/table/src/index.ts"
+      ],
+      "@app/client/shortlists/state": ["libs/client/shortlists/state/src/index.ts"],
+      "@app/client/shortlists/ui": ["libs/client/shortlists/ui/src/index.ts"],
       "@app/core-ui": ["libs/core-ui/src/index.ts"],
       "@app/page/opportunity-details-page": [
         "libs/page/opportunity-details-page/src/index.ts"

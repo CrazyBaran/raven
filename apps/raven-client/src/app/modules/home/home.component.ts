@@ -43,9 +43,8 @@ export class HomeComponent {
         },
         {
           name: 'Shortlist',
-          path: 'companies/shortlist',
+          path: 'companies/shortlists',
           icon: 'fa-solid fa-check',
-          disabled: true,
         },
         {
           name: 'Pipeline',

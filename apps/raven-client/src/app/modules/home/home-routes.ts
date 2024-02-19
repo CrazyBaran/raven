@@ -33,6 +33,13 @@ export const HOME_ROUTES: Routes = [
                 (m) => m.OPPORTUNITIES_ROUTES,
               ),
           },
+          {
+            path: 'shortlists',
+            loadChildren: () =>
+              import('@app/client/shortlists/feature/shell').then(
+                (m) => m.SHORTLIST_ROUTES,
+              ),
+          },
         ],
       },
       {
@@ -40,6 +47,7 @@ export const HOME_ROUTES: Routes = [
         loadChildren: () =>
           import('@app/client/notes/feature/shell').then((m) => m.NOTES_ROUTES),
       },
+
       {
         path: 'templates',
         loadComponent: () =>
