@@ -72,6 +72,7 @@ describe('AffinityCacheService', () => {
           hmget: jest.fn(),
           exists: jest.fn((redisKey) => redisKey === AFFINITY_CACHE),
           del: jest.fn(),
+          hkeys: jest.fn(),
         },
       },
     };
@@ -139,10 +140,17 @@ describe('AffinityCacheService', () => {
       'first-test.com': JSON.stringify(organisationStageDtos[0]),
       'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
     };
-    mockCacheManager.store.client.hgetall.mockResolvedValue(rawData);
+    mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
+    mockCacheManager.store.client.hmget.mockResolvedValue([
+      JSON.stringify(organisationStageDtos[1]),
+    ]);
 
     const result = await service.getByDomains(['test.co.uk']);
     expect(result).toEqual([organisationStageDtos[1]]);
+    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(
+      AFFINITY_CACHE,
+      ...['test.com,test.co.uk'],
+    );
   });
 
   it('should get many by domains', async () => {
@@ -150,11 +158,20 @@ describe('AffinityCacheService', () => {
       'first-test.com': JSON.stringify(organisationStageDtos[0]),
       'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
     };
-    mockCacheManager.store.client.hgetall.mockResolvedValue(rawData);
+
+    mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
+    mockCacheManager.store.client.hmget.mockResolvedValue([
+      JSON.stringify(organisationStageDtos[0]),
+      JSON.stringify(organisationStageDtos[1]),
+    ]);
 
     const result = await service.getByDomains(['test.co.uk', 'first-test.com']);
     expect(result).toContainEqual(organisationStageDtos[1]);
     expect(result).toContainEqual(organisationStageDtos[0]);
+    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(
+      AFFINITY_CACHE,
+      ...['first-test.com', 'test.com,test.co.uk'],
+    );
   });
 
   it('should reset', async () => {
@@ -181,5 +198,38 @@ describe('AffinityCacheService', () => {
     });
     const result = await service.getListFields();
     expect(result).toEqual(fields);
+  });
+
+  it('should return empty array if no fields are found', async () => {
+    mockCacheManager.store.client.hgetall.mockResolvedValue({});
+    const result = await service.getListFields();
+    expect(result).toEqual([]);
+  });
+
+  it('should return empty array if no matching keys are found', async () => {
+    mockCacheManager.store.client.hkeys.mockResolvedValue([]);
+
+    const result = await service.getByDomains(['test.co.uk']);
+    expect(result).toEqual([]);
+    expect(mockCacheManager.store.client.hmget).not.toHaveBeenCalled();
+  });
+
+  it('should return only one item, if try get by two domains', async () => {
+    const rawData = {
+      'first-test.com': JSON.stringify(organisationStageDtos[0]),
+    };
+
+    mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
+    mockCacheManager.store.client.hmget.mockResolvedValue([
+      JSON.stringify(organisationStageDtos[0]),
+    ]);
+
+    const result = await service.getByDomains(['test.co.uk', 'first-test.com']);
+    expect(result).toContainEqual(organisationStageDtos[0]);
+    expect(result).toHaveLength(1);
+    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(
+      AFFINITY_CACHE,
+      ...['first-test.com'],
+    );
   });
 });

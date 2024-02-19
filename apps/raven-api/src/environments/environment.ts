@@ -174,6 +174,10 @@ export const environment = {
       .get('AFFINITY_ENABLED_ON_INIT')
       .default('true')
       .asBoolStrict(),
+    dataWatchdogEnabled: env
+      .get('AFFINITY_DATA_WATCHDOG_ENABLED')
+      .default('true')
+      .asBoolStrict(),
     webhookToken: env.get('AFFINITY_WEBHOOK_TOKEN').asString(),
     apiKey: env.get('AFFINITY_API_KEY').asString(),
     affinityUrl: env.get('AFFINITY_URL').asString(),
