@@ -15,10 +15,10 @@ import { AffinityApiService } from './api/affinity-api.service';
 import { AffinityCacheService } from './cache/affinity-cache.service';
 import { AffinityEnricher } from './cache/affinity.enricher';
 import { OpportunityStageChangedEventHandler } from './event-handlers/opportunity-stage-changed.event-handler';
+import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.processor';
+import { AffinityDataWatchdogProducer } from './queues/affinity-data-watchdog.producer';
 import { AffinityProcessor } from './queues/affinity.processor';
 import { AffinityProducer } from './queues/affinity.producer';
-import { AffinityDataWatchdogProducer } from './queues/affinity-data-watchdog.producer';
-import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.processor';
 
 @Module({
   imports: [
@@ -30,14 +30,14 @@ import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.p
         defaultJobOptions: {
           attempts: 3,
           // exponential fn: 2 ^ ($attempts - 1) * $delay
-          backoff: { type: 'exponential', delay: 60000 }
-        }
-      }
+          backoff: { type: 'exponential', delay: 60000 },
+        },
+      },
     ]),
     HttpModule,
     ConfigModule,
     WebSocketsModule,
-    TypeOrmModule.forFeature([PipelineDefinitionEntity])
+    TypeOrmModule.forFeature([PipelineDefinitionEntity]),
   ],
   providers: [
     AffinityApiService,
@@ -51,10 +51,9 @@ import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.p
     AffinityValueResolverService,
     AffinityEnricher,
     AffinityDataWatchdogProducer,
-    AffinityDataWatchdogProcessor
+    AffinityDataWatchdogProcessor,
   ],
   controllers: [AffinityController],
-  exports: [AffinityCacheService, AffinityEnricher]
+  exports: [AffinityCacheService, AffinityEnricher],
 })
-export class AffinityIntegrationModule {
-}
+export class AffinityIntegrationModule {}
