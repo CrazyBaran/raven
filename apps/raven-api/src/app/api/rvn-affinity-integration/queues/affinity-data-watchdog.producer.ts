@@ -6,19 +6,19 @@ import { OnModuleInit } from '@nestjs/common';
 import { AffinityDataWatchdogJobData } from './affinity-data-watchdog.processor';
 import { environment } from '../../../../environments/environment';
 
-export class AffinityDataWatchdogProducer implements OnModuleInit{
+export class AffinityDataWatchdogProducer implements OnModuleInit {
   public constructor(
     private readonly logger: RavenLogger,
-    @InjectQueue(AFFINITY_DATA_WATCHDOG) private readonly affinityDataWatchdogQueue: Queue,
+    @InjectQueue(AFFINITY_DATA_WATCHDOG) private readonly affinityDataWatchdogQueue: Queue
   ) {
-      this.logger.setContext(AffinityDataWatchdogProducer.name);
+    this.logger.setContext(AffinityDataWatchdogProducer.name);
   }
 
   public async onModuleInit(): Promise<void> {
-        if(environment.affinity.dataWatchdogEnabled) {
-          await this.affinityDataWatchdogQueue.add('AffinityDataWatchdogJob', {} as AffinityDataWatchdogJobData, {
-            repeat: { every: 1000 * 60 }
-          });
-        }
+    if (environment.affinity.dataWatchdogEnabled) {
+      await this.affinityDataWatchdogQueue.add('AffinityDataWatchdogJob', {} as AffinityDataWatchdogJobData, {
+        repeat: { every: 1000 * 60 }
+      });
     }
+  }
 }

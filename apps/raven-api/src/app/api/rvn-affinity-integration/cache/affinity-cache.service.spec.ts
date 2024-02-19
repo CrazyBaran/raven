@@ -16,7 +16,7 @@ const organisationStageDtos = [
       name: 'Organisation 1',
       domain: 'first-test.com',
       domains: ['first-test.com'],
-      global: true,
+      global: true
     } as OrganizationDto,
     entityId: 456,
     listEntryId: 789,
@@ -26,9 +26,9 @@ const organisationStageDtos = [
       {
         displayName: 'test',
 
-        value: 'test',
-      },
-    ],
+        value: 'test'
+      }
+    ]
   } as OrganizationStageDto,
   {
     organizationDto: {
@@ -37,7 +37,7 @@ const organisationStageDtos = [
       name: 'Organisation 2',
       domain: 'test.com',
       domains: ['test.com', 'test.co.uk'],
-      global: true,
+      global: true
     } as OrganizationDto,
     entityId: 456,
     listEntryId: 789,
@@ -46,10 +46,10 @@ const organisationStageDtos = [
     fields: [
       {
         displayName: 'test',
-        value: 'test',
-      },
-    ],
-  } as OrganizationStageDto,
+        value: 'test'
+      }
+    ]
+  } as OrganizationStageDto
 ];
 
 const fields = [{ id: 1, name: 'test' } as FieldDto];
@@ -61,7 +61,7 @@ describe('AffinityCacheService', () => {
   beforeEach(async () => {
     mockPipeline = {
       hset: jest.fn(),
-      exec: jest.fn(),
+      exec: jest.fn()
     };
     mockCacheManager = {
       store: {
@@ -72,9 +72,9 @@ describe('AffinityCacheService', () => {
           hmget: jest.fn(),
           exists: jest.fn((redisKey) => redisKey === AFFINITY_CACHE),
           del: jest.fn(),
-          hkeys: jest.fn(),
-        },
-      },
+          hkeys: jest.fn()
+        }
+      }
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -82,9 +82,9 @@ describe('AffinityCacheService', () => {
         AffinityCacheService,
         {
           provide: CACHE_MANAGER,
-          useValue: mockCacheManager,
-        },
-      ],
+          useValue: mockCacheManager
+        }
+      ]
     }).compile();
 
     service = module.get<AffinityCacheService>(AffinityCacheService);
@@ -102,19 +102,19 @@ describe('AffinityCacheService', () => {
     expect(pipeline().hset).toHaveBeenCalledWith(
       AFFINITY_CACHE,
       'first-test.com',
-      JSON.stringify(organisationStageDtos[0]),
+      JSON.stringify(organisationStageDtos[0])
     );
     expect(pipeline().hset).toHaveBeenCalledWith(
       AFFINITY_CACHE,
       'test.com,test.co.uk',
-      JSON.stringify(organisationStageDtos[1]),
+      JSON.stringify(organisationStageDtos[1])
     );
   });
 
   it('should get all', async () => {
     const rawData = {
       'first-test.com': JSON.stringify(organisationStageDtos[0]),
-      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
+      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1])
     };
     mockCacheManager.store.client.hgetall.mockResolvedValue(rawData);
 
@@ -125,12 +125,12 @@ describe('AffinityCacheService', () => {
   it('should get all with filters', async () => {
     const rawData = {
       'first-test.com': JSON.stringify(organisationStageDtos[0]),
-      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
+      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1])
     };
     mockCacheManager.store.client.hgetall.mockResolvedValue(rawData);
 
     const result = await service.getAll(
-      (data) => data.organizationDto.id === 123,
+      (data) => data.organizationDto.id === 123
     );
     expect(result).toEqual([organisationStageDtos[0]]);
   });
@@ -138,11 +138,11 @@ describe('AffinityCacheService', () => {
   it('should get by domains', async () => {
     const rawData = {
       'first-test.com': JSON.stringify(organisationStageDtos[0]),
-      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
+      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1])
     };
     mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
     mockCacheManager.store.client.hmget.mockResolvedValue(
-      [JSON.stringify(organisationStageDtos[1])],
+      [JSON.stringify(organisationStageDtos[1])]
     );
 
     const result = await service.getByDomains(['test.co.uk']);
@@ -153,12 +153,12 @@ describe('AffinityCacheService', () => {
   it('should get many by domains', async () => {
     const rawData = {
       'first-test.com': JSON.stringify(organisationStageDtos[0]),
-      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
+      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1])
     };
 
     mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
     mockCacheManager.store.client.hmget.mockResolvedValue(
-      [JSON.stringify(organisationStageDtos[0]), JSON.stringify(organisationStageDtos[1])],
+      [JSON.stringify(organisationStageDtos[0]), JSON.stringify(organisationStageDtos[1])]
     );
 
     const result = await service.getByDomains(['test.co.uk', 'first-test.com']);
@@ -170,7 +170,7 @@ describe('AffinityCacheService', () => {
   it('should reset', async () => {
     await service.reset();
     expect(mockCacheManager.store.client.del).toHaveBeenCalledWith(
-      AFFINITY_CACHE,
+      AFFINITY_CACHE
     );
   });
 
@@ -181,13 +181,13 @@ describe('AffinityCacheService', () => {
     expect(pipeline().hset).toHaveBeenCalledWith(
       AFFINITY_FIELDS_CACHE,
       'test',
-      JSON.stringify(fields[0]),
+      JSON.stringify(fields[0])
     );
   });
 
   it('should get list fields', async () => {
     mockCacheManager.store.client.hgetall.mockResolvedValue({
-      test: JSON.stringify(fields[0]),
+      test: JSON.stringify(fields[0])
     });
     const result = await service.getListFields();
     expect(result).toEqual(fields);
@@ -209,12 +209,12 @@ describe('AffinityCacheService', () => {
 
   it('should return only one item, if try get by two domains', async () => {
     const rawData = {
-      'first-test.com': JSON.stringify(organisationStageDtos[0]),
+      'first-test.com': JSON.stringify(organisationStageDtos[0])
     };
 
     mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
     mockCacheManager.store.client.hmget.mockResolvedValue(
-      [JSON.stringify(organisationStageDtos[0])],
+      [JSON.stringify(organisationStageDtos[0])]
     );
 
     const result = await service.getByDomains(['test.co.uk', 'first-test.com']);

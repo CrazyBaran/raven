@@ -7,7 +7,7 @@ import {
   AFFINITY_QUEUE,
   AFFINITY_QUEUE__HANDLE_WEBHOOK,
   AFFINITY_QUEUE__REGENERATE,
-  AFFINITY_QUEUE__SETUP_WEBHOOK,
+  AFFINITY_QUEUE__SETUP_WEBHOOK
 } from '../affinity.const';
 import { WebhookPayloadDto } from '../api/dtos/webhook-payload.dto';
 
@@ -15,7 +15,7 @@ import { WebhookPayloadDto } from '../api/dtos/webhook-payload.dto';
 export class AffinityProducer implements OnModuleInit {
   public constructor(
     private readonly logger: RavenLogger,
-    @InjectQueue(AFFINITY_QUEUE) private readonly affinityQueue: Queue,
+    @InjectQueue(AFFINITY_QUEUE) private readonly affinityQueue: Queue
   ) {
     this.logger.setContext(AffinityProducer.name);
   }
