@@ -71,10 +71,11 @@ export const organisationTableConfiguration: TableColumn[] = [
         (m) => m.DynamicTagsColumnComponent,
       ),
     name: 'Industry',
-    field: 'industry.industries',
+    field: 'industry',
     type: 'string',
     filter: 'string',
     sortable: false,
+    dataFn: (row): string[] => row.data?.industry.industries ?? [],
   },
   {
     componentPath: () =>

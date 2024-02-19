@@ -85,7 +85,7 @@ export class SourceFnPipe implements PipeTransform {
   public transform(
     column: TableColumn,
   ): (filter: string) => Observable<string[]> {
-    if (column.field === 'industry.industries') {
+    if (column.field === 'industry') {
       return (filter: string) =>
         this.organisationService
           .getIndustries(filter)
