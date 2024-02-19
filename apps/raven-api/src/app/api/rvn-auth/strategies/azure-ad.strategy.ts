@@ -4,6 +4,7 @@ import { AzureAdPayload, UserRegisterEvent } from '@app/rvns-auth';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PassportStrategy } from '@nestjs/passport';
+import * as openTelemetry from '@opentelemetry/api';
 import { ClsService } from 'nestjs-cls';
 import { environment } from '../../../../environments/environment';
 import { UsersCacheService } from '../../rvn-users/users-cache.service';
@@ -50,6 +51,17 @@ export class AzureADStrategy extends PassportStrategy(
 
     this.cls.set('localAccountId', response.oid);
     this.cls.set('accessToken', req.headers['authorization'].split(' ')[1]);
+
+    const activeSpan = openTelemetry.trace.getActiveSpan();
+    activeSpan.addEvent('user-logged-in');
+    activeSpan.setAttribute(
+      'rvn.user.name',
+      response[environment.azureAd.tokenKeys.name],
+    );
+    activeSpan.setAttribute(
+      'rvn.user.email',
+      response[environment.azureAd.tokenKeys.email],
+    );
 
     return response;
   }

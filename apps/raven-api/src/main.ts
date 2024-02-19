@@ -1,3 +1,49 @@
+import * as env from 'env-var';
+import { AzureMonitorOpenTelemetryOptions, useAzureMonitor } from '@azure/monitor-opentelemetry';
+import { Resource } from "@opentelemetry/resources";
+import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
+import { registerInstrumentations } from "@opentelemetry/instrumentation";
+import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis";
+import { TypeormInstrumentation } from "opentelemetry-instrumentation-typeorm";
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core";
+import { BullMQProInstrumentation } from 'opentelemetry-instrumentation-bullmqpro';
+
+
+const customResource = new Resource({
+  [SemanticResourceAttributes.SERVICE_NAME]: "jakub-test-service-name",
+  [SemanticResourceAttributes.SERVICE_NAMESPACE]: "jakub-test-namespace",
+  [SemanticResourceAttributes.SERVICE_INSTANCE_ID]: "jakub-test-instance",
+});
+
+// Create a new AzureMonitorOpenTelemetryOptions object.
+const options: AzureMonitorOpenTelemetryOptions = {
+  instrumentationOptions: {
+    azureSdk: { enabled: true },
+  },
+  azureMonitorExporterOptions: {
+    connectionString: env.get('APPLICATIONINSIGHTS_CONNECTION_STRING').asString(),
+  },
+  resource: customResource,
+  samplingRatio: 1,
+};
+
+// Enable Azure Monitor integration using the useAzureMonitor function and the AzureMonitorOpenTelemetryOptions object.
+useAzureMonitor(options);
+
+registerInstrumentations({
+  // List of instrumentations to register
+  instrumentations: [
+    new HttpInstrumentation(),
+    new ExpressInstrumentation(),
+    new NestInstrumentation(),
+    //new IORedisInstrumentation(), // for ioredis instrumentation
+    new TypeormInstrumentation(), // for typeorm instrumentation
+    new BullMQProInstrumentation(),
+  ],
+});
+
 import "reflect-metadata";
 import "isomorphic-fetch";
 import helmet from "helmet";

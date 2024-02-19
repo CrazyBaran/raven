@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import morgan, { TokenIndexer } from 'morgan';
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
+import { trace } from '@opentelemetry/api';
 import { environment } from '../../environments/environment';
 import { RequestLogger } from './request.logger';
 
@@ -10,6 +11,7 @@ export class RequestLoggerMiddleware implements NestMiddleware {
   public constructor(private readonly logger: RequestLogger) {}
 
   public use(req: Request, res: Response, next: NextFunction): void {
+    const traceId = trace?.getActiveSpan()?.spanContext()?.traceId;
     if (
       !environment.logs.request.excludedEndpoints.some((ec) =>
         req.baseUrl.includes(ec),
@@ -31,6 +33,7 @@ export class RequestLoggerMiddleware implements NestMiddleware {
             this.resolveUserTokens(req),
             tokens['remote-addr'](req, res),
             `"${tokens['user-agent'](req, res)}"`,
+            `traceId:${traceId}`,
           ].join(' ');
         },
         {
