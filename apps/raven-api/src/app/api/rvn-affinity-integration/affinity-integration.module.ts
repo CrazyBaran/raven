@@ -17,6 +17,8 @@ import { AffinityEnricher } from './cache/affinity.enricher';
 import { OpportunityStageChangedEventHandler } from './event-handlers/opportunity-stage-changed.event-handler';
 import { AffinityProcessor } from './queues/affinity.processor';
 import { AffinityProducer } from './queues/affinity.producer';
+import { AffinityDataWatchdogProducer } from './queues/affinity-data-watchdog.producer';
+import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.processor';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { AffinityProducer } from './queues/affinity.producer';
     AffinityWebhookService,
     AffinityValueResolverService,
     AffinityEnricher,
+    AffinityDataWatchdogProducer,
+    AffinityDataWatchdogProcessor,
   ],
   controllers: [AffinityController],
   exports: [AffinityCacheService, AffinityEnricher],

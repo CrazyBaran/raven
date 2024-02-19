@@ -30,6 +30,7 @@ export const environment = {
     apiPrefix: env.get('API_PREFIX').default('api').asString(),
     enableSwagger: env.get('SWAGGER_ENABLE').default('true').asBoolStrict(),
     sentryDsn: env.get('SENTRY_DSN').asUrlString(),
+    applicationInsightsConnectionString: env.get('APPLICATIONINSIGHTS_CONNECTION_STRING').asString(),
   },
   logs: {
     audit: {
@@ -172,6 +173,10 @@ export const environment = {
   affinity: {
     enabledOnInit: env
       .get('AFFINITY_ENABLED_ON_INIT')
+      .default('true')
+      .asBoolStrict(),
+    dataWatchdogEnabled: env
+      .get('AFFINITY_DATA_WATCHDOG_ENABLED')
       .default('true')
       .asBoolStrict(),
     webhookToken: env.get('AFFINITY_WEBHOOK_TOKEN').asString(),

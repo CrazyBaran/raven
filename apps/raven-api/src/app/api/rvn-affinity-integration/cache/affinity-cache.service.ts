@@ -48,16 +48,13 @@ export class AffinityCacheService {
   public async getByDomains(
     domains: string[],
   ): Promise<OrganizationStageDto[]> {
-    const items = await this.store.client.hgetall(AFFINITY_CACHE);
-    const keys = items ? Object.keys(items) : [];
+    const keys = await this.store.client.hkeys(AFFINITY_CACHE);
     const matchingKeys = keys.filter((key) =>
       domains.some((domain) => key.includes(domain)),
     );
     if (matchingKeys.length === 0) return [];
-    const matchingItems = Object.entries(items).filter(([key]) =>
-      matchingKeys.some((matchingKey) => matchingKey === key),
-    );
-    return matchingItems.map(([_, value]) =>
+    const matchingItems = await this.store.client.hmget(AFFINITY_CACHE, ...matchingKeys);
+    return matchingItems.map((value) =>
       this.parseOrganisationStageDto(value),
     );
   }

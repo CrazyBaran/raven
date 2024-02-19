@@ -1,6 +1,6 @@
-import { InjectQueue } from '@nestjs/bull';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Queue } from 'bull';
+import { Queue } from '@taskforcesh/bullmq-pro';
 import { environment } from '../../../../environments/environment';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import {
@@ -35,6 +35,8 @@ export class AffinityProducer implements OnModuleInit {
     } else {
       this.logger.warn('Webhook token is not set. Skipping webhook setup.');
     }
+
+
   }
 
   public async enqueueHandleWebhook(body: WebhookPayloadDto): Promise<void> {
