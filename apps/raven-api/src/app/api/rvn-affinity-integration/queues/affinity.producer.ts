@@ -35,8 +35,6 @@ export class AffinityProducer implements OnModuleInit {
     } else {
       this.logger.warn('Webhook token is not set. Skipping webhook setup.');
     }
-
-
   }
 
   public async enqueueHandleWebhook(body: WebhookPayloadDto): Promise<void> {

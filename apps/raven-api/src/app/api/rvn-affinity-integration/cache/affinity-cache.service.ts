@@ -53,10 +53,11 @@ export class AffinityCacheService {
       domains.some((domain) => key.includes(domain)),
     );
     if (matchingKeys.length === 0) return [];
-    const matchingItems = await this.store.client.hmget(AFFINITY_CACHE, ...matchingKeys);
-    return matchingItems.map((value) =>
-      this.parseOrganisationStageDto(value),
+    const matchingItems = await this.store.client.hmget(
+      AFFINITY_CACHE,
+      ...matchingKeys,
     );
+    return matchingItems.map((value) => this.parseOrganisationStageDto(value));
   }
 
   public async reset(): Promise<void> {

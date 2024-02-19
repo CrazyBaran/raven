@@ -30,7 +30,6 @@ export const environment = {
     apiPrefix: env.get('API_PREFIX').default('api').asString(),
     enableSwagger: env.get('SWAGGER_ENABLE').default('true').asBoolStrict(),
     sentryDsn: env.get('SENTRY_DSN').asUrlString(),
-    applicationInsightsConnectionString: env.get('APPLICATIONINSIGHTS_CONNECTION_STRING').asString(),
   },
   logs: {
     audit: {

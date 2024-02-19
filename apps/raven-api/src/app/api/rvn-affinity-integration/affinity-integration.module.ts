@@ -8,17 +8,17 @@ import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { AffinityWebhookService } from './affinity-webhook.service';
-import { AFFINITY_QUEUE } from './affinity.const';
+import { AFFINITY_DATA_WATCHDOG_QUEUE, AFFINITY_QUEUE } from './affinity.const';
 import { AffinityController } from './affinity.controller';
 import { AffinityService } from './affinity.service';
 import { AffinityApiService } from './api/affinity-api.service';
 import { AffinityCacheService } from './cache/affinity-cache.service';
 import { AffinityEnricher } from './cache/affinity.enricher';
 import { OpportunityStageChangedEventHandler } from './event-handlers/opportunity-stage-changed.event-handler';
+import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.processor';
+import { AffinityDataWatchdogProducer } from './queues/affinity-data-watchdog.producer';
 import { AffinityProcessor } from './queues/affinity.processor';
 import { AffinityProducer } from './queues/affinity.producer';
-import { AffinityDataWatchdogProducer } from './queues/affinity-data-watchdog.producer';
-import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.processor';
 
 @Module({
   imports: [
@@ -27,6 +27,16 @@ import { AffinityDataWatchdogProcessor } from './queues/affinity-data-watchdog.p
         name: AFFINITY_QUEUE,
         order: 0,
         description: 'Communicate with Affinity',
+        defaultJobOptions: {
+          attempts: 3,
+          // exponential fn: 2 ^ ($attempts - 1) * $delay
+          backoff: { type: 'exponential', delay: 60000 },
+        },
+      },
+      {
+        name: AFFINITY_DATA_WATCHDOG_QUEUE,
+        order: 1,
+        description: 'Ensure Affinity Data exist in cache',
         defaultJobOptions: {
           attempts: 3,
           // exponential fn: 2 ^ ($attempts - 1) * $delay

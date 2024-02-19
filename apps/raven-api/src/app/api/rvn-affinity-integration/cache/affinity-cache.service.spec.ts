@@ -141,13 +141,16 @@ describe('AffinityCacheService', () => {
       'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
     };
     mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
-    mockCacheManager.store.client.hmget.mockResolvedValue(
-      [JSON.stringify(organisationStageDtos[1])],
-    );
+    mockCacheManager.store.client.hmget.mockResolvedValue([
+      JSON.stringify(organisationStageDtos[1]),
+    ]);
 
     const result = await service.getByDomains(['test.co.uk']);
     expect(result).toEqual([organisationStageDtos[1]]);
-    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(AFFINITY_CACHE, ...['test.com,test.co.uk']);
+    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(
+      AFFINITY_CACHE,
+      ...['test.com,test.co.uk'],
+    );
   });
 
   it('should get many by domains', async () => {
@@ -157,14 +160,18 @@ describe('AffinityCacheService', () => {
     };
 
     mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
-    mockCacheManager.store.client.hmget.mockResolvedValue(
-      [JSON.stringify(organisationStageDtos[0]), JSON.stringify(organisationStageDtos[1])],
-    );
+    mockCacheManager.store.client.hmget.mockResolvedValue([
+      JSON.stringify(organisationStageDtos[0]),
+      JSON.stringify(organisationStageDtos[1]),
+    ]);
 
     const result = await service.getByDomains(['test.co.uk', 'first-test.com']);
     expect(result).toContainEqual(organisationStageDtos[1]);
     expect(result).toContainEqual(organisationStageDtos[0]);
-    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(AFFINITY_CACHE, ...['first-test.com', 'test.com,test.co.uk']);
+    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(
+      AFFINITY_CACHE,
+      ...['first-test.com', 'test.com,test.co.uk'],
+    );
   });
 
   it('should reset', async () => {
@@ -213,13 +220,16 @@ describe('AffinityCacheService', () => {
     };
 
     mockCacheManager.store.client.hkeys.mockResolvedValue(Object.keys(rawData));
-    mockCacheManager.store.client.hmget.mockResolvedValue(
-      [JSON.stringify(organisationStageDtos[0])],
-    );
+    mockCacheManager.store.client.hmget.mockResolvedValue([
+      JSON.stringify(organisationStageDtos[0]),
+    ]);
 
     const result = await service.getByDomains(['test.co.uk', 'first-test.com']);
     expect(result).toContainEqual(organisationStageDtos[0]);
     expect(result).toHaveLength(1);
-    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(AFFINITY_CACHE, ...['first-test.com']);
+    expect(mockCacheManager.store.client.hmget).toHaveBeenCalledWith(
+      AFFINITY_CACHE,
+      ...['first-test.com'],
+    );
   });
 });
