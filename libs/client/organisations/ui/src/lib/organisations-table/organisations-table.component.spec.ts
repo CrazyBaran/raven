@@ -4,6 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { from } from 'rxjs';
 import { OrganisationsTableComponent } from './organisations-table.component';
 
+import ResizeObserver from 'resize-observer-polyfill';
+global.ResizeObserver = ResizeObserver;
+
 describe('ClientOrganisationsUiComponent', () => {
   let component: OrganisationsTableComponent;
   let fixture: ComponentFixture<OrganisationsTableComponent>;
