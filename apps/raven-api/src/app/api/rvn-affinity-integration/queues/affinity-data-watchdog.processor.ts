@@ -8,14 +8,14 @@ import { RedisStore } from 'cache-manager-ioredis-yet';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import {
   AFFINITY_CACHE,
-  AFFINITY_DATA_WATCHDOG,
+  AFFINITY_DATA_WATCHDOG_QUEUE,
   AFFINITY_FIELDS_CACHE,
 } from '../affinity.const';
 import { AffinityProducer } from './affinity.producer';
 
 export interface AffinityDataWatchdogJobData {}
 
-@Processor(AFFINITY_DATA_WATCHDOG, {
+@Processor(AFFINITY_DATA_WATCHDOG_QUEUE, {
   concurrency: 1,
   group: { concurrency: 1 },
   removeOnComplete: { count: 10 },
