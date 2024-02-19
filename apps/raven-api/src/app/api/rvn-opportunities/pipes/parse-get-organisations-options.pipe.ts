@@ -149,7 +149,7 @@ export class ParseGetOrganisationsOptionsPipe
     ] as DealRoomLastFundingType[];
 
     filters.industries = filterValues['industry'] as string[];
-    filters.industries = filterValues['investor'] as string[];
+    filters.investors = filterValues['investor'] as string[];
 
     filters.countries = filterValues['hq.country'] as CountryType[];
 
