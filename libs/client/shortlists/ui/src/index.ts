@@ -1,1 +1,2 @@
-export * from './lib/client-shortlists-ui/client-shortlists-ui.component';
+export * from './lib/create-shortlist-form/shortlist-form.component';
+export * from './lib/shortlist-table/shortlist-table.component';

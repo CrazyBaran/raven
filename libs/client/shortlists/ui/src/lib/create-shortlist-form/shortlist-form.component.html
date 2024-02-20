@@ -1,0 +1,25 @@
+<form [formGroup]="form()" class="flex flex-col gap-6">
+  <kendo-formfield>
+    <kendo-label [for]="name" text="Shortlist's Name" />
+    <kendo-textbox #name formControlName="name" />
+    <kendo-formerror> Shortlist's Name is Required</kendo-formerror>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label [for]="description" text="Description" />
+    <kendo-textarea
+      #description
+      [maxlength]="1000"
+      [rows]="7"
+      formControlName="description"
+    />
+
+    @if (form().controls.description.errors?.['maxlength']) {
+      <kendo-formerror>
+        Description should be less than
+        {{ form().controls.description.errors?.['maxlength'].requiredLength }}
+        characters</kendo-formerror
+      >
+    }
+  </kendo-formfield>
+</form>

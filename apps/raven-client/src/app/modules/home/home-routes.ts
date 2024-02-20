@@ -19,6 +19,13 @@ export const HOME_ROUTES: Routes = [
         path: 'companies',
         children: [
           {
+            path: 'shortlists',
+            loadChildren: () =>
+              import('@app/client/shortlists/feature/shell').then(
+                (m) => m.SHORTLIST_ROUTES,
+              ),
+          },
+          {
             path: '',
             loadChildren: () =>
               import('@app/client/organisations/feature/shell').then(
@@ -31,13 +38,6 @@ export const HOME_ROUTES: Routes = [
             loadChildren: () =>
               import('@app/client/opportunities/feature/shell').then(
                 (m) => m.OPPORTUNITIES_ROUTES,
-              ),
-          },
-          {
-            path: 'shortlists',
-            loadChildren: () =>
-              import('@app/client/shortlists/feature/shell').then(
-                (m) => m.SHORTLIST_ROUTES,
               ),
           },
         ],

@@ -1,0 +1,7 @@
+:host {
+  @apply flex h-full flex-col;
+}
+
+.secondary-dialog {
+  @apply bg-buttons-button-text-30 text-component-text border-buttons-button-text-8;
+}

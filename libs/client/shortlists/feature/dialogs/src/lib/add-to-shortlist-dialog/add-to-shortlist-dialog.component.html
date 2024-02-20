@@ -1,0 +1,52 @@
+@if (mode() === 'add') {
+  <kendo-dialog-titlebar (close)="onDialogClose()">
+    <span class="k-window-title">Add to Shortlist</span>
+  </kendo-dialog-titlebar>
+
+  <div class="p-10">
+    <p class="mb-8">Choose a Shortlist or Create a New One</p>
+    <form [formGroup]="form" class="flex flex-col gap-6">
+      <kendo-formfield>
+        <kendo-dropdownlist
+          [data]="vm().shortlists"
+          [textField]="'name'"
+          [valueField]="'id'"
+          [formControlName]="'id'"
+          [defaultItem]="{ name: 'Choose from list', id: null }"
+        />
+        <kendo-formerror> Shortlist's Name is Required</kendo-formerror>
+      </kendo-formfield>
+
+      <kendo-button (click)="switchToCreateShortlistMode()"
+        >Create New Shortlist</kendo-button
+      >
+    </form>
+  </div>
+
+  <kendo-dialog-actions>
+    <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+    <kendo-button (click)="submit()" themeColor="primary"> Add </kendo-button>
+  </kendo-dialog-actions>
+} @else {
+  <kendo-dialog-titlebar (close)="onDialogClose()">
+    <span class="k-window-title">Create New Shortlist</span>
+  </kendo-dialog-titlebar>
+
+  <div class="min-h-[340px] p-10 pb-0">
+    <p class="mb-8">Choose a Shortlist or Create a New One</p>
+    <app-shortlist-form [form]="createShortlistForm" />
+  </div>
+
+  <kendo-dialog-actions>
+    <kendo-button (click)="switchToAddToShortlistMode()" class="w-40"
+      >Cancel</kendo-button
+    >
+    <kendo-button
+      (click)="createShortlist()"
+      [disabled]="!createShortlistForm.valid"
+      themeColor="primary"
+    >
+      Create
+    </kendo-button>
+  </kendo-dialog-actions>
+}

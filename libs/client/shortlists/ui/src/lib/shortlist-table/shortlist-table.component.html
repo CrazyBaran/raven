@@ -1,0 +1,72 @@
+<kendo-grid
+  (scrollBottom)="onLoadMore()"
+  [data]="gridData"
+  [loading]="isLoading"
+  [sort]="sort"
+  [sortable]="true"
+  [trackBy]="getTrackByFn('id')"
+  [clearNoneSort]="true"
+  class="grid-borderless h-full"
+  scrollable="scrollable"
+  uiKendoUrlSorting
+>
+  <kendo-grid-column headerClass="!font-bold" title="List Name">
+    <ng-template kendoGridCellTemplate let-shortlist>
+      <p [isEllipsisActive]="true">
+        {{ shortlist.name }}
+      </p>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Description">
+    <ng-template kendoGridCellTemplate let-shortlist>
+      <p>
+        {{ shortlist.description }}
+      </p>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Companies">
+    <ng-template kendoGridCellTemplate let-shortlist>
+      <p>
+        {{ shortlist.companies }}
+      </p>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="In pipeline">
+    <ng-template kendoGridCellTemplate let-shortlist>
+      <p>
+        {{ shortlist.inPipeline }}
+      </p>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Contributors">
+    <ng-template kendoGridCellTemplate let-shortlist>
+      <ui-tags-container
+        [rows]="4"
+        [tags]="shortlist.contributors | toUserTag"
+        class="w-full"
+      />
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column headerClass="!font-bold" title="Last Updated">
+    <ng-template kendoGridCellTemplate let-shortlist>
+      <p>{{ shortlist.updatedAt | date: 'MMMM d, y' }}</p>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column [width]="100" title="">
+    <ng-template kendoGridCellTemplate let-shortlist>
+      <div class="flex justify-end gap-2">
+        <kendo-button
+          [uiClipboard]="getShortlistUrl(shortlist.id)"
+          iconClass="fa-solid fa-link"
+          themeColor="light"
+        />
+        <app-dropdownbutton-navigation [model]="shortlist.actionsModel" />
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>

@@ -1,1 +1,43 @@
-<p>client-shortlists-feature-table works!</p>
+<app-page-template pageIcon="fa-regular fa-star" pageName="Shortlists">
+  <div class="flex items-center gap-3" page-header-actions>
+    <app-text-box-navigation [model]="vm().queryModel" class="w-64" />
+    <kendo-button
+      [queryParams]="createShortlistQueryParams"
+      [routerLink]="['./']"
+      fillMode="flat"
+      iconClass="fa-solid fa-square-plus"
+      queryParamsHandling="merge"
+      size="large"
+      >Create New Shortlist</kendo-button
+    >
+    <!--      [skipLocationChange]="true"-->
+    <kendo-button
+      [queryParams]="addToShortlistQueryParams"
+      [routerLink]="['./']"
+      fillMode="flat"
+      iconClass="fa-solid fa-square-plus"
+      queryParamsHandling="merge"
+      size="large"
+      >add
+    </kendo-button>
+    <!--      [skipLocationChange]="true"-->
+  </div>
+  <div
+    class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
+    page-content
+  >
+    <app-quick-filters-template>
+      <div class="flex gap-6">
+        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation" />
+      </div>
+    </app-quick-filters-template>
+
+    <div class="flex-1 shrink-0 overflow-hidden">
+      <app-shortlist-table
+        (loadMore)="onLoadMore($event)"
+        [model]="vm().tableModel!"
+        class="block h-full"
+      />
+    </div>
+  </div>
+</app-page-template>

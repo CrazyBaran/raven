@@ -16,7 +16,7 @@ import {
   DialogSettings,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
-import { exhaustMap, filter, map, tap } from 'rxjs';
+import { exhaustMap, filter, map, of, tap } from 'rxjs';
 import { ShelfActions } from './actions/shelf.actions';
 import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
 
@@ -25,31 +25,29 @@ export class DialogQueryParams {
   public static readonly updateOpportunityStage = 'update-opportunity-stage';
   public static readonly passCompany = 'pass-company';
   public static readonly moveToOutreachCompany = 'move-to-outreach-company';
+
+  public static readonly updateShortlist = 'update-shortlist';
+  public static readonly createShortlist = 'create-shortlist';
+  public static readonly deleteShortlist = 'delete-shortlist';
+  public static readonly addToShortlist = 'add-to-shortlist';
 }
 
 export const dynamicDialogsConfig: Record<
   string,
-  {
-    settings?: Omit<DialogSettings, 'content'>;
-    template: Omit<ComponentTemplate, 'name'>;
-  }
+  | {
+      settings?: Omit<DialogSettings, 'content'>;
+      template: Omit<ComponentTemplate, 'name'>;
+    }
+  | ComponentTemplate['load']
 > = {
-  [DialogQueryParams.reopenOpportunity]: {
-    template: {
-      load: () =>
-        import('@app/client/opportunities/feature/update-dialog').then(
-          (m) => m.ReopenOpportunityDialogModule,
-        ),
-    },
-  },
-  [DialogQueryParams.updateOpportunityStage]: {
-    template: {
-      load: () =>
-        import('@app/client/opportunities/feature/update-dialog').then(
-          (m) => m.UpdateOpportunityStageModule,
-        ),
-    },
-  },
+  [DialogQueryParams.reopenOpportunity]: () =>
+    import('@app/client/opportunities/feature/update-dialog').then(
+      (m) => m.ReopenOpportunityDialogModule,
+    ),
+  [DialogQueryParams.updateOpportunityStage]: () =>
+    import('@app/client/opportunities/feature/update-dialog').then(
+      (m) => m.UpdateOpportunityStageModule,
+    ),
   [DialogQueryParams.passCompany]: {
     template: {
       load: () =>
@@ -61,14 +59,27 @@ export const dynamicDialogsConfig: Record<
       cssClass: 'raven-custom-dialog k-dialog-secondary',
     },
   },
-  [DialogQueryParams.moveToOutreachCompany]: {
-    template: {
-      load: () =>
-        import('@app/client/organisations/feature/dialogs').then(
-          (m) => m.MoveToOutreachCompanyDialogModule,
-        ),
-    },
-  },
+  [DialogQueryParams.moveToOutreachCompany]: () =>
+    import('@app/client/organisations/feature/dialogs').then(
+      (m) => m.MoveToOutreachCompanyDialogModule,
+    ),
+
+  [DialogQueryParams.updateShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.UpdateShortlistDialogModule,
+    ),
+  [DialogQueryParams.createShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.CreateShortlistDialogModule,
+    ),
+  [DialogQueryParams.deleteShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.DeleteShortlistDialogModule,
+    ),
+  [DialogQueryParams.addToShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.AddToShortlistDialogModule,
+    ),
 };
 
 @Injectable()
@@ -165,21 +176,38 @@ export class ShelfEffects {
           const dialog = Object.keys(params).find((key) =>
             Object.keys(dynamicDialogsConfig).includes(key),
           );
+          const settings = dialog ? dynamicDialogsConfig[dialog] : null;
+
+          if (typeof settings === 'function') {
+            return { dialog, template: { load: settings } };
+          }
+
           return dialog ? { dialog, ...dynamicDialogsConfig[dialog] } : null;
         }),
         filter((settings) => !!settings),
-        exhaustMap(
-          (config) =>
-            this.dynamicDialogService.openDynamicDialog({
-              width: 480,
-              maxHeight: '95vh',
-              cssClass: 'raven-custom-dialog',
-              ...config!.settings,
-              template: {
-                name: config!.dialog,
-                ...config!.template,
-              },
-            }).result,
+        exhaustMap((config) =>
+          !config
+            ? of([])
+            : 'settings' in config
+              ? this.dynamicDialogService.openDynamicDialog({
+                  width: 480,
+                  maxHeight: '95vh',
+                  cssClass: 'raven-custom-dialog',
+                  ...config!.settings,
+                  template: {
+                    name: config!.dialog,
+                    ...config!.template,
+                  },
+                }).result
+              : this.dynamicDialogService.openDynamicDialog({
+                  width: 480,
+                  maxHeight: '95vh',
+                  cssClass: 'raven-custom-dialog',
+                  template: {
+                    name: config!.dialog!,
+                    load: config.template!.load,
+                  },
+                }).result,
         ),
       );
     },

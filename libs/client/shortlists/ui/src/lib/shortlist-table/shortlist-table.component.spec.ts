@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ClientShortlistsUiComponent } from './client-shortlists-ui.component';
+import { ShortlistTableComponent } from './shortlist-table.component';
 
 describe('ClientShortlistsUiComponent', () => {
-  let component: ClientShortlistsUiComponent;
-  let fixture: ComponentFixture<ClientShortlistsUiComponent>;
+  let component: ShortlistTableComponent;
+  let fixture: ComponentFixture<ShortlistTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClientShortlistsUiComponent],
+      imports: [ShortlistTableComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ClientShortlistsUiComponent);
+    fixture = TestBed.createComponent(ShortlistTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,13 +1,17 @@
+import { NgClass, NgStyle } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   Input,
+  inject,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DropDownButtonModule } from '@progress/kendo-angular-buttons';
 
-export type DropdownAction =
+export type DropdownAction = {
+  actionStyle?: { [k: string]: string };
+  actionClass?: string;
+} & (
   | {
       text: string;
       click: () => void;
@@ -18,7 +22,8 @@ export type DropdownAction =
       queryParamsHandling?: 'merge' | 'preserve';
       queryParams?: { [k: string]: string };
       skipLocationChange?: boolean;
-    };
+    }
+);
 
 export type DropdownbuttonNavigationModel = {
   actions: DropdownAction[];
@@ -34,7 +39,7 @@ export const dropdownbuttonNavigationModelDefaults: Required<DropdownbuttonNavig
 @Component({
   selector: 'app-dropdownbutton-navigation',
   standalone: true,
-  imports: [DropDownButtonModule, RouterLink],
+  imports: [DropDownButtonModule, RouterLink, NgStyle, NgClass],
   templateUrl: './text-box-navigation.component.html',
   styleUrls: ['./text-box-navigation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

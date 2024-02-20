@@ -1,9 +1,10 @@
 import { Route } from '@angular/router';
+import { provideTagsFeature } from '@app/client/tags/state';
 
 export const SHORTLIST_ROUTES: Route[] = [
   {
     path: '',
-    providers: [],
+    providers: [provideTagsFeature()],
     children: [
       {
         path: '',

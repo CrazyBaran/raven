@@ -1,0 +1,18 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Create New Shortlist</span>
+</kendo-dialog-titlebar>
+
+<div class="min-h-[340px] p-10 pb-0">
+  <app-shortlist-form [form]="form" />
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="!form.valid"
+    themeColor="primary"
+  >
+    Create Shortlist
+  </kendo-button>
+</kendo-dialog-actions>
