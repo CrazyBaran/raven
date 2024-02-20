@@ -6,6 +6,7 @@ import {
   KanbanGroup,
   OpportunityCard,
 } from '@app/client/opportunities/ui';
+import { OpportunityUtils } from '@app/client/opportunities/utils';
 import {
   pipelinesQuery,
   selectAllPipelineStages,
@@ -173,14 +174,15 @@ function createCard(
 }
 
 function toKanbanFooterGroup(stage: PipelineStageData): KanbanFooterGroup {
+  const isWon = OpportunityUtils.isWonStage(stage);
   return {
     name: stage.displayName,
     id: stage.id,
     theme: stage.configuration!.color as 'warning' | 'success',
     droppableFrom: stage.configuration!.droppableFrom ?? [],
     //todo: implement when api ready
-    removeSwitch: false,
-    reminder: false,
+    removeSwitch: !isWon,
+    reminder: !isWon,
   };
 }
 
