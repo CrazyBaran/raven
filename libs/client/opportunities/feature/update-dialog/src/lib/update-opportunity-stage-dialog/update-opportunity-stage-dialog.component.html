@@ -3,7 +3,9 @@
 </kendo-dialog-titlebar>
 
 <div class="p-10">
-  <p>Please select the new status for the opportunity as listed below.</p>
+  <p class="text-center">
+    Please select the new status for the opportunity as listed below.
+  </p>
 
   <form
     class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10 pb-0"
@@ -47,22 +49,30 @@
       <kendo-formerror>Opportunity status is required</kendo-formerror>
     </kendo-formfield>
 
-    <div class="mt-4 flex flex-col gap-4" [class.invisible]="!showActions()">
-      <kendo-button
-        class="mx-auto w-fit"
-        themeColor="primary"
-        fillMode="outline"
-        iconClass="fa-solid fa-bell"
-        >Set a reminder</kendo-button
-      >
-      <div class="flex items-center justify-between">
-        <p>Remove company from all shortlists</p>
-        <kendo-switch>
-          <ng-template kendoSwitchOffLabel>Off</ng-template>
-          <ng-template kendoSwitchOnLabel>On</ng-template>
-        </kendo-switch>
+    @if (dialogConfig().actionInfo) {
+      <p class="mb-4 text-center">
+        {{ dialogConfig().actionInfo }}
+      </p>
+    }
+
+    @if (dialogConfig().actionButtons) {
+      <div class="mt-4 flex flex-col gap-4">
+        <kendo-button
+          class="mx-auto w-fit"
+          themeColor="primary"
+          fillMode="outline"
+          iconClass="fa-solid fa-bell"
+          >Set a reminder</kendo-button
+        >
+        <div class="flex items-center justify-between">
+          <p>Remove company from all shortlists</p>
+          <kendo-switch>
+            <ng-template kendoSwitchOffLabel>Off</ng-template>
+            <ng-template kendoSwitchOnLabel>On</ng-template>
+          </kendo-switch>
+        </div>
       </div>
-    </div>
+    }
   </form>
 </div>
 
@@ -71,11 +81,11 @@
   <kendo-button
     (click)="submit()"
     [disabled]="!formGroup.valid || vm().isCreating"
-    [themeColor]="submitButtonTheme()"
+    [themeColor]="dialogConfig().submitButtonTheme"
   >
     @if (vm().isCreating) {
       <kendo-loader class="!text-secondary-100 mr-1" size="small" />
     }
-    {{ submitButtonText() }}
+    {{ dialogConfig().submitButtonText }}
   </kendo-button>
 </kendo-dialog-actions>

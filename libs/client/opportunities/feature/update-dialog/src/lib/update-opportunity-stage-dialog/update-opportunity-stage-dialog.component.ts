@@ -35,6 +35,43 @@ import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { startWith, take } from 'rxjs';
 import { selectUpdateOpportunityStageViewModel } from './update-opportunity-stage-dialog.selectors';
 
+export type SelectedStageType = 'won' | 'lost' | 'pass' | 'other';
+
+export interface DialogStageConfig {
+  submitButtonText: string;
+  submitButtonTheme: 'primary' | 'secondary';
+  actionButtons?: boolean;
+  actionInfo?: string;
+}
+
+export const DIALOG_STAGE_CONFIG: Record<SelectedStageType, DialogStageConfig> =
+  {
+    won: {
+      submitButtonText: 'Mark status as Won/Portfolio',
+      submitButtonTheme: 'primary',
+      actionInfo:
+        'This will update the status of the opportunity to Won and remove it from the pipeline view. The company will then be marked as a portfolio company and removed from the shortlist.',
+    },
+    lost: {
+      submitButtonText: 'Mark status as Lost',
+      submitButtonTheme: 'secondary',
+      actionButtons: true,
+      actionInfo:
+        'This will update the status of the opportunity to lost and remove it from the pipeline view.',
+    },
+    pass: {
+      submitButtonText: 'Mark status as Passed',
+      submitButtonTheme: 'secondary',
+      actionButtons: true,
+      actionInfo:
+        'This will update the status of the opportunity to passed and remove it from the pipeline view.',
+    },
+    other: {
+      submitButtonText: 'Update Opportunity Status',
+      submitButtonTheme: 'primary',
+    },
+  };
+
 @Component({
   selector: 'app-update-dialog',
   standalone: true,
@@ -78,28 +115,16 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
     return this.vm().stages.data.find((s) => s.id === this.stageId());
   });
 
-  protected showActions = computed(() => {
-    return (
-      OpportunityUtils.isLostStage(this.stage()) ||
-      OpportunityUtils.isPassStage(this.stage())
-    );
-  });
-
-  protected submitButtonTheme = computed(() => {
-    return OpportunityUtils.isLostStage(this.stage()) ||
-      OpportunityUtils.isPassStage(this.stage())
-      ? 'secondary'
-      : 'primary';
-  });
-
-  protected submitButtonText = computed(() => {
-    return OpportunityUtils.isLostStage(this.stage())
-      ? 'Mark status as Lost'
+  protected dialogConfig = computed(() => {
+    const type = OpportunityUtils.isLostStage(this.stage())
+      ? 'lost'
       : OpportunityUtils.isPassStage(this.stage())
-        ? 'Mark status as Passed'
+        ? 'pass'
         : OpportunityUtils.isWonStage(this.stage())
-          ? 'Mark status as Won/Portfolio'
-          : 'Update Opportunity Status';
+          ? 'won'
+          : 'other';
+
+    return DIALOG_STAGE_CONFIG[type];
   });
 
   protected vm = this.store.selectSignal(selectUpdateOpportunityStageViewModel);
