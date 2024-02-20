@@ -1,5 +1,6 @@
-import type { Attributes, Span } from '@opentelemetry/api';
 import {
+  Attributes,
+  Span,
   SpanKind,
   SpanStatusCode,
   context,
@@ -35,6 +36,47 @@ export class Instrumentation extends InstrumentationBase {
     super('opentelemetry-instrumentation-bullmqpro', '5.1', config);
   }
 
+  private static setError = (span: Span, error: Error): Error => {
+    span.recordException(error);
+    span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+    return error;
+  };
+
+  private static attrMap(prefix: string, opts: JobsOptions): Attributes {
+    const attrs = flatten({ [prefix]: opts }) as Attributes;
+    for (const key in attrs) {
+      if (attrs[key] === undefined) delete attrs[key];
+    }
+
+    return attrs;
+  }
+
+  private static async withContext(
+    thisArg: any,
+    original: Function,
+    span: Span,
+    instrumentation: Instrumentation,
+    args: any[],
+  ): Promise<any> {
+    const parentContext = context.active();
+    const messageContext = trace.setSpan(parentContext, span);
+
+    return await context.with(messageContext, async () => {
+      try {
+        return await original.apply(thisArg, ...[args]);
+      } catch (e) {
+        throw Instrumentation.setError(span, e as Error);
+      } finally {
+        span.end();
+        instrumentation._diag.debug(
+          `END span ${span.spanContext().spanId} traceId ${
+            span.spanContext().traceId
+          }`,
+        );
+      }
+    });
+  }
+
   /**
    * Init method will be called when the plugin is constructed.
    * It returns an `InstrumentationNodeModuleDefinition` which describes
@@ -44,7 +86,7 @@ export class Instrumentation extends InstrumentationBase {
    */
   protected init(): InstrumentationNodeModuleDefinition<typeof bullmqpro> {
     return new InstrumentationNodeModuleDefinition<typeof bullmqpro>(
-      'bullmqpro',
+      '@taskforcesh/bullmq-pro',
       ['1.*', '2.*', '3.*', '4.*', '5.*', '6.*'],
       this._onPatchMain(),
       this._onUnPatchMain(),
@@ -53,12 +95,16 @@ export class Instrumentation extends InstrumentationBase {
 
   private _onPatchMain() {
     return (moduleExports: typeof bullmqpro): typeof bullmqpro => {
-      this._diag.debug('patching');
+      this._diag.debug('Patching');
 
       // As Spans
-      this._wrap(moduleExports.Queue.prototype, 'add', this._patchQueueAdd());
       this._wrap(
-        moduleExports.Queue.prototype,
+        moduleExports.QueuePro.prototype,
+        'add',
+        this._patchQueueAdd(),
+      );
+      this._wrap(
+        moduleExports.QueuePro.prototype,
         'addBulk',
         this._patchQueueAddBulk(),
       );
@@ -74,17 +120,17 @@ export class Instrumentation extends InstrumentationBase {
       );
       this._wrap(moduleExports.JobPro.prototype, 'addJob', this._patchAddJob());
 
-      // @ts-expect-error
       this._wrap(
         moduleExports.WorkerPro.prototype,
+        // @ts-expect-error This is protected method
         'callProcessJob',
         this._patchCallProcessJob(),
       );
-      this._wrap(
-        moduleExports.WorkerPro.prototype,
-        'run',
-        this._patchWorkerRun(),
-      );
+      // this._wrap(
+      //   moduleExports.WorkerPro.prototype,
+      //   'run',
+      //   this._patchWorkerRun(),
+      // );
 
       // As Events
       this._wrap(
@@ -103,19 +149,53 @@ export class Instrumentation extends InstrumentationBase {
     return (moduleExports: typeof bullmqpro): void => {
       this._diag.debug('un-patching');
 
-      this._unwrap(moduleExports.Queue.prototype, 'add');
-      this._unwrap(moduleExports.Queue.prototype, 'addBulk');
+      this._unwrap(moduleExports.QueuePro.prototype, 'add');
+      this._unwrap(moduleExports.QueuePro.prototype, 'addBulk');
       this._unwrap(moduleExports.FlowProducer.prototype, 'add');
       this._unwrap(moduleExports.FlowProducer.prototype, 'addBulk');
       this._unwrap(moduleExports.JobPro.prototype, 'addJob');
 
-      // @ts-expect-error
+      // @ts-expect-error This is protected method
       this._unwrap(moduleExports.WorkerPro.prototype, 'callProcessJob');
-      this._unwrap(moduleExports.WorkerPro.prototype, 'run');
+      // this._unwrap(moduleExports.WorkerPro.prototype, 'run');
 
       this._unwrap(moduleExports.JobPro.prototype, 'extendLock');
       this._unwrap(moduleExports.JobPro.prototype, 'remove');
       this._unwrap(moduleExports.JobPro.prototype, 'retry');
+    };
+  }
+
+  private _patchQueueAdd(): (original: Function) => (...args: any) => any {
+    const instrumentation = this;
+    const tracer = instrumentation.tracer;
+    const action = 'Queue.add';
+
+    return function add(original) {
+      return async function patch(this: Queue, ...args: any): Promise<Job> {
+        const [name] = [...args];
+        const spanName = `${this.name}.${name} ${action}`;
+        const span = tracer.startSpan(spanName, {
+          attributes: {
+            [SemanticAttributes.MESSAGING_SYSTEM]:
+              BullMQAttributes.MESSAGING_SYSTEM,
+            [SemanticAttributes.MESSAGING_DESTINATION]: this.name,
+            [BullMQAttributes.JOB_NAME]: name,
+          },
+          kind: SpanKind.INTERNAL,
+        });
+        instrumentation._diag.debug(
+          `START Queue.add span ${span.spanContext().spanId} traceId ${
+            span.spanContext().traceId
+          } spanName:${spanName}`,
+        );
+        return Instrumentation.withContext(
+          this,
+          original,
+          span,
+          instrumentation,
+          args,
+        );
+      };
     };
   }
 
@@ -153,7 +233,14 @@ export class Instrumentation extends InstrumentationBase {
         const parentContext = context.active();
         const messageContext = trace.setSpan(parentContext, span);
 
-        propagation.inject(messageContext, this.opts);
+        if (this.repeatJobKey === undefined) {
+          propagation.inject(messageContext, this.opts);
+        }
+        instrumentation._diag.debug(
+          `START Job.addJob span ${span.spanContext().spanId} traceId ${
+            span.spanContext().traceId
+          } spanName:${spanName}`,
+        );
         return await context.with(messageContext, async () => {
           try {
             return await original.apply(this, [client, parentOpts]);
@@ -168,31 +255,6 @@ export class Instrumentation extends InstrumentationBase {
             span.end();
           }
         });
-      };
-    };
-  }
-
-  private _patchQueueAdd(): (original: Function) => (...args: any) => any {
-    const instrumentation = this;
-    const tracer = instrumentation.tracer;
-    const action = 'Queue.add';
-
-    return function add(original) {
-      return async function patch(this: Queue, ...args: any): Promise<Job> {
-        const [name] = [...args];
-
-        const spanName = `${this.name}.${name} ${action}`;
-        const span = tracer.startSpan(spanName, {
-          attributes: {
-            [SemanticAttributes.MESSAGING_SYSTEM]:
-              BullMQAttributes.MESSAGING_SYSTEM,
-            [SemanticAttributes.MESSAGING_DESTINATION]: this.name,
-            [BullMQAttributes.JOB_NAME]: name,
-          },
-          kind: SpanKind.INTERNAL,
-        });
-
-        return Instrumentation.withContext(this, original, span, args);
       };
     };
   }
@@ -221,7 +283,13 @@ export class Instrumentation extends InstrumentationBase {
           kind: SpanKind.INTERNAL,
         });
 
-        return Instrumentation.withContext(this, original, span, args);
+        return Instrumentation.withContext(
+          this,
+          original,
+          span,
+          instrumentation,
+          args,
+        );
       };
     };
   }
@@ -250,7 +318,13 @@ export class Instrumentation extends InstrumentationBase {
           kind: SpanKind.INTERNAL,
         });
 
-        return Instrumentation.withContext(this, original, span, [flow, opts]);
+        return Instrumentation.withContext(
+          this,
+          original,
+          span,
+          instrumentation,
+          [flow, opts],
+        );
       };
     };
   }
@@ -276,7 +350,13 @@ export class Instrumentation extends InstrumentationBase {
           kind: SpanKind.INTERNAL,
         });
 
-        return Instrumentation.withContext(this, original, span, args);
+        return Instrumentation.withContext(
+          this,
+          original,
+          span,
+          instrumentation,
+          args,
+        );
       };
     };
   }
@@ -295,8 +375,10 @@ export class Instrumentation extends InstrumentationBase {
       ) {
         const workerName = this.name ?? 'anonymous';
         const currentContext = context.active();
-        const parentContext = propagation.extract(currentContext, job.opts);
-
+        let parentContext = currentContext;
+        if (job.repeatJobKey === undefined) {
+          parentContext = propagation.extract(currentContext, job.opts);
+        }
         const spanName = `${job.queueName}.${job.name} Worker.${workerName} #${job.attemptsMade}`;
         const span = tracer.startSpan(
           spanName,
@@ -315,13 +397,21 @@ export class Instrumentation extends InstrumentationBase {
               [BullMQAttributes.QUEUE_NAME]: job.queueName,
               [BullMQAttributes.WORKER_NAME]: workerName,
             },
-            kind: SpanKind.CONSUMER,
+            kind:
+              job.repeatJobKey === undefined
+                ? SpanKind.CONSUMER
+                : SpanKind.INTERNAL,
           },
           parentContext,
         );
         if (job.repeatJobKey)
           span.setAttribute(BullMQAttributes.JOB_REPEAT_KEY, job.repeatJobKey);
         const messageContext = trace.setSpan(parentContext, span);
+        instrumentation._diag.debug(
+          `START Worker.callProcessJob span ${
+            span.spanContext().spanId
+          } traceId ${span.spanContext().traceId} spanName:${spanName}`,
+        );
 
         return await context.with(messageContext, async () => {
           try {
@@ -347,6 +437,11 @@ export class Instrumentation extends InstrumentationBase {
               );
 
             span.end();
+            instrumentation._diag.debug(
+              `END Worker.callProcessJob span ${
+                span.spanContext().spanId
+              } traceId ${span.spanContext().traceId}`,
+            );
           }
         });
       };
@@ -383,7 +478,18 @@ export class Instrumentation extends InstrumentationBase {
           kind: SpanKind.INTERNAL,
         });
 
-        return Instrumentation.withContext(this, original, span, args);
+        instrumentation._diag.debug(
+          `START _patchWorkerRun span ${span.spanContext().spanId}  traceId ${
+            span.spanContext().traceId
+          }`,
+        );
+        return Instrumentation.withContext(
+          this,
+          original,
+          span,
+          instrumentation,
+          args,
+        );
       };
     };
   }
@@ -437,40 +543,5 @@ export class Instrumentation extends InstrumentationBase {
         return original.apply(this, args);
       };
     };
-  }
-
-  private static setError = (span: Span, error: Error) => {
-    span.recordException(error);
-    span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-    return error;
-  };
-
-  private static attrMap(prefix: string, opts: JobsOptions): Attributes {
-    const attrs = flatten({ [prefix]: opts }) as Attributes;
-    for (const key in attrs) {
-      if (attrs[key] === undefined) delete attrs[key];
-    }
-
-    return attrs;
-  }
-
-  private static async withContext(
-    thisArg: any,
-    original: Function,
-    span: Span,
-    args: any[],
-  ): Promise<any> {
-    const parentContext = context.active();
-    const messageContext = trace.setSpan(parentContext, span);
-
-    return await context.with(messageContext, async () => {
-      try {
-        return await original.apply(thisArg, ...[args]);
-      } catch (e) {
-        throw Instrumentation.setError(span, e as Error);
-      } finally {
-        span.end();
-      }
-    });
   }
 }

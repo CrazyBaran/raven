@@ -2,19 +2,11 @@ import * as env from 'env-var';
 import { AzureMonitorOpenTelemetryOptions, useAzureMonitor } from '@azure/monitor-opentelemetry';
 import { Resource } from "@opentelemetry/resources";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
-import { registerInstrumentations } from "@opentelemetry/instrumentation";
-import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis";
-import { TypeormInstrumentation } from "opentelemetry-instrumentation-typeorm";
-import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
-import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
-import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core";
-import { BullMQProInstrumentation } from 'opentelemetry-instrumentation-bullmqpro';
 
 
 const customResource = new Resource({
-  [SemanticResourceAttributes.SERVICE_NAME]: "jakub-test-service-name",
-  [SemanticResourceAttributes.SERVICE_NAMESPACE]: "jakub-test-namespace",
-  [SemanticResourceAttributes.SERVICE_INSTANCE_ID]: "jakub-test-instance",
+  [SemanticResourceAttributes.SERVICE_NAME]: "as-wa-mc-raven-dev",
+  [SemanticResourceAttributes.SERVICE_INSTANCE_ID]: "jakub-local-dev",
 });
 
 // Create a new AzureMonitorOpenTelemetryOptions object.
@@ -29,8 +21,23 @@ const options: AzureMonitorOpenTelemetryOptions = {
   samplingRatio: 1,
 };
 
+const { diag, DiagConsoleLogger, DiagLogLevel } = require("@opentelemetry/api");
+
+
+
+
+
 // Enable Azure Monitor integration using the useAzureMonitor function and the AzureMonitorOpenTelemetryOptions object.
 useAzureMonitor(options);
+
+import { registerInstrumentations } from "@opentelemetry/instrumentation";
+import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis";
+import { TypeormInstrumentation } from "opentelemetry-instrumentation-typeorm";
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core";
+import { BullMQProInstrumentation } from 'opentelemetry-instrumentation-bullmqpro';
+
 
 registerInstrumentations({
   // List of instrumentations to register
@@ -38,11 +45,13 @@ registerInstrumentations({
     new HttpInstrumentation(),
     new ExpressInstrumentation(),
     new NestInstrumentation(),
-    //new IORedisInstrumentation(), // for ioredis instrumentation
+    new IORedisInstrumentation(), // for ioredis instrumentation
     new TypeormInstrumentation(), // for typeorm instrumentation
     new BullMQProInstrumentation(),
   ],
 });
+
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 import "reflect-metadata";
 import "isomorphic-fetch";

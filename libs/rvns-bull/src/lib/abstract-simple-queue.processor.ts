@@ -14,7 +14,9 @@ export abstract class AbstractSimpleQueueProcessor<JobData> extends WorkerHost {
   public async onStart(job: Job<JobData>): Promise<void> {
     const message = `Queue [${job.name}][${
       job.id
-    }] started, payload: "${JSON.stringify(job.data)}"`;
+    }] started, payload: "${JSON.stringify(job.data)}"  "${JSON.stringify(
+      job.repeatJobKey,
+    )}"`;
     if (this.logStart) {
       this.logger.log(message);
     } else {
