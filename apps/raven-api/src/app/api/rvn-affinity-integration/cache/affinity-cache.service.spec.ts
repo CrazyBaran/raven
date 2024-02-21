@@ -73,6 +73,7 @@ describe('AffinityCacheService', () => {
           exists: jest.fn((redisKey) => redisKey === AFFINITY_CACHE),
           del: jest.fn(),
           hkeys: jest.fn(),
+          hset: jest.fn(),
         },
       },
     };
@@ -95,20 +96,14 @@ describe('AffinityCacheService', () => {
   });
 
   it('should add or replace many', async () => {
-    const pipeline = mockCacheManager.store.client.pipeline;
+    const client = mockCacheManager.store.client;
 
     await service.addOrReplaceMany(organisationStageDtos);
-    expect(pipeline().hset).toHaveBeenCalledTimes(2);
-    expect(pipeline().hset).toHaveBeenCalledWith(
-      AFFINITY_CACHE,
-      'first-test.com',
-      JSON.stringify(organisationStageDtos[0]),
-    );
-    expect(pipeline().hset).toHaveBeenCalledWith(
-      AFFINITY_CACHE,
-      'test.com,test.co.uk',
-      JSON.stringify(organisationStageDtos[1]),
-    );
+    expect(client.hset).toHaveBeenCalledTimes(1);
+    expect(client.hset).toHaveBeenCalledWith(AFFINITY_CACHE, {
+      'first-test.com': JSON.stringify(organisationStageDtos[0]),
+      'test.com,test.co.uk': JSON.stringify(organisationStageDtos[1]),
+    });
   });
 
   it('should get all', async () => {

@@ -1,5 +1,6 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
+import * as oTel from '@opentelemetry/api';
 import { Cache } from 'cache-manager';
 import { RedisStore } from 'cache-manager-ioredis-yet';
 import { AFFINITY_CACHE, AFFINITY_FIELDS_CACHE } from '../affinity.const';
@@ -19,15 +20,28 @@ export class AffinityCacheService {
   public async addOrReplaceMany(
     organisations: OrganizationStageDto[],
   ): Promise<void> {
-    const pipeline = this.store.client.pipeline();
-    for (const organisation of organisations) {
-      pipeline.hset(
-        AFFINITY_CACHE,
-        organisation.organizationDto.domains.join(',').toString(),
-        JSON.stringify(organisation),
-      );
-    }
-    await pipeline.exec();
+    await oTel.trace.getTracer(AFFINITY_CACHE).startActiveSpan(
+      'AffinityCacheService.addOrReplaceMany',
+      {
+        attributes: {
+          'rvn.cache.itemsToAddOrReplaceCount': organisations.length,
+        },
+        kind: oTel.SpanKind.INTERNAL,
+      },
+      async (span: oTel.Span) => {
+        await this.store.client.hset(
+          AFFINITY_CACHE,
+          organisations.reduce((obj, organisation) => {
+            return {
+              ...obj,
+              [organisation.organizationDto.domains.join(',')]:
+                JSON.stringify(organisation),
+            };
+          }, {}),
+        );
+        span.end();
+      },
+    );
   }
 
   public async getAll(

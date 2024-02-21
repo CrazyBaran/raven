@@ -1,3 +1,4 @@
+import "./tracing";
 import "reflect-metadata";
 import "isomorphic-fetch";
 import helmet from "helmet";

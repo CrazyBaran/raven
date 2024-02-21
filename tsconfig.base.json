@@ -228,7 +228,9 @@
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"],
       "@app/rvns-shortlists": ["libs/rvns-shortlists/src/index.ts"],
       "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
-
+      "opentelemetry-instrumentation-bullmqpro": [
+        "libs/shared/opentelemetry-instrumentation-bullmqpro/src/index.ts"
+      ],
       "rvns-shared": ["libs/rvns-shared/src/index.ts"]
     }
   },

@@ -1,0 +1,25 @@
+{
+  "name": "opentelemetry-instrumentation-bullmqpro",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/opentelemetry-instrumentation-bullmqpro/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/opentelemetry-instrumentation-bullmqpro/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/shared/opentelemetry-instrumentation-bullmqpro/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
