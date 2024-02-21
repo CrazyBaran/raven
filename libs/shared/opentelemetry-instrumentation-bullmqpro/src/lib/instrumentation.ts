@@ -209,7 +209,12 @@ export class Instrumentation extends InstrumentationBase {
     this._wrap(obj, methodName, wrapper);
   }
 
-  private createQueueAddWrapper(tracer: Tracer, diag: DiagLogger) {
+  private createQueueAddWrapper(
+    tracer: Tracer,
+    diag: DiagLogger,
+  ): (
+    original: typeof QueuePro.prototype.add,
+  ) => typeof QueuePro.prototype.add {
     diag.debug('Applying patch for Queue.add');
     return function wrapQueueAdd(original: typeof QueuePro.prototype.add) {
       return async function createWithTrace(

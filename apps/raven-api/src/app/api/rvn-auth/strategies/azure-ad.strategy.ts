@@ -53,12 +53,12 @@ export class AzureADStrategy extends PassportStrategy(
     this.cls.set('accessToken', req.headers['authorization'].split(' ')[1]);
 
     const activeSpan = oTel.trace.getActiveSpan();
-    activeSpan.addEvent('user-logged-in');
-    activeSpan.setAttribute(
+    activeSpan?.addEvent('user-logged-in');
+    activeSpan?.setAttribute(
       'rvn.user.name',
       response[environment.azureAd.tokenKeys.name],
     );
-    activeSpan.setAttribute(
+    activeSpan?.setAttribute(
       'rvn.user.email',
       response[environment.azureAd.tokenKeys.email],
     );
