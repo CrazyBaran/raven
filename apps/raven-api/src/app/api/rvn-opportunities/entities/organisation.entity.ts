@@ -5,11 +5,13 @@ import {
   Column,
   Entity,
   Index,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   ValueTransformer,
 } from 'typeorm';
 import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
+import { ShortlistEntity } from '../../rvn-shortlists/entities/shortlist.entity';
 import { OpportunityEntity } from './opportunity.entity';
 import { OrganisationDomainEntity } from './organisation-domain.entity';
 
@@ -58,6 +60,13 @@ export class OrganisationEntity implements SharepointEnabledEntity {
     length: '30',
   })
   public companyStatusOverride: CompanyStatus | null;
+
+  @ManyToMany(() => ShortlistEntity, (shortlist) => shortlist.organisations, {
+    cascade: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  public shortlists?: ShortlistEntity[];
 
   public domains: string[];
   @AfterInsert()

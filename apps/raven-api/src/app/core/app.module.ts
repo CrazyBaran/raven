@@ -31,6 +31,7 @@ import { NotesModule } from '../api/rvn-notes/notes.module';
 import { OnBehalfOfModule } from '../api/rvn-on-behalf-of/on-behalf-of.module';
 import { OpportunitiesModule } from '../api/rvn-opportunities/opportunities.module';
 import { PipelineModule } from '../api/rvn-pipeline/pipeline.module';
+import { ShortlistsModule } from '../api/rvn-shortlists/shortlists.module';
 import { StaticDataModule } from '../api/rvn-static-data/static-data.module';
 import { StorageAccountModule } from '../api/rvn-storage-account/storage-account.module';
 import { TagsModule } from '../api/rvn-tags/tags.module';
@@ -96,6 +97,7 @@ import { TransformInterceptor } from './transform.interceptor';
     FilesModule,
     StaticDataModule,
     ScheduleModule.forRoot(),
+    ShortlistsModule,
   ],
   providers: [
     // core
