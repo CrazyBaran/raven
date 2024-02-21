@@ -209,17 +209,7 @@ export class Instrumentation extends InstrumentationBase {
     this._wrap(obj, methodName, wrapper);
   }
 
-  private createQueueAddWrapper(
-    tracer: Tracer,
-    diag: DiagLogger,
-  ): (
-    original: typeof QueuePro.prototype.add,
-  ) => (
-    this: typeof QueuePro,
-    name: string,
-    data: unknown,
-    opts?: JobsProOptions,
-  ) => Promise<bullmqpro.JobPro> {
+  private createQueueAddWrapper(tracer: Tracer, diag: DiagLogger) {
     diag.debug('Applying patch for Queue.add');
     return function wrapQueueAdd(original: typeof QueuePro.prototype.add) {
       return async function createWithTrace(
