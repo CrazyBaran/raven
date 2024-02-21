@@ -1,8 +1,11 @@
+import * as oTel from '@opentelemetry/api';
 import {
   Attributes,
+  DiagLogger,
   Span,
   SpanKind,
   SpanStatusCode,
+  Tracer,
   context,
   propagation,
   trace,
@@ -11,6 +14,7 @@ import {
   InstrumentationBase,
   InstrumentationConfig,
   InstrumentationNodeModuleDefinition,
+  isWrapped,
 } from '@opentelemetry/instrumentation';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 import type * as bullmqpro from '@taskforcesh/bullmq-pro';
@@ -22,21 +26,22 @@ import type {
   JobNode,
   JobsOptions,
   ParentOpts,
-  Queue,
   Worker,
 } from 'bullmq';
 import { flatten } from 'flat';
 
+import { JobsProOptions, QueuePro } from '@taskforcesh/bullmq-pro';
 import { BullMQAttributes } from './attributes';
 
 declare type Fn = (...args: any[]) => any;
 
 export class Instrumentation extends InstrumentationBase {
+  static readonly COMPONENT = '@taskforcesh/bullmq-pro';
   public constructor(config: InstrumentationConfig = {}) {
     super('opentelemetry-instrumentation-bullmqpro', '5.1', config);
   }
 
-  private static setError = (span: Span, error: Error): Error => {
+  private static addError = (span: Span, error: Error): Error => {
     span.recordException(error);
     span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
     return error;
@@ -49,6 +54,30 @@ export class Instrumentation extends InstrumentationBase {
     }
 
     return attrs;
+  }
+
+  private static applyWithContext<ReturnType>(
+    thisArg: unknown,
+    original: (...args: unknown[]) => Promise<ReturnType>,
+    originalArgsArray: unknown[],
+    span: Span,
+    diag: DiagLogger,
+  ): Promise<ReturnType> {
+    const spanContext = oTel.trace.setSpan(oTel.context.active(), span);
+    return oTel.context.with(spanContext, async () => {
+      try {
+        return await original.apply(thisArg, originalArgsArray);
+      } catch (e: unknown) {
+        throw Instrumentation.addError(span, e as Error);
+      } finally {
+        span.end();
+        diag.debug(
+          `END span ${span.spanContext().spanId} traceId ${
+            span.spanContext().traceId
+          }`,
+        );
+      }
+    });
   }
 
   private static async withContext(
@@ -65,7 +94,7 @@ export class Instrumentation extends InstrumentationBase {
       try {
         return await original.apply(thisArg, ...[args]);
       } catch (e) {
-        throw Instrumentation.setError(span, e as Error);
+        throw Instrumentation.addError(span, e as Error);
       } finally {
         span.end();
         instrumentation._diag.debug(
@@ -98,11 +127,12 @@ export class Instrumentation extends InstrumentationBase {
       this._diag.debug('Patching');
 
       // As Spans
-      this._wrap(
+      this.ensureWrapped(
         moduleExports.QueuePro.prototype,
         'add',
-        this._patchQueueAdd(),
+        this.createQueueAddWrapper(this.tracer, this._diag),
       );
+
       this._wrap(
         moduleExports.QueuePro.prototype,
         'addBulk',
@@ -165,15 +195,40 @@ export class Instrumentation extends InstrumentationBase {
     };
   }
 
-  private _patchQueueAdd(): (original: Function) => (...args: any) => any {
-    const instrumentation = this;
-    const tracer = instrumentation.tracer;
-    const action = 'Queue.add';
+  private ensureWrapped<Nodule extends object, MethodName extends keyof Nodule>(
+    obj: Nodule,
+    methodName: MethodName,
+    wrapper: (original: Nodule[MethodName]) => Nodule[MethodName],
+  ): void {
+    this._diag.debug(
+      `Applying ${String(methodName)} patch for ${Instrumentation.COMPONENT}`,
+    );
+    if (isWrapped(obj[methodName])) {
+      this._unwrap(obj, methodName);
+    }
+    this._wrap(obj, methodName, wrapper);
+  }
 
-    return function add(original) {
-      return async function patch(this: Queue, ...args: any): Promise<Job> {
-        const [name] = [...args];
-        const spanName = `${this.name}.${name} ${action}`;
+  private createQueueAddWrapper(
+    tracer: Tracer,
+    diag: DiagLogger,
+  ): (
+    original: typeof QueuePro.prototype.add,
+  ) => (
+    this: typeof QueuePro,
+    name: string,
+    data: unknown,
+    opts?: JobsProOptions,
+  ) => Promise<bullmqpro.JobPro> {
+    diag.debug('Applying patch for Queue.add');
+    return function wrapQueueAdd(original: typeof QueuePro.prototype.add) {
+      return async function createWithTrace(
+        this: typeof QueuePro<unknown, unknown, string>,
+        name: string,
+        data: unknown,
+        opts?: JobsProOptions,
+      ): Promise<bullmqpro.JobPro> {
+        const spanName = `${this.name}.${name} 'Queue.add'`;
         const span = tracer.startSpan(spanName, {
           attributes: {
             [SemanticAttributes.MESSAGING_SYSTEM]:
@@ -183,17 +238,19 @@ export class Instrumentation extends InstrumentationBase {
           },
           kind: SpanKind.INTERNAL,
         });
-        instrumentation._diag.debug(
+
+        diag.debug(
           `START Queue.add span ${span.spanContext().spanId} traceId ${
             span.spanContext().traceId
           } spanName:${spanName}`,
         );
-        return Instrumentation.withContext(
+
+        return await Instrumentation.applyWithContext(
           this,
           original,
+          [name, data, opts],
           span,
-          instrumentation,
-          args,
+          diag,
         );
       };
     };
@@ -245,7 +302,7 @@ export class Instrumentation extends InstrumentationBase {
           try {
             return await original.apply(this, [client, parentOpts]);
           } catch (e) {
-            throw Instrumentation.setError(span, e as Error);
+            throw Instrumentation.addError(span, e as Error);
           } finally {
             span.setAttribute(
               SemanticAttributes.MESSAGE_ID,
@@ -418,7 +475,7 @@ export class Instrumentation extends InstrumentationBase {
             const result = await original.apply(this, [job, ...rest]);
             return result;
           } catch (e) {
-            throw Instrumentation.setError(span, e as Error);
+            throw Instrumentation.addError(span, e as Error);
           } finally {
             if (job.finishedOn)
               span.setAttribute(
