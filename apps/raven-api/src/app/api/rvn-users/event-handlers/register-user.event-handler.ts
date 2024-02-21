@@ -13,11 +13,15 @@ export class RegisterUserEventHandler {
 
   @OnEvent('user-register')
   protected async process(event: UserRegisterEvent): Promise<void> {
-    const user = await this.usersService.create(event.email, {
-      azureId: event.azureId,
-      name: event.name,
-      team: null,
-    });
+    let user = await this.usersService.getByEmail(event.email);
+    if (user === null) {
+      user = await this.usersService.create(event.email, {
+        azureId: event.azureId,
+        name: event.name,
+        team: null,
+      });
+    }
+
     await this.usersCacheService.addOrReplace(user);
   }
 }
