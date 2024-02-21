@@ -1,6 +1,7 @@
 import { AbstractSimpleQueueProcessor } from '@app/rvns-bull';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject } from '@nestjs/common';
+import * as oTel from '@opentelemetry/api';
 import * as openTelemetry from '@opentelemetry/api';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
@@ -36,35 +37,34 @@ export class AffinityDataWatchdogProcessor extends AbstractSimpleQueueProcessor<
   }
 
   public async process(job: JobPro): Promise<boolean> {
-    const span = openTelemetry.trace
-      .getTracer(AFFINITY_DATA_WATCHDOG_QUEUE)
-      .startSpan('affinity-data-watchdog-processor.process', {
-        kind: openTelemetry.SpanKind.SERVER,
-      });
-    const ctx = openTelemetry.trace.setSpan(
-      openTelemetry.context.active(),
-      span,
-    );
-    await openTelemetry.context.with(ctx, async () => {
-      try {
-        const listFieldsCount = await this.store.client.hlen(
-          AFFINITY_FIELDS_CACHE,
-        );
-        const affinityCacheCount = await this.store.client.hlen(AFFINITY_CACHE);
-        if (listFieldsCount === 0 || affinityCacheCount === 0) {
-          this.logger.warn(
-            'Affinity data watchdog didnt find any data. Regenerating data.',
+    await oTel.trace.getTracer(AFFINITY_DATA_WATCHDOG_QUEUE).startActiveSpan(
+      'affinity-data-watchdog-processor.process',
+      {
+        kind: oTel.SpanKind.SERVER,
+      },
+      async (span: oTel.Span) => {
+        try {
+          const listFieldsCount = await this.store.client.hlen(
+            AFFINITY_FIELDS_CACHE,
           );
-          await this.affinityProducer.enqueueRegenerateAffinityData();
+          const affinityCacheCount =
+            await this.store.client.hlen(AFFINITY_CACHE);
+          if (listFieldsCount === 0 || affinityCacheCount === 0) {
+            const message =
+              'Affinity data watchdog didnt find any data. Regenerating data.';
+            this.logger.warn(message);
+            span.addEvent(message);
+            await this.affinityProducer.enqueueRegenerateAffinityData();
+          }
+          span.setStatus({ code: openTelemetry.SpanStatusCode.OK });
+        } catch (e: unknown) {
+          span.recordException(e as Error);
+          throw e;
+        } finally {
+          span.end();
         }
-        span.setStatus({ code: openTelemetry.SpanStatusCode.OK });
-      } catch (e: unknown) {
-        span.recordException(e as Error);
-        throw e;
-      } finally {
-        span.end();
-      }
-    });
+      },
+    );
 
     return true;
   }
