@@ -97,14 +97,11 @@ export class OpportunitiesService {
   public reopenOpportunity(
     opportunityId: string,
   ): Observable<GenericResponse<OpportunityData>> {
-    // First, get the opportunity details
     return this.getOpportunityDetails(opportunityId).pipe(
       switchMap((opportunityDetailsResponse) => {
-        // Check if the response contains data and previousPipelineStage ID
         const previousPipelineStageId =
           opportunityDetailsResponse.data?.previousPipelineStageId;
 
-        // Now, patch the opportunity with the previousPipelineStage ID
         return this.patchOpportunity(opportunityId, {
           pipelineStageId: previousPipelineStageId,
         });
