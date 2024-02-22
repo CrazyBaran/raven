@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Pipe, PipeTransform } from '@angular/core';
 
-const suffixes = ['k', 'M', 'G', 'T', 'P', 'E'];
+const suffixes = ['k', 'm', 'bn', 'tn'];
 
 export const toThousands = (input: number, digits = 0): number | string => {
   const exp = Math.floor(Math.log(input) / Math.log(1000));
