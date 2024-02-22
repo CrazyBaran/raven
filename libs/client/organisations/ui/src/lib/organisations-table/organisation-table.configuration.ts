@@ -137,7 +137,7 @@ export const organisationTableConfiguration: TableColumn[] = [
     field: 'funding.lastFundingRound',
     type: 'string',
     filter: 'string',
-    sortable: true,
+    sortable: false,
   },
   {
     componentPath: () =>
