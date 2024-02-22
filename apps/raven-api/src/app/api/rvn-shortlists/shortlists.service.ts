@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CompanyStatus, PagedData } from 'rvns-shared';
-import { In, Repository } from 'typeorm';
+import { CompanyStatus, PagedDataWithExtras, ShortlistType } from 'rvns-shared';
+import { In, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { BulkAddOrganisationsDto } from './dto/bulk-add-organisations.dto';
@@ -17,6 +17,7 @@ interface CreateShortlistOptions {
   name: string;
   description?: string;
   organisations?: string[];
+  type?: ShortlistType;
 }
 
 interface UpdateShortlistOptions {
@@ -44,27 +45,19 @@ export class ShortlistsService {
 
   public async findAll(
     options: GetShortlistsOptions,
-  ): Promise<PagedData<ShortlistEntity>> {
+    userEntity?: UserEntity,
+  ): Promise<PagedDataWithExtras<ShortlistEntity>> {
+    const extras = await this.getShortlistsExtras(userEntity);
+
     const queryBuilder =
       this.shortlistRepository.createQueryBuilder('shortlists');
 
-    queryBuilder.leftJoinAndSelect('shortlists.organisations', 'organisations');
-    queryBuilder.loadRelationCountAndMap(
-      'shortlists.organisationsCount',
-      'shortlists.organisations',
-    );
-    queryBuilder.loadRelationCountAndMap(
-      'shortlists.inPipelineCount',
-      'shortlists.organisations',
-      'organisation',
-      (qb) =>
-        qb
-          .leftJoin('organisation.opportunities', 'opportunities')
-          .leftJoin('opportunities.pipelineStage', 'pipelineStage')
-          .andWhere('pipelineStage.relatedCompanyStatus IN (:...statuses)', {
-            statuses: this.inPipelineStatuses,
-          }),
-    );
+    if (extras.length) {
+      queryBuilder.where({
+        id: Not(In(extras.map((excludedList) => excludedList.id))),
+      });
+    }
+    this.addStatsQuery(queryBuilder);
 
     const searchString = options.query
       ? `%${options.query.toLowerCase()}%`
@@ -96,7 +89,8 @@ export class ShortlistsService {
     return {
       items: shortlists,
       total: count,
-    } as PagedData<ShortlistEntity>;
+      extras,
+    } as PagedDataWithExtras<ShortlistEntity>;
   }
 
   public async findOne(id: string): Promise<ShortlistEntity> {
@@ -105,23 +99,7 @@ export class ShortlistsService {
 
     queryBuilder.where({ id });
     queryBuilder.limit(1);
-    queryBuilder.leftJoinAndSelect('shortlists.organisations', 'organisations');
-    queryBuilder.loadRelationCountAndMap(
-      'shortlists.organisationsCount',
-      'shortlists.organisations',
-    );
-    queryBuilder.loadRelationCountAndMap(
-      'shortlists.inPipelineCount',
-      'shortlists.organisations',
-      'organisation',
-      (qb) =>
-        qb
-          .leftJoin('organisation.opportunities', 'opportunities')
-          .leftJoin('opportunities.pipelineStage', 'pipelineStage')
-          .andWhere('pipelineStage.relatedCompanyStatus IN (:...statuses)', {
-            statuses: this.inPipelineStatuses,
-          }),
-    );
+    this.addStatsQuery(queryBuilder);
 
     return queryBuilder.getOne();
   }
@@ -144,6 +122,10 @@ export class ShortlistsService {
 
       const organisations = await queryBuilder.getMany();
       shortlist.organisations = organisations;
+    }
+
+    if (options.type) {
+      shortlist.type = options.type;
     }
 
     return await this.shortlistRepository.save(shortlist);
@@ -246,5 +228,74 @@ export class ShortlistsService {
       },
       relations: ['organisations'],
     });
+  }
+
+  public async createPersonalShortlistForUser(
+    userId: string,
+    name: string,
+  ): Promise<ShortlistEntity> {
+    const userData = new UserEntity();
+    userData.id = userId;
+
+    return await this.create(
+      {
+        name: `${name} Personal Shortlist`,
+        description: `Personal shortlist of user ${name}`,
+        type: ShortlistType.PERSONAL,
+      },
+      userData,
+    );
+  }
+
+  public async getUserPersonalShortlist(
+    userId: string,
+  ): Promise<ShortlistEntity> {
+    const queryBuilder =
+      this.shortlistRepository.createQueryBuilder('shortlists');
+
+    queryBuilder.where({ creatorId: userId, type: ShortlistType.PERSONAL });
+    queryBuilder.limit(1);
+    this.addStatsQuery(queryBuilder);
+
+    return queryBuilder.getOne();
+  }
+
+  private addStatsQuery(
+    queryBuilder: SelectQueryBuilder<ShortlistEntity>,
+  ): SelectQueryBuilder<ShortlistEntity> {
+    queryBuilder.leftJoinAndSelect('shortlists.organisations', 'organisations');
+    queryBuilder.loadRelationCountAndMap(
+      'shortlists.organisationsCount',
+      'shortlists.organisations',
+    );
+    queryBuilder.loadRelationCountAndMap(
+      'shortlists.inPipelineCount',
+      'shortlists.organisations',
+      'organisation',
+      (qb) =>
+        qb
+          .leftJoin('organisation.opportunities', 'opportunities')
+          .leftJoin('opportunities.pipelineStage', 'pipelineStage')
+          .andWhere('pipelineStage.relatedCompanyStatus IN (:...statuses)', {
+            statuses: this.inPipelineStatuses,
+          }),
+    );
+
+    return queryBuilder;
+  }
+
+  private async getShortlistsExtras(
+    userEntity?: UserEntity,
+  ): Promise<ShortlistEntity[]> {
+    const extras = [];
+    if (userEntity?.id) {
+      const personalShortlist = await this.getUserPersonalShortlist(
+        userEntity.id,
+      );
+
+      !!personalShortlist && extras.push(personalShortlist);
+    }
+
+    return extras;
   }
 }

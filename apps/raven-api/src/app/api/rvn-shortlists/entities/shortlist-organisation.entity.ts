@@ -3,6 +3,7 @@ import {
   AfterInsert,
   AfterLoad,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
@@ -13,9 +14,11 @@ import { ShortlistEntity } from './shortlist.entity';
 @Entity('shortlist_organisation')
 export class ShortlistOrganisationEntity {
   @PrimaryColumn({ name: 'shortlist_id' })
+  @Index()
   public shortlistId: string;
 
   @PrimaryColumn({ name: 'organisation_id' })
+  @Index()
   public organisationId: string;
 
   @ManyToOne(() => ShortlistEntity, (shortlist) => shortlist.organisations, {

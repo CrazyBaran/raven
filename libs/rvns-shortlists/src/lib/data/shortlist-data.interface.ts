@@ -1,6 +1,8 @@
-import { PagedData, ShortlistType } from 'rvns-shared';
+import { PagedData, PagedDataWithExtras, ShortlistType } from 'rvns-shared';
 
 export interface PagedShortlistData extends PagedData<ShortlistData> {}
+export interface PagedShortlistDataWithExtras
+  extends PagedDataWithExtras<ShortlistData> {}
 
 export interface ShortlistStats {
   organisationsCount: number;

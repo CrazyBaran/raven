@@ -1,12 +1,13 @@
 import { OrganisationData } from '@app/rvns-opportunities';
 import {
   PagedShortlistData,
+  PagedShortlistDataWithExtras,
   ShortlistData,
   ShortlistStats,
 } from '@app/rvns-shortlists';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, plainToInstance } from 'class-transformer';
-import { PagedData, ShortlistType } from 'rvns-shared';
+import { PagedData, PagedDataWithExtras, ShortlistType } from 'rvns-shared';
 import { ShortlistEntity } from './entities/shortlist.entity';
 
 export class ShortlistRO implements ShortlistData {
@@ -75,5 +76,12 @@ export class PagedShortlistRO implements PagedData<ShortlistRO> {
   ): PagedShortlistData => ({
     total: pagedData.total,
     items: pagedData?.items.map(ShortlistRO.createFromEntity),
+  });
+
+  public static createFromPagedDataWithExtras = (
+    pagedData: PagedDataWithExtras<ShortlistEntity>,
+  ): PagedShortlistDataWithExtras => ({
+    ...this.createFromPagedData(pagedData),
+    extras: pagedData?.extras?.map(ShortlistRO.createFromEntity),
   });
 }

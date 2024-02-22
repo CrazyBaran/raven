@@ -1,7 +1,10 @@
 import { EmptyResponseData, GenericResponseSchema } from '@app/rvns-api';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
-import { PagedShortlistData, ShortlistData } from '@app/rvns-shortlists';
+import {
+  PagedShortlistDataWithExtras,
+  ShortlistData,
+} from '@app/rvns-shortlists';
 import {
   Body,
   Controller,
@@ -54,9 +57,10 @@ export class ShortlistsController {
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async findAll(
     @Query(ParseGetShortlistsOptionsPipe) options?: Record<string, string>,
-  ): Promise<PagedShortlistData> {
-    return PagedShortlistRO.createFromPagedData(
-      await this.shortlistsService.findAll(options),
+    @Identity(ParseUserFromIdentityPipe) userEntity?: UserEntity,
+  ): Promise<PagedShortlistDataWithExtras> {
+    return PagedShortlistRO.createFromPagedDataWithExtras(
+      await this.shortlistsService.findAll(options, userEntity),
     );
   }
 
