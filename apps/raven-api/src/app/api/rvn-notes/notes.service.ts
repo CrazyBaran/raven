@@ -1070,11 +1070,12 @@ export class NotesService {
       if (filteredTags.length > 0) {
         complexTagsToReturn.push(filteredTags[0]);
       } else {
-        const newComplexTag = new ComplexTagEntity();
+        const newComplexTag = await this.complexTagRepository.create();
         newComplexTag.tags = [complexTag.companyTag, complexTag.opportunityTag];
         if (complexTag.versionTag) {
           newComplexTag.tags.push(complexTag.versionTag);
         }
+        await this.complexTagRepository.save(newComplexTag);
         complexTagsToReturn.push(newComplexTag);
       }
     }
