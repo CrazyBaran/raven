@@ -7,8 +7,8 @@ import { ShortListTableRow } from './shortlist-table/shortlist-table.component';
   standalone: true,
 })
 export class IsPersonalShortlistTypePipe implements PipeTransform {
-  public transform(shortlist: { type?: ShortlistType }): boolean {
-    return shortlist.type === 'personal';
+  public transform(shortlist?: { type?: ShortlistType }): boolean {
+    return shortlist?.type === 'personal';
   }
 }
 
@@ -17,8 +17,8 @@ export class IsPersonalShortlistTypePipe implements PipeTransform {
   standalone: true,
 })
 export class IisMainShortlistTypePipe implements PipeTransform {
-  public transform(shortlist: { type?: ShortListTableRow['type'] }): boolean {
-    return shortlist.type === 'main';
+  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
+    return shortlist?.type === 'main';
   }
 }
 
@@ -27,7 +27,17 @@ export class IisMainShortlistTypePipe implements PipeTransform {
   standalone: true,
 })
 export class IsMyShortlistTypePipe implements PipeTransform {
-  public transform(shortlist: { type?: ShortListTableRow['type'] }): boolean {
-    return shortlist.type === 'my';
+  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
+    return shortlist?.type === 'my';
+  }
+}
+
+@Pipe({
+  name: 'isCustomShortlistType',
+  standalone: true,
+})
+export class IsCustomShortlistTypePipe implements PipeTransform {
+  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
+    return shortlist?.type === 'custom';
   }
 }

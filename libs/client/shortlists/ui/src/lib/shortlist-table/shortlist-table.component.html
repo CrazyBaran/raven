@@ -98,7 +98,9 @@
           iconClass="fa-solid fa-link"
           themeColor="light"
         />
-        <app-dropdownbutton-navigation [model]="shortlist.actionsModel" />
+        @if (shortlist | isCustomShortlistType) {
+          <app-dropdownbutton-navigation [model]="shortlist.actionsModel" />
+        }
       </div>
     </ng-template>
   </kendo-grid-column>

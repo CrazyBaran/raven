@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import {
   ButtongroupNavigationComponent,
+  DropdownButtonNavigationComponent,
   TextBoxNavigationComponent,
 } from '@app/client/shared/ui-router';
 import {
@@ -35,6 +36,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { filter, Subject, takeUntil } from 'rxjs';
+import { IsCustomShortlistTypePipe } from '../../../../../ui/src/lib/is-personal-shortlist.pipe';
 import {
   selectShortlistOrganisationsTableParams,
   selectShortlistOrganisationsTableViewModel,
@@ -55,6 +57,8 @@ import {
     QuickFiltersTemplateComponent,
     TooltipModule,
     ShowTooltipIfClampedDirective,
+    DropdownButtonNavigationComponent,
+    IsCustomShortlistTypePipe,
   ],
   templateUrl: './shortlist-organisations-table.component.html',
   styleUrl: './shortlist-organisations-table.component.scss',

@@ -29,6 +29,7 @@ import { IconModule } from '@progress/kendo-angular-icons';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import {
   IisMainShortlistTypePipe,
+  IsCustomShortlistTypePipe,
   IsMyShortlistTypePipe,
   IsPersonalShortlistTypePipe,
 } from '../is-personal-shortlist.pipe';
@@ -64,6 +65,7 @@ export interface ShortListTableRow {
     IisMainShortlistTypePipe,
     IconModule,
     IsMyShortlistTypePipe,
+    IsCustomShortlistTypePipe,
   ],
   templateUrl: './shortlist-table.component.html',
   styleUrl: './shortlist-table.component.scss',

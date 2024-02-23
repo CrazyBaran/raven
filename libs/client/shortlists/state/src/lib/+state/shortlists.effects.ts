@@ -82,43 +82,7 @@ export const getShortlist$ = createEffect(
         shortlistsService.getShortlist(id).pipe(
           map((response) => {
             return ShortlistsActions.getShortlistSuccess({
-              data: {
-                ...response.data!,
-                contibutors: [
-                  {
-                    id: '1',
-                    name: 'John Doe 12345',
-                  },
-                  {
-                    id: '2',
-                    name: 'Jane Doe 12345',
-                  },
-                  {
-                    id: '3',
-                    name: 'John Smith 12345',
-                  },
-                  {
-                    id: '4',
-                    name: 'Jane Smith 12345',
-                  },
-                  {
-                    id: '5',
-                    name: 'John Smith 12345',
-                  },
-                  {
-                    id: '6',
-                    name: 'Jane Smith 12345',
-                  },
-                  {
-                    id: '7',
-                    name: 'John Smith 12345',
-                  },
-                  {
-                    id: '8',
-                    name: 'Jane Smith 12345',
-                  },
-                ],
-              },
+              data: response.data!,
             });
           }),
           catchError((error) => {
