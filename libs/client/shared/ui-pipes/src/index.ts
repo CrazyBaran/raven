@@ -1,3 +1,7 @@
+export * from './lib/control-errors.pipe';
+export { ControlHasChangesPipe } from './lib/control-has-changes.pipe';
+export { ControlInvalidPipe } from './lib/control-invalid.pipe';
+export * from './lib/control-state.pipe';
 export * from './lib/deal-lead.pipe';
 export * from './lib/deal-team.pipe';
 export * from './lib/heat-color.pipe';
@@ -6,3 +10,4 @@ export * from './lib/safe-html.pipe';
 export * from './lib/thousand-suffixes.pipe';
 export * from './lib/times.pipe';
 export * from './lib/to-url.pipe';
+export * from './lib/to-user-tag.pipe';

@@ -1,0 +1,21 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Create New Shortlist</span>
+</kendo-dialog-titlebar>
+
+<div class="min-h-[340px] p-10 pb-0">
+  <app-shortlist-form [form]="form" />
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="(form | controlInvalid$ | async) || vm().isCreating!"
+    themeColor="primary"
+  >
+    @if (vm().isCreating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Create Shortlist
+  </kendo-button>
+</kendo-dialog-actions>

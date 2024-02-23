@@ -1,6 +1,6 @@
 import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
-import { tagsFeature, tagsQuery } from '@app/client/organisations/api-tags';
+import { tagsQuery } from '@app/client/organisations/api-tags';
 import {
   organisationStatusColorDictionary,
   organisationsFeature,
@@ -10,17 +10,18 @@ import {
   FilterParam,
   OpportunityRow,
   OrganisationRowV2,
+  OrganisationTableBulkAction,
   parseToFilters,
 } from '@app/client/organisations/ui';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
   ButtongroupNavigationModel,
-  DropdownNavigationModel,
+  DropdownAction,
 } from '@app/client/shared/ui-router';
+import { DialogUtil } from '@app/client/shared/util';
 import {
   buildButtonGroupNavigation,
-  buildDropdownNavigation,
   buildInputNavigation,
   buildPageParamsSelector,
   selectQueryParam,
@@ -131,53 +132,6 @@ export const selectOrganisationTableQueryModel = createSelector(
     }),
 );
 
-export const selectOrganisationsTableNavigationDropdowns = createSelector(
-  selectOrganisationsTableParams,
-  tagsFeature.selectOpportunityTags,
-  tagsFeature.selectPeopleTags,
-  tagsFeature.selectLoadingTags,
-  (
-    params,
-    opportunityTags,
-    peopleTags,
-    loadingTags,
-  ): DropdownNavigationModel[] => {
-    const opportunityData = opportunityTags.map((t) => ({
-      name: t.name,
-      id: t.id,
-    }));
-
-    const peopleData = peopleTags.map((t) => ({
-      name: t.name,
-      id: t.userId,
-    }));
-
-    return [
-      buildDropdownNavigation({
-        params,
-        name: 'round',
-        data: opportunityData,
-        defaultItem: {
-          id: null,
-          name: 'All Funding Rounds',
-        },
-        loading: loadingTags.opportunity,
-      }),
-
-      buildDropdownNavigation({
-        params,
-        name: 'member',
-        data: peopleData,
-        defaultItem: {
-          id: null,
-          name: 'Deal Member',
-        },
-        loading: loadingTags.people,
-      }),
-    ];
-  },
-);
-
 export const selectIsLoadingOrganisationsTable = createSelector(
   organisationsFeature.selectLoaded,
   (loaded) => !loaded,
@@ -207,6 +161,17 @@ export const selectOrganisationRows = createSelector(
               ] ?? '',
           },
           data: company.data,
+          actionData: [
+            {
+              text: 'Add to Shortlist',
+              queryParamsHandling: 'merge',
+              routerLink: ['./'],
+              queryParams: {
+                [DialogUtil.queryParams.addToShortlist]: company.id!,
+              },
+              skipLocationChange: true,
+            } satisfies DropdownAction,
+          ],
           opportunities: company.opportunities
             .map(({ id }) => groupedDictionary[id])
             .map(
@@ -233,7 +198,7 @@ export const selectOrganisationRows = createSelector(
                         queryParamsHandling: 'merge',
                         routerLink: ['./'],
                         queryParams: {
-                          [DialogQueryParams.reopenOpportunity]:
+                          [DialogUtil.queryParams.reopenOpportunity]:
                             opportunity!.id,
                         },
                         skipLocationChange: true,
@@ -245,7 +210,7 @@ export const selectOrganisationRows = createSelector(
                         queryParamsHandling: 'merge',
                         routerLink: ['./'],
                         queryParams: {
-                          [DialogQueryParams.updateOpportunityStage]:
+                          [DialogUtil.queryParams.updateOpportunityStage]:
                             opportunity!.id,
                         },
                         skipLocationChange: true,
@@ -293,7 +258,6 @@ export const selectFilterIndicators = createSelector(
 
 export const selectOrganisationsTableViewModel = createSelector(
   selectOrganisationsTableButtonGroupNavigation,
-  selectOrganisationsTableNavigationDropdowns,
   selectOrganisationTableQueryModel,
   selectOrganisationsTableParams,
   selectTableModel,
@@ -302,7 +266,6 @@ export const selectOrganisationsTableViewModel = createSelector(
   selectOrganisationStatusButtonGroupNavigation,
   (
     buttonGroupNavigation,
-    navigationDropdowns,
     queryModel,
     params,
     tableModel,
@@ -312,7 +275,6 @@ export const selectOrganisationsTableViewModel = createSelector(
   ) => {
     return {
       buttonGroupNavigation,
-      navigationDropdowns,
       queryModel,
       tableModel,
       params,
@@ -320,6 +282,12 @@ export const selectOrganisationsTableViewModel = createSelector(
       lastChecked: dataWarehouseLastUpdated?.lastChecked,
       filters,
       statuses,
+      bulkActions: [
+        {
+          text: 'Add to Shortlist',
+          queryParamName: DialogUtil.queryParams.addToShortlist,
+        },
+      ] satisfies OrganisationTableBulkAction[],
     };
   },
 );

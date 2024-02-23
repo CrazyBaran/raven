@@ -3,6 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
+import { DialogUtil } from '@app/client/shared/util';
 import {
   selectQueryParam,
   selectQueryParams,
@@ -16,41 +17,27 @@ import {
   DialogSettings,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
-import { exhaustMap, filter, map, tap } from 'rxjs';
+import { exhaustMap, filter, map, of, tap } from 'rxjs';
 import { ShelfActions } from './actions/shelf.actions';
 import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
 
-export class DialogQueryParams {
-  public static readonly reopenOpportunity = 'reopen-opportunity';
-  public static readonly updateOpportunityStage = 'update-opportunity-stage';
-  public static readonly passCompany = 'pass-company';
-  public static readonly moveToOutreachCompany = 'move-to-outreach-company';
-}
-
 export const dynamicDialogsConfig: Record<
   string,
-  {
-    settings?: Omit<DialogSettings, 'content'>;
-    template: Omit<ComponentTemplate, 'name'>;
-  }
+  | {
+      settings?: Omit<DialogSettings, 'content'>;
+      template: Omit<ComponentTemplate, 'name'>;
+    }
+  | ComponentTemplate['load']
 > = {
-  [DialogQueryParams.reopenOpportunity]: {
-    template: {
-      load: () =>
-        import('@app/client/opportunities/feature/update-dialog').then(
-          (m) => m.ReopenOpportunityDialogModule,
-        ),
-    },
-  },
-  [DialogQueryParams.updateOpportunityStage]: {
-    template: {
-      load: () =>
-        import('@app/client/opportunities/feature/update-dialog').then(
-          (m) => m.UpdateOpportunityStageModule,
-        ),
-    },
-  },
-  [DialogQueryParams.passCompany]: {
+  [DialogUtil.queryParams.reopenOpportunity]: () =>
+    import('@app/client/opportunities/feature/update-dialog').then(
+      (m) => m.ReopenOpportunityDialogModule,
+    ),
+  [DialogUtil.queryParams.updateOpportunityStage]: () =>
+    import('@app/client/opportunities/feature/update-dialog').then(
+      (m) => m.UpdateOpportunityStageModule,
+    ),
+  [DialogUtil.queryParams.passCompany]: {
     template: {
       load: () =>
         import('@app/client/organisations/feature/dialogs').then(
@@ -61,14 +48,31 @@ export const dynamicDialogsConfig: Record<
       cssClass: 'raven-custom-dialog k-dialog-secondary',
     },
   },
-  [DialogQueryParams.moveToOutreachCompany]: {
-    template: {
-      load: () =>
-        import('@app/client/organisations/feature/dialogs').then(
-          (m) => m.MoveToOutreachCompanyDialogModule,
-        ),
-    },
-  },
+  [DialogUtil.queryParams.moveToOutreachCompany]: () =>
+    import('@app/client/organisations/feature/dialogs').then(
+      (m) => m.MoveToOutreachCompanyDialogModule,
+    ),
+
+  [DialogUtil.queryParams.updateShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.UpdateShortlistDialogModule,
+    ),
+  [DialogUtil.queryParams.createShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.CreateShortlistDialogModule,
+    ),
+  [DialogUtil.queryParams.deleteShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.DeleteShortlistDialogModule,
+    ),
+  [DialogUtil.queryParams.addToShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.AddToShortlistDialogModule,
+    ),
+  [DialogUtil.queryParams.removeFromShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.RemoveFromShortlistDialogModule,
+    ),
 };
 
 @Injectable()
@@ -165,21 +169,38 @@ export class ShelfEffects {
           const dialog = Object.keys(params).find((key) =>
             Object.keys(dynamicDialogsConfig).includes(key),
           );
+          const settings = dialog ? dynamicDialogsConfig[dialog] : null;
+
+          if (typeof settings === 'function') {
+            return { dialog, template: { load: settings } };
+          }
+
           return dialog ? { dialog, ...dynamicDialogsConfig[dialog] } : null;
         }),
         filter((settings) => !!settings),
-        exhaustMap(
-          (config) =>
-            this.dynamicDialogService.openDynamicDialog({
-              width: 480,
-              maxHeight: '95vh',
-              cssClass: 'raven-custom-dialog',
-              ...config!.settings,
-              template: {
-                name: config!.dialog,
-                ...config!.template,
-              },
-            }).result,
+        exhaustMap((config) =>
+          !config
+            ? of([])
+            : 'settings' in config
+              ? this.dynamicDialogService.openDynamicDialog({
+                  width: 480,
+                  maxHeight: '95vh',
+                  cssClass: 'raven-custom-dialog',
+                  ...config!.settings,
+                  template: {
+                    name: config!.dialog,
+                    ...config!.template,
+                  },
+                }).result
+              : this.dynamicDialogService.openDynamicDialog({
+                  width: 480,
+                  maxHeight: '95vh',
+                  cssClass: 'raven-custom-dialog',
+                  template: {
+                    name: config!.dialog!,
+                    load: config.template!.load,
+                  },
+                }).result,
         ),
       );
     },

@@ -1,0 +1,44 @@
+<!--  [filterable]="true"-->
+<!--  [kendoDropDownFilter]="{ caseSensitive: false, operator: 'contains' }"-->
+<kendo-multiselect
+  (valueChange)="onValueChange($event)"
+  [data]="data()!"
+  [loading]="loading()!"
+  [virtual]="virtual()!"
+  [fillMode]="fillMode()!"
+  [placeholder]="placeholder()!"
+  [textField]="textField()!"
+  [valueField]="valueField()!"
+  [valuePrimitive]="valuePrimitive()!"
+  [checkboxes]="checkboxes()!"
+>
+  @if (filterable()) {
+    <ng-template kendoMultiSelectHeaderTemplate>
+      <div class="p-2">
+        <input type="text" class="w-40" />
+        <kendo-textbox placeholder="Search..." [formControl]="searchControl">
+          <!--          <ng-template kendoTextBoxPrefixTemplate>-->
+          <!--            <kendo-icon-->
+          <!--              name="search"-->
+          <!--              class="text-gray-400"-->
+          <!--              size="small"-->
+          <!--            ></kendo-icon>-->
+          <!--          </ng-template>-->
+        </kendo-textbox>
+        <kendo-textarea></kendo-textarea>
+        <kendo-button>ckucik</kendo-button>
+      </div>
+    </ng-template>
+  }
+
+  <!--  <ng-template kendoMultiSelectItemTemplate let-dataItem>-->
+  <!--    <div-->
+  <!--      (click)="$event.stopPropagation(); togglePerson(dataItem)"-->
+  <!--      (keydown.enter)="$event.stopPropagation(); togglePerson(dataItem)"-->
+  <!--      class="-mx-2 -my-1 grid w-[calc(100%+1rem)] grid-cols-[auto_1fr] items-center gap-0.5 px-2 py-1"-->
+  <!--    >-->
+  <!--      <input [checked]="dataItem.checked" kendoCheckBox type="checkbox" />-->
+  <!--      <span class="ml-2 truncate">{{ dataItem.name }}</span>-->
+  <!--    </div>-->
+  <!--  </ng-template>-->
+</kendo-multiselect>

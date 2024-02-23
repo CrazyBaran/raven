@@ -3,9 +3,14 @@ import {
   EventEmitter,
   Input,
   Output,
+  TrackByFunction,
   ViewChild,
 } from '@angular/core';
-import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
+import {
+  GridComponent,
+  GridDataResult,
+  GridItem,
+} from '@progress/kendo-angular-grid';
 import {
   CompositeFilterDescriptor,
   SortDescriptor,
@@ -105,5 +110,12 @@ export abstract class InfinityTableViewBaseComponent<T> {
       row: 0,
     });
     this.page = 0;
+  }
+
+  public getTrackByFn(key: keyof T): TrackByFunction<GridItem> {
+    return (index, item) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return key in item.data ? (item.data as any)[key] : index;
+    };
   }
 }

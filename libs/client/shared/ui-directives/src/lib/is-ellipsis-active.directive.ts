@@ -34,7 +34,10 @@ export class IsEllipsisActiveDirective implements AfterViewInit {
   public ngAfterViewInit(): void {
     setTimeout(() => {
       const element = this.elementRef.nativeElement;
-      if (element.offsetWidth < element.scrollWidth) {
+      if (
+        element.offsetWidth < element.scrollWidth ||
+        element.offsetHeight < element.scrollHeight
+      ) {
         element.title = element.innerHTML;
       }
     }, 500);

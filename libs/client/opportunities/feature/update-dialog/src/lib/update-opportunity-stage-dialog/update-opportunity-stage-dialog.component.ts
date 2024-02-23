@@ -29,7 +29,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+import { DialogUtil } from '@app/client/shared/util';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { startWith, take } from 'rxjs';
@@ -135,7 +135,7 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams: {
-          [DialogQueryParams.updateOpportunityStage]: null,
+          [DialogUtil.queryParams.updateOpportunityStage]: null,
         },
         queryParamsHandling: 'merge',
       });

@@ -1,6 +1,13 @@
 <kendo-dropdownbutton
   (itemClick)="onItemClick($event)"
   [data]="model.actions"
+  [unpatch]
   class="dropdown-navigation"
   iconClass="fa-solid fa-ellipsis-vertical"
-/>
+>
+  <ng-template kendoDropDownButtonItemTemplate let-action>
+    <span [ngStyle]="action.actionStyle" [ngClass]="action.actionClass">{{
+      action.text
+    }}</span>
+  </ng-template>
+</kendo-dropdownbutton>

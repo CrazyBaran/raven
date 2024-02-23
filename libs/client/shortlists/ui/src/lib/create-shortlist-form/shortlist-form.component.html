@@ -1,0 +1,39 @@
+<form [formGroup]="form()" class="flex flex-col gap-4">
+  <kendo-formfield>
+    <kendo-label [for]="name" text="Shortlist's Name" />
+    <kendo-textbox #name formControlName="name" [maxlength]="maxNameLength">
+      <ng-template kendoTextBoxSuffixTemplate>
+        @if ((nameControl() | controlState$ | push) === 'PENDING') {
+          <kendo-loader />
+        }
+      </ng-template>
+    </kendo-textbox>
+
+    <ng-container *rxLet="nameControl() | controlErrors$; let errors">
+      @if (errors?.['required'] && nameControl()?.touched) {
+        <kendo-formerror> Shortlist's Name is Required</kendo-formerror>
+      } @else if (errors?.['shortlistNameExists']) {
+        <kendo-formerror> Shortlist's Name already exists</kendo-formerror>
+      }
+    </ng-container>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label [for]="description" text="Description" />
+    <kendo-textarea
+      #description
+      [maxlength]="maxDescriptionLength"
+      [rows]="7"
+      formControlName="description"
+    />
+
+    @if (descriptionControl()?.errors?.['maxlength']) {
+      <kendo-formerror>
+        Description should be less than
+        {{ descriptionControl()?.errors?.['maxlength'].requiredLength }}
+        characters</kendo-formerror
+      >
+    }
+    <footer class="px-3 pt-3 text-end text-sm">Character Limit: 1000</footer>
+  </kendo-formfield>
+</form>

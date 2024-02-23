@@ -1,0 +1,68 @@
+@if (mode() === 'add') {
+  <kendo-dialog-titlebar (close)="onDialogClose()">
+    <span class="k-window-title">Add to Shortlist</span>
+  </kendo-dialog-titlebar>
+
+  <div class="p-10">
+    <p class="mb-8">Choose a Shortlist or Create a New One</p>
+    <form [formGroup]="form" class="flex flex-col gap-6">
+      <kendo-formfield>
+        <kendo-multiselect
+          [data]="vm().shortlists"
+          [textField]="'name'"
+          [valueField]="'id'"
+          [formControlName]="'shortlistsIds'"
+          [checkboxes]="true"
+          [autoClose]="false"
+          [valuePrimitive]="true"
+          [loading]="vm().isLoadingData!"
+          placeholder="Choose from list"
+        />
+        <kendo-formerror> Shortlist's Name is Required</kendo-formerror>
+      </kendo-formfield>
+
+      <kendo-button class="self-start" (click)="switchToCreateShortlistMode()"
+        >Create New Shortlist</kendo-button
+      >
+    </form>
+  </div>
+
+  <kendo-dialog-actions>
+    <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+    <kendo-button
+      (click)="submit()"
+      [disabled]="!form.valid || vm().isUpdating!"
+      themeColor="primary"
+    >
+      @if (vm().isUpdating) {
+        <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+      }
+      Add
+    </kendo-button>
+  </kendo-dialog-actions>
+} @else {
+  <kendo-dialog-titlebar (close)="onDialogClose()">
+    <span class="k-window-title">Create New Shortlist</span>
+  </kendo-dialog-titlebar>
+
+  <div class="min-h-[340px] p-10 pb-0">
+    <p class="mb-8">Choose a Shortlist or Create a New One</p>
+    <app-shortlist-form [form]="createShortlistForm" />
+  </div>
+
+  <kendo-dialog-actions>
+    <kendo-button (click)="switchToAddToShortlistMode()" class="w-40"
+      >Cancel</kendo-button
+    >
+    <kendo-button
+      (click)="createShortlist()"
+      [disabled]="!createShortlistForm.valid"
+      themeColor="primary"
+    >
+      @if (vm().isCreating) {
+        <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+      }
+      Create
+    </kendo-button>
+  </kendo-dialog-actions>
+}

@@ -1,0 +1,27 @@
+{
+  "name": "client-shortlists-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/client/shortlists/data-access/src",
+  "prefix": "lib",
+  "tags": ["scope:rvnc-shortlists", "type:data-access"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/client/shortlists/data-access/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/client/tags/state/**/*.ts",
+          "libs/client/tags/state/**/*.html"
+        ]
+      }
+    }
+  }
+}

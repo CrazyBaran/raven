@@ -12,6 +12,7 @@ import {
   TagsContainerComponent,
 } from '@app/client/shared/ui';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
+import { ToUserTagPipe } from '@app/client/shared/ui-pipes';
 import {
   DropdownAction,
   DropdownButtonNavigationComponent,
@@ -19,7 +20,6 @@ import {
 } from '@app/client/shared/ui-router';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridItem, GridModule } from '@progress/kendo-angular-grid';
-import { ToUserTagPipe } from '../organisations-table-view-legacy/organisations-table-view.component';
 
 export type OpportunityRow = {
   id: string;

@@ -4,12 +4,28 @@ $primary-color: #00a59b;
 $secondary-color: #002c3c;
 $tertiary-color: #9bcbeb;
 $light: #d9d9d6;
+$dark: #424242;
 
 $error-color: #f31700;
+$informational-error-color: #c52a1a;
 $info-color: #0058e9;
 $success-color: #37b400;
 $warning-color: #ffc000;
 
+//INFORMATIONAL COLORS
+$informational-error-color: #c52a1a;
+$informational-success-color: #12861e;
+$informational-warning-color: #ffbf1f;
+$informational-info-color: #008387;
+
+$informational-variables: (
+  informational-error: $informational-error-color,
+  informational-success: $informational-success-color,
+  informational-warning: $informational-warning-color,
+  informational-info: $informational-info-color,
+);
+
+//SERIES COLORS
 $kendo-series-a: #00ccbe;
 $kendo-series-b: #004b66;
 $kendo-series-c: #b4e4e2;
@@ -35,20 +51,12 @@ $series-variables: (
 }
 
 :root {
-  @each $name, $value in $series-variables {
-    --#{$name}: #{$value};
-    --#{$name}-darken-75: #{k-color-mix(black, $value, 25%)};
-    --#{$name}-darken-50: #{k-color-mix(black, $value, 50%)};
-    --#{$name}-lighten-75: #{k-color-mix(white, $value, 25%)};
-    --#{$name}-lighten-50: #{k-color-mix(white, $value, 50%)};
-    //@debug k-color-mix(black, #{$value}, 25%);
-  }
-
   // APP MAIN COLORS
   --rv-primary: #{$primary-color};
   --rv-secondary: #{$secondary-color};
   --rv-tertiary: #{$tertiary-color};
   --rv-light: #{$light};
+  --rv-dark: #{$dark};
 
   --rv-error: #{$error-color};
   --rv-info: #{$info-color};
@@ -65,7 +73,22 @@ $series-variables: (
 
   // RAVEN COLORS
 
-  --informational-success: #12861e;
-  --informational-success-50: #12861e80;
-  --informational-warning: #ffbf1f;
+  // SERIES COLORS
+  @each $name, $value in $series-variables {
+    --#{$name}: #{$value};
+    --#{$name}-darken-75: #{k-color-mix(black, $value, 25%)};
+    --#{$name}-darken-50: #{k-color-mix(black, $value, 50%)};
+    --#{$name}-lighten-75: #{k-color-mix(white, $value, 25%)};
+    --#{$name}-lighten-50: #{k-color-mix(white, $value, 50%)};
+  }
+
+  // INFORMATIONAL COLORS
+  @each $name, $value in $informational-variables {
+    --#{$name}: #{$value};
+    --#{$name}-8: #{k-color-mix(white, $value, 8%)};
+    --#{$name}-16: #{k-color-mix(white, $value, 16%)};
+    --#{$name}-24: #{k-color-mix(white, $value, 24%)};
+    --#{$name}-30: #{k-color-mix(white, $value, 30%)};
+    --#{$name}-50: #{k-color-mix(white, $value, 50%)};
+  }
 }

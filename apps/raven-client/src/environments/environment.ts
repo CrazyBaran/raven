@@ -2,7 +2,9 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
+import { Environment } from '@app/client/core/environment';
+
+export const environment: Environment = {
   production: false,
   apiUrl: 'http://localhost:3333/api',
   adClientId: '88c53dfa-5389-4ee1-a126-0ed17d3a7db4',
@@ -19,7 +21,8 @@ export const environment = {
     'b!RAtLR_rMHU6q6EHlSvfDLAASJHjBXgVDjdZqm3u-M8xaIH4wn66DSb1tnKWcYlEx',
   sharepointRootDirectoryId: '01RVXLZIUM2GLOT2SNUZDZBGFRP3ZBORTK',
   websocketUrl: 'https://as-wa-mc-raven-dev.azurewebsites.net/',
-  pipelineGrouping: true,
+  // websocketUrl: 'http://localhost:3333',
+  shortlistsFeature: true,
 };
 /*
  * For easier debugging in development mode, you can import the following file

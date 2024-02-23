@@ -10,7 +10,8 @@ import {
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+
+import { DialogUtil } from '@app/client/shared/util';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { first } from 'rxjs';
@@ -40,7 +41,7 @@ export class MoveToOutreachCompanyDialogComponent extends DialogContentBase {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams: {
-          [DialogQueryParams.moveToOutreachCompany]: null,
+          [DialogUtil.queryParams.moveToOutreachCompany]: null,
         },
         queryParamsHandling: 'merge',
       });

@@ -11,27 +11,20 @@
   height: calc(100% + 3em);
 }
 
-#organisation-details {
-  grid-area: organisation-details;
+ui-tilelayout-item {
+  max-height: 400px;
+}
+//TODO: refactor this ng-deep selectors
+::ng-deep .k-link.k-selected {
+  background: white !important;
 }
 
-#organisation-opportunities {
-  grid-area: organisation-opportunities;
+::ng-deep .k-panelbar-item-text {
+  color: black !important;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 400;
 }
-
-#organisation-files {
-  grid-area: organisation-files;
-}
-
-#organisation-notes {
-  grid-area: organisation-notes;
-}
-
-.organisation-page-grid {
-  grid-template-columns: 1fr 1fr;
-  grid-auto-rows: minmax(400px, 1fr);
-  grid-template-areas:
-    'organisation-details organisation-opportunities'
-    'organisation-files organisation-files'
-    'organisation-notes organisation-notes';
+::ng-deep .k-panelbar-toggle {
+  color: black !important;
 }

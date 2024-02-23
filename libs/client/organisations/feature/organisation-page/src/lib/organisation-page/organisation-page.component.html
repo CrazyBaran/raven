@@ -24,6 +24,18 @@
   </div>
 
   <div class="flex gap-2" page-header-actions>
+    <kendo-button
+      *featureFlag="'shortlistsFeature'"
+      class="mr-2"
+      kendoTooltip
+      title="Add to Shortlist"
+      themeColor="primary"
+      iconClass="fa-solid fa-star"
+      [queryParams]="vm().addToShortlistQueryParam"
+      queryParamsHandling="merge"
+      [skipLocationChange]="true"
+      [routerLink]="['./']"
+    />
     @if (vm().showStatus) {
       <div class="flex items-center gap-3">
         <i
@@ -38,7 +50,7 @@
 
     @if (vm().showOutreachButton) {
       <kendo-button
-        [queryParams]="vm().outreachQueryParams"
+        [queryParams]="vm().outreachQueryParam"
         queryParamsHandling="merge"
         [skipLocationChange]="true"
         [routerLink]="['./']"
@@ -53,140 +65,207 @@
   </div>
 
   <div
-    class="organisation-details | bg-base-background flex h-full flex-col overflow-auto"
+    class="organisation-details | bg-base-background flex h-full flex-col overflow-y-scroll"
     page-content
   >
-    <div class="organisation-page-grid | grid h-full gap-6">
-      <!--      rowHeight="minmax(400px,1fr)"-->
-      <ui-tilelayout-item id="organisation-details">
-        <div class="flex items-center justify-between gap-2" header>
-          <h5 class="k-card-title">Company details</h5>
-          <kendo-button
-            [disabled]="true || vm().isLoading"
-            [queryParams]="{
-              'organisation-edit': vm().currentOrganisationId
-            }"
-            [routerLink]="['./']"
-            iconClass="fa-sharp fa-solid fa-pen"
-            queryParamsHandling="merge"
-            size="small"
-            >Edit</kendo-button
-          >
-        </div>
-        <div body class="bg-grey-100 h-full overflow-auto">
-          <div
-            class="bg-grey-100 grid grid-cols-2 gap-3 bg-opacity-50 px-6 py-5"
-          >
-            @if (vm().isLoading) {
-              @for (i of 4 | times; track i) {
-                <div class="px-2 py-3">
-                  <kendo-skeleton class="mb-1" height="20" width="80%" />
-                  <kendo-skeleton height="10" width="75%" />
-                </div>
-              }
-            } @else {
-              @for (detail of vm().details; track detail.label) {
-                <div [@fadeIn] class="px-2 py-3">
-                  <h1 class="text-lg">{{ detail.label }}</h1>
-                  <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
-                </div>
-              }
-            }
+    <div class="flex flex-col gap-6">
+      <div class="grid grid-cols-2 gap-6">
+        <ui-tilelayout-item id="organisation-details">
+          <div class="flex items-center justify-between gap-2" header>
+            <h5 class="k-card-title">Company details</h5>
+            <kendo-button
+              [disabled]="true || vm().isLoading"
+              [queryParams]="{
+                'organisation-edit': vm().currentOrganisationId
+              }"
+              [routerLink]="['./']"
+              iconClass="fa-sharp fa-solid fa-pen"
+              queryParamsHandling="merge"
+              size="small"
+              >Edit</kendo-button
+            >
           </div>
-        </div>
-      </ui-tilelayout-item>
-
-      <!--  Opportunities   -->
-      <!--      class="self-start"-->
-      <ui-tilelayout-item id="organisation-opportunities">
-        <div class="flex items-center justify-between gap-2" header>
-          <h5 class="k-card-title">Opportunities</h5>
-          <kendo-button
-            [queryParams]="{
-              'opportunity-create': vm().currentOrganisationId
-            }"
-            [routerLink]="['./']"
-            iconClass="fa-sharp fa-solid fa-pen"
-            size="small"
-            >Add new</kendo-button
-          >
-        </div>
-        <!--            [skipLocationChange]="true"-->
-
-        @if (vm().opportunities.length || vm().isLoading) {
-          <kendo-grid
-            body
-            [kendoGridBinding]="vm().opportunities"
-            [loading]="vm().isLoading"
-            [sort]="sort"
-            [sortable]="true"
-            class="grid-borderless max-h-full"
-          >
-            <ng-template kendoGridLoadingTemplate>
-              <ui-loader [disableInfo]="true" class="bg-white bg-opacity-60" />
-            </ng-template>
-            <kendo-grid-column
-              [headerStyle]="{ 'font-weight': '700' }"
-              title="Funding Round"
+          <div body class="bg-grey-100 h-full overflow-auto">
+            <div
+              class="bg-grey-100 grid grid-cols-2 gap-3 bg-opacity-50 px-6 py-5"
             >
-              <ng-template kendoGridCellTemplate let-dataItem>
-                <p>{{ dataItem.tag?.name ?? 'No Opportunity' }}</p>
-                <p class="text-xs">
-                  Updated: {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy' }}
-                </p>
-              </ng-template>
-            </kendo-grid-column>
-
-            <kendo-grid-column
-              [headerStyle]="{ 'font-weight': '700' }"
-              title="Status"
-            >
-              <ng-template kendoGridCellTemplate let-dataItem>
-                <div class="flex items-center gap-3">
-                  <i
-                    [style.color]="dataItem.status?.color"
-                    class="fa-solid fa-circle text-xs"
-                  ></i>
-                  <p [isEllipsisActive]="true" class="flex-1 text-black">
-                    {{ dataItem.status?.name ?? '' }}
-                  </p>
-                </div>
-              </ng-template>
-            </kendo-grid-column>
-
-            <kendo-grid-column
-              [headerStyle]="{ 'font-weight': '700' }"
-              title="Deal Lead"
-            >
-              <ng-template kendoGridCellTemplate let-dataItem>
-                @for (name of dataItem.team | dealLeads; track name) {
-                  <ui-tag [label]="name" uiUserTag />
+              @if (vm().isLoading) {
+                @for (i of 2 | times; track i) {
+                  <div class="px-2 py-3">
+                    <kendo-skeleton class="mb-1" height="10" width="80%" />
+                    <kendo-skeleton height="10" width="75%" />
+                  </div>
                 }
-              </ng-template>
-            </kendo-grid-column>
-
-            <kendo-grid-column [width]="70">
-              <ng-template kendoGridCellTemplate let-dataItem>
-                <div class="flex flex-row gap-1">
-                  <kendo-button
-                    [routerLink]="['opportunities', dataItem.id]"
-                    iconClass="fa-solid fa-eye"
-                    themeColor="primary"
-                  />
-                </div>
-              </ng-template>
-            </kendo-grid-column>
-          </kendo-grid>
-        } @else {
-          <div class="flex items-center gap-3 px-16 py-9">
-            <i class="fa-regular fa-circle-info"></i>
-            <p class="text-subtle-text !m-0 text-sm italic">
-              There are no existing pipeline items or opportunities for this
-              company. Select Add to Outreach to create a new pipeline item.
-            </p>
+              } @else {
+                @for (detail of vm().details; track detail.label) {
+                  <div [@fadeIn] class="px-2 py-3">
+                    <h1 class="text-lg">{{ detail.label }}</h1>
+                    <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
+                  </div>
+                }
+              }
+            </div>
           </div>
-        }
-      </ui-tilelayout-item>
+        </ui-tilelayout-item>
+
+        <!--  Opportunities   -->
+        <ui-tilelayout-item id="organisation-opportunities">
+          <div class="flex items-center justify-between gap-2" header>
+            <h5 class="k-card-title">Opportunities</h5>
+            <kendo-button
+              [queryParams]="{
+                'opportunity-create': vm().currentOrganisationId
+              }"
+              [routerLink]="['./']"
+              iconClass="fa-sharp fa-solid fa-pen"
+              size="small"
+              >Add new</kendo-button
+            >
+          </div>
+          <!--            [skipLocationChange]="true"-->
+
+          @if (vm().opportunities.length || vm().isLoading) {
+            <kendo-grid
+              body
+              [kendoGridBinding]="vm().opportunities"
+              [loading]="vm().isLoading"
+              [sort]="sort"
+              [sortable]="true"
+              class="grid-borderless max-h-full"
+            >
+              <ng-template kendoGridLoadingTemplate>
+                <ui-loader
+                  [disableInfo]="true"
+                  class="bg-white bg-opacity-60"
+                />
+              </ng-template>
+              <kendo-grid-column
+                [headerStyle]="{ 'font-weight': '700' }"
+                title="Funding Round"
+              >
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <p>{{ dataItem.tag?.name ?? 'No Opportunity' }}</p>
+                  <p class="text-xs">
+                    Updated:
+                    {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy' }}
+                  </p>
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-column
+                [headerStyle]="{ 'font-weight': '700' }"
+                title="Status"
+              >
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div class="flex items-center gap-3">
+                    <i
+                      [style.color]="dataItem.status?.color"
+                      class="fa-solid fa-circle text-xs"
+                    ></i>
+                    <p [isEllipsisActive]="true" class="flex-1 text-black">
+                      {{ dataItem.status?.name ?? '' }}
+                    </p>
+                  </div>
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-column
+                [headerStyle]="{ 'font-weight': '700' }"
+                title="Deal Lead"
+              >
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  @for (name of dataItem.team | dealLeads; track name) {
+                    <ui-tag [label]="name" uiUserTag />
+                  }
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-column [width]="70">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div class="flex flex-row gap-1">
+                    <kendo-button
+                      [routerLink]="['opportunities', dataItem.id]"
+                      iconClass="fa-solid fa-eye"
+                      themeColor="primary"
+                    />
+                  </div>
+                </ng-template>
+              </kendo-grid-column>
+            </kendo-grid>
+          } @else {
+            <div class="flex items-center gap-3 px-16 py-9">
+              <i class="fa-regular fa-circle-info"></i>
+              <p class="text-subtle-text !m-0 text-sm italic">
+                There are no existing pipeline items or opportunities for this
+                company. Select Add to Outreach to create a new pipeline item.
+              </p>
+            </div>
+          }
+        </ui-tilelayout-item>
+      </div>
+
+      <kendo-panelbar *featureFlag="'shortlistsFeature'">
+        <ng-template kendoPanelBarItemTitle>
+          <h5 class="k-card-title">Shortlists</h5>
+        </ng-template>
+        <kendo-panelbar-item title="Shortlists" [expanded]="false">
+          <ng-template kendoPanelBarContent>
+            <kendo-grid
+              [pageable]="true"
+              [pageSize]="5"
+              [data]="shortlistGrid.data"
+            >
+              <kendo-grid-column headerClass="!font-bold" title="List Name">
+                <ng-template kendoGridCellTemplate let-shortlist>
+                  <a
+                    [routerLink]="['/companies', 'shortlists', shortlist.id]"
+                    class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
+                  >
+                    <div class="grow overflow-hidden">
+                      <p
+                        kendoTooltip
+                        [isEllipsisActive]="true"
+                        class="text-base group-hover:font-bold"
+                      >
+                        {{ shortlist.name }}
+                      </p>
+                    </div>
+                  </a>
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-column headerClass="!font-bold" title="Description">
+                <ng-template kendoGridCellTemplate let-shortlist>
+                  <p
+                    class="line-clamp-2"
+                    kendoTooltip
+                    position="right"
+                    [title]="shortlist.description"
+                  >
+                    {{ shortlist.description }}
+                  </p>
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-column headerClass="!font-bold" title="Contributors">
+                <ng-template kendoGridCellTemplate let-shortlist>
+                  <ui-tags-container
+                    [rows]="4"
+                    [tags]="shortlist.contributors | toUserTag"
+                    class="w-full"
+                  />
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-column headerClass="!font-bold" title="Last Updated">
+                <ng-template kendoGridCellTemplate let-shortlist>
+                  <p>{{ shortlist.updatedAt | date: 'MMMM d, y' }}</p>
+                </ng-template>
+              </kendo-grid-column>
+            </kendo-grid>
+          </ng-template>
+        </kendo-panelbar-item>
+      </kendo-panelbar>
 
       <!--  Files   -->
       <ui-tilelayout-item id="organisation-files">

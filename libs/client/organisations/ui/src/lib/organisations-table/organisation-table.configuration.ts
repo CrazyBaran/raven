@@ -1,5 +1,5 @@
-import { DialogQueryParams } from '@app/client/shared/shelf';
 import { transformToThousands } from '@app/client/shared/ui-pipes';
+import { DialogUtil } from '@app/client/shared/util';
 import { CompanyColumn } from '../dynamic-company-column/dynamic-company-column.component';
 import { CompanyStatusColumn } from '../dynamic-company-status-column/dynamic-company-status-column.component';
 import { DateColumn } from '../dynamic-date-column/dynamic-date-column.component';
@@ -37,7 +37,7 @@ export const organisationTableConfiguration: TableColumn[] = [
       return {
         ...row.status,
         queryParam: {
-          [DialogQueryParams.moveToOutreachCompany]: row.id,
+          [DialogUtil.queryParams.moveToOutreachCompany]: row.id,
         },
       };
     },

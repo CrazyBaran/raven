@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ENVIRONMENT } from '@app/client/core/environment';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
@@ -40,12 +39,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PipelinesPageComponent {
-  public environment = inject(ENVIRONMENT);
-
   public vm = this.store.selectSignal(selectPipelinesPageViewModel);
-  public board = this.store.selectSignal(
-    selectKanbanBoard(this.environment.pipelineGrouping),
-  );
+  public board = this.store.selectSignal(selectKanbanBoard);
 
   public constructor(private readonly store: Store) {
     this.store.dispatch(PipelinesActions.getPipelines());

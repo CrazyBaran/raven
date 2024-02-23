@@ -1,4 +1,6 @@
-export const environment = {
+import { Environment } from '@app/client/core/environment';
+
+export const environment: Environment = {
   production: true,
   apiUrl: 'https://raven-staging-api.mubadalacapital.ae',
   adClientId: 'fc392811-e450-47c1-8928-0ac8def0bb9e',
@@ -15,5 +17,5 @@ export const environment = {
     'b!5FlQMrtGjUmiYJj3y40t--qau7WP-uRBqy0COkR9--xujk9FQtU_ToCpw10tbcQJ',
   sharepointRootDirectoryId: '01TMG4F3ZIOUZNA6XIYNCLU6GK7VG3EYMV',
   websocketUrl: 'https://app-raven-prod-uks.azurewebsites.net/',
-  pipelineGrouping: true,
+  shortlistsFeature: false,
 };

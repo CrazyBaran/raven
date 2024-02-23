@@ -3,6 +3,9 @@ import { createSelector } from '@ngrx/store';
 import { TagEntity } from './tags.model';
 import { tagsFeature } from './tags.reducer';
 
+/**
+ * Select tag by logged users name
+ */
 export const selectCurrentUserTag = createSelector(
   authQuery.selectUserName,
   tagsFeature.selectPeopleTags,

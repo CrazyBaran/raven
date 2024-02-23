@@ -6,6 +6,7 @@ import {
   Component,
   ElementRef,
   inject,
+  input,
   Pipe,
   PipeTransform,
   signal,
@@ -14,6 +15,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {
+  FeatureFlagDirective,
   IsEllipsisActiveDirective,
   OnResizeDirective,
   ResizedEvent,
@@ -23,31 +25,36 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridItem, GridModule, RowClassFn } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
 import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+
 import {
   ClipboardService,
   KendoUrlPagingDirective,
   KendoUrlSortingDirective,
 } from '@app/client/shared/ui';
+import { InfinityTableViewBaseComponent } from '@app/client/shared/ui-directives';
 import {
   DropdownAction,
   DropdownButtonNavigationComponent,
   DropdownbuttonNavigationModel,
 } from '@app/client/shared/ui-router';
+import { DialogUtil } from '@app/client/shared/util';
 import {
   countryTypes,
   dealRoomLastFundingTypes,
   lastFundingTypes,
 } from '@app/shared/data-warehouse';
+import { CheckBoxModule } from '@progress/kendo-angular-inputs';
+import { RxIf } from '@rx-angular/template/if';
+import { RxUnpatch } from '@rx-angular/template/unpatch';
 import param from 'jquery-param';
 import * as _ from 'lodash';
 import { CompanyStatus } from 'rvns-shared';
 import { map, Observable, of } from 'rxjs';
-import { InfinityTableViewBaseComponent } from '../../../../../shared/ui-directives/src/lib/infinity-table-view-base.directive';
 import { DateRangeFilterComponent } from '../date-range-filter/date-range-filter.component';
 import { MultiCheckFilterComponent } from '../multicheck-filter/multicheck-filter.component';
 import { NumberRangeFilterComponent } from '../number-range-filter/number-range-filter.component';
@@ -132,6 +139,12 @@ export type OrganisationRowV2 = {
   };
   opportunities: OpportunityRow[];
   data: any;
+  actionData?: DropdownAction[];
+};
+
+export type OrganisationTableBulkAction = {
+  text: string;
+  queryParamName: string;
 };
 
 @Component({
@@ -155,6 +168,10 @@ export type OrganisationRowV2 = {
     SourceFnPipe,
     DropdownButtonNavigationComponent,
     OnResizeDirective,
+    CheckBoxModule,
+    RxUnpatch,
+    RxIf,
+    FeatureFlagDirective,
   ],
   templateUrl: './organisations-table.component.html',
   styleUrls: ['./organisations-table.component.scss'],
@@ -164,15 +181,32 @@ export type OrganisationRowV2 = {
 export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<OrganisationRowV2> {
   @ViewChild('grid', { read: ElementRef }) public gridRef: ElementRef;
 
+  public bulkActions = input<OrganisationTableBulkAction[]>([]);
+
+  public showCheckboxHeader = input<boolean>(false);
+
   public router = inject(Router);
+
   public activedRoute = inject(ActivatedRoute);
+
   public clipboardService = inject(ClipboardService);
 
-  public collapsedRows = signal<string[]>([]);
+  public cdr = inject(ChangeDetectorRef);
 
   public additionalFields = organisationTableConfiguration;
 
-  private cdr = inject(ChangeDetectorRef);
+  public collapsedRows = signal<string[]>([]);
+
+  public checkedRows = signal<string[]>([]);
+
+  public checkedAll = signal<boolean>(false);
+
+  //observables
+  protected checkedAll$ = toObservable(this.checkedAll);
+
+  protected checkedRows$ = toObservable(this.checkedRows);
+
+  protected checkedRowsLength$ = this.checkedRows$.pipe(map((x) => x.length));
 
   public get tableWidth(): string {
     return (
@@ -213,6 +247,8 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
     this.gridRef.nativeElement
       .querySelectorAll(`[row-active=true]`)
       .forEach((x: any) => x.setAttribute('row-active', false));
+    this.checkedRows.set([]);
+    this.checkedAll.set(false);
   }
 
   public filterChange($event: CompositeFilterDescriptor): void {
@@ -241,7 +277,7 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
       text: 'Pass on Company',
       routerLink: ['./'],
       queryParams: {
-        [DialogQueryParams.passCompany]: organisation.id,
+        [DialogUtil.queryParams.passCompany]: organisation.id,
       },
       skipLocationChange: true,
       queryParamsHandling: 'merge',
@@ -262,8 +298,37 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
     return {
       actions:
         organisation.status.name !== CompanyStatus.PASSED
-          ? [passAction, copyLinkAction]
-          : [copyLinkAction],
+          ? [passAction, copyLinkAction, ...(organisation.actionData ?? [])]
+          : [copyLinkAction, ...(organisation.actionData ?? [])],
+    };
+  }
+
+  protected toggleAll($event: Event): void {
+    const checked = ($event.target as HTMLInputElement).checked;
+    this.checkedAll.set(checked);
+    this.checkedRows.set(checked ? this.data.map((x) => x.id) : []);
+  }
+
+  protected toggleCheckedRow(id: string, $event: Event): void {
+    const checked = ($event.target as HTMLInputElement).checked;
+
+    if (checked) {
+      this.checkedRows.update((value) => [...value, id]);
+    } else {
+      if (this.checkedAll()) {
+        //included loaded more rows
+        this.checkedRows.set(this.data.map((x) => x.id));
+        this.checkedAll.set(false);
+      }
+      this.checkedRows.update((value) => value.filter((x) => x !== id));
+    }
+  }
+
+  protected getBulkQueryParam(action: OrganisationTableBulkAction): {
+    [key: string]: string[];
+  } {
+    return {
+      [action.queryParamName]: this.checkedRows(),
     };
   }
 }

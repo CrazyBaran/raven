@@ -20,7 +20,6 @@ import {
 } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { PipelinesActions } from '@app/client/pipelines/state';
-import { DialogQueryParams } from '@app/client/shared/shelf';
 import { FadeInOutDirective, fadeIn } from '@app/client/shared/ui';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import {
@@ -28,6 +27,7 @@ import {
   DropdownButtonNavigationComponent,
 } from '@app/client/shared/ui-router';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
+import { DialogUtil } from '@app/client/shared/util';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -77,7 +77,7 @@ export class OpportunityDetailsPageComponent {
         queryParamsHandling: 'merge',
         routerLink: ['./'],
         queryParams: {
-          [DialogQueryParams.reopenOpportunity]: this.vm().opportunityId!,
+          [DialogUtil.queryParams.reopenOpportunity]: this.vm().opportunityId!,
         },
         skipLocationChange: true,
       } as DropdownAction,

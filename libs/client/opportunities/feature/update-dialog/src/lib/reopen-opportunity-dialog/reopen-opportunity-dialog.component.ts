@@ -17,7 +17,8 @@ import { LabelModule } from '@progress/kendo-angular-label';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+
+import { DialogUtil } from '@app/client/shared/util';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { take } from 'rxjs';
 import { selectCreateOpportunityDialogViewModel } from './reopen-opportunity-dialog.selectors';
@@ -54,7 +55,7 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams: {
-          [DialogQueryParams.reopenOpportunity]: null,
+          [DialogUtil.queryParams.reopenOpportunity]: null,
         },
         queryParamsHandling: 'merge',
       });

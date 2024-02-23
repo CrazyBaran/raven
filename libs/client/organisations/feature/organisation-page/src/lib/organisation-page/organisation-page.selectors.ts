@@ -7,7 +7,7 @@ import {
   organisationsFeature,
 } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+import { DialogUtil } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { tagsQuery } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
@@ -153,8 +153,11 @@ export const selectOrganisationPageViewModel = createSelector(
         ) && !isLoading,
       showStatus: !isLoading && companyStatusDisplayName,
       showOutreachButton: !isLoading && !currentOrganisation?.companyStatus,
-      outreachQueryParams: {
-        [DialogQueryParams.moveToOutreachCompany]: currentOrganisation?.id,
+      outreachQueryParam: {
+        [DialogUtil.queryParams.moveToOutreachCompany]: currentOrganisation?.id,
+      },
+      addToShortlistQueryParam: {
+        [DialogUtil.queryParams.addToShortlist]: currentOrganisation?.id,
       },
     };
   },

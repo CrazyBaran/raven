@@ -13,11 +13,12 @@ import {
   OrganisationsActions,
   organisationsFeature,
 } from '@app/client/organisations/state';
-import { DialogQueryParams, ShelfActions } from '@app/client/shared/shelf';
+import { ShelfActions } from '@app/client/shared/shelf';
 import {
   fadeIn,
   LoaderComponent,
   TagComponent,
+  TagsContainerComponent,
   TilelayoutItemComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
@@ -25,12 +26,16 @@ import {
   DealLeadsPipe,
   DealTeamPipe,
   TimesPipe,
+  ToUserTagPipe,
 } from '@app/client/shared/ui-pipes';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { GridModule, RowClassArgs } from '@progress/kendo-angular-grid';
-import { TileLayoutModule } from '@progress/kendo-angular-layout';
+import {
+  PanelBarModule,
+  TileLayoutModule,
+} from '@progress/kendo-angular-layout';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
@@ -50,14 +55,19 @@ import { SPItem } from '@app/client/files/sdk-pnptimeline';
 import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import { PipelinesActions } from '@app/client/pipelines/state';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
-import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
+import {
+  FeatureFlagDirective,
+  IsEllipsisActiveDirective,
+} from '@app/client/shared/ui-directives';
 import {
   DropdownAction,
   DropdownButtonNavigationComponent,
 } from '@app/client/shared/ui-router';
+import { DialogUtil } from '@app/client/shared/util';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import { TagData } from '@app/rvns-tags';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { ComboBoxModule } from '@progress/kendo-angular-dropdowns';
 import {
@@ -66,6 +76,7 @@ import {
 } from '@progress/kendo-angular-indicators';
 import { FormFieldModule, TextBoxModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import {
   TreeListComponent,
   TreeListModule,
@@ -113,6 +124,11 @@ import {
     ReactiveFormsModule,
     TextBoxModule,
     DropdownButtonNavigationComponent,
+    TooltipModule,
+    FeatureFlagDirective,
+    TagsContainerComponent,
+    ToUserTagPipe,
+    PanelBarModule,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -132,15 +148,23 @@ export class OrganisationPageComponent {
   public sharepointList = this.environment.sharepointList;
   public sharepointWeb = this.environment.sharepointWeb;
 
-  protected store = inject(Store);
+  public shortlistGrid = {
+    data: {
+      data: [
+        {
+          name: 'John Smith',
+          description: '12345',
+          contributors: ['John Smith', 'Jane Smith'],
+          updatedAt: '2021-01-01',
+        },
+      ],
+      total: 25,
+    },
+  };
 
-  protected actions$ = inject(Actions);
+  public store = inject(Store);
 
-  protected router = inject(Router);
-
-  protected filesService = inject(FilesService);
-
-  protected vm = this.store.selectSignal(selectOrganisationPageViewModel);
+  public vm = this.store.selectSignal(selectOrganisationPageViewModel);
 
   public dropdownButtonActions = {
     actions: [
@@ -148,7 +172,7 @@ export class OrganisationPageComponent {
         text: 'Pass on Company',
         routerLink: ['./'],
         queryParams: {
-          [DialogQueryParams.passCompany]: this.vm().currentOrganisationId,
+          [DialogUtil.queryParams.passCompany]: this.vm().currentOrganisationId,
         },
         skipLocationChange: true,
         queryParamsHandling: 'merge',
@@ -157,11 +181,17 @@ export class OrganisationPageComponent {
   };
 
   // files
-  protected fileTable = this.store.selectSignal(
+  public fileTable = this.store.selectSignal(
     selectFilesTableViewModelFactory(this.environment),
   );
 
   public source = computed(() => this.fileTable().source, { equal: _.isEqual });
+
+  protected actions$ = inject(Actions);
+
+  protected router = inject(Router);
+
+  protected filesService = inject(FilesService);
 
   public constructor() {
     const organizationId = this.vm().currentOrganisationId;
@@ -190,6 +220,17 @@ export class OrganisationPageComponent {
             directoryUrl: organisation!.sharepointDirectory!,
             folderId: organisation!.sharepointDirectory!,
           }),
+        );
+      });
+
+    this.actions$
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(ShortlistsActions.bulkAddOrganisationsToShortlistSuccess),
+      )
+      .subscribe(() => {
+        this.store.dispatch(
+          OrganisationsActions.getOrganisation({ id: organizationId }),
         );
       });
   }

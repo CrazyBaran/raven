@@ -2,12 +2,13 @@ import {
   opportunitiesFeature,
   opportunitiesQuery,
 } from '@app/client/opportunities/data-access';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+
+import { DialogUtil } from '@app/client/shared/util';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
 
 export const selectCreateOpportunityDialogViewModel = createSelector(
-  selectQueryParam(DialogQueryParams.reopenOpportunity),
+  selectQueryParam(DialogUtil.queryParams.reopenOpportunity),
   opportunitiesQuery.selectOpportunitiesDictionary,
   opportunitiesQuery.selectOpportunityDetailsIsLoading,
   opportunitiesFeature.selectReopen,
