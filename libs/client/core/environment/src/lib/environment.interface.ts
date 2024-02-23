@@ -1,10 +1,14 @@
-export interface Environment {
+export const featureFlags = ['shortlistsFeature'] as const;
+export type FeatureFlag = (typeof featureFlags)[number];
+
+export type Environment = {
   production: boolean;
   apiUrl: string;
   adClientId: string;
   adAuthority: string;
   adRedirectUri: string;
   adPostLogoutRedirectUri: string;
+  adScope: string;
   sharepointRoot: string;
   sharepointSiteId: string;
   sharepointDriveId: string;
@@ -12,5 +16,4 @@ export interface Environment {
   sharepointWeb: string;
   sharepointList: string;
   websocketUrl: string;
-  pipelineGrouping: boolean;
-}
+} & Record<FeatureFlag, boolean>;
