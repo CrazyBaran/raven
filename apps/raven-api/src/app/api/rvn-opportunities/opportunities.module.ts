@@ -18,6 +18,7 @@ import { ParseTemplateWithGroupsAndFieldsPipe } from '../../shared/pipes/parse-t
 import { ShareOpportunityEntity } from '../rvn-acl/entities/share-opportunity.entity';
 import { DataWarehouseModule } from '../rvn-data-warehouse/data-warehouse.module';
 import { FilesModule } from '../rvn-files/files.module';
+import { ShortlistsModule } from '../rvn-shortlists/shortlists.module';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
 import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
@@ -62,6 +63,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
     PipelineModule,
     WebSocketsModule,
     FilesModule,
+    ShortlistsModule,
   ],
   providers: [
     OrganisationService,

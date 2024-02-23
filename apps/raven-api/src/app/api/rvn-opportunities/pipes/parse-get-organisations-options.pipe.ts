@@ -4,7 +4,7 @@ import {
   DealRoomLastFundingType,
   LastFundingType,
 } from '@app/shared/data-warehouse';
-import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, ParseUUIDPipe, PipeTransform } from '@nestjs/common';
 import deparam from 'jquery-deparam';
 import { CompanyStatus } from 'rvns-shared';
 import {
@@ -59,6 +59,16 @@ export class ParseGetOrganisationsOptionsPipe
       options.filters.status = options.filters.status
         ? [...options.filters.status, this.mapStatus(values['status'])]
         : [this.mapStatus(values['status'])];
+    }
+
+    if (values['shortlistId']) {
+      const parseUUIDPipe = new ParseUUIDPipe();
+      options.shortlistId = await parseUUIDPipe.transform(
+        values['shortlistId'],
+        {
+          type: 'custom',
+        },
+      );
     }
 
     options.primaryDataSource = this.evaluatePrimaryDataSource(options);

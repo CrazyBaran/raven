@@ -1,4 +1,4 @@
-import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, ParseUUIDPipe, PipeTransform } from '@nestjs/common';
 
 import {
   defaultGetShortlistsOptions,
@@ -42,6 +42,16 @@ export class ParseGetShortlistsOptionsPipe
       defaultGetShortlistsOptions.orderBy;
 
     options.query = values['query'] ?? null;
+
+    if (values['organisationId']) {
+      const parseUUIDPipe = new ParseUUIDPipe();
+      options.organisationId = await parseUUIDPipe.transform(
+        values['organisationId'],
+        {
+          type: 'custom',
+        },
+      );
+    }
 
     return options;
   }

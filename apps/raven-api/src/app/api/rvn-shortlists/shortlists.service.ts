@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyStatus, PagedDataWithExtras, ShortlistType } from 'rvns-shared';
 import { In, Not, Repository, SelectQueryBuilder } from 'typeorm';
@@ -33,6 +37,10 @@ export class ShortlistsService {
     CompanyStatus.MET,
     CompanyStatus.OUTREACH,
   ];
+  private readonly nonRemovableShortlistTypes = [
+    ShortlistType.PERSONAL,
+    ShortlistType.MAIN,
+  ];
 
   public constructor(
     @InjectRepository(ShortlistEntity)
@@ -59,6 +67,11 @@ export class ShortlistsService {
     }
     this.addStatsQuery(queryBuilder);
 
+    if (options?.organisationId) {
+      queryBuilder.andWhere('organisations.id = :organisationId', {
+        organisationId: options.organisationId,
+      });
+    }
     const searchString = options.query
       ? `%${options.query.toLowerCase()}%`
       : undefined;
@@ -98,10 +111,20 @@ export class ShortlistsService {
       this.shortlistRepository.createQueryBuilder('shortlists');
 
     queryBuilder.where({ id });
-    queryBuilder.limit(1);
     this.addStatsQuery(queryBuilder);
 
-    return queryBuilder.getOne();
+    const shortlist = await queryBuilder.getOne();
+    if (!shortlist) {
+      throw new NotFoundException();
+    }
+
+    if (shortlist.type === ShortlistType.MAIN) {
+      const totalStats = await this.getTotalStats();
+      shortlist.inPipelineCount += totalStats.inPipelineCount;
+      shortlist.organisationsCount += totalStats.organisationsCount;
+    }
+
+    return shortlist;
   }
 
   public async create(
@@ -204,6 +227,20 @@ export class ShortlistsService {
   }
 
   public async remove(id: string): Promise<void> {
+    const shortlistToRemove = await this.shortlistRepository.findOne({
+      where: { id },
+    });
+
+    if (!shortlistToRemove) {
+      throw new NotFoundException();
+    }
+
+    if (
+      this.nonRemovableShortlistTypes.indexOf(shortlistToRemove.type) !== -1
+    ) {
+      throw new ForbiddenException('This shortlist cannot be deleted.');
+    }
+
     await this.shortlistRepository.delete(id);
   }
 
@@ -254,10 +291,26 @@ export class ShortlistsService {
       this.shortlistRepository.createQueryBuilder('shortlists');
 
     queryBuilder.where({ creatorId: userId, type: ShortlistType.PERSONAL });
-    queryBuilder.limit(1);
     this.addStatsQuery(queryBuilder);
 
     return queryBuilder.getOne();
+  }
+
+  public async getMainShortlist(withStats = true): Promise<ShortlistEntity> {
+    const queryBuilder =
+      this.shortlistRepository.createQueryBuilder('shortlists');
+
+    queryBuilder.where({ type: ShortlistType.MAIN });
+    queryBuilder.limit(1);
+    const mainShortlist = await queryBuilder.getOne();
+    if (mainShortlist && withStats) {
+      const totalStats = await this.getTotalStats();
+
+      mainShortlist.inPipelineCount = totalStats.inPipelineCount;
+      mainShortlist.organisationsCount = totalStats.organisationsCount;
+    }
+
+    return mainShortlist;
   }
 
   private addStatsQuery(
@@ -284,6 +337,41 @@ export class ShortlistsService {
     return queryBuilder;
   }
 
+  private async getTotalStats(): Promise<Partial<ShortlistEntity>> {
+    const statsQueryBuilder =
+      this.organisationRepository.createQueryBuilder('shortlisted');
+    statsQueryBuilder.leftJoin('shortlisted.shortlists', 'shortlists');
+    statsQueryBuilder.leftJoin('shortlisted.opportunities', 'opportunities');
+
+    statsQueryBuilder.where('shortlists.type IN (:...shortlistTypes)', {
+      shortlistTypes: [ShortlistType.CUSTOM, ShortlistType.PERSONAL],
+    });
+
+    statsQueryBuilder.loadRelationCountAndMap(
+      'shortlisted.inPipelineCount',
+      'shortlisted.opportunities',
+      'opportunity',
+      (qb) =>
+        qb
+          .leftJoin('opportunity.pipelineStage', 'pipelineStage')
+          .andWhere('pipelineStage.relatedCompanyStatus IN (:...statuses)', {
+            statuses: this.inPipelineStatuses,
+          }),
+    );
+
+    const [organisations, totalCount] =
+      await statsQueryBuilder.getManyAndCount();
+
+    const inPipelineCount = organisations.reduce(
+      (a, b) => a['inPipelineCount'] + b['inPipelineCount'],
+    );
+
+    return {
+      inPipelineCount: Number(inPipelineCount),
+      organisationsCount: totalCount,
+    };
+  }
+
   private async getShortlistsExtras(
     userEntity?: UserEntity,
   ): Promise<ShortlistEntity[]> {
@@ -295,6 +383,9 @@ export class ShortlistsService {
 
       !!personalShortlist && extras.push(personalShortlist);
     }
+
+    const mainShortlist = await this.getMainShortlist();
+    !!mainShortlist && extras.push(mainShortlist);
 
     return extras;
   }

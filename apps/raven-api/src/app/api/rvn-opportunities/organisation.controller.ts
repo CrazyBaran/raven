@@ -49,6 +49,7 @@ export class OrganisationController {
   @ApiQuery({ name: 'query', type: String, required: false })
   @ApiQuery({ name: 'member', type: String, required: false })
   @ApiQuery({ name: 'round', type: String, required: false })
+  @ApiQuery({ name: 'shortlistId', type: String, required: false })
   @ApiQuery({
     name: 'filters',
     type: String,

@@ -9,6 +9,7 @@ export class GetShortlistsOptions {
   public direction?: Direction;
   public orderBy?: SortableField;
   public query?: string;
+  public organisationId?: string;
 }
 
 export const defaultGetShortlistsOptions: GetShortlistsOptions = {

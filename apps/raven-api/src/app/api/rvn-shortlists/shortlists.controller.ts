@@ -48,6 +48,7 @@ export class ShortlistsController {
   @ApiQuery({ name: 'take', type: Number, required: false })
   @ApiQuery({ name: 'dir', type: String, required: false })
   @ApiQuery({ name: 'query', type: String, required: false })
+  @ApiQuery({ name: 'organisationId', type: String, required: false })
   @ApiResponse({
     status: 200,
     description: 'List of shortlists',

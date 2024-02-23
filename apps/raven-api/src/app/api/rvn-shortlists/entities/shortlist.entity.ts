@@ -41,9 +41,9 @@ export class ShortlistEntity {
   @JoinColumn({ name: 'creator_id' })
   public creator: UserEntity;
 
-  @Column()
+  @Column({ nullable: true })
   @RelationId((t: ShortlistEntity) => t.creator)
-  public creatorId: string;
+  public creatorId: string | null;
 
   @ManyToMany(
     () => OrganisationEntity,
@@ -80,6 +80,6 @@ export class ShortlistEntity {
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
-    this.creatorId = this.creatorId.toLowerCase();
+    this.creatorId = this.creatorId?.toLowerCase() || null;
   }
 }

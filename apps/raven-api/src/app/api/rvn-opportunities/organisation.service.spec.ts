@@ -8,6 +8,7 @@ import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehous
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
+import { ShortlistsService } from '../rvn-shortlists/shortlists.service';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
@@ -60,6 +61,10 @@ describe('OrganisationService', () => {
         },
         {
           provide: PipelineUtilityService,
+          useValue: {},
+        },
+        {
+          provide: ShortlistsService,
           useValue: {},
         },
       ],

@@ -46,7 +46,7 @@ export class ShortlistOrganisationEntity {
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
-    this.organisationId = this.organisationId.toLowerCase();
-    this.shortlistId = this.shortlistId.toLowerCase();
+    this.organisationId = this.organisationId?.toLowerCase();
+    this.shortlistId = this.shortlistId?.toLowerCase();
   }
 }

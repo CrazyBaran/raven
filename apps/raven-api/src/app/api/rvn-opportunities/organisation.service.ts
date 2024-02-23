@@ -21,6 +21,7 @@ import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehous
 import { DataWarehouseService } from '../rvn-data-warehouse/data-warehouse.service';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
+import { ShortlistsService } from '../rvn-shortlists/shortlists.service';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { OpportunityEntity } from './entities/opportunity.entity';
@@ -58,6 +59,7 @@ export class OrganisationService {
     @Optional() private readonly dataWarehouseService: DataWarehouseService,
     private readonly domainResolver: DomainResolver,
     private readonly pipelineUtilityService: PipelineUtilityService,
+    private readonly shortlistsService: ShortlistsService,
   ) {
     this.logger.setContext(OrganisationService.name);
   }
@@ -499,7 +501,8 @@ export class OrganisationService {
       .leftJoinAndSelect(
         'organisations.organisationDomains',
         'organisationDomains',
-      );
+      )
+      .leftJoin('organisations.shortlists', 'shortlists');
 
     const searchString = options.query
       ? `%${options.query.toLowerCase()}%`
@@ -513,6 +516,18 @@ export class OrganisationService {
         .orWhere(`LOWER(organisationDomains.domain) LIKE :searchString`, {
           searchString,
         });
+    }
+
+    if (options.shortlistId) {
+      const mainShortlist =
+        await this.shortlistsService.getMainShortlist(false);
+      if (mainShortlist?.id === options.shortlistId) {
+        queryBuilder.andWhere('shortlists.id IS NOT NULL');
+      } else {
+        queryBuilder.andWhere('shortlists.id = :shortlistId', {
+          shortlistId: options.shortlistId,
+        });
+      }
     }
 
     if (options.skip || options.take) {

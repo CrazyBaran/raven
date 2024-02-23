@@ -17,6 +17,6 @@ import { ShortlistsService } from './shortlists.service';
   ],
   controllers: [ShortlistsController],
   providers: [ShortlistsService, UserRegisteredEventHandler],
-  exports: [],
+  exports: [ShortlistsService],
 })
 export class ShortlistsModule {}

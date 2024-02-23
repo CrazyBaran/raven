@@ -5,6 +5,7 @@ import { from } from 'rxjs';
 import { OrganisationsTableComponent } from './organisations-table.component';
 
 import ResizeObserver from 'resize-observer-polyfill';
+import { ENVIRONMENT } from '../../../../../core/environment/src';
 global.ResizeObserver = ResizeObserver;
 
 describe('ClientOrganisationsUiComponent', () => {
@@ -21,6 +22,10 @@ describe('ClientOrganisationsUiComponent', () => {
           useValue: {
             params: from([]),
           },
+        },
+        {
+          provide: ENVIRONMENT,
+          useValue: {},
         },
       ],
     }).compileComponents();

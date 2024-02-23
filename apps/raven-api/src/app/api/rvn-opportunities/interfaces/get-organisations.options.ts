@@ -26,6 +26,7 @@ export class GetOrganisationsOptions {
   public round?: string;
   public primaryDataSource?: PrimaryDataSource;
   public filters?: CompanyFilterOptions;
+  public shortlistId?: string;
 }
 
 export const defaultGetOrganisationsOptions: GetOrganisationsOptions = {
