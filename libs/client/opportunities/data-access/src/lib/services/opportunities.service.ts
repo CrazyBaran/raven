@@ -4,8 +4,7 @@ import { Params } from '@angular/router';
 import { PipelinesService } from '@app/client/pipelines/data-access';
 import { GenericResponse } from '@app/rvns-api';
 import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';
-import { Observable, switchMap, tap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, switchMap } from 'rxjs';
 
 export type OpportunityChanges = {
   pipelineStageId?: string;
@@ -98,19 +97,15 @@ export class OpportunitiesService {
   public reopenOpportunity(
     opportunityId: string,
   ): Observable<GenericResponse<OpportunityData>> {
-    return this.pipelineService.getPipelines().pipe(
-      map(
-        (response) =>
-          response.data?.[0]?.stages.find(
-            (stage) =>
-              stage.displayName.toLowerCase().includes('preliminary') &&
-              stage.displayName.toLowerCase().includes('in progress'),
-          ),
-      ),
-      tap((stage) => !stage && console.error('No preliminary stage found')),
-      switchMap((stage) =>
-        this.patchOpportunity(opportunityId, { pipelineStageId: stage!.id }),
-      ),
+    return this.getOpportunityDetails(opportunityId).pipe(
+      switchMap((opportunityDetailsResponse) => {
+        const previousPipelineStageId =
+          opportunityDetailsResponse.data?.previousPipelineStageId;
+
+        return this.patchOpportunity(opportunityId, {
+          pipelineStageId: previousPipelineStageId,
+        });
+      }),
     );
   }
 }
