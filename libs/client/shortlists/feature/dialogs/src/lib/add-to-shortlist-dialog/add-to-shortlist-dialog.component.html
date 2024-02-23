@@ -7,17 +7,21 @@
     <p class="mb-8">Choose a Shortlist or Create a New One</p>
     <form [formGroup]="form" class="flex flex-col gap-6">
       <kendo-formfield>
-        <kendo-dropdownlist
+        <kendo-multiselect
           [data]="vm().shortlists"
           [textField]="'name'"
           [valueField]="'id'"
-          [formControlName]="'id'"
-          [defaultItem]="{ name: 'Choose from list', id: null }"
+          [formControlName]="'shortlistsIds'"
+          [checkboxes]="true"
+          [autoClose]="false"
+          [valuePrimitive]="true"
+          [loading]="vm().isLoadingData!"
+          placeholder="Choose from list"
         />
         <kendo-formerror> Shortlist's Name is Required</kendo-formerror>
       </kendo-formfield>
 
-      <kendo-button (click)="switchToCreateShortlistMode()"
+      <kendo-button class="self-start" (click)="switchToCreateShortlistMode()"
         >Create New Shortlist</kendo-button
       >
     </form>
@@ -25,7 +29,16 @@
 
   <kendo-dialog-actions>
     <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
-    <kendo-button (click)="submit()" themeColor="primary"> Add </kendo-button>
+    <kendo-button
+      (click)="submit()"
+      [disabled]="!form.valid || vm().isUpdating!"
+      themeColor="primary"
+    >
+      @if (vm().isUpdating) {
+        <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+      }
+      Add
+    </kendo-button>
   </kendo-dialog-actions>
 } @else {
   <kendo-dialog-titlebar (close)="onDialogClose()">
@@ -46,6 +59,9 @@
       [disabled]="!createShortlistForm.valid"
       themeColor="primary"
     >
+      @if (vm().isCreating) {
+        <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+      }
       Create
     </kendo-button>
   </kendo-dialog-actions>

@@ -10,9 +10,12 @@
   <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
   <kendo-button
     (click)="submit()"
-    [disabled]="!form.valid"
+    [disabled]="(form | controlInvalid$ | async) || vm().isCreating!"
     themeColor="primary"
   >
+    @if (vm().isCreating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
     Create Shortlist
   </kendo-button>
 </kendo-dialog-actions>

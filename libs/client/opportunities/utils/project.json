@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/opportunities/utils/src",
   "prefix": "lib",
-  "tags": [],
+  "tags": ["type:util"],
   "projectType": "library",
   "targets": {
     "test": {
@@ -15,7 +15,13 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/client/opportunities/page/opportunity-details/**/*.ts",
+          "libs/client/opportunities/page/opportunity-details/**/*.html"
+        ]
+      }
     }
   }
 }

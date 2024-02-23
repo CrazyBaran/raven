@@ -1,7 +1,30 @@
+@if (bulkActions().length) {
+  <div class="mb-3 flex flex-col gap-4" *featureFlag="'shortlistsFeature'">
+    <div class="text-xxs text-buttons-button-text-50 uppercase">
+      bulk options
+    </div>
+
+    <div class="flex flex-row gap-6">
+      @for (action of bulkActions(); track action.text) {
+        <kendo-button
+          [queryParams]="getBulkQueryParam(action)"
+          [routerLink]="['./']"
+          queryParamsHandling="merge"
+          [skipLocationChange]="true"
+          [disabled]="!checkedRows().length"
+          >{{ action.text }}</kendo-button
+        >
+      }
+    </div>
+  </div>
+}
+
 <kendo-grid
   #grid
+  (appOnResize)="onResize($event)"
   (filterChange)="filterChange($event)"
   (scrollBottom)="onLoadMore()"
+  [clearNoneSort]="true"
   [data]="gridData"
   [expandedDetailKeys]="collapsedRows()"
   [filter]="filters!"
@@ -10,14 +33,40 @@
   [sort]="sort"
   [sortable]="true"
   [trackBy]="trackByFn"
-  [clearNoneSort]="true"
   class="organisation-table h-full"
   filterable="menu"
   kendoGridExpandDetailsBy="id"
   scrollable="scrollable"
   uiKendoUrlSorting
-  (appOnResize)="onResize($event)"
 >
+  <kendo-grid-column [width]="35" *featureFlag="'shortlistsFeature'">
+    <ng-template kendoGridCellTemplate let-organisation>
+      <input
+        (click)="
+          $event.stopPropagation(); toggleCheckedRow(organisation.id, $event)
+        "
+        [checked]="checkedAll() || checkedRows().includes(organisation.id)"
+        [unpatch]
+        kendoCheckBox
+        size="large"
+        type="checkbox"
+      />
+    </ng-template>
+    @if (showCheckboxHeader()) {
+      <ng-template kendoGridHeaderTemplate>
+        <input
+          (change)="toggleAll($event)"
+          [checked]="checkedAll()"
+          [indeterminate]="checkedRows().length && !checkedAll()"
+          [unpatch]
+          kendoCheckBox
+          size="large"
+          type="checkbox"
+        />
+      </ng-template>
+    }
+  </kendo-grid-column>
+
   @for (columnTemplate of additionalFields; track columnTemplate.name) {
     <kendo-grid-column
       [field]="columnTemplate.field"

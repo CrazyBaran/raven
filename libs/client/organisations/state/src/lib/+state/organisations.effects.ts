@@ -1,8 +1,10 @@
 import { inject } from '@angular/core';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, map, of, switchMap } from 'rxjs';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, concatMap, filter, map, of, switchMap } from 'rxjs';
+import { organisationsFeature } from '../../index';
 import {
   OrganisationsActions,
   OrganisationsUrlActions,
@@ -210,6 +212,22 @@ export const getDataWarehouseLastUpdated = createEffect(
           }),
         ),
       ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const getDataWarehouseLastUpdatedIfNotLoaded = createEffect(
+  (actions$ = inject(Actions), store = inject(Store)) => {
+    return actions$.pipe(
+      ofType(OrganisationsActions.getDataWarehouseLastUpdatedIfNotLoaded),
+      concatLatestFrom(() =>
+        store.select(organisationsFeature.selectDataWarehouseLastUpdated),
+      ),
+      filter(([, lastUpdated]) => !lastUpdated),
+      map(() => OrganisationsActions.getDataWarehouseLastUpdated()),
     );
   },
   {

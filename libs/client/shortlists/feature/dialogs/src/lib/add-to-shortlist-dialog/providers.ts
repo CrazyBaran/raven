@@ -4,12 +4,13 @@ import {
   DynamicModule,
 } from '@app/client/shared/dynamic-renderer/data-access';
 
+import { provideShortlistsFeature } from '@app/client/shortlists/state';
 import { AddToShortlistDialogComponent } from './add-to-shortlist-dialog.component';
 
 @NgModule({
   imports: [AddToShortlistDialogComponent],
   exports: [AddToShortlistDialogComponent],
-  providers: [],
+  providers: [provideShortlistsFeature()],
 })
 export class AddToShortlistDialogModule implements DynamicModule {
   public entry = AddToShortlistDialogComponent;

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ShelfModule, ShelfStoreFacade } from '@app/client/shared/shelf';
+import { ENVIRONMENT } from '@app/client/core/environment';
+import { ShelfModule } from '@app/client/shared/shelf';
 import { WindowModule } from '@progress/kendo-angular-dialog';
 import { NavAsideComponent } from '../../components/nav-aside/nav-aside.component';
 import { UiNavAsideRoute } from '../../components/nav-aside/nav-aside.interface';
@@ -21,7 +22,7 @@ import { UiNavAsideRoute } from '../../components/nav-aside/nav-aside.interface'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  public shelfFacade = inject(ShelfStoreFacade);
+  public environment = inject(ENVIRONMENT);
 
   public readonly mainRoutes2: UiNavAsideRoute[] = [
     {
@@ -45,6 +46,7 @@ export class HomeComponent {
           name: 'Shortlist',
           path: 'companies/shortlists',
           icon: 'fa-solid fa-check',
+          disabled: !this.environment.shortlistsFeature,
         },
         {
           name: 'Pipeline',

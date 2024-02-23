@@ -27,6 +27,8 @@ import {
 } from '@app/client/shared/ui-templates';
 import { isNavigatingAway } from '@app/client/shared/util-router';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import { ShortlistsActions } from '@app/client/shortlists/state';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { Subject, filter, takeUntil } from 'rxjs';
@@ -69,6 +71,7 @@ export class OrganisationsTableV2Component {
   public constructor(
     private store: Store,
     private router: Router,
+    private actions$: Actions,
   ) {
     this.store.dispatch(PipelinesActions.getPipelines());
     this.store.dispatch(
@@ -103,6 +106,16 @@ export class OrganisationsTableV2Component {
         this.store.dispatch(
           OrganisationsUrlActions.queryParamsChanged({ params }),
         );
+      });
+
+    this.actions$
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(ShortlistsActions.bulkAddOrganisationsToShortlistSuccess),
+      )
+      .subscribe(() => {
+        this.organisationTable.checkedRows.set([]);
+        this.organisationTable.checkedAll.set(false);
       });
   }
 

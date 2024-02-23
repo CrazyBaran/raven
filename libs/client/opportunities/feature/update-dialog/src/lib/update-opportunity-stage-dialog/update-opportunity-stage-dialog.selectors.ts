@@ -4,13 +4,13 @@ import {
 } from '@app/client/opportunities/data-access';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { pipelinesQuery } from '@app/client/pipelines/state';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+import { DialogUtil } from '@app/client/shared/util';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { tagsFeature } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
 
 export const selectUpdateOpportunityStageViewModel = createSelector(
-  selectQueryParam(DialogQueryParams.updateOpportunityStage),
+  selectQueryParam(DialogUtil.queryParams.updateOpportunityStage),
   opportunitiesQuery.selectOpportunitiesDictionary,
   opportunitiesQuery.selectOpportunityDetailsIsLoading,
   opportunitiesFeature.selectUpdate,

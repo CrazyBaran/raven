@@ -15,7 +15,7 @@ import {
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+import { DialogUtil } from '@app/client/shared/util';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import {
@@ -71,7 +71,7 @@ export class PassCompanyDialogComponent extends DialogContentBase {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams: {
-          [DialogQueryParams.passCompany]: null,
+          [DialogUtil.queryParams.passCompany]: null,
         },
         queryParamsHandling: 'merge',
       });

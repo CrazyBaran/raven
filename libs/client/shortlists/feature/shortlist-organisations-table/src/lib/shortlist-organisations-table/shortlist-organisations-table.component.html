@@ -1,0 +1,86 @@
+<app-page-template pageIcon="">
+  <div class="flex items-center gap-2" page-header-title>
+    <kendo-button
+      [routerLink]="['/companies/shortlists']"
+      fillMode="flat"
+      iconClass="fa-regular fa-star"
+      themeColor="primary"
+      >Shortlists</kendo-button
+    >
+    @if (vm().shortlist?.name) {
+      <i
+        class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+      ></i>
+      <kendo-button [disabled]="true" fillMode="flat" themeColor="primary">{{
+        vm().shortlist?.name
+      }}</kendo-button>
+    }
+  </div>
+  <div class="flex items-center gap-3" page-header-actions>
+    <app-text-box-navigation [model]="vm().queryModel" class="w-64" />
+  </div>
+  <div
+    class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
+    page-content
+  >
+    <div class="grid grid-cols-[1fr_1fr_auto] items-start gap-4">
+      <div class="min-w-0 space-y-4">
+        <div class="text-xxs text-buttons-button-text-50 uppercase">
+          Description
+        </div>
+
+        <p
+          class="line-clamp-2"
+          kendoTooltip
+          position="right"
+          [showTooltipIfClamped]="vm().shortlist?.description"
+        >
+          {{ vm().shortlist?.description }}
+        </p>
+      </div>
+      <div class="space-y-4">
+        <div class="text-xxs text-buttons-button-text-50 uppercase">
+          Contributors
+        </div>
+
+        <p
+          class="line-clamp-2"
+          kendoTooltip
+          position="left"
+          [showTooltipIfClamped]="vm().shortlistContributors"
+        >
+          {{ vm().shortlistContributors }}
+        </p>
+      </div>
+      <kendo-button
+        [queryParams]="vm().editQueryParam"
+        [routerLink]="['./']"
+        queryParamsHandling="merge"
+        skipLocationChange="true"
+        class="mr-10"
+      >
+        Edit Info</kendo-button
+      >
+    </div>
+    <app-quick-filters-template>
+      <div class="flex gap-6">
+        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation" />
+        <app-buttongroup-navigation [model]="vm().statuses" />
+      </div>
+    </app-quick-filters-template>
+
+    @if ((vm().filters | keyvalue).length > 0) {
+      <app-filter-tiles [filters]="vm().filters" />
+    }
+
+    <div class="flex-1 shrink-0 overflow-hidden">
+      <app-organisations-table
+        (loadMore)="onLoadMore($event)"
+        [bulkActions]="vm().bulkActions"
+        [model]="vm().tableModel!"
+        [showCheckboxHeader]="vm().showCheckboxHeader"
+        class="block h-full"
+      />
+    </div>
+  </div>
+</app-page-template>

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
+// TODO: fix boundaries
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { PipelinesService } from '@app/client/pipelines/data-access';
 import { GenericResponse } from '@app/rvns-api';
 import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';

@@ -4,23 +4,13 @@
     <kendo-button
       [queryParams]="createShortlistQueryParams"
       [routerLink]="['./']"
+      [skipLocationChange]="true"
       fillMode="flat"
       iconClass="fa-solid fa-square-plus"
       queryParamsHandling="merge"
       size="large"
       >Create New Shortlist</kendo-button
     >
-    <!--      [skipLocationChange]="true"-->
-    <kendo-button
-      [queryParams]="addToShortlistQueryParams"
-      [routerLink]="['./']"
-      fillMode="flat"
-      iconClass="fa-solid fa-square-plus"
-      queryParamsHandling="merge"
-      size="large"
-      >add
-    </kendo-button>
-    <!--      [skipLocationChange]="true"-->
   </div>
   <div
     class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"

@@ -64,6 +64,8 @@ export const OrganisationsActions = createActionGroup({
       data: DataWarehouseLastUpdatedEntity;
     }>(),
     'Get Data Warehouse Last Updated Failure': props<{ error: string }>(),
+
+    'Get Data Warehouse Last Updated If Not Loaded': emptyProps(),
   },
 });
 

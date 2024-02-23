@@ -1,12 +1,25 @@
-<kendo-dialog-titlebar (close)="onDialogClose()" class="secondary-dialog">
+<kendo-dialog-titlebar (close)="onDialogClose()">
   <span class="k-window-title">Delete Shortlist</span>
 </kendo-dialog-titlebar>
 
-<div class="flex min-h-[340px] flex-col gap-6 p-10 pb-0"></div>
+<div class="flex flex-col gap-6 p-10 pt-3">
+  <p>
+    Deleting this shortlist will permanently be removed from the platform
+    entirely.
+  </p>
+  <p class="mb-4">Are you sure you want to continue?</p>
+</div>
 
 <kendo-dialog-actions>
   <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
-  <kendo-button (click)="submit()" themeColor="secondary">
-    Create Shortlist
+  <kendo-button
+    (click)="delete()"
+    [disabled]="vm().isDeleting"
+    themeColor="primary"
+  >
+    @if (vm().isDeleting) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Delete
   </kendo-button>
 </kendo-dialog-actions>

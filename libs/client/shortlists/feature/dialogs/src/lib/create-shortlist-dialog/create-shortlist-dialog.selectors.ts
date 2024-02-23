@@ -1,12 +1,11 @@
-import { DialogQueryParams } from '@app/client/shared/shelf';
-import { selectQueryParam } from '@app/client/shared/util-router';
+import { shortlistsQuery } from '@app/client/shortlists/state';
 import { createSelector } from '@ngrx/store';
 
 export const selectCreateShortlistViewModel = createSelector(
-  selectQueryParam(DialogQueryParams.createShortlist),
-  (id) => {
+  shortlistsQuery.selectLoadingStates,
+  ({ create: isCreating }) => {
     return {
-      organisationId: id,
+      isCreating,
     };
   },
 );

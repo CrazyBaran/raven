@@ -3,6 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
+import { DialogUtil } from '@app/client/shared/util';
 import {
   selectQueryParam,
   selectQueryParams,
@@ -20,18 +21,6 @@ import { exhaustMap, filter, map, of, tap } from 'rxjs';
 import { ShelfActions } from './actions/shelf.actions';
 import { DynamicDialogService, RavenShelfService } from './raven-shelf.service';
 
-export class DialogQueryParams {
-  public static readonly reopenOpportunity = 'reopen-opportunity';
-  public static readonly updateOpportunityStage = 'update-opportunity-stage';
-  public static readonly passCompany = 'pass-company';
-  public static readonly moveToOutreachCompany = 'move-to-outreach-company';
-
-  public static readonly updateShortlist = 'update-shortlist';
-  public static readonly createShortlist = 'create-shortlist';
-  public static readonly deleteShortlist = 'delete-shortlist';
-  public static readonly addToShortlist = 'add-to-shortlist';
-}
-
 export const dynamicDialogsConfig: Record<
   string,
   | {
@@ -40,15 +29,15 @@ export const dynamicDialogsConfig: Record<
     }
   | ComponentTemplate['load']
 > = {
-  [DialogQueryParams.reopenOpportunity]: () =>
+  [DialogUtil.queryParams.reopenOpportunity]: () =>
     import('@app/client/opportunities/feature/update-dialog').then(
       (m) => m.ReopenOpportunityDialogModule,
     ),
-  [DialogQueryParams.updateOpportunityStage]: () =>
+  [DialogUtil.queryParams.updateOpportunityStage]: () =>
     import('@app/client/opportunities/feature/update-dialog').then(
       (m) => m.UpdateOpportunityStageModule,
     ),
-  [DialogQueryParams.passCompany]: {
+  [DialogUtil.queryParams.passCompany]: {
     template: {
       load: () =>
         import('@app/client/organisations/feature/dialogs').then(
@@ -59,26 +48,30 @@ export const dynamicDialogsConfig: Record<
       cssClass: 'raven-custom-dialog k-dialog-secondary',
     },
   },
-  [DialogQueryParams.moveToOutreachCompany]: () =>
+  [DialogUtil.queryParams.moveToOutreachCompany]: () =>
     import('@app/client/organisations/feature/dialogs').then(
       (m) => m.MoveToOutreachCompanyDialogModule,
     ),
 
-  [DialogQueryParams.updateShortlist]: () =>
+  [DialogUtil.queryParams.updateShortlist]: () =>
     import('@app/client/shortlists/feature/dialogs').then(
       (m) => m.UpdateShortlistDialogModule,
     ),
-  [DialogQueryParams.createShortlist]: () =>
+  [DialogUtil.queryParams.createShortlist]: () =>
     import('@app/client/shortlists/feature/dialogs').then(
       (m) => m.CreateShortlistDialogModule,
     ),
-  [DialogQueryParams.deleteShortlist]: () =>
+  [DialogUtil.queryParams.deleteShortlist]: () =>
     import('@app/client/shortlists/feature/dialogs').then(
       (m) => m.DeleteShortlistDialogModule,
     ),
-  [DialogQueryParams.addToShortlist]: () =>
+  [DialogUtil.queryParams.addToShortlist]: () =>
     import('@app/client/shortlists/feature/dialogs').then(
       (m) => m.AddToShortlistDialogModule,
+    ),
+  [DialogUtil.queryParams.removeFromShortlist]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.RemoveFromShortlistDialogModule,
     ),
 };
 

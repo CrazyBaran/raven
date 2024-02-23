@@ -193,8 +193,14 @@
       "@app/client/shortlists/data-access": [
         "libs/client/shortlists/data-access/src/index.ts"
       ],
+      "@app/client/shortlists/feature/dialogs": [
+        "libs/client/shortlists/feature/dialogs/src/index.ts"
+      ],
       "@app/client/shortlists/feature/shell": [
         "libs/client/shortlists/feature/shell/src/index.ts"
+      ],
+      "@app/client/shortlists/feature/shortlist/organisations/table": [
+        "libs/client/shortlists/feature/shortlist-organisations-table/src/index.ts"
       ],
       "@app/client/shortlists/feature/table": [
         "libs/client/shortlists/feature/table/src/index.ts"
@@ -202,10 +208,9 @@
       "@app/client/shortlists/state": [
         "libs/client/shortlists/state/src/index.ts"
       ],
-      "@app/client/shortlists/feature/dialogs": [
-        "libs/client/shortlists/feature/dialogs/src/index.ts"
-      ],
       "@app/client/shortlists/ui": ["libs/client/shortlists/ui/src/index.ts"],
+      "@app/client/shortlists/utils": ["libs/client/shortlists/utils/src/index.ts"],
+
       "@app/client/tags/api-organisations": [
         "libs/client/tags/api-organisations/src/index.ts"
       ],
@@ -247,7 +252,7 @@
       "opentelemetry-instrumentation-bullmqpro": [
         "libs/shared/opentelemetry-instrumentation-bullmqpro/src/index.ts"
       ],
-      "rvns-shared": ["libs/rvns-shared/src/index.ts"]
+      "rvns-shared": ["libs/rvns-shared/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

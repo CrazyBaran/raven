@@ -8,6 +8,8 @@ export const PipelinesActions = createActionGroup({
     'Get Pipelines Success': props<{ data: PipelineDefinitionModel[] }>(),
     'Get Pipelines Failure': props<{ error: string }>(),
 
+    'Get Pipelines If Not Loaded': emptyProps(),
+
     'Clear Pipelines': emptyProps(),
   },
 });

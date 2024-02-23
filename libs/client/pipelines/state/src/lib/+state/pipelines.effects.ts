@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { PipelinesService } from '@app/client/pipelines/data-access';
-import { PipelineStageData } from '@app/rvns-pipelines';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, map, of } from 'rxjs';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, concatMap, filter, map, of } from 'rxjs';
 import { colorDictionary } from './pipeline-colors.constants';
 import { PipelinesActions } from './pipelines.actions';
+import { pipelinesQuery } from './pipelines.selectors';
 
 export const getPipelineColors = (
-  stage: PipelineStageData,
+  stage: { configuration?: unknown },
   index: number,
 ): {
   primaryColor: string;
@@ -49,7 +50,19 @@ export class PipelinesEffects {
     );
   });
 
+  private loadPipelinesIfNotLoaded$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PipelinesActions.getPipelinesIfNotLoaded),
+      concatLatestFrom(() =>
+        this.store.select(pipelinesQuery.selectAllPipelineStages),
+      ),
+      filter(([, pipelines]) => !pipelines.length),
+      map(() => PipelinesActions.getPipelines()),
+    );
+  });
+
   public constructor(
+    private readonly store: Store,
     private readonly actions$: Actions,
     private readonly pipelinesService: PipelinesService,
   ) {}

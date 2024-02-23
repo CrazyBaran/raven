@@ -15,11 +15,17 @@ import {
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 
 import { RouterLink } from '@angular/router';
-import { DialogQueryParams } from '@app/client/shared/shelf';
+import { DialogUtil } from '@app/client/shared/util';
+import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import { ShortlistTableComponent } from '@app/client/shortlists/ui';
 import { TagsActions } from '@app/client/tags/state';
+import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { selectShortlistsTableViewModel } from './shortlist-table-container.selectors';
+import {
+  selectShortlistsTableParams,
+  selectShortlistsTableViewModel,
+} from './shortlist-table-container.selectors';
 
 @Component({
   selector: 'app-shortlist-table-container',
@@ -41,25 +47,39 @@ import { selectShortlistsTableViewModel } from './shortlist-table-container.sele
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShortlistTableContainerComponent {
+  protected actions$ = inject(Actions);
   protected store = inject(Store);
 
   protected readonly vm = this.store.selectSignal(
     selectShortlistsTableViewModel,
   );
 
-  protected createShortlistQueryParams = {
-    [DialogQueryParams.createShortlist]: '',
-  };
+  protected readonly params = this.store.selectSignal(
+    selectShortlistsTableParams,
+  );
 
-  addToShortlistQueryParams = {
-    [DialogQueryParams.addToShortlist]: '',
+  protected createShortlistQueryParams = {
+    [DialogUtil.queryParams.createShortlist]: '',
   };
 
   public constructor() {
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({ tagTypes: ['people'] }),
     );
+
+    this.store
+      .select(selectShortlistsTableParams)
+      .pipe(distinctUntilChangedDeep())
+      .subscribe((query) => {
+        this.store.dispatch(ShortlistsActions.getShortlists({ query }));
+      });
   }
 
-  onLoadMore($event: { offset: number; take: number }) {}
+  protected onLoadMore($event: { offset: number; take: number }): void {
+    this.store.dispatch(
+      ShortlistsActions.loadMoreShortlists({
+        query: { ...this.params(), ...$event },
+      }),
+    );
+  }
 }

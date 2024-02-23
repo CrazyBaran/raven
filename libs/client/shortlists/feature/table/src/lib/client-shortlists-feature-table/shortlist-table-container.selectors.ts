@@ -1,13 +1,14 @@
 import { tagsQuery } from '@app/client/organisations/api-tags';
 
-import { DialogQueryParams } from '@app/client/shared/shelf';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import { ButtongroupNavigationModel } from '@app/client/shared/ui-router';
+import { DialogUtil } from '@app/client/shared/util';
 import {
   buildButtonGroupNavigation,
   buildInputNavigation,
   buildPageParamsSelector,
 } from '@app/client/shared/util-router';
+import { ShortlistEntity, shortlistsQuery } from '@app/client/shortlists/state';
 import { ShortListTableRow } from '@app/client/shortlists/ui';
 import { createSelector } from '@ngrx/store';
 
@@ -65,73 +66,78 @@ export const selectOrganisationTableQueryModel = createSelector(
     }),
 );
 
-// export const selectIsLoadingOrganisationsTable = createSelector(
-//   organisationsFeature.selectLoaded,
-//   (loaded) => !loaded,
-// );
-
 export const selectShortlistRows = createSelector(
-  tagsQuery.selectCurrentUserTag,
-  (organisations): ShortListTableRow[] => {
-    return [
-      {
-        id: '1',
-        name: 'Shortlist 1',
-        description: 'Shortlist 1 Description',
-        companies: '12',
-        inPipeline: '3',
-        contributors: ['John Doe', 'Jane Doe'],
-        updatedAt: '2021-08-01',
-        actionsModel: {
-          iconClass: 'fa-solid fa-ellipsis-vertical',
-          actions: [
-            {
-              text: 'Edit Shortlist',
-              queryParams: { [DialogQueryParams.updateShortlist]: '1' },
-              skipLocationChange: true,
-              routerLink: [''],
-              queryParamsHandling: 'merge',
-            },
-            {
-              text: 'Delete Shortlist',
-              queryParams: { [DialogQueryParams.deleteShortlist]: '1' },
-              skipLocationChange: true,
-              routerLink: [''],
-              queryParamsHandling: 'merge',
-              actionStyle: { color: 'var(--informational-error)' },
-            },
-          ],
-        },
-      },
-      {
-        id: '2',
-        name: 'Shortlist 2',
-        description: 'Shortlist 2 Description',
-        companies: '5',
-        inPipeline: '2',
-        contributors: ['John Doe', 'Jane Doe'],
-        updatedAt: '2021-08-01',
-      },
-      {
-        id: '3',
-        name: 'Shortlist 3',
-        description: 'Shortlist 3 Description',
-        companies: '8',
-        inPipeline: '1',
-        contributors: ['John Doe', 'Jane Doe'],
-        updatedAt: '2021-08-01',
-      },
+  shortlistsQuery.selectTable,
+  shortlistsQuery.selectEntities,
+  shortlistsQuery.selectMainShortlist,
+  shortlistsQuery.selectMyShortlist,
+  ({ ids }, entities, mainShortlist, myShortlist) => {
+    const shortlists = [
+      mainShortlist,
+      myShortlist,
+      ...ids
+        .filter((id) => id !== myShortlist?.id && id !== mainShortlist?.id)
+        .map((id) => entities[id]),
     ];
+
+    return shortlists
+      .filter((x): x is ShortlistEntity => !!x)
+      .map(
+        (shortlist): ShortListTableRow => ({
+          id: shortlist.id,
+          name: shortlist.name,
+          description: shortlist.description,
+          companies: shortlist.stats?.organisationsCount?.toString(),
+          inPipeline: shortlist.stats?.inPipelineCount?.toString(),
+          type: shortlist.type,
+          contributors: shortlist.contibutors?.map((x) => x.name) ?? [],
+          updatedAt:
+            typeof shortlist.updatedAt === 'string'
+              ? shortlist.updatedAt
+              : shortlist.updatedAt.toISOString(),
+          actionsModel: {
+            iconClass: 'fa-solid fa-ellipsis-vertical',
+            actions: [
+              {
+                text: 'Edit Shortlist',
+                queryParams: {
+                  [DialogUtil.queryParams.updateShortlist]: shortlist.id,
+                },
+                skipLocationChange: true,
+                routerLink: [''],
+                queryParamsHandling: 'merge',
+              },
+              {
+                text: 'Delete Shortlist',
+                queryParams: {
+                  [DialogUtil.queryParams.deleteShortlist]: shortlist.id,
+                },
+                skipLocationChange: true,
+                routerLink: [''],
+                queryParamsHandling: 'merge',
+                actionStyle: { color: 'var(--informational-error)' },
+              },
+            ],
+          },
+        }),
+      );
   },
 );
 
 export const selectTableModel = createSelector(
   selectShortlistsTableParams,
   selectShortlistRows,
-  (params, rows): TableViewModel<ShortListTableRow> => ({
+  shortlistsQuery.selectLoadingStates,
+  shortlistsQuery.selectTable,
+  (
+    params,
+    rows,
+    { table: isLoading, loadMoreTable: isLoadMore },
+    { total },
+  ): TableViewModel<ShortListTableRow> => ({
     ...params,
-    isLoading: false,
-    total: 50,
+    total,
+    isLoading: !!isLoading || !!isLoadMore,
     data: rows,
   }),
 );
@@ -139,12 +145,12 @@ export const selectTableModel = createSelector(
 export const selectShortlistsTableViewModel = createSelector(
   selectShortlistsTableButtonGroupNavigation,
   selectOrganisationTableQueryModel,
-  selectShortlistsTableParams,
+
   selectTableModel,
-  (buttonGroupNavigation, queryModel, params, tableModel) => ({
+  (buttonGroupNavigation, queryModel, tableModel) => ({
     buttonGroupNavigation,
     queryModel,
-    params,
+
     tableModel,
   }),
 );

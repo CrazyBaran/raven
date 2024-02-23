@@ -1,26 +1,55 @@
 <kendo-grid
+  id="shortlist-table"
   (scrollBottom)="onLoadMore()"
+  [clearNoneSort]="true"
   [data]="gridData"
   [loading]="isLoading"
+  [rowClass]="rowCallback"
   [sort]="sort"
   [sortable]="true"
-  [trackBy]="getTrackByFn('id')"
-  [clearNoneSort]="true"
+  [trackBy]="trackByFn"
   class="grid-borderless h-full"
   scrollable="scrollable"
   uiKendoUrlSorting
 >
   <kendo-grid-column headerClass="!font-bold" title="List Name">
     <ng-template kendoGridCellTemplate let-shortlist>
-      <p [isEllipsisActive]="true">
-        {{ shortlist.name }}
-      </p>
+      <a
+        [routerLink]="['/companies', 'shortlists', shortlist.id]"
+        class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
+      >
+        <div class="flex grow items-center gap-2 overflow-hidden">
+          @if (
+            (shortlist | isPersonalShortlistType) ||
+            (shortlist | isMyShortlistType)
+          ) {
+            <i class="fa-solid fa-user-circle text-buttons-button-text-90"></i>
+          }
+          @if (shortlist | isMainShortlistType) {
+            <i
+              class="fa-solid fa-star text-informational-warning items-center"
+            ></i>
+          }
+          <p
+            [isEllipsisActive]="true"
+            class="text-base group-hover:font-bold"
+            kendoTooltip
+          >
+            {{ shortlist.name }}
+          </p>
+        </div>
+      </a>
     </ng-template>
   </kendo-grid-column>
 
   <kendo-grid-column headerClass="!font-bold" title="Description">
     <ng-template kendoGridCellTemplate let-shortlist>
-      <p>
+      <p
+        [title]="shortlist.description"
+        class="line-clamp-2"
+        kendoTooltip
+        position="right"
+      >
         {{ shortlist.description }}
       </p>
     </ng-template>
@@ -44,11 +73,15 @@
 
   <kendo-grid-column headerClass="!font-bold" title="Contributors">
     <ng-template kendoGridCellTemplate let-shortlist>
-      <ui-tags-container
-        [rows]="4"
-        [tags]="shortlist.contributors | toUserTag"
-        class="w-full"
-      />
+      @if (shortlist | isMyShortlistType) {
+        Me
+      } @else {
+        <ui-tags-container
+          [rows]="4"
+          [tags]="shortlist.contributors | toUserTag"
+          class="w-full"
+        />
+      }
     </ng-template>
   </kendo-grid-column>
 

@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DropDownButtonModule } from '@progress/kendo-angular-buttons';
+import { RxUnpatch } from '@rx-angular/template/unpatch';
 
 export type DropdownAction = {
   actionStyle?: { [k: string]: string };
@@ -39,7 +40,7 @@ export const dropdownbuttonNavigationModelDefaults: Required<DropdownbuttonNavig
 @Component({
   selector: 'app-dropdownbutton-navigation',
   standalone: true,
-  imports: [DropDownButtonModule, RouterLink, NgStyle, NgClass],
+  imports: [DropDownButtonModule, RouterLink, NgStyle, NgClass, RxUnpatch],
   templateUrl: './text-box-navigation.component.html',
   styleUrls: ['./text-box-navigation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

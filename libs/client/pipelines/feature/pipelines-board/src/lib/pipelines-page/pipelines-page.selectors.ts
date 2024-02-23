@@ -186,58 +186,52 @@ function toKanbanFooterGroup(stage: PipelineStageData): KanbanFooterGroup {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const selectKanbanBoard = (groupingEnabled: boolean) =>
-  createSelector(
-    selectAllPipelineStages,
-    selectOportunitiesStageDictionary,
-    (stages, opportunitiesStageDictionary): KanbanBoard => {
-      const footers: KanbanFooterGroup[] = _.chain(stages)
-        .filter(({ configuration }) => !!configuration)
-        .orderBy('configuration.order')
-        .map(toKanbanFooterGroup)
-        .value();
+export const selectKanbanBoard = createSelector(
+  selectAllPipelineStages,
+  selectOportunitiesStageDictionary,
+  (stages, opportunitiesStageDictionary): KanbanBoard => {
+    const footers: KanbanFooterGroup[] = _.chain(stages)
+      .filter(({ configuration }) => !!configuration)
+      .orderBy('configuration.order')
+      .map(toKanbanFooterGroup)
+      .value();
 
-      const columns = _.chain(stages)
-        .filter(({ configuration, isHidden }) => !configuration && !isHidden)
-        .orderBy('order')
-        .map((stage) => ({
-          ...stage,
-          prefix: groupingEnabled
-            ? stage.displayName.split(' - ')[0]
-            : stage.displayName,
-          displayName: groupingEnabled
-            ? stage.displayName.split(' - ')[1] ?? stage.displayName
-            : stage.displayName,
-        }))
-        .groupBy('prefix')
-        .mapValues(
-          (stages): KanbanColumn => ({
-            name: stages[0].prefix,
-            backgroundColor: stages[0].secondaryColor ?? stages[0].primaryColor,
-            color: stages[0].primaryColor,
-            groups: stages.map(
-              (stage): KanbanGroup => ({
-                id: stage.id,
-                name: stage.displayName,
-                cards:
-                  opportunitiesStageDictionary[stage.id]?.map((opportunity) =>
-                    createCard(opportunity, stage),
-                  ) ?? [],
-                length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
-              }),
-            ),
-          }),
-        )
-        .values()
-        .value();
+    const columns = _.chain(stages)
+      .filter(({ configuration, isHidden }) => !configuration && !isHidden)
+      .orderBy('order')
+      .map((stage) => ({
+        ...stage,
+        prefix: stage.displayName.split(' - ')[0],
+        displayName: stage.displayName.split(' - ')[1] ?? stage.displayName,
+      }))
+      .groupBy('prefix')
+      .mapValues(
+        (stages): KanbanColumn => ({
+          name: stages[0].prefix,
+          backgroundColor: stages[0].secondaryColor ?? stages[0].primaryColor,
+          color: stages[0].primaryColor,
+          groups: stages.map(
+            (stage): KanbanGroup => ({
+              id: stage.id,
+              name: stage.displayName,
+              cards:
+                opportunitiesStageDictionary[stage.id]?.map((opportunity) =>
+                  createCard(opportunity, stage),
+                ) ?? [],
+              length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
+            }),
+          ),
+        }),
+      )
+      .values()
+      .value();
 
-      return {
-        columns,
-        footers: groupingEnabled ? footers : [],
-        preliminiaryColumn: columns!.find(
-          ({ name }) => name.toLowerCase().includes('preliminary dd')!,
-        )!,
-      };
-    },
-  );
+    return {
+      columns,
+      footers,
+      preliminiaryColumn: columns!.find(
+        ({ name }) => name.toLowerCase().includes('preliminary dd')!,
+      )!,
+    };
+  },
+);
