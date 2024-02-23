@@ -52,19 +52,7 @@ export class HomeComponent {
           path: 'companies/pipeline',
           icon: 'fa-regular fa-fire',
         },
-        {
-          name: 'portfolio',
-          path: 'companies/portfolio',
-          icon: 'fa-regular fa-house',
-          disabled: true,
-        },
       ],
-    },
-    {
-      name: 'Investors',
-      path: 'investors',
-      icon: 'fa-solid fa-user-tie',
-      disabled: true,
     },
     {
       name: 'Notes',

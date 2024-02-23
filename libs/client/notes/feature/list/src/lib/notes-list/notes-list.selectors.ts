@@ -19,10 +19,16 @@ export const selectNotesListViewModel = createSelector(
       params,
       name: 'noteType',
       toggleable: true,
-      buttons: templates.map((template) => ({
-        id: template.name,
-        name: template.name,
-      })),
+      buttons: [
+        {
+          id: null,
+          name: 'All Note Types',
+        },
+        ...templates.map((template) => ({
+          id: template.name,
+          name: template.name,
+        })),
+      ],
       staticQueryParams: { skip: null },
     }),
     buttonGroupAssignedTo: buildButtonGroupNavigation({

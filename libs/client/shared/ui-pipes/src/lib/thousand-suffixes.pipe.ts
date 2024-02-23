@@ -10,7 +10,7 @@ export const toThousands = (input: number, digits = 0): number | string => {
 
 export const transformToThousands = (input: any, digits = 0): any => {
   if (input === null || input === undefined) {
-    return 0;
+    return 'N/a';
   }
   return Number.isNaN(input) || input < 1000
     ? input
