@@ -69,6 +69,14 @@ module.exports = {
       link: {
         hover: `#008077`,
       },
+      'informational-warning': {
+        DEFAULT: 'var(--informational-warning)',
+        '-8': 'var(--informational-warning-8)',
+        '-16': 'var(--informational-warning-16)',
+        '-24': 'var(--informational-warning-24)',
+        '-30': 'var(--informational-warning-30)',
+        '-50': 'var(--informational-warning-50)',
+      },
       'series-a': {
         DEFAULT: 'var(--series-a)',
         'lighten-50': 'var(--series-a-lighten-50)',
@@ -208,5 +216,6 @@ module.exports = {
         },
       });
     }),
+    require('@tailwindcss/line-clamp'),
   ],
 };

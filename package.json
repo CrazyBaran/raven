@@ -137,6 +137,7 @@
     "@rx-angular/template": "^17.0.0",
     "@sentry/node": "^7.66.0",
     "@sentry/tracing": "^7.66.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@taskforcesh/bullmq-pro": "^6.3.4",
     "@taskforcesh/nestjs-bullmq-pro": "^2.0.0",
     "bcrypt": "^5.1.1",

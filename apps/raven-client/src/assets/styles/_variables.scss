@@ -4,6 +4,7 @@ $primary-color: #00a59b;
 $secondary-color: #002c3c;
 $tertiary-color: #9bcbeb;
 $light: #d9d9d6;
+$dark: #424242;
 
 $error-color: #f31700;
 $informational-error-color: #c52a1a;
@@ -55,6 +56,7 @@ $series-variables: (
   --rv-secondary: #{$secondary-color};
   --rv-tertiary: #{$tertiary-color};
   --rv-light: #{$light};
+  --rv-dark: #{$dark};
 
   --rv-error: #{$error-color};
   --rv-info: #{$info-color};
