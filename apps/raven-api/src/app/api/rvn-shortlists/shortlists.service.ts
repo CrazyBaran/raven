@@ -363,7 +363,8 @@ export class ShortlistsService {
       await statsQueryBuilder.getManyAndCount();
 
     const inPipelineCount = organisations.reduce(
-      (a, b) => a['inPipelineCount'] + b['inPipelineCount'],
+      (a, b) => a + b['inPipelineCount'],
+      0,
     );
 
     return {
