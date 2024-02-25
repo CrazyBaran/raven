@@ -5,24 +5,23 @@ import { Injectable } from '@nestjs/common';
 export class DataWarehouseOrderByMapper {
   public map(value: DataWarehouseCompanyOrderBy): string {
     switch (value) {
-      case 'name':
-        return 'name';
       case 'funding.totalFundingAmount':
-        return 'totalFundingAmount';
+        return 'data.fundingTotalFundingAmount';
       case 'funding.lastFundingAmount':
-        return 'lastFundingAmount';
+        return 'data.fundingLastFundingAmount';
       case 'funding.lastFundingDate':
-        return 'lastFundingDate';
+        return 'data.fundingLastFundingDate';
       case 'funding.lastFundingType':
-        return 'specterLastFundingType';
+        return 'data.fundingLastFundingType';
       case 'funding.lastFundingRound':
-        return 'dealRoomLastFundingRound';
+        return 'data.fundingLastFundingRound';
       case 'hq.country':
-        return 'country';
+        return 'data.hqCountry';
       case 'mcvLeadScore':
-        return 'mcvLeadScore';
+        return 'data.mcvLeadScore';
+      case 'name':
       default:
-        throw new Error(`Unknown order by value: ${value}`);
+        return 'data.name';
     }
   }
 }

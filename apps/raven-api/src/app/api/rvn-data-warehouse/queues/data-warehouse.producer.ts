@@ -16,4 +16,17 @@ export class DataWarehouseProducer {
   public async enqueueRegenerateStatic(): Promise<void> {
     await this.queue.add(DWH_QUEUE.JOBS.REGENERATE_STATIC, {});
   }
+
+  public async enqueueRegenerateProxy(
+    skip?: number,
+    take?: number,
+  ): Promise<void> {
+    await this.queue.add(DWH_QUEUE.JOBS.REGENERATE_PROXY, {
+      options: { skip, take },
+    });
+  }
+
+  public async enqueueClearProxy(): Promise<void> {
+    await this.queue.add(DWH_QUEUE.JOBS.CLEAR_PROXY, {});
+  }
 }

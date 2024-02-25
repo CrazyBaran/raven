@@ -1,24 +1,28 @@
 import {
   CompanyDto,
-  CompanyFilterOptions,
   DataWarehouseLastUpdatedDto,
   FounderDto,
-  GetCompaniesOptions,
 } from '@app/shared/data-warehouse';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { JobPro } from '@taskforcesh/bullmq-pro';
+import { Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { DataWarehouseCacheService } from './cache/data-warehouse-cache.service';
-import { DWH_SERVICE } from './data-warehouse.const';
-import { DataWarehouseAccessService } from './v1/data-warehouse.access.service';
+import { DataWarehouseAccessBase } from './interfaces/data-warehouse.access.base';
+import { DataWarehouseCompaniesIndustryV1Entity } from './proxy/entities/data-warehouse-company-industries.v1.entity';
+import { DataWarehouseCompaniesInvestorV1Entity } from './proxy/entities/data-warehouse-company-investors.v1.entity';
 
 @Injectable()
 export class DataWarehouseService {
   public constructor(
     private readonly logger: RavenLogger,
-    @Inject(DWH_SERVICE)
-    private readonly dataWarehouseAccessService: DataWarehouseAccessService,
+    private readonly dataWarehouseAccessService: DataWarehouseAccessBase,
     private readonly dataWarehouseCacheService: DataWarehouseCacheService,
+    @InjectRepository(DataWarehouseCompaniesIndustryV1Entity)
+    private readonly dataWarehouseCompaniesIndustryV1Repository: Repository<DataWarehouseCompaniesIndustryV1Entity>,
+    @InjectRepository(DataWarehouseCompaniesInvestorV1Entity)
+    private readonly dataWarehouseCompaniesInvestorV1Repository: Repository<DataWarehouseCompaniesInvestorV1Entity>,
   ) {
     this.logger.setContext(DataWarehouseService.name);
   }
@@ -159,31 +163,51 @@ export class DataWarehouseService {
     await this.dataWarehouseCacheService.setLastChecked(new Date(Date.now()));
   }
 
-  public async getFilteredCompanies(
-    options: GetCompaniesOptions,
-    filterOptions?: CompanyFilterOptions,
-  ): Promise<{ items: Partial<CompanyDto>[]; count: number }> {
-    return await this.dataWarehouseAccessService.filterCompanies(
-      options,
-      filterOptions,
-    );
-  }
-
-  public async getIndustries(query: string): Promise<string[]> {
-    const industries = await this.dataWarehouseCacheService.getIndustries();
-    if (query) {
-      return industries.filter((industry) =>
-        industry.toLowerCase().includes(query.toLowerCase()),
+  public async getInvestors(options?: {
+    skip?: number;
+    take?: number;
+    query?: string;
+  }): Promise<string[]> {
+    const collate = 'COLLATE SQL_Latin1_General_CP1_CI_AS';
+    const queryBuilder =
+      this.dataWarehouseCompaniesInvestorV1Repository.createQueryBuilder(
+        'investors',
+      );
+    if (options.query) {
+      queryBuilder.where(
+        `investors.name ${collate} LIKE '%${options.query}%' ${collate} `,
       );
     }
-    return industries;
+
+    queryBuilder
+      .skip(options.skip ? options.skip : 0)
+      .take(options.take ? options.take : 25);
+
+    const result = await queryBuilder.getMany();
+    return result.map((investor) => investor.name);
   }
 
-  public async getInvestors(skip: number, take: number): Promise<string[]> {
-    const investors = await this.dataWarehouseCacheService.getInvestors(
-      skip,
-      take,
-    );
-    return investors;
+  public async getIndustries(options?: {
+    skip?: number;
+    take?: number;
+    query?: string;
+  }): Promise<string[]> {
+    const collate = 'COLLATE SQL_Latin1_General_CP1_CI_AS';
+    const queryBuilder =
+      this.dataWarehouseCompaniesIndustryV1Repository.createQueryBuilder(
+        'industries',
+      );
+    if (options.query) {
+      queryBuilder.where(
+        `industries.name ${collate} LIKE '%${options.query}%' ${collate} `,
+      );
+    }
+
+    queryBuilder
+      .skip(options.skip ? options.skip : 0)
+      .take(options.take ? options.take : 25);
+
+    const result = await queryBuilder.getMany();
+    return result.map((industry) => industry.name);
   }
 }

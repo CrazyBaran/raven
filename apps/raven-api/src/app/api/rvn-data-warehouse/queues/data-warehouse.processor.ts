@@ -5,9 +5,13 @@ import { Processor } from '@taskforcesh/nestjs-bullmq-pro';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { DWH_QUEUE } from '../data-warehouse.const';
 import { DataWarehouseService } from '../data-warehouse.service';
+import { DataWarehouseRegenerator } from '../proxy/data-warehouse.regenerator';
 
-export interface DataWarehouseJobData<EncryptedType = Record<string, string>> {
-  body: EncryptedType;
+export interface DataWarehouseJobData {
+  options?: {
+    skip?: number;
+    take?: number;
+  };
 }
 
 @Processor(DWH_QUEUE.NAME, {
@@ -19,6 +23,7 @@ export class DataWarehouseProcessor extends AbstractSimpleQueueProcessor<DataWar
   public constructor(
     public readonly logger: RavenLogger,
     private readonly dataWarehouseService: DataWarehouseService,
+    private readonly dataWarehouseRegenerator: DataWarehouseRegenerator,
     private readonly eventEmitter: EventEmitter2,
   ) {
     logger.setContext(DataWarehouseProcessor.name);
@@ -29,11 +34,28 @@ export class DataWarehouseProcessor extends AbstractSimpleQueueProcessor<DataWar
     switch (job.name) {
       case DWH_QUEUE.JOBS.REGENERATE: {
         await this.dataWarehouseService.regenerateCache(job);
+        await this.dataWarehouseRegenerator.regenerateInvestors();
+        await this.dataWarehouseRegenerator.regenerateIndustries();
         this.eventEmitter.emit('data-warehouse.regeneration.finished');
         return true;
       }
       case DWH_QUEUE.JOBS.REGENERATE_STATIC: {
-        await this.dataWarehouseService.regenerateStaticCache(job);
+        await this.dataWarehouseRegenerator.regenerateInvestors();
+        await this.dataWarehouseRegenerator.regenerateIndustries();
+        return true;
+      }
+      case DWH_QUEUE.JOBS.CLEAR_PROXY: {
+        await this.dataWarehouseRegenerator.clearProxy();
+        return true;
+      }
+      case DWH_QUEUE.JOBS.REGENERATE_PROXY: {
+        await this.dataWarehouseRegenerator.regenerateProxy(
+          job.data?.options?.skip,
+          job.data?.options?.take,
+          async (progress) => {
+            await job.updateProgress(progress);
+          },
+        );
         return true;
       }
       default: {

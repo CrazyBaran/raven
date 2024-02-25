@@ -5,7 +5,7 @@ import { DWH_V1_SCHEMA } from '../data-warehouse.v1.const';
   name: DWH_V1_SCHEMA.views.companies.name,
   schema: DWH_V1_SCHEMA.schemaName,
 })
-export class CompanyDwhEntity {
+export class CompanyV1DwhEntity {
   @PrimaryColumn({ name: 'DealRoomCompanyID' })
   public companyId: number;
 
@@ -198,6 +198,9 @@ export class CompanyDwhEntity {
 
   @Column({ name: 'DealRoom Last Updated' })
   public dealRoomLastUpdated: Date;
+
+  @Column({ name: 'LastRefreshedUTC' })
+  public lastRefreshedUtc: Date;
 
   @Column({ name: 'MCV Lead Score', type: 'float' })
   public mcvLeadScore: number;

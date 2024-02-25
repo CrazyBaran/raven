@@ -1,4 +1,4 @@
 export class IndustryDto {
-  public industries: string[];
-  public subIndustries: string[];
+  public industries?: string[];
+  public subIndustries?: string[];
 }

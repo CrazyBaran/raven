@@ -7,26 +7,14 @@ import {
   Index,
   ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
-  ValueTransformer,
 } from 'typeorm';
 import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
+import { DataWarehouseCompanyV1Entity } from '../../rvn-data-warehouse/proxy/entities/data-warehouse-company.v1.entity';
 import { ShortlistEntity } from '../../rvn-shortlists/entities/shortlist.entity';
 import { OpportunityEntity } from './opportunity.entity';
 import { OrganisationDomainEntity } from './organisation-domain.entity';
-
-export class SimpleArrayTransformer implements ValueTransformer {
-  public to(value: string[] | string): string {
-    if ((value as string[])?.join) {
-      return (value as string[])?.join(',');
-    }
-    return value as string;
-  }
-
-  public from(value: string): string[] {
-    return value?.split(',');
-  }
-}
 
 @Entity('organisations')
 @Index(['id'], { unique: true })
@@ -51,6 +39,12 @@ export class OrganisationEntity implements SharepointEnabledEntity {
     (organisationDomain) => organisationDomain.organisation,
   )
   public organisationDomains: OrganisationDomainEntity[];
+
+  @OneToOne(
+    (type) => DataWarehouseCompanyV1Entity,
+    (dataWarehouseCompany) => dataWarehouseCompany.organisation,
+  )
+  public dataV1: DataWarehouseCompanyV1Entity;
 
   @Column({
     nullable: true,

@@ -210,7 +210,7 @@ export const environment = {
       .get('DWH_AUTH_TYPE')
       .default('azure-active-directory-default')
       .asString(),
-    version: env.get('DWH_VERSION').default('v1').asString(),
+    version: env.get('DWH_VERSION').default('v2').asString(),
     defaultAuth: {
       userName: env.get('DWH_USERNAME').asString(),
       password: env.get('DWH_PASSWORD').asString(),

@@ -19,6 +19,7 @@ import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisat
 import { DataWarehouseCacheService } from '../rvn-data-warehouse/cache/data-warehouse-cache.service';
 import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
 import { DataWarehouseService } from '../rvn-data-warehouse/data-warehouse.service';
+import { OrganisationProvider } from '../rvn-data-warehouse/proxy/organisation.provider';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
 import { ShortlistsService } from '../rvn-shortlists/shortlists.service';
@@ -59,6 +60,7 @@ export class OrganisationService {
     @Optional() private readonly dataWarehouseService: DataWarehouseService,
     private readonly domainResolver: DomainResolver,
     private readonly pipelineUtilityService: PipelineUtilityService,
+    private readonly organisationProvider: OrganisationProvider,
     private readonly shortlistsService: ShortlistsService,
   ) {
     this.logger.setContext(OrganisationService.name);
@@ -71,15 +73,81 @@ export class OrganisationService {
       throw new Error('Options are required');
     }
 
-    if (options.primaryDataSource === 'raven') {
-      return await this.findAllByRaven(options);
-    } else if (options.primaryDataSource === 'dwh') {
-      return await this.findAllByDataWarehouse(options);
-    } else {
-      throw new Error(
-        `Primary data source ${options.primaryDataSource} not supported`,
+    const { organisationIds, count } =
+      await this.organisationProvider.getOrganisations(options);
+
+    const queryBuilder =
+      this.organisationRepository.createQueryBuilder('organisations');
+
+    queryBuilder
+      .leftJoinAndSelect('organisations.opportunities', 'opportunities')
+      .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
+      .leftJoinAndSelect('opportunities.tag', 'tag')
+      .leftJoinAndSelect('opportunities.shares', 'shares')
+      .leftJoinAndSelect('shares.actor', 'member')
+      .leftJoinAndSelect(
+        'opportunities.pipelineDefinition',
+        'pipelineDefinition',
+      )
+      .leftJoinAndSelect(
+        'organisations.organisationDomains',
+        'organisationDomains',
       );
-    }
+
+    queryBuilder.where(`organisations.id IN (:...organisationIds)`, {
+      organisationIds,
+    });
+
+    const organisations = await queryBuilder.getMany();
+
+    const teamsForOpportunities =
+      await this.opportunityTeamService.getOpportunitiesTeams(
+        (organisations as unknown as OrganisationDataWithOpportunities[])
+          .map((org) => org.opportunities)
+          .flat() as unknown as OpportunityEntity[],
+      );
+
+    const affinityEnrichedData =
+      await this.affinityEnricher.enrichOrganisations(
+        organisations,
+        async (entity, data) => {
+          for (const opportunity of data.opportunities) {
+            const pipelineStage =
+              await this.pipelineUtilityService.getPipelineStageOrDefault(
+                opportunity.stage.id,
+              );
+
+            opportunity.stage = {
+              ...opportunity.stage,
+              displayName: pipelineStage.displayName,
+              order: pipelineStage.order,
+              mappedFrom: pipelineStage.mappedFrom,
+              relatedCompanyStatus: pipelineStage.relatedCompanyStatus,
+            };
+
+            opportunity.team = teamsForOpportunities[opportunity.id];
+          }
+
+          data.companyStatus = this.evaluateCompanyStatus(entity, data);
+
+          return data;
+        },
+      );
+
+    const enrichedData = this.dataWarehouseEnricher
+      ? await this.dataWarehouseEnricher?.enrichOrganisations(
+          affinityEnrichedData,
+        )
+      : affinityEnrichedData;
+
+    return {
+      items: enrichedData.sort((a, b) => {
+        const lowestIndexA = organisationIds.indexOf(a.id);
+        const lowestIndexB = organisationIds.indexOf(b.id);
+        return lowestIndexA - lowestIndexB;
+      }),
+      total: count,
+    } as PagedOrganisationData;
   }
 
   public async findOne(id: string): Promise<OrganisationDataWithOpportunities> {
@@ -292,6 +360,10 @@ export class OrganisationService {
         Math.round((i / dataWarehouseCompanyCount) * 100),
       );
     }
+
+    await this.eventEmitter.emitAsync(
+      'data-warehouse.regeneration.organisations.finished',
+    );
   }
 
   public getNonExistentDataWarehouseData(
@@ -650,115 +722,6 @@ export class OrganisationService {
     return {
       items: enrichedData,
       total: count,
-    } as PagedOrganisationData;
-  }
-
-  private async findAllByDataWarehouse(
-    options?: GetOrganisationsOptions,
-  ): Promise<PagedOrganisationData> {
-    if (!options) {
-      throw new Error('Options are required');
-    }
-
-    const dataWarehouseData =
-      await this.dataWarehouseService.getFilteredCompanies(
-        {
-          skip: options.skip,
-          take: options.take,
-          orderBy: options.orderBy,
-          direction: options.direction,
-          query: options.query,
-        },
-        options.filters,
-      );
-
-    const domains = this.domainResolver.cleanDomains(
-      dataWarehouseData.items.map((company) => company.domain),
-    );
-
-    if (domains.length === 0) {
-      return {
-        items: [],
-        total: 0,
-      } as PagedOrganisationData;
-    }
-    const queryBuilder =
-      this.organisationRepository.createQueryBuilder('organisations');
-
-    queryBuilder
-      .leftJoinAndSelect('organisations.opportunities', 'opportunities')
-      .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
-      .leftJoinAndSelect('opportunities.tag', 'tag')
-      .leftJoinAndSelect('opportunities.shares', 'shares')
-      .leftJoinAndSelect('shares.actor', 'member')
-      .leftJoinAndSelect(
-        'opportunities.pipelineDefinition',
-        'pipelineDefinition',
-      )
-      .leftJoinAndSelect(
-        'organisations.organisationDomains',
-        'organisationDomains',
-      );
-
-    queryBuilder.where(
-      `organisationDomains.domain IN (${domains
-        .map((domain) => `'${domain}'`)
-        .join(', ')})`,
-    );
-
-    const [organisations, count] = await queryBuilder.getManyAndCount();
-
-    const teamsForOpportunities =
-      await this.opportunityTeamService.getOpportunitiesTeams(
-        (organisations as unknown as OrganisationDataWithOpportunities[])
-          .map((org) => org.opportunities)
-          .flat() as unknown as OpportunityEntity[],
-      );
-
-    const affinityEnrichedData =
-      await this.affinityEnricher.enrichOrganisations(
-        organisations,
-        async (entity, data) => {
-          for (const opportunity of data.opportunities) {
-            const pipelineStage =
-              await this.pipelineUtilityService.getPipelineStageOrDefault(
-                opportunity.stage.id,
-              );
-
-            opportunity.stage = {
-              ...opportunity.stage,
-              displayName: pipelineStage.displayName,
-              order: pipelineStage.order,
-              mappedFrom: pipelineStage.mappedFrom,
-              relatedCompanyStatus: pipelineStage.relatedCompanyStatus,
-            };
-
-            opportunity.team = teamsForOpportunities[opportunity.id];
-          }
-
-          data.companyStatus = this.evaluateCompanyStatus(entity, data);
-
-          return data;
-        },
-      );
-
-    const enrichedData = this.dataWarehouseEnricher
-      ? await this.dataWarehouseEnricher?.enrichOrganisations(
-          affinityEnrichedData,
-        )
-      : affinityEnrichedData;
-
-    return {
-      items: enrichedData.sort((a, b) => {
-        const lowestIndexA = Math.min(
-          ...a.domains.map((domain) => domains.indexOf(domain)),
-        );
-        const lowestIndexB = Math.min(
-          ...b.domains.map((domain) => domains.indexOf(domain)),
-        );
-        return lowestIndexA - lowestIndexB;
-      }),
-      total: dataWarehouseData.count,
     } as PagedOrganisationData;
   }
 

@@ -5,6 +5,7 @@ import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
+import { OrganisationProvider } from '../rvn-data-warehouse/proxy/organisation.provider';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
@@ -65,6 +66,10 @@ describe('OrganisationService', () => {
         },
         {
           provide: ShortlistsService,
+          useValue: {},
+        },
+        {
+          provide: OrganisationProvider,
           useValue: {},
         },
       ],

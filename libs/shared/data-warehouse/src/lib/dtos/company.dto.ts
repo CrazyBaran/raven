@@ -66,4 +66,19 @@ export class CompanyDto {
 
   public specterLastUpdated?: Date;
   public dealRoomLastUpdated?: Date;
+  public lastRefreshedUtc?: Date;
 }
+
+export const exposedCompanyData: Partial<keyof CompanyDto>[] = [
+  'name',
+  'domain',
+  'description',
+  'hq',
+  'actors',
+  'funding',
+  'industry',
+  'mcvLeadScore',
+  'lastRefreshedUtc',
+  'specterLastUpdated',
+  'dealRoomLastUpdated',
+];

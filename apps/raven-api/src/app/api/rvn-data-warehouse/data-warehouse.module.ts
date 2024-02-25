@@ -5,31 +5,37 @@ import { SqlServerConnectionCredentialsAuthenticationOptions } from 'typeorm/dri
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
 import { environment } from '../../../environments/environment';
 import { BullService } from '../../core/bull.service';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
+import { ShortlistsModule } from '../rvn-shortlists/shortlists.module';
 import { DataWarehouseCacheService } from './cache/data-warehouse-cache.service';
 import { DataWarehouseEnricher } from './cache/data-warehouse.enricher';
-import {
-  DWH_QUEUE,
-  DWH_SERVICE,
-  DataWarehouseDataSourceName,
-} from './data-warehouse.const';
+import { DWH_QUEUE, DataWarehouseDataSourceName } from './data-warehouse.const';
 import { DataWarehouseController } from './data-warehouse.controller';
 import { DataWarehouseService } from './data-warehouse.service';
+import { DataWarehouseRegenerationOrganisationsFinishedEventHandler } from './event-handlers/data-warehouse-regeneration-organisations-finished.event-handler';
+import { DataWarehouseAccessBase } from './interfaces/data-warehouse.access.base';
+import { DataWarehouseRegenerator } from './proxy/data-warehouse.regenerator';
+import { DataWarehouseCompaniesIndustryV1Entity } from './proxy/entities/data-warehouse-company-industries.v1.entity';
+import { DataWarehouseCompaniesInvestorV1Entity } from './proxy/entities/data-warehouse-company-investors.v1.entity';
+import { DataWarehouseCompanyV1Entity } from './proxy/entities/data-warehouse-company.v1.entity';
+import { DataWarehouseOrderByMapper } from './proxy/order-by.mapper';
+import { OrganisationProvider } from './proxy/organisation.provider';
 import { DataWarehouseProcessor } from './queues/data-warehouse.processor';
 import { DataWarehouseProducer } from './queues/data-warehouse.producer';
 import { DataWarehouseScheduler } from './tasks/data-warehouse.scheduler';
-import { DataWarehouseAccessService } from './v1/data-warehouse.access.service';
-import { CompanyDwhEntity } from './v1/entities/company.dwh.entity';
+import { DataWarehouseV1AccessService } from './v1/data-warehouse.v1.access.service';
+import { CompanyV1DwhEntity } from './v1/entities/company.v1.dwh.entity';
 import { DealroomCompanyNumberOfEmployeesDwhEntity } from './v1/entities/dealroom-company-number-of-employees.dwh.entity';
 import { DealroomCompanyTagEntity } from './v1/entities/dealroom-company-tags.dwh.entity';
 import { DealroomFundingRoundEntity } from './v1/entities/dealroom-funding-rounds.dwh.entity';
 import { FounderDwhEntity } from './v1/entities/founder.dwh.entity';
 import { InvestorDwhEntity } from './v1/entities/investor.dwh.entity';
-import { CompanyMapper } from './v1/mappers/company.mapper';
-import { FounderMapper } from './v1/mappers/founder.mapper';
+import { CompanyV1Mapper } from './v1/mappers/company.v1.mapper';
 import { FundingRoundMapper } from './v1/mappers/funding-round.mapper';
-import { InvestorMapper } from './v1/mappers/investor.mapper';
 import { NumberOfEmployeesMapper } from './v1/mappers/number-of-employees.mapper';
-import { DataWarehouseOrderByMapper } from './v1/mappers/order-by.mapper';
+import { DataWarehouseV2AccessService } from './v2/data-warehouse.v2.access.service';
+import { CompanyV2DwhEntity } from './v2/entities/company.v2.dwh.entity';
+import { CompanyV2Mapper } from './v2/mappers/company.v2.mapper';
 @Module({})
 export class DataWarehouseModule {
   public static async forRootAsync(): Promise<DynamicModule> {
@@ -64,6 +70,9 @@ export class DataWarehouseModule {
       case 'v1':
         module = this.buildV1Module(module);
         break;
+      case 'v2':
+        module = this.buildV2Module(module);
+        break;
       default: {
         console.log('DataWarehouse connection stopped: version not found');
         return module;
@@ -86,6 +95,13 @@ export class DataWarehouseModule {
             },
           },
         ]),
+        TypeOrmModule.forFeature([
+          DataWarehouseCompanyV1Entity,
+          DataWarehouseCompaniesInvestorV1Entity,
+          DataWarehouseCompaniesIndustryV1Entity,
+          OrganisationEntity,
+        ]),
+        ShortlistsModule,
       ],
       controllers: [...module.controllers, DataWarehouseController],
       exports: [
@@ -93,6 +109,7 @@ export class DataWarehouseModule {
         DataWarehouseService,
         DataWarehouseCacheService,
         DataWarehouseEnricher,
+        OrganisationProvider,
       ],
       providers: [
         ...module.providers,
@@ -102,6 +119,10 @@ export class DataWarehouseModule {
         DataWarehouseScheduler,
         DataWarehouseProducer,
         DataWarehouseProcessor,
+        DataWarehouseRegenerator,
+        OrganisationProvider,
+        DataWarehouseOrderByMapper,
+        DataWarehouseRegenerationOrganisationsFinishedEventHandler,
       ],
     };
 
@@ -166,7 +187,7 @@ export class DataWarehouseModule {
         ...module.imports,
         TypeOrmModule.forFeature(
           [
-            CompanyDwhEntity,
+            CompanyV1DwhEntity,
             DealroomCompanyNumberOfEmployeesDwhEntity,
             DealroomCompanyTagEntity,
             DealroomFundingRoundEntity,
@@ -178,13 +199,37 @@ export class DataWarehouseModule {
       ],
       providers: [
         ...module.providers,
-        { provide: DWH_SERVICE, useClass: DataWarehouseAccessService },
-        CompanyMapper,
-        DataWarehouseOrderByMapper,
+        {
+          provide: DataWarehouseAccessBase,
+          useClass: DataWarehouseV1AccessService,
+        },
+        DataWarehouseV1AccessService,
+        CompanyV1Mapper,
         NumberOfEmployeesMapper,
         FundingRoundMapper,
-        FounderMapper,
-        InvestorMapper,
+      ],
+    };
+  }
+
+  private static buildV2Module(module: DynamicModule): DynamicModule {
+    return {
+      ...module,
+      imports: [
+        ...module.imports,
+        TypeOrmModule.forFeature(
+          [CompanyV2DwhEntity],
+          DataWarehouseDataSourceName,
+        ),
+        TypeOrmModule.forFeature([]),
+      ],
+      providers: [
+        ...module.providers,
+        {
+          provide: DataWarehouseAccessBase,
+          useClass: DataWarehouseV2AccessService,
+        },
+        DataWarehouseV2AccessService,
+        CompanyV2Mapper,
       ],
     };
   }

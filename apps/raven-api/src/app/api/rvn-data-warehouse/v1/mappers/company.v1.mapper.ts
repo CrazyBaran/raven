@@ -9,17 +9,15 @@ import {
 import { Injectable } from '@nestjs/common';
 import { pick } from 'lodash';
 import { DataWarehouseParser } from '../../utils/data-warehouse.parser';
-import { CompanyDwhEntity } from '../entities/company.dwh.entity';
+import { CompanyV1DwhEntity } from '../entities/company.v1.dwh.entity';
 import { DealroomCompanyNumberOfEmployeesDwhEntity } from '../entities/dealroom-company-number-of-employees.dwh.entity';
 import { DealroomCompanyTagEntity } from '../entities/dealroom-company-tags.dwh.entity';
 import { DealroomFundingRoundEntity } from '../entities/dealroom-funding-rounds.dwh.entity';
-import { FounderMapper } from './founder.mapper';
 import { FundingRoundMapper } from './funding-round.mapper';
-import { InvestorMapper } from './investor.mapper';
 import { NumberOfEmployeesMapper } from './number-of-employees.mapper';
 
 @Injectable()
-export class CompanyMapper {
+export class CompanyV1Mapper {
   private readonly exposedCompanyData: Partial<keyof CompanyDto>[] = [
     'name',
     'domain',
@@ -31,17 +29,18 @@ export class CompanyMapper {
     'hq',
     'industry',
     'mcvLeadScore',
+    'lastRefreshedUtc',
+    'specterLastUpdated',
+    'dealRoomLastUpdated',
   ];
 
   public constructor(
     private readonly numberOfEmployeesMapper: NumberOfEmployeesMapper,
     private readonly fundingRoundMapper: FundingRoundMapper,
-    private readonly investorMapper: InvestorMapper,
-    private readonly founderMapper: FounderMapper,
   ) {}
 
   public map(
-    entity: CompanyDwhEntity,
+    entity: CompanyV1DwhEntity,
     numberOfEmployees: GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>,
     tags: GroupedEntity<DealroomCompanyTagEntity>,
     fundingRounds: GroupedEntity<DealroomFundingRoundEntity>,
@@ -77,9 +76,7 @@ export class CompanyMapper {
           numberOfEmployees?.entities,
         ),
         tags: tags?.entities.map((t) => t.tag),
-        fundingRounds: fundingRounds?.entities.map((fundingRound) =>
-          this.fundingRoundMapper.map(fundingRound),
-        ),
+        fundingRounds: this.fundingRoundMapper.mapMany(fundingRounds?.entities),
         funding: {
           totalFundingAmount: entity.totalFundingAmount,
           lastFundingAmount: entity.lastFundingAmount,
@@ -163,7 +160,7 @@ export class CompanyMapper {
   }
 
   public mapMany(
-    entities: CompanyDwhEntity[],
+    entities: CompanyV1DwhEntity[],
     numberOfEmployees?: GroupedEntity<DealroomCompanyNumberOfEmployeesDwhEntity>[],
     tags?: GroupedEntity<DealroomCompanyTagEntity>[],
     fundingRounds?: GroupedEntity<DealroomFundingRoundEntity>[],
