@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { JobPro } from '@taskforcesh/bullmq-pro';
 import { CompanyStatus } from 'rvns-shared';
-import { Brackets, EntityManager, In, Repository } from 'typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
@@ -23,7 +23,6 @@ import { OrganisationProvider } from '../rvn-data-warehouse/proxy/organisation.p
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
 import { ShortlistsService } from '../rvn-shortlists/shortlists.service';
-import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
@@ -74,7 +73,10 @@ export class OrganisationService {
     }
 
     const { organisationIds, count } =
-      await this.organisationProvider.getOrganisations(options);
+      await this.organisationProvider.getOrganisations(
+        options,
+        options?.filters,
+      );
 
     const queryBuilder =
       this.organisationRepository.createQueryBuilder('organisations');
@@ -548,181 +550,6 @@ export class OrganisationService {
         );
       }
     });
-  }
-
-  private async findAllByRaven(
-    options?: GetOrganisationsOptions,
-  ): Promise<PagedOrganisationData> {
-    if (!options) {
-      throw new Error('Options are required');
-    }
-
-    const queryBuilder =
-      this.organisationRepository.createQueryBuilder('organisations');
-
-    queryBuilder
-      .leftJoinAndSelect('organisations.opportunities', 'opportunities')
-      .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
-      .leftJoinAndSelect('opportunities.tag', 'tag')
-      .leftJoinAndSelect('opportunities.shares', 'shares')
-      .leftJoinAndSelect('shares.actor', 'member')
-      .leftJoinAndSelect(
-        'opportunities.pipelineDefinition',
-        'pipelineDefinition',
-      )
-      .leftJoinAndSelect(
-        'organisations.organisationDomains',
-        'organisationDomains',
-      )
-      .leftJoin('organisations.shortlists', 'shortlists');
-
-    const searchString = options.query
-      ? `%${options.query.toLowerCase()}%`
-      : undefined;
-
-    if (searchString) {
-      queryBuilder
-        .where(`LOWER(organisations.name) LIKE :searchString`, {
-          searchString,
-        })
-        .orWhere(`LOWER(organisationDomains.domain) LIKE :searchString`, {
-          searchString,
-        });
-    }
-
-    if (options.shortlistId) {
-      const mainShortlist =
-        await this.shortlistsService.getMainShortlist(false);
-      if (mainShortlist?.id === options.shortlistId) {
-        queryBuilder.andWhere('shortlists.id IS NOT NULL');
-      } else {
-        queryBuilder.andWhere('shortlists.id = :shortlistId', {
-          shortlistId: options.shortlistId,
-        });
-      }
-    }
-
-    if (options.skip || options.take) {
-      queryBuilder.skip(options.skip ?? 0).take(options.take ?? 10);
-    }
-
-    if (options.member) {
-      queryBuilder.andWhere('member.id = :member', {
-        member: options.member,
-      });
-    }
-
-    let tagEntities = [];
-
-    if (options.round) {
-      const tagAssignedTo = await this.organisationRepository.manager
-        .createQueryBuilder(TagEntity, 'tag')
-        .select()
-        .where('tag.id = :round', { round: options.round })
-        .getOne();
-
-      if (tagAssignedTo) tagEntities = [...tagEntities, tagAssignedTo];
-    }
-
-    if (tagEntities) {
-      for (const tag of tagEntities) {
-        const tagSubQuery = this.organisationRepository.manager
-          .createQueryBuilder(OpportunityEntity, 'opportunity_with_tag')
-          .select('opportunity_with_tag.organisationId')
-          .innerJoin('opportunity_with_tag.tag', 'subquerytag')
-          .where('subquerytag.id = :tagId');
-
-        queryBuilder
-          .andWhere(`organisations.id IN (${tagSubQuery.getQuery()})`)
-          .setParameter('tagId', tag.id);
-      }
-    }
-
-    if (options.orderBy) {
-      queryBuilder.addOrderBy(
-        `organisations.${options.orderBy}`,
-        options.direction || 'DESC',
-      );
-    } else {
-      queryBuilder.addOrderBy('organisations.name', 'DESC');
-    }
-
-    if (options.filters?.status) {
-      queryBuilder.andWhere(
-        new Brackets((qb) => {
-          if (options.filters.status.includes(null)) {
-            qb.orWhere(
-              new Brackets((qb) => {
-                qb.where(
-                  'organisations.companyStatusOverride IS NULL',
-                ).andWhere('pipelineStage.relatedCompanyStatus IS NULL');
-              }),
-            );
-          }
-          const statuses = options.filters.status
-            .filter((status) => status != null)
-            .join(',');
-          if (statuses) {
-            qb.andWhere('organisations.companyStatusOverride IN (:status)', {
-              status: statuses,
-            }).orWhere(
-              new Brackets((qb) => {
-                qb.where('pipelineStage.relatedCompanyStatus IN (:status)', {
-                  status: statuses,
-                }).andWhere('organisations.companyStatusOverride is null');
-              }),
-            );
-          }
-        }),
-      );
-    }
-
-    const [organisations, count] = await queryBuilder.getManyAndCount();
-
-    const teamsForOpportunities =
-      await this.opportunityTeamService.getOpportunitiesTeams(
-        (organisations as unknown as OrganisationDataWithOpportunities[])
-          .map((org) => org.opportunities)
-          .flat() as unknown as OpportunityEntity[],
-      );
-
-    const affinityEnrichedData =
-      await this.affinityEnricher.enrichOrganisations(
-        organisations,
-        async (entity, data) => {
-          for (const opportunity of data.opportunities) {
-            const pipelineStage =
-              await this.pipelineUtilityService.getPipelineStageOrDefault(
-                opportunity.stage.id,
-              );
-
-            opportunity.stage = {
-              ...opportunity.stage,
-              displayName: pipelineStage.displayName,
-              order: pipelineStage.order,
-              mappedFrom: pipelineStage.mappedFrom,
-              relatedCompanyStatus: pipelineStage.relatedCompanyStatus,
-            };
-
-            opportunity.team = teamsForOpportunities[opportunity.id];
-          }
-
-          data.companyStatus = this.evaluateCompanyStatus(entity, data);
-
-          return data;
-        },
-      );
-
-    const enrichedData = this.dataWarehouseEnricher
-      ? await this.dataWarehouseEnricher?.enrichOrganisations(
-          affinityEnrichedData,
-        )
-      : affinityEnrichedData;
-
-    return {
-      items: enrichedData,
-      total: count,
-    } as PagedOrganisationData;
   }
 
   private evaluateCompanyStatus(

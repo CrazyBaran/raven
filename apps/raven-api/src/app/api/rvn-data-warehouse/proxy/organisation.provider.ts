@@ -2,6 +2,7 @@ import { CompanyFilterOptions } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
+import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../../rvn-opportunities/entities/opportunity.entity';
 import { OrganisationEntity } from '../../rvn-opportunities/entities/organisation.entity';
 import {
@@ -15,11 +16,14 @@ import { DataWarehouseOrderByMapper } from './order-by.mapper';
 @Injectable()
 export class OrganisationProvider {
   public constructor(
+    private readonly logger: RavenLogger,
     @InjectRepository(OrganisationEntity)
     private readonly organisationRepository: Repository<OrganisationEntity>,
     private readonly orderByMapper: DataWarehouseOrderByMapper,
     private readonly shortlistsService: ShortlistsService,
-  ) {}
+  ) {
+    this.logger.setContext(OrganisationProvider.name);
+  }
   public async getOrganisations(
     options: GetOrganisationsOptions,
     filterOptions?: CompanyFilterOptions,
@@ -30,6 +34,8 @@ export class OrganisationProvider {
     queryBuilder
       .leftJoinAndSelect('organisations.organisationDomains', 'domains')
       .leftJoinAndSelect('organisations.dataV1', 'data')
+      .leftJoinAndSelect('data.industries', 'industries')
+      .leftJoinAndSelect('data.investors', 'investors')
       .leftJoinAndSelect('organisations.opportunities', 'opportunities')
       .leftJoinAndSelect('opportunities.tag', 'tag')
       .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
@@ -49,27 +55,36 @@ export class OrganisationProvider {
       }
     }
 
+    queryBuilder.where('organisations.name is not null');
+
     //queryBuilder.select('organisation.id');
 
     const collate = 'COLLATE SQL_Latin1_General_CP1_CI_AS';
     if (options?.query) {
       queryBuilder.andWhere(
         new Brackets((qb) => {
-          qb.where('data.name LIKE :query', {
-            query: `%${options.query}%`,
+          qb.orWhere(`data.name ${collate} LIKE :dataNameSearch ${collate}`, {
+            dataNameSearch: `%${options.query}%`,
           });
 
-          qb.orWhere(`data.domain ${collate} LIKE :query ${collate}`, {
-            query: `%${options.query}%`,
+          qb.orWhere(
+            `organisations.name ${collate} LIKE :organisationNameSearch ${collate}`,
+            {
+              organisationNameSearch: `%${options.query}%`,
+            },
+          );
+
+          qb.orWhere(`domains.domain LIKE :domainSearch`, {
+            domainSearch: `%${options.query}%`,
           });
         }),
       );
     }
 
-    if (options.skip || options.take) {
+    if (options?.skip || options?.take) {
       queryBuilder
-        .skip(options.skip ?? defaultGetOrganisationsOptions.skip)
-        .take(options.take ?? defaultGetOrganisationsOptions.take);
+        .skip(options?.skip ?? defaultGetOrganisationsOptions.skip)
+        .take(options?.take ?? defaultGetOrganisationsOptions.take);
     }
 
     if (options.member) {
@@ -111,13 +126,13 @@ export class OrganisationProvider {
       queryBuilder.orderBy(orderBy, direction);
     }
 
-    if (options.filters?.status) {
+    if (options.filters?.status && options.filters.status.length > 0) {
       queryBuilder.andWhere(
         new Brackets((qb) => {
           if (options.filters.status.includes(null)) {
             qb.orWhere(
               new Brackets((qb) => {
-                qb.where(
+                qb.andWhere(
                   'organisations.companyStatusOverride IS NULL',
                 ).andWhere('pipelineStage.relatedCompanyStatus IS NULL');
               }),
@@ -148,63 +163,73 @@ export class OrganisationProvider {
     }
 
     if (filterOptions?.industries && filterOptions.industries.length > 0) {
-      queryBuilder.andWhere(
-        new Brackets((qb) => {
-          qb.where('data.specterIndustry IN (:...industries)', {
-            industries: filterOptions.industries,
-          });
-
-          qb.orWhere('data.specterSubIndustry IN (:...industries)', {
-            industries: filterOptions.industries,
-          });
-        }),
-      );
+      queryBuilder.andWhere('industries.name IN (:...industries)', {
+        industries: filterOptions.industries,
+      });
     }
 
     if (filterOptions?.investors && filterOptions.investors.length > 0) {
-      queryBuilder.andWhere('data.specterInvestors IN (:...investors)', {
+      queryBuilder.andWhere('investors.name IN (:...investors)', {
         investors: filterOptions.investors,
       });
     }
 
     if (filterOptions?.totalFundingAmount) {
       if (filterOptions.totalFundingAmount.min) {
-        queryBuilder.andWhere('data.fundingTotalFundingAmount >= :min', {
-          min: filterOptions.totalFundingAmount.min,
-        });
+        queryBuilder.andWhere(
+          'data.fundingTotalFundingAmount >= :minTotalFundingAmount',
+          {
+            minTotalFundingAmount: filterOptions.totalFundingAmount.min,
+          },
+        );
       }
 
       if (filterOptions.totalFundingAmount.max) {
-        queryBuilder.andWhere('data.fundingTotalFundingAmount <= :max', {
-          max: filterOptions.totalFundingAmount.max,
-        });
+        queryBuilder.andWhere(
+          'data.fundingTotalFundingAmount <= :maxTotalFundingAmount',
+          {
+            maxTotalFundingAmount: filterOptions.totalFundingAmount.max,
+          },
+        );
       }
     }
 
     if (filterOptions?.lastFundingAmount) {
       if (filterOptions.lastFundingAmount.min) {
-        queryBuilder.andWhere('data.fundingLastFundingAmount >= :min', {
-          min: filterOptions.lastFundingAmount.min,
-        });
+        queryBuilder.andWhere(
+          'data.fundingLastFundingAmount >= :minLastFundingAmount',
+          {
+            minLastFundingAmount: filterOptions.lastFundingAmount.min,
+          },
+        );
       }
 
       if (filterOptions.lastFundingAmount.max) {
-        queryBuilder.andWhere('data.fundingLastFundingAmount <= :max', {
-          max: filterOptions.lastFundingAmount.max,
-        });
+        queryBuilder.andWhere(
+          'data.fundingLastFundingAmount <= :maxLastFundingAmount',
+          {
+            maxLastFundingAmount: filterOptions.lastFundingAmount.max,
+          },
+        );
       }
     }
 
     if (filterOptions?.lastFundingDate) {
-      if (filterOptions.lastFundingDate.min) {
-        queryBuilder.andWhere('data.fundingLastFundingDate >= :min', {
-          min: filterOptions.lastFundingDate.min.toISOString(),
+      if (
+        filterOptions.lastFundingDate.min &&
+        !isNaN(filterOptions.lastFundingDate.min.getTime())
+      ) {
+        queryBuilder.andWhere('data.fundingLastFundingDate >= :minDate', {
+          minDate: filterOptions.lastFundingDate.min.toISOString(),
         });
       }
 
-      if (filterOptions.lastFundingDate.max) {
-        queryBuilder.andWhere('data.fundingLastFundingDate <= :max', {
-          max: filterOptions.lastFundingDate.max.toISOString(),
+      if (
+        filterOptions.lastFundingDate.max &&
+        !isNaN(filterOptions.lastFundingDate.max.getTime())
+      ) {
+        queryBuilder.andWhere('data.fundingLastFundingDate <= :maxDate', {
+          maxDate: filterOptions.lastFundingDate.max.toISOString(),
         });
       }
     }
