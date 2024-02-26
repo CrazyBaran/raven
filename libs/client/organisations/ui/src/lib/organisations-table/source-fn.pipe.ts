@@ -1,5 +1,8 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
+// TODO: move logic to configuraiton
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { OrganisationsService } from '@app/client/organisations/data-access';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import {
   countryTypes,
   dealRoomLastFundingTypes,
