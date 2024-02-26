@@ -1,7 +1,7 @@
 import { IndustryDto } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, IsNull, Not, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { OrganisationEntity } from '../../rvn-opportunities/entities/organisation.entity';
 import { DataWarehouseCacheService } from '../cache/data-warehouse-cache.service';
@@ -60,12 +60,6 @@ export class DataWarehouseRegenerator {
         ((i + internalChunkSize) / organisations.length) * 100.0,
       );
     }
-  }
-
-  public async clearProxy(): Promise<void> {
-    await this.dataWarehouseCompanyV1Repository.delete({
-      organisationId: Not(IsNull()),
-    });
   }
 
   public async regenerateIndustries(): Promise<void> {
@@ -190,6 +184,11 @@ export class DataWarehouseRegenerator {
         }),
       );
     }
+
+    // delete existing data by the organisation ids to be pushed
+    await this.dataWarehouseCompanyV1Repository.delete(
+      chunk.map((organisation) => organisation.id),
+    );
 
     await this.dataWarehouseCompanyV1Repository.save(data);
   }

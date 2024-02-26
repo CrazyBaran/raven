@@ -25,8 +25,4 @@ export class DataWarehouseProducer {
       options: { skip, take },
     });
   }
-
-  public async enqueueClearProxy(): Promise<void> {
-    await this.queue.add(DWH_QUEUE.JOBS.CLEAR_PROXY, {});
-  }
 }

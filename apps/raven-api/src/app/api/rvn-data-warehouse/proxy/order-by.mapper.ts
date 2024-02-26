@@ -20,6 +20,7 @@ export class DataWarehouseOrderByMapper {
       case 'mcvLeadScore':
         return 'data.mcvLeadScore';
       case 'name':
+      case 'company':
       default:
         return 'data.name';
     }

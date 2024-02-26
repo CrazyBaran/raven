@@ -252,6 +252,10 @@ export const environment = {
         min: 1,
       },
     } as SqlServerConnectionOptions,
+    enableProxyRegeneration: env
+      .get('DWH_ENABLE_PROXY_REGENERATION')
+      .default('false')
+      .asBoolStrict(),
   },
   features: {
     dataWareHouse: env

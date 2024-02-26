@@ -44,10 +44,6 @@ export class DataWarehouseProcessor extends AbstractSimpleQueueProcessor<DataWar
         await this.dataWarehouseRegenerator.regenerateIndustries();
         return true;
       }
-      case DWH_QUEUE.JOBS.CLEAR_PROXY: {
-        await this.dataWarehouseRegenerator.clearProxy();
-        return true;
-      }
       case DWH_QUEUE.JOBS.REGENERATE_PROXY: {
         await this.dataWarehouseRegenerator.regenerateProxy(
           job.data?.options?.skip,

@@ -19,6 +19,5 @@ export const DWH_QUEUE = {
     REGENERATE: 'DataWarehouseQueue-Regenerate',
     REGENERATE_STATIC: 'DataWarehouseQueue-RegenerateStatic',
     REGENERATE_PROXY: 'DataWarehouseQueue-RegenerateProxy',
-    CLEAR_PROXY: 'DataWarehouseQueue-ClearProxy',
   },
 };

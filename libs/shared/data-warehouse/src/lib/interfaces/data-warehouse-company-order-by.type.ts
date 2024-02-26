@@ -1,5 +1,6 @@
 export type DataWarehouseCompanyOrderBy =
   | 'name'
+  | 'company'
   | 'id'
   | 'createdAt'
   | 'updatedAt'
