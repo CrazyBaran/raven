@@ -83,12 +83,18 @@ export class ShortlistsController {
   @ApiOperation({ summary: 'Bulk add organisations to shortlists' })
   @ApiResponse({
     status: 201,
-    description: 'The organisation has been successfully created.',
+    description: 'Organisation/s has been sucessfully added to shortlist/s.',
   })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
-  public async bulkAdd(@Body() dto: BulkAddOrganisationsDto): Promise<void> {
-    return await this.shortlistsService.bulkAddOrganisationsToShortlists(dto);
+  public async bulkAdd(
+    @Body() dto: BulkAddOrganisationsDto,
+    @Identity(ParseUserFromIdentityPipe) userEntity?: UserEntity,
+  ): Promise<void> {
+    return await this.shortlistsService.bulkAddOrganisationsToShortlists(
+      dto,
+      userEntity,
+    );
   }
 
   @Patch(':id')
@@ -104,9 +110,10 @@ export class ShortlistsController {
     @Param('id', ParseUUIDPipe, ParseShortlistPipe)
     shortlist: ShortlistEntity,
     @Body() dto: UpdateShortlistDto,
+    @Identity(ParseUserFromIdentityPipe) userEntity?: UserEntity,
   ): Promise<ShortlistData> {
     return ShortlistRO.createFromEntity(
-      await this.shortlistsService.update(shortlist, dto),
+      await this.shortlistsService.update(shortlist, dto, userEntity),
     );
   }
 
@@ -136,10 +143,12 @@ export class ShortlistsController {
     @Param('shortlistId', ParseUUIDPipe, ParseShortlistPipe)
     shortlistEntity: ShortlistEntity,
     @Body() dto: DeleteOrganisationFromShortlistDto,
+    @Identity(ParseUserFromIdentityPipe) userEntity?: UserEntity,
   ): Promise<EmptyResponseData> {
     await this.shortlistsService.deleteOrganisationsFromShortlist(
       shortlistEntity,
       dto,
+      userEntity,
     );
   }
 
@@ -147,7 +156,7 @@ export class ShortlistsController {
   @ApiOperation({ summary: 'Create a new shortlist' })
   @ApiResponse({
     status: 201,
-    description: 'The organisation has been successfully created.',
+    description: 'The shortlist has been successfully created.',
   })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)

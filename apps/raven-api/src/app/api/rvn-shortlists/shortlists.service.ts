@@ -156,22 +156,26 @@ export class ShortlistsService {
 
   public async bulkAddOrganisationsToShortlists(
     options: BulkAddOrganisationsDto,
+    userEntity?: UserEntity,
   ): Promise<void> {
     const shortlists = await this.shortlistRepository.find({
       where: {
         id: In(options.shortlistsIds),
       },
-      relations: ['organisations'],
     });
     const organisations = await this.organisationRepository.find({
+      select: {
+        id: true,
+      },
       where: {
         id: In(options.organisationsIds),
       },
-      relations: ['shortlists'],
     });
 
     const relationsToAdd: ShortlistOrganisationEntity[] = [];
     for (const shortlist of shortlists) {
+      await this.assertSpecialTypesUpdate(shortlist, userEntity);
+
       relationsToAdd.push(
         ...organisations.map((organisation) =>
           ShortlistOrganisationEntity.create({
@@ -187,7 +191,10 @@ export class ShortlistsService {
   public async update(
     shortlistEntity: ShortlistEntity,
     options: UpdateShortlistOptions,
+    userEntity?: UserEntity,
   ): Promise<ShortlistEntity> {
+    await this.assertSpecialTypesUpdate(shortlistEntity, userEntity);
+
     if (options.name) {
       shortlistEntity.name = options.name;
     }
@@ -247,7 +254,10 @@ export class ShortlistsService {
   public async deleteOrganisationsFromShortlist(
     shortlistEntity: ShortlistEntity,
     options: DeleteOrganisationFromShortlistDto,
+    userEntity?: UserEntity,
   ): Promise<ShortlistEntity> {
+    await this.assertSpecialTypesUpdate(shortlistEntity, userEntity);
+
     if (options.organisations?.length) {
       const relatedEntities = await this.shortlistOrganisationRepository.find({
         where: {
@@ -389,5 +399,21 @@ export class ShortlistsService {
     !!mainShortlist && extras.push(mainShortlist);
 
     return extras;
+  }
+
+  private async assertSpecialTypesUpdate(
+    shortlistEntity: ShortlistEntity,
+    userEntity?: UserEntity,
+  ): Promise<void> {
+    if (shortlistEntity.type === ShortlistType.MAIN) {
+      throw new ForbiddenException();
+    }
+
+    if (
+      shortlistEntity.type === ShortlistType.PERSONAL &&
+      userEntity?.id !== shortlistEntity.creatorId
+    ) {
+      throw new ForbiddenException();
+    }
   }
 }
