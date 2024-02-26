@@ -27,16 +27,21 @@ import {
   OrganisationsTableComponent,
 } from '@app/client/organisations/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
+import { LoaderComponent } from '@app/client/shared/ui';
 import { ShowTooltipIfClampedDirective } from '@app/client/shared/ui-directives';
 import { isNavigatingAway } from '@app/client/shared/util-router';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { ShortlistsActions } from '@app/client/shortlists/state';
+import {
+  IsCustomShortlistTypePipe,
+  IsMyShortlistTypePipe,
+  IsPersonalShortlistTypePipe,
+} from '@app/client/shortlists/ui';
 import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { IsCustomShortlistTypePipe } from '../../../../../ui/src/lib/is-personal-shortlist.pipe';
 import {
   selectShortlistOrganisationsTableParams,
   selectShortlistOrganisationsTableViewModel,
@@ -59,6 +64,9 @@ import {
     ShowTooltipIfClampedDirective,
     DropdownButtonNavigationComponent,
     IsCustomShortlistTypePipe,
+    LoaderComponent,
+    IsMyShortlistTypePipe,
+    IsPersonalShortlistTypePipe,
   ],
   templateUrl: './shortlist-organisations-table.component.html',
   styleUrl: './shortlist-organisations-table.component.scss',
@@ -84,6 +92,7 @@ export class ShortlistOrganisationsTableComponent {
     private router: Router,
     private actions$: Actions,
   ) {
+    this.store.dispatch(ShortlistsActions.openShortlistOrganisationsTable());
     this.store.dispatch(PipelinesActions.getPipelinesIfNotLoaded());
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({

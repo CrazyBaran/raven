@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { PipelinesService } from '@app/client/pipelines/data-access';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import { catchError, concatMap, filter, map, of } from 'rxjs';
 import { colorDictionary } from './pipeline-colors.constants';
 import { PipelinesActions } from './pipelines.actions';
@@ -35,10 +36,13 @@ export class PipelinesEffects {
               data:
                 data?.map((d) => ({
                   ...d,
-                  stages: d.stages?.map((s, index) => ({
-                    ...s,
-                    ...getPipelineColors(s, index),
-                  })),
+                  stages: _.chain(d.stages)
+                    ?.orderBy('order')
+                    .map((s, index) => ({
+                      ...s,
+                      ...getPipelineColors(s, index),
+                    }))
+                    .value(),
                 })) || [],
             }),
           ),

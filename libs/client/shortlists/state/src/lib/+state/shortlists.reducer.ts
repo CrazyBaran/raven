@@ -50,7 +50,7 @@ export const shortlistsFeature = createFeature({
     on(ShortlistsActions.getShortlists, (state) => ({
       ...state,
       table: {
-        ...state.table,
+        ids: [],
         total: 0,
       },
       loadingStates: {
@@ -83,6 +83,7 @@ export const shortlistsFeature = createFeature({
         });
       },
     ),
+
     on(ShortlistsActions.getShortlistsFailure, (state) => ({
       ...state,
       table: {

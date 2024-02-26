@@ -11,9 +11,18 @@
       <i
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
       ></i>
-      <kendo-button [disabled]="true" fillMode="flat" themeColor="primary">{{
-        vm().shortlist?.name
-      }}</kendo-button>
+
+      <kendo-button
+        [disabled]="true"
+        [iconClass]="
+          (vm().shortlist! | isPersonalShortlistType)
+            ? 'fa-solid fa-circle-user'
+            : ''
+        "
+        fillMode="flat"
+        themeColor="primary"
+        >{{ vm().shortlist?.name }}</kendo-button
+      >
     }
   </div>
   <div class="flex items-center gap-3" page-header-actions>
@@ -82,7 +91,8 @@
         [bulkActions]="vm().bulkActions"
         [model]="vm().tableModel!"
         [showCheckboxHeader]="vm().showCheckboxHeader"
-        class="block h-full"
+        [rows]="vm().rows"
+        [emptyMessage]="vm().emptyMessage"
       />
     </div>
   </div>

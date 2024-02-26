@@ -73,6 +73,7 @@ export class OrganisationsTableV2Component {
     private router: Router,
     private actions$: Actions,
   ) {
+    this.store.dispatch(OrganisationsActions.openOrganisationsTable());
     this.store.dispatch(PipelinesActions.getPipelines());
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({

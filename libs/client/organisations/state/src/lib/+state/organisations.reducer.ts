@@ -2,6 +2,8 @@ import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 
 import { routerQuery } from '@app/client/shared/util-router';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import {
   OrganisationsActions,
   OrganisationsUrlActions,
@@ -19,6 +21,10 @@ export interface OrganisationsState extends EntityState<OrganisationEntity> {
   creatingSharepointFolder: boolean;
   dataWarehouseLastUpdated: DataWarehouseLastUpdatedEntity | null;
   updateLoading: boolean;
+  table: {
+    ids: string[];
+    total: number;
+  };
 }
 
 export const OrganisationAdapter: EntityAdapter<OrganisationEntity> =
@@ -34,6 +40,10 @@ export const initialOrganisationState: OrganisationsState =
     creatingSharepointFolder: false,
     dataWarehouseLastUpdated: null,
     updateLoading: false,
+    table: {
+      ids: [],
+      total: 0,
+    },
   });
 
 export const organisationsFeature = createFeature({
@@ -66,6 +76,18 @@ export const organisationsFeature = createFeature({
 
     on(
       OrganisationsActions.getOrganisations,
+      ShortlistsActions.openShortlistOrganisationsTable,
+      OrganisationsActions.openOrganisationsTable,
+      (state) => ({
+        ...state,
+        table: {
+          ids: [],
+          total: 0,
+        },
+      }),
+    ),
+    on(
+      OrganisationsActions.getOrganisations,
       OrganisationsActions.loadMoreOrganisations,
       OrganisationsUrlActions.queryParamsChanged,
       (state) => ({
@@ -75,15 +97,23 @@ export const organisationsFeature = createFeature({
       }),
     ),
     on(OrganisationsActions.getOrganisationsSuccess, (state, { data }) =>
-      OrganisationAdapter.setAll([...data.items], {
+      OrganisationAdapter.upsertMany([...data.items], {
         ...state,
         loaded: true,
         totalRows: data.total,
+        table: {
+          ids: data.items.map((item) => item.id!) ?? [],
+          total: data.total,
+        },
       }),
     ),
     on(OrganisationsActions.loadMoreOrganisationsSuccess, (state, { data }) =>
       OrganisationAdapter.upsertMany([...data.items], {
         ...state,
+        table: {
+          ids: [...state.table.ids, ...data.items.map((item) => item.id!)],
+          total: data.total,
+        },
         loaded: true,
         totalRows: data.total,
       }),
@@ -174,8 +204,17 @@ export const organisationsFeature = createFeature({
       ),
     ),
   ),
-  extraSelectors: ({ selectOrganisationsState }) => ({
+  extraSelectors: ({
+    selectOrganisationsState,
+    selectTable,
+    selectEntities,
+  }) => ({
     ...OrganisationAdapter.getSelectors(selectOrganisationsState),
+    selectTableOrganisations: createSelector(
+      selectTable,
+      selectEntities,
+      (table, entities) => table.ids.map((id) => entities[id]!),
+    ),
     selectOrganisation: createSelector(
       selectOrganisationsState,
       routerQuery.selectCurrentOrganisationId,

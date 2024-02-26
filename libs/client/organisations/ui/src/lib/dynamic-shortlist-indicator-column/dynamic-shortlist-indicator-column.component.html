@@ -1,0 +1,19 @@
+@if (field.shortlists?.length) {
+  <div class="flex w-full justify-center">
+    <i
+      kendoTooltip
+      [tooltipTemplate]="tooltipTemplate"
+      title="Shortlisted"
+      class="fa-solid fa-star text-informational-warning items-center"
+      position="right"
+    ></i>
+  </div>
+}
+
+<ng-template #tooltipTemplate>
+  <div class="flex flex-col gap-2">
+    @for (shortlist of field.shortlists; track shortlist.id) {
+      <p>{{ shortlist.name }}</p>
+    }
+  </div>
+</ng-template>

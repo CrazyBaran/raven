@@ -1,0 +1,104 @@
+<kendo-panelbar id="shortlist-panelbar">
+  <ng-template kendoPanelBarItemTitle>
+    <h5 class="k-card-title">Shortlists</h5>
+  </ng-template>
+  <kendo-panelbar-item [expanded]="false" title="Shortlists">
+    <ng-template kendoPanelBarContent>
+      <div class="h-[363px]">
+        <kendo-grid
+          (pageChange)="organisationShortlistsStore.pageChange($event)"
+          (sortChange)="organisationShortlistsStore.sortChange($event)"
+          [data]="organisationShortlistsStore.data()"
+          [loading]="organisationShortlistsStore.isLoading()!"
+          [pageSize]="5"
+          [pageable]="true"
+          [skip]="organisationShortlistsStore.pageState().skip"
+          [sortable]="true"
+          [sort]="[organisationShortlistsStore.sort()]"
+          class="h-full"
+        >
+          <kendo-grid-column
+            field="name"
+            headerClass="!font-bold"
+            title="List Name"
+          >
+            <ng-template kendoGridCellTemplate let-shortlist>
+              @if (shortlist | isPersonalShortlistType) {
+                <a
+                  class="flex grow cursor-pointer items-center gap-3 overflow-hidden"
+                >
+                  <i
+                    class="fa-solid fa-user-circle text-buttons-button-text-90"
+                  ></i>
+
+                  <div class="grow overflow-hidden">
+                    <p
+                      kendoTooltip
+                      [showTooltipIfClamped]="shortlist.name"
+                      class="text-base"
+                    >
+                      {{ shortlist.name }}
+                    </p>
+                  </div>
+                </a>
+              } @else {
+                <a
+                  [routerLink]="['/companies', 'shortlists', shortlist.id]"
+                  class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
+                >
+                  @if (shortlist | isMyShortlistType) {
+                    <i
+                      class="fa-solid fa-user-circle text-buttons-button-text-90"
+                    ></i>
+                  }
+                  <div class="grow overflow-hidden">
+                    <p
+                      kendoTooltip
+                      [showTooltipIfClamped]="shortlist.name"
+                      class="text-base group-hover:font-bold"
+                    >
+                      {{ shortlist.name }}
+                    </p>
+                  </div>
+                </a>
+              }
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column headerClass="!font-bold" title="Description">
+            <ng-template kendoGridCellTemplate let-shortlist>
+              <p
+                [title]="shortlist.description"
+                class="line-clamp-2"
+                kendoTooltip
+                position="right"
+              >
+                {{ shortlist.description }}
+              </p>
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column headerClass="!font-bold" title="Contributors">
+            <ng-template kendoGridCellTemplate let-shortlist>
+              <ui-tags-container
+                [rows]="2"
+                [tags]="shortlist.contributors | toUserTag"
+                class="w-full"
+              />
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column
+            headerClass="!font-bold"
+            title="Last Updated"
+            field="updatedAt"
+          >
+            <ng-template kendoGridCellTemplate let-shortlist>
+              <p>{{ shortlist.updatedAt | date: 'MMMM d, y' }}</p>
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+      </div>
+    </ng-template>
+  </kendo-panelbar-item>
+</kendo-panelbar>

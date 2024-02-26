@@ -1,8 +1,10 @@
+import { InjectionToken } from '@angular/core';
 import { transformToThousands } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { CompanyColumn } from '../dynamic-company-column/dynamic-company-column.component';
 import { CompanyStatusColumn } from '../dynamic-company-status-column/dynamic-company-status-column.component';
 import { DateColumn } from '../dynamic-date-column/dynamic-date-column.component';
+import { CompanyShortlistIndicatorColumn } from '../dynamic-shortlist-indicator-column/dynamic-shortlist-indicator-column.component';
 import { TableColumn } from './organisations-table.component';
 
 /**
@@ -22,6 +24,29 @@ export const organisationTableConfiguration: TableColumn[] = [
       id: row.id,
       name: row.name,
       domains: row.domains,
+    }),
+  },
+  {
+    componentPath: () =>
+      import(
+        '../dynamic-shortlist-indicator-column/dynamic-shortlist-indicator-column.component'
+      ).then((m) => m.DynamicShortlistIndicatorColumnComponent),
+    name: 'Shortlisted',
+    field: 'shortlisted',
+    filter: null,
+    sortable: false,
+    width: 88,
+    dataFn: (row): CompanyShortlistIndicatorColumn => ({
+      shortlists: [
+        {
+          name: 'Shortlist 1',
+          id: '1',
+        },
+        {
+          name: 'Shortlist 2',
+          id: '2',
+        },
+      ],
     }),
   },
   {
@@ -117,17 +142,6 @@ export const organisationTableConfiguration: TableColumn[] = [
       value: row.data?.funding?.lastFundingDate,
     }),
   },
-  // {
-  //   componentPath: () =>
-  //     import('../dynamic-string-column/dynamic-string-column.component').then(
-  //       (m) => m.DynamicStringColumnComponent,
-  //     ),
-  //   name: 'Last Funding Type',
-  //   field: 'funding.lastFundingType',
-  //   type: 'string',
-  //   filter: 'string',
-  //   sortable: true,
-  // },
   {
     componentPath: () =>
       import('../dynamic-string-column/dynamic-string-column.component').then(
@@ -151,3 +165,7 @@ export const organisationTableConfiguration: TableColumn[] = [
     sortable: false,
   },
 ];
+
+export const ORGANISATION_TABLE_TOKEN = new InjectionToken<TableColumn[]>(
+  'Organisation Table Token',
+);

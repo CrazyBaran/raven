@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { tagsQuery } from '@app/client/organisations/api-tags';
@@ -14,11 +15,9 @@ import {
   parseToFilters,
 } from '@app/client/organisations/ui';
 
+import { organisationTableConfiguration } from '@app/client/organisations/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
-import {
-  ButtongroupNavigationModel,
-  DropdownAction,
-} from '@app/client/shared/ui-router';
+import { ButtongroupNavigationModel } from '@app/client/shared/ui-router';
 import { DialogUtil } from '@app/client/shared/util';
 import {
   buildButtonGroupNavigation,
@@ -142,20 +141,10 @@ export const isOpportunityClosed = (opportunity: OpportunityData): boolean =>
   );
 
 export const selectOrganisationRows = createSelector(
-  organisationsFeature.selectAll,
+  organisationsFeature.selectTableOrganisations,
   opportunitiesQuery.selectOpportunitiesDictionary,
   pipelinesQuery.selectStagePrimaryColorDictionary,
-  selectRouteParam('shortlistId'),
-  (organisations, groupedDictionary, stageColorDictionary, shortlistId) => {
-    const removeFromShortlistAction: DropdownAction = {
-      text: 'Remove from Shortlist',
-      queryParamsHandling: 'merge',
-      routerLink: ['./'],
-      queryParams: {
-        [DialogUtil.queryParams.removeFromShortlist]: shortlistId!,
-      },
-      skipLocationChange: true,
-    };
+  (organisations, groupedDictionary, stageColorDictionary) => {
     return organisations.map(
       (company): OrganisationRowV2 =>
         ({
@@ -170,7 +159,17 @@ export const selectOrganisationRows = createSelector(
               ] ?? '',
           },
           data: company.data,
-          actionData: [removeFromShortlistAction],
+          actionData: [
+            {
+              text: 'Remove from Shortlist',
+              queryParamsHandling: 'merge',
+              routerLink: ['./'],
+              queryParams: {
+                [DialogUtil.queryParams.removeFromShortlist]: company.id!,
+              },
+              skipLocationChange: true,
+            },
+          ],
           opportunities: company.opportunities
             .map(({ id }) => groupedDictionary[id])
             .map(
@@ -322,6 +321,11 @@ export const selectShortlistOrganisationsTableViewModel = createSelector(
         },
       ] satisfies OrganisationTableBulkAction[],
       showCheckboxHeader,
+      rows: organisationTableConfiguration.filter(
+        (x) => x.name !== 'Shortlisted',
+      ),
+      emptyMessage:
+        'Please go to the All Companies page to add companies to your Shortlist',
       ...shortlist,
       ...quickFilters,
     };

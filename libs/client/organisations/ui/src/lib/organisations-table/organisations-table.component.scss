@@ -1,6 +1,10 @@
 $border-color: #b3e4e1;
 $border: 2px solid #b3e4e1 !important;
 
+app-organisations-table {
+  @apply flex h-full flex-col;
+}
+
 .organisation-table {
   .k-table-th {
     border: none !important;

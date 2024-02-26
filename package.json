@@ -95,6 +95,7 @@
     "@nestjs/typeorm": "10.0.0",
     "@nestjs/websockets": "10.2.3",
     "@ngrx/component-store": "17.0.0",
+    "@ngrx/signals": "^17.1.1",
     "@node-saml/passport-saml": "^4.0.4",
     "@opentelemetry/instrumentation": "^0.48.0",
     "@opentelemetry/instrumentation-express": "^0.35.0",
