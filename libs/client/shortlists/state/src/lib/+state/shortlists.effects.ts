@@ -228,7 +228,10 @@ export const bulkAddOrganisationsToShortlist$ = createEffect(
           map(() => {
             return ShortlistsActions.bulkAddOrganisationsToShortlistSuccess({
               data,
-              message: 'Bulk Add Organisations To Shortlist.',
+              message:
+                data.organisationsIds.length > 1
+                  ? 'Bulk Add Organisations To Shortlist.'
+                  : 'Organisation Added To Shortlist.',
             });
           }),
           catchError((error) => {
@@ -236,7 +239,10 @@ export const bulkAddOrganisationsToShortlist$ = createEffect(
             return of(
               ShortlistsActions.bulkAddOrganisationsToShortlistFailure({
                 error,
-                message: 'Bulk Add Organisations To Shortlist Failed.',
+                message:
+                  data.organisationsIds.length > 1
+                    ? 'Bulk Add Organisations To Shortlist Failed.'
+                    : 'Organisation Added To Shortlist Failed.',
               }),
             );
           }),
@@ -262,7 +268,10 @@ export const bulkRemoveOrganisationsFromShortlist$ = createEffect(
             return ShortlistsActions.bulkRemoveOrganisationsFromShortlistSuccess(
               {
                 data,
-                message: 'Bulk Remove Organisations From Shortlist.',
+                message:
+                  data.organisations.length > 1
+                    ? 'Bulk Remove Organisations From Shortlist.'
+                    : 'Organisation Removed From Shortlist.',
               },
             );
           }),
@@ -271,7 +280,10 @@ export const bulkRemoveOrganisationsFromShortlist$ = createEffect(
             return of(
               ShortlistsActions.bulkRemoveOrganisationsFromShortlistFailure({
                 error,
-                message: 'Bulk Remove Organisations From Shortlist Failed.',
+                message:
+                  data.organisations.length > 1
+                    ? 'Bulk Remove Organisations From Shortlist Failed.'
+                    : 'Organisation Removed From Shortlist Failed.',
               }),
             );
           }),

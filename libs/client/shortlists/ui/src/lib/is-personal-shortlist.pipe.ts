@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ShortlistType } from 'rvns-shared';
 import { ShortListTableRow } from './shortlist-table/shortlist-table.component';
 
 @Pipe({
@@ -7,7 +6,7 @@ import { ShortListTableRow } from './shortlist-table/shortlist-table.component';
   standalone: true,
 })
 export class IsPersonalShortlistTypePipe implements PipeTransform {
-  public transform(shortlist?: { type?: ShortlistType }): boolean {
+  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
     return shortlist?.type === 'personal';
   }
 }
@@ -41,3 +40,10 @@ export class IsCustomShortlistTypePipe implements PipeTransform {
     return shortlist?.type === 'custom';
   }
 }
+
+export const shortlistPipes = [
+  IsPersonalShortlistTypePipe,
+  IisMainShortlistTypePipe,
+  IsMyShortlistTypePipe,
+  IsCustomShortlistTypePipe,
+];

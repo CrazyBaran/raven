@@ -204,68 +204,7 @@
         </ui-tilelayout-item>
       </div>
 
-      <kendo-panelbar *featureFlag="'shortlistsFeature'">
-        <ng-template kendoPanelBarItemTitle>
-          <h5 class="k-card-title">Shortlists</h5>
-        </ng-template>
-        <kendo-panelbar-item title="Shortlists" [expanded]="false">
-          <ng-template kendoPanelBarContent>
-            <kendo-grid
-              [pageable]="true"
-              [pageSize]="5"
-              [data]="shortlistGrid.data"
-            >
-              <kendo-grid-column headerClass="!font-bold" title="List Name">
-                <ng-template kendoGridCellTemplate let-shortlist>
-                  <a
-                    [routerLink]="['/companies', 'shortlists', shortlist.id]"
-                    class="hover:text-primary-600 group flex grow cursor-pointer items-center gap-3 overflow-hidden transition-all duration-100"
-                  >
-                    <div class="grow overflow-hidden">
-                      <p
-                        kendoTooltip
-                        [isEllipsisActive]="true"
-                        class="text-base group-hover:font-bold"
-                      >
-                        {{ shortlist.name }}
-                      </p>
-                    </div>
-                  </a>
-                </ng-template>
-              </kendo-grid-column>
-
-              <kendo-grid-column headerClass="!font-bold" title="Description">
-                <ng-template kendoGridCellTemplate let-shortlist>
-                  <p
-                    class="line-clamp-2"
-                    kendoTooltip
-                    position="right"
-                    [title]="shortlist.description"
-                  >
-                    {{ shortlist.description }}
-                  </p>
-                </ng-template>
-              </kendo-grid-column>
-
-              <kendo-grid-column headerClass="!font-bold" title="Contributors">
-                <ng-template kendoGridCellTemplate let-shortlist>
-                  <ui-tags-container
-                    [rows]="4"
-                    [tags]="shortlist.contributors | toUserTag"
-                    class="w-full"
-                  />
-                </ng-template>
-              </kendo-grid-column>
-
-              <kendo-grid-column headerClass="!font-bold" title="Last Updated">
-                <ng-template kendoGridCellTemplate let-shortlist>
-                  <p>{{ shortlist.updatedAt | date: 'MMMM d, y' }}</p>
-                </ng-template>
-              </kendo-grid-column>
-            </kendo-grid>
-          </ng-template>
-        </kendo-panelbar-item>
-      </kendo-panelbar>
+      <app-organisation-shortlists-table *featureFlag="'shortlistsFeature'" />
 
       <!--  Files   -->
       <ui-tilelayout-item id="organisation-files">

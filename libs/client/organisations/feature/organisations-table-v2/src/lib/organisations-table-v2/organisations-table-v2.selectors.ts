@@ -14,6 +14,7 @@ import {
   parseToFilters,
 } from '@app/client/organisations/ui';
 
+import { organisationTableConfiguration } from '@app/client/organisations/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
   ButtongroupNavigationModel,
@@ -64,11 +65,11 @@ export const selectOrganisationsTableButtonGroupNavigation = createSelector(
           id: null,
           name: 'All Companies',
         },
-        // {
-        //   id: 'shortlisted',
-        //   name: 'Shortlisted',
-        //   iconClass: 'fa fa-star',
-        // },
+        {
+          id: 'shortlisted',
+          name: 'Shortlisted',
+          iconClass: 'fa fa-star',
+        },
         {
           id: userTag?.userId ?? 'unknown',
           name: 'My Deals',
@@ -143,7 +144,7 @@ export const isOpportunityClosed = (opportunity: OpportunityData): boolean =>
   );
 
 export const selectOrganisationRows = createSelector(
-  organisationsFeature.selectAll,
+  organisationsFeature.selectTableOrganisations,
   opportunitiesQuery.selectOpportunitiesDictionary,
   pipelinesQuery.selectStagePrimaryColorDictionary,
   (organisations, groupedDictionary, stageColorDictionary) => {
@@ -282,6 +283,7 @@ export const selectOrganisationsTableViewModel = createSelector(
       lastChecked: dataWarehouseLastUpdated?.lastChecked,
       filters,
       statuses,
+      rows: organisationTableConfiguration,
       bulkActions: [
         {
           text: 'Add to Shortlist',

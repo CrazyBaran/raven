@@ -18,132 +18,143 @@
     </div>
   </div>
 }
-
-<kendo-grid
-  #grid
-  (appOnResize)="onResize($event)"
-  (filterChange)="filterChange($event)"
-  (scrollBottom)="onLoadMore()"
-  [clearNoneSort]="true"
-  [data]="gridData"
-  [expandedDetailKeys]="collapsedRows()"
-  [filter]="filters!"
-  [loading]="isLoading"
-  [rowClass]="rowCallback"
-  [sort]="sort"
-  [sortable]="true"
-  [trackBy]="trackByFn"
-  class="organisation-table h-full"
-  filterable="menu"
-  kendoGridExpandDetailsBy="id"
-  scrollable="scrollable"
-  uiKendoUrlSorting
->
-  <kendo-grid-column [width]="35" *featureFlag="'shortlistsFeature'">
-    <ng-template kendoGridCellTemplate let-organisation>
-      <input
-        (click)="
-          $event.stopPropagation(); toggleCheckedRow(organisation.id, $event)
-        "
-        [checked]="checkedAll() || checkedRows().includes(organisation.id)"
-        [unpatch]
-        kendoCheckBox
-        size="large"
-        type="checkbox"
-      />
-    </ng-template>
-    @if (showCheckboxHeader()) {
-      <ng-template kendoGridHeaderTemplate>
+<div class="h-full flex-1 overflow-hidden">
+  <kendo-grid
+    #grid
+    (appOnResize)="onResize($event)"
+    (filterChange)="filterChange($event)"
+    (scrollBottom)="onLoadMore()"
+    [clearNoneSort]="true"
+    [data]="gridData"
+    [expandedDetailKeys]="collapsedRows()"
+    [filter]="filters!"
+    [loading]="isLoading"
+    [rowClass]="rowCallback"
+    [sort]="sort"
+    [sortable]="true"
+    [trackBy]="trackByFn"
+    class="organisation-table h-full"
+    filterable="menu"
+    kendoGridExpandDetailsBy="id"
+    scrollable="scrollable"
+    uiKendoUrlSorting
+  >
+    <kendo-grid-column [width]="35" *featureFlag="'shortlistsFeature'">
+      <ng-template kendoGridCellTemplate let-organisation>
         <input
-          (change)="toggleAll($event)"
-          [checked]="checkedAll()"
-          [indeterminate]="checkedRows().length && !checkedAll()"
+          (click)="
+            $event.stopPropagation(); toggleCheckedRow(organisation.id, $event)
+          "
+          [checked]="checkedAll() || checkedRows().includes(organisation.id)"
           [unpatch]
           kendoCheckBox
           size="large"
           type="checkbox"
         />
       </ng-template>
-    }
-  </kendo-grid-column>
-
-  @for (columnTemplate of additionalFields; track columnTemplate.name) {
-    <kendo-grid-column
-      [field]="columnTemplate.field"
-      [title]="columnTemplate.name"
-      headerClass="!font-bold text-sm"
-      [width]="columnTemplate.width ?? 160"
-      [filterable]="!!columnTemplate.filter"
-      [sortable]="columnTemplate.sortable"
-    >
-      <ng-template kendoGridCellTemplate let-organisation>
-        <div class="text-sm">
-          <app-render-template
-            [component]="columnTemplate | dynamicColumn: organisation"
+      @if (showCheckboxHeader()) {
+        <ng-template kendoGridHeaderTemplate>
+          <input
+            (change)="toggleAll($event)"
+            [checked]="checkedAll()"
+            [indeterminate]="checkedRows().length && !checkedAll()"
+            [unpatch]
+            kendoCheckBox
+            size="large"
+            type="checkbox"
           />
-        </div>
-      </ng-template>
-
-      @if (columnTemplate.filter) {
-        <ng-template
-          kendoGridFilterMenuTemplate
-          let-filter
-          let-column="column"
-          let-filterService="filterService"
-        >
-          @switch (columnTemplate.filter) {
-            @case ('date') {
-              <app-date-range-filter
-                [field]="column.field"
-                [filter]="filter"
-                [filterService]="filterService"
-              />
-            }
-            @case ('string') {
-              <app-multicheck-filter
-                [sourceFn]="columnTemplate | sourceFn"
-                [field]="column.field"
-                [filterService]="filterService"
-                [currentFilter]="filter"
-                [isPrimitive]="true"
-              />
-            }
-            @case ('number') {
-              <app-number-range-filter
-                [field]="column.field"
-                [filter]="filter"
-                [filterService]="filterService"
-              />
-            }
-          }
         </ng-template>
       }
     </kendo-grid-column>
-  }
 
-  <kendo-grid-column [width]="100" title="">
-    <ng-template kendoGridCellTemplate let-organisation>
-      <div class="flex justify-end gap-2">
-        <app-dropdownbutton-navigation
-          [model]="getActionsModel(organisation)"
-        />
-        <kendo-button
-          (click)="toggleRow(organisation.id)"
-          [class.invisible]="organisation.opportunities.length === 0"
-          [iconClass]="
-            'fa-solid fa-caret-' +
-            (isRowCollapsed(organisation.id) ? 'up' : 'down')
-          "
-          fillMode="link"
-        />
-      </div>
+    @for (columnTemplate of rows(); track columnTemplate.name) {
+      <kendo-grid-column
+        [field]="columnTemplate.field"
+        [title]="columnTemplate.name"
+        headerClass="!font-bold text-sm"
+        [width]="columnTemplate.width ?? 160"
+        [filterable]="!!columnTemplate.filter"
+        [sortable]="columnTemplate.sortable"
+      >
+        <ng-template kendoGridCellTemplate let-organisation>
+          <div class="text-sm">
+            <app-render-template
+              [component]="columnTemplate | dynamicColumn: organisation"
+            />
+          </div>
+        </ng-template>
+
+        @if (columnTemplate.filter) {
+          <ng-template
+            kendoGridFilterMenuTemplate
+            let-filter
+            let-column="column"
+            let-filterService="filterService"
+          >
+            @switch (columnTemplate.filter) {
+              @case ('date') {
+                <app-date-range-filter
+                  [field]="column.field"
+                  [filter]="filter"
+                  [filterService]="filterService"
+                />
+              }
+              @case ('string') {
+                <app-multicheck-filter
+                  [sourceFn]="columnTemplate | sourceFn"
+                  [field]="column.field"
+                  [filterService]="filterService"
+                  [currentFilter]="filter"
+                  [isPrimitive]="true"
+                />
+              }
+              @case ('number') {
+                <app-number-range-filter
+                  [field]="column.field"
+                  [filter]="filter"
+                  [filterService]="filterService"
+                />
+              }
+            }
+          </ng-template>
+        }
+      </kendo-grid-column>
+    }
+
+    <kendo-grid-column [width]="100" title="">
+      <ng-template kendoGridCellTemplate let-organisation>
+        <div class="flex justify-end gap-2">
+          <app-dropdownbutton-navigation
+            [model]="getActionsModel(organisation)"
+          />
+          <kendo-button
+            (click)="toggleRow(organisation.id)"
+            [class.invisible]="organisation.opportunities.length === 0"
+            [iconClass]="
+              'fa-solid fa-caret-' +
+              (isRowCollapsed(organisation.id) ? 'up' : 'down')
+            "
+            fillMode="link"
+          />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <ng-template kendoGridDetailTemplate let-organisation>
+      <app-opportunities-table
+        [rows]="organisation.opportunities"
+        [style.width]="tableWidth"
+      />
     </ng-template>
-  </kendo-grid-column>
 
-  <ng-template kendoGridDetailTemplate let-organisation>
-    <app-opportunities-table
-      [rows]="organisation.opportunities"
-      [style.width]="tableWidth"
-    />
-  </ng-template>
-</kendo-grid>
+    @if (emptyMessage() && !isLoading) {
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="flex h-full flex-col items-center justify-center">
+          <div class="mt-16 w-[304px] text-xl text-black">
+            {{ emptyMessage() }}
+          </div>
+        </div>
+      </ng-template>
+    }
+  </kendo-grid>
+</div>

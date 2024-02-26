@@ -3,133 +3,135 @@
     *ngIf="vm().fields?.length || vm().isLoading"
     class="custom-scroll-on-hover -mr-1.5 h-full flex-1 overflow-auto pr-1.5"
   >
-    <kendo-tilelayout
-      [columns]="12"
-      [draggable]="false"
-      [gap]="12"
-      class="!p-0"
-      rowHeight="minmax(300px, auto)"
-    >
-      <ng-container [formGroup]="formGroup">
-        <ng-container *ngIf="vm().isLoading; else fields">
-          <kendo-tilelayout-item
-            *rxFor="let i of 2 | times"
-            [colSpan]="12"
-            [col]="1"
-          >
-            <kendo-tilelayout-item-header>
-              <kendo-skeleton width="60%"></kendo-skeleton>
-            </kendo-tilelayout-item-header>
-            <kendo-tilelayout-item-body>
-              <div class="flex flex-col gap-2">
-                <kendo-skeleton width="60%"></kendo-skeleton>
-                <kendo-skeleton width="35%"></kendo-skeleton>
-                <kendo-skeleton width="70%"></kendo-skeleton>
-                <kendo-skeleton width="35%"></kendo-skeleton>
-                <kendo-skeleton width="70%"></kendo-skeleton>
-              </div>
-            </kendo-tilelayout-item-body>
-          </kendo-tilelayout-item>
-        </ng-container>
-        <ng-template #fields>
-          @if (vm().heatmapFields.length) {
-            <kendo-tilelayout-item [@fadeIn] [colSpan]="12" [col]="1">
+    @defer {
+      <kendo-tilelayout
+        [columns]="12"
+        [draggable]="false"
+        [gap]="12"
+        class="!p-0"
+        rowHeight="minmax(300px, auto)"
+      >
+        <ng-container [formGroup]="formGroup">
+          <ng-container *ngIf="vm().isLoading; else fields">
+            <kendo-tilelayout-item
+              *rxFor="let i of 2 | times"
+              [colSpan]="12"
+              [col]="1"
+            >
               <kendo-tilelayout-item-header>
-                <div class="flex items-center justify-between gap-2">
-                  <h5 class="k-card-title">Financial KPIs</h5>
-                  <kendo-button
-                    iconClass="fa-regular fa-pen"
-                    [queryParams]="{ 'edit-financial-kpi': true }"
-                    [routerLink]="['./']"
-                    queryParamsHandling="merge"
-                    >Edit</kendo-button
-                  >
-                </div>
+                <kendo-skeleton width="60%"></kendo-skeleton>
               </kendo-tilelayout-item-header>
               <kendo-tilelayout-item-body>
-                <div class="flex flex-col gap-3">
-                  @for (
-                    fieldGroup of vm().heatmapFields;
-                    track fieldGroup.uniqId
-                  ) {
-                    <div>
-                      <div
-                        class="bg-chart-tooltip-bg border-chart-border mb-0.5 border px-3 py-2"
-                      >
-                        {{ fieldGroup.title }}
-                      </div>
-                      <div class="financial-grid grid gap-0.5">
-                        @for (
-                          field of $any(fieldGroup).noteFields;
-                          track field.uniqId
-                        ) {
-                          <div
-                            [ngStyle]="{
-                              'background-color':
-                                field.heat | heatColor: 'background',
-                              color: field.heat | heatColor: 'font'
-                            }"
-                            class="bg-success flex min-h-[60px] flex-col justify-between px-2 py-1 text-white"
-                          >
-                            <div class="text-sm">{{ field.title }}</div>
-
-                            <div class="text-end text-sm">
-                              @if (field.value) {
-                                {{ field.value || '' }} {{ field.unit }}
-                              }
-                            </div>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
+                <div class="flex flex-col gap-2">
+                  <kendo-skeleton width="60%"></kendo-skeleton>
+                  <kendo-skeleton width="35%"></kendo-skeleton>
+                  <kendo-skeleton width="70%"></kendo-skeleton>
+                  <kendo-skeleton width="35%"></kendo-skeleton>
+                  <kendo-skeleton width="70%"></kendo-skeleton>
                 </div>
               </kendo-tilelayout-item-body>
             </kendo-tilelayout-item>
-          }
+          </ng-container>
+          <ng-template #fields>
+            @if (vm().heatmapFields.length) {
+              <kendo-tilelayout-item [@fadeIn] [colSpan]="12" [col]="1">
+                <kendo-tilelayout-item-header>
+                  <div class="flex items-center justify-between gap-2">
+                    <h5 class="k-card-title">Financial KPIs</h5>
+                    <kendo-button
+                      iconClass="fa-regular fa-pen"
+                      [queryParams]="{ 'edit-financial-kpi': true }"
+                      [routerLink]="['./']"
+                      queryParamsHandling="merge"
+                      >Edit</kendo-button
+                    >
+                  </div>
+                </kendo-tilelayout-item-header>
+                <kendo-tilelayout-item-body>
+                  <div class="flex flex-col gap-3">
+                    @for (
+                      fieldGroup of vm().heatmapFields;
+                      track fieldGroup.uniqId
+                    ) {
+                      <div>
+                        <div
+                          class="bg-chart-tooltip-bg border-chart-border mb-0.5 border px-3 py-2"
+                        >
+                          {{ fieldGroup.title }}
+                        </div>
+                        <div class="financial-grid grid gap-0.5">
+                          @for (
+                            field of $any(fieldGroup).noteFields;
+                            track field.uniqId
+                          ) {
+                            <div
+                              [ngStyle]="{
+                                'background-color':
+                                  field.heat | heatColor: 'background',
+                                color: field.heat | heatColor: 'font'
+                              }"
+                              class="bg-success flex min-h-[60px] flex-col justify-between px-2 py-1 text-white"
+                            >
+                              <div class="text-sm">{{ field.title }}</div>
 
-          <kendo-tilelayout-item
-            *rxFor="
-              let field of fields$;
-              let i = index;
-              trackBy: 'formControlName'
-            "
-            [@fadeIn]
-            [colSpan]="12"
-            [col]="1"
-            [order]="i"
-          >
-            <kendo-tilelayout-item-header>
-              <div class="flex items-center justify-between gap-2">
-                <h5 class="k-card-title">{{ field.title }}</h5>
+                              <div class="text-end text-sm">
+                                @if (field.value) {
+                                  {{ field.value || '' }} {{ field.unit }}
+                                }
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </kendo-tilelayout-item-body>
+              </kendo-tilelayout-item>
+            }
 
-                <app-status-indicator
-                  [state]="
-                    state().updatingField === field.formControlName
-                      ? state().state
-                      : 'none'
-                  "
-                />
-              </div>
-            </kendo-tilelayout-item-header>
-            <kendo-tilelayout-item-body>
-              <app-rich-text
-                (valueChange)="onValueChange(field.formControlName)"
-                [borderless]="true"
-                [disabled]="state().state === 'validate'"
-                [formControlName]="field.formControlName"
-                [grow]="true"
-                [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
-                [readonly]="!vm().canEditFields"
-                class="h-full"
-                placeholder="Click to write content here..."
-              >
-              </app-rich-text>
-            </kendo-tilelayout-item-body>
-          </kendo-tilelayout-item>
-        </ng-template>
-      </ng-container>
-    </kendo-tilelayout>
+            <kendo-tilelayout-item
+              *rxFor="
+                let field of fields$;
+                let i = index;
+                trackBy: 'formControlName'
+              "
+              [@fadeIn]
+              [colSpan]="12"
+              [col]="1"
+              [order]="i"
+            >
+              <kendo-tilelayout-item-header>
+                <div class="flex items-center justify-between gap-2">
+                  <h5 class="k-card-title">{{ field.title }}</h5>
+
+                  <app-status-indicator
+                    [state]="
+                      state().updatingField === field.formControlName
+                        ? state().state
+                        : 'none'
+                    "
+                  />
+                </div>
+              </kendo-tilelayout-item-header>
+              <kendo-tilelayout-item-body>
+                <app-rich-text
+                  (valueChange)="onValueChange(field.formControlName)"
+                  [borderless]="true"
+                  [disabled]="state().state === 'validate'"
+                  [formControlName]="field.formControlName"
+                  [grow]="true"
+                  [proseSettings]="{ proseMirrorSettings: proseMirrorSettings }"
+                  [readonly]="!vm().canEditFields"
+                  class="h-full"
+                  placeholder="Click to write content here..."
+                >
+                </app-rich-text>
+              </kendo-tilelayout-item-body>
+            </kendo-tilelayout-item>
+          </ng-template>
+        </ng-container>
+      </kendo-tilelayout>
+    }
   </div>
 
   <kendo-tilelayout

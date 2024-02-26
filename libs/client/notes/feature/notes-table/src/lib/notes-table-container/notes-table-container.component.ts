@@ -33,6 +33,9 @@ export class NotesTableContainerComponent {
   protected params = this.store.selectSignal(notesQuery.selectNotesTableParams);
 
   public constructor() {
+    this.store.dispatch(NotesActions.openNotesTable());
+    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
+
     this.store
       .select(notesQuery.selectNotesTableParams)
       .pipe(distinctUntilChangedDeep(), takeUntilDestroyed())
@@ -52,9 +55,6 @@ export class NotesTableContainerComponent {
       .subscribe(([action, params]) => {
         this._loadNotes(params, true);
       });
-
-    this.store.dispatch(NotesActions.openNotesTable());
-    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
   }
 
   protected onLoadMore($event: { offset: number; take: number }): void {

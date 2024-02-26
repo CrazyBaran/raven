@@ -65,9 +65,8 @@ import {
 } from '@app/client/shared/ui-router';
 import { DialogUtil } from '@app/client/shared/util';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
-import { ShortlistsActions } from '@app/client/shortlists/state';
 import { TagData } from '@app/rvns-tags';
-import { Actions, ofType } from '@ngrx/effects';
+import { Actions } from '@ngrx/effects';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { ComboBoxModule } from '@progress/kendo-angular-dropdowns';
 import {
@@ -83,6 +82,7 @@ import {
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
 import { filter, first, map, Observable } from 'rxjs';
+import { OrganisationShortlistsTableComponent } from '../organisation-shortlists-table/organisation-shortlists-table.component';
 import {
   FileRow,
   selectFilesTableViewModelFactory,
@@ -129,6 +129,7 @@ import {
     TagsContainerComponent,
     ToUserTagPipe,
     PanelBarModule,
+    OrganisationShortlistsTableComponent,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -147,20 +148,6 @@ export class OrganisationPageComponent {
   public sharepointUrl = this.environment.sharepointRoot;
   public sharepointList = this.environment.sharepointList;
   public sharepointWeb = this.environment.sharepointWeb;
-
-  public shortlistGrid = {
-    data: {
-      data: [
-        {
-          name: 'John Smith',
-          description: '12345',
-          contributors: ['John Smith', 'Jane Smith'],
-          updatedAt: '2021-01-01',
-        },
-      ],
-      total: 25,
-    },
-  };
 
   public store = inject(Store);
 
@@ -220,17 +207,6 @@ export class OrganisationPageComponent {
             directoryUrl: organisation!.sharepointDirectory!,
             folderId: organisation!.sharepointDirectory!,
           }),
-        );
-      });
-
-    this.actions$
-      .pipe(
-        takeUntilDestroyed(),
-        ofType(ShortlistsActions.bulkAddOrganisationsToShortlistSuccess),
-      )
-      .subscribe(() => {
-        this.store.dispatch(
-          OrganisationsActions.getOrganisation({ id: organizationId }),
         );
       });
   }

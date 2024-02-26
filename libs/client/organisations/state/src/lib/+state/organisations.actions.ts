@@ -66,6 +66,8 @@ export const OrganisationsActions = createActionGroup({
     'Get Data Warehouse Last Updated Failure': props<{ error: string }>(),
 
     'Get Data Warehouse Last Updated If Not Loaded': emptyProps(),
+
+    'Open Organisations Table': emptyProps(),
   },
 });
 

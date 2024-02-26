@@ -5,8 +5,9 @@ import {
   GetShortlistDto,
   UpdateShortlistDto,
 } from '@app/client/shortlists/data-access';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { PagedShortlistDataWithExtras } from '@app/rvns-shortlists';
-import { createActionGroup, props } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { ShortlistEntity } from './shortlists.model';
 
 export type SuccessPayload<T> = { data: T; message?: string };
@@ -56,5 +57,7 @@ export const ShortlistsActions = createActionGroup({
       data: PagedShortlistDataWithExtras;
     }>(),
     'Load More Shortlists Failure': props<FailurePayload>(),
+
+    'Open Shortlist Organisations Table': emptyProps(),
   },
 });

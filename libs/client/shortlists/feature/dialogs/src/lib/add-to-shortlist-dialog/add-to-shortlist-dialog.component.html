@@ -8,14 +8,18 @@
     <form [formGroup]="form" class="flex flex-col gap-6">
       <kendo-formfield>
         <kendo-multiselect
-          [data]="vm().shortlists"
+          [data]="signalStore.shortlists()"
           [textField]="'name'"
           [valueField]="'id'"
           [formControlName]="'shortlistsIds'"
           [checkboxes]="true"
           [autoClose]="false"
+          [itemDisabled]="itemDisabledFn"
           [valuePrimitive]="true"
-          [loading]="vm().isLoadingData!"
+          [loading]="signalStore.isLoading()"
+          (filterChange)="onFilterChange($event)"
+          [filterable]="true"
+          [virtual]="true"
           placeholder="Choose from list"
         />
         <kendo-formerror> Shortlist's Name is Required</kendo-formerror>

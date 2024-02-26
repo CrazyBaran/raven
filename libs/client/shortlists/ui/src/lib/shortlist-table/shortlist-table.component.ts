@@ -1,9 +1,10 @@
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   ViewEncapsulation,
 } from '@angular/core';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
   ClipboardDirective,
@@ -25,14 +26,8 @@ import {
   RowClassArgs,
   RowClassFn,
 } from '@progress/kendo-angular-grid';
-import { IconModule } from '@progress/kendo-angular-icons';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
-import {
-  IisMainShortlistTypePipe,
-  IsCustomShortlistTypePipe,
-  IsMyShortlistTypePipe,
-  IsPersonalShortlistTypePipe,
-} from '../is-personal-shortlist.pipe';
+import { shortlistPipes } from '../is-personal-shortlist.pipe';
 
 export interface ShortListTableRow {
   id: string;
@@ -50,22 +45,18 @@ export interface ShortListTableRow {
   selector: 'app-shortlist-table',
   standalone: true,
   imports: [
-    ClipboardDirective,
     GridModule,
     KendoUrlSortingDirective,
-    TagsContainerComponent,
-    ButtonModule,
-    DatePipe,
-    ToUserTagPipe,
-    IsEllipsisActiveDirective,
-    DropdownButtonNavigationComponent,
     RouterLink,
+    IsEllipsisActiveDirective,
     TooltipModule,
-    IsPersonalShortlistTypePipe,
-    IisMainShortlistTypePipe,
-    IconModule,
-    IsMyShortlistTypePipe,
-    IsCustomShortlistTypePipe,
+    ButtonModule,
+    DropdownButtonNavigationComponent,
+    TagsContainerComponent,
+    ToUserTagPipe,
+    DatePipe,
+    ClipboardDirective,
+    shortlistPipes,
   ],
   templateUrl: './shortlist-table.component.html',
   styleUrl: './shortlist-table.component.scss',
@@ -76,7 +67,7 @@ export class ShortlistTableComponent extends InfinityTableViewBaseComponent<Shor
   public trackByFn = this.getTrackByFn('id');
 
   public getShortlistUrl(shortlistId: string): string {
-    return `${window.location.href}?shortlist=${shortlistId}`;
+    return `${window.location.href}/${shortlistId}`;
   }
 
   public rowCallback: RowClassFn = (context: RowClassArgs) => {
