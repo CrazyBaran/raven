@@ -6,7 +6,6 @@ export function isNavigatingAway(
 ): boolean {
   return (
     !!currentNavigation &&
-    !currentNavigation.extras?.relativeTo &&
-    currentNavigation?.extractedUrl.toString() !== route
+    currentNavigation?.extractedUrl.toString().split('?')[0] !== route
   );
 }

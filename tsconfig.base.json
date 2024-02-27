@@ -127,9 +127,7 @@
       "@app/client/organisations/feature/organisation-page": [
         "libs/client/organisations/feature/organisation-page/src/index.ts"
       ],
-      "@app/client/organisations/feature/organisations-table": [
-        "libs/client/organisations/feature/organisations-table/src/index.ts"
-      ],
+
       "@app/client/organisations/feature/organisations-table-v2": [
         "libs/client/organisations/feature/organisations-table-v2/src/index.ts"
       ],
