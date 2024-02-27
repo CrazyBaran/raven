@@ -78,7 +78,7 @@ export class ShortlistsService {
 
     if (searchString) {
       queryBuilder
-        .where(`LOWER(shortlists.name) LIKE :nameSearch`, {
+        .andWhere(`LOWER(shortlists.name) LIKE :nameSearch`, {
           nameSearch: searchString,
         })
         .orWhere(`LOWER(shortlists.description) LIKE :descriptionSearch`, {
@@ -171,16 +171,32 @@ export class ShortlistsService {
         id: In(options.organisationsIds),
       },
     });
+    const personalShortlist = await this.getUserPersonalShortlist(
+      userEntity?.id,
+    );
 
     const relationsToAdd: ShortlistOrganisationEntity[] = [];
+    let containsPersonal = false;
     for (const shortlist of shortlists) {
       await this.assertSpecialTypesUpdate(shortlist, userEntity);
 
+      shortlist.id === personalShortlist.id && (containsPersonal = true);
       relationsToAdd.push(
         ...organisations.map((organisation) =>
           ShortlistOrganisationEntity.create({
             organisationId: organisation.id,
             shortlistId: shortlist.id,
+          }),
+        ),
+      );
+    }
+
+    if (!containsPersonal) {
+      relationsToAdd.push(
+        ...organisations.map((organisation) =>
+          ShortlistOrganisationEntity.create({
+            organisationId: organisation.id,
+            shortlistId: personalShortlist.id,
           }),
         ),
       );
@@ -323,6 +339,18 @@ export class ShortlistsService {
     return mainShortlist;
   }
 
+  public async addOrganisationToPersonalList(
+    userId?: string,
+    organisationId?: string,
+  ): Promise<void> {
+    const personalShortlist = await this.getUserPersonalShortlist(userId);
+    await this.shortlistOrganisationRepository.save(
+      ShortlistOrganisationEntity.create({
+        organisationId: organisationId,
+        shortlistId: personalShortlist.id,
+      }),
+    );
+  }
   private addStatsQuery(
     queryBuilder: SelectQueryBuilder<ShortlistEntity>,
   ): SelectQueryBuilder<ShortlistEntity> {

@@ -43,6 +43,8 @@ export class OrganisationProvider {
       .leftJoinAndSelect('shares.actor', 'member')
       .leftJoinAndSelect('organisations.shortlists', 'shortlists');
 
+    queryBuilder.where('organisations.name is not null');
+
     if (options?.shortlistId) {
       const mainShortlist =
         await this.shortlistsService.getMainShortlist(false);
@@ -54,8 +56,6 @@ export class OrganisationProvider {
         });
       }
     }
-
-    queryBuilder.where('organisations.name is not null');
 
     //queryBuilder.select('organisation.id');
 

@@ -279,6 +279,9 @@ export class OpportunityService {
         opportunity.organisation.name,
         opportunity.organisation.domains,
         defaultPipelineStage.mappedFrom,
+        options?.userEntity?.id,
+        opportunity.organisation.id,
+        defaultPipelineStage.relatedCompanyStatus,
       ),
     );
 
@@ -314,6 +317,9 @@ export class OpportunityService {
         createdOrganisation.name,
         createdOrganisation.domains,
         defaultPipelineStage.mappedFrom,
+        options?.userEntity?.id,
+        opportunity.organisation.id,
+        defaultPipelineStage.relatedCompanyStatus,
       ),
     );
 
@@ -378,6 +384,9 @@ export class OpportunityService {
           opportunity.organisation.name,
           opportunityEntity.organisation.domains,
           options.pipelineStage.mappedFrom,
+          userEntity?.id,
+          opportunity.organisation.id,
+          opportunity.pipelineStage?.relatedCompanyStatus,
         ),
       );
     }
