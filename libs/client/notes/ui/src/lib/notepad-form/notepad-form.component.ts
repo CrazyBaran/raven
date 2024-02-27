@@ -71,6 +71,7 @@ export const TITLE_FIELD: DynamicControl = {
   order: 0,
   validators: {
     required: true,
+    maxLength: 100,
   },
 };
 

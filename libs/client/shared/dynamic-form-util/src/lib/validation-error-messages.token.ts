@@ -21,6 +21,10 @@ export const ERROR_MESSAGES: Record<string, (args?: unknown) => string> = {
     `The length should be at least ${
       hasProp(args, 'requiredLength') ? args.requiredLength : ''
     } characters`,
+  maxlength: (args: unknown) =>
+    `The length should be less than ${
+      hasProp(args, 'requiredLength') ? args.requiredLength : ''
+    } characters`,
   appPasswordShouldMatch: () => `Password should match`,
   passwordShouldMatch: () => `Password should match`,
   pattern: () => `Wrong format`,

@@ -29,9 +29,11 @@ import {
   TITLE_FIELD,
 } from '@app/client/notes/ui';
 import { ImagePathDictionaryService } from '@app/client/shared/storage/data-access';
+import { ControlInvalidPipe } from '@app/client/shared/ui-pipes';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
+import { RxPush } from '@rx-angular/template/push';
 import * as _ from 'lodash';
 import { filter, take } from 'rxjs';
 
@@ -44,6 +46,8 @@ import { filter, take } from 'rxjs';
     ReactiveFormsModule,
     ButtonsModule,
     LoaderModule,
+    ControlInvalidPipe,
+    RxPush,
   ],
   templateUrl: './notepad-content.component.html',
   styleUrls: ['./notepad-content.component.scss'],
@@ -53,6 +57,9 @@ import { filter, take } from 'rxjs';
 export class NotepadContentComponent {
   @ViewChild('container', { read: ViewContainerRef })
   public containerRef: ViewContainerRef;
+
+  @ViewChild(NotepadFormComponent)
+  public notepadFormComponent: NotepadFormComponent;
 
   protected templateFacade = inject(TemplatesStoreFacade);
   protected noteFacade = inject(NoteStoreFacade);
