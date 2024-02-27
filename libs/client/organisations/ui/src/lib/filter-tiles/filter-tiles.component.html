@@ -12,8 +12,7 @@
         class="!p-0 !text-xl"
         iconClass="fa-sharp fa-solid fa-circle-xmark"
         (click)="$event.stopPropagation(); removeFilter(pair.key)"
-      >
-      </kendo-button>
+      ></kendo-button>
     </div>
   }
   @if ((filters() | keyvalue).length > 0) {

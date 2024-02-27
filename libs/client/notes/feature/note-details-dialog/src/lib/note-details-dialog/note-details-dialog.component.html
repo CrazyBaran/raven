@@ -25,15 +25,17 @@
           iconClass="fa-regular fa-pen"
           size="large"
           themeColor="primary"
-          >Cancel</kendo-button
         >
+          Cancel
+        </kendo-button>
         <kendo-button
           (click)="updateNote()"
           [disabled]="isUpdating() || !notepadForm.valid"
           size="large"
           themeColor="primary"
-          >Update Note</kendo-button
         >
+          Update Note
+        </kendo-button>
       </div>
     } @else {
       <app-note-details
@@ -51,8 +53,9 @@
           "
           iconClass="fa-solid fa-link"
           size="medium"
-          >Copy Link</kendo-button
         >
+          Copy Link
+        </kendo-button>
 
         <div class="flex flex-row gap-3" kendoTooltip>
           <div class="flex items-center justify-center gap-3 text-xs">
@@ -76,8 +79,9 @@
             iconClass="fa-regular fa-trash-can"
             size="large"
             themeColor="primary"
-            >Delete</kendo-button
           >
+            Delete
+          </kendo-button>
           <div
             [title]="
               !vm().canEditNote
@@ -93,16 +97,18 @@
               iconClass="fa-regular fa-pen"
               size="large"
               themeColor="primary"
-              >Edit / Update</kendo-button
             >
+              Edit / Update
+            </kendo-button>
           </div>
 
           <kendo-button
             (click)="handleCloseWindow()"
             size="large"
             themeColor="primary"
-            >Close</kendo-button
           >
+            Close
+          </kendo-button>
         </div>
       </div>
     }

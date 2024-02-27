@@ -19,8 +19,9 @@
           themeColor="primary"
           fillMode="outline"
           iconClass="fa-solid fa-bell"
-          >Set a reminder</kendo-button
         >
+          Set a reminder
+        </kendo-button>
       }
 
       @if (footerGroup.removeSwitch) {
@@ -36,14 +37,15 @@
       <p>Are you sure you want to proceed?</p>
     </div>
     <kendo-dialog-actions>
-      <kendo-button (click)="onCancelDialog()"
-        >Keep existing status</kendo-button
-      >
+      <kendo-button (click)="onCancelDialog()">
+        Keep existing status
+      </kendo-button>
       <kendo-button
         (click)="onConfirmDialog()"
         [themeColor]="footerGroup.theme === 'success' ? 'primary' : 'secondary'"
-        >Mark status as {{ footerGroup.name }}</kendo-button
       >
+        Mark status as {{ footerGroup.name }}
+      </kendo-button>
     </kendo-dialog-actions>
   </kendo-dialog>
 }

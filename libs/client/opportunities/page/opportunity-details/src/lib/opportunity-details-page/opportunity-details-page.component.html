@@ -5,8 +5,9 @@
       fillMode="flat"
       iconClass="fa-sharp fa-regular fa-cart-shopping"
       themeColor="primary"
-      >All Companies</kendo-button
     >
+      All Companies
+    </kendo-button>
     @if (vm().currentOrganisation?.name) {
       <i
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
@@ -15,8 +16,9 @@
         [routerLink]="['/companies', vm().currentOrganisation?.id]"
         fillMode="flat"
         themeColor="primary"
-        >{{ vm().currentOrganisation?.name }}</kendo-button
       >
+        {{ vm().currentOrganisation?.name }}
+      </kendo-button>
       <i
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
       ></i>
@@ -25,14 +27,15 @@
         fillMode="flat"
         iconClass="fa-sharp fa-regular fa-fire"
         themeColor="primary"
-        >Pipeline</kendo-button
       >
+        Pipeline
+      </kendo-button>
       <i
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
       ></i>
-      <kendo-button [disabled]="true" fillMode="flat" themeColor="primary"
-        >Opportunity</kendo-button
-      >
+      <kendo-button [disabled]="true" fillMode="flat" themeColor="primary">
+        Opportunity
+      </kendo-button>
     }
   </div>
   <div class="flex gap-1" page-header-actions>

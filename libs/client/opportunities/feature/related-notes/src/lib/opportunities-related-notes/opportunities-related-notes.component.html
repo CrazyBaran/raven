@@ -43,8 +43,9 @@
                       [queryParams]="{ 'edit-financial-kpi': true }"
                       [routerLink]="['./']"
                       queryParamsHandling="merge"
-                      >Edit</kendo-button
                     >
+                      Edit
+                    </kendo-button>
                   </div>
                 </kendo-tilelayout-item-header>
                 <kendo-tilelayout-item-body>
@@ -124,8 +125,7 @@
                   [readonly]="!vm().canEditFields"
                   class="h-full"
                   placeholder="Click to write content here..."
-                >
-                </app-rich-text>
+                ></app-rich-text>
               </kendo-tilelayout-item-body>
             </kendo-tilelayout-item>
           </ng-template>
@@ -209,8 +209,7 @@
                 iconClass="fa-solid fa-eye"
                 queryParamsHandling="merge"
                 themeColor="primary"
-              >
-              </kendo-button>
+              ></kendo-button>
             </div>
           </div>
           <div class="px-3 pb-6 pt-3">

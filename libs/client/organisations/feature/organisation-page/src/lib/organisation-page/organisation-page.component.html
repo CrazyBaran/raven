@@ -5,8 +5,9 @@
       fillMode="flat"
       iconClass="fa-sharp fa-regular fa-cart-shopping"
       themeColor="primary"
-      >All Companies</kendo-button
     >
+      All Companies
+    </kendo-button>
 
     @if (vm().currentOrganisation?.name) {
       <i
@@ -18,8 +19,9 @@
         [disabled]="true"
         fillMode="flat"
         themeColor="primary"
-        >{{ vm().currentOrganisation?.name }}</kendo-button
       >
+        {{ vm().currentOrganisation?.name }}
+      </kendo-button>
     }
   </div>
 
@@ -55,8 +57,9 @@
         [skipLocationChange]="true"
         [routerLink]="['./']"
         themeColor="primary"
-        >Add To Outreach</kendo-button
       >
+        Add To Outreach
+      </kendo-button>
     }
 
     @if (vm().showPassButton) {
@@ -82,8 +85,9 @@
               iconClass="fa-sharp fa-solid fa-pen"
               queryParamsHandling="merge"
               size="small"
-              >Edit</kendo-button
             >
+              Edit
+            </kendo-button>
           </div>
           <div body class="bg-grey-100 h-full overflow-auto">
             <div
@@ -119,8 +123,9 @@
               [routerLink]="['./']"
               iconClass="fa-sharp fa-solid fa-pen"
               size="small"
-              >Add new</kendo-button
             >
+              Add new
+            </kendo-button>
           </div>
           <!--            [skipLocationChange]="true"-->
 
@@ -330,8 +335,8 @@
                 @if (vm().isCreatingSharepointFolder) {
                   <kendo-loader class="!text-secondary-100 mr-1" size="small" />
                 }
-                Create Organisation Folder</kendo-button
-              >
+                Create Organisation Folder
+              </kendo-button>
             </div>
           }
         </ng-container>
@@ -345,8 +350,9 @@
             (click)="openNoteShelf()"
             iconClass="fa-sharp fa-solid fa-pen"
             size="small"
-            >Add New</kendo-button
           >
+            Add New
+          </kendo-button>
         </div>
         <app-notes-table-container body />
       </ui-tilelayout-item>
