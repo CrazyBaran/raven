@@ -63,7 +63,7 @@ export class OrganisationProvider {
     if (options?.query) {
       queryBuilder.andWhere(
         new Brackets((qb) => {
-          qb.orWhere(`data.name ${collate} LIKE :dataNameSearch ${collate}`, {
+          qb.where(`data.name ${collate} LIKE :dataNameSearch ${collate}`, {
             dataNameSearch: `%${options.query}%`,
           });
 
@@ -129,34 +129,44 @@ export class OrganisationProvider {
     if (options.filters?.status && options.filters.status.length > 0) {
       queryBuilder.andWhere(
         new Brackets((qb) => {
-          if (options.filters.status.includes(null)) {
-            qb.orWhere(
-              new Brackets((qb) => {
-                qb.andWhere(
-                  'organisations.companyStatusOverride IS NULL',
-                ).andWhere('pipelineStage.relatedCompanyStatus IS NULL');
-              }),
-            );
-          }
           const statuses = options.filters.status.filter(
             (status) => status != null,
           );
           if (statuses && statuses.length > 0) {
-            qb.andWhere(
-              'organisations.companyStatusOverride IN (:...statuses)',
-              {
-                statuses: statuses,
-              },
-            ).orWhere(
-              new Brackets((qb) => {
-                qb.where(
-                  'pipelineStage.relatedCompanyStatus IN (:...statuses)',
-                  {
-                    statuses: statuses,
-                  },
-                ).andWhere('organisations.companyStatusOverride is null');
+            qb.where('organisations.companyStatusOverride IN (:...statuses)', {
+              statuses: statuses,
+            }).orWhere(
+              new Brackets((qb2) => {
+                qb2
+                  .where(
+                    'pipelineStage.relatedCompanyStatus IN (:...statuses)',
+                    {
+                      statuses: statuses,
+                    },
+                  )
+                  .andWhere('organisations.companyStatusOverride is null');
               }),
             );
+          }
+
+          if (options.filters.status.includes(null)) {
+            if (statuses.length > 1) {
+              qb.orWhere(
+                new Brackets((qb2) => {
+                  qb2
+                    .where('organisations.companyStatusOverride IS NULL')
+                    .andWhere('pipelineStage.relatedCompanyStatus IS NULL');
+                }),
+              );
+            } else {
+              qb.where(
+                new Brackets((qb2) => {
+                  qb2
+                    .where('organisations.companyStatusOverride IS NULL')
+                    .andWhere('pipelineStage.relatedCompanyStatus IS NULL');
+                }),
+              );
+            }
           }
         }),
       );

@@ -96,6 +96,12 @@ export class OrganisationService {
         'organisationDomains',
       );
 
+    if (organisationIds.length === 0) {
+      return {
+        items: [],
+        total: 0,
+      };
+    }
     queryBuilder.where(`organisations.id IN (:...organisationIds)`, {
       organisationIds,
     });

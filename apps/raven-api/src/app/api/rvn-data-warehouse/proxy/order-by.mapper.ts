@@ -22,7 +22,7 @@ export class DataWarehouseOrderByMapper {
       case 'name':
       case 'company':
       default:
-        return 'data.name';
+        return 'organisations.name';
     }
   }
 }
