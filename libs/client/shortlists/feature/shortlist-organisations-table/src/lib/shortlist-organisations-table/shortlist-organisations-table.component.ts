@@ -17,7 +17,7 @@ import {
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationStart, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import {
   OrganisationsActions,
   OrganisationsUrlActions,
@@ -29,8 +29,10 @@ import {
 import { PipelinesActions } from '@app/client/pipelines/state';
 import { LoaderComponent } from '@app/client/shared/ui';
 import { ShowTooltipIfClampedDirective } from '@app/client/shared/ui-directives';
-import { isNavigatingAway } from '@app/client/shared/util-router';
-import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import {
+  distinctUntilChangedDeep,
+  takeUntilNavigatedAway,
+} from '@app/client/shared/util-rxjs';
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import {
   IsCustomShortlistTypePipe,
@@ -41,7 +43,6 @@ import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
-import { filter, Subject, takeUntil } from 'rxjs';
 import {
   selectShortlistOrganisationsTableParams,
   selectShortlistOrganisationsTableViewModel,
@@ -85,11 +86,8 @@ export class ShortlistOrganisationsTableComponent {
     selectShortlistOrganisationsTableParams,
   );
 
-  private navigatedAway$ = new Subject<boolean>();
-
   public constructor(
     private store: Store,
-    private router: Router,
     private actions$: Actions,
   ) {
     this.store.dispatch(ShortlistsActions.openShortlistOrganisationsTable());
@@ -108,24 +106,13 @@ export class ShortlistOrganisationsTableComponent {
       }),
     );
 
-    this.router.events
-      .pipe(
-        takeUntilDestroyed(),
-        filter((event) => event instanceof NavigationStart),
-      )
-      .subscribe(() => {
-        const currentNavigation = router.getCurrentNavigation();
-        if (isNavigatingAway(currentNavigation, '/companies')) {
-          this.navigatedAway$?.next(true);
-          this.navigatedAway$?.complete();
-        }
-      });
-
     this.store
       .select(selectShortlistOrganisationsTableParams)
       .pipe(
         takeUntilDestroyed(),
-        takeUntil(this.navigatedAway$),
+        takeUntilNavigatedAway({
+          route: `/companies/shortlists/${this.vm().shortlistId}`,
+        }),
         distinctUntilChangedDeep({ ignoreOrder: true }),
       )
       .subscribe((params) => {

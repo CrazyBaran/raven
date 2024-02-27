@@ -6,7 +6,6 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationStart, Router } from '@angular/router';
 import { PipelinesActions } from '@app/client/organisations/api-pipelines';
 import { TagsActions } from '@app/client/organisations/api-tags';
 import {
@@ -25,13 +24,14 @@ import {
   PageTemplateComponent,
   QuickFiltersTemplateComponent,
 } from '@app/client/shared/ui-templates';
-import { isNavigatingAway } from '@app/client/shared/util-router';
-import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
+import {
+  distinctUntilChangedDeep,
+  takeUntilNavigatedAway,
+} from '@app/client/shared/util-rxjs';
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { Subject, filter, takeUntil } from 'rxjs';
 import { CreateOrganisationDialogComponent } from '../create-organisation-dialog/create-organisation-dialog.component';
 import {
   selectOrganisationsTableParams,
@@ -66,11 +66,8 @@ export class OrganisationsTableV2Component {
   protected vm = this.store.selectSignal(selectOrganisationsTableViewModel);
   protected params = this.store.selectSignal(selectOrganisationsTableParams);
 
-  private navigatedAway$ = new Subject<boolean>();
-
   public constructor(
     private store: Store,
-    private router: Router,
     private actions$: Actions,
   ) {
     this.store.dispatch(OrganisationsActions.openOrganisationsTable());
@@ -82,24 +79,11 @@ export class OrganisationsTableV2Component {
     );
     this.store.dispatch(OrganisationsActions.getDataWarehouseLastUpdated());
 
-    this.router.events
-      .pipe(
-        takeUntilDestroyed(),
-        filter((event) => event instanceof NavigationStart),
-      )
-      .subscribe(() => {
-        const currentNavigation = router.getCurrentNavigation();
-        if (isNavigatingAway(currentNavigation, '/companies')) {
-          this.navigatedAway$?.next(true);
-          this.navigatedAway$?.complete();
-        }
-      });
-
     this.store
       .select(selectOrganisationsTableParams)
       .pipe(
         takeUntilDestroyed(),
-        takeUntil(this.navigatedAway$),
+        takeUntilNavigatedAway({ route: '/companies' }),
         distinctUntilChangedDeep({ ignoreOrder: true }),
       )
       .subscribe((params) => {
