@@ -52,10 +52,8 @@ export const organisationShortlistsTableStore = signalStore(
       routerQuery.selectCurrentOrganisationId,
     ),
     params: computed(() => ({
-      skip: store.pageState.skip()!,
-      take: store.pageState.take()!,
-      field: store.sort.field()!,
-      dir: store.sort().dir!,
+      ...store.pageState(),
+      ...store.sort(),
       organisationId: ngrxStore.selectSignal(
         routerQuery.selectCurrentOrganisationId,
       )()!,
@@ -77,10 +75,10 @@ export const organisationShortlistsTableStore = signalStore(
       ),
     ),
     loadShortlists: rxMethod<{
-      skip: string | number;
-      take: string | number;
-      field: string;
-      dir: string;
+      skip?: string | number;
+      take?: string | number;
+      field?: string;
+      dir?: string;
       organisationId: string;
     }>(
       pipe(

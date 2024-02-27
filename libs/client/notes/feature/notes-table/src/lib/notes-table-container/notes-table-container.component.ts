@@ -57,11 +57,11 @@ export class NotesTableContainerComponent {
       });
   }
 
-  protected onLoadMore($event: { offset: number; take: number }): void {
+  protected onLoadMore($event: { skip: number; take: number }): void {
     this._loadNotes(
       {
         ...this.params(),
-        skip: '' + $event.offset,
+        skip: '' + $event.skip,
         take: '' + $event.take,
       },
       false,

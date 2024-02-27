@@ -24,7 +24,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridItem, GridModule, RowClassFn } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';
 
 import {
@@ -124,10 +124,6 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
 
   public showCheckboxHeader = input<boolean>(false);
 
-  public router = inject(Router);
-
-  public activedRoute = inject(ActivatedRoute);
-
   public clipboardService = inject(ClipboardService);
 
   public cdr = inject(ChangeDetectorRef);
@@ -190,7 +186,7 @@ export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<
     const filters = _.isEmpty(mapFilters) ? null : param(mapFilters);
 
     this.router.navigate([], {
-      relativeTo: this.activedRoute,
+      relativeTo: this.activatedRoute,
       queryParams: { filters },
       queryParamsHandling: 'merge',
     });

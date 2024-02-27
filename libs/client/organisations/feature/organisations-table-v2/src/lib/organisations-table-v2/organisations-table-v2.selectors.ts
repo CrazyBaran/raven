@@ -257,6 +257,13 @@ export const selectFilterIndicators = createSelector(
   },
 );
 
+export const selectShowCheckboxHeader = createSelector(
+  selectOrganisationsTableParams,
+  ({ query, member, status, filters }) => {
+    return !!(query || member || status || filters);
+  },
+);
+
 export const selectOrganisationsTableViewModel = createSelector(
   selectOrganisationsTableButtonGroupNavigation,
   selectOrganisationTableQueryModel,
@@ -265,6 +272,7 @@ export const selectOrganisationsTableViewModel = createSelector(
   organisationsFeature.selectDataWarehouseLastUpdated,
   selectFilterIndicators,
   selectOrganisationStatusButtonGroupNavigation,
+  selectShowCheckboxHeader,
   (
     buttonGroupNavigation,
     queryModel,
@@ -273,6 +281,7 @@ export const selectOrganisationsTableViewModel = createSelector(
     dataWarehouseLastUpdated,
     filters,
     statuses,
+    showCheckboxHeader,
   ) => {
     return {
       buttonGroupNavigation,
@@ -290,6 +299,7 @@ export const selectOrganisationsTableViewModel = createSelector(
           queryParamName: DialogUtil.queryParams.addToShortlist,
         },
       ] satisfies OrganisationTableBulkAction[],
+      showCheckboxHeader,
     };
   },
 );

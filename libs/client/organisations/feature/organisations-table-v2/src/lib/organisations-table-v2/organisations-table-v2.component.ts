@@ -120,13 +120,12 @@ export class OrganisationsTableV2Component {
       });
   }
 
-  protected onLoadMore($event: { offset: number; take: number }): void {
+  protected onLoadMore($event: { skip: number; take: number }): void {
     this.store.dispatch(
       OrganisationsActions.loadMoreOrganisations({
         params: {
           ...this.params(),
-          skip: '' + $event.offset,
-          take: '' + $event.take,
+          ...$event,
         },
       }),
     );

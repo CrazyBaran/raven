@@ -34,6 +34,8 @@
         characters</kendo-formerror
       >
     }
-    <footer class="px-3 pt-3 text-end text-sm">Character Limit: 1000</footer>
+    <footer class="px-3 pt-3 text-end text-sm">
+      Character Limit: {{ descriptionControl()?.value?.length ?? 0 }} / 1000
+    </footer>
   </kendo-formfield>
 </form>

@@ -89,10 +89,10 @@
       <app-organisations-table
         (loadMore)="onLoadMore($event)"
         [bulkActions]="vm().bulkActions"
-        [model]="vm().tableModel!"
-        [showCheckboxHeader]="vm().showCheckboxHeader"
-        [rows]="vm().rows"
         [emptyMessage]="vm().emptyMessage"
+        [model]="vm().tableModel!"
+        [rows]="vm().rows"
+        [showCheckboxHeader]="vm().showCheckboxHeader"
       />
     </div>
   </div>
