@@ -8,12 +8,12 @@
         Last DW sync: {{ vm().lastChecked | date: 'dd/MM/yyyy hh:mm a' }}
       </p>
     }
-    <app-text-box-navigation class="w-64" [model]="vm().queryModel" />
+    <app-text-box-navigation [model]="vm().queryModel" class="w-64" />
     <kendo-button
-      fillMode="flat"
-      size="large"
-      iconClass="fa-solid fa-square-plus"
       (click)="showCreateDialog.set(true)"
+      fillMode="flat"
+      iconClass="fa-solid fa-square-plus"
+      size="large"
       >Add new</kendo-button
     >
   </div>
@@ -34,10 +34,11 @@
 
     <div class="flex-1 shrink-0 overflow-hidden">
       <app-organisations-table
-        [rows]="vm().rows"
-        [bulkActions]="vm().bulkActions"
         (loadMore)="onLoadMore($event)"
+        [bulkActions]="vm().bulkActions"
         [model]="vm().tableModel!"
+        [rows]="vm().rows"
+        [showCheckboxHeader]="vm().showCheckboxHeader"
       />
     </div>
   </div>

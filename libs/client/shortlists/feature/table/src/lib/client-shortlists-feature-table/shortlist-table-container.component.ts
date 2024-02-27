@@ -75,7 +75,7 @@ export class ShortlistTableContainerComponent {
       });
   }
 
-  protected onLoadMore($event: { offset: number; take: number }): void {
+  protected onLoadMore($event: { skip: number; take: number }): void {
     this.store.dispatch(
       ShortlistsActions.loadMoreShortlists({
         query: { ...this.params(), ...$event },

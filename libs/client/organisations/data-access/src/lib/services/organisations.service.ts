@@ -20,7 +20,7 @@ export class OrganisationsService {
   public constructor(private http: HttpClient) {}
 
   public getOrganisations(
-    params?: Record<string, string | string[]>,
+    params?: Record<string, number | string | string[]>,
   ): Observable<GenericResponse<OrganisationsResponse>> {
     return this.http.get<GenericResponse<OrganisationsResponse>>(this.url, {
       params,

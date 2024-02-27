@@ -1,11 +1,13 @@
 import {
   Directive,
   EventEmitter,
+  inject,
   Input,
   Output,
   TrackByFunction,
   ViewChild,
 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   GridComponent,
   GridDataResult,
@@ -34,9 +36,12 @@ export abstract class InfinityTableViewBaseComponent<T> {
   @Input() public model: InfinityTableViewModel<T> | null;
 
   @Output() public loadMore = new EventEmitter<{
-    offset: number;
+    skip: number;
     take: number;
   }>();
+
+  public router = inject(Router);
+  public activatedRoute = inject(ActivatedRoute);
 
   public page = 0;
 
@@ -99,8 +104,9 @@ export abstract class InfinityTableViewBaseComponent<T> {
     }
 
     this.page++;
+
     this.loadMore.emit({
-      offset: this.page * this.take,
+      skip: this.page * this.take,
       take: this.take,
     });
   }
