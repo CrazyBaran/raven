@@ -17,8 +17,9 @@
             iconClass="fa-sharp fa-solid fa-pen"
             queryParamsHandling="merge"
             size="small"
-            >Edit</kendo-button
           >
+            Edit
+          </kendo-button>
         }
       </div>
     </kendo-tilelayout-item-header>
@@ -56,8 +57,9 @@
           (click)="openTeamEdit()"
           iconClass="fa-sharp fa-solid fa-pen"
           size="small"
-          >Edit</kendo-button
         >
+          Edit
+        </kendo-button>
       </div>
     </kendo-tilelayout-item-header>
     <kendo-tilelayout-item-body>
@@ -130,18 +132,23 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="tab" headerClass="!font-bold" title="Tab">
-        </kendo-grid-column>
+        <kendo-grid-column
+          field="tab"
+          headerClass="!font-bold"
+          title="Tab"
+        ></kendo-grid-column>
 
-        <kendo-grid-column field="field" headerClass="!font-bold" title="Field">
-        </kendo-grid-column>
+        <kendo-grid-column
+          field="field"
+          headerClass="!font-bold"
+          title="Field"
+        ></kendo-grid-column>
 
         <kendo-grid-column
           field="action"
           headerClass="!font-bold"
           title="Action"
-        >
-        </kendo-grid-column>
+        ></kendo-grid-column>
       </kendo-grid>
     </kendo-tilelayout-item-body>
   </kendo-tilelayout-item>
@@ -194,7 +201,7 @@
   </div>
 
   <kendo-dialog-actions>
-    <kendo-button (click)="showEditTeam.set(false)"> Cancel </kendo-button>
+    <kendo-button (click)="showEditTeam.set(false)">Cancel</kendo-button>
     <kendo-button
       (click)="updateTeam()"
       [disabled]="vm().isLoading! || !adminCount()"

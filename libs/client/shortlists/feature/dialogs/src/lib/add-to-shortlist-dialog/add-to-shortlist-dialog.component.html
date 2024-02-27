@@ -22,12 +22,12 @@
           [virtual]="true"
           placeholder="Choose from list"
         />
-        <kendo-formerror> Shortlist's Name is Required</kendo-formerror>
+        <kendo-formerror>Shortlist's Name is Required</kendo-formerror>
       </kendo-formfield>
 
-      <kendo-button class="self-start" (click)="switchToCreateShortlistMode()"
-        >Create New Shortlist</kendo-button
-      >
+      <kendo-button class="self-start" (click)="switchToCreateShortlistMode()">
+        Create New Shortlist
+      </kendo-button>
     </form>
   </div>
 
@@ -55,9 +55,9 @@
   </div>
 
   <kendo-dialog-actions>
-    <kendo-button (click)="switchToAddToShortlistMode()" class="w-40"
-      >Cancel</kendo-button
-    >
+    <kendo-button (click)="switchToAddToShortlistMode()" class="w-40">
+      Cancel
+    </kendo-button>
     <kendo-button
       (click)="createShortlist()"
       [disabled]="!createShortlistForm.valid"

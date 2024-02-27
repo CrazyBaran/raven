@@ -5,8 +5,9 @@
       fillMode="flat"
       iconClass="fa-regular fa-star"
       themeColor="primary"
-      >Shortlists</kendo-button
     >
+      Shortlists
+    </kendo-button>
     @if (vm().shortlist?.name) {
       <i
         class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
@@ -21,8 +22,9 @@
         "
         fillMode="flat"
         themeColor="primary"
-        >{{ vm().shortlist?.name }}</kendo-button
       >
+        {{ vm().shortlist?.name }}
+      </kendo-button>
     }
   </div>
   <div class="flex items-center gap-3" page-header-actions>
@@ -69,8 +71,8 @@
           skipLocationChange="true"
           class="mr-10"
         >
-          Edit Info</kendo-button
-        >
+          Edit Info
+        </kendo-button>
       </div>
     }
 

@@ -11,16 +11,14 @@
       [valueField]="templateDropdownConfig.valueField"
       [virtual]="true"
       fillMode="outline"
-    >
-    </kendo-dropdownlist>
+    ></kendo-dropdownlist>
     <!--        TAGS       -->
     <app-tag-dropdown
       (openTagDialog)="openTagDialog($event)"
       [loading]="tagLoading()!"
       [tags]="$any(tags())"
       formControlName="tags"
-    >
-    </app-tag-dropdown>
+    ></app-tag-dropdown>
 
     <!--        SHARE       -->
     <kendo-multiselect
