@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyStatus, PagedDataWithExtras, ShortlistType } from 'rvns-shared';
-import { In, Not, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, In, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { BulkAddOrganisationsDto } from './dto/bulk-add-organisations.dto';
@@ -60,11 +60,18 @@ export class ShortlistsService {
     const queryBuilder =
       this.shortlistRepository.createQueryBuilder('shortlists');
 
-    if (extras.length) {
-      queryBuilder.where({
-        id: Not(In(extras.map((excludedList) => excludedList.id))),
+    if (!options.organisationId) {
+      queryBuilder.andWhere('shortlists.type NOT IN (:...excludedTypes)', {
+        excludedTypes: [ShortlistType.PERSONAL],
       });
+
+      if (extras.length) {
+        queryBuilder.andWhere({
+          id: Not(In(extras.map((excludedList) => excludedList.id))),
+        });
+      }
     }
+
     this.addStatsQuery(queryBuilder);
 
     if (options?.organisationId) {
@@ -77,13 +84,16 @@ export class ShortlistsService {
       : undefined;
 
     if (searchString) {
-      queryBuilder
-        .andWhere(`LOWER(shortlists.name) LIKE :nameSearch`, {
-          nameSearch: searchString,
-        })
-        .orWhere(`LOWER(shortlists.description) LIKE :descriptionSearch`, {
-          descriptionSearch: searchString,
-        });
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          qb.where(`LOWER(shortlists.name) LIKE :nameSearch`, {
+            nameSearch: searchString,
+          });
+          qb.orWhere(`LOWER(shortlists.description) LIKE :descriptionSearch`, {
+            descriptionSearch: searchString,
+          });
+        }),
+      );
     }
 
     if (options.skip || options.take) {
