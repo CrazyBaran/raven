@@ -35,7 +35,7 @@ export class NoteEntity implements AuditableEntity {
   @Column({ default: () => 'NEWID()', type: 'uniqueidentifier' })
   public rootVersionId: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   public name: string;
 
   @Column()
