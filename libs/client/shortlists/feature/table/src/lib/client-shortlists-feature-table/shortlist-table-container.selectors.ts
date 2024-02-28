@@ -42,7 +42,7 @@ export const selectShortlistsTableButtonGroupNavigation = createSelector(
       buttons: [
         {
           id: null,
-          name: 'All Companies',
+          name: 'All Shortlists',
         },
 
         {

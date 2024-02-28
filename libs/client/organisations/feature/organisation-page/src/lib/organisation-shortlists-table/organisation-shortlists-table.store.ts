@@ -2,6 +2,7 @@ import { computed, inject } from '@angular/core';
 import { routerQuery } from '@app/client/shared/util-router';
 import { ShortlistsService } from '@app/client/shortlists/data-access';
 import { ShortlistEntity } from '@app/client/shortlists/state';
+import { ShortlistUtil } from '@app/client/shortlists/utils';
 import { tapResponse } from '@ngrx/component-store';
 import {
   patchState,
@@ -88,13 +89,22 @@ export const organisationShortlistsTableStore = signalStore(
         }),
         switchMap((params) =>
           shortlistService.getShortlists(params).pipe(
-            map((response) => ({
-              total: response.data?.total ?? 0,
-              data:
-                response.data?.items.map((shortlist) => ({
-                  ...shortlist,
-                })) ?? [],
-            })),
+            map((response) => {
+              const personalShortlist = ShortlistUtil.findMyShortlistFromExtras(
+                response.data?.extras,
+              );
+              return {
+                total: response.data?.total ?? 0,
+                data:
+                  (response.data?.items.map((shortlist) => ({
+                    ...shortlist,
+                    type:
+                      personalShortlist?.id === shortlist.id
+                        ? 'my'
+                        : shortlist.type,
+                  })) as never) ?? [],
+              };
+            }),
             tapResponse({
               next: (data) =>
                 patchState(store, {

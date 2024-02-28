@@ -40,31 +40,34 @@
     scrollable="scrollable"
     uiKendoUrlSorting
   >
-    <kendo-grid-column [width]="35" *featureFlag="'shortlistsFeature'">
-      <ng-template kendoGridCellTemplate let-organisation>
-        <input
-          (click)="
-            $event.stopPropagation(); toggleCheckedRow(organisation.id, $event)
-          "
-          [checked]="checkedAll() || checkedRows().includes(organisation.id)"
-          kendoCheckBox
-          size="large"
-          type="checkbox"
-        />
-      </ng-template>
-      @if (showCheckboxHeader()) {
-        <ng-template kendoGridHeaderTemplate>
+    @if (bulkActions().length) {
+      <kendo-grid-column [width]="35" *featureFlag="'shortlistsFeature'">
+        <ng-template kendoGridCellTemplate let-organisation>
           <input
-            (change)="toggleAll($event)"
-            [checked]="checkedAll()"
-            [indeterminate]="checkedRows().length && !checkedAll()"
+            (click)="
+              $event.stopPropagation();
+              toggleCheckedRow(organisation.id, $event)
+            "
+            [checked]="checkedAll() || checkedRows().includes(organisation.id)"
             kendoCheckBox
             size="large"
             type="checkbox"
           />
         </ng-template>
-      }
-    </kendo-grid-column>
+        @if (showCheckboxHeader()) {
+          <ng-template kendoGridHeaderTemplate>
+            <input
+              (change)="toggleAll($event)"
+              [checked]="checkedAll()"
+              [indeterminate]="checkedRows().length && !checkedAll()"
+              kendoCheckBox
+              size="large"
+              type="checkbox"
+            />
+          </ng-template>
+        }
+      </kendo-grid-column>
+    }
 
     @for (columnTemplate of rows(); track columnTemplate.name) {
       <kendo-grid-column
@@ -146,13 +149,9 @@
       />
     </ng-template>
 
-    @if (emptyMessage() && !isLoading) {
+    @if (emptyMessageTemplate() && !isLoading) {
       <ng-template kendoGridNoRecordsTemplate>
-        <div class="flex h-full flex-col items-center justify-center">
-          <div class="mt-16 w-[304px] text-xl text-black">
-            {{ emptyMessage() }}
-          </div>
-        </div>
+        <ng-container [ngTemplateOutlet]="emptyMessageTemplate()!" />
       </ng-template>
     }
   </kendo-grid>

@@ -140,6 +140,7 @@ export class AddToShortlistDialogComponent extends DynamicDialogContentBase {
           ...(this.form.controls.shortlistsIds.value ?? []),
           data.id,
         ]);
+        this.signalStore.reloadShortlists();
         this.switchToAddToShortlistMode();
       });
   }

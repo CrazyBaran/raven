@@ -8,6 +8,7 @@ import {
   inject,
   input,
   signal,
+  TemplateRef,
   TrackByFunction,
   ViewChild,
   ViewEncapsulation,
@@ -119,6 +120,8 @@ export type OrganisationTableBulkAction = {
 })
 export class OrganisationsTableComponent extends InfinityTableViewBaseComponent<OrganisationRowV2> {
   @ViewChild('grid', { read: ElementRef }) public gridRef: ElementRef;
+
+  public emptyMessageTemplate = input<TemplateRef<any>>();
 
   public bulkActions = input<OrganisationTableBulkAction[]>([]);
 
