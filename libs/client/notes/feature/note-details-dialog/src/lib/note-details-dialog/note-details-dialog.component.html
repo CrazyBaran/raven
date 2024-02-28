@@ -30,7 +30,10 @@
         </kendo-button>
         <kendo-button
           (click)="updateNote()"
-          [disabled]="isUpdating() || !notepadForm.valid"
+          [disabled]="
+            isUpdating() ||
+            (notepadFormComponent?.notepadForm | controlInvalid$ | push)
+          "
           size="large"
           themeColor="primary"
         >

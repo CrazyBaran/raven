@@ -10,7 +10,10 @@
     </button>
     <button
       (click)="submit()"
-      [disabled]="!notepadForm.valid || isCreatePending()"
+      [disabled]="
+        (notepadFormComponent?.notepadForm | controlInvalid$ | push) ||
+        isCreatePending()
+      "
       [iconClass]="isCreatePending() ? '' : 'fa-solid fa-plus'"
       kendoButton
       size="large"

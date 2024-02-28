@@ -29,7 +29,7 @@ import {
   TagComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
-import { ToUrlPipe } from '@app/client/shared/ui-pipes';
+import { ControlInvalidPipe, ToUrlPipe } from '@app/client/shared/ui-pipes';
 import { controlDragArea } from '@app/client/shared/util';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { Actions, ofType } from '@ngrx/effects';
@@ -44,6 +44,7 @@ import {
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { xIcon } from '@progress/kendo-svg-icons';
+import { RxPush } from '@rx-angular/template/push';
 import { filter, take } from 'rxjs';
 import {
   selectNoteDetailsDialogViewModel,
@@ -67,7 +68,9 @@ import {
     DatePipe,
     UserTagDirective,
     TooltipModule,
+    RxPush,
     NoteDetailsComponent,
+    ControlInvalidPipe,
   ],
   templateUrl: './note-details-dialog.component.html',
   styleUrls: ['./note-details-dialog.component.scss'],
