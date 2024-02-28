@@ -140,11 +140,29 @@ export const isOpportunityClosed = (opportunity: OpportunityData): boolean =>
     (status) => status === opportunity.stage.displayName.toLowerCase(),
   );
 
+export const selectCurrentShortlist = createSelector(
+  selectRouteParam('shortlistId'),
+  shortlistsQuery.selectEntities,
+  (shortlistId, entities) => {
+    const shortlist = entities[shortlistId!] ?? null;
+    return {
+      shortlistId,
+      shortlist,
+      shortlistContributors:
+        shortlist?.contibutors?.map((x) => x.name).join(', ') ?? '',
+      editQueryParam: {
+        [DialogUtil.queryParams.updateShortlist]: shortlistId,
+      },
+    };
+  },
+);
+
 export const selectOrganisationRows = createSelector(
   organisationsFeature.selectTableOrganisations,
   opportunitiesQuery.selectOpportunitiesDictionary,
   pipelinesQuery.selectStagePrimaryColorDictionary,
-  (organisations, groupedDictionary, stageColorDictionary) => {
+  selectCurrentShortlist,
+  (organisations, groupedDictionary, stageColorDictionary, { shortlist }) => {
     return organisations.map(
       (company): OrganisationRowV2 =>
         ({
@@ -159,17 +177,20 @@ export const selectOrganisationRows = createSelector(
               ] ?? '',
           },
           data: company.data,
-          actionData: [
-            {
-              text: 'Remove from Shortlist',
-              queryParamsHandling: 'merge',
-              routerLink: ['./'],
-              queryParams: {
-                [DialogUtil.queryParams.removeFromShortlist]: company.id!,
-              },
-              skipLocationChange: true,
-            },
-          ],
+          actionData:
+            shortlist?.type !== 'main'
+              ? [
+                  {
+                    text: 'Remove from Shortlist',
+                    queryParamsHandling: 'merge',
+                    routerLink: ['./'],
+                    queryParams: {
+                      [DialogUtil.queryParams.removeFromShortlist]: company.id!,
+                    },
+                    skipLocationChange: true,
+                  },
+                ]
+              : [],
           opportunities: company.opportunities
             .map(({ id }) => groupedDictionary[id])
             .map(
@@ -254,23 +275,6 @@ export const selectFilterIndicators = createSelector(
   },
 );
 
-export const selectCurrentShortlist = createSelector(
-  selectRouteParam('shortlistId'),
-  shortlistsQuery.selectEntities,
-  (shortlistId, entities) => {
-    const shortlist = entities[shortlistId!] ?? null;
-    return {
-      shortlistId,
-      shortlist,
-      shortlistContributors:
-        shortlist?.contibutors?.map((x) => x.name).join(', ') ?? '',
-      editQueryParam: {
-        [DialogUtil.queryParams.updateShortlist]: shortlistId,
-      },
-    };
-  },
-);
-
 export const selectShowCheckboxHeader = createSelector(
   selectShortlistOrganisationsTableParams,
   ({ query, member, status, filters }) => {
@@ -314,18 +318,20 @@ export const selectShortlistOrganisationsTableViewModel = createSelector(
       lastUpdated: dataWarehouseLastUpdated?.lastUpdated,
       lastChecked: dataWarehouseLastUpdated?.lastChecked,
       filters,
-      bulkActions: [
-        {
-          text: 'Remove from Shortlist',
-          queryParamName: DialogUtil.queryParams.removeFromShortlist,
-        },
-      ] satisfies OrganisationTableBulkAction[],
+      bulkActions:
+        shortlist.shortlist?.type !== 'main'
+          ? ([
+              {
+                text: 'Remove from Shortlist',
+                queryParamName: DialogUtil.queryParams.removeFromShortlist,
+              },
+            ] satisfies OrganisationTableBulkAction[])
+          : [],
       showCheckboxHeader,
       rows: organisationTableConfiguration.filter(
         (x) => x.name !== 'Shortlisted',
       ),
-      emptyMessage:
-        'Please go to the All Companies page to add companies to your Shortlist',
+
       ...shortlist,
       ...quickFilters,
     };

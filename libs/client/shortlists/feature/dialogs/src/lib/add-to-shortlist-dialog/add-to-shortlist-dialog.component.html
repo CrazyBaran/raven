@@ -8,7 +8,7 @@
     <form [formGroup]="form" class="flex flex-col gap-6">
       <kendo-formfield>
         <kendo-multiselect
-          [data]="signalStore.shortlists()"
+          [data]="signalStore.data()"
           [textField]="'name'"
           [valueField]="'id'"
           [formControlName]="'shortlistsIds'"

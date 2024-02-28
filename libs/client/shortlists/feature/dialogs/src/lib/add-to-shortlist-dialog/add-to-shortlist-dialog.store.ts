@@ -68,6 +68,7 @@ export const addToShortlistDialogStore = signalStore(
     loading: computed(
       () => store.isLoading() || store.isLoadingAddedShortlists(),
     ),
+    data: computed(() => _.uniqBy(store.shortlists(), 'id')),
   })),
   withMethods((store, shortlistsService = inject(ShortlistsService)) => ({
     updateFilter(filter: string): void {
@@ -101,6 +102,32 @@ export const addToShortlistDialogStore = signalStore(
         ),
       ),
     ),
+    reloadShortlists: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true })),
+        switchMap(() =>
+          shortlistsService.getShortlists({ take: 250 }).pipe(
+            tapResponse({
+              next: (response) => {
+                const shortlists = [
+                  MY_SHORTLIST_ITEM,
+                  ...response.data!.items.filter(
+                    ({ type }) => type === 'custom',
+                  ),
+                ];
+
+                patchState(store, {
+                  shortlists: shortlists,
+                  isLoading: false,
+                });
+              },
+              error: (error) => console.error('Error', error),
+              finalize: () => patchState(store, { isLoading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
     loadAddedShortlists: rxMethod<string[]>(
       pipe(
         distinctUntilChanged(),
@@ -111,7 +138,12 @@ export const addToShortlistDialogStore = signalStore(
             tapResponse({
               next: (response) => {
                 patchState(store, {
-                  addedShortlists: [MY_SHORTLIST_ITEM, ...response.data!.items],
+                  addedShortlists: [
+                    MY_SHORTLIST_ITEM,
+                    ...response.data!.items.filter(
+                      ({ type }) => type === 'custom',
+                    ),
+                  ],
                 });
               },
               error: (error) => console.error('Error', error),

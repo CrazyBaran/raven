@@ -75,9 +75,11 @@
     <ng-template kendoGridCellTemplate let-shortlist>
       @if (shortlist | isMyShortlistType) {
         Me
+      } @else if (shortlist | isMainShortlistType) {
+        Mubadala Ventures
       } @else {
         <ui-tags-container
-          [rows]="4"
+          [rows]="2"
           [tags]="shortlist.contributors | toUserTag"
           class="w-full"
         />
