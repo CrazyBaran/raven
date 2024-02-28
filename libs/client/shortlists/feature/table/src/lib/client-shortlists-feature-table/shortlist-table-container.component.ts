@@ -63,6 +63,7 @@ export class ShortlistTableContainerComponent {
   };
 
   public constructor() {
+    this.store.dispatch(ShortlistsActions.openShortlistTable());
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({ tagTypes: ['people'] }),
     );

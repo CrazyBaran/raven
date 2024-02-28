@@ -5,7 +5,7 @@ import {
   ViewChild,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { PipelinesActions } from '@app/client/organisations/api-pipelines';
 import { TagsActions } from '@app/client/organisations/api-tags';
 import {
@@ -28,16 +28,20 @@ import {
   distinctUntilChangedDeep,
   takeUntilNavigatedAway,
 } from '@app/client/shared/util-rxjs';
-import { ShortlistsActions } from '@app/client/shortlists/state';
+import {
+  ShortlistsActions,
+  shortlistsQuery,
+} from '@app/client/shortlists/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import * as _ from 'lodash';
+import { combineLatest, debounceTime, filter, map } from 'rxjs';
 import { CreateOrganisationDialogComponent } from '../create-organisation-dialog/create-organisation-dialog.component';
 import {
   selectOrganisationsTableParams,
   selectOrganisationsTableViewModel,
 } from './organisations-table-v2.selectors';
-
 @Component({
   selector: 'app-client-organisations-feature-organisations-table',
   standalone: true,
@@ -64,7 +68,32 @@ export class OrganisationsTableV2Component {
   protected showCreateDialog = signal(false);
 
   protected vm = this.store.selectSignal(selectOrganisationsTableViewModel);
-  protected params = this.store.selectSignal(selectOrganisationsTableParams);
+  protected tableParams$ = this.store.select(selectOrganisationsTableParams);
+  protected mainShortlist$ = this.store.select(
+    shortlistsQuery.selectMainShortlist,
+  );
+  protected params$ = combineLatest([
+    this.tableParams$,
+    this.mainShortlist$,
+  ]).pipe(
+    debounceTime(25),
+    filter(
+      ([params, mainShortlist]) =>
+        params.member !== 'shortlisted' || !!mainShortlist,
+    ),
+    map(([params, mainShortlist]) => {
+      if (params.member === 'shortlisted') {
+        return {
+          ..._.omit(params, 'member'),
+          shortlistId: mainShortlist!.id,
+        };
+      }
+      return params;
+    }),
+    distinctUntilChangedDeep(),
+  );
+
+  protected params = toSignal(this.params$);
 
   public constructor(
     private store: Store,
@@ -78,9 +107,9 @@ export class OrganisationsTableV2Component {
       }),
     );
     this.store.dispatch(OrganisationsActions.getDataWarehouseLastUpdated());
+    this.store.dispatch(ShortlistsActions.getShortlistExtras());
 
-    this.store
-      .select(selectOrganisationsTableParams)
+    this.params$
       .pipe(
         takeUntilDestroyed(),
         takeUntilNavigatedAway({ route: '/companies' }),

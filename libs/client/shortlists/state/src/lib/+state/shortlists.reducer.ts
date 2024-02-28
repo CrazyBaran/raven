@@ -47,12 +47,12 @@ export const shortlistsFeature = createFeature({
   reducer: createReducer(
     initialShortlistState,
     //////////////////////////
+    on(ShortlistsActions.openShortlistTable, (state) => ({
+      ...state,
+      table: { ids: [], total: 0 },
+    })),
     on(ShortlistsActions.getShortlists, (state) => ({
       ...state,
-      table: {
-        ids: [],
-        total: 0,
-      },
       loadingStates: {
         ...state.loadingStates,
         table: true,
@@ -74,9 +74,7 @@ export const shortlistsFeature = createFeature({
             ...state.loadingStates,
             table: false,
           },
-          mainShortlist: main
-            ? ({ ...main, type: 'main' } satisfies ShortlistEntity)
-            : null,
+          mainShortlist: main,
           myShortlist: my
             ? ({ ...my, type: 'my' } satisfies ShortlistEntity)
             : null,
@@ -92,6 +90,20 @@ export const shortlistsFeature = createFeature({
       },
       loadingStates: { ...state.loadingStates, table: false },
     })),
+
+    on(ShortlistsActions.getShortlistExtrasSuccess, (state, { data }) => {
+      const my = data.find((x) => x.type === 'personal');
+      const main = data.find((x) => x.type === 'main');
+
+      return {
+        ...state,
+        mainShortlist: main,
+        myShortlist: my
+          ? ({ ...my, type: 'my' } satisfies ShortlistEntity)
+          : null,
+      };
+    }),
+
     //////////////////////////
     on(ShortlistsActions.getShortlist, (state, { id }) => ({
       ...state,

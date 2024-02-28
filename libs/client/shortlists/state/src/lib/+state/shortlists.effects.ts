@@ -103,6 +103,38 @@ export const getShortlist$ = createEffect(
   },
 );
 
+export const getShortlistExtras$ = createEffect(
+  (
+    actions$ = inject(Actions),
+    shortlistsService = inject(ShortlistsService),
+  ) => {
+    return actions$.pipe(
+      ofType(ShortlistsActions.getShortlistExtras),
+      switchMap(() =>
+        shortlistsService.getShortlists({ take: 1 }).pipe(
+          map((response) => {
+            return ShortlistsActions.getShortlistExtrasSuccess({
+              data: response.data!.extras,
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              ShortlistsActions.getShortlistExtrasFailure({
+                error,
+                message: 'Get Shortlist Extras Failed.',
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
 export const getShortlistIfNotLoaded$ = createEffect(
   (actions$ = inject(Actions), store = inject(Store)) => {
     return actions$.pipe(

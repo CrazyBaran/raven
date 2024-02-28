@@ -24,6 +24,10 @@ export const ShortlistsActions = createActionGroup({
     'Get Shortlist Success': props<{ data: ShortlistEntity }>(),
     'Get Shortlist Failure': props<FailurePayload>(),
 
+    'Get Shortlist Extras': emptyProps(),
+    'Get Shortlist Extras Success': props<{ data: ShortlistEntity[] }>(),
+    'Get Shortlist Extras Failure': props<FailurePayload>(),
+
     'Get Shorlist If Not Loaded': props<{ id: string }>(),
 
     'Bulk Add Organisations To Shortlist': props<{
@@ -58,6 +62,7 @@ export const ShortlistsActions = createActionGroup({
     }>(),
     'Load More Shortlists Failure': props<FailurePayload>(),
 
+    'Open Shortlist Table': emptyProps(),
     'Open Shortlist Organisations Table': emptyProps(),
   },
 });
