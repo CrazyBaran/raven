@@ -37,16 +37,7 @@ export const organisationTableConfiguration: TableColumn[] = [
     sortable: false,
     width: 88,
     dataFn: (row): CompanyShortlistIndicatorColumn => ({
-      shortlists: [
-        {
-          name: 'Shortlist 1',
-          id: '1',
-        },
-        {
-          name: 'Shortlist 2',
-          id: '2',
-        },
-      ],
+      shortlists: row.shortlists ?? [],
     }),
   },
   {

@@ -18,4 +18,5 @@ export interface ShortlistData {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly stats: ShortlistStats;
+  readonly contributors: { id: string; name: string }[];
 }

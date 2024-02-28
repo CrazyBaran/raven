@@ -78,6 +78,7 @@ export type OrganisationRowV2 = {
   };
   opportunities: OpportunityRow[];
   data: any;
+  shortlists?: { name: string; id: string }[];
   actionData?: DropdownAction[];
 };
 

@@ -1,11 +1,6 @@
 import { ShortlistData } from '@app/rvns-shortlists';
 
-export type ShortlistDto = ShortlistData & {
-  contibutors?: {
-    id: string;
-    name: string;
-  }[];
-};
+export type ShortlistDto = ShortlistData;
 
 export interface GetShortlistDto {
   query?: string;
