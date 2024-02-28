@@ -149,7 +149,7 @@ export const selectCurrentShortlist = createSelector(
       shortlistId,
       shortlist,
       shortlistContributors:
-        shortlist?.contibutors?.map((x) => x.name).join(', ') ?? '',
+        shortlist?.contributors?.map((x) => x.name).join(', ') ?? '',
       editQueryParam: {
         [DialogUtil.queryParams.updateShortlist]: shortlistId,
       },

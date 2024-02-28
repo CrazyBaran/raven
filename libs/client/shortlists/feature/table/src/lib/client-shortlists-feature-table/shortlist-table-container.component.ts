@@ -14,6 +14,7 @@ import {
 } from '@app/client/shared/ui-templates';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { DialogUtil } from '@app/client/shared/util';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
@@ -70,7 +71,7 @@ export class ShortlistTableContainerComponent {
 
     this.store
       .select(selectShortlistsTableParams)
-      .pipe(distinctUntilChangedDeep())
+      .pipe(takeUntilDestroyed(), distinctUntilChangedDeep())
       .subscribe((query) => {
         this.store.dispatch(ShortlistsActions.getShortlists({ query }));
       });

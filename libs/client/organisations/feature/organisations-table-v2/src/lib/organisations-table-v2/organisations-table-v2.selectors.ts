@@ -173,6 +173,11 @@ export const selectOrganisationRows = createSelector(
               skipLocationChange: true,
             } satisfies DropdownAction,
           ],
+          shortlists:
+            company.shortlists?.map(({ name, id }) => ({
+              name: name!,
+              id: id!,
+            })) ?? [],
           opportunities: company.opportunities
             .map(({ id }) => groupedDictionary[id])
             .map(

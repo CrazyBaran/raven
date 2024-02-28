@@ -102,6 +102,8 @@ export const organisationShortlistsTableStore = signalStore(
                       personalShortlist?.id === shortlist.id
                         ? 'my'
                         : shortlist.type,
+                    contributors:
+                      shortlist.contributors.map(({ name }) => name) ?? [],
                   })) as never) ?? [],
               };
             }),

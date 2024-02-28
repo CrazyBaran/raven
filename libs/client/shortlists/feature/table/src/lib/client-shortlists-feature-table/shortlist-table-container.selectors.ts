@@ -90,7 +90,7 @@ export const selectShortlistRows = createSelector(
           companies: shortlist.stats?.organisationsCount?.toString(),
           inPipeline: shortlist.stats?.inPipelineCount?.toString(),
           type: shortlist.type,
-          contributors: shortlist.contibutors?.map((x) => x.name) ?? [],
+          contributors: shortlist.contributors?.map((x) => x.name) ?? [],
           updatedAt:
             typeof shortlist.updatedAt === 'string'
               ? shortlist.updatedAt
