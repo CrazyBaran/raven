@@ -10,6 +10,7 @@ import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.e
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { BulkAddOrganisationsDto } from './dto/bulk-add-organisations.dto';
 import { DeleteOrganisationFromShortlistDto } from './dto/delete-organisation-from-shortlist.dto';
+import { ShortlistContributorEntity } from './entities/shortlist-contributor.entity';
 import { ShortlistOrganisationEntity } from './entities/shortlist-organisation.entity';
 import { ShortlistEntity } from './entities/shortlist.entity';
 import {
@@ -49,6 +50,8 @@ export class ShortlistsService {
     private readonly organisationRepository: Repository<OrganisationEntity>,
     @InjectRepository(ShortlistOrganisationEntity)
     private readonly shortlistOrganisationRepository: Repository<ShortlistOrganisationEntity>,
+    @InjectRepository(ShortlistContributorEntity)
+    private readonly shortlistContributorRepository: Repository<ShortlistContributorEntity>,
   ) {}
 
   public async findAll(
@@ -60,6 +63,10 @@ export class ShortlistsService {
     const queryBuilder =
       this.shortlistRepository.createQueryBuilder('shortlists');
 
+    queryBuilder
+      .leftJoin('shortlists.contributors', 'contributors')
+      .addSelect(['contributors.id', 'contributors.name']);
+
     if (!options.organisationId) {
       queryBuilder.andWhere('shortlists.type NOT IN (:...excludedTypes)', {
         excludedTypes: [ShortlistType.PERSONAL],
@@ -70,6 +77,16 @@ export class ShortlistsService {
           id: Not(In(extras.map((excludedList) => excludedList.id))),
         });
       }
+    }
+
+    if (options?.member) {
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          qb.where('shortlists.creatorId = :member', {
+            member: options.member,
+          }).orWhere('contributors.id = :member', { member: options.member });
+        }),
+      );
     }
 
     this.addStatsQuery(queryBuilder);
@@ -120,6 +137,9 @@ export class ShortlistsService {
     const queryBuilder =
       this.shortlistRepository.createQueryBuilder('shortlists');
 
+    queryBuilder
+      .leftJoin('shortlists.contributors', 'contributors')
+      .addSelect(['contributors.id', 'contributors.name']);
     queryBuilder.where({ id });
     this.addStatsQuery(queryBuilder);
 
@@ -186,6 +206,8 @@ export class ShortlistsService {
     );
 
     const relationsToAdd: ShortlistOrganisationEntity[] = [];
+    const shortlistContributorsRelations: ShortlistContributorEntity[] = [];
+    const updatedShortlists: Partial<ShortlistEntity>[] = [];
     let containsPersonal = false;
     for (const shortlist of shortlists) {
       await this.assertSpecialTypesUpdate(shortlist, userEntity);
@@ -199,6 +221,16 @@ export class ShortlistsService {
           }),
         ),
       );
+      shortlistContributorsRelations.push(
+        ShortlistContributorEntity.create({
+          shortlistId: shortlist.id,
+          userId: userEntity.id,
+        }),
+      );
+      updatedShortlists.push({
+        id: shortlist.id,
+        updatedAt: new Date(),
+      });
     }
 
     if (!containsPersonal) {
@@ -212,6 +244,10 @@ export class ShortlistsService {
       );
     }
     await this.shortlistOrganisationRepository.save(relationsToAdd);
+    await this.shortlistContributorRepository.save(
+      shortlistContributorsRelations,
+    );
+    await this.shortlistRepository.save(updatedShortlists);
   }
 
   public async update(
@@ -293,6 +329,10 @@ export class ShortlistsService {
       });
 
       await this.shortlistOrganisationRepository.remove(relatedEntities);
+      await this.shortlistRepository.save({
+        id: shortlistEntity.id,
+        updatedAt: new Date(),
+      });
     }
 
     return await this.shortlistRepository.findOne({

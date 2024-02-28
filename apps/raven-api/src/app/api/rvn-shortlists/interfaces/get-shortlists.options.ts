@@ -10,6 +10,7 @@ export class GetShortlistsOptions {
   public orderBy?: SortableField;
   public query?: string;
   public organisationId?: string;
+  public member?: string;
 }
 
 export const defaultGetShortlistsOptions: GetShortlistsOptions = {

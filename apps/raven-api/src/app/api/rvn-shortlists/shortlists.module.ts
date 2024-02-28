@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
+import { ShortlistContributorEntity } from './entities/shortlist-contributor.entity';
 import { ShortlistOrganisationEntity } from './entities/shortlist-organisation.entity';
 import { ShortlistEntity } from './entities/shortlist.entity';
 import { OpportunityStageChangedEventHandler } from './event-handlers/opportuinuty-stage-changed.event-handler';
@@ -13,6 +14,7 @@ import { ShortlistsService } from './shortlists.service';
     TypeOrmModule.forFeature([
       ShortlistEntity,
       ShortlistOrganisationEntity,
+      ShortlistContributorEntity,
       OrganisationEntity,
     ]),
   ],

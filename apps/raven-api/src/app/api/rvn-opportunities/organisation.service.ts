@@ -94,7 +94,9 @@ export class OrganisationService {
       .leftJoinAndSelect(
         'organisations.organisationDomains',
         'organisationDomains',
-      );
+      )
+      .leftJoin('organisations.shortlists', 'shortlists')
+      .addSelect(['shortlists.id', 'shortlists.name']);
 
     if (organisationIds.length === 0) {
       return {
@@ -137,6 +139,9 @@ export class OrganisationService {
           }
 
           data.companyStatus = this.evaluateCompanyStatus(entity, data);
+          data.shortlists = entity.shortlists
+            ?.slice(0, 25)
+            ?.map((shortlist) => ({ id: shortlist.id, name: shortlist.name }));
 
           return data;
         },

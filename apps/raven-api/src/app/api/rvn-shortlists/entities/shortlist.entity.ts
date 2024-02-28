@@ -63,6 +63,24 @@ export class ShortlistEntity {
   })
   public organisations?: OrganisationEntity[];
 
+  @ManyToMany(() => UserEntity, {
+    cascade: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinTable({
+    name: 'shortlist_contributor',
+    joinColumn: {
+      name: 'shortlist_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+  })
+  public contributors?: UserEntity[];
+
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   public createdAt: Date;
 

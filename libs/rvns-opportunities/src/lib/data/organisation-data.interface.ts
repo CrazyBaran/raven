@@ -1,7 +1,7 @@
+import { ShortlistData } from '@app/rvns-shortlists';
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { CompanyStatus, PagedData } from 'rvns-shared';
 import { OpportunityDataWithoutOrganisation } from './opportunity-data.interface';
-
 export interface PagedOrganisationData
   extends PagedData<OrganisationDataWithOpportunities> {}
 
@@ -15,6 +15,7 @@ export interface OrganisationData {
   sharepointDirectory?: string;
   sharePointPath?: string;
   data?: Partial<CompanyDto>;
+  shortlists?: Partial<ShortlistData>[];
 }
 
 export interface OrganisationDataWithOpportunities extends OrganisationData {

@@ -43,6 +43,8 @@ export class ParseGetShortlistsOptionsPipe
 
     options.query = values['query'] ?? null;
 
+    options.member = values['member'] ?? null;
+
     if (values['organisationId']) {
       const parseUUIDPipe = new ParseUUIDPipe();
       options.organisationId = await parseUUIDPipe.transform(
