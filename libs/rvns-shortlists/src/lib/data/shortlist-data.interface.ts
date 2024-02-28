@@ -9,6 +9,11 @@ export interface ShortlistStats {
   inPipelineCount: number;
 }
 
+export interface ShortlistContributor {
+  id: string;
+  name: string;
+}
+
 export interface ShortlistData {
   readonly id: string;
   readonly name: string;
@@ -18,5 +23,5 @@ export interface ShortlistData {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly stats: ShortlistStats;
-  readonly contributors: { id: string; name: string }[];
+  readonly contributors: ShortlistContributor[];
 }

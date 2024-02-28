@@ -2,6 +2,7 @@ import { OrganisationData } from '@app/rvns-opportunities';
 import {
   PagedShortlistData,
   PagedShortlistDataWithExtras,
+  ShortlistContributor,
   ShortlistData,
   ShortlistStats,
 } from '@app/rvns-shortlists';
@@ -47,6 +48,9 @@ export class ShortlistRO implements ShortlistData {
 
   @ApiProperty()
   public stats: ShortlistStats;
+
+  @ApiProperty()
+  public contributors: ShortlistContributor[];
 
   public static createFromEntity(entity: ShortlistEntity): ShortlistData {
     return plainToInstance(ShortlistRO, {
