@@ -12,7 +12,7 @@
   scrollable="scrollable"
   uiKendoUrlSorting
 >
-  <kendo-grid-column headerClass="!font-bold" title="List Name">
+  <kendo-grid-column headerClass="!font-bold" title="List Name" field="name">
     <ng-template kendoGridCellTemplate let-shortlist>
       <a
         [routerLink]="['/companies', 'shortlists', shortlist.id]"

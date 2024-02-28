@@ -5,6 +5,7 @@ import { provideNotesFeature } from '@app/client/notes/state';
 import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
 import { provideOrganisationFeature } from '@app/client/organisations/state';
 import { providePipelinesFeature } from '@app/client/pipelines/state';
+import { provideShortlistsFeature } from '@app/client/shortlists/state';
 import { provideTagsFeature } from '@app/client/tags/state';
 import { provideTemplatesFeature } from '@app/client/templates/data-access';
 
@@ -29,6 +30,7 @@ export const ORGANISATION_ROUTES: Routes = [
           import(
             '@app/client/organisations/feature/organisations-table-v2'
           ).then((m) => m.OrganisationsTableV2Component),
+        providers: [provideShortlistsFeature()],
       },
       {
         path: 'pipeline',
