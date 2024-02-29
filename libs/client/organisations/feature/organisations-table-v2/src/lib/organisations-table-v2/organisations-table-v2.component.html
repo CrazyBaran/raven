@@ -34,15 +34,13 @@
     }
 
     <div class="flex-1 shrink-0 overflow-hidden">
-      @defer {
-        <app-organisations-table
-          (loadMore)="onLoadMore($event)"
-          [bulkActions]="vm().bulkActions"
-          [model]="vm().tableModel!"
-          [rows]="vm().rows"
-          [showCheckboxHeader]="vm().showCheckboxHeader"
-        />
-      }
+      <app-organisations-table
+        (loadMore)="onLoadMore($event)"
+        [bulkActions]="vm().bulkActions"
+        [model]="vm().tableModel!"
+        [rows]="vm().rows"
+        [showCheckboxHeader]="vm().showCheckboxHeader"
+      />
     </div>
   </div>
 </app-page-template>
