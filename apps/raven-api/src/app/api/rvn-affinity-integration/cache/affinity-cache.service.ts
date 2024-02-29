@@ -59,6 +59,10 @@ export class AffinityCacheService {
     return data;
   }
 
+  public async getCompanyKeys(): Promise<string[]> {
+    return await this.store.client.hkeys(AFFINITY_CACHE);
+  }
+
   public async getByDomains(
     domains: string[],
   ): Promise<OrganizationStageDto[]> {

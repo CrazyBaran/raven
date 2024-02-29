@@ -42,6 +42,7 @@ export class OrganisationController {
 
   @Get()
   @ApiOperation({ summary: 'Get all organisations' })
+  @ApiQuery({ name: 'raven', type: Boolean, required: false })
   @ApiQuery({ name: 'skip', type: Number, required: false })
   @ApiQuery({ name: 'take', type: Number, required: false })
   @ApiQuery({ name: 'dir', type: String, required: false })
@@ -63,7 +64,11 @@ export class OrganisationController {
   public async findAll(
     // Workaround for a NestJS bug. 'options' is actually of type GetOrganisationsOptions, but it has to be set as Record<string, string> to make it properly transform in a pipe.
     @Query(ParseGetOrganisationsOptionsPipe) options?: Record<string, string>,
+    @Query('raven') raven?: boolean,
   ): Promise<PagedOrganisationData> {
+    if (raven) {
+      return await this.organisationService.getRavenCompanies();
+    }
     return await this.organisationService.findAll(options);
   }
 

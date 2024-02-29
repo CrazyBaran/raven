@@ -527,6 +527,47 @@ export class OrganisationService {
     return await tem.save(opportunity);
   }
 
+  public async getRavenCompanies(): Promise<PagedOrganisationData> {
+    const queryBuilder =
+      await this.organisationRepository.createQueryBuilder('organisations');
+
+    queryBuilder.leftJoinAndSelect(
+      'organisations.organisationDomains',
+      'domains',
+    );
+    queryBuilder.leftJoin('organisations.dataV1', 'data');
+
+    queryBuilder.where('data.data IS NULL');
+    queryBuilder.andWhere('domains.domain != :domain', {
+      domain: 'https://placeholder.com',
+    });
+
+    const organisations = await queryBuilder.getMany();
+
+    const affinityDomains = await this.affinityCacheService.getCompanyKeys();
+
+    // Remove companies that are in the affinity cache by any domain
+    const ravenOrganisations = organisations.filter((organisation) => {
+      return !affinityDomains.some((domain) => {
+        return organisation.domains.includes(
+          domain
+            .split(',')
+            .map((d) => d.trim())
+            .filter((d) => d !== '')[0],
+        );
+      });
+    });
+    return {
+      items: ravenOrganisations.map((organisation) => {
+        return {
+          ...this.organisationEntityToData(organisation),
+          opportunities: undefined,
+        };
+      }),
+      total: ravenOrganisations.length,
+    };
+  }
+
   private async updateDomains(
     organisation: OrganisationEntity,
     domains: string[],

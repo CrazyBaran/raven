@@ -1,7 +1,7 @@
 [
   {
     "id": "3b37fc0e-2f6f-ee11-b007-6045bdd17462",
-    "name": "Company call",
+    "name": "Company Meeting",
     "type": "note",
     "isDefault": false,
     "fieldGroups": [
@@ -120,116 +120,6 @@
     "correspondingEntity": "TemplateEntity"
   },
   {
-    "id": "dd396795-336f-ee11-b007-6045bdd17462",
-    "name": "Customer reference call",
-    "type": "note",
-    "isDefault": false,
-    "fieldGroups": [
-      {
-        "id": "f7adafa4-336f-ee11-b007-6045bdd17462",
-        "name": "Customer reference call field group",
-        "order": 1,
-        "tab_id": null,
-        "fieldDefinitions": [
-          {
-            "id": "90f137c2-336f-ee11-b007-6045bdd17462",
-            "name": "Company Name",
-            "type": "text",
-            "order": 1,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "91f137c2-336f-ee11-b007-6045bdd17462",
-            "name": "Company URL",
-            "type": "text",
-            "order": 2,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "22da49ce-336f-ee11-b007-6045bdd17462",
-            "name": "Call Attendees",
-            "type": "text",
-            "order": 3,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "da9a08d7-336f-ee11-b007-6045bdd17462",
-            "name": "Market / Competition",
-            "type": "richText",
-            "order": 4,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "db9a08d7-336f-ee11-b007-6045bdd17462",
-            "name": "Product / Tech",
-            "type": "richText",
-            "order": 5,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "dfea54df-336f-ee11-b007-6045bdd17462",
-            "name": "GTM",
-            "type": "richText",
-            "order": 6,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "e0ea54df-336f-ee11-b007-6045bdd17462",
-            "name": "Risks / Challenges",
-            "type": "richText",
-            "order": 7,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "f71b2cea-336f-ee11-b007-6045bdd17462",
-            "name": "Other",
-            "type": "richText",
-            "order": 8,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "bdd58a6f-0678-ee11-8925-6045bdc18eee",
-            "name": "Preparation",
-            "type": "richText",
-            "order": 9,
-            "configuration": null,
-            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          }
-        ],
-        "templateId": "dd396795-336f-ee11-b007-6045bdd17462",
-        "correspondingEntity": "FieldGroupEntity"
-      }
-    ],
-    "tabs": [],
-    "correspondingEntity": "TemplateEntity"
-  },
-  {
     "id": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
     "name": "Default Workflow Template for Opportunities",
     "type": "workflow",
@@ -279,11 +169,41 @@
             "configuration": null,
             "fieldGroupId": "9ead8f88-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+        "name": "Investment Thesis and Risk Field Group",
+        "order": 1,
+        "tab_id": "04e38691-8184-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "654bc5bd-8684-ee11-8927-6045bdd178c1",
+            "name": "Merits",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "664bc5bd-8684-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
             "correspondingEntity": "FieldDefinitionEntity"
           }
         ],
@@ -351,36 +271,6 @@
         "correspondingEntity": "FieldGroupEntity"
       },
       {
-        "id": "48bb57a4-8284-ee11-8927-6045bdd178c1",
-        "name": "Investment Thesis and Risk Field Group",
-        "order": 1,
-        "tab_id": "04e38691-8184-ee11-8927-6045bdd178c1",
-        "fieldDefinitions": [
-          {
-            "id": "654bc5bd-8684-ee11-8927-6045bdd178c1",
-            "name": "Merits",
-            "type": "richText",
-            "order": 1,
-            "configuration": null,
-            "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "664bc5bd-8684-ee11-8927-6045bdd178c1",
-            "name": "Risks",
-            "type": "richText",
-            "order": 2,
-            "configuration": null,
-            "fieldGroupId": "48bb57a4-8284-ee11-8927-6045bdd178c1",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          }
-        ],
-        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
-        "correspondingEntity": "FieldGroupEntity"
-      },
-      {
         "id": "f82b507f-8284-ee11-8927-6045bdd178c1",
         "name": "Expert Calls Field Group",
         "order": 1,
@@ -424,8 +314,8 @@
             "configuration": null,
             "fieldGroupId": "f82b507f-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
@@ -489,8 +379,8 @@
             "configuration": null,
             "fieldGroupId": "adc61a70-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
@@ -544,8 +434,8 @@
             "configuration": null,
             "fieldGroupId": "8c9cb05b-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
@@ -599,8 +489,8 @@
             "configuration": null,
             "fieldGroupId": "3415033d-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
@@ -664,63 +554,8 @@
             "configuration": null,
             "fieldGroupId": "f68f6450-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
-              "e555560e-7293-ee11-8927-6045bdd178c1",
-              "e655560e-7293-ee11-8927-6045bdd178c1"
-            ],
-            "correspondingEntity": "FieldDefinitionEntity"
-          }
-        ],
-        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
-        "correspondingEntity": "FieldGroupEntity"
-      },
-      {
-        "id": "9c176d21-8284-ee11-8927-6045bdd178c1",
-        "name": "Team Field Group",
-        "order": 1,
-        "tab_id": "0e527d60-8084-ee11-8927-6045bdd178c1",
-        "fieldDefinitions": [
-          {
-            "id": "6f532923-8384-ee11-8927-6045bdd178c1",
-            "name": "Key Management",
-            "type": "richText",
-            "order": 1,
-            "configuration": null,
-            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "3f9bf856-8384-ee11-8927-6045bdd178c1",
-            "name": "Positives",
-            "type": "richText",
-            "order": 2,
-            "configuration": null,
-            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "27e8c05f-8384-ee11-8927-6045bdd178c1",
-            "name": "Risks",
-            "type": "richText",
-            "order": 3,
-            "configuration": null,
-            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "24fc9b6b-8384-ee11-8927-6045bdd178c1",
-            "name": "Unknowns / To be diligence",
-            "type": "richText",
-            "order": 4,
-            "configuration": null,
-            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
-            "hideOnPipelineStageIds": [
               "e355560e-7293-ee11-8927-6045bdd178c1",
-              "e455560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
@@ -784,8 +619,63 @@
             "configuration": null,
             "fieldGroupId": "77af272c-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
+              "e555560e-7293-ee11-8927-6045bdd178c1",
+              "e655560e-7293-ee11-8927-6045bdd178c1"
+            ],
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
+        "correspondingEntity": "FieldGroupEntity"
+      },
+      {
+        "id": "9c176d21-8284-ee11-8927-6045bdd178c1",
+        "name": "Team Field Group",
+        "order": 1,
+        "tab_id": "0e527d60-8084-ee11-8927-6045bdd178c1",
+        "fieldDefinitions": [
+          {
+            "id": "6f532923-8384-ee11-8927-6045bdd178c1",
+            "name": "Key Management",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "3f9bf856-8384-ee11-8927-6045bdd178c1",
+            "name": "Positives",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "27e8c05f-8384-ee11-8927-6045bdd178c1",
+            "name": "Risks",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "24fc9b6b-8384-ee11-8927-6045bdd178c1",
+            "name": "Unknowns / To be diligence",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "9c176d21-8284-ee11-8927-6045bdd178c1",
+            "hideOnPipelineStageIds": [
+              "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
@@ -830,12 +720,12 @@
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
               "da55560e-7293-ee11-8927-6045bdd178c1",
-              "db55560e-7293-ee11-8927-6045bdd178c1",
-              "dc55560e-7293-ee11-8927-6045bdd178c1",
               "dd55560e-7293-ee11-8927-6045bdd178c1",
+              "dc55560e-7293-ee11-8927-6045bdd178c1",
+              "db55560e-7293-ee11-8927-6045bdd178c1",
               "de55560e-7293-ee11-8927-6045bdd178c1",
-              "df55560e-7293-ee11-8927-6045bdd178c1",
-              "e055560e-7293-ee11-8927-6045bdd178c1"
+              "e055560e-7293-ee11-8927-6045bdd178c1",
+              "df55560e-7293-ee11-8927-6045bdd178c1"
             ],
             "correspondingEntity": "FieldDefinitionEntity"
           },
@@ -877,8 +767,8 @@
             "configuration": null,
             "fieldGroupId": "d92f4165-8284-ee11-8927-6045bdd178c1",
             "hideOnPipelineStageIds": [
-              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e455560e-7293-ee11-8927-6045bdd178c1",
+              "e355560e-7293-ee11-8927-6045bdd178c1",
               "e555560e-7293-ee11-8927-6045bdd178c1",
               "e655560e-7293-ee11-8927-6045bdd178c1"
             ],
@@ -1145,10 +1035,6 @@
         "name": "Team",
         "order": 1,
         "pipelineStageIds": [
-          "db55560e-7293-ee11-8927-6045bdd178c1",
-          "dc55560e-7293-ee11-8927-6045bdd178c1",
-          "dd55560e-7293-ee11-8927-6045bdd178c1",
-          "de55560e-7293-ee11-8927-6045bdd178c1",
           "df55560e-7293-ee11-8927-6045bdd178c1",
           "e055560e-7293-ee11-8927-6045bdd178c1",
           "e155560e-7293-ee11-8927-6045bdd178c1",
@@ -1158,7 +1044,9 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": ["327abb74-2f6f-ee11-b007-6045bdd17462"],
+        "relatedFieldIds": [
+          "327abb74-2f6f-ee11-b007-6045bdd17462"
+        ],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1168,10 +1056,6 @@
         "name": "Market",
         "order": 2,
         "pipelineStageIds": [
-          "db55560e-7293-ee11-8927-6045bdd178c1",
-          "dc55560e-7293-ee11-8927-6045bdd178c1",
-          "dd55560e-7293-ee11-8927-6045bdd178c1",
-          "de55560e-7293-ee11-8927-6045bdd178c1",
           "df55560e-7293-ee11-8927-6045bdd178c1",
           "e055560e-7293-ee11-8927-6045bdd178c1",
           "e155560e-7293-ee11-8927-6045bdd178c1",
@@ -1181,7 +1065,9 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": ["9760a07d-2f6f-ee11-b007-6045bdd17462"],
+        "relatedFieldIds": [
+          "9760a07d-2f6f-ee11-b007-6045bdd17462"
+        ],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1191,10 +1077,6 @@
         "name": "Product & Technology",
         "order": 3,
         "pipelineStageIds": [
-          "db55560e-7293-ee11-8927-6045bdd178c1",
-          "dc55560e-7293-ee11-8927-6045bdd178c1",
-          "dd55560e-7293-ee11-8927-6045bdd178c1",
-          "de55560e-7293-ee11-8927-6045bdd178c1",
           "df55560e-7293-ee11-8927-6045bdd178c1",
           "e055560e-7293-ee11-8927-6045bdd178c1",
           "e155560e-7293-ee11-8927-6045bdd178c1",
@@ -1204,7 +1086,9 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": ["9860a07d-2f6f-ee11-b007-6045bdd17462"],
+        "relatedFieldIds": [
+          "9860a07d-2f6f-ee11-b007-6045bdd17462"
+        ],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1214,10 +1098,6 @@
         "name": "Business Model / GTM",
         "order": 4,
         "pipelineStageIds": [
-          "db55560e-7293-ee11-8927-6045bdd178c1",
-          "dc55560e-7293-ee11-8927-6045bdd178c1",
-          "dd55560e-7293-ee11-8927-6045bdd178c1",
-          "de55560e-7293-ee11-8927-6045bdd178c1",
           "df55560e-7293-ee11-8927-6045bdd178c1",
           "e055560e-7293-ee11-8927-6045bdd178c1",
           "e155560e-7293-ee11-8927-6045bdd178c1",
@@ -1227,7 +1107,9 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": ["6c9c9e87-2f6f-ee11-b007-6045bdd17462"],
+        "relatedFieldIds": [
+          "6c9c9e87-2f6f-ee11-b007-6045bdd17462"
+        ],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1237,10 +1119,6 @@
         "name": "Competitive Analysis",
         "order": 5,
         "pipelineStageIds": [
-          "db55560e-7293-ee11-8927-6045bdd178c1",
-          "dc55560e-7293-ee11-8927-6045bdd178c1",
-          "dd55560e-7293-ee11-8927-6045bdd178c1",
-          "de55560e-7293-ee11-8927-6045bdd178c1",
           "df55560e-7293-ee11-8927-6045bdd178c1",
           "e055560e-7293-ee11-8927-6045bdd178c1",
           "e155560e-7293-ee11-8927-6045bdd178c1",
@@ -1250,7 +1128,9 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": ["9760a07d-2f6f-ee11-b007-6045bdd17462"],
+        "relatedFieldIds": [
+          "9760a07d-2f6f-ee11-b007-6045bdd17462"
+        ],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1260,10 +1140,6 @@
         "name": "Financials",
         "order": 6,
         "pipelineStageIds": [
-          "db55560e-7293-ee11-8927-6045bdd178c1",
-          "dc55560e-7293-ee11-8927-6045bdd178c1",
-          "dd55560e-7293-ee11-8927-6045bdd178c1",
-          "de55560e-7293-ee11-8927-6045bdd178c1",
           "df55560e-7293-ee11-8927-6045bdd178c1",
           "e055560e-7293-ee11-8927-6045bdd178c1",
           "e155560e-7293-ee11-8927-6045bdd178c1",
@@ -1273,7 +1149,9 @@
           "e555560e-7293-ee11-8927-6045bdd178c1",
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
-        "relatedFieldIds": ["6d9c9e87-2f6f-ee11-b007-6045bdd17462"],
+        "relatedFieldIds": [
+          "6d9c9e87-2f6f-ee11-b007-6045bdd17462"
+        ],
         "relatedTemplateIds": [],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
@@ -1308,7 +1186,9 @@
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
         "relatedFieldIds": [],
-        "relatedTemplateIds": ["0b9474fd-316f-ee11-b007-6045bdd17462"],
+        "relatedTemplateIds": [
+          "0b9474fd-316f-ee11-b007-6045bdd17462"
+        ],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
       },
@@ -1325,7 +1205,9 @@
           "e655560e-7293-ee11-8927-6045bdd178c1"
         ],
         "relatedFieldIds": [],
-        "relatedTemplateIds": ["dd396795-336f-ee11-b007-6045bdd17462"],
+        "relatedTemplateIds": [
+          "dd396795-336f-ee11-b007-6045bdd17462"
+        ],
         "templateId": "9b1072c5-7d84-ee11-8927-6045bdd178c1",
         "correspondingEntity": "TabEntity"
       },
@@ -1334,10 +1216,6 @@
         "name": "Value Creation",
         "order": 10,
         "pipelineStageIds": [
-          "db55560e-7293-ee11-8927-6045bdd178c1",
-          "dc55560e-7293-ee11-8927-6045bdd178c1",
-          "dd55560e-7293-ee11-8927-6045bdd178c1",
-          "de55560e-7293-ee11-8927-6045bdd178c1",
           "df55560e-7293-ee11-8927-6045bdd178c1",
           "e055560e-7293-ee11-8927-6045bdd178c1",
           "e155560e-7293-ee11-8927-6045bdd178c1",
@@ -1388,128 +1266,8 @@
     "correspondingEntity": "TemplateEntity"
   },
   {
-    "id": "173d9bd9-306f-ee11-b007-6045bdd17462",
-    "name": "Investor call",
-    "type": "note",
-    "isDefault": false,
-    "fieldGroups": [
-      {
-        "id": "d06d0ded-306f-ee11-b007-6045bdd17462",
-        "name": "Investor call field group",
-        "order": 1,
-        "tab_id": null,
-        "fieldDefinitions": [
-          {
-            "id": "2e665a0f-316f-ee11-b007-6045bdd17462",
-            "name": "Call Attendees",
-            "type": "text",
-            "order": 1,
-            "configuration": null,
-            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "d111af1b-316f-ee11-b007-6045bdd17462",
-            "name": "General update",
-            "type": "richText",
-            "order": 2,
-            "configuration": null,
-            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "81fa1a26-316f-ee11-b007-6045bdd17462",
-            "name": "Co-investments",
-            "type": "richText",
-            "order": 3,
-            "configuration": null,
-            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "82fa1a26-316f-ee11-b007-6045bdd17462",
-            "name": "Mubadala update",
-            "type": "richText",
-            "order": 4,
-            "configuration": null,
-            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "1343a830-316f-ee11-b007-6045bdd17462",
-            "name": "Fund update",
-            "type": "richText",
-            "order": 5,
-            "configuration": null,
-            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "36aeb83b-316f-ee11-b007-6045bdd17462",
-            "name": "Pipeline",
-            "type": "richText",
-            "order": 6,
-            "configuration": null,
-            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          },
-          {
-            "id": "2a840dfd-0478-ee11-8925-6045bdc18eee",
-            "name": "Preparation",
-            "type": "richText",
-            "order": 7,
-            "configuration": null,
-            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          }
-        ],
-        "templateId": "173d9bd9-306f-ee11-b007-6045bdd17462",
-        "correspondingEntity": "FieldGroupEntity"
-      }
-    ],
-    "tabs": [],
-    "correspondingEntity": "TemplateEntity"
-  },
-  {
-    "id": "560d043d-356f-ee11-b007-6045bdd17462",
-    "name": "Loose Note",
-    "type": "note",
-    "isDefault": true,
-    "fieldGroups": [
-      {
-        "id": "1d542f52-356f-ee11-b007-6045bdd17462",
-        "name": "Field group - default",
-        "order": 1,
-        "tab_id": null,
-        "fieldDefinitions": [
-          {
-            "id": "8ae9ea73-356f-ee11-b007-6045bdd17462",
-            "name": "Note",
-            "type": "richText",
-            "order": 1,
-            "configuration": null,
-            "fieldGroupId": "1d542f52-356f-ee11-b007-6045bdd17462",
-            "hideOnPipelineStageIds": [],
-            "correspondingEntity": "FieldDefinitionEntity"
-          }
-        ],
-        "templateId": "560d043d-356f-ee11-b007-6045bdd17462",
-        "correspondingEntity": "FieldGroupEntity"
-      }
-    ],
-    "tabs": [],
-    "correspondingEntity": "TemplateEntity"
-  },
-  {
     "id": "0b9474fd-316f-ee11-b007-6045bdd17462",
-    "name": "Market expert call",
+    "name": "Expert Call",
     "type": "note",
     "isDefault": false,
     "fieldGroups": [
@@ -1628,6 +1386,126 @@
     "correspondingEntity": "TemplateEntity"
   },
   {
+    "id": "560d043d-356f-ee11-b007-6045bdd17462",
+    "name": "Freeform Note",
+    "type": "note",
+    "isDefault": true,
+    "fieldGroups": [
+      {
+        "id": "1d542f52-356f-ee11-b007-6045bdd17462",
+        "name": "Field group - default",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "8ae9ea73-356f-ee11-b007-6045bdd17462",
+            "name": "Note",
+            "type": "richText",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "1d542f52-356f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "560d043d-356f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "173d9bd9-306f-ee11-b007-6045bdd17462",
+    "name": "Investor Meeting",
+    "type": "note",
+    "isDefault": false,
+    "fieldGroups": [
+      {
+        "id": "d06d0ded-306f-ee11-b007-6045bdd17462",
+        "name": "Investor call field group",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "2e665a0f-316f-ee11-b007-6045bdd17462",
+            "name": "Call Attendees",
+            "type": "text",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "d111af1b-316f-ee11-b007-6045bdd17462",
+            "name": "General update",
+            "type": "richText",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "81fa1a26-316f-ee11-b007-6045bdd17462",
+            "name": "Co-investments",
+            "type": "richText",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "82fa1a26-316f-ee11-b007-6045bdd17462",
+            "name": "Mubadala update",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "1343a830-316f-ee11-b007-6045bdd17462",
+            "name": "Fund update",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "36aeb83b-316f-ee11-b007-6045bdd17462",
+            "name": "Pipeline",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "2a840dfd-0478-ee11-8925-6045bdc18eee",
+            "name": "Preparation",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "d06d0ded-306f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "173d9bd9-306f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
     "id": "72041836-346f-ee11-b007-6045bdd17462",
     "name": "Pipeline call",
     "type": "note",
@@ -1731,6 +1609,116 @@
           }
         ],
         "templateId": "72041836-346f-ee11-b007-6045bdd17462",
+        "correspondingEntity": "FieldGroupEntity"
+      }
+    ],
+    "tabs": [],
+    "correspondingEntity": "TemplateEntity"
+  },
+  {
+    "id": "dd396795-336f-ee11-b007-6045bdd17462",
+    "name": "Reference Call",
+    "type": "note",
+    "isDefault": false,
+    "fieldGroups": [
+      {
+        "id": "f7adafa4-336f-ee11-b007-6045bdd17462",
+        "name": "Customer reference call field group",
+        "order": 1,
+        "tab_id": null,
+        "fieldDefinitions": [
+          {
+            "id": "90f137c2-336f-ee11-b007-6045bdd17462",
+            "name": "Company Name",
+            "type": "text",
+            "order": 1,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "91f137c2-336f-ee11-b007-6045bdd17462",
+            "name": "Company URL",
+            "type": "text",
+            "order": 2,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "22da49ce-336f-ee11-b007-6045bdd17462",
+            "name": "Call Attendees",
+            "type": "text",
+            "order": 3,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "da9a08d7-336f-ee11-b007-6045bdd17462",
+            "name": "Market / Competition",
+            "type": "richText",
+            "order": 4,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "db9a08d7-336f-ee11-b007-6045bdd17462",
+            "name": "Product / Tech",
+            "type": "richText",
+            "order": 5,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "dfea54df-336f-ee11-b007-6045bdd17462",
+            "name": "GTM",
+            "type": "richText",
+            "order": 6,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "e0ea54df-336f-ee11-b007-6045bdd17462",
+            "name": "Risks / Challenges",
+            "type": "richText",
+            "order": 7,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "f71b2cea-336f-ee11-b007-6045bdd17462",
+            "name": "Other",
+            "type": "richText",
+            "order": 8,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          },
+          {
+            "id": "bdd58a6f-0678-ee11-8925-6045bdc18eee",
+            "name": "Preparation",
+            "type": "richText",
+            "order": 9,
+            "configuration": null,
+            "fieldGroupId": "f7adafa4-336f-ee11-b007-6045bdd17462",
+            "hideOnPipelineStageIds": [],
+            "correspondingEntity": "FieldDefinitionEntity"
+          }
+        ],
+        "templateId": "dd396795-336f-ee11-b007-6045bdd17462",
         "correspondingEntity": "FieldGroupEntity"
       }
     ],

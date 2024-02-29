@@ -127,6 +127,18 @@ export class OrganisationProvider {
     }
 
     if (options.filters?.status && options.filters.status.length > 0) {
+      queryBuilder.leftJoin(
+        (subQuery) => {
+          return subQuery
+            .select('organisation_id', 'orgId')
+            .addSelect('MAX(created_at)', 'maxCreatedAt')
+            .from('rvn_opportunities', 'op')
+            .groupBy('op.organisation_id');
+        },
+        'latestOpportunity',
+        'organisations.id = latestOpportunity.orgId',
+      );
+
       queryBuilder.andWhere(
         new Brackets((qb) => {
           const statuses = options.filters.status.filter(
@@ -155,7 +167,10 @@ export class OrganisationProvider {
                 new Brackets((qb2) => {
                   qb2
                     .where('organisations.companyStatusOverride IS NULL')
-                    .andWhere('pipelineStage.relatedCompanyStatus IS NULL');
+                    .andWhere('pipelineStage.relatedCompanyStatus IS NULL')
+                    .andWhere(
+                      '(opportunities.createdAt IS NULL OR opportunities.createdAt = latestOpportunity.maxCreatedAt)',
+                    );
                 }),
               );
             } else {
@@ -163,7 +178,10 @@ export class OrganisationProvider {
                 new Brackets((qb2) => {
                   qb2
                     .where('organisations.companyStatusOverride IS NULL')
-                    .andWhere('pipelineStage.relatedCompanyStatus IS NULL');
+                    .andWhere('pipelineStage.relatedCompanyStatus IS NULL')
+                    .andWhere(
+                      '(opportunities.createdAt IS NULL OR opportunities.createdAt = latestOpportunity.maxCreatedAt)',
+                    );
                 }),
               );
             }
