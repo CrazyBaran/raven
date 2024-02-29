@@ -6,12 +6,9 @@ import {
   Injector,
   input,
 } from '@angular/core';
-
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import {
-  ControlErrorsPipe,
-  ControlStatePipe,
-} from '@app/client/shared/ui-pipes';
+import { OnErrorDirective } from '@app/client/shared/ui-directives';
+import { ControlStatePipe } from '@app/client/shared/ui-pipes';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import {
   FormFieldModule,
@@ -19,7 +16,6 @@ import {
   TextBoxModule,
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
-import { RxLet } from '@rx-angular/template/let';
 import { RxPush } from '@rx-angular/template/push';
 
 export type ShortlistForm = FormGroup<{
@@ -42,8 +38,7 @@ export const MAX_SHORTLIST_DESCRIPTION_LENGTH = 1000;
     LoaderModule,
     ControlStatePipe,
     RxPush,
-    RxLet,
-    ControlErrorsPipe,
+    OnErrorDirective,
   ],
   templateUrl: './shortlist-form.component.html',
   styleUrls: ['./shortlist-form.component.scss'],

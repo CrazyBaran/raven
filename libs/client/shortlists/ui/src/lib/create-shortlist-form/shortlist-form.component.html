@@ -9,13 +9,12 @@
       </ng-template>
     </kendo-textbox>
 
-    <ng-container *rxLet="nameControl() | controlErrors$; let errors">
-      @if (errors?.['required'] && nameControl()?.touched) {
-        <kendo-formerror>Shortlist's Name is Required</kendo-formerror>
-      } @else if (errors?.['shortlistNameExists']) {
-        <kendo-formerror>Shortlist's Name already exists</kendo-formerror>
-      }
-    </ng-container>
+    <kendo-formerror *uiOnError="'required'">
+      Shortlist's Name is Required
+    </kendo-formerror>
+    <kendo-formerror *uiOnError="'shortlistNameExists'">
+      Shortlist's Name already exists
+    </kendo-formerror>
   </kendo-formfield>
 
   <kendo-formfield>
@@ -28,13 +27,12 @@
       placeholder="Briefly describe a shortlist, its purpose, objectives etc."
     />
 
-    @if (descriptionControl()?.errors?.['maxlength']) {
-      <kendo-formerror>
-        Description should be less than
-        {{ descriptionControl()?.errors?.['maxlength'].requiredLength }}
-        characters
-      </kendo-formerror>
-    }
+    <kendo-formerror *uiOnError="'maxlength'; let error">
+      Description should be less than
+      {{ error.requiredLength }}
+      characters
+    </kendo-formerror>
+
     <footer class="px-3 pt-3 text-end text-sm">
       Character Limit: {{ descriptionControl()?.value?.length ?? 0 }} / 1000
     </footer>

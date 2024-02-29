@@ -1,6 +1,7 @@
 export * from './lib/feature-flag.directive';
 export * from './lib/infinity-table-view-base.directive';
 export * from './lib/is-ellipsis-active.directive';
+export * from './lib/on-error.directive';
 export * from './lib/recreate-view.directive';
 export * from './lib/resized/resize-observer.directive';
 export * from './lib/resized/resize-service';
