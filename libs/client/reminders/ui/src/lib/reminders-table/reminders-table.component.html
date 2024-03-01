@@ -10,7 +10,7 @@
     <div
       class="bulk-div mb-3 flex max-h-[58px] flex-col gap-4 overflow-hidden transition-all duration-300"
       [ngClass]="{
-        'max-h-0': checkboxAllState === 'none',
+        '!max-h-0': checkboxAllState === 'none',
         'opacity-0': checkboxAllState === 'none'
       }"
     >
@@ -79,7 +79,7 @@
         >
           <p
             [showTooltipIfClamped]="reminder.name"
-            class="line-clamp-1"
+            class="reminder-name line-clamp-1"
             kendoTooltip
           >
             {{ reminder.name }}
