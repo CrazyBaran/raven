@@ -1,0 +1,34 @@
+<app-page-template pageIcon="fa-regular fa-star" pageName="Reminders">
+  <div class="flex items-center gap-3" page-header-actions>
+    <app-text-box-navigation [model]="vm().queryModel" class="w-64" />
+    <kendo-button
+      [queryParams]="createShortlistQueryParams"
+      [routerLink]="['./']"
+      [skipLocationChange]="true"
+      fillMode="flat"
+      iconClass="fa-solid fa-square-plus"
+      queryParamsHandling="merge"
+      size="large"
+    >
+      Create New Reminder
+    </kendo-button>
+  </div>
+  <div
+    class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
+    page-content
+  >
+    <app-quick-filters-template>
+      <div class="flex gap-6">
+        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation" />
+        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation2" />
+      </div>
+    </app-quick-filters-template>
+
+    <div class="flex-1 shrink-0 overflow-hidden">
+      <app-reminders-table
+        [model]="vm().tableModel"
+        (loadMore)="onLoadMore($event)"
+      />
+    </div>
+  </div>
+</app-page-template>

@@ -1,0 +1,15 @@
+#reminder-table tr.reminder-type-overdue {
+  color: var(--informational-error);
+  .reminder-name {
+    color: var(--informational-error) !important;
+  }
+  background-color: var(--informational-error-8);
+}
+
+#reminder-table tr.reminder-type-due {
+  //color: orange;
+}
+
+#reminder-table tr.reminder-type-completed {
+  background-color: var(--informational-success-8);
+}

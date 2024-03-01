@@ -23,6 +23,7 @@ export const environment: Environment = {
   websocketUrl: 'https://as-wa-mc-raven-dev.azurewebsites.net/',
   // websocketUrl: 'http://localhost:3333',
   shortlistsFeature: true,
+  remindersFeature: true,
 };
 /*
  * For easier debugging in development mode, you can import the following file

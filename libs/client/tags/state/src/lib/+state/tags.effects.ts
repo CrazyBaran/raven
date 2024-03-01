@@ -4,7 +4,15 @@ import { TagsService } from '@app/client/tags/data-access';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { catchError, filter, forkJoin, map, of, switchMap } from 'rxjs';
+import {
+  catchError,
+  filter,
+  forkJoin,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+} from 'rxjs';
 import { TagsActions } from './tags.actions';
 import { tagsFeature } from './tags.reducer';
 
@@ -51,7 +59,7 @@ export const getTagsByTypes = createEffect(
   (actions$ = inject(Actions), tagsService = inject(TagsService)) => {
     return actions$.pipe(
       ofType(TagsActions.getTagsByTypes),
-      switchMap(({ tagTypes }) =>
+      mergeMap(({ tagTypes }) =>
         forkJoin(tagTypes.map((type) => tagsService.getTags({ type }))).pipe(
           map((responses) => {
             return TagsActions.getTagsByTypesSuccess({

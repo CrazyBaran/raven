@@ -14,6 +14,7 @@ import {
 import {
   InfinityTableViewBaseComponent,
   IsEllipsisActiveDirective,
+  ShowTooltipIfClampedDirective,
 } from '@app/client/shared/ui-directives';
 import { ToUserTagPipe } from '@app/client/shared/ui-pipes';
 import {
@@ -57,6 +58,7 @@ export interface ShortListTableRow {
     DatePipe,
     ClipboardDirective,
     shortlistPipes,
+    ShowTooltipIfClampedDirective,
   ],
   templateUrl: './shortlist-table.component.html',
   styleUrl: './shortlist-table.component.scss',

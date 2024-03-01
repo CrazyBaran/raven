@@ -1,0 +1,112 @@
+<form [formGroup]="form()" class="flex flex-col gap-4">
+  <kendo-formfield>
+    <kendo-label [for]="title" text="Title" />
+    <kendo-textbox
+      #title
+      [maxlength]="maxTitleLength"
+      formControlName="title"
+    />
+
+    <kendo-formerror *uiOnError="'required'">
+      Reminder Title is Required
+    </kendo-formerror>
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label [for]="tag" text="Company / Opportunity" />
+    <kendo-dropdowntree
+      #tag
+      [fetchChildren]="fetchChildrenFn"
+      [hasChildren]="hasChildrenFn"
+      [uiMultiSelectSourceFn]="companySource()"
+      [valueDepth]="1"
+      formControlName="tag"
+      kendoDropDownTreeExpandable
+      placeholder="Search Tags"
+      textField="name"
+      valueField="id"
+    >
+      <ng-template kendoDropDownTreeValueTemplate let-dataItem>
+        @if (dataItem) {
+          {{ dataItem?.company?.name }} / {{ dataItem?.opportunity?.name }}
+        } @else {
+          Search Tags
+        }
+      </ng-template>
+
+      <ng-template kendoDropDownTreeNodeTemplate let-dataItem>
+        @if (dataItem?.opportunity) {
+          {{ dataItem?.opportunity?.name }}
+        } @else {
+          <div (click)="$event.preventDefault()" class="pointer-events-none">
+            {{ dataItem?.company?.name }}
+          </div>
+        }
+      </ng-template>
+    </kendo-dropdowntree>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label [for]="description" text="Description" />
+    <kendo-textarea
+      #description
+      [maxlength]="maxDescriptionLength"
+      [rows]="7"
+      formControlName="description"
+      placeholder="Briefly describe the reminder, it’s purpose, objectives etc."
+    />
+
+    <kendo-formerror *uiOnError="'maxlength'; let error">
+      Description should be less than
+      {{ error.requiredLength }}
+      characters
+    </kendo-formerror>
+
+    <footer class="px-3 pt-3 text-end text-sm">
+      Character Limit: {{ form()?.controls?.description?.value?.length ?? 0 }} /
+      1000
+    </footer>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label [for]="assignees" text="Assign to" />
+    <kendo-multiselect
+      #assignees
+      [autoClose]="false"
+      [checkboxes]="true"
+      [uiMultiSelectSourceFn]="usersSource()"
+      [valuePrimitive]="true"
+      [virtual]="true"
+      class="max-h-40 !overflow-auto"
+      formControlName="assignees"
+      placeholder="Choose from list"
+      textField="name"
+      valueField="id"
+    />
+    <kendo-formerror *uiOnError="'required'">
+      Assign To is Required
+    </kendo-formerror>
+  </kendo-formfield>
+  <kendo-button
+    (click)="onAssignToMe()"
+    [disabled]="assignButtonDisabled"
+    class="-mt-2 self-start"
+    fillMode="clear"
+    themeColor="primary"
+  >
+    Assign to Me
+  </kendo-button>
+
+  <kendo-formfield>
+    <kendo-label [for]="dueDate" text="Due Date" />
+    <kendo-datepicker
+      #dueDate
+      [min]="today"
+      formControlName="dueDate"
+      format="MM/dd/yyyy"
+      placeholder="MM/dd/yyyy"
+    />
+    <kendo-formerror *uiOnError="'required'">
+      Due Date is Required
+    </kendo-formerror>
+  </kendo-formfield>
+</form>

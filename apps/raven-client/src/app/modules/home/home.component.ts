@@ -72,7 +72,8 @@ export class HomeComponent {
       name: 'Reminders',
       path: 'reminders',
       icon: 'fa-solid fa-alarm-clock',
-      disabled: true,
+      disabled: !this.environment.remindersFeature,
+      exact: true,
     },
   ];
 }

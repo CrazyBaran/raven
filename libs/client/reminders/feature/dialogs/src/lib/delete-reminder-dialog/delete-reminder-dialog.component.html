@@ -1,0 +1,22 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Delete Reminder</span>
+</kendo-dialog-titlebar>
+
+<div class="flex flex-col gap-6 p-10 pt-3">
+  <p>Deleting a reminder is a permanent action.</p>
+  <p class="mb-4">Are you sure you want to continue?</p>
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="delete()"
+    [disabled]="vm().isDeleting"
+    themeColor="primary"
+  >
+    @if (vm().isDeleting) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Delete Reminder
+  </kendo-button>
+</kendo-dialog-actions>

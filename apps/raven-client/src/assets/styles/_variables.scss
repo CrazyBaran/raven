@@ -85,10 +85,10 @@ $series-variables: (
   // INFORMATIONAL COLORS
   @each $name, $value in $informational-variables {
     --#{$name}: #{$value};
-    --#{$name}-8: #{k-color-mix(white, $value, 8%)};
-    --#{$name}-16: #{k-color-mix(white, $value, 16%)};
-    --#{$name}-24: #{k-color-mix(white, $value, 24%)};
-    --#{$name}-30: #{k-color-mix(white, $value, 30%)};
+    --#{$name}-8: #{k-color-mix(white, $value, 92%)};
+    --#{$name}-16: #{k-color-mix(white, $value, 84%)};
+    --#{$name}-24: #{k-color-mix(white, $value, 76%)};
+    --#{$name}-30: #{k-color-mix(white, $value, 70%)};
     --#{$name}-50: #{k-color-mix(white, $value, 50%)};
   }
 }

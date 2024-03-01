@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import {
   Directive,
   EventEmitter,
   inject,
-  Input,
+  input,
   Output,
   TrackByFunction,
   ViewChild,
@@ -33,7 +34,7 @@ export interface InfinityTableViewModel<T> {
 export abstract class InfinityTableViewBaseComponent<T> {
   @ViewChild(GridComponent) public grid!: GridComponent;
 
-  @Input() public model: InfinityTableViewModel<T> | null;
+  public model = input<InfinityTableViewModel<T> | null>();
 
   @Output() public loadMore = new EventEmitter<{
     skip: number;
@@ -46,34 +47,34 @@ export abstract class InfinityTableViewBaseComponent<T> {
   public page = 0;
 
   public get data(): T[] {
-    return this.model?.data ?? [];
+    return this.model()?.data ?? [];
   }
 
   public get isLoading(): boolean {
-    return this.model?.isLoading ?? true;
+    return this.model()?.isLoading ?? true;
   }
 
   public get total(): number {
-    return Number(this.model?.total);
+    return Number(this.model()?.total);
   }
 
   public get take(): number {
-    return Number(this.model?.take);
+    return Number(this.model()?.take);
   }
 
   public get skip(): number {
-    return Number(this.model?.skip);
+    return Number(this.model()?.skip);
   }
 
   public get field(): string | null {
-    return this.model?.field ?? null;
+    return this.model()?.field ?? null;
   }
 
   public get dir(): 'asc' | 'desc' | null {
-    if (!this.model?.dir) return null;
+    if (!this.model()?.dir) return null;
 
-    if (this.model.dir === 'asc' || this.model.dir === 'desc') {
-      return this.model.dir;
+    if (this.model()!.dir === 'asc' || this.model()!.dir === 'desc') {
+      return this.model()!.dir as 'asc' | 'desc';
     }
 
     // console.warn(`Unknown sort direction: ${this.model.dir}`);
@@ -95,11 +96,11 @@ export abstract class InfinityTableViewBaseComponent<T> {
   }
 
   public get filters(): CompositeFilterDescriptor | null {
-    return this.model?.filters ?? null;
+    return this.model()?.filters ?? null;
   }
 
   public onLoadMore(): void {
-    if (this.total <= this.data.length || this.model?.isLoading) {
+    if (this.total <= this.data.length || this.model()?.isLoading) {
       return;
     }
 

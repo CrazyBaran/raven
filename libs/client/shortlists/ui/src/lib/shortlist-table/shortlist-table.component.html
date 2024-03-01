@@ -45,8 +45,7 @@
   <kendo-grid-column headerClass="!font-bold" title="Description">
     <ng-template kendoGridCellTemplate let-shortlist>
       <p
-        [title]="shortlist.description"
-        class="line-clamp-2"
+        [showTooltipIfClamped]="shortlist.description"
         kendoTooltip
         position="right"
       >

@@ -1,4 +1,4 @@
-export const featureFlags = ['shortlistsFeature'] as const;
+export const featureFlags = ['shortlistsFeature', 'remindersFeature'] as const;
 export type FeatureFlag = (typeof featureFlags)[number];
 
 export type Environment = {
