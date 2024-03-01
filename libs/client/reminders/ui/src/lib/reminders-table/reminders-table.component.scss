@@ -1,0 +1,22 @@
+#reminder-table tr.reminder-type-overdue {
+  color: red;
+  height: 65px;
+}
+
+#reminder-table tr.reminder-type-due {
+  color: orange;
+  height: 65px;
+}
+
+#reminder-table tr.reminder-type-completed {
+  color: green !important;
+  height: 65px;
+  .line-clamp-1 {
+    color: green !important;
+  }
+}
+
+.bulk-div {
+  //overflow: hidden;
+  //transition: max-height 0.25s ease-in-out;
+}

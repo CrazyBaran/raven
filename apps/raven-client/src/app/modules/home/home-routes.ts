@@ -47,7 +47,13 @@ export const HOME_ROUTES: Routes = [
         loadChildren: () =>
           import('@app/client/notes/feature/shell').then((m) => m.NOTES_ROUTES),
       },
-
+      {
+        path: 'reminders',
+        loadChildren: () =>
+          import('@app/client/reminders/feature/shell').then(
+            (m) => m.REMINDERS_ROUTES,
+          ),
+      },
       {
         path: 'templates',
         loadComponent: () =>

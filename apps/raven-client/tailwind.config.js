@@ -170,6 +170,9 @@ module.exports = {
         12: '0.12',
         16: '0.16',
       },
+      transitionProperty: {
+        'max-height': 'max-height',
+      },
     },
     fontSize: {
       xxs: ['0.625rem', '0.75rem'], // 10px

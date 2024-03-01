@@ -1,0 +1,26 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Create New Reminder</span>
+</kendo-dialog-titlebar>
+
+<div class="p-10">
+  <app-reminder-form
+    [form]="form"
+    [opportunities]="vm().opportunityTags"
+    [companySource]="companySourceFn"
+    [usersSource]="usersSourceFn"
+    [loggedUserTag]="vm().currentUser!"
+  />
+</div>
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="(form | controlInvalid$ | async) || vm().isCreating!"
+    themeColor="primary"
+  >
+    @if (vm().isCreating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Add New Reminder
+  </kendo-button>
+</kendo-dialog-actions>

@@ -10,7 +10,7 @@ export class ToUserTagPipe implements PipeTransform {
     return (
       users?.map((user) => ({
         name: user,
-        icon: 'fa-solid fa-user',
+        icon: 'fa-solid fa-user-circle',
         id: user,
         size: 'medium',
       })) ?? []

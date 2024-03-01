@@ -1,0 +1,129 @@
+<div class="flex h-full flex-col">
+  <ng-container
+    *rxLet="
+      checkboxAllState$;
+      let checkboxAllState;
+      patchZone: false;
+      strategy: 'native'
+    "
+  >
+    <div
+      class="bulk-div mb-3 flex max-h-[58px] flex-col gap-4 overflow-hidden transition-all duration-300"
+      [ngClass]="{
+        'max-h-0': checkboxAllState === 'none',
+        'opacity-0': checkboxAllState === 'none'
+      }"
+    >
+      <div class="text-xxs text-buttons-button-text-50 uppercase">
+        bulk options
+      </div>
+
+      <div class="flex flex-row gap-6">
+        <kendo-button (click)="onBulkComplete()">Complete All</kendo-button>
+      </div>
+    </div>
+  </ng-container>
+  <kendo-grid
+    [loading]="isLoading"
+    [clearNoneSort]="true"
+    [data]="data"
+    [rowClass]="rowCallback"
+    [sort]="sort"
+    [sortable]="true"
+    [trackBy]="trackByFn"
+    (scrollBottom)="onLoadMore()"
+    class="grid-borderless min-h-0 flex-1"
+    id="reminder-table"
+    uiKendoUrlSorting
+  >
+    <kendo-grid-column [width]="45">
+      <ng-template kendoGridCellTemplate let-reminder>
+        <input
+          *rxLet="
+            checkboxState(reminder.id);
+            let checked;
+            patchZone: false;
+            strategy: 'native'
+          "
+          (click)="toggleCheckedRow(reminder.id)"
+          [checked]="checked"
+          kendoCheckBox
+          size="large"
+          type="checkbox"
+        />
+      </ng-template>
+      <ng-template kendoGridHeaderTemplate>
+        <input
+          (change)="toggleAll(checkboxAllState)"
+          *rxLet="
+            checkboxAllState$;
+            let checkboxAllState;
+            patchZone: false;
+            strategy: 'native'
+          "
+          [checked]="checkboxAllState === 'checked'"
+          [indeterminate]="checkboxAllState === 'indeterminate'"
+          kendoCheckBox
+          size="large"
+          type="checkbox"
+        />
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="name" headerClass="!font-bold" title="Title">
+      <ng-template kendoGridCellTemplate let-reminder>
+        <kendo-button
+          (click)="onReminderClick(reminder)"
+          [unpatch]
+          fillMode="link"
+        >
+          <p
+            [showTooltipIfClamped]="reminder.name"
+            class="line-clamp-1"
+            kendoTooltip
+          >
+            {{ reminder.name }}
+          </p>
+        </kendo-button>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Company / Opportunity">
+      <ng-template kendoGridCellTemplate let-reminder>
+        @if (reminder.tag.company) {
+          {{ reminder.tag.company }} / {{ reminder.tag.opportunity }}
+        }
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Assigned By">
+      <ng-template kendoGridCellTemplate let-reminder>
+        @defer {
+          <ui-tags-container
+            [rows]="1"
+            [tags]="reminder.assignees | toUserTag"
+            class="w-full"
+          />
+        }
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      field="dueDate"
+      headerClass="!font-bold"
+      title="Due Date"
+    >
+      <ng-template kendoGridCellTemplate let-reminder>
+        <p>{{ reminder.dueDate | date: 'MMMM d, y' }}</p>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column [width]="100" title="">
+      <ng-template kendoGridCellTemplate let-reminder>
+        <div class="flex justify-end gap-2">
+          <app-dropdownbutton-navigation [model]="reminder.actionsModel" />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</div>

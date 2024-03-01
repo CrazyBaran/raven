@@ -1,0 +1,35 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Reminder</span>
+</kendo-dialog-titlebar>
+
+<div class="p-10">
+  @if (vm().reminder; as reminder) {
+    <div class="flex flex-col gap-4">
+      <section>
+        <p class="text-subtle-text">Title</p>
+        <p class="text-lg">{{ reminder.name }}</p>
+      </section>
+      <section>
+        <p class="text-subtle-text">Company / Opportunity</p>
+        <p class="text-lg">{{ reminder.name }}</p>
+      </section>
+      <section>
+        <p class="text-subtle-text">Description</p>
+        <p class="line-clamp-2 text-lg">{{ reminder.description }}</p>
+      </section>
+      <section>
+        <p class="text-subtle-text">Assignees</p>
+
+        <ui-tags-container
+          [rows]="1"
+          [tags]="reminder.assignies | picklist: 'name' | toUserTag"
+          class="w-full"
+        />
+      </section>
+      <section>
+        <p class="text-subtle-text">Due Date</p>
+        <p class="text-lg">{{ reminder.dueDate | date: 'MMMM d, y' }}</p>
+      </section>
+    </div>
+  }
+</div>

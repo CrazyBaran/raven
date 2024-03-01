@@ -18,4 +18,5 @@ export const environment: Environment = {
   sharepointRootDirectoryId: '01RVXLZIUM2GLOT2SNUZDZBGFRP3ZBORTK',
   websocketUrl: 'https://as-wa-mc-raven-dev.azurewebsites.net/',
   shortlistsFeature: true,
+  remindersFeature: true,
 };
