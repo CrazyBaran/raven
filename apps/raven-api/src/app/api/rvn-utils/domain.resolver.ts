@@ -24,6 +24,16 @@ export class DomainResolver {
     if (domain === undefined || domain === null || domain === '') {
       return null;
     }
+
+    domain = domain.replace(/^(https?:\/\/)?(www\.)?/i, '');
+    domain = domain.replace(/\/$/, '');
+
     return domain.trim().toLowerCase();
+  }
+
+  public isEqual(domain1: string, domain2: string): boolean {
+    const cleanDomain1 = this.cleanDomain(domain1);
+    const cleanDomain2 = this.cleanDomain(domain2);
+    return cleanDomain1 === cleanDomain2;
   }
 }

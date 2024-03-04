@@ -32,4 +32,16 @@ describe('DomainResolver', () => {
   ])('should return unique domains', (domains, result) => {
     expect(domainResolver.extractDomains(domains)).toEqual(result);
   });
+
+  it.each([
+    ['www.domains.com', ['domains.com']],
+    ['https://domains.com', ['domains.com']],
+    ['http://domains.com', ['domains.com']],
+    ['https://www.domains.com', ['domains.com']],
+    ['https://www.domains.com/', ['domains.com']],
+    ['https://test.domains.com/', ['test.domains.com']],
+    ['https://test.domains.com/en/', ['test.domains.com/en']],
+  ])('should return unique domains', (domains, result) => {
+    expect(domainResolver.extractDomains(domains)).toEqual(result);
+  });
 });

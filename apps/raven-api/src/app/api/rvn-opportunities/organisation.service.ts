@@ -28,10 +28,14 @@ import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
-import { GetOrganisationsOptions } from './interfaces/get-organisations.options';
+import {
+  GetOrganisationsOptions,
+  PrimaryDataSource,
+} from './interfaces/get-organisations.options';
 import { OpportunityTeamService } from './opportunity-team.service';
 
 interface CreateOrganisationOptions {
+  initialDataSource?: PrimaryDataSource;
   name: string;
   domain: string;
   createOpportunity?: boolean;
@@ -240,6 +244,7 @@ export class OrganisationService {
       async (tem) => {
         const organisation = new OrganisationEntity();
         organisation.name = options.name;
+        organisation.initialDataSource = options.initialDataSource;
 
         const organisationEntity = await tem.save(organisation);
 
@@ -414,6 +419,7 @@ export class OrganisationService {
       async (tem) => {
         const organisation = new OrganisationEntity();
         organisation.name = organisationDto.name;
+        organisation.initialDataSource = 'affinity';
         const savedOrganisation = await tem.save(organisation);
 
         for (const singleDomain of organisationDto.domains) {
@@ -459,6 +465,7 @@ export class OrganisationService {
       async (tem) => {
         const organisation = new OrganisationEntity();
         organisation.name = company.name;
+        organisation.initialDataSource = 'dwh';
         const savedOrganisation = await tem.save(organisation);
 
         const domains = this.domainResolver.extractDomains(company.domain);

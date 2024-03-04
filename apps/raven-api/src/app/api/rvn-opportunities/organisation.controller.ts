@@ -99,6 +99,7 @@ export class OrganisationController {
       await this.organisationService.create({
         name: dto.name,
         domain: dto.domain,
+        initialDataSource: 'raven',
       }),
     );
   }

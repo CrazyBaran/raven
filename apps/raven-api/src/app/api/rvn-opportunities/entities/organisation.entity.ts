@@ -13,6 +13,7 @@ import {
 import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
 import { DataWarehouseCompanyV1Entity } from '../../rvn-data-warehouse/proxy/entities/data-warehouse-company.v1.entity';
 import { ShortlistEntity } from '../../rvn-shortlists/entities/shortlist.entity';
+import { PrimaryDataSource } from '../interfaces/get-organisations.options';
 import { OpportunityEntity } from './opportunity.entity';
 import { OrganisationDomainEntity } from './organisation-domain.entity';
 
@@ -61,6 +62,9 @@ export class OrganisationEntity implements SharepointEnabledEntity {
     onUpdate: 'CASCADE',
   })
   public shortlists?: ShortlistEntity[];
+
+  @Column({ nullable: true, type: 'varchar' })
+  public initialDataSource?: PrimaryDataSource;
 
   public domains: string[];
   @AfterInsert()

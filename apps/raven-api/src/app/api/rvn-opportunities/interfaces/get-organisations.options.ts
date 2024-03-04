@@ -14,7 +14,7 @@ export const sortableFields = [
 ] as const;
 export type SortableField = (typeof sortableFields)[number];
 
-export type PrimaryDataSource = 'raven' | 'dwh'; //  | 'affinity';
+export type PrimaryDataSource = 'raven' | 'dwh' | 'affinity';
 
 export class GetOrganisationsOptions {
   public skip?: number;
