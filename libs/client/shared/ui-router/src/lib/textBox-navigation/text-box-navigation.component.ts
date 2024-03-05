@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { InputSize, TextBoxModule } from '@progress/kendo-angular-inputs';
+import { RxUnpatch } from '@rx-angular/template/unpatch';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { BaseNavigationComponent } from '../base-navigation-component.directive';
 
 export type TextBoxNavigationModel = {
   queryParamName: string;
@@ -27,21 +29,25 @@ const textBoxNavigationModelDefaults: Required<TextBoxNavigationModel> = {
 @Component({
   selector: 'app-text-box-navigation',
   standalone: true,
-  imports: [CommonModule, TextBoxModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    TextBoxModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    RxUnpatch,
+  ],
   templateUrl: './text-box-navigation.component.html',
   styleUrls: ['./text-box-navigation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextBoxNavigationComponent {
+export class TextBoxNavigationComponent extends BaseNavigationComponent {
   public navigationControl = new FormControl();
 
   private _model: Required<TextBoxNavigationModel> =
     textBoxNavigationModelDefaults;
 
-  public constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {
+  public constructor() {
+    super();
     this.navigationControl.valueChanges
       .pipe(
         takeUntilDestroyed(),
@@ -49,8 +55,8 @@ export class TextBoxNavigationComponent {
         distinctUntilChanged(),
       )
       .subscribe((value) => {
-        this.router.navigate([], {
-          relativeTo: this.route,
+        this.navigateWithZone([], {
+          relativeTo: this.activatedRoute,
           queryParams: { [this.model.queryParamName]: value || null },
           queryParamsHandling: this.model.queryParamsHandling,
         });

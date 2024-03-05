@@ -1,13 +1,19 @@
 import { computed, inject } from '@angular/core';
+import { LoadDataMethod, withTable } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { ShortlistsService } from '@app/client/shortlists/data-access';
-import { ShortlistEntity } from '@app/client/shortlists/state';
+import {
+  ShortlistEntity,
+  ShortlistsActions,
+} from '@app/client/shortlists/state';
 import { ShortlistUtil } from '@app/client/shortlists/utils';
 import { tapResponse } from '@ngrx/component-store';
+import { Actions, ofType } from '@ngrx/effects';
 import {
   patchState,
   signalStore,
   withComputed,
+  withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -46,7 +52,7 @@ const initialState: OrganisationShortlistsTableState = {
   },
 };
 
-export const organisationShortlistsTableStore = signalStore(
+export const organisationShortlistsTableStore2 = signalStore(
   withState(initialState),
   withComputed((store, ngrxStore = inject(Store)) => ({
     organisationId: ngrxStore.selectSignal(
@@ -121,3 +127,52 @@ export const organisationShortlistsTableStore = signalStore(
     ),
   })),
 );
+
+export const organisationShortlistsTableStore = signalStore(
+  withComputed((store, ngrxStore = inject(Store)) => ({
+    additionalParams: computed(() => ({
+      organisationId: ngrxStore.selectSignal(
+        routerQuery.selectCurrentOrganisationId,
+      )()!,
+    })),
+  })),
+  withMethods((store, shortlistsService = inject(ShortlistsService)) => ({
+    loadData: getLoadShortlistData(shortlistsService),
+  })),
+  withTable<ShortlistEntity>(),
+  withHooks((store, actions$ = inject(Actions)) => ({
+    onInit: (): void => {
+      const resetPage$ = actions$.pipe(
+        ofType(
+          ShortlistsActions.bulkAddOrganisationsToShortlistSuccess,
+          ShortlistsActions.deleteShortlistSuccess,
+          ShortlistsActions.createShortlistSuccess,
+          ShortlistsActions.updateShortlistSuccess,
+        ),
+      );
+      store.refresh(resetPage$);
+    },
+  })),
+);
+
+export const getLoadShortlistData =
+  (shortlistService: ShortlistsService): LoadDataMethod<ShortlistEntity> =>
+  (params) =>
+    shortlistService.getShortlists(params).pipe(
+      map((response) => {
+        const personalShortlist = ShortlistUtil.findMyShortlistFromExtras(
+          response.data?.extras,
+        );
+        return {
+          total: response.data?.total ?? 0,
+          data:
+            (response.data?.items.map((shortlist) => ({
+              ...shortlist,
+              type:
+                personalShortlist?.id === shortlist.id ? 'my' : shortlist.type,
+              contributors:
+                shortlist.contributors.map(({ name }) => name) ?? [],
+            })) as never) ?? [],
+        };
+      }),
+    );

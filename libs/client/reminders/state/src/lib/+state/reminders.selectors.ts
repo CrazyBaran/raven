@@ -21,7 +21,7 @@ const selectRemindersTableParams = buildPageParamsSelector(
   },
 );
 
-export const selectReloadTableParams = createSelector(
+const selectReloadTableParams = createSelector(
   remindersFeature.selectTable,
   selectRemindersTableParams,
   (table, params) => {
@@ -33,9 +33,33 @@ export const selectReloadTableParams = createSelector(
   },
 );
 
+const selectToMeCount = createSelector(
+  remindersFeature.selectTable,
+
+  (table) => {
+    return 21;
+  },
+);
+
+const selectToOthersCount = createSelector(
+  remindersFeature.selectTable,
+  (table) => {
+    return 37;
+  },
+);
+
+const selectTotalCount = createSelector(
+  selectToMeCount,
+  selectToOthersCount,
+  (my, other) => my + other,
+);
+
 export const remindersQuery = {
   ...remindersFeature,
   remindersQueryParams,
   selectRemindersTableParams,
   selectReloadTableParams,
+  selectToMeCount,
+  selectToOthersCount,
+  selectTotalCount,
 };

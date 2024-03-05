@@ -47,12 +47,12 @@ export interface ReminderTableRow {
   id: string;
   name: string;
   tag: {
-    company: string;
-    opportunity: string;
+    company: string | undefined;
+    opportunity: string | undefined;
   };
   assignees: string[];
-  dueDate: string;
-  type: 'overdue' | 'due' | 'completed';
+  dueDate: string | Date;
+  status: 'overdue' | 'due' | 'completed';
   actionsModel: DropdownbuttonNavigationModel;
 }
 
@@ -115,7 +115,7 @@ export class RemindersTableComponent extends InfinityTableViewBaseComponent<Remi
   public rowCallback: RowClassFn = (context: RowClassArgs) => {
     const row = context.dataItem as ReminderTableRow;
 
-    return { [`reminder-type-${row.type}`]: true };
+    return { [`reminder-type-${row.status}`]: true };
   };
 
   public onReminderClick(reminder: ReminderTableRow): void {

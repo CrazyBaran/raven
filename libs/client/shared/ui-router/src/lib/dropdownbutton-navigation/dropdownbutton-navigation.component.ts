@@ -1,13 +1,9 @@
 import { NgClass, NgStyle } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  inject,
-} from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { DropDownButtonModule } from '@progress/kendo-angular-buttons';
 import { RxUnpatch } from '@rx-angular/template/unpatch';
+import { BaseNavigationComponent } from '../base-navigation-component.directive';
 
 export type DropdownAction = {
   actionStyle?: { [k: string]: string };
@@ -45,10 +41,7 @@ export const dropdownbuttonNavigationModelDefaults: Required<DropdownbuttonNavig
   styleUrls: ['./text-box-navigation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DropdownButtonNavigationComponent {
-  protected router = inject(Router);
-  protected activatedRoute = inject(ActivatedRoute);
-
+export class DropdownButtonNavigationComponent extends BaseNavigationComponent {
   private _model: Required<DropdownbuttonNavigationModel> =
     dropdownbuttonNavigationModelDefaults;
 
@@ -67,7 +60,7 @@ export class DropdownButtonNavigationComponent {
 
   public onItemClick($event: DropdownAction): void {
     if ('routerLink' in $event) {
-      this.router.navigate([], {
+      this.navigateWithZone([], {
         relativeTo: this.activatedRoute,
         queryParams: $event.queryParams,
         queryParamsHandling: $event.queryParamsHandling,

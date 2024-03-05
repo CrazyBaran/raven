@@ -1,13 +1,10 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  Input,
-} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { RxIf } from '@rx-angular/template/if';
+import { RxUnpatch } from '@rx-angular/template/unpatch';
+import { BaseNavigationComponent } from '../base-navigation-component.directive';
 
 export type DropdownNavigationItem = {
   id: string | null | undefined;
@@ -26,19 +23,16 @@ export type DropdownNavigationModel = {
 @Component({
   selector: 'app-dropdown-navigation',
   standalone: true,
-  imports: [CommonModule, DropDownListModule, RxIf],
+  imports: [CommonModule, DropDownListModule, RxIf, ButtonModule, RxUnpatch],
   templateUrl: './dropdown-navigation.component.html',
   styleUrls: ['./dropdown-navigation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DropdownNavigationComponent {
+export class DropdownNavigationComponent extends BaseNavigationComponent {
   @Input({ required: true }) public model: DropdownNavigationModel;
 
-  protected router = inject(Router);
-  protected activatedRoute = inject(ActivatedRoute);
-
   protected valueChange($event: { id: string }): void {
-    this.router.navigate([], {
+    this.navigateWithZone([], {
       relativeTo: this.activatedRoute,
       queryParams: { [this.model.queryParamName]: $event.id },
       queryParamsHandling: this.model.strategy ?? 'merge',

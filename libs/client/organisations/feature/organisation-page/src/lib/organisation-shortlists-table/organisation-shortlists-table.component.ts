@@ -17,14 +17,12 @@ import {
   ShowTooltipIfClampedDirective,
 } from '@app/client/shared/ui-directives';
 import { ToUserTagPipe } from '@app/client/shared/ui-pipes';
-import { ShortlistsActions } from '@app/client/shortlists/state';
 import {
   IsMyShortlistTypePipe,
   IsPersonalShortlistTypePipe,
 } from '@app/client/shortlists/ui';
-import { Actions, ofType } from '@ngrx/effects';
+import { Actions } from '@ngrx/effects';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
-import { map } from 'rxjs';
 import { organisationShortlistsTableStore } from './organisation-shortlists-table.store';
 
 @Component({
@@ -54,19 +52,4 @@ import { organisationShortlistsTableStore } from './organisation-shortlists-tabl
 export class OrganisationShortlistsTableComponent {
   public actions$ = inject(Actions);
   public organisationShortlistsStore = inject(organisationShortlistsTableStore);
-
-  public constructor() {
-    const resetPage$ = this.actions$.pipe(
-      ofType(ShortlistsActions.bulkAddOrganisationsToShortlistSuccess),
-      map(() => ({
-        skip: 0,
-        take: 5,
-      })),
-    );
-
-    this.organisationShortlistsStore.pageChange(resetPage$);
-
-    const $params = this.organisationShortlistsStore.params;
-    this.organisationShortlistsStore.loadShortlists($params);
-  }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,7 +28,7 @@ import {
   providerReminderForm,
   REMINDER_COMPANY_SOURCE,
   REMINDER_USERS_SOURCE,
-} from '../creaste-reminder-form.token';
+} from '../create-reminder-form.token';
 import { selectCreateReminderViewModel } from './create-remidner-dialog.selectors';
 
 @Component({
@@ -73,6 +74,22 @@ export class CreateReminderDialogComponent
         tagTypes: ['opportunity', 'people'],
       }),
     );
+
+    if (this.vm().createParams.organisation) {
+      this.form.controls.tag.setValue({
+        company: {
+          name: this.vm().createParams.organisation!.name,
+          id: this.vm().createParams.organisation!.id!,
+        },
+        opportunity: this.vm().createParams.opportunity
+          ? {
+              name: this.vm().createParams.opportunity!.tag!.name!,
+              id: this.vm().createParams.opportunity!.id,
+            }
+          : undefined,
+      });
+      this.form.controls.tag.disable();
+    }
   }
 
   protected onDialogClose(): void {

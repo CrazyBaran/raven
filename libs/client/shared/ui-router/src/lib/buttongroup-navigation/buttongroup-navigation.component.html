@@ -1,6 +1,7 @@
 <kendo-buttongroup class="flex gap-0.5" selection="single">
   @for (filter of model?.filters ?? []; track filter.id) {
     <kendo-button
+      [unpatch]
       (click)="onClick(filter)"
       [selected]="filter.selected"
       [toggleable]="true"
@@ -9,6 +10,12 @@
       [iconClass]="filter.iconClass!"
     >
       {{ filter.name }}
+
+      @if (suffixTemplate) {
+        <ng-container
+          *ngTemplateOutlet="suffixTemplate; context: { $implicit: filter }"
+        />
+      }
     </kendo-button>
   }
 </kendo-buttongroup>

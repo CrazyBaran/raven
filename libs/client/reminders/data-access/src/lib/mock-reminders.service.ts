@@ -18,8 +18,14 @@ export class MockRemindersService {
       name: 'Reminder 1',
       description: 'Description 1',
       company: { id: '1', name: 'Company 1' },
-      opportunity: { id: '1', name: 'Opportunity 1' },
-      assignies: [{ id: '1', name: 'Assignee 1' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '1', name: 'Assignee 1' }],
       dueDate: '2023-01-01',
       type: 'overdue',
     },
@@ -27,9 +33,14 @@ export class MockRemindersService {
       id: '2',
       name: 'Reminder 2',
       description: 'Description 2',
-      company: { id: '2', name: 'Company 2' },
-      opportunity: { id: '2', name: 'Opportunity 2' },
-      assignies: [{ id: '2', name: 'Assignee 2' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '2', name: 'Assignee 2' }],
       dueDate: '2023-02-02',
       type: 'due',
     },
@@ -37,9 +48,14 @@ export class MockRemindersService {
       id: '3',
       name: 'Reminder 3',
       description: 'Description 3',
-      company: { id: '3', name: 'Company 3' },
-      opportunity: { id: '3', name: 'Opportunity 3' },
-      assignies: [{ id: '3', name: 'Assignee 3' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '3', name: 'Assignee 3' }],
       dueDate: '2023-03-03',
       type: 'overdue',
     },
@@ -47,9 +63,14 @@ export class MockRemindersService {
       id: '4',
       name: 'Reminder 4',
       description: 'Description 4',
-      company: { id: '4', name: 'Company 4' },
-      opportunity: { id: '4', name: 'Opportunity 4' },
-      assignies: [{ id: '4', name: 'Assignee 4' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '4', name: 'Assignee 4' }],
       dueDate: '2023-04-04',
       type: 'due',
     },
@@ -57,9 +78,14 @@ export class MockRemindersService {
       id: '5',
       name: 'Reminder 5',
       description: 'Description 5',
-      company: { id: '5', name: 'Company 5' },
-      opportunity: { id: '5', name: 'Opportunity 5' },
-      assignies: [{ id: '5', name: 'Assignee 5' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '5', name: 'Assignee 5' }],
       dueDate: '2023-05-05',
       type: 'overdue',
     },
@@ -67,9 +93,14 @@ export class MockRemindersService {
       id: '6',
       name: 'Reminder 6',
       description: 'Description 6',
-      company: { id: '6', name: 'Company 6' },
-      opportunity: { id: '6', name: 'Opportunity 6' },
-      assignies: [{ id: '6', name: 'Assignee 6' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '6', name: 'Assignee 6' }],
       dueDate: '2023-06-06',
       type: 'due',
     },
@@ -77,9 +108,14 @@ export class MockRemindersService {
       id: '7',
       name: 'Reminder 7',
       description: 'Description 7',
-      company: { id: '7', name: 'Company 7' },
-      opportunity: { id: '7', name: 'Opportunity 7' },
-      assignies: [{ id: '7', name: 'Assignee 7' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '7', name: 'Assignee 7' }],
       dueDate: '2023-07-07',
       type: 'completed',
     },
@@ -87,9 +123,14 @@ export class MockRemindersService {
       id: '8',
       name: 'Reminder 8',
       description: 'Description 8',
-      company: { id: '8', name: 'Company 8' },
-      opportunity: { id: '8', name: 'Opportunity 8' },
-      assignies: [{ id: '8', name: 'Assignee 8' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '8', name: 'Assignee 8' }],
       dueDate: '2023-08-08',
       type: 'completed',
     },
@@ -97,9 +138,14 @@ export class MockRemindersService {
       id: '9',
       name: 'Reminder 9',
       description: 'Description 9',
-      company: { id: '9', name: 'Company 9' },
-      opportunity: { id: '9', name: 'Opportunity 9' },
-      assignies: [{ id: '9', name: 'Assignee 9' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '9', name: 'Assignee 9' }],
       dueDate: '2023-09-09',
       type: 'completed',
     },
@@ -107,9 +153,14 @@ export class MockRemindersService {
       id: '10',
       name: 'Reminder 10',
       description: 'Description 10',
-      company: { id: '10', name: 'Company 10' },
-      opportunity: { id: '10', name: 'Opportunity 10' },
-      assignies: [{ id: '10', name: 'Assignee 10' }],
+      tag: {
+        id: '1',
+        tags: [
+          { id: '1', name: 'Company 1', type: 'company' },
+          { id: '2', name: 'Opportunity 1', type: 'opportunity' },
+        ],
+      },
+      assignees: [{ id: '10', name: 'Assignee 10' }],
       dueDate: '2023-10-10',
       type: 'completed',
     },
@@ -141,9 +192,9 @@ export class MockRemindersService {
     const { skip, take } = { skip: 0, take: 25, ...params };
     const items = this.reminders.filter((r) => {
       if (params?.status) {
-        return params.status === 'completed' && r.type === 'completed';
+        return params.status === 'completed' && r.status === 'completed';
       }
-      return r.type !== 'completed';
+      return r.status !== 'completed';
     });
     return of({
       data: {
@@ -165,7 +216,7 @@ export class MockRemindersService {
       id: Math.random().toString(36).substr(2, 9),
       name: createReminder.name,
 
-      assignies: createReminder.assignees.map((x) => {
+      assignees: createReminder.assignees.map((x) => {
         return { name: `random new name ${random(5)}`, id: x };
       }),
       company: {
@@ -201,7 +252,7 @@ export class MockRemindersService {
   public completeReminder(
     ids: string[],
   ): Observable<GenericResponse<ReminderDto>> {
-    ids.forEach((id) => this._updateReminder(id, { type: 'completed' }));
+    ids.forEach((id) => this._updateReminder(id, { status: 'completed' }));
     return of({ data: null } as any).pipe(delay(750));
   }
 

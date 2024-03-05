@@ -29,6 +29,7 @@ import { ShortlistTableComponent } from '@app/client/shortlists/ui';
 import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { BadgeModule } from '@progress/kendo-angular-indicators';
 import { selectRemindersTableViewModel } from './reminders-table-container.selectors';
 
 @Component({
@@ -46,6 +47,7 @@ import { selectRemindersTableViewModel } from './reminders-table-container.selec
     ShortlistTableComponent,
     RouterLink,
     RemindersTableComponent,
+    BadgeModule,
   ],
   templateUrl: './reminders-table-container.component.html',
   styleUrl: './reminders-table-container.component.scss',
@@ -67,7 +69,10 @@ export class RemindersTableContainerComponent {
   );
 
   protected createShortlistQueryParams = {
-    [DialogUtil.queryParams.createReminder]: '',
+    [DialogUtil.queryParams.createReminder]: {
+      organisation: '123',
+      opportuniy: '1222',
+    },
   };
 
   public constructor() {

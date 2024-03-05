@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { opportunitiesQuery } from '@app/client/organisations/api-opportunities';
 import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { tagsQuery } from '@app/client/organisations/api-tags';
@@ -172,6 +173,15 @@ export const selectOrganisationRows = createSelector(
               },
               skipLocationChange: true,
             } satisfies DropdownAction,
+            {
+              text: 'Add Reminder',
+              queryParamsHandling: 'merge',
+              routerLink: ['./'],
+              queryParams: {
+                [DialogUtil.queryParams.createReminder]: [company.id] as any,
+              },
+              skipLocationChange: true,
+            } satisfies DropdownAction,
           ],
           shortlists:
             company.shortlists?.map(({ name, id }) => ({
@@ -180,8 +190,21 @@ export const selectOrganisationRows = createSelector(
             })) ?? [],
           opportunities: company.opportunities
             .map(({ id }) => groupedDictionary[id])
-            .map(
-              (opportunity): OpportunityRow => ({
+            .map((opportunity): OpportunityRow => {
+              const reminderAction = {
+                text: 'Add Reminder',
+                queryParamsHandling: 'merge',
+                routerLink: ['./'],
+                queryParams: {
+                  [DialogUtil.queryParams.createReminder]: [
+                    company.id,
+                    opportunity!.id,
+                  ] as any,
+                },
+                skipLocationChange: true,
+              } satisfies DropdownAction;
+
+              return {
                 id: opportunity!.id,
                 companyId: company.id!,
                 name: opportunity!.tag?.name ?? '',
@@ -209,6 +232,7 @@ export const selectOrganisationRows = createSelector(
                         },
                         skipLocationChange: true,
                       },
+                      reminderAction,
                     ]
                   : [
                       {
@@ -221,9 +245,10 @@ export const selectOrganisationRows = createSelector(
                         },
                         skipLocationChange: true,
                       },
+                      reminderAction,
                     ],
-              }),
-            ),
+              };
+            }),
         }) ?? [],
     );
   },

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { inject, InjectionToken } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ReminderDto } from '@app/client/reminders/data-access';
 import { ReminderEntity } from '@app/client/reminders/state';
 import { ReminderForm } from '@app/client/reminders/ui';
+import { ReminderUtils } from '@app/client/reminders/utils';
 import {
   MAX_SHORTLIST_DESCRIPTION_LENGTH,
   MAX_SHORTLIST_NAME_LENGTH,
@@ -32,17 +34,18 @@ export const UPDATE_REMINDER_FORM_FN = new InjectionToken(
           ],
           tag: [
             {
-              value: (value.opportunity
+              value: (value.tag
                 ? {
-                    company: value.company,
-                    opportunity: value.opportunity,
+                    company: ReminderUtils.getReminderCompanyTag(value)?.id,
+                    opportunity:
+                      ReminderUtils.getReminderOpportunityTag(value)?.id,
                   }
                 : null) as any,
               disabled: true,
             },
           ],
           assignees: [
-            value.assignies.map((x) => x.id) ?? ([] as string[]),
+            value.assignees.map((x) => x.id) ?? ([] as string[]),
             [Validators.required],
           ],
           dueDate: [
@@ -57,17 +60,24 @@ export const UPDATE_REMINDER_FORM_FN = new InjectionToken(
 export const MOCK_REMINDER = {
   id: '',
   name: 'Reminder Title',
-  company: {
-    name: 'harmonic2',
-    id: 'a48fc952-1fc4-ee11-85f9-6045bd0f462e',
-  },
-  opportunity: {
-    name: 'Series C',
-    id: '89e7106c-e773-ee11-8925-6045bdc18eee',
+  tag: {
+    id: '',
+    tags: [
+      {
+        name: 'harmonic2',
+        id: 'a48fc952-1fc4-ee11-85f9-6045bd0f462e',
+        type: 'company',
+      },
+      {
+        name: 'Series C',
+        id: '89e7106c-e773-ee11-8925-6045bdc18eee',
+        type: 'opportunity',
+      },
+    ],
   },
   description:
     'Description here, goes for several rows. Dolor sit amet adipiscing elit',
-  assignies: [
+  assignees: [
     {
       id: 'b7d550f4-5a72-ee11-8925-6045bdc18eee',
       name: 'John Doe',
@@ -78,5 +88,7 @@ export const MOCK_REMINDER = {
     },
   ],
   dueDate: '2024-03-07T01:00:00.000Z',
-  type: 'completed',
+  status: 'completed',
+  createdAt: new Date(),
+  updatedAt: new Date(),
 } satisfies ReminderEntity;

@@ -77,6 +77,14 @@ module.exports = {
         '-30': 'var(--informational-warning-30)',
         '-50': 'var(--informational-warning-50)',
       },
+      'informational-error': {
+        DEFAULT: 'var(--informational-error)',
+        '-8': 'var(--informational-error-8)',
+        '-16': 'var(--informational-error-16)',
+        '-24': 'var(--informational-error-24)',
+        '-30': 'var(--informational-error-30)',
+        '-50': 'var(--informational-error-50)',
+      },
       'series-a': {
         DEFAULT: 'var(--series-a)',
         'lighten-50': 'var(--series-a-lighten-50)',
@@ -138,7 +146,9 @@ module.exports = {
       component: {
         border: '#EBEBEB',
         text: '#424242',
+        'text-white': '#fff',
         borderHover: '#D6D6D6',
+        bg: '#fff',
       },
       buttons: {
         'button-text-90': '#002C3CE5',

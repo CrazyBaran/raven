@@ -1,0 +1,5 @@
+.nav-aside__toggle {
+  @apply flex h-8 w-8 rounded-full bg-white text-[2rem];
+
+  color: var(--rv-primary-button-bg);
+}

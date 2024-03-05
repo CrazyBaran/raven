@@ -11,3 +11,4 @@ export * from './lib/tag/tag.component';
 export * from './lib/tag/user-tag.directive';
 export * from './lib/tags-container/tags-container.component';
 export * from './lib/tilelayout-item/tilelayout-item.component';
+export * from './lib/toggle-menu-button/toggle-menu-button.component';
