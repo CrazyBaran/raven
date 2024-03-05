@@ -306,7 +306,7 @@ export class OpportunityService {
     );
 
     const opportunity = await this.createOpportunity(
-      createdOrganisation,
+      createdOrganisation[0],
       defaultPipeline,
       defaultPipelineStage,
     );
@@ -314,8 +314,8 @@ export class OpportunityService {
     this.eventEmitter.emit(
       'opportunity-stage-changed',
       new OpportunityStageChangedEvent(
-        createdOrganisation.name,
-        createdOrganisation.domains,
+        createdOrganisation[0].name,
+        createdOrganisation[0].domains,
         defaultPipelineStage.mappedFrom,
         options?.userEntity?.id,
         opportunity.organisation.id,
@@ -462,7 +462,7 @@ export class OpportunityService {
             affinityEntry.stage?.text,
           );
 
-        await this.createOpportunity(organisation, pipeline, pipelineStage);
+        await this.createOpportunity(organisation[0], pipeline, pipelineStage);
       }
     }
   }

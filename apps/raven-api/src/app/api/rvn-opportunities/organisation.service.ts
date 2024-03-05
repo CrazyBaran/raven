@@ -227,14 +227,14 @@ export class OrganisationService {
       : affinityEnrichedOrganisation;
   }
 
-  public async findByDomain(domain: string): Promise<OrganisationEntity> {
-    const cleanedDomain = this.domainResolver.extractDomains(domain)[0];
-    const organisation = await this.organisationRepository.findOne({
+  public async findByDomain(domain: string): Promise<OrganisationEntity[]> {
+    const cleanedDomains = this.domainResolver.extractDomains(domain);
+    const organisations = await this.organisationRepository.find({
       relations: ['organisationDomains'],
-      where: { organisationDomains: { domain: cleanedDomain } },
+      where: { organisationDomains: { domain: In(cleanedDomains) } },
     });
 
-    return organisation;
+    return organisations;
   }
 
   public async create(
