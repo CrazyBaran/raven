@@ -1,9 +1,7 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
   KanbanBoard,
-  KanbanColumn,
   KanbanFooterGroup,
-  KanbanGroup,
   OpportunityCard,
 } from '@app/client/opportunities/ui';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
@@ -205,24 +203,25 @@ export const selectKanbanBoard = createSelector(
         displayName: stage.displayName.split(' - ')[1] ?? stage.displayName,
       }))
       .groupBy('prefix')
-      .mapValues(
-        (stages): KanbanColumn => ({
-          name: stages[0].prefix,
-          backgroundColor: stages[0].secondaryColor ?? stages[0].primaryColor,
-          color: stages[0].primaryColor,
-          groups: stages.map(
-            (stage): KanbanGroup => ({
-              id: stage.id,
-              name: stage.displayName,
-              cards:
-                opportunitiesStageDictionary[stage.id]?.map((opportunity) =>
-                  createCard(opportunity, stage),
-                ) ?? [],
-              length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
-            }),
-          ),
-        }),
-      )
+      .mapValues((stages) => {
+        // Reverse the order of stages within each group
+        const reversedStages = _.reverse([...stages]);
+        return {
+          name: reversedStages[0].prefix,
+          backgroundColor:
+            reversedStages[0].secondaryColor ?? reversedStages[0].primaryColor,
+          color: reversedStages[0].primaryColor,
+          groups: reversedStages.map((stage) => ({
+            id: stage.id,
+            name: stage.displayName,
+            cards:
+              opportunitiesStageDictionary[stage.id]?.map((opportunity) =>
+                createCard(opportunity, stage),
+              ) ?? [],
+            length: opportunitiesStageDictionary[stage.id]?.length ?? 0,
+          })),
+        };
+      })
       .values()
       .value();
 
