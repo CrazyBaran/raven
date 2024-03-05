@@ -82,6 +82,7 @@ import {
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
 import { filter, first, map, Observable } from 'rxjs';
+import { OrganisationRemindersTableComponent } from '../organisation-reminders-table/organisation-reminders-table.component';
 import { OrganisationShortlistsTableComponent } from '../organisation-shortlists-table/organisation-shortlists-table.component';
 import {
   FileRow,
@@ -130,6 +131,7 @@ import {
     ToUserTagPipe,
     PanelBarModule,
     OrganisationShortlistsTableComponent,
+    OrganisationRemindersTableComponent,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],

@@ -1,0 +1,11 @@
+<button
+  class="nav-aside__toggle"
+  type="button"
+  aria-label="Toggle Sidebar"
+  (click)="toggleDirection()"
+>
+  <i
+    class="fa-solid fa-circle-chevron-right duration-300"
+    [ngClass]="{ 'rotate-180': direction === 'right' }"
+  ></i>
+</button>

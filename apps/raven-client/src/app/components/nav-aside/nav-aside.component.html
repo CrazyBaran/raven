@@ -1,45 +1,40 @@
 <aside class="nav-aside">
-  <button
-    class="nav-aside__toggle"
-    type="button"
-    aria-label="Toggle Sidebar"
-    (click)="handleToggleSidebar()"
-  >
-    <i
-      class="fa-solid fa-circle-chevron-right duration-300"
-      [ngClass]="{ 'rotate-180': isOpen() }"
-    ></i>
-  </button>
-
+  <ui-toggle-menu-button
+    [direction]="isOpen() ? 'right' : 'left'"
+    (directionChange)="handleToggleSidebar()"
+  />
   <div class="nav-aside__actions">
-    <div class="nav-aside__routes" kendoTooltip>
-      <button
-        kendoButton
-        iconClass="fa-solid fa-square-plus"
-        themeColor="primary"
-        size="large"
-        class="mb-10"
-        title="New Note"
-        (click)="handleOpenNotepad()"
-      ></button>
+    <div class="nav-aside__routes">
+      <app-sidebar-action-button
+        (newNoteClick)="handleOpenNotepad()"
+        (newReminderClick)="handleNewReminder()"
+      />
 
-      <ul>
-        <li *ngFor="let route of routes">
-          <button
-            class="action"
-            [ngClass]="{
-              disabled: route.disabled,
-              active: route.exact
-                ? activeUrl === route.path
-                : activeUrl.includes(route.path)
-            }"
-            [disabled]="route.disabled"
-            [title]="route.name"
-            (click)="handleOpenSubRoute(route)"
-          >
-            <i class="{{ route.icon }}"></i>
-          </button>
-        </li>
+      <ul kendoTooltip>
+        @for (route of routes; track route.name) {
+          <li>
+            <button
+              class="action"
+              [ngClass]="{
+                disabled: route.disabled,
+                active: route.exact
+                  ? activeUrl()! === route.path
+                  : activeUrl()!.includes(route.path)
+              }"
+              [disabled]="route.disabled"
+              [title]="route.name"
+              (click)="handleOpenSubRoute(route)"
+            >
+              <i class="{{ route.icon }}"></i>
+
+              @if (route.badge && route.badge.value) {
+                <kendo-badge rounded="full" themeColor="error">
+                  {{ route.badge.value }}
+                </kendo-badge>
+              }
+            </button>
+          </li>
+        }
       </ul>
     </div>
 
@@ -60,40 +55,44 @@
 
   <div class="nav-aside__content content" [@collapse] *ngIf="isOpen()">
     <div class="content-info" [@collapse] *ngIf="isOpen()">
-      <div class="menu" *ngIf="!!subRoutes; else mainMenu">
-        <button
-          type="button"
-          class="menu__item menu__item--back"
-          (click)="handleGoBackToMainMenu()"
-        >
-          <i class="fa-solid fa-arrow-left"></i>
-          Main Menu
-        </button>
+      @if (subRoutes) {
+        <div class="menu">
+          <button
+            type="button"
+            class="menu__item menu__item--back"
+            (click)="handleGoBackToMainMenu()"
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+            Main Menu
+          </button>
 
-        <div class="menu__routes">
-          <div class="menu__item menu__item--title">
-            {{ openRoute()?.name }}
+          <div class="menu__routes">
+            <div class="menu__item menu__item--title">
+              {{ openRoute()?.name }}
+            </div>
+
+            <ul class="flex flex-col gap-2">
+              @for (subRoute of subRoutes; track subRoute.name) {
+                <li>
+                  <a
+                    [routerLink]="subRoute.disabled ? null : subRoute.path"
+                    [ngClass]="{ 'menu__item--disabled': subRoute.disabled }"
+                    [routerLinkActiveOptions]="{
+                      exact: subRoute.exact || false
+                    }"
+                    routerLinkActive="menu__item--active"
+                    (click)="!subRoute.disabled && handleToggleSidebar(false)"
+                    class="menu__item"
+                  >
+                    <i class="{{ subRoute.icon }}"></i>
+                    {{ subRoute.name }}
+                  </a>
+                </li>
+              }
+            </ul>
           </div>
-
-          <ul *ngFor="let subRoute of subRoutes">
-            <li>
-              <a
-                [routerLink]="subRoute.disabled ? null : subRoute.path"
-                [ngClass]="{ 'menu__item--disabled': subRoute.disabled }"
-                [routerLinkActiveOptions]="{ exact: subRoute.exact || false }"
-                routerLinkActive="menu__item--active"
-                (click)="!subRoute.disabled && handleToggleSidebar(false)"
-                class="menu__item"
-              >
-                <i class="{{ subRoute.icon }}"></i>
-                {{ subRoute.name }}
-              </a>
-            </li>
-          </ul>
         </div>
-      </div>
-
-      <ng-template #mainMenu>
+      } @else {
         <div>
           <button
             kendoButton
@@ -113,8 +112,8 @@
                 [ngClass]="{
                   'menu__item--disabled': route.disabled,
                   'menu__item--active': route.exact
-                    ? activeUrl === route.path
-                    : activeUrl.includes(route.path!)
+                    ? activeUrl()! === route.path
+                    : activeUrl()!.includes(route.path!)
                 }"
                 [disabled]="route.disabled"
                 (click)="handleOpenSubRoute(route, true)"
@@ -124,7 +123,8 @@
             </li>
           </ul>
         </div>
-      </ng-template>
+      }
+
       <div>
         <ul
           class="gap- mb-6 flex flex-col"

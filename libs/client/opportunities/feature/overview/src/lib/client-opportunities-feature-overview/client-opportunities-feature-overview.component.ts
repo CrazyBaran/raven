@@ -24,6 +24,7 @@ import {
   KendoDynamicPagingDirective,
   LoaderComponent,
   TagComponent,
+  TilelayoutItemComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
@@ -48,6 +49,7 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { TileLayoutModule } from '@progress/kendo-angular-layout';
 import { RxFor } from '@rx-angular/template/for';
 import { map, Observable, startWith, tap } from 'rxjs';
+import { OpportunityRemindersTableComponent } from '../opportunityy-reminders-table/opportunity-reminders-table.component';
 import { selectOpportunityOverviewViewModel } from './client-opportunities-feature-overview.selectors';
 
 @Component({
@@ -73,6 +75,8 @@ import { selectOpportunityOverviewViewModel } from './client-opportunities-featu
     ReactiveFormsModule,
     DropDownListModule,
     LoaderModule,
+    OpportunityRemindersTableComponent,
+    TilelayoutItemComponent,
   ],
   templateUrl: './client-opportunities-feature-overview.component.html',
   styleUrls: ['./client-opportunities-feature-overview.component.scss'],

@@ -20,7 +20,7 @@ import { first } from 'rxjs';
 import {
   REMINDER_COMPANY_SOURCE,
   REMINDER_USERS_SOURCE,
-} from '../creaste-reminder-form.token';
+} from '../create-reminder-form.token';
 import { UPDATE_REMINDER_FORM_FN } from '../update-reminder-form.token';
 import {
   selectUpdateReminderViewModel,
@@ -80,7 +80,7 @@ export class UpdateReminderDialogComponent extends DynamicDialogContentBase {
         changes: {
           name: rawValue.title ?? '',
           description: rawValue.description ?? '',
-          assignies: rawValue.assignees ?? [],
+          assignees: rawValue.assignees ?? [],
           dueDate: rawValue.dueDate!,
           tag: rawValue.tag
             ? {

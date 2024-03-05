@@ -5,6 +5,10 @@ export interface UiNavAsideRoute {
   disabled?: boolean;
   subRoutes?: UiNavAsideSubRoute[];
   exact?: boolean;
+  navigate?: boolean;
+  badge?: {
+    value: string | number;
+  };
 }
 
 export interface UiNavAsideSubRoute extends Omit<UiNavAsideRoute, 'subRoutes'> {

@@ -1,0 +1,43 @@
+<button
+  #anchor
+  kendoButton
+  iconClass="fa-solid fa-square-plus"
+  themeColor="primary"
+  size="large"
+  kendoTooltip
+  position="right"
+  class="mb-10"
+  title="Add new note or reminder"
+  (click)="showPopup.set(true)"
+></button>
+@if (showPopup()) {
+  @defer {
+    <kendo-popup [anchor]="anchor" id="sidebarActionBtn">
+      <div (clickOutside)="showPopup.set(false)">
+        <div
+          class="bg-primary text-component-text-white flex flex-col gap-1 p-1"
+        >
+          <kendo-button
+            id="newNoteBtn"
+            themeColor="primary"
+            (click)="onNewNoteClick()"
+            size="large"
+            title="New Note"
+          >
+            <i class="fa-solid fa-notebook"></i>
+            New Note
+          </kendo-button>
+          <kendo-button
+            size="large"
+            themeColor="primary"
+            title="New Reminder"
+            (click)="onNewReminderClick()"
+          >
+            <i class="fa-solid fa-alarm-clock"></i>
+            New Reminder
+          </kendo-button>
+        </div>
+      </div>
+    </kendo-popup>
+  }
+}

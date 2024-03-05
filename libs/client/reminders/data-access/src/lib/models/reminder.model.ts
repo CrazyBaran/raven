@@ -1,21 +1,44 @@
-export type ReminderDto = {
+import { PagedData } from 'rvns-shared';
+
+export interface PagedReminderData extends PagedData<ReminderData> {}
+
+export interface ReminderAssignee {
+  id: string;
+  name: string;
+}
+
+export interface ReminderComplexTag {
+  id: string;
+  tags: ReminderTag[];
+}
+
+export interface ReminderTag {
+  id: string;
+  name: string;
+  type: string;
+}
+
+export interface ReminderData {
   id: string;
   name: string;
   description: string;
-  company: {
-    id: string;
-    name: string;
-  };
-  opportunity: {
-    id: string;
-    name: string;
-  };
-  assignies: {
-    id: string;
-    name: string;
-  }[];
-  dueDate: string;
-  type: 'overdue' | 'due' | 'completed';
+  dueDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  status: ReminderStatus;
+  assignees: ReminderAssignee[];
+  tag: ReminderComplexTag;
+}
+
+export enum ReminderStatus {
+  DUE = 'due',
+  OVERDUE = 'overdue',
+  COMPLETED = 'completed',
+}
+
+export type ReminderDto = Omit<ReminderData, 'status' | 'dueDate'> & {
+  status: `${ReminderStatus}`;
+  dueDate: string | Date;
 };
 
 export interface GetRemindersDto {

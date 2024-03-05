@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { inject, InjectionToken } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {

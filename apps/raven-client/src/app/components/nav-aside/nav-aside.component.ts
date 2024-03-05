@@ -6,12 +6,19 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ShelfStoreFacade } from '@app/client/shared/shelf';
+import { ToggleMenuButtonComponent } from '@app/client/shared/ui';
+import { ClickOutsideDirective, DialogUtil } from '@app/client/shared/util';
 import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { BadgeModule } from '@progress/kendo-angular-indicators';
+import { PopupModule } from '@progress/kendo-angular-popup';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
+import { map, startWith } from 'rxjs';
 import { LoginComponent } from '../../pages/login/login.component';
+import { SidebarActionButtonComponent } from '../sidebar-action-button/sidebar-action-button.component';
 import { collapseAnimation } from './nav-aside.animation';
 import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
 
@@ -24,6 +31,11 @@ import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
     RouterModule,
     LoginComponent,
     TooltipModule,
+    ToggleMenuButtonComponent,
+    PopupModule,
+    ClickOutsideDirective,
+    SidebarActionButtonComponent,
+    BadgeModule,
   ],
   templateUrl: './nav-aside.component.html',
   styleUrls: ['./nav-aside.component.scss'],
@@ -57,24 +69,30 @@ export class NavAsideComponent {
     },
   ];
 
+  public activeUrl = toSignal(
+    this.router.events.pipe(
+      startWith(this.router.url),
+      map(() => {
+        let url = this.router.url;
+
+        if (url.startsWith('/')) {
+          url = url.slice(1);
+        }
+
+        return url;
+      }),
+    ),
+  );
+
   public constructor(
     private readonly msalService: MsalService,
     private readonly router: Router,
+    private readonly activedRoute: ActivatedRoute,
     private readonly shelfFacade: ShelfStoreFacade,
   ) {}
 
   public get subRoutes(): UiNavAsideSubRoute[] | null {
     return this.openRoute()?.subRoutes || null;
-  }
-
-  public get activeUrl(): string {
-    let url = this.router.url;
-
-    if (url.startsWith('/')) {
-      url = url.slice(1);
-    }
-
-    return url;
   }
 
   public get activeUser(): string {
@@ -109,7 +127,7 @@ export class NavAsideComponent {
     route: UiNavAsideRoute,
     navigate?: boolean,
   ): Promise<void> {
-    if (!route.subRoutes && navigate) {
+    if (!route.subRoutes && (navigate || route.navigate)) {
       await this.router.navigateByUrl(route.path);
 
       this.handleToggleSidebar(false);
@@ -125,6 +143,14 @@ export class NavAsideComponent {
 
   public handleOpenNotepad(): void {
     this.shelfFacade.openNotepad();
+  }
+
+  public handleNewReminder(): void {
+    this.router.navigate([], {
+      relativeTo: this.activedRoute,
+      queryParams: { [DialogUtil.queryParams.createReminder]: true },
+      skipLocationChange: true,
+    });
   }
 
   public handleToggleUserDetails(): void {

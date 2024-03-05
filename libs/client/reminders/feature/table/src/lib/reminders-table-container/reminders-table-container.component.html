@@ -19,7 +19,27 @@
   >
     <app-quick-filters-template>
       <div class="flex gap-6">
-        <app-buttongroup-navigation [model]="vm().buttonGroupNavigation" />
+        <app-buttongroup-navigation
+          [model]="vm().buttonGroupNavigation"
+          [suffixTemplate]="suffixIndicator"
+        >
+          <ng-template #suffixIndicator let-button>
+            <span class="width inline-block w-5">
+              <kendo-badge
+                class="mr-1 mt-1"
+                rounded="full"
+                size="medium"
+                fill="solid"
+                themeColor="error"
+                position="inside"
+              >
+                {{
+                  button.id ? vm().myRemindersCount : vm().otherRemindersCount
+                }}
+              </kendo-badge>
+            </span>
+          </ng-template>
+        </app-buttongroup-navigation>
         <app-buttongroup-navigation [model]="vm().buttonGroupNavigation2" />
       </div>
     </app-quick-filters-template>
@@ -28,7 +48,7 @@
       <app-reminders-table
         [model]="vm().tableModel"
         (loadMore)="onLoadMore($event)"
-      />
+      ></app-reminders-table>
     </div>
   </div>
 </app-page-template>

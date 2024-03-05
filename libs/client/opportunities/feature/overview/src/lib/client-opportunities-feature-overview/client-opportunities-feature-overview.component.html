@@ -1,56 +1,50 @@
-<kendo-tilelayout
-  [columns]="12"
-  [draggable]="false"
-  [gap]="24"
-  class="h-full grid-rows-[auto_1fr] !p-0"
-  rowHeight="auto"
->
+<div [draggable]="false" class="flex h-full gap-6">
   <!--  DETAILS   -->
-  <kendo-tilelayout-item [colSpan]="4" [rowSpan]="2" class="h-full">
-    <kendo-tilelayout-item-header>
-      <div class="flex items-center justify-between gap-2">
-        <h5 class="k-card-title">Details</h5>
-        @if (vm().canEditOpportunity) {
-          <kendo-button
-            [queryParams]="{ 'opportunity-edit': vm().id }"
-            [routerLink]="['./']"
-            iconClass="fa-sharp fa-solid fa-pen"
-            queryParamsHandling="merge"
-            size="small"
-          >
-            Edit
-          </kendo-button>
-        }
-      </div>
-    </kendo-tilelayout-item-header>
-    <kendo-tilelayout-item-body>
-      <div
-        class="bg-grey-100 flex max-h-full flex-col gap-3 overflow-auto bg-opacity-50 px-6 py-5"
-      >
-        <ng-container *ngIf="vm().isLoading; else details">
-          <div *ngFor="let i of 7 | times" class="px-2 py-3">
-            <kendo-skeleton [height]="20" class="mb-1" width="170px" />
-            <kendo-skeleton [height]="10" width="125px" />
-          </div>
-        </ng-container>
-        <ng-template #details>
-          <div
-            *rxFor="let detail of vm().details; trackBy: 'label'"
-            [@fadeIn]
-            class="px-2 py-3"
-          >
-            <h1 class="text-lg">{{ detail.label }}</h1>
-            <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
-          </div>
-        </ng-template>
-      </div>
-    </kendo-tilelayout-item-body>
-  </kendo-tilelayout-item>
+  <ui-tilelayout-item class="flex-1">
+    <div header class="flex items-center justify-between gap-2">
+      <h5 class="k-card-title">Details</h5>
+      @if (vm().canEditOpportunity) {
+        <kendo-button
+          [queryParams]="{ 'opportunity-edit': vm().id }"
+          [routerLink]="['./']"
+          iconClass="fa-sharp fa-solid fa-pen"
+          queryParamsHandling="merge"
+          size="small"
+        >
+          Edit
+        </kendo-button>
+      }
+    </div>
 
-  <!--  DEAL TEAM   -->
-  <kendo-tilelayout-item [colSpan]="9" class="h-[200px]">
-    <kendo-tilelayout-item-header>
-      <div class="flex items-center justify-between gap-2">
+    <div
+      body
+      class="bg-grey-100 flex max-h-full flex-col gap-3 overflow-auto bg-opacity-50 px-6 py-5"
+    >
+      <ng-container *ngIf="vm().isLoading; else details">
+        <div *ngFor="let i of 7 | times" class="px-2 py-3">
+          <kendo-skeleton [height]="20" class="mb-1" width="170px" />
+          <kendo-skeleton [height]="10" width="125px" />
+        </div>
+      </ng-container>
+      <ng-template #details>
+        <div
+          *rxFor="let detail of vm().details; trackBy: 'label'"
+          [@fadeIn]
+          class="px-2 py-3"
+        >
+          <h1 class="text-lg">{{ detail.label }}</h1>
+          <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
+        </div>
+      </ng-template>
+    </div>
+  </ui-tilelayout-item>
+
+  <div
+    class="custom-scroll-on-hover | flex h-full flex-1 flex-col gap-6 overflow-auto"
+  >
+    <!--  DEAL TEAM   -->
+    <ui-tilelayout-item>
+      <div header class="flex items-center justify-between gap-2">
         <h5 class="k-card-title">Deal Team</h5>
         <kendo-button
           *ngIf="vm().canEditTeam"
@@ -61,9 +55,7 @@
           Edit
         </kendo-button>
       </div>
-    </kendo-tilelayout-item-header>
-    <kendo-tilelayout-item-body>
-      <kendo-grid [data]="vm().team" class="grid-borderless h-full">
+      <kendo-grid body [data]="vm().team" class="grid-borderless h-full">
         <kendo-grid-column
           [width]="1"
           field="dealLead"
@@ -102,18 +94,18 @@
           </ng-template>
         </kendo-grid-column>
       </kendo-grid>
-    </kendo-tilelayout-item-body>
-  </kendo-tilelayout-item>
+    </ui-tilelayout-item>
 
-  <!--  MISSING DD DETAILS-->
-  <kendo-tilelayout-item [colSpan]="9">
-    <kendo-tilelayout-item-header>
-      <div class="flex items-center justify-between gap-2">
+    <!--  DEAL TEAM   -->
+    <app-opportunity-reminders-table />
+
+    <!--  MISSING DD DETAILS-->
+    <ui-tilelayout-item class="min-h-[350px] flex-1">
+      <div header class="flex items-center justify-between gap-2">
         <h5 class="k-card-title">Missing DD Details</h5>
       </div>
-    </kendo-tilelayout-item-header>
-    <kendo-tilelayout-item-body>
       <kendo-grid
+        body
         #paging="uiKendoDynamicPaging"
         [kendoGridBinding]="vm().missingDetails"
         [loading]="vm().isLoading"
@@ -150,9 +142,9 @@
           title="Action"
         ></kendo-grid-column>
       </kendo-grid>
-    </kendo-tilelayout-item-body>
-  </kendo-tilelayout-item>
-</kendo-tilelayout>
+    </ui-tilelayout-item>
+  </div>
+</div>
 
 <ng-template #tagSkeleton>
   <div class="flex gap-1">

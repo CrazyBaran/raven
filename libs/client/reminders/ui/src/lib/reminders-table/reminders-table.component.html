@@ -38,19 +38,21 @@
   >
     <kendo-grid-column [width]="45">
       <ng-template kendoGridCellTemplate let-reminder>
-        <input
-          *rxLet="
-            checkboxState(reminder.id);
-            let checked;
-            patchZone: false;
-            strategy: 'native'
-          "
-          (click)="toggleCheckedRow(reminder.id)"
-          [checked]="checked"
-          kendoCheckBox
-          size="large"
-          type="checkbox"
-        />
+        @if (reminder.status !== 'completed') {
+          <input
+            *rxLet="
+              checkboxState(reminder.id);
+              let checked;
+              patchZone: false;
+              strategy: 'native'
+            "
+            (click)="toggleCheckedRow(reminder.id)"
+            [checked]="checked"
+            kendoCheckBox
+            size="large"
+            type="checkbox"
+          />
+        }
       </ng-template>
       <ng-template kendoGridHeaderTemplate>
         <input
@@ -125,5 +127,17 @@
         </div>
       </ng-template>
     </kendo-grid-column>
+
+    @if (!isLoading) {
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="text-subtle-text flex h-full w-full items-center gap-2 p-5">
+          <i class="fa-regular fa-circle-info mr-2"></i>
+          <p class="text-start text-sm italic">
+            There are no outstanding reminders. Select Add New Reminder to
+            create a new one.
+          </p>
+        </div>
+      </ng-template>
+    }
   </kendo-grid>
 </div>

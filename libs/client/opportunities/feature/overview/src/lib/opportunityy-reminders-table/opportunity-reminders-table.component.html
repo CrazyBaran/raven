@@ -1,0 +1,28 @@
+<kendo-panelbar id="reminder-panelbar">
+  <kendo-panelbar-item [expanded]="false" title="Reminders">
+    <ng-template kendoPanelBarItemTitle>
+      <h5 class="k-card-title !m-0 flex w-full items-center !text-black">
+        Reminders
+        <kendo-button
+          size="small"
+          class="ml-auto mr-2"
+          (click)="onCreateReminder($event)"
+        >
+          Add Reminder
+        </kendo-button>
+      </h5>
+    </ng-template>
+    <ng-template kendoPanelBarContent>
+      <app-reminders-light-table
+        (pageChange)="organisationRemindersStore.pageChange($event)"
+        (sortChange)="organisationRemindersStore.sortChange($event)"
+        [items]="organisationRemindersStore.data()"
+        [loading]="organisationRemindersStore.isLoading()!"
+        [pageSize]="organisationRemindersStore.pageState().take"
+        [skip]="organisationRemindersStore.pageState().skip"
+        [sort]="organisationRemindersStore.sort?.() ?? []"
+        class="h-full"
+      />
+    </ng-template>
+  </kendo-panelbar-item>
+</kendo-panelbar>

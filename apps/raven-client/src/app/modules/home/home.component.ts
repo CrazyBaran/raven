@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ENVIRONMENT } from '@app/client/core/environment';
+import { remindersQuery } from '@app/client/reminders/state';
 import { ShelfModule } from '@app/client/shared/shelf';
+import { Store } from '@ngrx/store';
 import { WindowModule } from '@progress/kendo-angular-dialog';
 import { NavAsideComponent } from '../../components/nav-aside/nav-aside.component';
 import { UiNavAsideRoute } from '../../components/nav-aside/nav-aside.interface';
@@ -23,8 +30,13 @@ import { UiNavAsideRoute } from '../../components/nav-aside/nav-aside.interface'
 })
 export class HomeComponent {
   public environment = inject(ENVIRONMENT);
+  public store = inject(Store);
 
-  public readonly mainRoutes2: UiNavAsideRoute[] = [
+  public remindersCount = this.store.selectSignal(
+    remindersQuery.selectTotalCount,
+  );
+
+  public readonly mainRoutes2 = computed((): UiNavAsideRoute[] => [
     {
       name: 'Home Dashboard',
       path: '',
@@ -74,6 +86,10 @@ export class HomeComponent {
       icon: 'fa-solid fa-alarm-clock',
       disabled: !this.environment.remindersFeature,
       exact: true,
+      navigate: true,
+      badge: {
+        value: this.remindersCount(),
+      },
     },
-  ];
+  ]);
 }

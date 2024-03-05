@@ -1,10 +1,11 @@
 <kendo-dropdownlist
-  *ngIf="model"
   (valueChange)="valueChange($event)"
+  *ngIf="model"
   [data]="model.data"
   [defaultItem]="model.defaultItem"
   [loading]="model.loading ?? false"
+  [unpatch]
+  [value]="model.value"
   textField="name"
   valueField="id"
-  [value]="model.value"
 ></kendo-dropdownlist>

@@ -141,7 +141,7 @@ export const remindersFeature = createFeature({
     })),
     on(RemindersActions.completeReminderSuccess, (state, { data: { ids } }) =>
       remindersAdapter.updateMany(
-        ids.map((id) => ({ id, changes: { type: 'completed' } })),
+        ids.map((id) => ({ id, changes: { status: 'completed' } })),
         {
           ...state,
           loadingStates: { ...state.loadingStates, complete: false },

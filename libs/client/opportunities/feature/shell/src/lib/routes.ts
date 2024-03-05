@@ -5,6 +5,7 @@ import { notesProviders } from '@app/client/notes/feature/shell';
 import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
 import { provideOrganisationFeature } from '@app/client/organisations/state';
 import { providePipelinesFeature } from '@app/client/pipelines/state';
+import { provideRemindersFeature } from '@app/client/reminders/state';
 
 export const OPPORTUNITIES_ROUTES: Route[] = [
   {
@@ -14,6 +15,7 @@ export const OPPORTUNITIES_ROUTES: Route[] = [
       provideOrganisationFeature(),
       providePipelinesFeature(),
       provideWebsocketEffects(),
+      provideRemindersFeature(),
     ],
     children: [
       {

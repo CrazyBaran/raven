@@ -8,7 +8,6 @@ export type ButtongroupNavigationModel = {
     queryParams: Record<string, string | null>;
     iconClass?: string;
   }[];
-  // paramName: string;
   queryParamsHandling?: 'merge' | 'preserve';
   size?: ButtonSize;
   toggleable?: boolean;

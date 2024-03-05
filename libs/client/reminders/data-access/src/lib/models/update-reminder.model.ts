@@ -1,9 +1,9 @@
 import { ReminderDto } from './reminder.model';
 
 export type UpdateReminderDto = Partial<
-  Pick<ReminderDto, 'name' | 'company' | 'description' | 'type'>
+  Pick<ReminderDto, 'name' | 'description' | 'status'>
 > & {
-  assignies?: string[];
+  assignees?: string[];
   dueDate?: Date;
   tag?: {
     companyId: string;

@@ -2,9 +2,9 @@ import { tagsQuery } from '@app/client/organisations/api-tags';
 
 import { ReminderEntity, remindersQuery } from '@app/client/reminders/state';
 import { ReminderTableRow } from '@app/client/reminders/ui';
+import { ReminderUtils } from '@app/client/reminders/utils';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import { ButtongroupNavigationModel } from '@app/client/shared/ui-router';
-import { DialogUtil } from '@app/client/shared/util';
 import {
   buildButtonGroupNavigation,
   buildInputNavigation,
@@ -20,13 +20,12 @@ export const selectRemindersTableButtonGroupNavigation = createSelector(
       name: 'assignee',
       buttons: [
         {
-          id: null,
-          name: 'For Others',
-        },
-
-        {
           id: userTag?.userId ?? 'unknown',
           name: 'For Me',
+        },
+        {
+          id: null,
+          name: 'For Others',
         },
       ],
     });
@@ -90,44 +89,12 @@ export const selectTableModel = createSelector(
     isLoading: !!isLoading || !!isLoadMore || !!reloadTable,
     data: rows.map((reminder) => ({
       ...reminder,
-      assignees: reminder.assignies.map(({ name }) => name),
+      assignees: reminder.assignees.map(({ name }) => name),
       tag: {
-        company: reminder.company.name,
-        opportunity: reminder.opportunity.name,
+        company: ReminderUtils.getReminderCompanyTag(reminder)?.name,
+        opportunity: ReminderUtils.getReminderOpportunityTag(reminder)?.name,
       },
-      assignies: reminder.assignies.map(({ name }) => name),
-      actionsModel: {
-        actions: [
-          {
-            text: 'Complete Reminder',
-            queryParams: {
-              [DialogUtil.queryParams.completeReminder]: reminder.id,
-            },
-            skipLocationChange: true,
-            routerLink: [''],
-            queryParamsHandling: 'merge',
-          },
-          {
-            text: 'Update Reminder',
-            queryParams: {
-              [DialogUtil.queryParams.updateReminder]: reminder.id,
-            },
-            skipLocationChange: true,
-            routerLink: [''],
-            queryParamsHandling: 'merge',
-          },
-          {
-            text: 'Delete Reminder',
-            queryParams: {
-              [DialogUtil.queryParams.deleteReminder]: reminder.id,
-            },
-            skipLocationChange: true,
-            routerLink: [''],
-            queryParamsHandling: 'merge',
-            actionStyle: { color: 'var(--informational-error)' },
-          },
-        ],
-      },
+      actionsModel: ReminderUtils.getReminderActions(reminder),
     })),
   }),
 );
@@ -136,12 +103,22 @@ export const selectRemindersTableViewModel = createSelector(
   selectRemindersTableButtonGroupNavigation,
   selectRemindersTableButtonGroupNavigation2,
   selectRemindersTableQueryModel,
-
   selectTableModel,
-  (buttonGroupNavigation, buttonGroupNavigation2, queryModel, tableModel) => ({
+  remindersQuery.selectToMeCount,
+  remindersQuery.selectToOthersCount,
+  (
     buttonGroupNavigation,
     buttonGroupNavigation2,
     queryModel,
     tableModel,
+    myRemindersCount,
+    otherRemindersCount,
+  ) => ({
+    buttonGroupNavigation,
+    buttonGroupNavigation2,
+    queryModel,
+    tableModel,
+    myRemindersCount,
+    otherRemindersCount,
   }),
 );

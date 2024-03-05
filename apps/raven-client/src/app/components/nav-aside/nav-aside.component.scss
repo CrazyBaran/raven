@@ -21,14 +21,12 @@
     }
   }
 
-  &__toggle {
-    @apply absolute -right-4 top-16 z-[1] flex h-8 w-8 rounded-full bg-white text-[2rem];
-
-    color: var(--rv-primary-button-bg);
+  ui-toggle-menu-button {
+    @apply absolute -right-4 top-20 z-[1];
   }
 
   .action {
-    @apply flex cursor-pointer flex-col items-center;
+    @apply relative flex cursor-pointer flex-col items-center;
 
     color: var(--rv-secondary);
 
@@ -132,4 +130,8 @@
       }
     }
   }
+}
+
+::ng-deep #newNoteBtn .k-button-text {
+  margin-right: auto;
 }

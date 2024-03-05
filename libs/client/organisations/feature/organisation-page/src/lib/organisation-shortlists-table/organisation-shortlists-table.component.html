@@ -14,7 +14,7 @@
           [pageable]="true"
           [skip]="organisationShortlistsStore.pageState().skip"
           [sortable]="true"
-          [sort]="[organisationShortlistsStore.sort()]"
+          [sort]="organisationShortlistsStore.sort()!"
           class="h-full"
         >
           <kendo-grid-column

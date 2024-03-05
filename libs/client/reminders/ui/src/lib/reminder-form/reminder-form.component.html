@@ -27,7 +27,10 @@
     >
       <ng-template kendoDropDownTreeValueTemplate let-dataItem>
         @if (dataItem) {
-          {{ dataItem?.company?.name }} / {{ dataItem?.opportunity?.name }}
+          {{ dataItem?.company?.name }}
+          @if (dataItem?.opportunity) {
+            / {{ dataItem?.opportunity?.name }}
+          }
         } @else {
           Search Tags
         }
