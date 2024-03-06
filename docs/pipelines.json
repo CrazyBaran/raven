@@ -22,7 +22,7 @@
       {
         "id": "db55560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "Outreach - Planned",
-        "order": 2,
+        "order": 4,
         "mappedFrom": "Outreach - Planned",
         "isHidden": false,
         "isDefault": true,
@@ -48,7 +48,7 @@
       {
         "id": "dd55560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "Outreach - Scheduling",
-        "order": 4,
+        "order": 2,
         "mappedFrom": "Outreach - Scheduling",
         "isHidden": false,
         "isDefault": false,
@@ -74,7 +74,7 @@
       {
         "id": "df55560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "Preliminary DD - In progress",
-        "order": 6,
+        "order": 7,
         "mappedFrom": "Preliminary DD - in progress",
         "isHidden": false,
         "isDefault": false,
@@ -87,7 +87,7 @@
       {
         "id": "e055560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "Preliminary DD - Ready for socialisation",
-        "order": 7,
+        "order": 6,
         "mappedFrom": "Preliminary DD - ready for socialisation",
         "isHidden": false,
         "isDefault": false,
@@ -100,7 +100,7 @@
       {
         "id": "e155560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "DD - In Progress",
-        "order": 8,
+        "order": 9,
         "mappedFrom": "DD - In Progress",
         "isHidden": false,
         "isDefault": false,
@@ -113,7 +113,7 @@
       {
         "id": "e255560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "DD - Ready for Local IC",
-        "order": 9,
+        "order": 8,
         "mappedFrom": "DD - Ready for Local IC",
         "isHidden": false,
         "isDefault": false,
@@ -126,7 +126,7 @@
       {
         "id": "e355560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "IC - Prepping for Capital IC",
-        "order": 10,
+        "order": 11,
         "mappedFrom": "IC - prepping for Capital IC",
         "isHidden": false,
         "isDefault": false,
@@ -139,7 +139,7 @@
       {
         "id": "e455560e-7293-ee11-8927-6045bdd178c1",
         "displayName": "IC - Ready for Capital IC",
-        "order": 11,
+        "order": 10,
         "mappedFrom": "IC - ready for Capital IC",
         "isHidden": false,
         "isDefault": false,
