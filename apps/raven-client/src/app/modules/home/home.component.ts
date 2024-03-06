@@ -57,7 +57,7 @@ export class HomeComponent {
         {
           name: 'Shortlist',
           path: 'companies/shortlists',
-          icon: 'fa-solid fa-check',
+          icon: 'fa-solid fa-star',
           disabled: !this.environment.shortlistsFeature,
         },
         {
