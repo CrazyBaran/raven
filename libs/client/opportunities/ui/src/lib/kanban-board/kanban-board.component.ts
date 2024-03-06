@@ -119,6 +119,10 @@ export class KanbanBoardComponent {
     opportunityId: string;
   }>();
 
+  @Output() public removeCompanyFromShortlist = new EventEmitter<{
+    organisationId: string;
+  }>();
+
   protected receiveMode = signal<KanbanDragStartEvent | boolean | null>(null);
   protected receiveMode$ = toObservable(this.receiveMode);
 
@@ -158,11 +162,22 @@ export class KanbanBoardComponent {
     this.receiveMode.set(false);
   }
 
-  protected onConfirmDialog(): void {
+  protected onConfirmDialog($event: {
+    removeCompanyFromShortlist: boolean;
+  }): void {
     this.dragEndEvent.emit({
       pipelineStageId: this.confirmDrop()!.footerGroup.id,
       opportunityId: this.confirmDrop()!.opportunityId,
     });
+    if ($event.removeCompanyFromShortlist) {
+      this.removeCompanyFromShortlist.emit({
+        organisationId: _.chain(this._board.columns)
+          .flatMap(({ groups }) => groups)
+          .flatMap(({ cards }) => cards)
+          .find({ id: this.confirmDrop()!.opportunityId })
+          .value().organisation.id,
+      });
+    }
     this.confirmDrop.set(null);
     this.receiveMode.set(false);
   }

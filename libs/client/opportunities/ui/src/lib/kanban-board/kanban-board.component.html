@@ -46,7 +46,7 @@
 
 <app-drop-confirmation
   (cancelEvent)="onCloseDialog()"
-  (confirmEvent)="onConfirmDialog()"
+  (confirmEvent)="onConfirmDialog($event)"
   [footerGroup]="confirmDrop()?.footerGroup!"
 />
 

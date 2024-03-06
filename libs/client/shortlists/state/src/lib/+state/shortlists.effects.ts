@@ -328,6 +328,49 @@ export const bulkRemoveOrganisationsFromShortlist$ = createEffect(
   },
 );
 
+export const removeOrganisationFromMyShortlist$ = createEffect(
+  (
+    actions$ = inject(Actions),
+    shortlistsService = inject(ShortlistsService),
+    store = inject(Store),
+  ) => {
+    return actions$.pipe(
+      ofType(ShortlistsActions.removeOrganisationFromMyShortlist),
+      concatLatestFrom(() => store.select(shortlistsQuery.selectMyShortlist)),
+      switchMap(([{ organisationId }, myShortlist]) =>
+        shortlistsService
+          .bulkRemoveOrganisationsFromShortlist({
+            shortlistId: myShortlist!.id,
+            organisations: [organisationId],
+          })
+          .pipe(
+            map(() => {
+              return ShortlistsActions.removeOrganisationFromMyShortlistSuccess(
+                {
+                  data: { organisationId },
+                  message: 'Organisation Removed From Personal Shortlist.',
+                },
+              );
+            }),
+            catchError((error) => {
+              console.error('Error', error);
+              return of(
+                ShortlistsActions.removeOrganisationFromMyShortlistFailure({
+                  error,
+                  message:
+                    'Remove Organisation From Personal Shortlist Failed.',
+                }),
+              );
+            }),
+          ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
 export const showShortlistSuccessMessage$ = createEffect(
   (actions$ = inject(Actions)) => {
     return actions$.pipe(
@@ -337,6 +380,7 @@ export const showShortlistSuccessMessage$ = createEffect(
         ShortlistsActions.createShortlistSuccess,
         ShortlistsActions.bulkAddOrganisationsToShortlistSuccess,
         ShortlistsActions.bulkRemoveOrganisationsFromShortlistSuccess,
+        ShortlistsActions.removeOrganisationFromMyShortlistSuccess,
       ),
       filter(({ message }) => !!message),
       map(({ message }) => {
@@ -362,6 +406,7 @@ export const showShortlistErrorMessage$ = createEffect(
         ShortlistsActions.createShortlistFailure,
         ShortlistsActions.bulkAddOrganisationsToShortlistFailure,
         ShortlistsActions.bulkRemoveOrganisationsFromShortlistFailure,
+        ShortlistsActions.removeOrganisationFromMyShortlistFailure,
       ),
       filter(({ message }) => !!message),
       map(({ message }) => {

@@ -13,6 +13,7 @@ import {
   PageTemplateComponent,
   QuickFiltersTemplateComponent,
 } from '@app/client/shared/ui-templates';
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import { TagsActions } from '@app/client/tags/state';
 import { Store } from '@ngrx/store';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
@@ -44,7 +45,7 @@ export class PipelinesPageComponent {
 
   public constructor(private readonly store: Store) {
     this.store.dispatch(PipelinesActions.getPipelines());
-
+    this.store.dispatch(ShortlistsActions.getShortlistExtras());
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({
         tagTypes: ['people', 'opportunity'],
@@ -67,6 +68,14 @@ export class PipelinesPageComponent {
       OpportunitiesActions.changeOpportunityPipelineStage({
         id: $event.opportunityId,
         pipelineStageId: $event.pipelineStageId,
+      }),
+    );
+  }
+
+  public removeCompanyFromShortlist($event: { organisationId: string }): void {
+    this.store.dispatch(
+      ShortlistsActions.removeOrganisationFromMyShortlist({
+        organisationId: $event.organisationId,
       }),
     );
   }
