@@ -1,10 +1,10 @@
-import { KeyValuePipe } from '@angular/common';
+import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  inject,
   Output,
+  inject,
   signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -17,6 +17,7 @@ import {
 import { TagsActions } from '@app/client/organisations/api-tags';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
+import { ControlInvalidPipe } from '@app/client/shared/ui-pipes';
 import { TagsService } from '@app/client/tags/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -26,6 +27,7 @@ import { ComboBoxModule } from '@progress/kendo-angular-dropdowns';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
+import { RxLet } from '@rx-angular/template/let';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -50,6 +52,9 @@ import { DomainValidators } from './domainValidators';
     LoaderModule,
     ReactiveFormsModule,
     ButtonModule,
+    AsyncPipe,
+    ControlInvalidPipe,
+    RxLet,
   ],
   templateUrl: './create-organisation-dialog.component.html',
   styleUrls: ['./create-organisation-dialog.component.scss'],

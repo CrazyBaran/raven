@@ -50,7 +50,8 @@
   <kendo-dialog-actions>
     <kendo-button (click)="onCloseDialog()">Cancel</kendo-button>
     <kendo-button
-      [disabled]="!organisationFormGroup.valid"
+      *rxLet="organisationFormGroup | controlInvalid$; let invalid"
+      [disabled]="invalid"
       (click)="save()"
       themeColor="primary"
     >
