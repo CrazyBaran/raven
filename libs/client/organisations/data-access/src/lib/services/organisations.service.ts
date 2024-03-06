@@ -63,7 +63,11 @@ export class OrganisationsService {
   }
 
   public checkIfDomainExists(value: string): Observable<boolean> {
-    return this.getOrganisations({ take: '100', skip: '0', query: value }).pipe(
+    return this.getOrganisations({
+      take: '100',
+      skip: '0',
+      domain: value,
+    }).pipe(
       map(
         (response) =>
           response.data?.items.some((organisation) =>
