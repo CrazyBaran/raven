@@ -372,7 +372,7 @@ export const selectShortlistOrganisationsTableViewModel = createSelector(
       rows: organisationTableConfiguration.filter(
         (x) => x.name !== 'Shortlisted',
       ),
-
+      showEmptyTemplate: !params.status! && !params.member,
       ...shortlist,
       ...quickFilters,
     };
