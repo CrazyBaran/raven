@@ -11,6 +11,7 @@ import { TagsActions } from '@app/client/organisations/api-tags';
 import {
   OrganisationsActions,
   OrganisationsUrlActions,
+  organisationsQuery,
 } from '@app/client/organisations/state';
 import {
   FilterTilesComponent,
@@ -38,10 +39,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import * as _ from 'lodash';
 import { combineLatest, debounceTime, filter, map } from 'rxjs';
 import { CreateOrganisationDialogComponent } from '../create-organisation-dialog/create-organisation-dialog.component';
-import {
-  selectOrganisationsTableParams,
-  selectOrganisationsTableViewModel,
-} from './organisations-table-v2.selectors';
+import { selectOrganisationsTableViewModel } from './organisations-table-v2.selectors';
 @Component({
   selector: 'app-client-organisations-feature-organisations-table',
   standalone: true,
@@ -68,7 +66,9 @@ export class OrganisationsTableV2Component {
   protected showCreateDialog = signal(false);
 
   protected vm = this.store.selectSignal(selectOrganisationsTableViewModel);
-  protected tableParams$ = this.store.select(selectOrganisationsTableParams);
+  protected tableParams$ = this.store.select(
+    organisationsQuery.selectOrganisationsTableParams,
+  );
   protected mainShortlist$ = this.store.select(
     shortlistsQuery.selectMainShortlist,
   );

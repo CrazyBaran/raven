@@ -90,7 +90,9 @@ export class FilterTilesComponent {
 
   private getNumberRangeText(value: FilterParam): string {
     const [start, end] = value as [number, number];
-    return `${start} - ${end ?? 'any'}`;
+    return `${start}${
+      typeof start === 'string' && start === 'any' ? '' : '$'
+    } - ${end ?? 'any'}${end ? '$' : ''}`;
   }
 
   private getFilterConfig(

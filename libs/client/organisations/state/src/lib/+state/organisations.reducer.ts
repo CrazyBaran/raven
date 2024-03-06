@@ -74,6 +74,18 @@ export const organisationsFeature = createFeature({
       loadingOrganisation: false,
     })),
 
+    on(OrganisationsActions.refreshOrganisationsSuccess, (state, { data }) =>
+      data
+        ? OrganisationAdapter.upsertMany(data.items, {
+            ...state,
+            table: {
+              total: data.total,
+              ids: data.items.map((item) => item.id!) ?? [],
+            },
+          })
+        : { ...state },
+    ),
+
     on(
       OrganisationsActions.getOrganisations,
       ShortlistsActions.openShortlistOrganisationsTable,

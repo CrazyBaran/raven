@@ -7,6 +7,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { FilterService } from '@progress/kendo-angular-grid';
 import { NumericTextBoxModule } from '@progress/kendo-angular-inputs';
+import { NumberFormatOptions } from '@progress/kendo-angular-intl';
 import {
   CompositeFilterDescriptor,
   FilterDescriptor,
@@ -27,6 +28,12 @@ export class NumberRangeFilterComponent implements OnInit {
 
   public start: number | null;
   public end: number | null;
+
+  public formatOptions: NumberFormatOptions = {
+    style: 'currency',
+    currency: 'USD',
+    currencyDisplay: 'symbol',
+  };
 
   public get min(): number | null {
     return this.start ? this.start : null;

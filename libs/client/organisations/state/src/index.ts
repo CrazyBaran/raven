@@ -11,6 +11,7 @@ import { organisationsFeature } from './lib/+state/organisations.reducer';
 export * from './lib/+state/organisations.actions';
 export * from './lib/+state/organisations.model';
 export * from './lib/+state/organisations.reducer';
+export * from './lib/+state/organisations.selectors';
 
 export const provideOrganisationFeature = (): Array<
   Provider | EnvironmentProviders
