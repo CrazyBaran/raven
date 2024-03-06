@@ -44,6 +44,13 @@ export const ShortlistsActions = createActionGroup({
       props<SuccessPayload<BulkRemoveFromShortlistDto>>(),
     'Bulk Remove Organisations From Shortlist Failure': props<FailurePayload>(),
 
+    'Remove Organisation From My Shortlist': props<{
+      organisationId: string;
+    }>(),
+    'Remove Organisation From My Shortlist Success':
+      props<SuccessPayload<{ organisationId: string }>>(),
+    'Remove Organisation From My Shortlist Failure': props<FailurePayload>(),
+
     'Delete Shortlist': props<{ id: string }>(),
     'Delete Shortlist Success': props<SuccessPayload<{ id: string }>>(),
     'Delete Shortlist Failure': props<FailurePayload>(),

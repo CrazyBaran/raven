@@ -16,6 +16,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { DialogUtil } from '@app/client/shared/util';
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import {
@@ -63,7 +64,9 @@ export class PassCompanyDialogComponent extends DialogContentBase {
     { label: 'Options', isValid: true },
   ];
 
-  protected companyControl = new FormControl();
+  protected companyControl = new FormControl({ value: '', disabled: true });
+
+  protected removeCompanyFromShortlist = new FormControl(true);
 
   public constructor(dialog: DialogRef) {
     super(dialog);
@@ -91,6 +94,14 @@ export class PassCompanyDialogComponent extends DialogContentBase {
         },
       }),
     );
+
+    if (this.removeCompanyFromShortlist.value) {
+      this.store.dispatch(
+        ShortlistsActions.removeOrganisationFromMyShortlist({
+          organisationId: this.vm().organisationId!,
+        }),
+      );
+    }
 
     this.actions$
       .pipe(ofType(OrganisationsActions.updateOrganisationSuccess), first())

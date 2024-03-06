@@ -33,6 +33,7 @@
           [board]="board()"
           [class.opacity-50]="vm().isLoading"
           (dragEndEvent)="onDragEvent($event)"
+          (removeCompanyFromShortlist)="removeCompanyFromShortlist($event)"
         />
       </div>
     </div>

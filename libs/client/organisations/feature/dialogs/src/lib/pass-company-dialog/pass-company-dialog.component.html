@@ -45,8 +45,8 @@
         Set a reminder
       </kendo-button>
       <div class="flex items-center justify-between">
-        <p>Remove company from all shortlists</p>
-        <kendo-switch>
+        <p>Remove company from my personal shortlist</p>
+        <kendo-switch [formControl]="removeCompanyFromShortlist">
           <ng-template kendoSwitchOffLabel>Off</ng-template>
           <ng-template kendoSwitchOnLabel>On</ng-template>
         </kendo-switch>

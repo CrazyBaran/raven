@@ -24,12 +24,18 @@ import { LabelModule } from '@progress/kendo-angular-label';
 
 import { KeyValuePipe } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
 import { DialogUtil } from '@app/client/shared/util';
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { startWith, take } from 'rxjs';
@@ -104,6 +110,8 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
     round: [<string | null>null],
     stage: [<string | null>null, Validators.required],
   });
+
+  protected removeCompanyFromShortlist = new FormControl(false);
 
   protected stageId = toSignal(
     this.formGroup.controls.stage.valueChanges.pipe(
@@ -189,6 +197,14 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
         },
       }),
     );
+
+    if (this.removeCompanyFromShortlist.value) {
+      this.store.dispatch(
+        ShortlistsActions.removeOrganisationFromMyShortlist({
+          organisationId: this.vm().organisation.id!,
+        }),
+      );
+    }
 
     this.actions$
       .pipe(ofType(OpportunitiesActions.updateOpportunitySuccess), take(1))
