@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   TrackByFunction,
+  ViewChild,
 } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
@@ -139,6 +140,9 @@ import {
   animations: [trigger('fadeIn', fadeIn())],
 })
 export class OrganisationPageComponent {
+  @ViewChild(OrganisationShortlistsTableComponent)
+  public shortlistsTable: OrganisationShortlistsTableComponent;
+
   public sort: SortDescriptor[] = [
     {
       field: 'createdAt',

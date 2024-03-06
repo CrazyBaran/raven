@@ -28,6 +28,10 @@
   <div class="flex gap-2" page-header-actions>
     <kendo-button
       *featureFlag="'shortlistsFeature'"
+      [ngClass]="{
+        '!text-informational-warning':
+          !!shortlistsTable?.organisationShortlistsStore?.data?.()?.total
+      }"
       class="mr-2"
       kendoTooltip
       title="Add to Shortlist"
