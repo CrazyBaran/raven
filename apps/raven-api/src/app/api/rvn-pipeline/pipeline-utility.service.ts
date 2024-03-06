@@ -87,6 +87,30 @@ export class PipelineUtilityService {
     return true;
   }
 
+  public async getFirstLiveOpportunityStage(
+    pipelineDefinitionId?: string,
+  ): Promise<PipelineStageEntity> {
+    const findOptions = {
+      where: {
+        relatedCompanyStatus: CompanyStatus.LIVE_OPPORTUNITY,
+      },
+      order: {
+        order: 'ASC',
+      },
+      top: 1,
+    } as FindOneOptions<PipelineStageEntity>;
+    findOptions.where = {
+      ...findOptions.where,
+      pipelineDefinitionId:
+        pipelineDefinitionId ?? (await this.getDefaultPipelineDefinition()).id,
+    };
+
+    const result = await this.pipelineStageRepository.find(findOptions);
+    return result.length > 0
+      ? result[0]
+      : await this.getDefaultPipelineStageByOrder(pipelineDefinitionId);
+  }
+
   public async getPassedOpportunityStage(
     pipelineDefinitionId?: string,
   ): Promise<PipelineStageEntity> {

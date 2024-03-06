@@ -14,6 +14,7 @@ export class TagEntityFactory {
     switch (options.type) {
       case TagTypeEnum.Company:
       case TagTypeEnum.Investor:
+      case TagTypeEnum.Version:
         tag = new OrganisationTagEntity();
         tag.organisationId = options.organisationId;
         break;

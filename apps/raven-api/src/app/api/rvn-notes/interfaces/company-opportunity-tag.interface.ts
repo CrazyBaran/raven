@@ -4,7 +4,7 @@ import {
 } from '../../rvn-tags/entities/tag.entity';
 
 export interface CompanyOpportunityTag {
-  companyTag: OrganisationTagEntity;
-  opportunityTag: TagEntity;
+  companyTag?: OrganisationTagEntity;
+  opportunityTag?: TagEntity;
   versionTag?: TagEntity;
 }

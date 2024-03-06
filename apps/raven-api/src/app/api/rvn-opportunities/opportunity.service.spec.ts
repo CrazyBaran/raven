@@ -7,6 +7,7 @@ import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enr
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
+import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityChecker } from './opportunity.checker';
@@ -58,6 +59,10 @@ describe('OpportunityService', () => {
         },
         {
           provide: getRepositoryToken(PipelineDefinitionEntity),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(TagEntity),
           useValue: {},
         },
         {

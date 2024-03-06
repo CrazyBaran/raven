@@ -1053,10 +1053,13 @@ export class NotesService {
   ): Promise<ComplexTagEntity[]> {
     const complexTagsToReturn = [];
     for (const complexTag of companyOpportunityTags) {
-      const ids = [complexTag.companyTag.id, complexTag.opportunityTag.id];
+      const ids = [complexTag.companyTag.id];
       if (complexTag.versionTag) {
         ids.push(complexTag.versionTag.id);
+      } else {
+        ids.push(complexTag.opportunityTag.id);
       }
+
       const existingComplexTags = await this.complexTagRepository.find({
         where: { tags: { id: In(ids) } },
         relations: ['tags'],
@@ -1070,10 +1073,12 @@ export class NotesService {
       if (filteredTags.length > 0) {
         complexTagsToReturn.push(filteredTags[0]);
       } else {
-        const newComplexTag = await this.complexTagRepository.create();
-        newComplexTag.tags = [complexTag.companyTag, complexTag.opportunityTag];
+        const newComplexTag = this.complexTagRepository.create();
+        newComplexTag.tags = [complexTag.companyTag];
         if (complexTag.versionTag) {
           newComplexTag.tags.push(complexTag.versionTag);
+        } else {
+          newComplexTag.tags.push(complexTag.opportunityTag);
         }
         await this.complexTagRepository.save(newComplexTag);
         complexTagsToReturn.push(newComplexTag);

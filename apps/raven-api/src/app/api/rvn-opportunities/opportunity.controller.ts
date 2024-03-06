@@ -188,6 +188,16 @@ export class OpportunityController {
     tag: string | TagEntity | null,
     @Identity(ParseUserFromIdentityPipe) userEntity: UserEntity,
   ): Promise<OpportunityData> {
+    if (dto.duplicateAndReopen) {
+      return this.opportunityService.opportunityEntityToData(
+        await this.opportunityService.duplicateAndReopen(
+          opportunity,
+          userEntity,
+          dto.versionName,
+        ),
+      );
+    }
+
     return this.opportunityService.opportunityEntityToData(
       await this.opportunityService.update(
         opportunity,

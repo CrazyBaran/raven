@@ -4,6 +4,7 @@ import {
   OpportunityStageChangedEvent,
   PagedOpportunityData,
 } from '@app/rvns-opportunities';
+import { TagTypeEnum } from '@app/rvns-tags';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,6 +18,7 @@ import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-defi
 import { PipelineStageEntity } from '../rvn-pipeline/entities/pipeline-stage.entity';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { TagEntityFactory } from '../rvn-tags/tag-entity.factory';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
@@ -36,6 +38,8 @@ export class OpportunityService {
     private readonly logger: RavenLogger,
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepository: Repository<OpportunityEntity>,
+    @InjectRepository(TagEntity)
+    private readonly tagsRepository: Repository<TagEntity>,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly affinityEnricher: AffinityEnricher,
     private readonly organisationService: OrganisationService,
@@ -465,6 +469,64 @@ export class OpportunityService {
         await this.createOpportunity(organisation[0], pipeline, pipelineStage);
       }
     }
+  }
+
+  public async duplicateAndReopen(
+    opportunity: OpportunityEntity,
+    userEntity: UserEntity,
+    versionName: string,
+  ): Promise<OpportunityEntity> {
+    await this.opportunityChecker.ensureNoConflictingOpportunity(
+      opportunity.organisation,
+    );
+
+    const defaultPipeline =
+      await this.pipelineUtilityService.getDefaultPipelineDefinition();
+    const firstLiveOpportunityStage =
+      await this.pipelineUtilityService.getFirstLiveOpportunityStage();
+
+    const duplicateOpportunity = await this.createOpportunity(
+      opportunity.organisation,
+      defaultPipeline,
+      firstLiveOpportunityStage,
+    );
+
+    const versionTag = TagEntityFactory.createTag({
+      type: TagTypeEnum.Version,
+      organisationId: opportunity.organisation.id,
+      name: versionName,
+    });
+
+    const createdTag = await this.tagsRepository.save(versionTag);
+
+    const updatedDuplicateOpportunity = await this.update(
+      duplicateOpportunity,
+      {
+        roundSize: opportunity.roundSize,
+        valuation: opportunity.valuation,
+        proposedInvestment: opportunity.proposedInvestment,
+        positioning: opportunity.positioning,
+        timing: opportunity.timing,
+        underNda: opportunity.underNda,
+        ndaTerminationDate: opportunity.ndaTerminationDate,
+        tagEntity: createdTag,
+      },
+      userEntity,
+    );
+
+    this.eventEmitter.emit(
+      'opportunity-stage-changed',
+      new OpportunityStageChangedEvent(
+        updatedDuplicateOpportunity.organisation.name,
+        updatedDuplicateOpportunity.organisation.domains,
+        firstLiveOpportunityStage.mappedFrom,
+        userEntity?.id,
+        updatedDuplicateOpportunity.organisation.id,
+        firstLiveOpportunityStage.relatedCompanyStatus,
+      ),
+    );
+
+    return opportunity;
   }
 
   private assignOpportunityProperties(

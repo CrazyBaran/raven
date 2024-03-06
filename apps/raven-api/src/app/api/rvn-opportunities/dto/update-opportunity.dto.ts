@@ -1,8 +1,24 @@
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateOpportunityDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  public readonly duplicateAndReopen?: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  public readonly versionName?: string;
+
   @ApiProperty()
   @IsOptional()
   @IsUUID()
