@@ -15,6 +15,7 @@ import {
   parseToFilters,
 } from '@app/client/organisations/ui';
 
+import { organisationsQuery } from '@app/client/organisations/state';
 import { organisationTableConfiguration } from '@app/client/organisations/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
@@ -25,7 +26,6 @@ import { DialogUtil } from '@app/client/shared/util';
 import {
   buildButtonGroupNavigation,
   buildInputNavigation,
-  buildPageParamsSelector,
   selectQueryParam,
 } from '@app/client/shared/util-router';
 import { OpportunityData } from '@app/rvns-opportunities';
@@ -33,29 +33,8 @@ import { createSelector } from '@ngrx/store';
 import deparam from 'jquery-deparam';
 import { CompanyStatus } from 'rvns-shared';
 
-export const organisationsQueryParams = [
-  'query',
-  'status',
-  'my',
-  'round',
-  'member',
-  'skip',
-  'take',
-  'field',
-  'dir',
-  'filters',
-] as const;
-
-export const selectOrganisationsTableParams = buildPageParamsSelector(
-  organisationsQueryParams,
-  {
-    skip: '0',
-    take: '25',
-  },
-);
-
 export const selectOrganisationsTableButtonGroupNavigation = createSelector(
-  selectOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   tagsQuery.selectCurrentUserTag,
   (params, userTag): ButtongroupNavigationModel => {
     return buildButtonGroupNavigation({
@@ -83,7 +62,7 @@ export const selectOrganisationsTableButtonGroupNavigation = createSelector(
 );
 
 export const selectOrganisationStatusButtonGroupNavigation = createSelector(
-  selectOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   tagsQuery.selectCurrentUserTag,
   (params, userTag): ButtongroupNavigationModel => {
     return buildButtonGroupNavigation({
@@ -125,7 +104,7 @@ export const selectOrganisationStatusButtonGroupNavigation = createSelector(
 );
 
 export const selectOrganisationTableQueryModel = createSelector(
-  selectOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   (params) =>
     buildInputNavigation({
       params,
@@ -262,7 +241,7 @@ export const selectTableFilters = createSelector(
 export const selectTableModel = createSelector(
   selectIsLoadingOrganisationsTable,
   selectOrganisationRows,
-  selectOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   organisationsFeature.selectTotalRows,
   selectTableFilters,
   (
@@ -288,7 +267,7 @@ export const selectFilterIndicators = createSelector(
 );
 
 export const selectShowCheckboxHeader = createSelector(
-  selectOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   ({ query, member, status, filters }) => {
     return !!(query || member || status || filters);
   },
@@ -297,7 +276,7 @@ export const selectShowCheckboxHeader = createSelector(
 export const selectOrganisationsTableViewModel = createSelector(
   selectOrganisationsTableButtonGroupNavigation,
   selectOrganisationTableQueryModel,
-  selectOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   selectTableModel,
   organisationsFeature.selectDataWarehouseLastUpdated,
   selectFilterIndicators,

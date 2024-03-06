@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import {
   OrganisationsActions,
+  organisationsQuery,
   OrganisationsUrlActions,
 } from '@app/client/organisations/state';
 import {
@@ -43,10 +44,7 @@ import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
-import {
-  selectShortlistOrganisationsTableParams,
-  selectShortlistOrganisationsTableViewModel,
-} from './shortlist-organisations-table.selectors';
+import { selectShortlistOrganisationsTableViewModel } from './shortlist-organisations-table.selectors';
 
 @Component({
   selector: 'app-shortlist-organisations-table',
@@ -83,7 +81,7 @@ export class ShortlistOrganisationsTableComponent {
     selectShortlistOrganisationsTableViewModel,
   );
   protected params = this.store.selectSignal(
-    selectShortlistOrganisationsTableParams,
+    organisationsQuery.selectOrganisationsTableParams,
   );
 
   public constructor(
@@ -107,7 +105,7 @@ export class ShortlistOrganisationsTableComponent {
     );
 
     this.store
-      .select(selectShortlistOrganisationsTableParams)
+      .select(organisationsQuery.selectOrganisationsTableParams)
       .pipe(
         takeUntilDestroyed(),
         takeUntilNavigatedAway({
@@ -132,11 +130,6 @@ export class ShortlistOrganisationsTableComponent {
       .subscribe(() => {
         this.organisationTable.checkedRows.set([]);
         this.organisationTable.checkedAll.set(false);
-        this.store.dispatch(
-          OrganisationsUrlActions.queryParamsChanged({
-            params: this.params(),
-          }),
-        );
       });
   }
 

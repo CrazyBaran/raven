@@ -5,6 +5,7 @@ import { tagsQuery } from '@app/client/organisations/api-tags';
 import {
   organisationStatusColorDictionary,
   organisationsFeature,
+  organisationsQuery,
 } from '@app/client/organisations/state';
 
 import {
@@ -25,7 +26,6 @@ import { DialogUtil } from '@app/client/shared/util';
 import {
   buildButtonGroupNavigation,
   buildInputNavigation,
-  buildPageParamsSelector,
   selectQueryParam,
   selectRouteParam,
 } from '@app/client/shared/util-router';
@@ -35,31 +35,9 @@ import { createSelector } from '@ngrx/store';
 import deparam from 'jquery-deparam';
 import { CompanyStatus } from 'rvns-shared';
 
-export const shortlistOrganisationsQueryParams = [
-  'query',
-  'status',
-  'my',
-  'round',
-  'member',
-  'skip',
-  'take',
-  'field',
-  'dir',
-  'filters',
-  'shortlistId',
-] as const;
-
-export const selectShortlistOrganisationsTableParams = buildPageParamsSelector(
-  shortlistOrganisationsQueryParams,
-  {
-    skip: '0',
-    take: '25',
-  },
-);
-
 export const selectShortlistOrganisationsTableButtonGroupNavigation =
   createSelector(
-    selectShortlistOrganisationsTableParams,
+    organisationsQuery.selectOrganisationsTableParams,
     tagsQuery.selectCurrentUserTag,
     (params, userTag): ButtongroupNavigationModel => {
       return buildButtonGroupNavigation({
@@ -83,7 +61,7 @@ export const selectShortlistOrganisationsTableButtonGroupNavigation =
 
 export const selectShortlistOrganisationStatusButtonGroupNavigation =
   createSelector(
-    selectShortlistOrganisationsTableParams,
+    organisationsQuery.selectOrganisationsTableParams,
     (params): ButtongroupNavigationModel => {
       return buildButtonGroupNavigation({
         params,
@@ -124,7 +102,7 @@ export const selectShortlistOrganisationStatusButtonGroupNavigation =
   );
 
 export const selectOrganisationTableQueryModel = createSelector(
-  selectShortlistOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   (params) =>
     buildInputNavigation({
       params,
@@ -291,7 +269,7 @@ export const selectTableFilters = createSelector(
 export const selectTableModel = createSelector(
   selectIsLoadingOrganisationsTable,
   selectOrganisationRows,
-  selectShortlistOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   organisationsFeature.selectTotalRows,
   selectTableFilters,
   (
@@ -317,7 +295,7 @@ export const selectFilterIndicators = createSelector(
 );
 
 export const selectShowCheckboxHeader = createSelector(
-  selectShortlistOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   ({ query, member, status, filters }) => {
     return !!(query || member || status || filters);
   },
@@ -338,7 +316,7 @@ export const selectShortlistOrganisationsQuickFilters = createSelector(
 
 export const selectShortlistOrganisationsTableViewModel = createSelector(
   selectShortlistOrganisationsQuickFilters,
-  selectShortlistOrganisationsTableParams,
+  organisationsQuery.selectOrganisationsTableParams,
   selectTableModel,
   organisationsFeature.selectDataWarehouseLastUpdated,
   selectFilterIndicators,

@@ -1,14 +1,24 @@
 import { inject } from '@angular/core';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, concatMap, filter, map, of, switchMap } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  concatMap,
+  filter,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
 import { organisationsFeature } from '../../index';
 import {
   OrganisationsActions,
   OrganisationsUrlActions,
 } from './organisations.actions';
+import { organisationsQuery } from './organisations.selectors';
 
 export const loadOrganisationOnUrlEvent = createEffect(
   (
@@ -261,6 +271,53 @@ export const createOrganisationSharepointFolder = createEffect(
             );
           }),
         ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const refreshOrganisations = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+    store = inject(Store),
+  ) => {
+    return actions$.pipe(
+      ofType(
+        OrganisationsActions.refreshOrganisations,
+        ShortlistsActions.bulkAddOrganisationsToShortlistSuccess,
+        ShortlistsActions.bulkRemoveOrganisationsFromShortlistSuccess,
+      ),
+      concatLatestFrom(() =>
+        combineLatest({
+          params: store.select(
+            organisationsQuery.selectOrganisationsTableParams,
+          ),
+          table: store.select(organisationsQuery.selectTable),
+        }),
+      ),
+      switchMap(([_, { params, table }]) =>
+        organisationsService
+          .getOrganisations({
+            ...params,
+            take: table?.ids.length || 0,
+          })
+          .pipe(
+            map((response) => {
+              return OrganisationsActions.refreshOrganisationsSuccess({
+                data: response.data || { items: [], total: 0 },
+              });
+            }),
+            catchError((error) => {
+              console.error('Error', error);
+              return of(
+                OrganisationsActions.refreshOrganisationsFailure({ error }),
+              );
+            }),
+          ),
       ),
     );
   },
