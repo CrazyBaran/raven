@@ -24,6 +24,9 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
+import { Identity } from '../rvn-users/decorators/identity.decorator';
+import { UserEntity } from '../rvn-users/entities/user.entity';
 import { CreateOrganisationDto } from './dto/create-organisation.dto';
 import { UpdateOrganisationDto } from './dto/update-organisation.dto';
 import { OrganisationEntity } from './entities/organisation.entity';
@@ -126,9 +129,11 @@ export class OrganisationController {
     @Param('id', ParseUUIDPipe, ParseOrganisationPipe)
     organisation: OrganisationEntity,
     @Body() dto: UpdateOrganisationDto,
+    @Identity(ParseUserFromIdentityPipe)
+    user: UserEntity,
   ): Promise<OrganisationData> {
     return this.organisationService.organisationEntityToData(
-      await this.organisationService.update(organisation, dto),
+      await this.organisationService.update(organisation, dto, user),
     );
   }
 

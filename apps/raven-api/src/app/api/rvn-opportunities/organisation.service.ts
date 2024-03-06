@@ -23,11 +23,13 @@ import { OrganisationProvider } from '../rvn-data-warehouse/proxy/organisation.p
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
 import { ShortlistsService } from '../rvn-shortlists/shortlists.service';
+import { UserEntity } from '../rvn-users/entities/user.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
+import { OrganisationPassedEvent } from './events/organisation-passed.event';
 import {
   GetOrganisationsOptions,
   PrimaryDataSource,
@@ -290,6 +292,7 @@ export class OrganisationService {
   public async update(
     organisation: OrganisationEntity,
     options: UpdateOrganisationOptions,
+    user?: UserEntity,
   ): Promise<OrganisationEntity> {
     if (options.name) {
       organisation.name = options.name;
@@ -299,6 +302,13 @@ export class OrganisationService {
     }
     if (Object.prototype.hasOwnProperty.call(options, 'companyStatus')) {
       organisation.companyStatusOverride = options.companyStatus;
+
+      if (options.companyStatus === CompanyStatus.PASSED) {
+        this.eventEmitter.emit(
+          'organisation-passed',
+          new OrganisationPassedEvent(organisation, user),
+        );
+      }
     }
 
     delete organisation.organisationDomains;
