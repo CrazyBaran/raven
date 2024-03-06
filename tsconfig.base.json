@@ -254,6 +254,7 @@
       ],
       "@app/rvns-opportunities": ["libs/rvns-opportunities/src/index.ts"],
       "@app/rvns-pipelines": ["libs/rvns-pipelines/src/index.ts"],
+      "@app/rvns-reminders": ["libs/rvns-reminders/src/index.ts"],
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],
       "@app/rvns-shortlists": ["libs/rvns-shortlists/src/index.ts"],

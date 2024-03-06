@@ -84,8 +84,14 @@ export class ShortlistsService {
         new Brackets((qb) => {
           qb.where('shortlists.creatorId = :member', {
             member: options.member,
-          }).orWhere('contributors.id = :member', { member: options.member });
+          }).orWhere('contributors.id = :member', {
+            member: options.member,
+          });
         }),
+      );
+      queryBuilder.leftJoinAndSelect(
+        'shortlists.contributors',
+        'contributors_full',
       );
     }
 
