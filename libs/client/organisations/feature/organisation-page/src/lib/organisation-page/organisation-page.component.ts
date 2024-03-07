@@ -32,24 +32,16 @@ import { Actions } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { filter } from 'rxjs';
-import { OrganisationDetailsComponent } from '../organisation-details/organisation-details.component';
-import { OrganisationFilesComponent } from '../organisation-files/organisation-files.component';
-import { OrganisationOpportunitiesComponent } from '../organisation-opportunities/organisation-opportunities.component';
 import { OrganisationNotesComponent } from '../organisation-related-notes/organisation-notes.component';
-import { OrganisationRemindersTableComponent } from '../organisation-reminders-table/organisation-reminders-table.component';
-import { OrganisationShortlistsTableComponent } from '../organisation-shortlists-table/organisation-shortlists-table.component';
+import { ORGANISATION_WIDGETS } from '../widgets';
+import { OrganisationShortlistsTableComponent } from '../widgets/organisation-shortlists-table/organisation-shortlists-table.component';
 import { selectOrganisationPageViewModel } from './organisation-page.selectors';
 
 @Component({
   selector: 'app-opportunity-details-page',
   standalone: true,
   imports: [
-    OrganisationShortlistsTableComponent,
-    OrganisationRemindersTableComponent,
-    OrganisationNotesComponent,
-    OrganisationOpportunitiesComponent,
-    OrganisationFilesComponent,
-    OrganisationDetailsComponent,
+    ORGANISATION_WIDGETS,
     PageTemplateComponent,
     FeatureFlagDirective,
     OrganisationNotesComponent,

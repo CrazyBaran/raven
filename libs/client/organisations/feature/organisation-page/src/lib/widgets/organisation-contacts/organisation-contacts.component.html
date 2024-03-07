@@ -1,0 +1,43 @@
+<kendo-panelbar class="white-tilelayout">
+  <kendo-panelbar-item [expanded]="false" title="Reminders">
+    <ng-template kendoPanelBarItemTitle>
+      <h5 class="k-card-title !m-0 flex w-full items-center !text-black">
+        Contacts
+      </h5>
+    </ng-template>
+    <ng-template kendoPanelBarContent>
+      <div class="h-[363px]">
+        <kendo-grid
+          (pageChange)="organisationRemindersStore.pageChange($event)"
+          (sortChange)="organisationRemindersStore.sortChange($event)"
+          [data]="organisationRemindersStore.data()"
+          [loading]="organisationRemindersStore.isLoading()!"
+          [pageSize]="organisationRemindersStore.pageState().take"
+          [skip]="organisationRemindersStore.pageState().skip"
+          [sort]="organisationRemindersStore.sort?.() ?? []"
+          [sortable]="true"
+          [pageable]="true"
+          class="grid-borderless h-full"
+        >
+          <kendo-grid-column [width]="50" title="">
+            <ng-template kendoGridCellTemplate>
+              <i class="fa-solid fa-circle-user"></i>
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column field="name" headerClass="!font-bold" title="Name">
+            <ng-template kendoGridCellTemplate let-contact>
+              {{ contact.name }}
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column [width]="100" title="">
+            <ng-template kendoGridCellTemplate>
+              <i class="fa-solid fa-pen"></i>
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+      </div>
+    </ng-template>
+  </kendo-panelbar-item>
+</kendo-panelbar>
