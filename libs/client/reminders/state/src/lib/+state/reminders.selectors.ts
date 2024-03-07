@@ -17,7 +17,7 @@ const selectRemindersTableParams = buildPageParamsSelector(
   remindersQueryParams,
   {
     skip: '0',
-    take: '25',
+    take: '30',
   },
 );
 
