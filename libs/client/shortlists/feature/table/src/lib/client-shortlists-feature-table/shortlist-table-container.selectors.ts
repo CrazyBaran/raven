@@ -28,7 +28,7 @@ export const selectShortlistsTableParams = buildPageParamsSelector(
   shortlistsQueryParams,
   {
     skip: '0',
-    take: '25',
+    take: '30',
   },
 );
 

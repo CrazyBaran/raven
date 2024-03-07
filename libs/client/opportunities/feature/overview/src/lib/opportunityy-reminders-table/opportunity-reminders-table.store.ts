@@ -1,5 +1,6 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 import { computed, inject } from '@angular/core';
+import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
   ReminderDto,
   RemindersService,
@@ -23,9 +24,10 @@ export const opportunityRemindersTableStore = signalStore(
       organisationId: ngrxStore.selectSignal(
         routerQuery.selectCurrentOrganisationId,
       )()!,
-      opportunityId: ngrxStore.selectSignal(
-        routerQuery.selectCurrentOpportunityId,
-      )()!,
+      opportunityId:
+        ngrxStore.selectSignal(
+          opportunitiesQuery.selectRouteOpportunityDetails,
+        )()?.tag?.id ?? '',
     })),
   })),
   withMethods((store, remindersService = inject(RemindersService)) => ({
