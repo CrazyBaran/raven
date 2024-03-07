@@ -3,10 +3,6 @@ import {
   importProvidersFrom,
   Provider,
 } from '@angular/core';
-import {
-  MockRemindersService,
-  RemindersService,
-} from '@app/client/reminders/data-access';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import * as remindersEffects from './lib/+state/reminders.effects';
@@ -24,8 +20,4 @@ export const provideRemindersFeature = (): Array<
     StoreModule.forFeature(remindersFeature),
     EffectsModule.forFeature(remindersEffects),
   ),
-  {
-    provide: RemindersService,
-    useClass: MockRemindersService,
-  },
 ];

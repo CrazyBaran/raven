@@ -11,17 +11,24 @@
       </section>
       <section>
         <p class="text-subtle-text">Company / Opportunity</p>
-        <p class="text-lg">{{ reminder.name }}</p>
+        <p class="text-lg">
+          {{ vm().companyOpportunityLabel }}
+        </p>
       </section>
       <section>
         <p class="text-subtle-text">Description</p>
-        <p class="line-clamp-2 text-lg">{{ reminder.description }}</p>
+        <p
+          class="line-clamp-6 text-lg"
+          [showTooltipIfClamped]="reminder.description"
+        >
+          {{ reminder.description }}
+        </p>
       </section>
       <section>
         <p class="text-subtle-text">Assignees</p>
 
         <ui-tags-container
-          [rows]="1"
+          [rows]="4"
           [tags]="reminder.assignees | picklist: 'name' | toUserTag"
           class="w-full"
         />

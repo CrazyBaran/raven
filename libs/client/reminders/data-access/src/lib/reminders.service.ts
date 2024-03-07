@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
 
 import { PagedData } from 'rvns-shared';
-import { Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { CreateReminderDto } from './models/create-reminder.model';
 import { GetRemindersDto, ReminderDto } from './models/reminder.model';
 import { UpdateReminderDto } from './models/update-reminder.model';
@@ -12,7 +12,7 @@ import { UpdateReminderDto } from './models/update-reminder.model';
   providedIn: 'root',
 })
 export class RemindersService {
-  private url = '/api/reminder';
+  private url = '/api/reminders';
 
   public constructor(private http: HttpClient) {}
 
@@ -58,8 +58,22 @@ export class RemindersService {
   }
 
   public completeReminder(ids: string[]): Observable<GenericResponse<null>> {
-    return this.http.patch<GenericResponse<null>>(`${this.url}/complete`, {
-      remidners: ids,
-    });
+    return forkJoin(
+      ids.map((id) =>
+        this.http.patch<GenericResponse<null>>(`${this.url}/${id}`, {
+          completed: true,
+        }),
+      ),
+    ).pipe(
+      map(
+        (responses) =>
+          ({
+            data: null,
+            status: 'success',
+            message: '',
+            statusCode: 200,
+          }) as GenericResponse<null>,
+      ),
+    );
   }
 }

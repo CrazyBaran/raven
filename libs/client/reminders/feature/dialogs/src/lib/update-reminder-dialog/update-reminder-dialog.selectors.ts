@@ -25,7 +25,10 @@ export const selectUpdateReminderViewModel = createSelector(
       isUpdating,
       reminder,
       opportunityTags,
-      currentUser,
+      currentUser: {
+        id: currentUser?.userId ?? '',
+        name: currentUser?.name ?? '',
+      },
     };
   },
 );

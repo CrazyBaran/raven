@@ -42,7 +42,10 @@ export const selectCreateReminderViewModel = createSelector(
     return {
       isCreating,
       opportunityTags,
-      currentUser,
+      currentUser: {
+        id: currentUser?.userId ?? '',
+        name: currentUser?.name ?? '',
+      },
       createParams,
     };
   },

@@ -1,8 +1,8 @@
 import { remindersQuery } from '@app/client/reminders/state';
+import { ReminderUtils } from '@app/client/reminders/utils';
 import { DialogUtil } from '@app/client/shared/util';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
-import { MOCK_REMINDER } from '../update-reminder-form.token';
 
 export const selectReminderDetails = createSelector(
   selectQueryParam(DialogUtil.queryParams.reminderDetails),
@@ -17,10 +17,15 @@ export const selectCreateReminderViewModel = createSelector(
   selectQueryParam(DialogUtil.queryParams.reminderDetails),
   selectReminderDetails,
   ({ get: isLoading }, reminderId, reminder) => {
+    const company = ReminderUtils.getReminderCompanyTag(reminder!);
+    const opportunity = ReminderUtils.getReminderOpportunityTag(reminder!);
     return {
       isLoading,
       reminderId: reminderId!,
-      reminder: MOCK_REMINDER,
+      reminder,
+      companyOpportunityLabel: `${company?.name ?? ''} ${
+        opportunity?.name ? `/ ${opportunity.name}` : ``
+      }`,
     };
   },
 );

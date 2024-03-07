@@ -79,7 +79,14 @@ export const REMINDER_USERS_SOURCE = new InjectionToken(
             take: 500,
             query: text,
           })
-          .pipe(map(({ data }) => data!));
+          .pipe(
+            map(({ data }) =>
+              data!.map((t) => ({
+                name: t.name,
+                id: t.userId!,
+              })),
+            ),
+          );
     },
   },
 );
