@@ -17,8 +17,8 @@ export const UPDATE_REMINDER_FORM_FN = new InjectionToken(
     factory: (): ((value: ReminderDto) => ReminderForm) => {
       const formBuilder = inject(FormBuilder);
 
-      return (value): ReminderForm =>
-        formBuilder.group({
+      return (value): ReminderForm => {
+        return formBuilder.group({
           title: [
             value.name,
             {
@@ -36,9 +36,15 @@ export const UPDATE_REMINDER_FORM_FN = new InjectionToken(
             {
               value: (value.tag
                 ? {
-                    company: ReminderUtils.getReminderCompanyTag(value)?.id,
-                    opportunity:
-                      ReminderUtils.getReminderOpportunityTag(value)?.id,
+                    company: {
+                      id: ReminderUtils.getReminderCompanyTag(value)?.id,
+                      name: ReminderUtils.getReminderCompanyTag(value)?.name,
+                    },
+                    opportunity: {
+                      id: ReminderUtils.getReminderOpportunityTag(value)?.id,
+                      name: ReminderUtils.getReminderOpportunityTag(value)
+                        ?.name,
+                    },
                   }
                 : null) as any,
               disabled: true,
@@ -53,6 +59,7 @@ export const UPDATE_REMINDER_FORM_FN = new InjectionToken(
             [Validators.required],
           ],
         });
+      };
     },
   },
 );

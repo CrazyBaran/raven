@@ -8,8 +8,11 @@ import { TagTypeEnum } from '@app/rvns-tags';
 
 export class ReminderUtils {
   public static getReminderActions(
-    reminder: ReminderEntity,
+    reminder: ReminderEntity | undefined,
   ): DropdownbuttonNavigationModel {
+    if (!reminder) {
+      return { actions: [] };
+    }
     const completeReminder = {
       text: 'Complete Reminder',
       queryParams: {
@@ -47,14 +50,20 @@ export class ReminderUtils {
   }
 
   public static getReminderCompanyTag(
-    reminder: ReminderEntity,
+    reminder: ReminderEntity | undefined,
   ): { name: string; id: string } | undefined {
+    if (!reminder) {
+      return undefined;
+    }
     return reminder.tag?.tags.find((tag) => tag.type === TagTypeEnum.Company);
   }
 
   public static getReminderOpportunityTag(
-    reminder: ReminderEntity,
+    reminder: ReminderEntity | undefined,
   ): { name: string; id: string } | undefined {
+    if (!reminder) {
+      return undefined;
+    }
     return reminder.tag?.tags.find(
       (tag) => tag.type === TagTypeEnum.Opportunity,
     );

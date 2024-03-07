@@ -5,6 +5,7 @@ import { DatePipe } from '@angular/common';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { DynamicDialogContentBase } from '@app/client/shared/shelf';
 import { TagsContainerComponent } from '@app/client/shared/ui';
+import { ShowTooltipIfClampedDirective } from '@app/client/shared/ui-directives';
 import { PicklistPipe, ToUserTagPipe } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { DialogModule } from '@progress/kendo-angular-dialog';
@@ -19,6 +20,7 @@ import { selectCreateReminderViewModel } from './remidner-details-dialog.selecto
     PicklistPipe,
     ToUserTagPipe,
     DatePipe,
+    ShowTooltipIfClampedDirective,
   ],
   templateUrl: './reminder-details-dialog.component.html',
   styleUrls: ['./reminder-details-dialog.component.scss'],
