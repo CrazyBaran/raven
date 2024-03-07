@@ -68,4 +68,14 @@ export class ReminderUtils {
       (tag) => tag.type === TagTypeEnum.Opportunity,
     );
   }
+
+  public static getReminderCompanyOpportunityLabel(
+    reminder: ReminderEntity | undefined,
+  ): string {
+    const company = ReminderUtils.getReminderCompanyTag(reminder);
+    const opportunity = ReminderUtils.getReminderOpportunityTag(reminder);
+    return `${company?.name ?? ''} ${
+      opportunity?.name ? `/ ${opportunity.name}` : ``
+    }`;
+  }
 }

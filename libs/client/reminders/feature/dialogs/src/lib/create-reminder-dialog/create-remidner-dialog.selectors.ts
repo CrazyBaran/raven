@@ -4,7 +4,7 @@ import { remindersQuery } from '@app/client/reminders/state';
 import { DialogUtil } from '@app/client/shared/util';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { tagsQuery } from '@app/client/tags/state';
-import { OpportunityData, OrganisationData } from '@app/rvns-opportunities';
+import { OrganisationData } from '@app/rvns-opportunities';
 import { createSelector } from '@ngrx/store';
 
 const selectCreateReminderParams = createSelector(
@@ -17,13 +17,13 @@ const selectCreateReminderParams = createSelector(
     opportunities,
   ): {
     organisation: OrganisationData | undefined;
-    opportunity: OpportunityData | undefined;
+    opportunity: any | undefined;
   } => {
     if (Array.isArray(params)) {
       const [organisationId, opportunityId] = params;
       return {
         organisation: organisations[organisationId],
-        opportunity: opportunities[opportunityId],
+        opportunity: opportunities[opportunityId]?.tag,
       };
     } else {
       return {
