@@ -65,12 +65,18 @@ export class OpportunityChecker {
   public async getActiveOrNewestOpportunity(
     organisation: OrganisationEntity,
   ): Promise<OpportunityEntity | null> {
-    if (organisation.opportunities.length === 0) return null;
+    const organisationFetched = await this.organisationRepository.findOne({
+      where: {
+        id: organisation.id,
+      },
+      relations: ['opportunities', 'opportunities.pipelineStage'],
+    });
 
-    const activeOpportunity = organisation.opportunities.find((opportunity) =>
-      this.pipelineUtilityService.isActivePipelineItemStage(
-        opportunity.pipelineStage,
-      ),
+    const activeOpportunity = organisationFetched.opportunities.find(
+      (opportunity) =>
+        this.pipelineUtilityService.isActivePipelineItemStage(
+          opportunity.pipelineStage,
+        ),
     );
 
     if (activeOpportunity) return activeOpportunity;

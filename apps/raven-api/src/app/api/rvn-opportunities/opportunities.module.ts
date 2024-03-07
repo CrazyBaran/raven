@@ -27,6 +27,7 @@ import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-fiel
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
 import { DataWarehouseRegenerationFinishedEventHandler } from './event-handlers/data-warehouse-regeneration-finished.event-handler';
+import { OrganisationPassedEventHandler } from './event-handlers/organisation-passed.event-handler';
 import { ORGANISATION_QUEUE } from './opportunities.const';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityChecker } from './opportunity.checker';
@@ -77,6 +78,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
     AffinityOrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,
     AffinityFieldChangedEventHandler,
+    OrganisationPassedEventHandler,
     DataWarehouseRegenerationFinishedEventHandler,
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,
