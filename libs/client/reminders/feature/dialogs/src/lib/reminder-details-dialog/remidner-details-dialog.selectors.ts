@@ -17,15 +17,12 @@ export const selectCreateReminderViewModel = createSelector(
   selectQueryParam(DialogUtil.queryParams.reminderDetails),
   selectReminderDetails,
   ({ get: isLoading }, reminderId, reminder) => {
-    const company = ReminderUtils.getReminderCompanyTag(reminder!);
-    const opportunity = ReminderUtils.getReminderOpportunityTag(reminder!);
     return {
       isLoading,
       reminderId: reminderId!,
       reminder,
-      companyOpportunityLabel: `${company?.name ?? ''} ${
-        opportunity?.name ? `/ ${opportunity.name}` : ``
-      }`,
+      companyOpportunityLabel:
+        ReminderUtils.getReminderCompanyOpportunityLabel(reminder),
     };
   },
 );

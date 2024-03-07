@@ -76,18 +76,24 @@ export class CreateReminderDialogComponent
     );
 
     if (this.vm().createParams.organisation) {
-      this.form.controls.tag.setValue({
-        company: {
-          name: this.vm().createParams.organisation!.name,
-          id: this.vm().createParams.organisation!.id!,
-        },
-        opportunity: this.vm().createParams.opportunity
-          ? {
-              name: this.vm().createParams.opportunity!.tag!.name!,
-              id: this.vm().createParams.opportunity!.id,
-            }
-          : undefined,
-      });
+      this.tagsService
+        .getTags({
+          organisationId: this.vm().createParams.organisation!.id,
+        })
+        .subscribe((response) => {
+          this.form.controls.tag.setValue({
+            company: {
+              name: this.vm().createParams.organisation!.name,
+              id: response.data![0].id,
+            },
+            opportunity: this.vm().createParams.opportunity
+              ? {
+                  name: this.vm().createParams.opportunity!.name!,
+                  id: this.vm().createParams.opportunity!.id,
+                }
+              : undefined,
+          });
+        });
       this.form.controls.tag.disable();
     }
   }

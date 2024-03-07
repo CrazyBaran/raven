@@ -92,8 +92,9 @@
 
     <kendo-grid-column headerClass="!font-bold" title="Company / Opportunity">
       <ng-template kendoGridCellTemplate let-reminder>
-        @if (reminder.tag.company) {
-          {{ reminder.tag.company }} / {{ reminder.tag.opportunity }}
+        {{ reminder.tag.company }}
+        @if (reminder.tag.opportunity) {
+          / {{ reminder.tag.opportunity }}
         }
       </ng-template>
     </kendo-grid-column>
