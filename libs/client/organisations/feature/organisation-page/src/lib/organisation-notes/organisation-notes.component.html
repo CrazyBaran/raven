@@ -1,0 +1,13 @@
+<ui-tilelayout-item id="organisation-notes">
+  <div class="flex items-center justify-between gap-2" header>
+    <h5 class="k-card-title">Related Notes</h5>
+    <kendo-button
+      (click)="openNoteShelf()"
+      iconClass="fa-sharp fa-solid fa-pen"
+      size="small"
+    >
+      Add New
+    </kendo-button>
+  </div>
+  <app-notes-table-container body />
+</ui-tilelayout-item>
