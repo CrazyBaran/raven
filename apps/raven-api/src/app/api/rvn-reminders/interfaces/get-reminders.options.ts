@@ -13,6 +13,8 @@ export class GetRemindersOptions {
   public status?: ReminderStatus;
   public assignee?: string;
   public query?: string;
+  public organisationId?: string;
+  public opportunityId?: string;
 }
 
 export const defaultGetRemindersOptions: GetRemindersOptions = {

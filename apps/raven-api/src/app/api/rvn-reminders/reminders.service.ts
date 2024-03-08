@@ -8,6 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PagedData } from 'rvns-shared';
 import { Brackets, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { ComplexTagEntity } from '../rvn-tags/entities/complex-tag.entity';
+import {
+  OrganisationTagEntity,
+  TagEntity,
+} from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { ReminderAssigneeEntity } from './entities/reminder-assignee.entity';
 import { ReminderEntity } from './entities/reminder.entity';
@@ -16,7 +20,6 @@ import {
   GetRemindersOptions,
   defaultGetRemindersOptions,
 } from './interfaces/get-reminders.options';
-
 interface CreateReminderOptions {
   name: string;
   description?: string;
@@ -67,7 +70,51 @@ export class RemindersService {
       queryBuilder.andWhere('assignees.id = :assigneeId', {
         assigneeId: options.assignee,
       });
-    } else {
+    }
+
+    if (options.organisationId) {
+      const ids = [options.organisationId];
+      options.opportunityId && ids.push(options.opportunityId);
+
+      const complexTagQueryBuilder =
+        this.complexTagRepository.createQueryBuilder('complexTags');
+      complexTagQueryBuilder.leftJoin('complexTags.tags', 'tags');
+      complexTagQueryBuilder.where('tags.organisationId = :organisationId', {
+        organisationId: options.organisationId,
+      });
+
+      if (options.opportunityId) {
+        complexTagQueryBuilder.orWhere('tags.id = :opportunityId', {
+          opportunityId: options.opportunityId,
+        });
+      }
+
+      complexTagQueryBuilder.leftJoinAndSelect('complexTags.tags', 'tags_full');
+      const existingComplexTags = await complexTagQueryBuilder.getMany();
+
+      const filteredTags = existingComplexTags.filter(
+        (ct) =>
+          ct.tags.length === ids.length &&
+          ct.tags.every((t: OrganisationTagEntity | TagEntity) =>
+            t instanceof OrganisationTagEntity
+              ? ids.includes(t.organisationId)
+              : ids.includes(t.id),
+          ),
+      );
+
+      if (filteredTags.length === 0) {
+        return {
+          items: [],
+          total: 0,
+        };
+      }
+
+      queryBuilder.andWhere('reminders.tagId = :tagId', {
+        tagId: filteredTags[0].id,
+      });
+    }
+
+    if (!options.assignee && !options.organisationId) {
       queryBuilder
         .andWhere(
           new Brackets((qb) => {
@@ -255,7 +302,7 @@ export class RemindersService {
       throw new ForbiddenException();
     }
 
-    await this.remindersRepository.delete(reminderEntity.id);
+    await this.remindersRepository.softDelete(reminderEntity.id);
   }
 
   private async getOrCreateComplexTag(

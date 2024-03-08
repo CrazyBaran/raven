@@ -98,6 +98,10 @@ export class ReminderRO implements ReminderData {
 
   @Exclude()
   @ApiProperty()
+  public deletedAt: Date;
+
+  @Exclude()
+  @ApiProperty()
   public completedDate: Date | null;
 
   @ApiProperty()

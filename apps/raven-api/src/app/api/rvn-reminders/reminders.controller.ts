@@ -60,6 +60,8 @@ export class RemindersController {
     required: false,
   })
   @ApiQuery({ name: 'query', type: String, required: false })
+  @ApiQuery({ name: 'organisationId', type: String, required: false })
+  @ApiQuery({ name: 'opportunityId', type: String, required: false })
   @ApiResponse({
     status: 200,
     description: 'List of reminders',

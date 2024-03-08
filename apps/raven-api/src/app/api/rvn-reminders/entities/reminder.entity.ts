@@ -3,6 +3,7 @@ import {
   AfterLoad,
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -85,6 +86,9 @@ export class ReminderEntity {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   public updatedAt: Date;
+
+  @DeleteDateColumn()
+  public deletedAt: Date;
 
   public completed: boolean;
 

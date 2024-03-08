@@ -47,6 +47,10 @@ export class ParseGetRemindersOptionsPipe
     options.assignee = values['assignee'] ?? undefined;
     options.query = values['query'] ?? null;
 
+    options.organisationId = values['organisationId'] ?? null;
+
+    options.opportunityId = values['opportunityId'] ?? null;
+
     return options;
   }
 
