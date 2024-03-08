@@ -26,7 +26,7 @@ export class DomainResolver {
     }
 
     domain = domain.replace(/^(https?:\/\/)?(www\.)?/i, '');
-    domain = domain.replace(/\/$/, '');
+    domain = domain.replace(/\/.*$/, '');
 
     return domain.trim().toLowerCase();
   }

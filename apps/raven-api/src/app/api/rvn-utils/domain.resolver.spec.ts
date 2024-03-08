@@ -40,7 +40,9 @@ describe('DomainResolver', () => {
     ['https://www.domains.com', ['domains.com']],
     ['https://www.domains.com/', ['domains.com']],
     ['https://test.domains.com/', ['test.domains.com']],
-    ['https://test.domains.com/en/', ['test.domains.com/en']],
+    ['https://test.domains.com/en/', ['test.domains.com']],
+    ['https://test.domains.com/en/example/', ['test.domains.com']],
+    ['test.domains.com/en/example/', ['test.domains.com']],
   ])('should return unique domains', (domains, result) => {
     expect(domainResolver.extractDomains(domains)).toEqual(result);
   });

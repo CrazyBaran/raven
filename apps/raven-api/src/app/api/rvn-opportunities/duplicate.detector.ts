@@ -98,4 +98,31 @@ export class DuplicateDetector {
 
     return duplicate;
   }
+
+  public async fixDomains(): Promise<void> {
+    const chunkSize = 1000;
+    const count = await this.organisationDomainRepository.count();
+    const chunks = Math.ceil(count / chunkSize);
+    for (let i = 0; i < chunks; i++) {
+      const domains = await this.organisationDomainRepository.find({
+        skip: i * chunkSize,
+        take: chunkSize,
+      });
+      const domainsToCreate: OrganisationDomainEntity[] = [];
+      const domainsToDelete: OrganisationDomainEntity[] = [];
+      for (const domain of domains) {
+        const cleanedDomain = this.domainResolver.cleanDomain(domain.domain);
+        if (cleanedDomain !== domain.domain) {
+          domainsToDelete.push(domain);
+          const newDomain = this.organisationDomainRepository.create({
+            organisationId: domain.organisationId,
+            domain: cleanedDomain,
+          });
+          domainsToCreate.push(newDomain);
+        }
+      }
+      await this.organisationDomainRepository.remove(domainsToDelete);
+      await this.organisationDomainRepository.save(domainsToCreate);
+    }
+  }
 }

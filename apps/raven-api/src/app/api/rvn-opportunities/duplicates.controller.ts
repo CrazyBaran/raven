@@ -18,4 +18,15 @@ export class DuplicatesController {
   public async getDuplicates(): Promise<DuplicatesDto> {
     return await this.duplicateDetector.getDuplicates();
   }
+
+  @Get('fix-domains')
+  @ApiOperation({
+    summary: 'Fix all organisations domains',
+  })
+  @ApiTags('Organisations')
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async fixDomains(): Promise<void> {
+    await this.duplicateDetector.fixDomains();
+  }
 }
