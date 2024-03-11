@@ -69,7 +69,7 @@ export class CreateReminderDialogComponent
   protected companySourceFn = inject(REMINDER_COMPANY_SOURCE);
   protected usersSourceFn = inject(REMINDER_USERS_SOURCE);
 
-  staticCompany = signal<any>(null);
+  protected staticCompany = signal<unknown>(null);
 
   public ngOnInit(): void {
     this.store.dispatch(

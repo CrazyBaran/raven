@@ -7,6 +7,7 @@ import {
 import { Store } from '@ngrx/store';
 
 import { DatePipe } from '@angular/common';
+import { RemindersActions } from '@app/client/reminders/state';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { DynamicDialogContentBase } from '@app/client/shared/shelf';
 import { LoaderComponent, TagsContainerComponent } from '@app/client/shared/ui';
