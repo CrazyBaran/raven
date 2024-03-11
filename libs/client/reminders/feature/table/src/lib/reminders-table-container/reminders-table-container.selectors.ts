@@ -12,19 +12,18 @@ import {
 import { createSelector } from '@ngrx/store';
 
 export const selectRemindersTableButtonGroupNavigation = createSelector(
-  remindersQuery.selectRemindersTableParams,
-  tagsQuery.selectCurrentUserTag,
-  (params, userTag): ButtongroupNavigationModel => {
+  remindersQuery.remindersTableParamsOrigin,
+  (params): ButtongroupNavigationModel => {
     return buildButtonGroupNavigation({
       params,
       name: 'assignee',
       buttons: [
         {
-          id: userTag?.userId ?? 'unknown',
+          id: null,
           name: 'For Me',
         },
         {
-          id: null,
+          id: 'others',
           name: 'For Others',
         },
       ],
@@ -90,6 +89,7 @@ export const selectTableModel = createSelector(
     data: rows.map((reminder) => ({
       ...reminder,
       assignees: reminder.assignees.map(({ name }) => name),
+      assignedBy: reminder.assignedBy.name,
       tag: {
         company: ReminderUtils.getReminderCompanyTag(reminder)?.name,
         opportunity: ReminderUtils.getReminderOpportunityTag(reminder)?.name,

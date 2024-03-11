@@ -14,17 +14,19 @@
 ui-tilelayout-item {
   max-height: 400px;
 }
-//TODO: refactor this ng-deep selectors
-::ng-deep .k-link.k-selected {
-  background: white !important;
-}
 
-::ng-deep .k-panelbar-item-text {
-  color: black !important;
-  font-size: 16px;
-  line-height: 1.25;
-  font-weight: 400;
-}
-::ng-deep .k-panelbar-toggle {
-  color: black !important;
+::ng-deep .white-tilelayout {
+  .k-link.k-selected {
+    background: white !important;
+  }
+
+  .k-panelbar-item-text {
+    color: black !important;
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 400;
+  }
+  .k-panelbar-toggle {
+    color: black !important;
+  }
 }

@@ -1,0 +1,20 @@
+<ui-tilelayout-item id="organisation-details">
+  <div class="flex items-center justify-between gap-2" header>
+    <h5 class="k-card-title">Company details</h5>
+    <kendo-button
+      [disabled]="!!vm().isLoading"
+      [queryParams]="{
+        'organisation-description-edit': vm().currentOrganisation?.id
+      }"
+      [routerLink]="['./']"
+      iconClass="fa-sharp fa-solid fa-pen"
+      queryParamsHandling="merge"
+      size="small"
+    >
+      Edit
+    </kendo-button>
+  </div>
+  <div body class="bg-grey-100 h-full overflow-auto">
+    <p>{{ vm().currentOrganisation?.description }}</p>
+  </div>
+</ui-tilelayout-item>

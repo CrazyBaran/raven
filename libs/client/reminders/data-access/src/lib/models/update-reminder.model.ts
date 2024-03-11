@@ -7,6 +7,6 @@ export type UpdateReminderDto = Partial<
   dueDate?: Date;
   tag?: {
     companyId: string;
-    opportunityId: string;
+    opportunityId?: string;
   };
 };

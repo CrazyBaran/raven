@@ -103,6 +103,7 @@ export class ShortlistOrganisationsTableComponent {
         id: this.vm().shortlistId!,
       }),
     );
+    this.store.dispatch(ShortlistsActions.getShortlistExtras());
 
     this.store
       .select(organisationsQuery.selectOrganisationsTableParams)

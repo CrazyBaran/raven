@@ -38,5 +38,9 @@
         <p class="text-lg">{{ reminder.dueDate | date: 'MMMM d, y' }}</p>
       </section>
     </div>
+  } @else {
+    <div class="h-[280px]">
+      <ui-loader />
+    </div>
   }
 </div>

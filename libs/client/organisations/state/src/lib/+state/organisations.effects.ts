@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { OrganisationsService } from '@app/client/organisations/data-access';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';

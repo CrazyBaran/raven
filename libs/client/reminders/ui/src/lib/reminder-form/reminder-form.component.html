@@ -17,8 +17,9 @@
       #tag
       [fetchChildren]="fetchChildrenFn"
       [hasChildren]="hasChildrenFn"
-      [uiMultiSelectSourceFn]="companySource()"
+      [uiMultiSelectSourceFn]="tagSource()"
       [valueDepth]="1"
+      [filterable]="!staticCompany()"
       formControlName="tag"
       kendoDropDownTreeExpandable
       placeholder="Search Tags"
@@ -106,7 +107,6 @@
       [min]="today"
       formControlName="dueDate"
       format="MM/dd/yyyy"
-      placeholder="MM/dd/yyyy"
     />
     <kendo-formerror *uiOnError="'required'">
       Due Date is Required
