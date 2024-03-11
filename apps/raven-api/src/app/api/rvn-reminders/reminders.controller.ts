@@ -1,6 +1,7 @@
 import {
   PagedReminderData,
   ReminderData,
+  ReminderStats,
   ReminderStatus,
 } from '@app/rvns-reminders';
 import { RoleEnum } from '@app/rvns-roles';
@@ -34,7 +35,7 @@ import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.inte
 import { ParseCompanyOpportunityTagPipe } from './pipes/parse-company-opportunity-tags.pipe';
 import { ParseGetRemindersOptionsPipe } from './pipes/parse-get-reminders-options.pipe';
 import { ParseReminderPipe } from './pipes/parse-reminder.pipe';
-import { PagedReminderRO, ReminderRO } from './reminders.ro';
+import { PagedReminderRO, ReminderRO, RemindersStatsRO } from './reminders.ro';
 import { RemindersService } from './reminders.service';
 
 @ApiTags('Reminders')
@@ -75,6 +76,27 @@ export class RemindersController {
   ): Promise<PagedReminderData> {
     return PagedReminderRO.createFromPagedData(
       await this.remindersService.findAll(options, userEntity),
+    );
+  }
+
+  @Get('/stats')
+  @ApiOperation({
+    summary: 'Get stats for my reminders',
+    description:
+      'Returns stats for reminders assigned to me or that I assigned to others.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Stats object',
+    type: RemindersStatsRO,
+  })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async getStats(
+    @Identity(ParseUserFromIdentityPipe) userEntity?: UserEntity,
+  ): Promise<ReminderStats> {
+    return RemindersStatsRO.createFromStatsData(
+      await this.remindersService.getStatsForUser(userEntity),
     );
   }
 

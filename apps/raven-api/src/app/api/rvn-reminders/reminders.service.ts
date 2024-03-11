@@ -1,4 +1,4 @@
-import { ReminderStatus } from '@app/rvns-reminders';
+import { ReminderStats, ReminderStatus } from '@app/rvns-reminders';
 import {
   ForbiddenException,
   Injectable,
@@ -292,6 +292,46 @@ export class RemindersService {
       where: { id: reminderEntity.id },
       relations: ['assignees', 'tag', 'tag.tags', 'assignedBy'],
     });
+  }
+
+  public async getStatsForUser(userEntity: UserEntity): Promise<ReminderStats> {
+    const currentDate = new Date();
+    const overdueForMeQueryBuilder =
+      this.remindersRepository.createQueryBuilder('reminders');
+    overdueForMeQueryBuilder.leftJoin('reminders.assignees', 'assignees');
+    overdueForMeQueryBuilder
+      .where('assignees.id = :userId', {
+        userId: userEntity.id,
+      })
+      .andWhere('reminders.dueDate < :date', {
+        date: currentDate,
+      })
+      .andWhere('reminders.completedDate IS NULL');
+
+    const overdueForOthersqueryBuilder =
+      this.remindersRepository.createQueryBuilder('reminders');
+    overdueForOthersqueryBuilder.leftJoin('reminders.assignees', 'assignees');
+    overdueForOthersqueryBuilder
+      .where('assignees.id != :userId', {
+        userId: userEntity.id,
+      })
+      .andWhere('reminders.dueDate < :date', {
+        date: currentDate,
+      })
+      .andWhere('reminders.assignedById = :userId', {
+        userId: userEntity.id,
+      })
+      .andWhere('reminders.completedDate IS NULL');
+
+    const overdueForMeCount = await overdueForMeQueryBuilder.getCount();
+    const overdueForOthersCount = await overdueForOthersqueryBuilder.getCount();
+
+    return {
+      overdue: {
+        forMe: overdueForMeCount,
+        forOthers: overdueForOthersCount,
+      },
+    };
   }
 
   public async remove(

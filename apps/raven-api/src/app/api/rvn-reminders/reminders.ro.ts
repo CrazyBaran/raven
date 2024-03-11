@@ -3,6 +3,8 @@ import {
   ReminderAssignee,
   ReminderComplexTag,
   ReminderData,
+  ReminderStats,
+  ReminderStatsEntity,
   ReminderStatus,
   ReminderTag,
 } from '@app/rvns-reminders';
@@ -179,4 +181,33 @@ export class PagedReminderRO implements PagedData<ReminderRO> {
     total: pagedData.total,
     items: pagedData?.items.map(ReminderRO.createFromEntity),
   });
+}
+
+export class RemindersStatsEntityRO implements ReminderStatsEntity {
+  @ApiProperty()
+  public forMe: number;
+
+  @ApiProperty()
+  public forOthers: number;
+
+  public static createFromStatsEntityData = (
+    statsEntity: ReminderStatsEntity,
+  ): ReminderStatsEntity =>
+    plainToInstance(RemindersStatsEntityRO, {
+      ...statsEntity,
+    });
+}
+
+export class RemindersStatsRO implements ReminderStats {
+  @ApiProperty({
+    type: RemindersStatsEntityRO,
+  })
+  public overdue: RemindersStatsEntityRO;
+
+  public static createFromStatsData = (data: ReminderStats): ReminderStats =>
+    plainToInstance(RemindersStatsRO, {
+      overdue: {
+        ...RemindersStatsEntityRO.createFromStatsEntityData(data.overdue),
+      },
+    });
 }

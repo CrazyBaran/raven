@@ -20,6 +20,15 @@ export interface ReminderTag {
   organisationId: string;
 }
 
+export interface ReminderStatsEntity {
+  forMe: number;
+  forOthers: number;
+}
+
+export interface ReminderStats {
+  overdue: ReminderStatsEntity;
+}
+
 export interface ReminderData {
   id: string;
   name: string;
