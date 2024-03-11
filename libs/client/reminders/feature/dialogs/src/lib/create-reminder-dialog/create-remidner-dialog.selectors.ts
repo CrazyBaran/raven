@@ -17,7 +17,7 @@ export const selectCreateReminderParams = createSelector(
     opportunities,
   ): {
     organisation: OrganisationData | undefined;
-    opportunity: unknown | undefined;
+    opportunity: { id: string; name: string } | undefined;
   } => {
     if (Array.isArray(params)) {
       const [organisationId, opportunityId] = params;
