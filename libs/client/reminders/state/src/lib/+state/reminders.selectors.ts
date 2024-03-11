@@ -1,5 +1,7 @@
 import { buildPageParamsSelector } from '@app/client/shared/util-router';
+import { tagsQuery } from '@app/client/tags/state';
 import { createSelector } from '@ngrx/store';
+import * as _ from 'lodash';
 import { remindersFeature } from './reminders.reducer';
 
 const remindersQueryParams = [
@@ -13,11 +15,23 @@ const remindersQueryParams = [
   'status',
 ] as const;
 
-const selectRemindersTableParams = buildPageParamsSelector(
+const remindersTableParamsOrigin = buildPageParamsSelector(
   remindersQueryParams,
   {
     skip: '0',
     take: '30',
+  },
+);
+
+const selectRemindersTableParams = createSelector(
+  remindersTableParamsOrigin,
+  tagsQuery.selectCurrentUserTag,
+  (params, currentUser) => {
+    if (!params.assignee && currentUser) {
+      return { ...params, assignee: currentUser.id };
+    } else {
+      return _.omit(params, 'assignee');
+    }
   },
 );
 
@@ -56,6 +70,7 @@ const selectTotalCount = createSelector(
 
 export const remindersQuery = {
   ...remindersFeature,
+  remindersTableParamsOrigin,
   remindersQueryParams,
   selectRemindersTableParams,
   selectReloadTableParams,

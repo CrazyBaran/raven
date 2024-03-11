@@ -18,6 +18,7 @@ import {
   KanbanFooterGroup,
   StatusIndicatorComponent,
 } from '@app/client/opportunities/ui';
+import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { PipelinesActions } from '@app/client/pipelines/state';
 import { FadeInOutDirective, fadeIn } from '@app/client/shared/ui';
@@ -28,6 +29,7 @@ import {
 } from '@app/client/shared/ui-router';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { DialogUtil } from '@app/client/shared/util';
+import { ShortlistsActions } from '@app/client/shortlists/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -130,11 +132,16 @@ export class OpportunityDetailsPageComponent {
   public onStageChange(stageId: string): void {
     const stage = this.vm().lines.data.find((s) => s.id === stageId);
     if (stage && stage.configuration) {
+      const isWon = OpportunityUtils.isWonStage(stage);
+
       this.footerGroup.set({
-        id: stageId,
         name: stage.displayName,
-        theme: stage.configuration.color as 'success' | 'warning',
-        droppableFrom: stage.configuration.droppableFrom,
+        id: stage.id,
+        theme: stage.configuration!.color as 'warning' | 'success',
+        droppableFrom: stage.configuration!.droppableFrom ?? [],
+        //todo: implement when api ready
+        removeSwitch: !isWon,
+        reminder: !isWon,
       });
     } else {
       this.store.dispatch(
@@ -153,7 +160,9 @@ export class OpportunityDetailsPageComponent {
     this.footerGroup.set(null);
   }
 
-  protected onConfirmDialog(): void {
+  protected onConfirmDialog(event: {
+    removeCompanyFromShortlist: boolean;
+  }): void {
     this.store.dispatch(
       OpportunitiesActions.changeOpportunityPipelineStage({
         id: this.vm().opportunityId!,
@@ -161,5 +170,12 @@ export class OpportunityDetailsPageComponent {
       }),
     );
     this.footerGroup.set(null);
+    if (event.removeCompanyFromShortlist) {
+      this.store.dispatch(
+        ShortlistsActions.removeOrganisationFromMyShortlist({
+          organisationId: this.vm().currentOrganisationId!,
+        }),
+      );
+    }
   }
 }

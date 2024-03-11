@@ -101,6 +101,15 @@
 
     <kendo-grid-column headerClass="!font-bold" title="Assigned By">
       <ng-template kendoGridCellTemplate let-reminder>
+        <div class="flex items-center">
+          <i class="fa-solid fa-circle-user mr-2"></i>
+          {{ reminder.assignedBy }}
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Assignees">
+      <ng-template kendoGridCellTemplate let-reminder>
         @defer {
           <ui-tags-container
             [rows]="1"

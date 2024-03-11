@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   Injector,
   input,
@@ -89,6 +90,15 @@ export class ReminderFormComponent {
     >();
   public companySource =
     input.required<(id: string) => Observable<CompanyOpportunityTreeItem[]>>();
+
+  public staticCompany = input<{ id: string; name: string }>();
+
+  public tagSource = computed(() => {
+    return this.staticCompany()
+      ? // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+        () => of([{ id: '', company: this.staticCompany() }])
+      : this.companySource();
+  });
 
   public today: Date = new Date();
 

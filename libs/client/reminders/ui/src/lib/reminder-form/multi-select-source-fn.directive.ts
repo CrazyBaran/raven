@@ -5,10 +5,10 @@ import {
   Directive,
   EventEmitter,
   inject,
-  Input,
+  input,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
   DropDownListComponent,
   DropDownTreeComponent,
@@ -22,9 +22,11 @@ import { catchError, Observable, of, startWith, switchMap, tap } from 'rxjs';
   standalone: true,
 })
 export class MultiSelectSourceFnDirective implements OnInit {
-  @Input({ alias: 'uiMultiSelectSourceFn' }) public companySourceFn: (
-    id: string,
-  ) => Observable<any[]>;
+  public companySourceFn = input.required<(id: string) => Observable<any[]>>({
+    alias: 'uiMultiSelectSourceFn',
+  });
+
+  public companySourceFn$ = toObservable(this.companySourceFn);
 
   public multiSelectComponent =
     inject(MultiSelectComponent, {
@@ -54,12 +56,16 @@ export class MultiSelectSourceFnDirective implements OnInit {
           this.cdr.detectChanges();
         }),
         switchMap((filter) =>
-          this.companySourceFn(filter).pipe(
-            tap((data) => {
-              this.multiSelectComponent!.data = data;
-              this.multiSelectComponent!.loading = false;
-              this.cdr.detectChanges();
-            }),
+          this.companySourceFn$.pipe(
+            switchMap((companySourceFn) =>
+              companySourceFn!(filter).pipe(
+                tap((data) => {
+                  this.multiSelectComponent!.data = data;
+                  this.multiSelectComponent!.loading = false;
+                  this.cdr.detectChanges();
+                }),
+              ),
+            ),
           ),
         ),
         catchError((error) => {

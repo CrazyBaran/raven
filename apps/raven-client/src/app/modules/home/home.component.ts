@@ -85,7 +85,6 @@ export class HomeComponent {
       path: 'reminders',
       icon: 'fa-solid fa-alarm-clock',
       disabled: !this.environment.remindersFeature,
-      exact: true,
       navigate: true,
       badge: {
         value: this.remindersCount(),

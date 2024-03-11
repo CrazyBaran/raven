@@ -4,6 +4,7 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 
@@ -68,6 +69,8 @@ export class CreateReminderDialogComponent
   protected companySourceFn = inject(REMINDER_COMPANY_SOURCE);
   protected usersSourceFn = inject(REMINDER_USERS_SOURCE);
 
+  staticCompany = signal<any>(null);
+
   public ngOnInit(): void {
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({
@@ -81,6 +84,11 @@ export class CreateReminderDialogComponent
           organisationId: this.vm().createParams.organisation!.id,
         })
         .subscribe((response) => {
+          const staticCompany = {
+            name: this.vm().createParams.organisation!.name,
+            id: response.data![0].id,
+          };
+          this.staticCompany.set(staticCompany);
           this.form.controls.tag.setValue({
             company: {
               name: this.vm().createParams.organisation!.name,
@@ -94,7 +102,10 @@ export class CreateReminderDialogComponent
               : undefined,
           });
         });
-      this.form.controls.tag.disable();
+
+      if (this.vm().createParams.opportunity) {
+        this.form.controls.tag.disable();
+      }
     }
   }
 

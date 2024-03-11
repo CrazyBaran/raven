@@ -7,7 +7,7 @@ import { tagsQuery } from '@app/client/tags/state';
 import { OrganisationData } from '@app/rvns-opportunities';
 import { createSelector } from '@ngrx/store';
 
-const selectCreateReminderParams = createSelector(
+export const selectCreateReminderParams = createSelector(
   selectQueryParam(DialogUtil.queryParams.createReminder),
   organisationsFeature.selectEntities,
   opportunitiesQuery.selectOpportunitiesDictionary,

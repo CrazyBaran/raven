@@ -32,7 +32,6 @@ import { Actions } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { filter } from 'rxjs';
-import { OrganisationNotesComponent } from '../organisation-related-notes/organisation-notes.component';
 import { ORGANISATION_WIDGETS } from '../widgets';
 import { OrganisationShortlistsTableComponent } from '../widgets/organisation-shortlists-table/organisation-shortlists-table.component';
 import { selectOrganisationPageViewModel } from './organisation-page.selectors';
@@ -44,7 +43,6 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
     ORGANISATION_WIDGETS,
     PageTemplateComponent,
     FeatureFlagDirective,
-    OrganisationNotesComponent,
     NgClass,
     TooltipModule,
     RouterLink,

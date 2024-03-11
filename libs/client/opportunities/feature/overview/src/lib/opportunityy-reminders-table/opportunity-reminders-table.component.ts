@@ -38,7 +38,7 @@ export class OpportunityRemindersTableComponent {
       queryParams: {
         [DialogUtil.queryParams.createReminder]: [
           this.organisationRemindersStore.additionalParams().organisationId,
-          this.organisationRemindersStore.additionalParams().opportunityId,
+          this.organisationRemindersStore.opportunityId(),
         ],
       },
       queryParamsHandling: 'merge',

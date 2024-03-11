@@ -51,6 +51,7 @@ export interface ReminderTableRow {
     opportunity: string | undefined;
   };
   assignees: string[];
+  assignedBy: string;
   dueDate: string | Date;
   status: 'overdue' | 'due' | 'completed';
   actionsModel: DropdownbuttonNavigationModel;

@@ -85,7 +85,7 @@ export class UpdateReminderDialogComponent extends DynamicDialogContentBase {
           tag: rawValue.tag
             ? {
                 companyId: rawValue.tag.company.id,
-                opportunityId: rawValue.tag.opportunity?.id ?? '',
+                opportunityId: rawValue.tag.opportunity?.id,
               }
             : undefined,
         },

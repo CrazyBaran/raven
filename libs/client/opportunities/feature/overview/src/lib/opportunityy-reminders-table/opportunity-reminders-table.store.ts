@@ -20,6 +20,12 @@ import { map } from 'rxjs';
 
 export const opportunityRemindersTableStore = signalStore(
   withComputed((store, ngrxStore = inject(Store)) => ({
+    opportunityId: computed(
+      () =>
+        ngrxStore.selectSignal(
+          opportunitiesQuery.selectRouteOpportunityDetails,
+        )()?.id ?? '',
+    ),
     additionalParams: computed(() => ({
       organisationId: ngrxStore.selectSignal(
         routerQuery.selectCurrentOrganisationId,
