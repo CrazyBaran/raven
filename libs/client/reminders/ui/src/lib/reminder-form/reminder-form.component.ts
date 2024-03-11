@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -95,8 +96,7 @@ export class ReminderFormComponent {
 
   public tagSource = computed(() => {
     return this.staticCompany()
-      ? // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        () => of([{ id: '', company: this.staticCompany() }])
+      ? () => of([{ id: '', company: this.staticCompany() }])
       : this.companySource();
   });
 

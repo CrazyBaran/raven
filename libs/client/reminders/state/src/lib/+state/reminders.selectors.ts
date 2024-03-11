@@ -48,17 +48,18 @@ const selectReloadTableParams = createSelector(
 );
 
 const selectToMeCount = createSelector(
-  remindersFeature.selectTable,
+  remindersFeature.selectRemindersState,
 
-  (table) => {
-    return 21;
+  ({ stats }) => {
+    return stats.overdue.forMe;
   },
 );
 
 const selectToOthersCount = createSelector(
-  remindersFeature.selectTable,
-  (table) => {
-    return 37;
+  remindersFeature.selectRemindersState,
+
+  ({ stats }) => {
+    return stats.overdue.forOthers;
   },
 );
 

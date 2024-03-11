@@ -2,6 +2,7 @@ import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, on } from '@ngrx/store';
 
 import { LoadingState } from '@app/client/shared/util';
+import { ReminderStats } from '@app/rvns-reminders';
 import { RemindersActions } from './reminders.actions';
 import { ReminderEntity } from './reminders.model';
 
@@ -22,6 +23,7 @@ export interface RemindersState extends EntityState<ReminderEntity> {
     total: number;
   };
   loadingStates: RemindersLoadingStates;
+  stats: ReminderStats;
 }
 
 export const remindersAdapter: EntityAdapter<ReminderEntity> =
@@ -33,6 +35,12 @@ export const initialRemindersState: RemindersState =
     table: {
       ids: [],
       total: 0,
+    },
+    stats: {
+      overdue: {
+        forMe: 0,
+        forOthers: 0,
+      },
     },
   });
 
@@ -224,6 +232,23 @@ export const remindersFeature = createFeature({
     on(RemindersActions.loadMoreRemindersFailure, (state) => ({
       ...state,
       loadingStates: { ...state.loadingStates, loadMoreTable: false },
+    })),
+
+    //////////////////////////
+    on(RemindersActions.getRemindersStats, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, getStats: true },
+    })),
+
+    on(RemindersActions.getRemindersStatsSuccess, (state, { data }) => ({
+      ...state,
+      stats: data,
+      loadingStates: { ...state.loadingStates, getStats: false },
+    })),
+
+    on(RemindersActions.getRemindersStatsFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, getStats: false },
     })),
   ),
 

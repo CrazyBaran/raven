@@ -5,7 +5,11 @@ import { GenericResponse } from '@app/rvns-api';
 import { PagedData } from 'rvns-shared';
 import { forkJoin, map, Observable } from 'rxjs';
 import { CreateReminderDto } from './models/create-reminder.model';
-import { GetRemindersDto, ReminderDto } from './models/reminder.model';
+import {
+  GetRemindersDto,
+  ReminderDto,
+  ReminderStats,
+} from './models/reminder.model';
 import { UpdateReminderDto } from './models/update-reminder.model';
 
 @Injectable({
@@ -66,7 +70,7 @@ export class RemindersService {
       ),
     ).pipe(
       map(
-        (responses) =>
+        () =>
           ({
             data: null,
             status: 'success',
@@ -75,5 +79,9 @@ export class RemindersService {
           }) as GenericResponse<null>,
       ),
     );
+  }
+
+  public getRemindersStats(): Observable<GenericResponse<ReminderStats>> {
+    return this.http.get<GenericResponse<ReminderStats>>(`${this.url}/stats`);
   }
 }
