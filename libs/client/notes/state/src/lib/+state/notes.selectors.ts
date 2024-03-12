@@ -73,7 +73,10 @@ export const selectAllNotesTableRows = createSelector(
       const complexTags: NoteTagData[] =
         note.complexTags?.map((t) => ({
           id: t.id,
-          name: `${t.tags.map((t) => t.name).join(' / ')}`,
+          name: `${[...t.tags]
+            .sort((a, b) => (a.type !== 'company' ? 1 : -1))
+            .map((t) => t.name)
+            .join(' / ')}`,
           type: 'opportunity',
         })) ?? [];
       return {

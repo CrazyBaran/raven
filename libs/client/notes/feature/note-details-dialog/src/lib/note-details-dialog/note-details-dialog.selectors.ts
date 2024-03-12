@@ -59,11 +59,16 @@ export const selectNoteDetailsDialogViewModel = createSelector(
       ...noteDetails,
       tags: [
         ...(noteDetails?.tags ?? []),
-        ...(noteDetails?.complexTags?.map((tag) => ({
-          id: tag.id,
-          name: tag.tags.map((t) => t.name).join(' / '),
-          type: 'opportunity',
-        })) ?? []),
+        ...(noteDetails?.complexTags?.map((tag) => {
+          return {
+            id: tag.id,
+            name: [...tag.tags]
+              .sort((a, b) => (a.type !== 'company' ? 1 : -1))
+              .map((t) => t.name)
+              .join(' / '),
+            type: 'opportunity',
+          };
+        }) ?? []),
       ],
     },
     form,
@@ -130,11 +135,19 @@ function createNotepadForm(
       ...(note?.tags
         ?.filter((tag) => tag.type !== 'people')
         .map((tag) => tag.id) ?? []),
-      ...(note?.complexTags?.map((tag) => ({
-        opportunityTagId:
-          tag.tags.find((t) => t.type === 'opportunity')?.id ?? '',
-        organisationId: tag.tags.find((t) => t.type === 'company')?.id ?? '',
-      })) ?? []),
+      ...(note?.complexTags?.map((tag) => {
+        const organisationId =
+          tag.tags.find((t) => t.type === 'company')?.id ?? '';
+        const opportunityTagId = tag.tags.find((t) => t.type === 'opportunity')
+          ?.id;
+        const versionTagId = tag.tags.find((t) => t.type === 'version')?.id;
+        return opportunityTagId
+          ? { organisationId, opportunityTagId }
+          : {
+              organisationId,
+              versionTagId: versionTagId!,
+            };
+      }) ?? []),
     ],
 
     title: note?.name,
