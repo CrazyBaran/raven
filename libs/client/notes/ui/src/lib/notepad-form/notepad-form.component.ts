@@ -50,7 +50,11 @@ import { EditorView } from '@progress/kendo-angular-editor';
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
 import { TagComponent, TagTypeColorPipe } from '@app/client/shared/ui';
 import { TagsActions, tagsQuery } from '@app/client/tags/state';
-import { TagDropdownValue } from '@app/client/tags/ui';
+import {
+  isOpportunityComplexTag,
+  isSimpleTagDropdownValue,
+  TagDropdownValue,
+} from '@app/client/tags/ui';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { firstValueFrom, map, startWith, tap } from 'rxjs';
@@ -248,23 +252,40 @@ export class NotepadFormComponent
     return (
       this.addedTagIds()
         ?.map((tag) => {
-          if (typeof tag === 'string') {
+          if (isSimpleTagDropdownValue(tag)) {
             return this.tags().find((t) => t?.id === tag) as TagData;
           }
-          const oppotunityTag = this.tags().find(
-            (t) => t?.id === tag.opportunityTagId,
-          ) as TagData;
-          const organisationTag = this.tags().find(
-            (t) => t?.id === tag.organisationId,
-          ) as TagData;
-          if (!oppotunityTag || !organisationTag) {
-            return null;
+          if (isOpportunityComplexTag(tag)) {
+            const oppotunityTag = this.tags().find(
+              (t) => t?.id === tag.opportunityTagId,
+            ) as TagData;
+            const organisationTag = this.tags().find(
+              (t) => t?.id === tag.organisationId,
+            ) as TagData;
+            if (!oppotunityTag || !organisationTag) {
+              return null;
+            }
+            return {
+              ...oppotunityTag,
+              organisationId: organisationTag?.id,
+              name: `${organisationTag?.name} / ${oppotunityTag?.name}`,
+            } as TagData;
+          } else {
+            const versionTag = this.tags().find(
+              (t) => t?.id === tag.versionTagId,
+            ) as TagData;
+            const organisationTag = this.tags().find(
+              (t) => t?.id === tag.organisationId,
+            ) as TagData;
+            if (!versionTag || !organisationTag) {
+              return null;
+            }
+            return {
+              ...versionTag,
+              organisationId: organisationTag?.id,
+              name: `${organisationTag?.name} / ${versionTag?.name}`,
+            } as TagData;
           }
-          return {
-            ...oppotunityTag,
-            organisationId: organisationTag?.id,
-            name: `${organisationTag?.name} / ${oppotunityTag?.name}`,
-          } as TagData;
         })
         .filter(Boolean) ?? []
     );
@@ -320,6 +341,7 @@ export class NotepadFormComponent
           'investor',
           'business-model',
           'people',
+          'version',
         ],
       }),
     );
@@ -352,10 +374,15 @@ export class NotepadFormComponent
   public removeTag(tag: TagData): void {
     this.notepadForm.controls.tags.setValue(
       this.addedTagIds()?.filter((t) => {
-        if (typeof t === 'string') {
+        if (isSimpleTagDropdownValue(t)) {
           return t !== tag.id;
         }
-        return t.opportunityTagId !== tag.id && t.organisationId !== tag.id;
+
+        if (isOpportunityComplexTag(t)) {
+          return t.opportunityTagId !== tag.id && t.organisationId !== tag.id;
+        }
+
+        return t.versionTagId !== tag.id && t.organisationId !== tag.id;
       }) ?? [],
     );
     this.notepadForm.controls.tags.markAsDirty();

@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,12 +34,20 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { OrganisationsActions } from '@app/client/organisations/state';
+import { RemindersActions } from '@app/client/reminders/state';
+import {
+  CRAETE_REMINDER_FORM,
+  providerReminderForm,
+} from '@app/client/reminders/utils';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
+import { ControlInvalidPipe } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
+import { RxPush } from '@rx-angular/template/push';
 import { startWith, take } from 'rxjs';
+import { CreateReminderContainerComponent } from '../../../../../../reminders/feature/dialogs/src/lib/create-reminder-container/create-reminder-container.component';
 import { selectUpdateOpportunityStageViewModel } from './update-opportunity-stage-dialog.selectors';
 
 export type SelectedStageType = 'won' | 'lost' | 'pass' | 'other';
@@ -94,10 +103,14 @@ export const DIALOG_STAGE_CONFIG: Record<SelectedStageType, DialogStageConfig> =
     ErrorMessagePipe,
     KeyValuePipe,
     SwitchModule,
+    CreateReminderContainerComponent,
+    ControlInvalidPipe,
+    RxPush,
   ],
   templateUrl: './update-opportunity-stage-dialog.component.html',
   styleUrls: ['./update-opportunity-stage-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [providerReminderForm],
 })
 export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
   protected store = inject(Store);
@@ -111,7 +124,10 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
     stage: [<string | null>null, Validators.required],
   });
 
+  protected reminderForm = inject(CRAETE_REMINDER_FORM);
+
   protected removeCompanyFromShortlist = new FormControl(false);
+  protected setReminderForm = new FormControl(false);
 
   protected stageId = toSignal(
     this.formGroup.controls.stage.valueChanges.pipe(
@@ -202,6 +218,26 @@ export class UpdateOpportunityStageDialogComponent extends DialogContentBase {
       this.store.dispatch(
         ShortlistsActions.removeOrganisationFromMyShortlist({
           organisationId: this.vm().organisation.id!,
+        }),
+      );
+    }
+
+    if (this.setReminderForm.value) {
+      const value = this.reminderForm.getRawValue();
+      this.store.dispatch(
+        RemindersActions.createReminder({
+          data: {
+            name: value.title!,
+            description: value.description!,
+            dueDate: value.dueDate!,
+            assignees: value.assignees!,
+            tag: value.tag
+              ? {
+                  companyId: value.tag.company.id,
+                  opportunityId: value.tag.opportunity?.id ?? '',
+                }
+              : undefined,
+          },
         }),
       );
     }

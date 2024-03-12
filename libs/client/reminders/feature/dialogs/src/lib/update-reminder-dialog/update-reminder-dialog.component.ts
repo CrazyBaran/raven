@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
@@ -5,6 +6,11 @@ import { AsyncPipe } from '@angular/common';
 import { RemindersActions } from '@app/client/reminders/state';
 import { ReminderForm, ReminderFormComponent } from '@app/client/reminders/ui';
 // eslint-disable-next-line @nx/enforce-module-boundaries
+import {
+  REMINDER_COMPANY_SOURCE,
+  REMINDER_USERS_SOURCE,
+  UPDATE_REMINDER_FORM_FN,
+} from '@app/client/reminders/utils';
 import { DynamicDialogContentBase } from '@app/client/shared/shelf';
 import {
   ControlHasChangesPipe,
@@ -17,11 +23,6 @@ import { DialogModule, DialogRef } from '@progress/kendo-angular-dialog';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { RxPush } from '@rx-angular/template/push';
 import { first } from 'rxjs';
-import {
-  REMINDER_COMPANY_SOURCE,
-  REMINDER_USERS_SOURCE,
-} from '../create-reminder-form.token';
-import { UPDATE_REMINDER_FORM_FN } from '../update-reminder-form.token';
 import {
   selectUpdateReminderViewModel,
   selectUpdatingReminder,

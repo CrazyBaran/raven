@@ -36,7 +36,6 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { FilterExpandSettings } from '@progress/kendo-angular-treeview';
 import { isEqual } from 'lodash';
-import { unique } from 'ng-packagr/lib/utils/array';
 import {
   combineLatest,
   debounceTime,
@@ -52,19 +51,48 @@ import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group
 export type DropdownTag = {
   id: string;
   name: string;
-  companyId?: number | null;
+  companyId?: string;
   type:
     | 'company'
     | 'opportunity'
     | 'industry'
     | 'investor'
     | 'business-model'
+    | 'version'
     | 'company_root';
+};
+
+export type OpportunityComplexTag = {
+  organisationId: string;
+  opportunityTagId: string;
+};
+export type VersionComplexTag = {
+  organisationId: string;
+  versionTagId: string;
 };
 
 export type TagDropdownValue =
   | string
-  | { organisationId: string; opportunityTagId: string };
+  | OpportunityComplexTag
+  | VersionComplexTag;
+
+export const isSimpleTagDropdownValue = (
+  item: TagDropdownValue,
+): item is string => {
+  return typeof item === 'string';
+};
+
+export const isOpportunityComplexTag = (
+  item: TagDropdownValue,
+): item is OpportunityComplexTag => {
+  return !isSimpleTagDropdownValue(item) && 'opportunityTagId' in item;
+};
+
+export const isVersionComplexTag = (
+  item: TagDropdownValue,
+): item is VersionComplexTag => {
+  return !isSimpleTagDropdownValue(item) && 'versionTagId' in item;
+};
 
 @Component({
   selector: 'app-tag-dropdown',
@@ -135,7 +163,13 @@ export class TagDropdownComponent extends ControlValueAccessor<
   protected oportunityTags = computed(() =>
     this.tagsSignal().filter((item) => item.type === 'opportunity'),
   );
+
+  protected versionTags = computed(() =>
+    this.tagsSignal().filter((item) => item.type === 'version'),
+  );
+
   protected opportunityTags$ = toObservable(this.oportunityTags);
+  protected versionTags$ = toObservable(this.versionTags);
 
   protected filter$ = toObservable(this.filterValue);
   protected companyTags$ = this.filter$.pipe(
@@ -165,41 +199,56 @@ export class TagDropdownComponent extends ControlValueAccessor<
   protected hasChildren = (dataItem: object): boolean =>
     'type' in dataItem && dataItem.type === 'company_root';
 
-  protected children = (dataItem: object): Observable<object[]> =>
-    combineLatest([this.opportunityTags$, this.value$]).pipe(
-      map(([opportunityTags, value]) => {
-        const companyId = 'id' in dataItem ? (dataItem?.id as string) : '';
+  protected children = ((dataItem: DropdownTag): Observable<object[]> =>
+    combineLatest([this.opportunityTags$, this.value$, this.versionTags$]).pipe(
+      map(([allOpportunityTags, value, allVersionTags]) => {
+        const companyId = dataItem.id;
         const companyTag = {
           id: companyId,
-          name: 'name' in dataItem ? dataItem?.name : '',
+          name: dataItem.name,
           label: '(No linked opportunity)',
           type: 'company',
-          companyId: 'id' in dataItem ? dataItem?.id : '',
+          companyId: dataItem.id,
         };
 
-        const tags = opportunityTags
+        const opportunityTags = allOpportunityTags
           .filter(
             ({ id }) =>
               !value.some(
                 (v) =>
-                  typeof v !== 'string' &&
+                  isOpportunityComplexTag(v) &&
                   v.organisationId === companyId &&
                   v.opportunityTagId === id,
               ),
           )
           .map((t) => ({
             ...t,
-            companyId: 'id' in dataItem ? dataItem.id : null,
+            companyId: companyId,
+          }));
+
+        const versionTags = allVersionTags
+          .filter(
+            (versionTag) =>
+              !value.some(
+                (v) =>
+                  isVersionComplexTag(v) && v.versionTagId === versionTag.id,
+              ) &&
+              ('organisationId' in versionTag && versionTag.organisationId) ===
+                ('organisationId' in dataItem && dataItem['organisationId']),
+          )
+          .map((t) => ({
+            ...t,
+            companyId: companyId,
           }));
 
         return this.value().some(
           (t) => typeof t === 'string' && t === companyId,
         )
-          ? tags
-          : [companyTag, ...tags];
+          ? [...opportunityTags, ...versionTags]
+          : [companyTag, ...opportunityTags, ...versionTags];
       }),
       distinctUntilChanged(isEqual),
-    );
+    )) as (node: object) => Observable<object[]>;
 
   protected currentTypeTags = computed(() => {
     const type = this.type();
@@ -231,22 +280,20 @@ export class TagDropdownComponent extends ControlValueAccessor<
       return;
     }
 
-    if (dataItem.type === 'opportunity') {
-      const companyId = String(dataItem.companyId ?? '');
-      this.value.update((value) =>
-        unique([
-          ...value,
-          {
-            organisationId: companyId,
+    const value: TagDropdownValue =
+      dataItem.type === 'opportunity'
+        ? {
+            organisationId: dataItem.companyId!,
             opportunityTagId: dataItem.id,
-          },
-        ]),
-      );
-      this.onChange?.(this.value());
-      return;
-    }
+          }
+        : dataItem.type === 'version'
+          ? {
+              organisationId: dataItem.companyId!,
+              versionTagId: dataItem.id,
+            }
+          : dataItem.id;
 
-    this.value.set([...this.value(), dataItem.id]);
+    this.value.set([...this.value(), value]);
     this.onChange?.(this.value());
   }
 

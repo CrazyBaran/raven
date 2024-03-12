@@ -2,7 +2,7 @@
   <span class="k-window-title">Update Opportunity Status</span>
 </kendo-dialog-titlebar>
 
-<div class="p-10">
+<div class="max-h-[65vh] overflow-y-scroll p-10">
   <p class="text-center">
     Please select the new status for the opportunity as listed below.
   </p>
@@ -57,14 +57,6 @@
 
     @if (dialogConfig().actionButtons) {
       <div class="mt-4 flex flex-col gap-4">
-        <kendo-button
-          class="mx-auto w-fit"
-          themeColor="primary"
-          fillMode="outline"
-          iconClass="fa-solid fa-bell"
-        >
-          Set a reminder
-        </kendo-button>
         <div class="flex items-center justify-between">
           <p>Remove company from my personal shortlist</p>
           <kendo-switch [formControl]="removeCompanyFromShortlist">
@@ -72,6 +64,21 @@
             <ng-template kendoSwitchOnLabel>On</ng-template>
           </kendo-switch>
         </div>
+        <div class="flex items-center justify-between">
+          <p>Set a reminder</p>
+          <kendo-switch [formControl]="setReminderForm">
+            <ng-template kendoSwitchOffLabel>Off</ng-template>
+            <ng-template kendoSwitchOnLabel>On</ng-template>
+          </kendo-switch>
+        </div>
+        @if (setReminderForm.value) {
+          <app-create-reminder-container
+            class="border-component-border border p-4"
+            [form]="reminderForm"
+            [organisationId]="vm().organisation?.id!"
+            [opportunityId]="vm().opportunityId"
+          />
+        }
       </div>
     }
   </form>
@@ -81,7 +88,11 @@
   <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
   <kendo-button
     (click)="submit()"
-    [disabled]="!formGroup.valid || vm().isCreating"
+    [disabled]="
+      !formGroup.valid ||
+      vm().isCreating ||
+      (!!setReminderForm.value && (reminderForm | controlInvalid$ | push))
+    "
     [themeColor]="dialogConfig().submitButtonTheme"
   >
     @if (vm().isCreating) {

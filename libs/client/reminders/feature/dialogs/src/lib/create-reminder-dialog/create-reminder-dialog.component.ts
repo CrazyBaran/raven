@@ -11,6 +11,12 @@ import { Store } from '@ngrx/store';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { RemindersActions } from '@app/client/reminders/state';
 import { ReminderFormComponent } from '@app/client/reminders/ui';
+import {
+  CRAETE_REMINDER_FORM,
+  providerReminderForm,
+  REMINDER_COMPANY_SOURCE,
+  REMINDER_USERS_SOURCE,
+} from '@app/client/reminders/utils';
 import { DynamicDialogContentBase } from '@app/client/shared/shelf';
 import {
   ControlInvalidPipe,
@@ -24,12 +30,6 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { take } from 'rxjs';
-import {
-  CRAETE_REMINDER_FORM,
-  providerReminderForm,
-  REMINDER_COMPANY_SOURCE,
-  REMINDER_USERS_SOURCE,
-} from '../create-reminder-form.token';
 import { selectCreateReminderViewModel } from './create-remidner-dialog.selectors';
 
 @Component({
@@ -65,7 +65,6 @@ export class CreateReminderDialogComponent
   protected vm = this.store.selectSignal(selectCreateReminderViewModel);
 
   protected form = inject(CRAETE_REMINDER_FORM);
-
   protected companySourceFn = inject(REMINDER_COMPANY_SOURCE);
   protected usersSourceFn = inject(REMINDER_USERS_SOURCE);
 

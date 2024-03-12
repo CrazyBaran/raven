@@ -2,7 +2,9 @@
   <span class="k-window-title">Update Company Status</span>
 </kendo-dialog-titlebar>
 
-<div class="flex min-h-[340px] flex-col gap-6 p-10 pb-0">
+<div
+  class="flex max-h-[60vh] min-h-[380px] flex-col gap-6 overflow-y-scroll p-10"
+>
   <kendo-stepper
     [currentStep]="currentStep()"
     (currentStepChange)="currentStep.set($event)"
@@ -36,14 +38,6 @@
     </p>
 
     <div class="flex flex-col gap-4 px-10">
-      <kendo-button
-        class="mx-auto w-fit"
-        themeColor="primary"
-        fillMode="outline"
-        iconClass="fa-solid fa-bell"
-      >
-        Set a reminder
-      </kendo-button>
       <div class="flex items-center justify-between">
         <p>Remove company from my personal shortlist</p>
         <kendo-switch [formControl]="removeCompanyFromShortlist">
@@ -51,7 +45,22 @@
           <ng-template kendoSwitchOnLabel>On</ng-template>
         </kendo-switch>
       </div>
+      <div class="flex items-center justify-between">
+        <p>Set a reminder</p>
+        <kendo-switch [formControl]="setReminderForm">
+          <ng-template kendoSwitchOffLabel>Off</ng-template>
+          <ng-template kendoSwitchOnLabel>On</ng-template>
+        </kendo-switch>
+      </div>
     </div>
+
+    @if (setReminderForm.value) {
+      <app-create-reminder-container
+        class="border-component-border border p-4"
+        [form]="reminderForm"
+        [organisationId]="vm().organisationId"
+      />
+    }
 
     <p>Are you sure you want to proceed?</p>
   }
@@ -68,7 +77,10 @@
 
     <kendo-button
       (click)="submit()"
-      [disabled]="vm().isLoading!"
+      [disabled]="
+        vm().isLoading! ||
+        (!!setReminderForm.value && (reminderForm | controlInvalid$ | push))
+      "
       themeColor="secondary"
     >
       @if (vm().isLoading) {
