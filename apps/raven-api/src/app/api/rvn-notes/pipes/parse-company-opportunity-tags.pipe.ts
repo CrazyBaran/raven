@@ -67,15 +67,17 @@ export class ParseCompanyOpportunityTagsPipe
     const versionTags = await this.entityManager.find(TagEntity, {
       where: {
         id: In(distinctVersionIds),
+        type: TagTypeEnum.Version,
       },
     });
 
-    // TODO adjust validation???
     this.validatePassedIds(
       distinctCompanyIds,
       distinctOpportunityIds,
+      distinctVersionIds,
       companyTags,
       opportunityTags,
+      versionTags,
     );
 
     return complexTagIds.map((complexTagId) => {
@@ -102,8 +104,10 @@ export class ParseCompanyOpportunityTagsPipe
   private validatePassedIds(
     distinctCompanyIds: string[],
     distinctOpportunityIds: string[],
+    distinctVersionIds: string[],
     companyTags: OrganisationTagEntity[],
     opportunityTags: TagEntity[],
+    versionTags: TagEntity[],
   ): void {
     const errors = [];
     if (distinctCompanyIds.length !== companyTags.length) {
@@ -123,6 +127,15 @@ export class ParseCompanyOpportunityTagsPipe
         `Opportunity tags with ids ${notFoundOpportunities.join(
           ', ',
         )} not found.`,
+      );
+    }
+
+    if (distinctVersionIds.length !== versionTags.length) {
+      const notFoundVersions = distinctVersionIds.filter(
+        (id) => !versionTags.find((versionTag) => versionTag.id === id),
+      );
+      errors.push(
+        `Version tags with ids ${notFoundVersions.join(', ')} not found.`,
       );
     }
     if (errors.length > 0) {

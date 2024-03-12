@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsUUID } from 'class-validator';
+import { IsDefined, IsOptional, IsUUID } from 'class-validator';
 
 export class ComplexTagDto {
   @ApiProperty()
@@ -8,7 +8,12 @@ export class ComplexTagDto {
   public readonly companyTagId: string;
 
   @ApiProperty()
-  @IsDefined()
+  @IsOptional()
   @IsUUID()
   public readonly opportunityTagId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID()
+  public readonly versionTagId: string;
 }
