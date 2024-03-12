@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@nx/enforce-module-boundaries */
 import { inject, InjectionToken } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {

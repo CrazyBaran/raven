@@ -48,6 +48,8 @@
   (cancelEvent)="onCloseDialog()"
   (confirmEvent)="onConfirmDialog($event)"
   [footerGroup]="confirmDrop()?.footerGroup!"
+  [opportunityId]="receiveMode()?.card?.id"
+  [organisationId]="receiveMode()?.card?.organisation?.id"
 />
 
 @if (paramsEditId()) {

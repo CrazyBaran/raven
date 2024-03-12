@@ -178,7 +178,6 @@ function toKanbanFooterGroup(stage: PipelineStageData): KanbanFooterGroup {
     id: stage.id,
     theme: stage.configuration!.color as 'warning' | 'success',
     droppableFrom: stage.configuration!.droppableFrom ?? [],
-    //todo: implement when api ready
     removeSwitch: !isWon,
     reminder: !isWon,
   };

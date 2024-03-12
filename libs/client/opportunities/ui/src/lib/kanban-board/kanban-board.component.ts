@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/member-ordering,@typescript-eslint/no-explicit-any */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -123,7 +123,7 @@ export class KanbanBoardComponent {
     organisationId: string;
   }>();
 
-  protected receiveMode = signal<KanbanDragStartEvent | boolean | null>(null);
+  protected receiveMode = signal<KanbanDragStartEvent | null>(null);
   protected receiveMode$ = toObservable(this.receiveMode);
 
   protected paramsEditId = signal<{
@@ -150,7 +150,7 @@ export class KanbanBoardComponent {
     $event: { opportunityId: string },
     group: KanbanFooterGroup,
   ): void {
-    this.receiveMode.set(true);
+    this.receiveMode.set({} as any);
     this.confirmDrop.set({
       footerGroup: group,
       opportunityId: $event.opportunityId,
@@ -159,7 +159,7 @@ export class KanbanBoardComponent {
 
   protected onCloseDialog(): void {
     this.confirmDrop.set(null);
-    this.receiveMode.set(false);
+    this.receiveMode.set(null);
   }
 
   protected onConfirmDialog($event: {
@@ -179,7 +179,7 @@ export class KanbanBoardComponent {
       });
     }
     this.confirmDrop.set(null);
-    this.receiveMode.set(false);
+    this.receiveMode.set(null);
   }
 
   protected onDrop(
@@ -210,7 +210,7 @@ export class KanbanBoardComponent {
       (originColumn!.name.includes('Outreach') ||
         originColumn!.name.includes('Met'))
     ) {
-      this.receiveMode.set(true);
+      this.receiveMode.set({} as any);
       this.paramsEditId.set({
         opportunityId: $event.opportunityId,
         organisationId: _.chain(this._board.columns)
@@ -229,12 +229,12 @@ export class KanbanBoardComponent {
   protected onOpportunityEditCancel(): void {
     this.paramsEditId.set(null);
     this.destinationStageId.set(null);
-    this.receiveMode.set(false);
+    this.receiveMode.set(null);
   }
 
   protected onOpportunityEditSubmit(): void {
     this.paramsEditId.set(null);
     this.destinationStageId.set(null);
-    this.receiveMode.set(false);
+    this.receiveMode.set(null);
   }
 }

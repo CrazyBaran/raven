@@ -7,6 +7,7 @@ export const selectPassCompanyDialogViewModel = createSelector(
   selectQueryParam(DialogUtil.queryParams.passCompany),
   organisationsFeature.selectEntities,
   organisationsFeature.selectUpdateLoading,
+
   (id, organisations, isLoading) => {
     return {
       organisationId: id,

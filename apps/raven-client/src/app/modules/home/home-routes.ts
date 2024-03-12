@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 
+import { provideRemindersFeature } from '@app/client/reminders/state';
 import { HomeComponent } from './home.component';
 
 export const HOME_ROUTES: Routes = [
   {
     path: '',
     component: HomeComponent,
+    providers: [provideRemindersFeature()],
     children: [
       {
         path: '',
