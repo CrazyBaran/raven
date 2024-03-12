@@ -334,17 +334,6 @@ export class NotesService {
         },
       );
 
-    if (opportunity.versionTag) {
-      complexTagsQb.innerJoin(
-        'complexTag.tags',
-        'versionComplexTag',
-        'versionComplexTag.id = :versionComplexTagId',
-        {
-          versionComplexTagId: opportunity.versionTag.id,
-        },
-      );
-    }
-
     const allComplexTagsForOpportunity = await complexTagsQb
       .leftJoinAndSelect('complexTag.tags', 'tags')
       .getMany();
@@ -354,12 +343,6 @@ export class NotesService {
       new Date().getTime() - s,
       'ms',
     );
-
-    const complexTagsForOpportunity = opportunity.versionTag
-      ? allComplexTagsForOpportunity
-      : allComplexTagsForOpportunity.filter(
-          (ct) => !ct.tags.some((t) => t.type === 'version'),
-        );
 
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
@@ -407,9 +390,9 @@ export class NotesService {
               return qb;
             }),
           );
-          if (complexTagsForOpportunity?.length > 0) {
+          if (allComplexTagsForOpportunity?.length > 0) {
             qb.orWhere('complexTags.id IN (:...complexTagIds)', {
-              complexTagIds: complexTagsForOpportunity?.map((ct) => ct.id),
+              complexTagIds: allComplexTagsForOpportunity?.map((ct) => ct.id),
             });
           }
 
