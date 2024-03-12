@@ -24,20 +24,33 @@
           [suffixTemplate]="suffixIndicator"
         >
           <ng-template #suffixIndicator let-button>
-            <span class="width inline-block w-5">
-              <kendo-badge
-                class="mr-1 mt-1"
-                rounded="full"
-                size="medium"
-                fill="solid"
-                themeColor="error"
-                position="inside"
-              >
-                {{
-                  button.id ? vm().myRemindersCount : vm().otherRemindersCount
-                }}
-              </kendo-badge>
-            </span>
+            @if (!button.id && vm().myRemindersCount) {
+              <span class="width inline-block w-5">
+                <kendo-badge
+                  class="mr-1 mt-1"
+                  rounded="full"
+                  size="medium"
+                  fill="solid"
+                  themeColor="error"
+                  position="inside"
+                >
+                  {{ vm().myRemindersCount }}
+                </kendo-badge>
+              </span>
+            } @else if (button.id && vm().otherRemindersCount) {
+              <span class="width inline-block w-5">
+                <kendo-badge
+                  class="mr-1 mt-1"
+                  rounded="full"
+                  size="medium"
+                  fill="solid"
+                  themeColor="error"
+                  position="inside"
+                >
+                  {{ vm().otherRemindersCount }}
+                </kendo-badge>
+              </span>
+            }
           </ng-template>
         </app-buttongroup-navigation>
         <app-buttongroup-navigation [model]="vm().buttonGroupNavigation2" />

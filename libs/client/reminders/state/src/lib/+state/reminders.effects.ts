@@ -228,6 +228,35 @@ export const createReminder$ = createEffect(
   },
 );
 
+export const getRemindersStats$ = createEffect(
+  (actions$ = inject(Actions), remindersService = inject(RemindersService)) => {
+    return actions$.pipe(
+      ofType(RemindersActions.getRemindersStats),
+      switchMap(() =>
+        remindersService.getRemindersStats().pipe(
+          map((response) => {
+            return RemindersActions.getRemindersStatsSuccess({
+              data: response.data!,
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              RemindersActions.getRemindersStatsFailure({
+                error,
+                message: 'Get Reminder Stats Failed.',
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
 export const showReminderSuccessMessage$ = createEffect(
   (actions$ = inject(Actions)) => {
     return actions$.pipe(
@@ -268,7 +297,13 @@ export const reloadRemindersTable$ = createEffect(
     remindersService = inject(RemindersService),
   ) => {
     return actions$.pipe(
-      ofType(RemindersActions.reloadRemindersTable),
+      ofType(
+        RemindersActions.reloadRemindersTable,
+        RemindersActions.completeReminderSuccess,
+        RemindersActions.deleteReminderSuccess,
+        RemindersActions.openReminderTable,
+        RemindersActions.updateReminderSuccess,
+      ),
       concatLatestFrom(() =>
         store.select(remindersQuery.selectReloadTableParams),
       ),
@@ -309,6 +344,7 @@ export const showReminderErrorMessage$ = createEffect(
         RemindersActions.updateReminderFailure,
         RemindersActions.createReminderFailure,
         RemindersActions.completeReminderFailure,
+        RemindersActions.getRemindersStatsFailure,
       ),
       filter(({ message }) => !!message),
       map(({ message }) => {

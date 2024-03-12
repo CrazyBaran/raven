@@ -50,3 +50,10 @@ export interface GetRemindersDto {
   dir?: string;
   status?: string;
 }
+
+export interface ReminderStats {
+  overdue: {
+    forMe: number;
+    forOthers: number;
+  };
+}

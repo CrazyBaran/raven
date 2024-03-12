@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ENVIRONMENT } from '@app/client/core/environment';
-import { remindersQuery } from '@app/client/reminders/state';
+import { RemindersActions, remindersQuery } from '@app/client/reminders/state';
 import { ShelfModule } from '@app/client/shared/shelf';
 import { Store } from '@ngrx/store';
 import { WindowModule } from '@progress/kendo-angular-dialog';
@@ -91,4 +91,8 @@ export class HomeComponent {
       },
     },
   ]);
+
+  public constructor() {
+    this.store.dispatch(RemindersActions.getRemindersStats());
+  }
 }

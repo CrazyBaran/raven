@@ -124,6 +124,7 @@
       field="dueDate"
       headerClass="!font-bold"
       title="Due Date"
+      [width]="150"
     >
       <ng-template kendoGridCellTemplate let-reminder>
         <p>{{ reminder.dueDate | date: 'MMMM d, y' }}</p>

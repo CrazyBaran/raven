@@ -56,5 +56,16 @@ export const RemindersActions = createActionGroup({
     'Reload Reminders Table Failure': props<FailurePayload>(),
 
     'Open Reminder Table': emptyProps(),
+
+    'Get Reminders Stats': emptyProps(),
+    'Get Reminders Stats Success': props<{
+      data: {
+        overdue: {
+          forMe: number;
+          forOthers: number;
+        };
+      };
+    }>(),
+    'Get Reminders Stats Failure': props<FailurePayload>(),
   },
 });
