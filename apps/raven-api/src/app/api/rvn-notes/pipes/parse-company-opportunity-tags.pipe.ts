@@ -36,12 +36,13 @@ export class ParseCompanyOpportunityTagsPipe
       ...new Set(
         complexTagIds.map((complexTagId) => complexTagId.companyTagId),
       ),
-    ];
+    ].filter((id) => !!id);
+
     const distinctOpportunityIds = [
       ...new Set(
         complexTagIds.map((complexTagId) => complexTagId.opportunityTagId),
       ),
-    ];
+    ].filter((id) => !!id);
 
     const distinctVersionIds = [
       ...new Set(
@@ -49,7 +50,7 @@ export class ParseCompanyOpportunityTagsPipe
           .map((complexTagId) => complexTagId.versionTagId)
           .filter((id) => !!id),
       ),
-    ];
+    ].filter((id) => !!id);
 
     const companyTags = await this.entityManager.find(OrganisationTagEntity, {
       where: {
