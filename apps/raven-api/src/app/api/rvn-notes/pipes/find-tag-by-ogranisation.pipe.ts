@@ -1,5 +1,6 @@
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
+import { TagTypeEnum } from '@app/rvns-tags';
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrganisationEntity } from '../../rvn-opportunities/entities/organisation.entity';
@@ -24,7 +25,10 @@ export class FindTagByOgranisationPipe
       return null;
     }
     const tags = await this.tagRepository.find({
-      where: { organisationId: organisationEntity.id },
+      where: {
+        organisationId: organisationEntity.id,
+        type: In([TagTypeEnum.Company, TagTypeEnum.Investor]),
+      },
     });
 
     const tag = tags.filter(
