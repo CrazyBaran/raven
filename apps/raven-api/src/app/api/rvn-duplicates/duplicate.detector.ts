@@ -1,9 +1,13 @@
+import { TagTypeEnum } from '@app/rvns-tags';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { NoteEntity } from '../rvn-notes/entities/note.entity';
+import { OrganisationDomainEntity } from '../rvn-opportunities/entities/organisation-domain.entity';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
+import { ReminderEntity } from '../rvn-reminders/entities/reminder.entity';
+import { OrganisationTagEntity } from '../rvn-tags/entities/tag.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
-import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
-import { OrganisationEntity } from './entities/organisation.entity';
 
 export class DuplicatesDto {
   public count: number;
@@ -19,6 +23,11 @@ export class DuplicateDto {
   }[];
 }
 
+export class CandidatesDto {
+  public unresolvable: string[];
+  public toDelete: string[];
+}
+
 @Injectable()
 export class DuplicateDetector {
   public constructor(
@@ -26,6 +35,10 @@ export class DuplicateDetector {
     private readonly organisationDomainRepository: Repository<OrganisationDomainEntity>,
     @InjectRepository(OrganisationEntity)
     private readonly organisationRepository: Repository<OrganisationEntity>,
+    @InjectRepository(NoteEntity)
+    private readonly noteRepository: Repository<NoteEntity>,
+    @InjectRepository(ReminderEntity)
+    private readonly reminderRepository: Repository<ReminderEntity>,
     private readonly domainResolver: DomainResolver,
   ) {}
 
@@ -49,6 +62,9 @@ export class DuplicateDetector {
 
     for (const domain in domainMap) {
       if (domainMap[domain].length > 1) {
+        if (domain === 'placeholder.com') {
+          continue;
+        }
         duplicates.count += 1;
         duplicates.duplicates.push(
           await this.getDuplicate(domain, domainMap[domain]),
@@ -74,6 +90,12 @@ export class DuplicateDetector {
       relations: ['opportunities', 'shortlists', 'organisationDomains'],
     });
 
+    const organisationsFromNoteTags = await this.getOrganisationsFromNoteTags();
+    const organisationsFromReminderTags =
+      await this.getOrganisationsFromReminderTags();
+    const organisationsFromTags = organisationsFromNoteTags.concat(
+      organisationsFromReminderTags,
+    );
     for (const organisation of organisations) {
       const reasons: string[] = [];
       if (organisation.opportunities.length > 0) {
@@ -84,6 +106,9 @@ export class DuplicateDetector {
       }
       if (organisation.sharepointDirectoryId) {
         reasons.push('Has sharepoint directory');
+      }
+      if (organisationsFromTags.includes(organisation.id)) {
+        reasons.push('Tag used in notes');
       }
 
       if (reasons.length === 0) {
@@ -124,5 +149,81 @@ export class DuplicateDetector {
       await this.organisationDomainRepository.remove(domainsToDelete);
       await this.organisationDomainRepository.save(domainsToCreate);
     }
+  }
+
+  public async getDeletionCandidates(
+    duplicates: DuplicatesDto,
+  ): Promise<CandidatesDto> {
+    const candidates: CandidatesDto = {
+      unresolvable: [],
+      toDelete: [],
+    };
+
+    for (const duplicate of duplicates.duplicates) {
+      if (duplicate.domain === 'placeholder.com') {
+        continue;
+      }
+      if (
+        duplicate.canRemove.length === 0 &&
+        duplicate.cannotRemove.length > 1
+      ) {
+        candidates.unresolvable.push(duplicate.domain);
+      }
+      if (duplicate.cannotRemove.length === 0) {
+        candidates.toDelete.push(...duplicate.canRemove.slice(1));
+      } else {
+        candidates.toDelete.push(...duplicate.canRemove);
+      }
+    }
+
+    return candidates;
+  }
+
+  private async getOrganisationsFromNoteTags(): Promise<string[]> {
+    const allNotes = await this.noteRepository.find({
+      relations: ['tags', 'complexTags', 'complexTags.tags'],
+      where: {},
+    });
+
+    const tags = allNotes.map((note) => note.tags).flat();
+    const complexTags = allNotes.map((note) => note.complexTags).flat();
+
+    const tagsOrganisations = tags
+      .map((tag) => (tag.type === TagTypeEnum.Company ? tag : null))
+      .filter((tag) => tag !== null);
+    const complexTagsOrganisations = complexTags
+      .map((complexTag) => complexTag.tags)
+      .flat()
+      .map((tag) => (tag.type === TagTypeEnum.Company ? tag : null))
+      .filter((tag) => tag !== null);
+
+    const allCompanyTags = tagsOrganisations.concat(complexTagsOrganisations);
+
+    const allCompanies = allCompanyTags.map(
+      (tag) => (tag as OrganisationTagEntity).organisationId,
+    );
+
+    return allCompanies;
+  }
+
+  private async getOrganisationsFromReminderTags(): Promise<string[]> {
+    const allReminders = await this.reminderRepository.find({
+      relations: ['tag', 'tag.tags'],
+      where: {},
+    });
+
+    const complexTags = allReminders.map((note) => note.tag);
+    const complexTagsOrganisations = complexTags
+      .map((complexTag) => complexTag?.tags)
+      .flat()
+      .filter((tags) => tags !== null)
+      .map((tag) => (tag?.type === TagTypeEnum.Company ? tag : null))
+      .filter((tag) => tag !== null);
+
+    const allCompanies = complexTagsOrganisations.map(
+      (tag) => (tag as OrganisationTagEntity).organisationId,
+    );
+
+    return allCompanies;
   }
 }

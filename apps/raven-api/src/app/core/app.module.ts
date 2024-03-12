@@ -25,6 +25,7 @@ import { AuditLogsMiddleware } from '../api/rvn-audit-logs/audit-logs.middleware
 import { AuditLogsModule } from '../api/rvn-audit-logs/audit-logs.module';
 import { AuthModule } from '../api/rvn-auth/auth.module';
 import { DataWarehouseModule } from '../api/rvn-data-warehouse/data-warehouse.module';
+import { DuplicatesModule } from '../api/rvn-duplicates/duplicates.module';
 import { FilesModule } from '../api/rvn-files/files.module';
 import { LoggerModule } from '../api/rvn-logger/logger.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
@@ -86,6 +87,7 @@ import { TransformInterceptor } from './transform.interceptor';
     AclModule,
     TeamsModule,
     UsersModule,
+    DuplicatesModule,
     WebSocketsModule,
     OpportunitiesModule,
     AffinityIntegrationModule,

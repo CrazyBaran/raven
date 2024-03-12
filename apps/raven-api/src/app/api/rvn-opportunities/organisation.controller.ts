@@ -153,6 +153,19 @@ export class OrganisationController {
     return await this.organisationService.remove(organisation.id);
   }
 
+  @Delete()
+  @ApiOperation({ summary: 'Delete organisations' })
+  @ApiResponse({
+    status: 200,
+    description: 'The organisations have been successfully deleted.',
+  })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async removeMany(@Body() ids: string[]): Promise<void> {
+    return await this.organisationService.removeMany(ids);
+  }
+
   @Get('sync/dwh')
   @ApiOperation({
     summary:

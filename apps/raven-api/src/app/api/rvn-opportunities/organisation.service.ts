@@ -18,11 +18,10 @@ import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enr
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { DataWarehouseCacheService } from '../rvn-data-warehouse/cache/data-warehouse-cache.service';
 import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
-import { DataWarehouseService } from '../rvn-data-warehouse/data-warehouse.service';
 import { OrganisationProvider } from '../rvn-data-warehouse/proxy/organisation.provider';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
-import { ShortlistsService } from '../rvn-shortlists/shortlists.service';
+import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { OpportunityEntity } from './entities/opportunity.entity';
@@ -57,16 +56,16 @@ export class OrganisationService {
     private readonly opportunityTeamService: OpportunityTeamService,
     @InjectRepository(OrganisationEntity)
     private readonly organisationRepository: Repository<OrganisationEntity>,
+    @InjectRepository(TagEntity)
+    private readonly tagRepository: Repository<TagEntity>,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly affinityEnricher: AffinityEnricher,
     @Optional() private readonly dataWarehouseEnricher: DataWarehouseEnricher,
     @Optional()
     private readonly dataWarehouseCacheService: DataWarehouseCacheService,
-    @Optional() private readonly dataWarehouseService: DataWarehouseService,
     private readonly domainResolver: DomainResolver,
     private readonly pipelineUtilityService: PipelineUtilityService,
     private readonly organisationProvider: OrganisationProvider,
-    private readonly shortlistsService: ShortlistsService,
   ) {
     this.logger.setContext(OrganisationService.name);
   }
@@ -323,7 +322,25 @@ export class OrganisationService {
   }
 
   public async remove(id: string): Promise<void> {
+    const queryBuilder = this.tagRepository.createQueryBuilder('tags');
+    queryBuilder.where('tags.organisationId = :id', { id });
+
+    const tags = await queryBuilder.getMany();
+
+    await this.tagRepository.remove(tags);
+
     await this.organisationRepository.delete(id);
+  }
+
+  public async removeMany(ids: string[]): Promise<void> {
+    const queryBuilder = this.tagRepository.createQueryBuilder('tags');
+    queryBuilder.where('tags.organisationId IN (:...ids)', { ids });
+
+    const tags = await queryBuilder.getMany();
+
+    await this.tagRepository.remove(tags);
+
+    await this.organisationRepository.delete(ids);
   }
 
   public async ensureAllAffinityOrganisationsAsOrganisations(): Promise<void> {

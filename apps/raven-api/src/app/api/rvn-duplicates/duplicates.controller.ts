@@ -1,8 +1,12 @@
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Patch } from '@nestjs/common';
 import { ApiOAuth2, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { DuplicateDetector, DuplicatesDto } from './duplicate.detector';
+import {
+  CandidatesDto,
+  DuplicateDetector,
+  DuplicatesDto,
+} from './duplicate.detector';
 
 @ApiTags('Organisations')
 @Controller('duplicates')
@@ -17,6 +21,19 @@ export class DuplicatesController {
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async getDuplicates(): Promise<DuplicatesDto> {
     return await this.duplicateDetector.getDuplicates();
+  }
+
+  @Patch('candidates')
+  @ApiOperation({
+    summary: 'Get deletion candidates',
+  })
+  @ApiTags('Organisations')
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async getCandidates() //@Body() body: DuplicatesDto,
+  : Promise<CandidatesDto> {
+    const body = await this.duplicateDetector.getDuplicates();
+    return await this.duplicateDetector.getDeletionCandidates(body);
   }
 
   @Get('fix-domains')

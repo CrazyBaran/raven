@@ -20,8 +20,6 @@ import { DataWarehouseModule } from '../rvn-data-warehouse/data-warehouse.module
 import { FilesModule } from '../rvn-files/files.module';
 import { ShortlistsModule } from '../rvn-shortlists/shortlists.module';
 import { TemplateEntity } from '../rvn-templates/entities/template.entity';
-import { DuplicateDetector } from './duplicate.detector';
-import { DuplicatesController } from './duplicates.controller';
 import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-field-changed.event-handler';
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
@@ -83,12 +81,7 @@ import { OrganisationProducer } from './queues/organisation.producer';
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,
     OpportunityChecker,
-    DuplicateDetector,
   ],
-  controllers: [
-    OrganisationController,
-    OpportunityController,
-    DuplicatesController,
-  ],
+  controllers: [OrganisationController, OpportunityController],
 })
 export class OpportunitiesModule {}
