@@ -168,6 +168,11 @@ export class PassCompanyDialogComponent extends DialogContentBase {
     this.actions$
       .pipe(ofType(OrganisationsActions.updateOrganisationSuccess), first())
       .subscribe(() => {
+        this.store.dispatch(
+          OrganisationsActions.getOrganisation({
+            id: this.vm().organisationId!,
+          }),
+        );
         this.dialog.close();
       });
   }

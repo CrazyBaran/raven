@@ -105,6 +105,23 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
     this.actions$
       .pipe(
         ofType(
+          OrganisationsActions.updateOrganisationSuccess,
+          OrganisationsActions.updateOrganisationFailure,
+        ),
+        take(1),
+      )
+      .subscribe((_data) => {
+        this.store.dispatch(
+          OrganisationsActions.getOrganisation({
+            id: this.vm().organisation.id!,
+          }),
+        );
+        this.dialog?.close();
+      });
+
+    this.actions$
+      .pipe(
+        ofType(
           OpportunitiesActions.reopenOpportunitySuccess,
           OpportunitiesActions.reopenOpportunityFailure,
         ),
@@ -112,11 +129,13 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
       )
       .subscribe((data) => {
         this.store.dispatch(
-          OrganisationsActions.getOrganisation({
+          OrganisationsActions.updateOrganisation({
             id: this.vm().organisation.id!,
+            changes: {
+              companyStatus: null,
+            },
           }),
         );
-        this.dialog?.close();
       });
   }
 }

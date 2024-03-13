@@ -14,6 +14,9 @@ import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
+import { OpportunityChecker } from './opportunity.checker';
+import { OpportunityService } from './opportunity.service';
+import { OrganisationHelperService } from './organisation-helper.service';
 import { OrganisationService } from './organisation.service';
 
 describe('OrganisationService', () => {
@@ -75,6 +78,18 @@ describe('OrganisationService', () => {
         },
         {
           provide: OrganisationProvider,
+          useValue: {},
+        },
+        {
+          provide: OrganisationHelperService,
+          useValue: {},
+        },
+        {
+          provide: OpportunityChecker,
+          useValue: {},
+        },
+        {
+          provide: OpportunityService,
           useValue: {},
         },
       ],

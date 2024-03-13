@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { combineLatest, mergeMap, of, switchMap } from 'rxjs';
 import { catchError, concatMap, filter, map } from 'rxjs/operators';
+import { CompanyStatus } from '../../../../../../rvns-shared/src';
+import { OrganisationsActions } from '../../../../api-organisations/src';
 import { OpportunitiesService } from '../services/opportunities.service';
 import { OpportunitiesActions } from './opportunities.actions';
 import { opportunitiesQuery } from './opportunities.selectors';
@@ -201,22 +203,45 @@ export class OpportunitiesEffects {
   private createOpportunity$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OpportunitiesActions.createOpportunity),
-      concatMap(({ payload }) =>
-        this.opportunitiesService.createOpportunity(payload).pipe(
-          switchMap(({ data }) => [
-            OpportunitiesActions.createOpportunitySuccess({ data: data! }),
-            NotificationsActions.showSuccessNotification({
-              content: 'Opportunity created successfully',
-            }),
-          ]),
-          catchError((error) =>
-            of(
-              OpportunitiesActions.createOpportunityFailure({
-                error,
+      concatLatestFrom(() =>
+        this.store.select(pipelinesQuery.selectAllPipelineStages),
+      ),
+      concatMap(([{ payload }, pipelineStages]) =>
+        this.opportunitiesService
+          .createOpportunity({ organisationId: payload.organisationId })
+          .pipe(
+            switchMap(({ data }) => [
+              NotificationsActions.showSuccessNotification({
+                content: 'Opportunity created successfully',
               }),
+              OpportunitiesActions.updateOpportunity({
+                id: data?.id!,
+                changes: {
+                  pipelineStageId:
+                    pipelineStages?.find(
+                      (stage) =>
+                        stage.relatedCompanyStatus ===
+                        CompanyStatus.LIVE_OPPORTUNITY,
+                    )?.id || undefined,
+                  ...payload,
+                },
+              }),
+              OrganisationsActions.updateOrganisation({
+                id: data!.organisation.id!,
+                changes: {
+                  companyStatus: null,
+                },
+              }),
+              OpportunitiesActions.createOpportunitySuccess({ data: data! }),
+            ]),
+            catchError((error) =>
+              of(
+                OpportunitiesActions.createOpportunityFailure({
+                  error,
+                }),
+              ),
             ),
           ),
-        ),
       ),
     );
   });

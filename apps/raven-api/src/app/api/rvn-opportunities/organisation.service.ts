@@ -28,12 +28,12 @@ import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import { OrganisationCreatedEvent } from './events/organisation-created.event';
-import { OrganisationPassedEvent } from './events/organisation-passed.event';
 import {
   GetOrganisationsOptions,
   PrimaryDataSource,
 } from './interfaces/get-organisations.options';
 import { OpportunityTeamService } from './opportunity-team.service';
+import { OrganisationHelperService } from './organisation-helper.service';
 
 interface CreateOrganisationOptions {
   initialDataSource?: PrimaryDataSource;
@@ -66,6 +66,7 @@ export class OrganisationService {
     private readonly domainResolver: DomainResolver,
     private readonly pipelineUtilityService: PipelineUtilityService,
     private readonly organisationProvider: OrganisationProvider,
+    private readonly organisationHelperService: OrganisationHelperService,
   ) {
     this.logger.setContext(OrganisationService.name);
   }
@@ -311,9 +312,9 @@ export class OrganisationService {
       organisation.companyStatusOverride = options.companyStatus;
 
       if (options.companyStatus === CompanyStatus.PASSED) {
-        this.eventEmitter.emit(
-          'organisation-passed',
-          new OrganisationPassedEvent(organisation, user),
+        await this.organisationHelperService.handleCompanyPassed(
+          organisation,
+          user,
         );
       }
     }

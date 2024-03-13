@@ -25,12 +25,12 @@ import { AffinityFieldChangedEventHandler } from './event-handlers/affinity-fiel
 import { AffinityRegenerationFinishedEventHandler } from './event-handlers/affinity-regeneration-finished.event-handler';
 import { AffinityStatusChangedEventHandler } from './event-handlers/affinity-status-changed.event-handler';
 import { DataWarehouseRegenerationFinishedEventHandler } from './event-handlers/data-warehouse-regeneration-finished.event-handler';
-import { OrganisationPassedEventHandler } from './event-handlers/organisation-passed.event-handler';
 import { ORGANISATION_QUEUE } from './opportunities.const';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityChecker } from './opportunity.checker';
 import { OpportunityController } from './opportunity.controller';
 import { OpportunityService } from './opportunity.service';
+import { OrganisationHelperService } from './organisation-helper.service';
 import { OrganisationController } from './organisation.controller';
 import { OrganisationService } from './organisation.service';
 import { OrganisationProcessor } from './queues/organisation.processor';
@@ -70,13 +70,13 @@ import { OrganisationProducer } from './queues/organisation.producer';
     OrganisationService,
     OpportunityService,
     OpportunityTeamService,
+    OrganisationHelperService,
     OrganisationProducer,
     OrganisationProcessor,
     AffinityRegenerationFinishedEventHandler,
     AffinityOrganisationCreatedEventHandler,
     AffinityStatusChangedEventHandler,
     AffinityFieldChangedEventHandler,
-    OrganisationPassedEventHandler,
     DataWarehouseRegenerationFinishedEventHandler,
     ParseUUIDPipe,
     ParseTemplateWithGroupsAndFieldsPipe,

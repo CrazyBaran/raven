@@ -69,7 +69,11 @@ export class OpportunityChecker {
       where: {
         id: organisation.id,
       },
-      relations: ['opportunities', 'opportunities.pipelineStage'],
+      relations: [
+        'opportunities',
+        'opportunities.pipelineStage',
+        'opportunities.organisation',
+      ],
     });
 
     const activeOpportunity = organisationFetched.opportunities.find(

@@ -5,7 +5,7 @@ import {
   PagedOpportunityData,
 } from '@app/rvns-opportunities';
 import { TagTypeEnum } from '@app/rvns-tags';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -42,6 +42,7 @@ export class OpportunityService {
     private readonly tagsRepository: Repository<TagEntity>,
     private readonly affinityCacheService: AffinityCacheService,
     private readonly affinityEnricher: AffinityEnricher,
+    @Inject(forwardRef(() => OrganisationService))
     private readonly organisationService: OrganisationService,
     private readonly opportunityTeamService: OpportunityTeamService,
     private readonly eventEmitter: EventEmitter2,
