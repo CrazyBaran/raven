@@ -6,7 +6,7 @@ $shelf-window-padding: 15px;
   right: 0;
   height: 100%;
   transform: rotate(180deg);
-  z-index: 10;
+  z-index: 999999;
 }
 
 .global-window-container {
