@@ -18,6 +18,8 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
 
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogUtil } from '@app/client/shared/util';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { take } from 'rxjs';
@@ -34,6 +36,7 @@ import { selectCreateOpportunityDialogViewModel } from './reopen-opportunity-dia
     RadioButtonModule,
     ButtonModule,
     LoaderModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './reopen-opportunity-dialog.component.html',
   styleUrls: ['./reopen-opportunity-dialog.component.scss'],
@@ -44,6 +47,13 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
   protected actions$ = inject(Actions);
   protected router = inject(Router);
   protected activatedRoute = inject(ActivatedRoute);
+
+  protected form = inject(FormBuilder).group({
+    companyName: '',
+    round: '',
+    option: 'duplicate' as 'duplicate' | 'existing',
+    newName: '',
+  });
 
   protected vm = this.store.selectSignal(
     selectCreateOpportunityDialogViewModel,
@@ -65,6 +75,18 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
         id: this.vm().opportunityId!,
       }),
     );
+
+    this.form.controls.option.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((option) => {
+        if (option === 'duplicate') {
+          this.form.controls.newName.setValidators(Validators.required);
+          this.form.controls.newName.enable();
+        } else {
+          this.form.controls.newName.clearValidators();
+          this.form.controls.newName.disable();
+        }
+      });
   }
 
   protected onDialogClose(): void {
@@ -75,6 +97,8 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
     this.store.dispatch(
       OpportunitiesActions.reopenOpportunity({
         id: this.vm().opportunityId!,
+        versionName: this.form.controls.newName.value!,
+        reopenAndDuplicate: this.form.controls.option.value === 'duplicate',
       }),
     );
 

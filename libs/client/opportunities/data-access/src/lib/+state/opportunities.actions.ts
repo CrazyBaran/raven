@@ -72,6 +72,8 @@ export const OpportunitiesActions = createActionGroup({
 
     'Reopen Opportunity': props<{
       id: string;
+      reopenAndDuplicate?: boolean;
+      versionName?: string;
     }>(),
     'Reopen Opportunity Failure': props<{ error: unknown }>(),
     'Reopen Opportunity Success': props<{ data: OpportunityData }>(),

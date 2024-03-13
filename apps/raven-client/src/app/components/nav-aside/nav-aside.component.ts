@@ -150,6 +150,7 @@ export class NavAsideComponent {
       relativeTo: this.activedRoute,
       queryParams: { [DialogUtil.queryParams.createReminder]: true },
       skipLocationChange: true,
+      queryParamsHandling: 'merge',
     });
   }
 

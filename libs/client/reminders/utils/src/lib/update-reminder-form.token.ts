@@ -32,26 +32,22 @@ export const UPDATE_REMINDER_FORM_FN = new InjectionToken(
             [Validators.maxLength(MAX_SHORTLIST_DESCRIPTION_LENGTH)],
           ],
           tag: [
-            {
-              value: (value.tag
-                ? {
-                    company: {
-                      id: ReminderUtils.getReminderCompanyTag(value)?.id,
-                      name: ReminderUtils.getReminderCompanyTag(value)?.name,
-                    },
-                    opportunity: ReminderUtils.getReminderOpportunityTag(value)
-                      ?.id
-                      ? {
-                          id: ReminderUtils.getReminderOpportunityTag(value)
-                            ?.id,
-                          name: ReminderUtils.getReminderOpportunityTag(value)
-                            ?.name,
-                        }
-                      : null,
-                  }
-                : null) as any,
-              disabled: true,
-            },
+            (value.tag
+              ? {
+                  company: {
+                    id: ReminderUtils.getReminderCompanyTag(value)?.id,
+                    name: ReminderUtils.getReminderCompanyTag(value)?.name,
+                  },
+                  opportunity: ReminderUtils.getReminderOpportunityTag(value)
+                    ?.id
+                    ? {
+                        id: ReminderUtils.getReminderOpportunityTag(value)?.id,
+                        name: ReminderUtils.getReminderOpportunityTag(value)
+                          ?.name,
+                      }
+                    : null,
+                }
+              : null) as any,
           ],
           assignees: [
             value.assignees.map((x) => x.id) ?? ([] as string[]),

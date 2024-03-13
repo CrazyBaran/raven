@@ -8,10 +8,14 @@
     active state on the pipeline.
   </p>
 
-  <form class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10">
+  <form
+    [formGroup]="form"
+    class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10"
+  >
     <kendo-formfield>
       <kendo-label text="Company Name" />
       <kendo-textbox
+        formControlName="companyName"
         [placeholder]="vm().organisation.name!"
         [disabled]="true"
       />
@@ -20,32 +24,35 @@
     <kendo-formfield>
       <kendo-label text="Funding Round" />
       <kendo-textbox
+        formControlName="round"
         [placeholder]="vm().organisation.tag.name!"
         [disabled]="true"
       />
     </kendo-formfield>
     <!--    orientation="horizontal"-->
+
     <kendo-formfield>
       <kendo-label text="Available Options" />
       <ul class="k-radio-list k-list-horizontal">
-        <!--        <li class="k-radio-item">-->
-        <!--          <input-->
-        <!--            #lead-->
-        <!--            formControlName="option"-->
-        <!--            kendoRadioButton-->
-        <!--            type="radio"-->
-        <!--            value="duplicate"-->
-        <!--          />-->
-        <!--          <kendo-label-->
-        <!--            [for]="lead"-->
-        <!--            text="Duplicate and start again (open with empty details)"-->
-        <!--          ></kendo-label>-->
-        <!--        </li>-->
+        <li class="k-radio-item">
+          <input
+            #lead
+            formControlName="option"
+            kendoRadioButton
+            type="radio"
+            value="duplicate"
+          />
+          <kendo-label
+            [for]="lead"
+            text="Duplicate and start again (open with empty details)"
+          ></kendo-label>
+        </li>
 
         <li class="k-radio-item">
           <input
             #follower
             kendoRadioButton
+            formControlName="option"
             type="radio"
             value="existing"
             [checked]="true"
@@ -54,6 +61,16 @@
         </li>
       </ul>
     </kendo-formfield>
+    @if (form.controls.option.value === 'duplicate') {
+      <kendo-formfield>
+        <kendo-label text="Please enter a name for this new opportunity" />
+        <kendo-textbox
+          formControlName="newName"
+          placeholder="eg. v2"
+          [disabled]="true"
+        />
+      </kendo-formfield>
+    }
   </form>
 </div>
 

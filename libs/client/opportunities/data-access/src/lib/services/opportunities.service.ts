@@ -98,6 +98,8 @@ export class OpportunitiesService {
 
   public reopenOpportunity(
     opportunityId: string,
+    reopenAndDuplicate?: boolean,
+    versionName?: string,
   ): Observable<GenericResponse<OpportunityData>> {
     return this.getOpportunityDetails(opportunityId).pipe(
       switchMap((opportunityDetailsResponse) => {
@@ -106,6 +108,8 @@ export class OpportunitiesService {
 
         return this.patchOpportunity(opportunityId, {
           pipelineStageId: previousPipelineStageId,
+          reopenAndDuplicate,
+          versionName,
         });
       }),
     );
