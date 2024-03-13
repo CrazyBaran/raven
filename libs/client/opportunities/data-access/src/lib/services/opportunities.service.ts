@@ -98,12 +98,12 @@ export class OpportunitiesService {
 
   public reopenOpportunity(
     opportunityId: string,
-    reopenAndDuplicate?: boolean,
+    duplicateAndReopen?: boolean,
     versionName?: string,
   ): Observable<GenericResponse<OpportunityData>> {
-    if (reopenAndDuplicate && versionName) {
+    if (duplicateAndReopen && versionName) {
       return this.patchOpportunity(opportunityId, {
-        reopenAndDuplicate,
+        duplicateAndReopen,
         versionName,
       });
     }
