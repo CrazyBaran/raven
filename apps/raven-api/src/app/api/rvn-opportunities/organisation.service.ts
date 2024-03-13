@@ -241,6 +241,14 @@ export class OrganisationService {
   public async create(
     options: CreateOrganisationOptions,
   ): Promise<OrganisationEntity> {
+    const existingOrganisation = await this.getExistingByDomains(
+      this.domainResolver.extractDomains(options.domain),
+    );
+
+    if (existingOrganisation) {
+      return existingOrganisation;
+    }
+
     return await this.organisationRepository.manager.transaction(
       async (tem) => {
         const organisation = new OrganisationEntity();
