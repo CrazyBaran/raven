@@ -5,6 +5,7 @@
 <div class="p-10">
   @if (updateForm) {
     <app-reminder-form
+      [versionTags]="vm().versionTags"
       [form]="updateForm"
       [companySource]="companySourceFn"
       [usersSource]="usersSourceFn"

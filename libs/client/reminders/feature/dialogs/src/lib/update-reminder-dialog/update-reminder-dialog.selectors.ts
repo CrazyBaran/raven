@@ -16,14 +16,23 @@ export const selectUpdateReminderViewModel = createSelector(
   selectQueryParam(DialogUtil.queryParams.updateReminder),
   remindersQuery.selectLoadingStates,
   selectUpdatingReminder,
-  tagsQuery.tagsFeature.selectOpportunityTags,
+  tagsQuery.selectOpportunityTags,
+  tagsQuery.selectVersionTags,
   tagsQuery.selectCurrentUserTag,
-  (id, { update: isUpdating }, reminder, opportunityTags, currentUser) => {
+  (
+    id,
+    { update: isUpdating },
+    reminder,
+    opportunityTags,
+    versionTags,
+    currentUser,
+  ) => {
     return {
       id: id!,
       isUpdating,
       reminder,
       opportunityTags,
+      versionTags,
       currentUser: {
         id: currentUser?.userId ?? '',
         name: currentUser?.name ?? '',

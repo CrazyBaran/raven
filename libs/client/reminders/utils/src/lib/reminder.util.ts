@@ -65,7 +65,9 @@ export class ReminderUtils {
       return undefined;
     }
     return reminder.tag?.tags.find(
-      (tag) => tag.type === TagTypeEnum.Opportunity,
+      (tag) =>
+        tag.type === TagTypeEnum.Opportunity ||
+        tag.type === TagTypeEnum.Version,
     );
   }
 

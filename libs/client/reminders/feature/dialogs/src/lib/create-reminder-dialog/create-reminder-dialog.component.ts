@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -14,8 +13,6 @@ import { ReminderFormComponent } from '@app/client/reminders/ui';
 import {
   CRAETE_REMINDER_FORM,
   providerReminderForm,
-  REMINDER_COMPANY_SOURCE,
-  REMINDER_USERS_SOURCE,
 } from '@app/client/reminders/utils';
 import { DynamicDialogContentBase } from '@app/client/shared/shelf';
 import {
@@ -24,12 +21,12 @@ import {
 } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { TagsService } from '@app/client/tags/data-access';
-import { TagsActions } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { take } from 'rxjs';
+import { CreateReminderContainerComponent } from '../create-reminder-container/create-reminder-container.component';
 import { selectCreateReminderViewModel } from './create-remidner-dialog.selectors';
 
 @Component({
@@ -44,16 +41,14 @@ import { selectCreateReminderViewModel } from './create-remidner-dialog.selector
     ControlInvalidPipe,
     ReminderFormComponent,
     JsonPipe,
+    CreateReminderContainerComponent,
   ],
   templateUrl: './create-reminder-dialog.component.html',
   styleUrls: ['./create-reminder-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [providerReminderForm],
 })
-export class CreateReminderDialogComponent
-  extends DynamicDialogContentBase
-  implements OnInit
-{
+export class CreateReminderDialogComponent extends DynamicDialogContentBase {
   public route = DialogUtil.queryParams.createReminder;
 
   protected store = inject(Store);
@@ -65,50 +60,10 @@ export class CreateReminderDialogComponent
   protected vm = this.store.selectSignal(selectCreateReminderViewModel);
 
   protected form = inject(CRAETE_REMINDER_FORM);
-  protected companySourceFn = inject(REMINDER_COMPANY_SOURCE);
-  protected usersSourceFn = inject(REMINDER_USERS_SOURCE);
 
   protected staticCompany = signal<{ name: string; id: string } | undefined>(
     undefined,
   );
-
-  public ngOnInit(): void {
-    this.store.dispatch(
-      TagsActions.getTagsByTypesIfNotLoaded({
-        tagTypes: ['opportunity', 'people'],
-      }),
-    );
-
-    if (this.vm().createParams.organisation) {
-      this.tagsService
-        .getTags({
-          organisationId: this.vm().createParams.organisation!.id,
-        })
-        .subscribe((response) => {
-          const staticCompany = {
-            name: this.vm().createParams.organisation!.name,
-            id: response.data![0].id,
-          };
-          this.staticCompany.set(staticCompany);
-          this.form.controls.tag.setValue({
-            company: {
-              name: this.vm().createParams.organisation!.name,
-              id: response.data![0].id,
-            },
-            opportunity: this.vm().createParams.opportunity
-              ? {
-                  name: this.vm().createParams.opportunity!.name!,
-                  id: this.vm().createParams.opportunity!.id,
-                }
-              : undefined,
-          });
-        });
-
-      if (this.vm().createParams.opportunity) {
-        this.form.controls.tag.disable();
-      }
-    }
-  }
 
   protected onDialogClose(): void {
     this.dialog.close();

@@ -93,6 +93,8 @@ export class ReminderFormComponent {
     input.required<(id: string) => Observable<CompanyOpportunityTreeItem[]>>();
 
   public staticCompany = input<{ id: string; name: string }>();
+  public versionTags =
+    input.required<{ id: string; name: string; organisationId: string }[]>();
 
   public tagSource = computed(() => {
     return this.staticCompany()
@@ -111,10 +113,16 @@ export class ReminderFormComponent {
   public hasChildrenFn: (node: object) => boolean = (node) =>
     !('opportunity' in node);
 
-  public fetchChildrenFn: (node: object) => Observable<object[]> = (node) =>
-    of(
-      this.opportunities().map((o) => {
-        const treeNode = node as CompanyOpportunityTreeItem;
+  public fetchChildrenFn: (node: object) => Observable<object[]> = (node) => {
+    const treeNode = node as CompanyOpportunityTreeItem;
+    const versionTags = this.versionTags().filter(
+      ({ organisationId }) =>
+        organisationId ===
+        ('organisationId' in treeNode.company &&
+          treeNode.company.organisationId),
+    );
+    return of(
+      [...this.opportunities(), ...versionTags].map((o) => {
         return {
           opportunity: o,
           company: treeNode.company,
@@ -122,6 +130,7 @@ export class ReminderFormComponent {
         };
       }),
     ).pipe(take(1));
+  };
 
   public onAssignToMe(): void {
     this.form().controls.assignees.setValue(

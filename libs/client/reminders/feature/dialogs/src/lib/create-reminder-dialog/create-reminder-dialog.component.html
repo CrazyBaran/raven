@@ -3,13 +3,10 @@
 </kendo-dialog-titlebar>
 
 <div class="p-10">
-  <app-reminder-form
+  <app-create-reminder-container
     [form]="form"
-    [opportunities]="vm().opportunityTags"
-    [companySource]="companySourceFn"
-    [usersSource]="usersSourceFn"
-    [loggedUserTag]="vm().currentUser!"
-    [staticCompany]="staticCompany()!"
+    [organisationId]="vm().organisationId!"
+    [opportunityId]="vm().opportunityId!"
   />
 </div>
 <kendo-dialog-actions>

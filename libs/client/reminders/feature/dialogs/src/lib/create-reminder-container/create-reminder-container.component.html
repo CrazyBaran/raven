@@ -1,6 +1,7 @@
 <app-reminder-form
   [form]="form()"
   [opportunities]="createReminderStore.opportunityTags()"
+  [versionTags]="createReminderStore.versionTags()"
   [companySource]="companySourceFn"
   [usersSource]="usersSourceFn"
   [loggedUserTag]="createReminderStore.currentUser()!"

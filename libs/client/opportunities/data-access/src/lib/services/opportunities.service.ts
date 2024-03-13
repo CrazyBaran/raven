@@ -101,6 +101,12 @@ export class OpportunitiesService {
     reopenAndDuplicate?: boolean,
     versionName?: string,
   ): Observable<GenericResponse<OpportunityData>> {
+    if (reopenAndDuplicate && versionName) {
+      return this.patchOpportunity(opportunityId, {
+        reopenAndDuplicate,
+        versionName,
+      });
+    }
     return this.getOpportunityDetails(opportunityId).pipe(
       switchMap((opportunityDetailsResponse) => {
         const previousPipelineStageId =
@@ -108,8 +114,6 @@ export class OpportunitiesService {
 
         return this.patchOpportunity(opportunityId, {
           pipelineStageId: previousPipelineStageId,
-          reopenAndDuplicate,
-          versionName,
         });
       }),
     );
