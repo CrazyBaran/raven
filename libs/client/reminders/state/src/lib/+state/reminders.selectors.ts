@@ -28,7 +28,7 @@ const selectRemindersTableParams = createSelector(
   tagsQuery.selectCurrentUserTag,
   (params, currentUser) => {
     if (!params.assignee && currentUser) {
-      return { ...params, assignee: currentUser.id };
+      return { ...params, assignee: currentUser.userId! };
     } else {
       return _.omit(params, 'assignee');
     }
