@@ -210,30 +210,44 @@ export class OpportunitiesEffects {
         this.opportunitiesService
           .createOpportunity({ organisationId: payload.organisationId })
           .pipe(
-            switchMap(({ data }) => [
-              NotificationsActions.showSuccessNotification({
-                content: 'Opportunity created successfully',
-              }),
-              OpportunitiesActions.updateOpportunity({
-                id: data?.id!,
-                changes: {
-                  pipelineStageId:
-                    pipelineStages?.find(
-                      (stage) =>
-                        stage.relatedCompanyStatus ===
-                        CompanyStatus.LIVE_OPPORTUNITY,
-                    )?.id || undefined,
-                  ...payload,
-                },
-              }),
-              OrganisationsActions.updateOrganisation({
-                id: data!.organisation.id!,
-                changes: {
-                  companyStatus: null,
-                },
-              }),
-              OpportunitiesActions.createOpportunitySuccess({ data: data! }),
-            ]),
+            switchMap(({ data }) => {
+              const returnActions = [];
+              returnActions.push(
+                NotificationsActions.showSuccessNotification({
+                  content: 'Opportunity created successfully',
+                }),
+              );
+
+              const shouldPatchOpportunity =
+                Object.keys(_.omit(payload, 'organisationId')).length > 0;
+              if (shouldPatchOpportunity) {
+                returnActions.push(
+                  OpportunitiesActions.updateOpportunity({
+                    id: data?.id!,
+                    changes: {
+                      pipelineStageId:
+                        pipelineStages?.find(
+                          (stage) =>
+                            stage.relatedCompanyStatus ===
+                            CompanyStatus.LIVE_OPPORTUNITY,
+                        )?.id || undefined,
+                      ...payload,
+                    },
+                  }),
+                  OrganisationsActions.updateOrganisation({
+                    id: data!.organisation.id!,
+                    changes: {
+                      companyStatus: null,
+                    },
+                  }),
+                );
+              }
+              returnActions.push(
+                OpportunitiesActions.createOpportunitySuccess({ data: data! }),
+              );
+
+              return returnActions;
+            }),
             catchError((error) =>
               of(
                 OpportunitiesActions.createOpportunityFailure({
