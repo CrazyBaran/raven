@@ -111,6 +111,15 @@ export const tagsFeature = createFeature({
     selectOpportunityTags: createSelector(selectTagsState, (state) =>
       selectTagsByTypes(state, 'opportunity'),
     ),
+    selectVersionTags: createSelector(
+      selectTagsState,
+      (state) =>
+        selectTagsByTypes(state, 'version') as {
+          id: string;
+          name: string;
+          organisationId: string;
+        }[],
+    ),
     selectOrganisationTags: createSelector(selectTagsState, (state) =>
       selectTagsByTypes(state, 'company'),
     ),

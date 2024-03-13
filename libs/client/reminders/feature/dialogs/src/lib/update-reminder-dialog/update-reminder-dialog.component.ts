@@ -23,6 +23,7 @@ import { DialogModule, DialogRef } from '@progress/kendo-angular-dialog';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { RxPush } from '@rx-angular/template/push';
 import { first } from 'rxjs';
+import { createReminderStore } from '../create-reminder-container/create-reminder-container.component';
 import {
   selectUpdateReminderViewModel,
   selectUpdatingReminder,
@@ -105,4 +106,6 @@ export class UpdateReminderDialogComponent extends DynamicDialogContentBase {
         this.dialog.close();
       });
   }
+
+  protected readonly createReminderStore = createReminderStore;
 }

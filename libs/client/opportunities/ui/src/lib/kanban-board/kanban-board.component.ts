@@ -123,6 +123,7 @@ export class KanbanBoardComponent {
     organisationId: string;
   }>();
 
+  protected draggedCard = signal<OpportunityCard | null>(null);
   protected receiveMode = signal<KanbanDragStartEvent | null>(null);
   protected receiveMode$ = toObservable(this.receiveMode);
 
@@ -140,6 +141,7 @@ export class KanbanBoardComponent {
 
   protected dragStarted($event: KanbanDragStartEvent): void {
     this.receiveMode.set($event);
+    this.draggedCard.set($event.card);
   }
 
   protected dragEnded($event: OpportunityCard): void {

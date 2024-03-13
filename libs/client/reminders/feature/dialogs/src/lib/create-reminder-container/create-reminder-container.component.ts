@@ -47,7 +47,9 @@ export type createReminderState = {
   organisationId: string | undefined;
   opportunityId: string | undefined;
   loadingStaticCompany: boolean;
-  staticCompany: { name: string; id: string } | undefined;
+  staticCompany:
+    | { name: string; id: string; organisationId: string }
+    | undefined;
 };
 
 export const createReminderStore = signalStore(
@@ -70,6 +72,7 @@ export const createReminderStore = signalStore(
         : undefined;
     }),
     opportunityTags: ngrxStore.selectSignal(tagsQuery.selectOpportunityTags),
+    versionTags: ngrxStore.selectSignal(tagsQuery.selectVersionTags),
     staticOpportunity: computed(() =>
       ngrxStore.selectSignal(tagsQuery.selectTagById(store.opportunityId())),
     ),
@@ -102,14 +105,14 @@ export const createReminderStore = signalStore(
           tap(() => patchState(store, { loadingStaticCompany: true })),
           switchMap((organisationId) =>
             organisationId
-              ? tagsService.getTags({ organisationId }).pipe(
+              ? tagsService.getTags({ organisationId, type: 'company' }).pipe(
                   tapResponse({
                     next: (response) => {
-                      const staticCompany = {
-                        name: response.data![0].name,
-                        id: response.data![0].id,
-                      };
-                      patchState(store, { staticCompany });
+                      const staticCompany = response.data![0]!;
+                      patchState(store, {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        staticCompany: staticCompany as any,
+                      });
                     },
                     error: console.error,
                     finalize: () =>
@@ -145,7 +148,7 @@ export const createReminderStore = signalStore(
     onInit: (): void => {
       ngrxStore.dispatch(
         TagsActions.getTagsByTypesIfNotLoaded({
-          tagTypes: ['opportunity', 'people'],
+          tagTypes: ['opportunity', 'people', 'version'],
         }),
       );
       const { organisationId, staticValue } = store;

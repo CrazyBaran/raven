@@ -4,26 +4,18 @@ import { remindersQuery } from '@app/client/reminders/state';
 import { DialogUtil } from '@app/client/shared/util';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { tagsQuery } from '@app/client/tags/state';
-import { OrganisationData } from '@app/rvns-opportunities';
 import { createSelector } from '@ngrx/store';
 
 export const selectCreateReminderParams = createSelector(
   selectQueryParam(DialogUtil.queryParams.createReminder),
   organisationsFeature.selectEntities,
   opportunitiesQuery.selectOpportunitiesDictionary,
-  (
-    params,
-    organisations,
-    opportunities,
-  ): {
-    organisation: OrganisationData | undefined;
-    opportunity: { id: string; name: string } | undefined;
-  } => {
+  (params) => {
     if (Array.isArray(params)) {
       const [organisationId, opportunityId] = params;
       return {
-        organisation: organisations[organisationId],
-        opportunity: opportunities[opportunityId]?.tag,
+        organisation: organisationId,
+        opportunity: opportunityId,
       };
     } else {
       return {
@@ -41,12 +33,8 @@ export const selectCreateReminderViewModel = createSelector(
   (createParams, { create: isCreating }, opportunityTags, currentUser) => {
     return {
       isCreating,
-      opportunityTags,
-      currentUser: {
-        id: currentUser?.userId ?? '',
-        name: currentUser?.name ?? '',
-      },
-      createParams,
+      organisationId: createParams.organisation,
+      opportunityId: createParams.opportunity,
     };
   },
 );
