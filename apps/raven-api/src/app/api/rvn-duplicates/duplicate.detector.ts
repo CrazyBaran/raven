@@ -45,6 +45,13 @@ export class DuplicateDetector {
   public async getDuplicates(): Promise<DuplicatesDto> {
     const domains = await this.organisationDomainRepository.find();
 
+    const organisationsFromNoteTags = await this.getOrganisationsFromNoteTags();
+    const organisationsFromReminderTags =
+      await this.getOrganisationsFromReminderTags();
+    const organisationsFromTags = organisationsFromNoteTags.concat(
+      organisationsFromReminderTags,
+    );
+
     const domainMap: { [key: string]: string[] } = {};
     for (const domain of domains) {
       const domainName = this.domainResolver.cleanDomain(domain.domain);
@@ -67,7 +74,11 @@ export class DuplicateDetector {
         }
         duplicates.count += 1;
         duplicates.duplicates.push(
-          await this.getDuplicate(domain, domainMap[domain]),
+          await this.getDuplicate(
+            domain,
+            domainMap[domain],
+            organisationsFromTags,
+          ),
         );
       }
     }
@@ -78,6 +89,7 @@ export class DuplicateDetector {
   public async getDuplicate(
     domain: string,
     organisationIds: string[],
+    organisationsFromTags: string[],
   ): Promise<DuplicateDto> {
     const duplicate: DuplicateDto = {
       domain: domain,
@@ -90,12 +102,6 @@ export class DuplicateDetector {
       relations: ['opportunities', 'shortlists', 'organisationDomains'],
     });
 
-    const organisationsFromNoteTags = await this.getOrganisationsFromNoteTags();
-    const organisationsFromReminderTags =
-      await this.getOrganisationsFromReminderTags();
-    const organisationsFromTags = organisationsFromNoteTags.concat(
-      organisationsFromReminderTags,
-    );
     for (const organisation of organisations) {
       const reasons: string[] = [];
       if (organisation.opportunities.length > 0) {

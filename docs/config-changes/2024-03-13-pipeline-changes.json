@@ -1,0 +1,289 @@
+[
+  {
+    "changeType": "Removed",
+    "entityClass": "PipelineStageEntity",
+    "data": {
+      "id": "da55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Shortlist",
+      "order": 1,
+      "mappedFrom": "Shortlist",
+      "isHidden": true,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "db55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Outreach - Planned",
+      "order": 4,
+      "mappedFrom": "Outreach - Planned",
+      "isHidden": false,
+      "isDefault": true,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "outreach",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "db55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Outreach - Planned",
+      "order": 2,
+      "mappedFrom": "Outreach - Planned",
+      "isHidden": false,
+      "isDefault": true,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "outreach",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "dd55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Outreach - Scheduling",
+      "order": 2,
+      "mappedFrom": "Outreach - Scheduling",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "outreach",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "dd55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Outreach - Scheduling",
+      "order": 4,
+      "mappedFrom": "Outreach - Scheduling",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "outreach",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "df55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Preliminary DD - In progress",
+      "order": 7,
+      "mappedFrom": "Preliminary DD - in progress",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "df55560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Preliminary DD - In progress",
+      "order": 6,
+      "mappedFrom": "Preliminary DD - in progress",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "e055560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Preliminary DD - Ready for socialisation",
+      "order": 6,
+      "mappedFrom": "Preliminary DD - ready for socialisation",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "e055560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Preliminary DD - Ready for socialisation",
+      "order": 7,
+      "mappedFrom": "Preliminary DD - ready for socialisation",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "e155560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "DD - In Progress",
+      "order": 9,
+      "mappedFrom": "DD - In Progress",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "e155560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "DD - In Progress",
+      "order": 8,
+      "mappedFrom": "DD - In Progress",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "e255560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "DD - Ready for Local IC",
+      "order": 8,
+      "mappedFrom": "DD - Ready for Local IC",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "e255560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "DD - Ready for Local IC",
+      "order": 9,
+      "mappedFrom": "DD - Ready for Local IC",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "e355560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "IC - Prepping for Capital IC",
+      "order": 11,
+      "mappedFrom": "IC - prepping for Capital IC",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "e355560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "IC - Prepping for Capital IC",
+      "order": 10,
+      "mappedFrom": "IC - prepping for Capital IC",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "e455560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "IC - Ready for Capital IC",
+      "order": 10,
+      "mappedFrom": "IC - ready for Capital IC",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "e455560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "IC - Ready for Capital IC",
+      "order": 11,
+      "mappedFrom": "IC - ready for Capital IC",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": null,
+      "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "live_opportunity",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  },
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "e655560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Pass",
+      "order": 13,
+      "mappedFrom": "Passed",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": "{\"color\":\"warning\",\"order\":1,\"droppableFrom\":[\"db55560e-7293-ee11-8927-6045bdd178c1\",\"dc55560e-7293-ee11-8927-6045bdd178c1\",\"dd55560e-7293-ee11-8927-6045bdd178c1\",\"de55560e-7293-ee11-8927-6045bdd178c1\",\"df55560e-7293-ee11-8927-6045bdd178c1\",\"e055560e-7293-ee11-8927-6045bdd178c1\",\"e155560e-7293-ee11-8927-6045bdd178c1\",\"e255560e-7293-ee11-8927-6045bdd178c1\",\"e355560e-7293-ee11-8927-6045bdd178c1\",\"e455560e-7293-ee11-8927-6045bdd178c1\"]}",
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": null,
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "e655560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Pass",
+      "order": 13,
+      "mappedFrom": "Passed",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": "{\"color\":\"warning\",\"order\":1,\"droppableFrom\":[\"db55560e-7293-ee11-8927-6045bdd178c1\",\"dc55560e-7293-ee11-8927-6045bdd178c1\",\"dd55560e-7293-ee11-8927-6045bdd178c1\",\"de55560e-7293-ee11-8927-6045bdd178c1\",\"df55560e-7293-ee11-8927-6045bdd178c1\",\"e055560e-7293-ee11-8927-6045bdd178c1\",\"e155560e-7293-ee11-8927-6045bdd178c1\",\"e255560e-7293-ee11-8927-6045bdd178c1\",\"e355560e-7293-ee11-8927-6045bdd178c1\",\"e455560e-7293-ee11-8927-6045bdd178c1\"]}",
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "passed",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  }
+]
