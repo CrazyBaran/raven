@@ -82,6 +82,6 @@ export const Primary: Story = {
         dealTeam: ['John Doe', 'Jane Doe'],
         updatedAt: '2021-01-01',
       },
-    ],
+    ] as any,
   },
 };
