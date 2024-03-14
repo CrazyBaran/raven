@@ -40,7 +40,7 @@ export const Primary: Story = {
       skip: 15,
       field: 'none',
       dir: 'asc',
-    },
+    } as any,
     filters: {
       Country: ['United Kingdom', 'Poland'],
       City: ['London', 'Warsaw'],

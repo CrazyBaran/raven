@@ -25,7 +25,7 @@ export const Primary: Story = {
       },
       createdAt: '2021-07-01T12:00:00.000Z',
       additionalFields: [],
-    },
+    } as any,
   },
 };
 
