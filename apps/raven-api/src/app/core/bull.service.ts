@@ -5,7 +5,6 @@ import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/dist/src/queueAdapters/bullMQ';
 import { ExpressAdapter } from '@bull-board/express';
 import { DynamicModule, INestApplication, Injectable } from '@nestjs/common';
-import { Queue } from '@taskforcesh/bullmq-pro';
 import { BullModule } from '@taskforcesh/nestjs-bullmq-pro';
 import { RegisterFlowProducerOptions } from '@taskforcesh/nestjs-bullmq-pro/dist/interfaces/register-flow-producer-options.interface';
 import { RegisterQueueOptions } from '@taskforcesh/nestjs-bullmq-pro/dist/interfaces/register-queue-options.interface';
@@ -50,7 +49,7 @@ export class BullService {
     createBullBoard({
       queues: _.sortBy(BullService.queues, 'order').map(
         (queue) =>
-          new BullMQAdapter(app.get<Queue>(`BullQueue_${queue.name}`), {
+          new BullMQAdapter(app.get(`BullQueue_${queue.name}`), {
             description: queue.description,
             readOnlyMode: environment.bull.board.readOnly,
           }),

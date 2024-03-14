@@ -1,4 +1,3 @@
-export { AbstractQueueBroadcaster } from './lib/abstract-queue.broadcaster';
 export {
   AbstractQueueProcessor,
   MsOutput,

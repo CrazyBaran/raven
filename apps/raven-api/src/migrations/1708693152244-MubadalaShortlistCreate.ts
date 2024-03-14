@@ -9,7 +9,7 @@ export class MubadalaShortlistCreate1708693152244
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.manager.save(
-      queryRunner.manager.create<ShortlistEntity>(ShortlistEntity, {
+      queryRunner.manager.create(ShortlistEntity, {
         name: 'Mubadala Shortlist',
         description:
           'List containing everything that is in any other Shortlist',

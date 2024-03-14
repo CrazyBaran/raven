@@ -23,7 +23,7 @@ export class PersonalListsCreate1708611325718 implements MigrationInterface {
       }
 
       await queryRunner.manager.save(
-        queryRunner.manager.create<ShortlistEntity>(ShortlistEntity, {
+        queryRunner.manager.create(ShortlistEntity, {
           name: `${user.name} Personal list`,
           description: `Personal shortlist of user ${user.name}`,
           creatorId: user.id,

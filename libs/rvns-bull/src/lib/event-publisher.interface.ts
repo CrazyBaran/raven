@@ -1,6 +1,6 @@
-import { Job } from 'bullmq';
 import { Socket } from 'socket.io';
 
+import { JobPro } from '@taskforcesh/bullmq-pro';
 import { EventState } from './event-state.type';
 
 export interface EmitOptions {
@@ -9,5 +9,5 @@ export interface EmitOptions {
 }
 
 export interface EventPublisher {
-  emit(job: Job, state: EventState, options?: EmitOptions): void;
+  emit(job: JobPro, state: EventState, options?: EmitOptions): void;
 }
