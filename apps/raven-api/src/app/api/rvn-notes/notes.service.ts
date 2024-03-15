@@ -8,7 +8,7 @@ import {
   RelatedNoteWithFields,
   WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
-import { TagData } from '@app/rvns-tags';
+import { TagData, TagTypeEnum } from '@app/rvns-tags';
 import { FieldDefinitionType, TemplateTypeEnum } from '@app/rvns-templates';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -301,7 +301,10 @@ export class NotesService {
 
     s = Date.now();
     const organisationTag = await this.organisationTagRepository.findOne({
-      where: { organisationId: opportunity.organisation.id },
+      where: {
+        organisationId: opportunity.organisation.id,
+        type: TagTypeEnum.Company,
+      },
     });
     if (!organisationTag) {
       this.logger.warn(
