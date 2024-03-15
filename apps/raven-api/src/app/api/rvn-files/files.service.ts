@@ -1,7 +1,7 @@
 import { FileData } from '@app/rvns-files';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { FileEntity } from './entities/file.entity';
 
@@ -52,5 +52,25 @@ export class FilesService {
         type: tagEntity.type,
       })),
     };
+  }
+
+  public async findAll(
+    opportunityId: string,
+    tags?: TagEntity[],
+  ): Promise<FileEntity[]> {
+    const findOptions = {
+      where: {
+        opportunityId: opportunityId,
+      },
+      relations: ['tags'],
+    };
+    if (tags && tags.length > 0) {
+      findOptions.where['tags'] = {
+        id: In(tags.map((tag) => tag.id)),
+      };
+    }
+    const result = await this.fileRepository.find(findOptions);
+
+    return result;
   }
 }

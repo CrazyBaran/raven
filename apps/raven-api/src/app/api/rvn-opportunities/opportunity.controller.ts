@@ -245,6 +245,24 @@ export class OpportunityController {
     );
   }
 
+  @ApiOperation({ description: 'Get file tags' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'opportunityId', type: String })
+  @ApiQuery({ name: 'tagIds', type: String, required: false })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @Get(':opportunityId/files')
+  public async getFiles(
+    @Param('opportunityId', ParseUUIDPipe, ParseOpportunityPipe)
+    opportunity: OpportunityEntity,
+    @Query('tagIds', ParseTagsPipe, ValidateTabTagsPipe)
+    tagEntities?: TagEntity[] | null,
+  ): Promise<FileData[]> {
+    return (await this.filesService.findAll(opportunity.id, tagEntities)).map(
+      (fileEntity) => this.filesService.fileEntityToFileData(fileEntity),
+    );
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an opportunity' })
   @ApiResponse({
