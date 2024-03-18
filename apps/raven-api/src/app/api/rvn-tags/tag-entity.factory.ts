@@ -3,6 +3,7 @@ import {
   OrganisationTagEntity,
   PeopleTagEntity,
   TagEntity,
+  VersionTagEntity,
 } from './entities/tag.entity';
 import { CreateTagOptions } from './tags.service';
 
@@ -14,7 +15,6 @@ export class TagEntityFactory {
     switch (options.type) {
       case TagTypeEnum.Company:
       case TagTypeEnum.Investor:
-      case TagTypeEnum.Version:
         tag = new OrganisationTagEntity();
         tag.organisationId = options.organisationId;
         break;
@@ -29,6 +29,10 @@ export class TagEntityFactory {
       case TagTypeEnum.Industry:
       case TagTypeEnum.Opportunity:
         tag = new TagEntity();
+        break;
+      case TagTypeEnum.Version:
+        tag = new VersionTagEntity();
+        tag.organisationId = options.organisationId;
         break;
       default:
         throw new Error('Unsupported tag type');

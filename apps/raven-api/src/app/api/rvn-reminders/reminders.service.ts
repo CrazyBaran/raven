@@ -92,15 +92,17 @@ export class RemindersService {
       complexTagQueryBuilder.leftJoinAndSelect('complexTags.tags', 'tags_full');
       const existingComplexTags = await complexTagQueryBuilder.getMany();
 
-      const filteredTags = existingComplexTags.filter(
-        (ct) =>
-          ct.tags.length === ids.length &&
-          ct.tags.every((t: OrganisationTagEntity | TagEntity) =>
-            t instanceof OrganisationTagEntity
-              ? ids.includes(t.organisationId)
-              : ids.includes(t.id),
-          ),
-      );
+      const filteredTags = options.opportunityId
+        ? existingComplexTags.filter(
+            (ct) =>
+              ct.tags.length === ids.length &&
+              ct.tags.every((t: TagEntity) =>
+                t instanceof OrganisationTagEntity
+                  ? ids.includes(t.organisationId)
+                  : ids.includes(t.id),
+              ),
+          )
+        : existingComplexTags;
 
       if (filteredTags.length === 0) {
         return {
@@ -109,8 +111,11 @@ export class RemindersService {
         };
       }
 
-      queryBuilder.andWhere('reminders.tagId = :tagId', {
-        tagId: filteredTags[0].id,
+      const tags = options.opportunityId
+        ? [filteredTags[0].id]
+        : [...filteredTags.map((tag) => tag.id)];
+      queryBuilder.andWhere('reminders.tagId IN (:...tagIds)', {
+        tagIds: tags,
       });
     }
 
@@ -372,9 +377,6 @@ export class RemindersService {
       tag.companyTag && tags.push(tag.companyTag);
       tag.opportunityTag && tags.push(tag.opportunityTag);
 
-      if (tag.versionTag) {
-        tags.push(tag.versionTag);
-      }
       newComplexTag.tags = tags;
 
       const complexTag = await this.complexTagRepository.save(newComplexTag);

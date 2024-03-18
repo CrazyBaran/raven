@@ -58,7 +58,7 @@ export class TagEntity {
     if (this.type === TagTypeEnum.Version) {
       (this as unknown as VersionTagEntity).opportunityTagId = (
         this as unknown as VersionTagEntity
-      ).opportunityTagId.toLowerCase();
+      ).opportunityTagId?.toLowerCase();
     }
   }
 }

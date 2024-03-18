@@ -1,4 +1,4 @@
-import { EntityManager } from 'typeorm';
+import { EntityManager, In } from 'typeorm';
 
 import { TagTypeEnum } from '@app/rvns-tags';
 import {
@@ -17,7 +17,6 @@ import { CompanyOpportunityTag } from '../interfaces/company-opportunity-tag.int
 interface PipeOutput {
   companyTag?: OrganisationTagEntity;
   opportunityTag?: TagEntity;
-  versionTag: TagEntity;
 }
 
 @Injectable()
@@ -35,39 +34,25 @@ export class ParseCompanyOpportunityTagPipe
       return null;
     }
 
-    let versionId;
-
-    if (companyOpportunityTag.versionId) {
-      versionId = companyOpportunityTag.versionId;
-    }
-
     const companyTag = await this.entityManager.findOne(OrganisationTagEntity, {
       where: {
         id: companyOpportunityTag.companyId,
         type: TagTypeEnum.Company,
       },
     });
+
     const opportunityTag =
       companyOpportunityTag.opportunityId &&
       (await this.entityManager.findOne(TagEntity, {
         where: {
           id: companyOpportunityTag.opportunityId,
-          type: TagTypeEnum.Opportunity,
-        },
-      }));
-
-    const versionTag =
-      versionId &&
-      (await this.entityManager.findOne(TagEntity, {
-        where: {
-          id: versionId,
+          type: In([TagTypeEnum.Opportunity, TagTypeEnum.Version]),
         },
       }));
 
     const output = {
       companyTag,
       opportunityTag,
-      versionTag,
     };
     this.validate(companyOpportunityTag, output);
 
