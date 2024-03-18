@@ -10,7 +10,7 @@
 
   <form
     [formGroup]="form"
-    class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-10"
+    class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto"
   >
     <kendo-formfield>
       <kendo-label text="Company Name" />
@@ -47,7 +47,13 @@
             text="Duplicate and start again (open with empty details)"
           ></kendo-label>
         </li>
-
+        <kendo-formfield
+          class="px-6"
+          [class.opacity-75]="form.controls.option.value !== 'duplicate'"
+        >
+          <kendo-label text="Please enter a name for this new opportunity" />
+          <kendo-textbox formControlName="newName" placeholder="eg. v2" />
+        </kendo-formfield>
         <li class="k-radio-item">
           <input
             #follower
@@ -61,16 +67,6 @@
         </li>
       </ul>
     </kendo-formfield>
-    @if (form.controls.option.value === 'duplicate') {
-      <kendo-formfield>
-        <kendo-label text="Please enter a name for this new opportunity" />
-        <kendo-textbox
-          formControlName="newName"
-          placeholder="eg. v2"
-          [disabled]="true"
-        />
-      </kendo-formfield>
-    }
   </form>
 </div>
 

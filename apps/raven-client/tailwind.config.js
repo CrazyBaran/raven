@@ -10,6 +10,7 @@ module.exports = {
   ],
   theme: {
     colors: {
+      transparent: 'transparent',
       primary: {
         DEFAULT: '#00A59B',
         4: '#00a59b0a',
@@ -76,6 +77,14 @@ module.exports = {
         '-24': 'var(--informational-warning-24)',
         '-30': 'var(--informational-warning-30)',
         '-50': 'var(--informational-warning-50)',
+      },
+      'informational-success': {
+        DEFAULT: 'var(--informational-success)',
+        '-8': 'var(--informational-success-8)',
+        '-16': 'var(--informational-success-16)',
+        '-24': 'var(--informational-success-24)',
+        '-30': 'var(--informational-success-30)',
+        '-50': 'var(--informational-success-50)',
       },
       'informational-error': {
         DEFAULT: 'var(--informational-error)',

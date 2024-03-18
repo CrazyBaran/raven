@@ -5,10 +5,12 @@
   [loading]="loading()!"
   [pageSize]="pageSize()"
   [pageable]="true"
+  [rowClass]="rowCallback"
   [skip]="skip()"
-  [sortable]="true"
   [sort]="sort()"
+  [sortable]="true"
   class="grid-borderless h-full"
+  id="reminder-light-table"
 >
   <kendo-grid-column field="name" headerClass="!font-bold" title="Title">
     <ng-template kendoGridCellTemplate let-reminder>
@@ -49,7 +51,9 @@
   <kendo-grid-column [width]="100" title="">
     <ng-template kendoGridCellTemplate let-reminder>
       <div class="flex justify-end gap-2">
-        <app-dropdownbutton-navigation [model]="getActionModel(reminder)" />
+        @if (reminder.actionsModel) {
+          <app-dropdownbutton-navigation [model]="reminder.actionsModel" />
+        }
       </div>
     </ng-template>
   </kendo-grid-column>

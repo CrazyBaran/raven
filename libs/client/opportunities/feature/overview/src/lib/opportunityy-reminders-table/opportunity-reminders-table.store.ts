@@ -6,8 +6,11 @@ import {
   RemindersService,
 } from '@app/client/reminders/data-access';
 import { RemindersActions } from '@app/client/reminders/state';
+import { RemindersLightTableRow } from '@app/client/reminders/ui';
+import { ReminderUtils } from '@app/client/reminders/utils';
 import { LoadDataMethod, withTable } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
+import { tagsQuery } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import {
   signalStore,
@@ -46,6 +49,28 @@ export const opportunityRemindersTableStore = signalStore(
       )),
   })),
   withTable<ReminderDto>(),
+  withComputed((store, ngrxStore = inject(Store)) => ({
+    data: computed(() => {
+      const loggedUserTag = ngrxStore.selectSignal(
+        tagsQuery.selectCurrentUserTag,
+      )();
+      return {
+        ...store.data(),
+        data: store.data().data.map(
+          (reminder): RemindersLightTableRow => ({
+            ...reminder,
+
+            actionsModel: ReminderUtils.canEditReminder(
+              reminder,
+              loggedUserTag?.userId,
+            )
+              ? ReminderUtils.getReminderActions(reminder)
+              : undefined,
+          }),
+        ),
+      };
+    }),
+  })),
   withHooks((store, actions$ = inject(Actions)) => ({
     onInit: (): void => {
       const resetPage$ = actions$.pipe(

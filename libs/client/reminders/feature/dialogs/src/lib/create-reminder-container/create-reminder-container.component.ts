@@ -81,12 +81,10 @@ export const createReminderStore = signalStore(
         opportunitiesQuery.selectOpportunityById(store.opportunityId()!),
       );
 
-      return staticOpportunity()?.tag?.id
-        ? {
-            company: store.staticCompany()!,
-            opportunity: staticOpportunity()!.tag!,
-          }
-        : undefined;
+      return {
+        company: store.staticCompany()!,
+        opportunity: staticOpportunity()?.tag,
+      };
     }),
   })),
   withMethods((store, tagsService = inject(TagsService)) => {
@@ -135,8 +133,12 @@ export const createReminderStore = signalStore(
       >(
         pipe(
           tap((staticValue) => {
-            if (store.form() && staticValue) {
-              store.form()?.controls.tag.setValue(staticValue);
+            if (!store.form()) {
+              return;
+            }
+            store.form()?.controls.tag.setValue(staticValue!);
+
+            if (staticValue?.company?.id) {
               store.form()?.controls.tag.disable();
             }
           }),

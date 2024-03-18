@@ -1,0 +1,10 @@
+#reminder-light-table tr.reminder-type-overdue {
+  @apply text-informational-error bg-informational-error--8;
+  .reminder-name {
+    color: var(--informational-error) !important;
+  }
+}
+
+#reminder-light-table tr.reminder-type-completed {
+  @apply bg-informational-success--8;
+}

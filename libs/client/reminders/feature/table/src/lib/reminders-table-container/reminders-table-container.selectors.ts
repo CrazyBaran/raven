@@ -77,25 +77,34 @@ export const selectTableModel = createSelector(
   selectReminderRows,
   remindersQuery.selectLoadingStates,
   remindersQuery.selectTable,
+  tagsQuery.selectCurrentUserTag,
   (
     params,
     rows,
     { table: isLoading, loadMoreTable: isLoadMore, reloadTable },
     { total },
+    loggedUserTag,
   ): TableViewModel<ReminderTableRow> => ({
     ...params,
     total,
     isLoading: !!isLoading || !!isLoadMore || !!reloadTable,
-    data: rows.map((reminder) => ({
-      ...reminder,
-      assignees: reminder.assignees.map(({ name }) => name),
-      assignedBy: reminder.assignedBy.name,
-      tag: {
-        company: ReminderUtils.getReminderCompanyTag(reminder)?.name,
-        opportunity: ReminderUtils.getReminderOpportunityTag(reminder)?.name,
-      },
-      actionsModel: ReminderUtils.getReminderActions(reminder),
-    })),
+    data: rows.map((reminder) => {
+      return {
+        ...reminder,
+        assignees: reminder.assignees.map(({ name }) => name),
+        assignedBy: reminder.assignedBy.name,
+        tag: {
+          company: ReminderUtils.getReminderCompanyTag(reminder)?.name,
+          opportunity: ReminderUtils.getReminderOpportunityTag(reminder)?.name,
+        },
+        actionsModel: ReminderUtils.canEditReminder(
+          reminder,
+          loggedUserTag?.userId,
+        )
+          ? ReminderUtils.getReminderActions(reminder)
+          : undefined,
+      };
+    }),
   }),
 );
 

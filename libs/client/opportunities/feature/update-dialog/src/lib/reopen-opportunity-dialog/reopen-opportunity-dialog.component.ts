@@ -49,10 +49,10 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
   protected activatedRoute = inject(ActivatedRoute);
 
   protected form = inject(FormBuilder).group({
-    companyName: '',
-    round: '',
-    option: 'duplicate' as 'duplicate' | 'existing',
-    newName: '',
+    companyName: [{ value: null, disabled: true }],
+    round: [{ value: null, disabled: true }],
+    option: ['duplicate' as 'duplicate' | 'existing'],
+    newName: [''],
   });
 
   protected vm = this.store.selectSignal(

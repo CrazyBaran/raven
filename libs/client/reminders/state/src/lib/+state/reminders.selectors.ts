@@ -20,6 +20,8 @@ const remindersTableParamsOrigin = buildPageParamsSelector(
   {
     skip: '0',
     take: '30',
+    field: 'dueDate',
+    dir: 'asc',
   },
 );
 

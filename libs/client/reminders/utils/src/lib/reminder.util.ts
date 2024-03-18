@@ -9,9 +9,9 @@ import { TagTypeEnum } from '@app/rvns-tags';
 export class ReminderUtils {
   public static getReminderActions(
     reminder: ReminderEntity | undefined,
-  ): DropdownbuttonNavigationModel {
+  ): DropdownbuttonNavigationModel | undefined {
     if (!reminder) {
-      return { actions: [] };
+      return undefined;
     }
     const completeReminder = {
       text: 'Complete Reminder',
@@ -79,5 +79,19 @@ export class ReminderUtils {
     return `${company?.name ?? ''} ${
       opportunity?.name ? `/ ${opportunity.name}` : ``
     }`;
+  }
+
+  public static canEditReminder(
+    reminder: ReminderEntity | undefined,
+    userId: string | undefined,
+  ): boolean {
+    if (!reminder || !userId) {
+      return false;
+    }
+    return (
+      reminder.assignees.some((assignee) => assignee.id === userId) ||
+      //TODO: should check by assignedBy.id
+      reminder.assignedBy.name === userId
+    );
   }
 }

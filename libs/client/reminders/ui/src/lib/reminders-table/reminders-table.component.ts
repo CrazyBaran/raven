@@ -54,7 +54,7 @@ export interface ReminderTableRow {
   assignedBy: string;
   dueDate: string | Date;
   status: 'overdue' | 'due' | 'completed';
-  actionsModel: DropdownbuttonNavigationModel;
+  actionsModel: DropdownbuttonNavigationModel | undefined;
 }
 
 @Component({

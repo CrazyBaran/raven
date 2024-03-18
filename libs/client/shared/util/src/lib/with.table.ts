@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type,@typescript-eslint/no-explicit-any */
-import { computed, Signal } from '@angular/core';
+import { computed, inject, Signal } from '@angular/core';
 import { tapResponse } from '@ngrx/component-store';
+import { Actions, ofType } from '@ngrx/effects';
 import {
   patchState,
   signalStoreFeature,
@@ -11,6 +12,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { ActionCreator } from '@ngrx/store';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { debounceTime, Observable, pipe, switchMap, tap } from 'rxjs';
@@ -50,6 +52,7 @@ export type LoadDataMethod<Entity> = (
 
 export function withTable<Entity>(settings?: {
   defaultSort?: SortDescriptor[];
+  refreshOnActions?: ActionCreator<any, any>[];
 }) {
   const options = { ...defaultSettings, ...settings };
   return signalStoreFeature(
@@ -76,11 +79,20 @@ export function withTable<Entity>(settings?: {
       sort: options?.defaultSort ?? [],
     }),
     withComputed((store) => ({
-      tableParams: computed(() => ({
-        ...store.pageState(),
-        ...(store.sort?.() ?? {}),
-        ...(store.additionalParams?.() ?? {}),
-      })),
+      tableParams: computed(() => {
+        if (store.sort()[0]) {
+          return {
+            ...store.pageState(),
+            ...store.sort()[0],
+            ...(store.additionalParams?.() ?? {}),
+          };
+        }
+        return {
+          ...store.pageState(),
+          ...(store.additionalParams?.() ?? {}),
+        };
+      }),
+      pageable: computed(() => store.data().total > store.pageState().take),
     })),
     withMethods((store) => ({
       pageChange: rxMethod<PageChangeEvent>(
@@ -107,10 +119,13 @@ export function withTable<Entity>(settings?: {
           switchMap((params) =>
             store.loadData(params).pipe(
               tapResponse({
-                next: (data) =>
+                next: (data) => {
+                  console.log(data);
                   patchState(store, {
                     data,
-                  }),
+                    isLoading: false,
+                  });
+                },
                 error: (error) => console.error('Error', error),
                 finalize: () => patchState(store, { isLoading: false }),
               }),
@@ -138,11 +153,16 @@ export function withTable<Entity>(settings?: {
         ),
       ),
     })),
-    withHooks((store) => ({
+    withHooks((store, actions$ = inject(Actions)) => ({
       onInit: () => {
         const tableParams = store.tableParams;
         if (options.listenOnInit) {
           store.loadData(tableParams);
+        }
+
+        if (options.refreshOnActions) {
+          const resetPage$ = actions$.pipe(ofType(...options.refreshOnActions));
+          store.refresh(resetPage$);
         }
       },
     })),
