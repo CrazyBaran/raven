@@ -45,7 +45,10 @@ export const selectOrganisationPageViewModel = createSelector(
           (status) => status === currentOrganisation?.companyStatus,
         ) && !isLoading,
       showStatus: !isLoading && companyStatusDisplayName,
-      showOutreachButton: !isLoading && !currentOrganisation?.companyStatus,
+      showOutreachButton:
+        !isLoading &&
+        (!currentOrganisation?.companyStatus ||
+          currentOrganisation?.companyStatus === CompanyStatus.PASSED),
       outreachQueryParam: {
         [DialogUtil.queryParams.moveToOutreachCompany]: currentOrganisation?.id,
       },

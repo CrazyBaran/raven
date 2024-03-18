@@ -61,6 +61,17 @@ export class MoveToOutreachCompanyDialogComponent extends DialogContentBase {
       }),
     );
 
+    if (this.vm().companyStatus) {
+      this.store.dispatch(
+        OrganisationsActions.updateOrganisation({
+          id: this.vm().organisationId!,
+          changes: {
+            companyStatus: null,
+          },
+        }),
+      );
+    }
+
     this.actions$
       .pipe(ofType(OpportunitiesActions.createOpportunitySuccess), first())
       .subscribe(() => {
