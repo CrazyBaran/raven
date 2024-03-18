@@ -2,4 +2,6 @@
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { OrganisationDataWithOpportunities } from '@app/rvns-opportunities';
 
-export type Organisation = OrganisationDataWithOpportunities;
+export type Organisation = OrganisationDataWithOpportunities & {
+  description?: string;
+};

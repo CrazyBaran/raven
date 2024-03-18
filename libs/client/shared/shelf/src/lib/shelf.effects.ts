@@ -93,6 +93,10 @@ export const dynamicDialogsConfig: Record<
     import('@app/client/reminders/feature/dialogs').then(
       (m) => m.CompleteReminderDialogModule,
     ),
+  [DialogUtil.queryParams.updateOrganisationDescription]: () =>
+    import('@app/client/organisations/feature/dialogs').then(
+      (m) => m.UpdateOrganisationDescriptionModule,
+    ),
 };
 
 @Injectable()

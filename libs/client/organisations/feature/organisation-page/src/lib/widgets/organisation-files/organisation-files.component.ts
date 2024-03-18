@@ -17,6 +17,7 @@ import {
 } from '@app/client/files/feature/files-table';
 import { FileEntity, FilesActions } from '@app/client/files/feature/state';
 import { SPItem } from '@app/client/files/sdk-pnptimeline';
+import { NotesTableContainerComponent } from '@app/client/notes/feature/notes-table';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import {
   TagComponent,
@@ -29,6 +30,7 @@ import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { RowClassArgs } from '@progress/kendo-angular-grid';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
+import { PanelBarModule } from '@progress/kendo-angular-layout';
 import {
   TreeListComponent,
   TreeListModule,
@@ -55,6 +57,8 @@ import {
     LoaderModule,
     UserTagDirective,
     RxPush,
+    NotesTableContainerComponent,
+    PanelBarModule,
   ],
   templateUrl: './organisation-files.component.html',
   styleUrls: ['./organisation-files.component.scss'],

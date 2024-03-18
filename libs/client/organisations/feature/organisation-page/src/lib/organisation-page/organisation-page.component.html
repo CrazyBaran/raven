@@ -27,7 +27,6 @@
 
   <div class="flex gap-2" page-header-actions>
     <kendo-button
-      *featureFlag="'shortlistsFeature'"
       [ngClass]="{
         '!text-informational-warning':
           !!shortlistsTable?.organisationShortlistsStore?.data?.()?.total
@@ -75,19 +74,61 @@
     class="organisation-details | bg-base-background flex h-full flex-col overflow-y-scroll"
     page-content
   >
-    <div class="flex flex-col gap-6">
-      <div class="grid grid-cols-2 gap-6">
-        <app-organisation-details />
-        <app-organisation-opportunities />
-      </div>
+    <kendo-tabstrip
+      *featureFlag="'organisationLayout'; else legacyLayout"
+      class="organisation-layout-tabstrip"
+    >
+      <kendo-tabstrip-tab title="Public Profile" [selected]="true">
+        <ng-template kendoTabContent>
+          <div class="flex flex-col gap-6">
+            <ng-container [ngTemplateOutlet]="header" />
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+      <kendo-tabstrip-tab title="Company Details">
+        <ng-template kendoTabContent>
+          <ng-container [ngTemplateOutlet]="header" />
+          <div class="flex flex-col gap-6">
+            <app-organisation-opportunities-v2 />
 
-      <app-organisation-shortlists-table *featureFlag="'shortlistsFeature'" />
+            <!--            TODO:           -->
+            <!-- <app-organisation-company-timeline />-->
 
-      <app-organisation-reminders-table *featureFlag="'remindersFeature'" />
+            <app-organisation-shortlists-table />
 
-      <app-organisation-files />
+            <app-organisation-reminders-table />
 
-      <app-organisation-notes />
-    </div>
+            <app-organisation-files />
+
+            <app-organisation-notes />
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+    </kendo-tabstrip>
   </div>
 </app-page-template>
+
+<ng-template #header>
+  <div class="mb-6 flex flex-col gap-6">
+    <div class="grid grid-cols-2 gap-6">
+      <app-organisation-details-v2 />
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #legacyLayout>
+  <div class="flex flex-col gap-6">
+    <div class="grid grid-cols-2 gap-6">
+      <app-organisation-details />
+      <app-organisation-opportunities />
+    </div>
+
+    <app-organisation-shortlists-table />
+
+    <app-organisation-reminders-table />
+
+    <app-organisation-files />
+
+    <app-organisation-notes />
+  </div>
+</ng-template>

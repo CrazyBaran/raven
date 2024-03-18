@@ -1,0 +1,93 @@
+<ui-tilelayout-item id="organisation-opportunities">
+  <div class="flex items-center justify-between gap-2" header>
+    <h5 class="k-card-title">Opportunities</h5>
+    <kendo-button
+      [queryParams]="{
+        'opportunity-create': signalStore.currentOrganisationId()!
+      }"
+      [routerLink]="['./']"
+      iconClass="fa-sharp fa-solid fa-pen"
+      size="small"
+    >
+      Add new
+    </kendo-button>
+  </div>
+
+  <kendo-grid
+    body
+    (pageChange)="signalStore.pageChange($event)"
+    (sortChange)="signalStore.sortChange($event)"
+    [data]="signalStore.data()"
+    [loading]="signalStore.isLoading()!"
+    [pageSize]="5"
+    [pageable]="signalStore.pageable()"
+    [skip]="signalStore.pageState().skip"
+    [sortable]="true"
+    [sort]="signalStore.sort()!"
+    class="grid-borderless"
+    [ngClass]="{
+      'h-[363px]': signalStore.pageable() || signalStore.isLoading()
+    }"
+  >
+    @if (!signalStore.data().total && !signalStore.isLoading()) {
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="flex items-center gap-3 px-16 py-9">
+          <i class="fa-regular fa-circle-info"></i>
+          <p class="text-subtle-text !m-0 text-sm italic">
+            There are no existing pipeline items or opportunities for this
+            company. Select Add to Outreach to create a new pipeline item.
+          </p>
+        </div>
+      </ng-template>
+    }
+    <kendo-grid-column
+      [headerStyle]="{ 'font-weight': '700' }"
+      title="Funding Round"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <p>{{ dataItem.tag?.name ?? 'No Opportunity' }}</p>
+        <p class="text-xs">
+          Updated:
+          {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy' }}
+        </p>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column [headerStyle]="{ 'font-weight': '700' }" title="Status">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <div class="flex items-center gap-3">
+          <i
+            [style.color]="dataItem.status?.color"
+            class="fa-solid fa-circle text-xs"
+          ></i>
+          <p [isEllipsisActive]="true" class="flex-1 text-black">
+            {{ dataItem.status?.name ?? '' }}
+          </p>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerStyle]="{ 'font-weight': '700' }"
+      title="Deal Lead"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        @for (name of dataItem.team | dealLeads; track name) {
+          <ui-tag [label]="name" uiUserTag />
+        }
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column [width]="70">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <div class="flex flex-row gap-1">
+          <kendo-button
+            [routerLink]="['opportunities', dataItem.id]"
+            iconClass="fa-solid fa-eye"
+            themeColor="primary"
+          />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</ui-tilelayout-item>

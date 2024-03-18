@@ -3,6 +3,7 @@ import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 
 import { routerQuery } from '@app/client/shared/util-router';
 // eslint-disable-next-line @nx/enforce-module-boundaries
+import { LoadingState } from '@app/client/shared/util';
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import {
   OrganisationsActions,
@@ -13,6 +14,8 @@ import {
   OrganisationEntity,
 } from './organisations.model';
 
+export type OrganisationsLoadingStates = LoadingState<'updateDescription'>;
+
 export interface OrganisationsState extends EntityState<OrganisationEntity> {
   totalRows: number;
   loaded: boolean | null;
@@ -20,6 +23,7 @@ export interface OrganisationsState extends EntityState<OrganisationEntity> {
   loadingOrganisation: boolean;
   creatingSharepointFolder: boolean;
   dataWarehouseLastUpdated: DataWarehouseLastUpdatedEntity | null;
+  loadingStates: OrganisationsLoadingStates;
   updateLoading: boolean;
   table: {
     ids: string[];
@@ -40,6 +44,7 @@ export const initialOrganisationState: OrganisationsState =
     creatingSharepointFolder: false,
     dataWarehouseLastUpdated: null,
     updateLoading: false,
+    loadingStates: {},
     table: {
       ids: [],
       total: 0,
@@ -215,6 +220,27 @@ export const organisationsFeature = createFeature({
         },
       ),
     ),
+
+    //////////////////////////
+    on(OrganisationsActions.updateOrganisationDescription, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, updateDescription: true },
+    })),
+    on(
+      OrganisationsActions.updateOrganisationDescriptionSuccess,
+      (state, { data }) =>
+        OrganisationAdapter.updateOne(
+          { id: data.id!, changes: data },
+          {
+            ...state,
+            loadingStates: { ...state.loadingStates, updateDescription: false },
+          },
+        ),
+    ),
+    on(OrganisationsActions.updateOrganisationDescriptionFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, updateDescription: false },
+    })),
   ),
   extraSelectors: ({
     selectOrganisationsState,

@@ -41,10 +41,14 @@ export const loadOrganisationOnUrlEvent = createEffect(
               }),
             ];
           }),
-          catchError((error) => {
-            console.error('Error', error);
-            return of(OrganisationsActions.getOrganisationsFailure({ error }));
-          }),
+          catchError((error) =>
+            of(
+              OrganisationsActions.getOrganisationsFailure({
+                error,
+                message: 'Failed to load organisations',
+              }),
+            ),
+          ),
         ),
       ),
     );
@@ -68,10 +72,14 @@ export const loadOrganisation = createEffect(
               data: response.data,
             });
           }),
-          catchError((error) => {
-            console.error('Error', error);
-            return of(OrganisationsActions.getOrganisationFailure({ error }));
-          }),
+          catchError((error) =>
+            of(
+              OrganisationsActions.getOrganisationFailure({
+                error,
+                message: 'Failed to load organisation',
+              }),
+            ),
+          ),
         ),
       ),
     );
@@ -95,10 +103,14 @@ export const loadOrganisations = createEffect(
               data: response.data || { items: [], total: 0 },
             });
           }),
-          catchError((error) => {
-            console.error('Error', error);
-            return of(OrganisationsActions.getOrganisationsFailure({ error }));
-          }),
+          catchError((error) =>
+            of(
+              OrganisationsActions.getOrganisationsFailure({
+                error,
+                message: 'Failed to load organisations',
+              }),
+            ),
+          ),
         ),
       ),
     );
@@ -122,12 +134,14 @@ export const loadMoreOrganisations = createEffect(
               data: response.data || { items: [], total: 0 },
             });
           }),
-          catchError((error) => {
-            console.error('Error', error);
-            return of(
-              OrganisationsActions.loadMoreOrganisationsFailure({ error }),
-            );
-          }),
+          catchError((error) =>
+            of(
+              OrganisationsActions.loadMoreOrganisationsFailure({
+                error,
+                message: 'Failed to load more organisations',
+              }),
+            ),
+          ),
         ),
       ),
     );
@@ -152,9 +166,11 @@ export const createOrganisation = createEffect(
             });
           }),
           catchError((error) => {
-            console.error('Error', error);
             return of(
-              OrganisationsActions.createOrganisationFailure({ error }),
+              OrganisationsActions.createOrganisationFailure({
+                error,
+                message: 'Failed to create organisation',
+              }),
             );
           }),
         ),
@@ -187,6 +203,7 @@ export const updateOrganisation$ = createEffect(
             of(
               OrganisationsActions.updateOrganisationFailure({
                 error,
+                message: 'Failed to update organisation',
               }),
             ),
           ),
@@ -214,10 +231,10 @@ export const getDataWarehouseLastUpdated = createEffect(
             });
           }),
           catchError((error) => {
-            console.error('Error', error);
             return of(
               OrganisationsActions.getDataWarehouseLastUpdatedFailure({
                 error,
+                message: 'Failed to get data warehouse last updated',
               }),
             );
           }),
@@ -263,14 +280,14 @@ export const createOrganisationSharepointFolder = createEffect(
               },
             );
           }),
-          catchError((error) => {
-            console.error('Error', error);
-            return of(
+          catchError((error) =>
+            of(
               OrganisationsActions.createOrganisationSharepointFolderFailure({
                 error,
+                message: 'Failed to create sharepoint folder',
               }),
-            );
-          }),
+            ),
+          ),
         ),
       ),
     );
@@ -312,14 +329,72 @@ export const refreshOrganisations = createEffect(
                 data: response.data || { items: [], total: 0 },
               });
             }),
-            catchError((error) => {
-              console.error('Error', error);
-              return of(
-                OrganisationsActions.refreshOrganisationsFailure({ error }),
-              );
-            }),
+            catchError((error) =>
+              of(
+                OrganisationsActions.refreshOrganisationsFailure({
+                  error,
+                  message: 'Failed to refresh organisations',
+                }),
+              ),
+            ),
           ),
       ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const updateOrganisationDescription = createEffect(
+  (
+    actions$ = inject(Actions),
+    organisationsService = inject(OrganisationsService),
+  ) => {
+    return actions$.pipe(
+      ofType(OrganisationsActions.updateOrganisationDescription),
+      switchMap(({ id, description }) =>
+        organisationsService.patchOrganisation(id, { description }).pipe(
+          map((response) => {
+            return OrganisationsActions.updateOrganisationDescriptionSuccess({
+              data: response.data!,
+            });
+          }),
+          catchError((error) =>
+            of(
+              OrganisationsActions.updateOrganisationDescriptionFailure({
+                error,
+                message: 'Failed to update organisation description',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const showOrganisationsErrorMessage$ = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(
+        OrganisationsActions.getOrganisationsFailure,
+        OrganisationsActions.createOrganisationFailure,
+        OrganisationsActions.updateOrganisationFailure,
+        OrganisationsActions.getDataWarehouseLastUpdatedFailure,
+        OrganisationsActions.createOrganisationSharepointFolderFailure,
+        OrganisationsActions.updateOrganisationDescriptionFailure,
+      ),
+      filter(({ message }) => !!message),
+      map(({ message, error }) => {
+        console.error('Effect Error', error);
+        return NotificationsActions.showErrorNotification({
+          content: message!,
+        });
+      }),
     );
   },
   {

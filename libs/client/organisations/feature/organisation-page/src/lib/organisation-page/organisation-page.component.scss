@@ -1,7 +1,10 @@
 :host {
-  display: grid;
-  height: 100dvh;
-  overflow: hidden;
+  @apply grid
+  h-screen overflow-hidden;
+
+  ui-tilelayout-item {
+    max-height: 400px;
+  }
 }
 
 //todo: remove this when we have a better solution for the grid
@@ -11,11 +14,7 @@
   height: calc(100% + 3em);
 }
 
-ui-tilelayout-item {
-  max-height: 400px;
-}
-
-::ng-deep .white-tilelayout {
+.white-tilelayout {
   .k-link.k-selected {
     background: white !important;
   }
@@ -28,5 +27,23 @@ ui-tilelayout-item {
   }
   .k-panelbar-toggle {
     color: black !important;
+  }
+}
+
+.organisation-layout-tabstrip {
+  .k-tabstrip-items-wrapper {
+    @apply border-none;
+  }
+
+  .k-item:first-child {
+    @apply ml-8 mr-3;
+  }
+
+  .k-item.k-active {
+    @apply bg-primary-8 border-component-border text-buttons-button-text border;
+  }
+
+  .k-tabstrip-content {
+    @apply border-none bg-transparent p-0 pt-4;
   }
 }

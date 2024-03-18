@@ -151,6 +151,25 @@
       "@app/client/pipelines/state": [
         "libs/client/pipelines/state/src/index.ts"
       ],
+      "@app/client/reminders/data-access": [
+        "libs/client/reminders/data-access/src/index.ts"
+      ],
+      "@app/client/reminders/feature/dialogs": [
+        "libs/client/reminders/feature/dialogs/src/index.ts"
+      ],
+      "@app/client/reminders/feature/shell": [
+        "libs/client/reminders/feature/shell/src/index.ts"
+      ],
+      "@app/client/reminders/feature/table": [
+        "libs/client/reminders/feature/table/src/index.ts"
+      ],
+      "@app/client/reminders/state": [
+        "libs/client/reminders/state/src/index.ts"
+      ],
+      "@app/client/reminders/ui": ["libs/client/reminders/ui/src/index.ts"],
+      "@app/client/reminders/utils": [
+        "libs/client/reminders/utils/src/index.ts"
+      ],
       "@app/client/shared/dynamic-form-util": [
         "libs/client/shared/dynamic-form-util/src/index.ts"
       ],
@@ -209,21 +228,6 @@
       "@app/client/shortlists/utils": [
         "libs/client/shortlists/utils/src/index.ts"
       ],
-      "@app/client/reminders/data-access": [
-        "libs/client/reminders/data-access/src/index.ts"
-      ],
-      "@app/client/reminders/feature/dialogs": [
-        "libs/client/reminders/feature/dialogs/src/index.ts"
-      ],
-      "@app/client/reminders/feature/shell": [
-        "libs/client/reminders/feature/shell/src/index.ts"
-      ],
-      "@app/client/reminders/feature/table": [
-        "libs/client/reminders/feature/table/src/index.ts"
-      ],
-      "@app/client/reminders/state": ["libs/client/reminders/state/src/index.ts"],
-      "@app/client/reminders/ui": ["libs/client/reminders/ui/src/index.ts"],
-      "@app/client/reminders/utils": ["libs/client/reminders/utils/src/index.ts"],
       "@app/client/tags/api-organisations": [
         "libs/client/tags/api-organisations/src/index.ts"
       ],
@@ -263,7 +267,6 @@
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"],
       "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
-
       "opentelemetry-instrumentation-bullmqpro": [
         "libs/shared/opentelemetry-instrumentation-bullmqpro/src/index.ts"
       ],

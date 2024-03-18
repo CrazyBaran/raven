@@ -19,4 +19,5 @@ export const environment: Environment = {
   websocketUrl: 'https://as-wa-mc-raven-dev.azurewebsites.net/',
   shortlistsFeature: true,
   remindersFeature: true,
+  organisationLayout: true,
 };

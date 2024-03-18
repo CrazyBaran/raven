@@ -1,3 +1,4 @@
+export * from './lib/clamped-changed.directive';
 export * from './lib/feature-flag.directive';
 export * from './lib/infinity-table-view-base.directive';
 export * from './lib/is-ellipsis-active.directive';

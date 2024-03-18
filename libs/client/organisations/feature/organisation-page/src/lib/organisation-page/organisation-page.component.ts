@@ -3,6 +3,7 @@ import {
   Component,
   inject,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
@@ -14,7 +15,7 @@ import { fadeIn } from '@app/client/shared/ui';
 import { Store } from '@ngrx/store';
 
 import { trigger } from '@angular/animations';
-import { NgClass, TitleCasePipe } from '@angular/common';
+import { NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FilesActions } from '@app/client/files/feature/state';
 import { PipelinesActions } from '@app/client/pipelines/state';
@@ -30,9 +31,11 @@ import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { DialogUtil } from '@app/client/shared/util';
 import { Actions } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { TabStripModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { filter } from 'rxjs';
 import { ORGANISATION_WIDGETS } from '../widgets';
+import { OrganisationDetailsV2Component } from '../widgets/organisation-details-v2/organisation-details-v2.component';
 import { OrganisationShortlistsTableComponent } from '../widgets/organisation-shortlists-table/organisation-shortlists-table.component';
 import { selectOrganisationPageViewModel } from './organisation-page.selectors';
 
@@ -50,10 +53,14 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
     DropdownButtonNavigationComponent,
     TitleCasePipe,
     IsEllipsisActiveDirective,
+    TabStripModule,
+    NgTemplateOutlet,
+    OrganisationDetailsV2Component,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
   animations: [trigger('fadeIn', fadeIn())],
 })
 export class OrganisationPageComponent {

@@ -18,6 +18,7 @@ import {
 } from '@app/client/files/sdk-pnptimeline';
 import { MsalService } from '@azure/msal-angular';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { ButtonThemeColor } from '@progress/kendo-angular-buttons/common/models';
 
 @Component({
   selector: 'app-picker',
@@ -34,6 +35,7 @@ export class PickerComponent {
   @Input() public list: string;
   @Input() public folder: string;
   @Input() public url: string;
+  @Input() public theme: ButtonThemeColor = 'primary';
 
   @Output() public selectFiles = new EventEmitter<any>();
 

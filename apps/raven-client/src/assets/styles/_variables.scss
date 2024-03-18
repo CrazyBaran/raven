@@ -80,6 +80,7 @@ $series-variables: (
     --#{$name}-darken-50: #{k-color-mix(black, $value, 50%)};
     --#{$name}-lighten-75: #{k-color-mix(white, $value, 25%)};
     --#{$name}-lighten-50: #{k-color-mix(white, $value, 50%)};
+    --#{$name}-lighten-20: #{k-color-mix(white, $value, 80%)};
   }
 
   // INFORMATIONAL COLORS

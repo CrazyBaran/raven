@@ -2,6 +2,7 @@ export class DialogUtil {
   public static queryParams = {
     reopenOpportunity: 'reopen-opportunity',
     updateOpportunityStage: 'update-opportunity-stage',
+    updateOrganisationDescription: 'update-organisation-description',
     passCompany: 'pass-company',
     moveToOutreachCompany: 'move-to-outreach-company',
 

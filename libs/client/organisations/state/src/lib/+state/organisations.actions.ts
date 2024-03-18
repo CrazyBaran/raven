@@ -6,6 +6,8 @@ import {
 
 //TODO: QUICK FIX FOR DEMO, Remove this dependency
 // eslint-disable-next-line @nx/enforce-module-boundaries
+import { FailurePayload } from '@app/client/shared/util';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { OpportunityData } from '@app/rvns-opportunities';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
@@ -20,33 +22,33 @@ export const OrganisationsActions = createActionGroup({
     'Get Organisation Success': props<{
       data: OrganisationEntity | undefined;
     }>(),
-    'Get Organisation Failure': props<{ error: string }>(),
+    'Get Organisation Failure': props<FailurePayload>(),
 
     'Get Organisations': emptyProps(),
     'Get Organisations Success': props<{ data: OrganisationsResponse }>(),
-    'Get Organisations Failure': props<{ error: string }>(),
+    'Get Organisations Failure': props<FailurePayload>(),
 
     'Load More Organisations': props<{
       params: Record<string, number | string | string[]>;
     }>(),
     'Load More Organisations Success': props<{ data: OrganisationsResponse }>(),
-    'Load More Organisations Failure': props<{ error: string }>(),
+    'Load More Organisations Failure': props<FailurePayload>(),
 
     'Refresh Organisations': emptyProps(),
     'Refresh Organisations Success': props<{ data: OrganisationsResponse }>(),
-    'Refresh Organisations Failure': props<{ error: string }>(),
+    'Refresh Organisations Failure': props<FailurePayload>(),
 
     'Create Organisation': props<{ data: CreateOrganisation }>(),
     'Create Organisation Success': props<{
       data: Organisation;
     }>(),
-    'Create Organisation Failure': props<{ error: string }>(),
+    'Create Organisation Failure': props<FailurePayload>(),
 
     'Update Organisation': props<{
       id: string;
       changes: Partial<OrganisationEntity>;
     }>(),
-    'Update Organisation Failure': props<{ error: string }>(),
+    'Update Organisation Failure': props<FailurePayload>(),
     'Update Organisation Success': props<{ data: Organisation }>(),
 
     'Create Organisation SharepointFolder': props<{
@@ -55,7 +57,7 @@ export const OrganisationsActions = createActionGroup({
     'Create Organisation SharepointFolder Success': props<{
       data: Organisation;
     }>(),
-    'Create Organisation SharepointFolder Failure': props<{ error: string }>(),
+    'Create Organisation SharepointFolder Failure': props<FailurePayload>(),
 
     'Add Opportunity to Organisation': props<{
       id: string;
@@ -67,11 +69,20 @@ export const OrganisationsActions = createActionGroup({
     'Get Data Warehouse Last Updated Success': props<{
       data: DataWarehouseLastUpdatedEntity;
     }>(),
-    'Get Data Warehouse Last Updated Failure': props<{ error: string }>(),
+    'Get Data Warehouse Last Updated Failure': props<FailurePayload>(),
 
     'Get Data Warehouse Last Updated If Not Loaded': emptyProps(),
 
     'Open Organisations Table': emptyProps(),
+
+    'Update Organisation Description': props<{
+      id: string;
+      description: string;
+    }>(),
+    'Update Organisation Description Success': props<{
+      data: Organisation;
+    }>(),
+    'Update Organisation Description Failure': props<FailurePayload>(),
   },
 });
 

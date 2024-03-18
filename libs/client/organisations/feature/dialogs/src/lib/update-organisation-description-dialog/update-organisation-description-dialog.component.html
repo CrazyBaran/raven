@@ -1,0 +1,51 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Custom Company Description</span>
+</kendo-dialog-titlebar>
+
+<div class="p-10">
+  <form [formGroup]="form" class="grid gap-4">
+    <kendo-formfield>
+      <kendo-label text="Company Name" />
+      <kendo-textbox
+        [disabled]="true"
+        [placeholder]="vm().organisation?.name!"
+        formControlName="companyName"
+      />
+    </kendo-formfield>
+    <kendo-formfield>
+      <kendo-label [for]="description" text="Description" />
+      <kendo-textarea
+        #description
+        [maxlength]="maxDescriptionLength"
+        [rows]="7"
+        formControlName="description"
+        placeholder=""
+      />
+
+      <kendo-formerror *uiOnError="'maxlength'; let error">
+        Description should be less than
+        {{ error.requiredLength }}
+        characters
+      </kendo-formerror>
+
+      <footer class="px-3 pt-3 text-end text-sm">
+        Character Limit:
+        {{ form.controls?.description?.value?.length ?? 0 }} /
+        {{ maxDescriptionLength }}
+      </footer>
+    </kendo-formfield>
+  </form>
+</div>
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="(form | controlInvalid$ | push) || vm().isUpdating!"
+    themeColor="primary"
+  >
+    @if (vm().isUpdating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Update Company Description
+  </kendo-button>
+</kendo-dialog-actions>
