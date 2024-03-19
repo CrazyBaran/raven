@@ -1,11 +1,16 @@
 import {
   CompanyDto,
+  ContactDto,
   DataWarehouseLastUpdatedDto,
   FounderDto,
+  FundingRoundDto,
+  NewsDto,
+  NumberOfEmployeesSnapshotDto,
 } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JobPro } from '@taskforcesh/bullmq-pro';
+import { PagedData } from 'rvns-shared';
 import { Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { DataWarehouseCacheService } from './cache/data-warehouse-cache.service';
@@ -33,7 +38,7 @@ export class DataWarehouseService {
       chunkSize?: number;
     },
   ): Promise<void> {
-    const chunkSize = options?.chunkSize ?? 2000;
+    const chunkSize = options?.chunkSize ?? 500;
 
     await this.dataWarehouseCacheService.resetCompanies();
 
@@ -209,5 +214,53 @@ export class DataWarehouseService {
 
     const result = await queryBuilder.getMany();
     return result.map((industry) => industry.name);
+  }
+
+  public async getNews(
+    domains: string[],
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<NewsDto>>> {
+    return await this.dataWarehouseAccessService.findAndMapNews(
+      domains,
+      skip,
+      take,
+    );
+  }
+
+  public async getContacts(
+    domains: string[],
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<ContactDto>>> {
+    return await this.dataWarehouseAccessService.findAndMapContacts(
+      domains,
+      skip,
+      take,
+    );
+  }
+
+  public async getEmployees(
+    domains: string[],
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<NumberOfEmployeesSnapshotDto>>> {
+    return await this.dataWarehouseAccessService.findAndMapEmployees(
+      domains,
+      skip,
+      take,
+    );
+  }
+
+  public async getFundingRounds(
+    domains: string[],
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<FundingRoundDto>>> {
+    return await this.dataWarehouseAccessService.findAndMapFundingRounds(
+      domains,
+      skip,
+      take,
+    );
   }
 }

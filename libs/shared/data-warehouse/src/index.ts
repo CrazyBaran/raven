@@ -1,6 +1,7 @@
 export * from './lib/dtos/acquisition.dto';
 export * from './lib/dtos/actors.dto';
 export * from './lib/dtos/company.dto';
+export * from './lib/dtos/contact.dto';
 export * from './lib/dtos/data-warehouse-last-updated.dto';
 export * from './lib/dtos/data-warehouse.dto';
 export * from './lib/dtos/founder.dto';
@@ -11,6 +12,7 @@ export * from './lib/dtos/hq.dto';
 export * from './lib/dtos/industry.dto';
 export * from './lib/dtos/investor.dto';
 export * from './lib/dtos/ipo-details.dto';
+export * from './lib/dtos/news.dto';
 export * from './lib/dtos/number-of-employees-snapshot.dto';
 export * from './lib/dtos/urls.dto';
 export * from './lib/interfaces/company-filter.options';

@@ -1,11 +1,19 @@
 export class FundingRoundDto {
-  public fundingRoundId: number;
-  public year: number;
-  public month: number;
+  public domain: string;
+  public date: Date;
   public round: string;
   public amount: number;
   public currency: string;
-  public dealRoomDataSource: string;
-  public dealRoomSourceVerified: string;
-  public lastRefreshedUTC: Date;
+  public amountInUsd: number;
+  public investors: string[];
 }
+
+export const exposedFundingRoundData: Partial<keyof FundingRoundDto>[] = [
+  'domain',
+  'date',
+  'round',
+  'amount',
+  'currency',
+  'amountInUsd',
+  'investors',
+];

@@ -1,11 +1,13 @@
 import { AcquisitionDto } from './acquisition.dto';
 import { ActorsDto } from './actors.dto';
+import { ContactDto } from './contact.dto';
 import { FundingRoundDto } from './funding-round.dto';
 import { FundingDto } from './funding.dto';
 import { GrowthStageDto } from './growth-stage.dto';
 import { HqDto } from './hq.dto';
 import { IndustryDto } from './industry.dto';
 import { IpoDetailsDto } from './ipo-details.dto';
+import { NewsDto } from './news.dto';
 import { NumberOfEmployeesSnapshotDto } from './number-of-employees-snapshot.dto';
 import { UrlsDto } from './urls.dto';
 
@@ -18,9 +20,9 @@ export class CompanyDto {
   public description?: string;
   public tagline?: string;
   public foundedYear?: number;
-  public numberOfEmployees?: NumberOfEmployeesSnapshotDto[];
+  public numberOfEmployees?: Partial<NumberOfEmployeesSnapshotDto>[];
   public tags?: string[];
-  public fundingRounds?: FundingRoundDto[];
+  public fundingRounds?: Partial<FundingRoundDto>[];
 
   public growthStage?: GrowthStageDto;
 
@@ -67,6 +69,9 @@ export class CompanyDto {
   public specterLastUpdated?: Date;
   public dealRoomLastUpdated?: Date;
   public lastRefreshedUtc?: Date;
+
+  public news?: Partial<NewsDto>[];
+  public contacts?: Partial<ContactDto>[];
 }
 
 export const exposedCompanyData: Partial<keyof CompanyDto>[] = [
@@ -81,4 +86,8 @@ export const exposedCompanyData: Partial<keyof CompanyDto>[] = [
   'lastRefreshedUtc',
   'specterLastUpdated',
   'dealRoomLastUpdated',
+  'numberOfEmployees',
+  'fundingRounds',
+  'news',
+  'contacts',
 ];

@@ -6,6 +6,12 @@ import {
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import {
+  ContactDto,
+  FundingRoundDto,
+  NewsDto,
+  NumberOfEmployeesSnapshotDto,
+} from '@app/shared/data-warehouse';
+import {
   Body,
   Controller,
   Delete,
@@ -24,6 +30,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { PagedData } from 'rvns-shared';
 import { ParseUserFromIdentityPipe } from '../../shared/pipes/parse-user-from-identity.pipe';
 import { Identity } from '../rvn-users/decorators/identity.decorator';
 import { UserEntity } from '../rvn-users/entities/user.entity';
@@ -94,6 +101,70 @@ export class OrganisationController {
     @Param('id') id: string,
   ): Promise<OrganisationDataWithOpportunities> {
     return await this.organisationService.findOne(id);
+  }
+
+  @Get(':id/news')
+  @ApiOperation({ summary: 'Get news for a single organisation' })
+  @ApiResponse({ status: 200, description: 'The organisation news' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async findNews(
+    @Param('id') id: string,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ): Promise<PagedData<Partial<NewsDto>>> {
+    return await this.organisationService.findNews(id, skip, take);
+  }
+
+  @Get(':id/funding-rounds')
+  @ApiOperation({ summary: 'Get funding rounds for a single organisation' })
+  @ApiResponse({ status: 200, description: 'The organisation funding rounds' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async findFundingRounds(
+    @Param('id') id: string,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ): Promise<PagedData<Partial<FundingRoundDto>>> {
+    return await this.organisationService.findFundingRounds(id, skip, take);
+  }
+
+  @Get(':id/employees')
+  @ApiOperation({ summary: 'Get employees for a single organisation' })
+  @ApiResponse({ status: 200, description: 'The organisation employees' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async findEmployees(
+    @Param('id') id: string,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ): Promise<PagedData<Partial<NumberOfEmployeesSnapshotDto>>> {
+    return await this.organisationService.findEmployees(id, skip, take);
+  }
+
+  @Get(':id/contacts')
+  @ApiOperation({ summary: 'Get contacts for a single organisation' })
+  @ApiResponse({ status: 200, description: 'The organisation contacts' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async findContacts(
+    @Param('id') id: string,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ): Promise<PagedData<Partial<ContactDto>>> {
+    return await this.organisationService.findContacts(id, skip, take);
   }
 
   @Post()

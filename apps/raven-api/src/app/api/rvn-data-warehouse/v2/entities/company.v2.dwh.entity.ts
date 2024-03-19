@@ -73,3 +73,22 @@ export class CompanyV2DwhEntity {
   @PrimaryColumn({ name: 'DealRoomCompanyID', type: 'bigint' })
   public companyId: number;
 }
+
+export const DWH_V2_COMPANY_SELECT_COLUMNS: Partial<
+  keyof CompanyV2DwhEntity
+>[] = [
+  'name',
+  'domain',
+  'description',
+  'country',
+  'industries',
+  'investors',
+  'totalFundingAmount',
+  'lastFundingAmount',
+  'lastFundingDate',
+  'lastFundingRound',
+  'mcvLeadScore',
+  'specterLastUpdated',
+  'dealRoomLastUpdated',
+  'lastRefreshedUtc',
+];

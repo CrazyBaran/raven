@@ -7,9 +7,15 @@ import { Injectable, Optional } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { CompanyDto } from '@app/shared/data-warehouse';
+import {
+  CompanyDto,
+  ContactDto,
+  FundingRoundDto,
+  NewsDto,
+  NumberOfEmployeesSnapshotDto,
+} from '@app/shared/data-warehouse';
 import { JobPro } from '@taskforcesh/bullmq-pro';
-import { CompanyStatus } from 'rvns-shared';
+import { CompanyStatus, PagedData } from 'rvns-shared';
 import { EntityManager, In, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
@@ -18,6 +24,7 @@ import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enr
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
 import { DataWarehouseCacheService } from '../rvn-data-warehouse/cache/data-warehouse-cache.service';
 import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
+import { DataWarehouseService } from '../rvn-data-warehouse/data-warehouse.service';
 import { OrganisationProvider } from '../rvn-data-warehouse/proxy/organisation.provider';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
@@ -67,6 +74,8 @@ export class OrganisationService {
     private readonly pipelineUtilityService: PipelineUtilityService,
     private readonly organisationProvider: OrganisationProvider,
     private readonly organisationHelperService: OrganisationHelperService,
+    @Optional()
+    private readonly dataWarehouseService: DataWarehouseService,
   ) {
     this.logger.setContext(OrganisationService.name);
   }
@@ -609,6 +618,70 @@ export class OrganisationService {
       }),
       total: ravenOrganisations.length,
     };
+  }
+
+  public async findNews(
+    id: string,
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<NewsDto>>> {
+    const domains = (
+      await this.organisationRepository.findOne({
+        where: { id },
+        relations: ['organisationDomains'],
+      })
+    )?.domains;
+
+    return await this.dataWarehouseService.getNews(domains, skip, take);
+  }
+
+  public async findFundingRounds(
+    id: string,
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<FundingRoundDto>>> {
+    const domains = (
+      await this.organisationRepository.findOne({
+        where: { id },
+        relations: ['organisationDomains'],
+      })
+    )?.domains;
+
+    return await this.dataWarehouseService.getFundingRounds(
+      domains,
+      skip,
+      take,
+    );
+  }
+
+  public async findEmployees(
+    id: string,
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<NumberOfEmployeesSnapshotDto>>> {
+    const domains = (
+      await this.organisationRepository.findOne({
+        where: { id },
+        relations: ['organisationDomains'],
+      })
+    )?.domains;
+
+    return await this.dataWarehouseService.getEmployees(domains, skip, take);
+  }
+
+  public async findContacts(
+    id: string,
+    skip?: number,
+    take?: number,
+  ): Promise<PagedData<Partial<ContactDto>>> {
+    const domains = (
+      await this.organisationRepository.findOne({
+        where: { id },
+        relations: ['organisationDomains'],
+      })
+    )?.domains;
+
+    return await this.dataWarehouseService.getContacts(domains, skip, take);
   }
 
   private async updateDomains(

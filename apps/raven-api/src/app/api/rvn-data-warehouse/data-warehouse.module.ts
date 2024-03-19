@@ -23,19 +23,18 @@ import { OrganisationProvider } from './proxy/organisation.provider';
 import { DataWarehouseProcessor } from './queues/data-warehouse.processor';
 import { DataWarehouseProducer } from './queues/data-warehouse.producer';
 import { DataWarehouseScheduler } from './tasks/data-warehouse.scheduler';
-import { DataWarehouseV1AccessService } from './v1/data-warehouse.v1.access.service';
-import { CompanyV1DwhEntity } from './v1/entities/company.v1.dwh.entity';
-import { DealroomCompanyNumberOfEmployeesDwhEntity } from './v1/entities/dealroom-company-number-of-employees.dwh.entity';
-import { DealroomCompanyTagEntity } from './v1/entities/dealroom-company-tags.dwh.entity';
-import { DealroomFundingRoundEntity } from './v1/entities/dealroom-funding-rounds.dwh.entity';
-import { FounderDwhEntity } from './v1/entities/founder.dwh.entity';
-import { InvestorDwhEntity } from './v1/entities/investor.dwh.entity';
-import { CompanyV1Mapper } from './v1/mappers/company.v1.mapper';
-import { FundingRoundMapper } from './v1/mappers/funding-round.mapper';
-import { NumberOfEmployeesMapper } from './v1/mappers/number-of-employees.mapper';
+
 import { DataWarehouseV2AccessService } from './v2/data-warehouse.v2.access.service';
 import { CompanyV2DwhEntity } from './v2/entities/company.v2.dwh.entity';
+import { ContactV2DwhEntity } from './v2/entities/contact.v2.dwh.entity';
+import { EmployeesV2DwhEntity } from './v2/entities/employees.v2.dwh.entity';
+import { FundingRoundV2DwhEntity } from './v2/entities/funding-round.v2.dwh.entity';
+import { NewsV2DwhEntity } from './v2/entities/news.v2.dwh.entity';
 import { CompanyV2Mapper } from './v2/mappers/company.v2.mapper';
+import { ContactV2Mapper } from './v2/mappers/contact.v2.mapper';
+import { EmployeesV2Mapper } from './v2/mappers/employees.v2.mapper';
+import { FundingRoundV2Mapper } from './v2/mappers/funding-round.v2.mapper';
+import { NewsV2Mapper } from './v2/mappers/news.v2.mapper';
 @Module({})
 export class DataWarehouseModule {
   public static async forRootAsync(): Promise<DynamicModule> {
@@ -67,14 +66,13 @@ export class DataWarehouseModule {
     };
 
     switch (environment.dataWarehouse.version) {
-      case 'v1':
-        module = this.buildV1Module(module);
-        break;
       case 'v2':
         module = this.buildV2Module(module);
         break;
       default: {
-        console.log('DataWarehouse connection stopped: version not found');
+        console.log(
+          'DataWarehouse connection stopped: version not found or not supported anymore',
+        );
         return module;
       }
     }
@@ -180,44 +178,19 @@ export class DataWarehouseModule {
     }
   }
 
-  private static buildV1Module(module: DynamicModule): DynamicModule {
-    return {
-      ...module,
-      imports: [
-        ...module.imports,
-        TypeOrmModule.forFeature(
-          [
-            CompanyV1DwhEntity,
-            DealroomCompanyNumberOfEmployeesDwhEntity,
-            DealroomCompanyTagEntity,
-            DealroomFundingRoundEntity,
-            FounderDwhEntity,
-            InvestorDwhEntity,
-          ],
-          DataWarehouseDataSourceName,
-        ),
-      ],
-      providers: [
-        ...module.providers,
-        {
-          provide: DataWarehouseAccessBase,
-          useClass: DataWarehouseV1AccessService,
-        },
-        DataWarehouseV1AccessService,
-        CompanyV1Mapper,
-        NumberOfEmployeesMapper,
-        FundingRoundMapper,
-      ],
-    };
-  }
-
   private static buildV2Module(module: DynamicModule): DynamicModule {
     return {
       ...module,
       imports: [
         ...module.imports,
         TypeOrmModule.forFeature(
-          [CompanyV2DwhEntity],
+          [
+            CompanyV2DwhEntity,
+            ContactV2DwhEntity,
+            EmployeesV2DwhEntity,
+            FundingRoundV2DwhEntity,
+            NewsV2DwhEntity,
+          ],
           DataWarehouseDataSourceName,
         ),
         TypeOrmModule.forFeature([]),
@@ -230,6 +203,10 @@ export class DataWarehouseModule {
         },
         DataWarehouseV2AccessService,
         CompanyV2Mapper,
+        ContactV2Mapper,
+        EmployeesV2Mapper,
+        FundingRoundV2Mapper,
+        NewsV2Mapper,
       ],
     };
   }
