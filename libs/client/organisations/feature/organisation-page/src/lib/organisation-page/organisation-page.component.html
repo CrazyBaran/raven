@@ -115,8 +115,13 @@
 
 <ng-template #header>
   <div class="mb-6 flex flex-col gap-6">
-    <div class="grid grid-cols-2 gap-6">
-      <app-organisation-details-v2 />
+    <div class="grid grid-cols-3 gap-6">
+      <div class="col col-start-1 col-end-3">
+        <app-organisation-details-v2 />
+      </div>
+      <div class="col col-start-3 col-end-4">
+        <app-organisation-contacts-table />
+      </div>
     </div>
   </div>
 </ng-template>

@@ -1,3 +1,4 @@
+import { OrganisationContactsComponent } from './organisation-contacts/organisation-contacts.component';
 import { OrganisationDetailsV2Component } from './organisation-details-v2/organisation-details-v2.component';
 import { OrganisationDetailsComponent } from './organisation-details/organisation-details.component';
 import { OrganisationFilesComponent } from './organisation-files/organisation-files.component';
@@ -18,4 +19,5 @@ export const ORGANISATION_WIDGETS = [
   OrganisationDetailsComponent,
   OrganisationNewsTableComponent,
   OrganisationDetailsV2Component,
+  OrganisationContactsComponent,
 ];

@@ -1,5 +1,13 @@
-#reminder-panelbar {
-  .k-link.k-selected {
-    background: white !important;
+#organisation-contacts {
+  .k-card-title {
+    margin: 0;
+  }
+
+  .contact-mailto {
+    i.fa-envelope {
+      font-size: 1.25rem;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
   }
 }

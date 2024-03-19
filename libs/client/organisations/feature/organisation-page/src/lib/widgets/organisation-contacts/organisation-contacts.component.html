@@ -1,43 +1,76 @@
-<kendo-panelbar class="white-tilelayout">
-  <kendo-panelbar-item [expanded]="false" title="Reminders">
-    <ng-template kendoPanelBarItemTitle>
-      <h5 class="k-card-title !m-0 flex w-full items-center !text-black">
-        Contacts
-      </h5>
-    </ng-template>
-    <ng-template kendoPanelBarContent>
-      <div class="h-[363px]">
-        <kendo-grid
-          (pageChange)="organisationRemindersStore.pageChange($event)"
-          (sortChange)="organisationRemindersStore.sortChange($event)"
-          [data]="organisationRemindersStore.data()"
-          [loading]="organisationRemindersStore.isLoading()!"
-          [pageSize]="organisationRemindersStore.pageState().take"
-          [skip]="organisationRemindersStore.pageState().skip"
-          [sort]="organisationRemindersStore.sort?.() ?? []"
-          [sortable]="true"
-          [pageable]="true"
-          class="grid-borderless h-full"
-        >
-          <kendo-grid-column [width]="50" title="">
-            <ng-template kendoGridCellTemplate>
-              <i class="fa-solid fa-circle-user"></i>
-            </ng-template>
-          </kendo-grid-column>
+<ui-tilelayout-item id="organisation-contacts">
+  <header header class="flex items-center justify-between gap-2">
+    <h5 class="k-card-title">Contacts</h5>
+    <img
+      title="Source: DealRoom"
+      kendoTooltip
+      position="left"
+      ngSrc="assets/images/dealroom-icon.svg"
+      alt="Dealroom logo"
+      width="26"
+      height="26"
+    />
+  </header>
 
-          <kendo-grid-column field="name" headerClass="!font-bold" title="Name">
-            <ng-template kendoGridCellTemplate let-contact>
-              {{ contact.name }}
-            </ng-template>
-          </kendo-grid-column>
+  <div body>
+    <div>
+      <kendo-grid
+        (scrollBottom)="organisationContactsStore.scrollBottom()"
+        (sortChange)="organisationContactsStore.sortChange($event)"
+        [data]="organisationContactsStore.data()"
+        [loading]="organisationContactsStore.isLoading()!"
+        [rowClass]="rowCallback"
+        [scrollable]="
+          organisationContactsStore.canLoadMore() ? 'none' : 'scrollable'
+        "
+        [ngClass]="{
+          'max-h-[185px]': organisationContactsStore.canLoadMore(),
+          'max-h-[220px]': !organisationContactsStore.canLoadMore(),
+          'min-h-[185px]': organisationContactsStore.canLoadMore(),
+          'min-h-[223px]': !organisationContactsStore.canLoadMore()
+        }"
+        class="grid-borderless h-full"
+      >
+        <kendo-grid-column [width]="50" title="">
+          <ng-template kendoGridCellTemplate>
+            <i class="fa-solid fa-circle-user"></i>
+          </ng-template>
+        </kendo-grid-column>
 
-          <kendo-grid-column [width]="100" title="">
-            <ng-template kendoGridCellTemplate>
-              <i class="fa-solid fa-pen"></i>
-            </ng-template>
-          </kendo-grid-column>
-        </kendo-grid>
-      </div>
-    </ng-template>
-  </kendo-panelbar-item>
-</kendo-panelbar>
+        <kendo-grid-column field="name" headerClass="!font-bold" title="Name">
+          <ng-template kendoGridCellTemplate let-contact>
+            {{ contact.name }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [width]="50" title="">
+          <ng-template kendoGridCellTemplate let-contact>
+            @if (contact?.email) {
+              <a
+                [href]="getMailto(contact.email)"
+                aria-label="Contact person"
+                class="contact-mailto"
+              >
+                <i class="fa-solid fa-envelope"></i>
+              </a>
+            }
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+      @if (organisationContactsStore.canLoadMore()) {
+        <div class="mt-2 flex justify-center">
+          <button
+            (click)="loadMore()"
+            kendoButton
+            fillMode="flat"
+            themeColor="primary"
+          >
+            Show
+            {{ organisationContactsStore.loadMoreAmount() }}
+            more
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</ui-tilelayout-item>

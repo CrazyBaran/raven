@@ -35,6 +35,7 @@ const defaultSettings: WithTableSettings = {
   take: 5,
   skip: 0,
   debounceTime: 50,
+  scrollDebounceTime: 150,
   listenOnInit: true,
 };
 
@@ -87,6 +88,7 @@ export function withInfiniteTable<Entity>(settings?: {
     withMethods((store) => ({
       scrollBottom: rxMethod<void>(
         pipe(
+          debounceTime(options.scrollDebounceTime!),
           tap(() => {
             if (
               !store.isLoading() &&

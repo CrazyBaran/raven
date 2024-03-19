@@ -35,6 +35,7 @@ export type WithTableSettings = {
   take?: number;
   skip?: number;
   debounceTime?: number;
+  scrollDebounceTime?: number;
   listenOnInit?: boolean;
 };
 

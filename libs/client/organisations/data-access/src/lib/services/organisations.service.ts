@@ -8,6 +8,7 @@ import { OrganisationNews } from '../models/organisation-news.model';
 import { Organisation } from '../models/organisation.model';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { PagedData } from 'rvns-shared';
+import { OrganisationContact } from '../models/contact.model';
 
 export type OrganisationsResponse = {
   items: Organisation[];
@@ -89,6 +90,16 @@ export class OrganisationsService {
     return this.http.patch<GenericResponse<Organisation>>(
       `${this.url}/${id}`,
       changes,
+    );
+  }
+
+  public getContacts(
+    id: string,
+    params?: Record<string, string | number | boolean | string[] | number[]>,
+  ): Observable<GenericResponse<PagedData<OrganisationContact>>> {
+    return this.http.get<GenericResponse<PagedData<OrganisationContact>>>(
+      `${this.url}/${id}/contacts`,
+      { params },
     );
   }
 
