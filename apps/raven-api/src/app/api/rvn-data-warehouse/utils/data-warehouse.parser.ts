@@ -1,9 +1,12 @@
 export class DataWarehouseParser {
-  public static parseSemicolonData(data: string): string[] {
+  public static parseSemicolonData(
+    data: string,
+    separator: string = ';',
+  ): string[] {
     if (!data) {
       return [];
     }
-    const splitData = data.split(';');
+    const splitData = data.split(separator);
     return splitData.map((item) => item.trim());
   }
 

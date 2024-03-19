@@ -248,6 +248,9 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
       },
       skip: skip ? skip : 0,
       take: take ? take : 100,
+      order: {
+        observationDate: 'DESC',
+      },
     } as FindManyOptions<EmployeesV2DwhEntity>;
 
     const [employees, total] =
@@ -272,6 +275,9 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
       },
       skip: skip ? skip : 0,
       take: take ? take : 100,
+      order: {
+        date: 'DESC',
+      },
     } as FindManyOptions<FundingRoundV2DwhEntity>;
 
     const [fundingRounds, total] =
@@ -296,6 +302,9 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
       },
       skip: skip ? skip : 0,
       take: take ? take : 100,
+      order: {
+        publicationDate: 'DESC',
+      },
     } as FindManyOptions<NewsV2DwhEntity>;
 
     const [news, total] = await this.newsRepository.findAndCount(options);

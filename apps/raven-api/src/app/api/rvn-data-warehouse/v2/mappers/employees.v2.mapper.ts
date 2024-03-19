@@ -16,17 +16,6 @@ export class EmployeesV2Mapper extends MapperBase<
     this.exposedData = exposedEmployeesData;
   }
 
-  public mapMany(
-    entities: EmployeesV2DwhEntity[],
-  ): Partial<NumberOfEmployeesSnapshotDto>[] {
-    const mappedEntities = super.mapMany(entities);
-    return mappedEntities.sort((a, b) => {
-      if (a.observationDate < b.observationDate) return -1;
-      if (a.observationDate > b.observationDate) return 1;
-      return 0;
-    });
-  }
-
   protected buildObject(
     entity: EmployeesV2DwhEntity,
   ): NumberOfEmployeesSnapshotDto {
