@@ -4,7 +4,10 @@ import { GenericResponse } from '@app/rvns-api';
 import { map, Observable } from 'rxjs';
 import { CreateOrganisation } from '../models/create-organisation.model';
 import { DataWarehouseLastUpdated } from '../models/data-warehouse-last-updated';
+import { OrganisationNews } from '../models/organisation-news.model';
 import { Organisation } from '../models/organisation.model';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { PagedData } from 'rvns-shared';
 
 export type OrganisationsResponse = {
   items: Organisation[];
@@ -86,6 +89,16 @@ export class OrganisationsService {
     return this.http.patch<GenericResponse<Organisation>>(
       `${this.url}/${id}`,
       changes,
+    );
+  }
+
+  public getNews(
+    id: string,
+    params?: Record<string, string | number | boolean | string[] | number[]>,
+  ): Observable<GenericResponse<PagedData<OrganisationNews>>> {
+    return this.http.get<GenericResponse<PagedData<OrganisationNews>>>(
+      `${this.url}/${id}/news`,
+      { params },
     );
   }
 }

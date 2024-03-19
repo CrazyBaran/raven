@@ -1,0 +1,85 @@
+<ui-tilelayout-item id="organisation-notes">
+  <header header class="flex items-center justify-between gap-2">
+    <h5 class="k-card-title">Company news</h5>
+
+    <img
+      title="Source: Pitchbook"
+      kendoTooltip
+      position="left"
+      ngSrc="assets/images/pitchbook-icon.svg"
+      alt="PitchBook logo"
+      width="26"
+      height="26"
+    />
+  </header>
+
+  <main body>
+    <kendo-grid
+      (scrollBottom)="organisationNewsStore.scrollBottom()"
+      (sortChange)="organisationNewsStore.sortChange($event)"
+      [data]="organisationNewsStore.data()"
+      [loading]="organisationNewsStore.isLoading()"
+      [sortable]="true"
+      [sort]="organisationNewsStore.sort()"
+      [rowClass]="rowCallback"
+      [scrollable]="organisationNewsStore.canLoadMore() ? 'none' : 'scrollable'"
+      class="grid-borderless h-full"
+      [ngClass]="{
+        'max-h-[280px]': organisationNewsStore.canLoadMore(),
+        'max-h-[318px]': !organisationNewsStore.canLoadMore()
+      }"
+    >
+      <kendo-grid-column [width]="60">
+        <ng-template kendoGridCellTemplate>
+          <div class="flex justify-center">
+            <img
+              ngSrc="assets/images/rss-icon.svg"
+              alt="RSS logo"
+              width="17.5"
+              height="20"
+            />
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column title="Details" headerClass="!font-bold">
+        <ng-template kendoGridCellTemplate let-news>
+          <a target="_blank" [href]="news.newsArticleUrl">
+            <p
+              [title]="news.title"
+              kendoTooltip
+              position="top"
+              [tooltipWidth]="240"
+              class="mb-1 line-clamp-1"
+            >
+              {{ news.title }}
+            </p>
+
+            <p class="text-sm">{{ news.domain }}</p>
+          </a>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [width]="100" title="When" headerClass="!font-bold">
+        <ng-template kendoGridCellTemplate let-news>
+          <p>{{ news.publicationDate | whenDate }}</p>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+
+    @if (organisationNewsStore.canLoadMore()) {
+      <div class="mt-2 flex justify-center">
+        <button
+          (click)="loadMore()"
+          kendoButton
+          fillMode="flat"
+          themeColor="primary"
+        >
+          Show
+          {{ organisationNewsStore.loadMoreAmount() }}
+          more
+        </button>
+      </div>
+    }
+  </main>
+</ui-tilelayout-item>

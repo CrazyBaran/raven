@@ -12,3 +12,4 @@ export * from './lib/thousand-suffixes.pipe';
 export * from './lib/times.pipe';
 export * from './lib/to-url.pipe';
 export * from './lib/to-user-tag.pipe';
+export * from './lib/when-date.pipe';
