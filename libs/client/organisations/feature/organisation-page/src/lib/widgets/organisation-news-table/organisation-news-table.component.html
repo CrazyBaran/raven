@@ -1,4 +1,4 @@
-<ui-tilelayout-item id="organisation-notes">
+<ui-tilelayout-item id="organisation-news">
   <header header class="flex items-center justify-between gap-2">
     <h5 class="k-card-title">Company news</h5>
 
@@ -23,7 +23,7 @@
       [sort]="organisationNewsStore.sort()"
       [rowClass]="rowCallback"
       [scrollable]="organisationNewsStore.canLoadMore() ? 'none' : 'scrollable'"
-      class="grid-borderless h-full"
+      class="grid-borderless h-full !border-b-0"
       [ngClass]="{
         'max-h-[280px]': organisationNewsStore.canLoadMore(),
         'max-h-[318px]': !organisationNewsStore.canLoadMore()

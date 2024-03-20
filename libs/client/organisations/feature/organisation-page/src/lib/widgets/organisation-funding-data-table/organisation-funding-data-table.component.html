@@ -1,0 +1,107 @@
+<ui-tilelayout-item id="organisation-funding-data">
+  <header header class="flex items-center justify-between gap-2">
+    <h5 class="k-card-title">Funding data</h5>
+
+    <img
+      title="Source: Pitchbook"
+      kendoTooltip
+      position="left"
+      ngSrc="assets/images/pitchbook-icon.svg"
+      alt="PitchBook logo"
+      width="26"
+      height="26"
+    />
+  </header>
+
+  <main body class="grid gap-6 lg:grid-cols-2">
+    <kendo-chart class="max-h-[330px]">
+      <kendo-chart-tooltip format="${0}M" />
+
+      <kendo-chart-value-axis>
+        <kendo-chart-value-axis-item
+          [title]="{ text: 'Cumulative Funding ($m)' }"
+        />
+      </kendo-chart-value-axis>
+
+      <kendo-chart-series>
+        <kendo-chart-series-item
+          [style]="'smooth'"
+          type="line"
+          [data]="organisationFundingDataStore.chartData().data"
+          field="amountInUsd"
+          categoryField="date"
+          [title]="{ text: 'Cumulative Funding ($m)' }"
+        >
+          <kendo-chart-series-item-tooltip />
+        </kendo-chart-series-item>
+      </kendo-chart-series>
+    </kendo-chart>
+
+    <aside>
+      <kendo-grid
+        (scrollBottom)="organisationFundingDataStore.scrollBottom()"
+        (sortChange)="organisationFundingDataStore.sortChange($event)"
+        [data]="organisationFundingDataStore.data()"
+        [loading]="organisationFundingDataStore.isLoading()"
+        [sortable]="true"
+        [sort]="organisationFundingDataStore.sort()"
+        [rowClass]="rowCallback"
+        [scrollable]="
+          organisationFundingDataStore.canLoadMore() ? 'none' : 'scrollable'
+        "
+        class="grid-borderless h-full !border-b-0"
+        [ngClass]="{
+          'max-h-[280px]': organisationFundingDataStore.canLoadMore(),
+          'max-h-[318px]': !organisationFundingDataStore.canLoadMore()
+        }"
+      >
+        <kendo-grid-column [width]="100" title="Date" headerClass="!font-bold">
+          <ng-template kendoGridCellTemplate let-fundingData>
+            <p>{{ fundingData.date | whenDate }}</p>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [width]="100" title="Round" headerClass="!font-bold">
+          <ng-template kendoGridCellTemplate let-fundingData>
+            <p class="mb-1 line-clamp-1">
+              {{ fundingData.amount || 0 | currency: fundingData.currency }}M
+            </p>
+
+            <p class="text-sm">{{ fundingData.round }}</p>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column title="Investors" headerClass="!font-bold">
+          <ng-template kendoGridCellTemplate let-fundingData>
+            @for (investor of fundingData.investors; track $index) {
+              <p
+                [title]="investor"
+                kendoTooltip
+                position="top"
+                [tooltipWidth]="240"
+                class="line-clamp-1"
+              >
+                {{ investor }}
+              </p>
+            }
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+
+      @if (organisationFundingDataStore.canLoadMore()) {
+        <div class="mt-2 flex justify-center">
+          <button
+            (click)="loadMore()"
+            kendoButton
+            fillMode="flat"
+            themeColor="primary"
+          >
+            Show
+            {{ organisationFundingDataStore.loadMoreAmount() }}
+            more
+          </button>
+        </div>
+      }
+    </aside>
+  </main>
+</ui-tilelayout-item>

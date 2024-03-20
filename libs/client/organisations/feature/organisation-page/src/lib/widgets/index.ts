@@ -2,6 +2,7 @@ import { OrganisationContactsComponent } from './organisation-contacts/organisat
 import { OrganisationDetailsV2Component } from './organisation-details-v2/organisation-details-v2.component';
 import { OrganisationDetailsComponent } from './organisation-details/organisation-details.component';
 import { OrganisationFilesComponent } from './organisation-files/organisation-files.component';
+import { OrganisationFundingDataTableComponent } from './organisation-funding-data-table/organisation-funding-data-table.component';
 import { OrganisationNewsTableComponent } from './organisation-news-table/organisation-news-table.component';
 import { OrganisationNotesComponent } from './organisation-notes/organisation-notes.component';
 import { OrganisationOpportunitiesV2Component } from './organisation-opportunities-v2/organisation-opportunities-v2.component';
@@ -20,4 +21,5 @@ export const ORGANISATION_WIDGETS = [
   OrganisationNewsTableComponent,
   OrganisationDetailsV2Component,
   OrganisationContactsComponent,
+  OrganisationFundingDataTableComponent,
 ];
