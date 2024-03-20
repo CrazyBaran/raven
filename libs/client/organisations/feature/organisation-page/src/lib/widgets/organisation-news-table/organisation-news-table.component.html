@@ -14,72 +14,73 @@
   </header>
 
   <main body>
-    <kendo-grid
-      (scrollBottom)="organisationNewsStore.scrollBottom()"
-      (sortChange)="organisationNewsStore.sortChange($event)"
-      [data]="organisationNewsStore.data()"
-      [loading]="organisationNewsStore.isLoading()"
-      [sortable]="true"
-      [sort]="organisationNewsStore.sort()"
-      [rowClass]="rowCallback"
-      [scrollable]="organisationNewsStore.canLoadMore() ? 'none' : 'scrollable'"
-      class="grid-borderless h-full !border-b-0"
-      [ngClass]="{
-        'max-h-[280px]': organisationNewsStore.canLoadMore(),
-        'max-h-[318px]': !organisationNewsStore.canLoadMore()
-      }"
-    >
-      <kendo-grid-column [width]="60">
-        <ng-template kendoGridCellTemplate>
-          <div class="flex justify-center">
-            <img
-              ngSrc="assets/images/rss-icon.svg"
-              alt="RSS logo"
-              width="17.5"
-              height="20"
-            />
-          </div>
-        </ng-template>
-      </kendo-grid-column>
+    <section #table>
+      <kendo-grid
+        (scrollBottom)="organisationNewsStore.scrollBottom()"
+        (sortChange)="organisationNewsStore.sortChange($event)"
+        [data]="organisationNewsStore.filteredData()"
+        [loading]="organisationNewsStore.isLoading()"
+        [sortable]="true"
+        [sort]="organisationNewsStore.sort()"
+        [rowClass]="rowCallback"
+        [scrollable]="
+          organisationNewsStore.canLoadMore() ? 'none' : 'scrollable'
+        "
+        class="grid-borderless h-full !border-b-0"
+        [style.max-height.px]="organisationNewsStore.tableHeight() || null"
+      >
+        <kendo-grid-column [width]="60">
+          <ng-template kendoGridCellTemplate>
+            <div class="flex justify-center">
+              <img
+                ngSrc="assets/images/rss-icon.svg"
+                alt="RSS logo"
+                width="17.5"
+                height="20"
+              />
+            </div>
+          </ng-template>
+        </kendo-grid-column>
 
-      <kendo-grid-column title="Details" headerClass="!font-bold">
-        <ng-template kendoGridCellTemplate let-news>
-          <a target="_blank" [href]="news.newsArticleUrl">
-            <p
-              [title]="news.title"
-              kendoTooltip
-              position="top"
-              [tooltipWidth]="240"
-              class="mb-1 line-clamp-1"
-            >
-              {{ news.title }}
-            </p>
+        <kendo-grid-column title="Details" headerClass="!font-bold">
+          <ng-template kendoGridCellTemplate let-news>
+            <a target="_blank" [href]="news.newsArticleUrl">
+              <p
+                [title]="news.title"
+                kendoTooltip
+                position="top"
+                [tooltipWidth]="240"
+                class="mb-1 line-clamp-1"
+              >
+                {{ news.title }}
+              </p>
 
-            <p class="text-sm">{{ news.domain }}</p>
-          </a>
-        </ng-template>
-      </kendo-grid-column>
+              <p class="text-sm">{{ news.domain }}</p>
+            </a>
+          </ng-template>
+        </kendo-grid-column>
 
-      <kendo-grid-column [width]="100" title="When" headerClass="!font-bold">
-        <ng-template kendoGridCellTemplate let-news>
-          <p>{{ news.publicationDate | whenDate }}</p>
-        </ng-template>
-      </kendo-grid-column>
-    </kendo-grid>
+        <kendo-grid-column [width]="100" title="When" headerClass="!font-bold">
+          <ng-template kendoGridCellTemplate let-news>
+            <p>{{ news.publicationDate | whenDate }}</p>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
 
-    @if (organisationNewsStore.canLoadMore()) {
-      <div class="mt-2 flex justify-center">
-        <button
-          (click)="loadMore()"
-          kendoButton
-          fillMode="flat"
-          themeColor="primary"
-        >
-          Show
-          {{ organisationNewsStore.loadMoreAmount() }}
-          more
-        </button>
-      </div>
-    }
+      @if (organisationNewsStore.canLoadMore()) {
+        <div class="mt-2 flex justify-center">
+          <button
+            (click)="loadMore(table.offsetHeight)"
+            kendoButton
+            fillMode="flat"
+            themeColor="primary"
+          >
+            Show
+            {{ organisationNewsStore.loadMoreAmount() }}
+            more
+          </button>
+        </div>
+      }
+    </section>
   </main>
 </ui-tilelayout-item>

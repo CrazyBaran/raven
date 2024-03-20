@@ -37,11 +37,11 @@
       </kendo-chart-series>
     </kendo-chart>
 
-    <aside>
+    <aside #table>
       <kendo-grid
         (scrollBottom)="organisationFundingDataStore.scrollBottom()"
         (sortChange)="organisationFundingDataStore.sortChange($event)"
-        [data]="organisationFundingDataStore.data()"
+        [data]="organisationFundingDataStore.filteredData()"
         [loading]="organisationFundingDataStore.isLoading()"
         [sortable]="true"
         [sort]="organisationFundingDataStore.sort()"
@@ -49,11 +49,7 @@
         [scrollable]="
           organisationFundingDataStore.canLoadMore() ? 'none' : 'scrollable'
         "
-        class="grid-borderless h-full !border-b-0"
-        [ngClass]="{
-          'max-h-[280px]': organisationFundingDataStore.canLoadMore(),
-          'max-h-[318px]': !organisationFundingDataStore.canLoadMore()
-        }"
+        class="grid-borderless !border-b-0"
       >
         <kendo-grid-column [width]="100" title="Date" headerClass="!font-bold">
           <ng-template kendoGridCellTemplate let-fundingData>

@@ -28,11 +28,12 @@ export type InfiniteTableState<Entity> = {
   sort: SortDescriptor[];
   defaultAmountOfRecords: number;
   loadedMore: boolean;
+  tableHeight: number;
 };
 
 const defaultSettings: WithTableSettings = {
   defaultSort: [],
-  take: 5,
+  take: 10,
   skip: 0,
   debounceTime: 50,
   scrollDebounceTime: 150,
@@ -69,6 +70,7 @@ export function withInfiniteTable<Entity>(settings?: {
       sort: options?.defaultSort ?? [],
       defaultAmountOfRecords: options?.defaultAmountOfRecords ?? 4,
       loadedMore: false,
+      tableHeight: 0,
     }),
     withComputed((store) => ({
       tableParams: computed(() => ({
@@ -84,6 +86,12 @@ export function withInfiniteTable<Entity>(settings?: {
       loadMoreAmount: computed(
         () => store.data().total - store.defaultAmountOfRecords(),
       ),
+      filteredData: computed(() => ({
+        ...store.data(),
+        data: store.loadedMore()
+          ? store.data().data
+          : store.data().data.slice(0, store.defaultAmountOfRecords()),
+      })),
     })),
     withMethods((store) => ({
       scrollBottom: rxMethod<void>(
@@ -142,9 +150,10 @@ export function withInfiniteTable<Entity>(settings?: {
           ),
         ),
       ),
-      loadMore(): void {
+      loadMore(tableHeight?: number): void {
         patchState(store, () => ({
           loadedMore: true,
+          tableHeight: tableHeight ?? 0,
         }));
       },
     })),

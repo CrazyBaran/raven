@@ -27,8 +27,8 @@ import { organisationNewsTableStore } from './organisation-news-table.store';
 export class OrganisationNewsTableComponent {
   public organisationNewsStore = inject(organisationNewsTableStore);
 
-  public loadMore(): void {
-    this.organisationNewsStore.loadMore();
+  public loadMore(tableHeight: number): void {
+    this.organisationNewsStore.loadMore(tableHeight);
   }
 
   public rowCallback = (): Record<string, boolean> => {

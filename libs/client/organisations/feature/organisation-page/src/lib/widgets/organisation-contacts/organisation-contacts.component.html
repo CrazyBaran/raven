@@ -12,24 +12,19 @@
     />
   </header>
 
-  <div body>
-    <div>
+  <main body>
+    <section #table>
       <kendo-grid
         (scrollBottom)="organisationContactsStore.scrollBottom()"
         (sortChange)="organisationContactsStore.sortChange($event)"
-        [data]="organisationContactsStore.data()"
-        [loading]="organisationContactsStore.isLoading()!"
+        [data]="organisationContactsStore.filteredData()"
+        [loading]="organisationContactsStore.isLoading()"
         [rowClass]="rowCallback"
         [scrollable]="
           organisationContactsStore.canLoadMore() ? 'none' : 'scrollable'
         "
-        [ngClass]="{
-          'max-h-[185px]': organisationContactsStore.canLoadMore(),
-          'max-h-[220px]': !organisationContactsStore.canLoadMore(),
-          'min-h-[185px]': organisationContactsStore.canLoadMore(),
-          'min-h-[223px]': !organisationContactsStore.canLoadMore()
-        }"
-        class="grid-borderless h-full"
+        class="grid-borderless !border-b-0"
+        [style.max-height.px]="organisationContactsStore.tableHeight() || null"
       >
         <kendo-grid-column [width]="50" title="">
           <ng-template kendoGridCellTemplate>
@@ -57,10 +52,11 @@
           </ng-template>
         </kendo-grid-column>
       </kendo-grid>
+
       @if (organisationContactsStore.canLoadMore()) {
         <div class="mt-2 flex justify-center">
           <button
-            (click)="loadMore()"
+            (click)="loadMore(table.offsetHeight)"
             kendoButton
             fillMode="flat"
             themeColor="primary"
@@ -71,6 +67,6 @@
           </button>
         </div>
       }
-    </div>
-  </div>
+    </section>
+  </main>
 </ui-tilelayout-item>

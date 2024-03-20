@@ -44,7 +44,7 @@ export class OrganisationContactsComponent {
     return { '!bg-white': true };
   };
 
-  public loadMore(): void {
-    this.organisationContactsStore.loadMore();
+  public loadMore(tableHeight: number): void {
+    this.organisationContactsStore.loadMore(tableHeight);
   }
 }

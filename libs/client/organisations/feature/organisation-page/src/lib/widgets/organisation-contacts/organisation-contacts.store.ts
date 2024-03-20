@@ -1,13 +1,13 @@
 import { inject } from '@angular/core';
+import {
+  OrganisationContact,
+  OrganisationsService,
+} from '@app/client/organisations/data-access';
 import { LoadDataMethod, withInfiniteTable } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { signalStore, withMethods } from '@ngrx/signals';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
-import {
-  OrganisationContact,
-  OrganisationsService,
-} from '../../../../../../data-access/src';
 
 export const organisationContactsStore = signalStore(
   withMethods(
@@ -30,8 +30,5 @@ export const organisationContactsStore = signalStore(
           )),
     }),
   ),
-  withInfiniteTable<OrganisationContact>({
-    take: 10,
-    defaultAmountOfRecords: 4,
-  }),
+  withInfiniteTable<OrganisationContact>(),
 );
