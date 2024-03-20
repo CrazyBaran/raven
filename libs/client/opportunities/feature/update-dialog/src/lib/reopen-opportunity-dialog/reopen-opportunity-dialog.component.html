@@ -72,8 +72,12 @@
 
 <kendo-dialog-actions>
   <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
-  <kendo-button (click)="onCreate()" themeColor="primary">
-    @if (vm().isCreating) {
+  <kendo-button
+    (click)="onCreate()"
+    [disabled]="form.invalid || isCreating()"
+    themeColor="primary"
+  >
+    @if (isCreating()) {
       <kendo-loader class="!text-secondary-100 mr-1" size="small" />
     }
     Reopen Opportunity

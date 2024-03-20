@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -43,6 +48,8 @@ import { selectCreateOpportunityDialogViewModel } from './reopen-opportunity-dia
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReopenOpportunityDialogComponent extends DialogContentBase {
+  public isCreating = signal(false);
+
   protected store = inject(Store);
   protected actions$ = inject(Actions);
   protected router = inject(Router);
@@ -94,6 +101,8 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
   }
 
   protected onCreate(): void {
+    this.isCreating.set(true);
+
     this.store.dispatch(
       OpportunitiesActions.reopenOpportunity({
         id: this.vm().opportunityId!,
@@ -110,12 +119,13 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
         ),
         take(1),
       )
-      .subscribe((_data) => {
+      .subscribe(() => {
         this.store.dispatch(
           OrganisationsActions.getOrganisation({
             id: this.vm().organisation.id!,
           }),
         );
+        this.isCreating.set(false);
         this.dialog?.close();
       });
 
@@ -127,7 +137,7 @@ export class ReopenOpportunityDialogComponent extends DialogContentBase {
         ),
         take(1),
       )
-      .subscribe((data) => {
+      .subscribe(() => {
         this.store.dispatch(
           OrganisationsActions.updateOrganisation({
             id: this.vm().organisation.id!,
