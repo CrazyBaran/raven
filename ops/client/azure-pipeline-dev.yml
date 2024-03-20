@@ -31,6 +31,7 @@ variables:
   FRONT_CDN_PROFILE_NAME: fd-mc-raven-dev
   PUBLICLY_AVAILABLE: false
   SHOULD_DEPLOY: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  NODE_OPTIONS: --max-old-space-size=8192
 
 steps:
   - template: tpl/steps.template.yml
