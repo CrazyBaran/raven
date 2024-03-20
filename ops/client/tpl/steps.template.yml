@@ -1,7 +1,3 @@
-variables:
-  - name: NODE_OPTIONS
-    value:--max-old-space-size=8192
-
 steps:
   - task: NodeTool@0
     inputs:
