@@ -1,6 +1,7 @@
 import { OrganisationContactsComponent } from './organisation-contacts/organisation-contacts.component';
 import { OrganisationDetailsV2Component } from './organisation-details-v2/organisation-details-v2.component';
 import { OrganisationDetailsComponent } from './organisation-details/organisation-details.component';
+import { OrganisationChartsComponent } from './organisation-employees-chart/organisation-employees-chart.component';
 import { OrganisationFilesComponent } from './organisation-files/organisation-files.component';
 import { OrganisationFundingDataTableComponent } from './organisation-funding-data-table/organisation-funding-data-table.component';
 import { OrganisationNewsTableComponent } from './organisation-news-table/organisation-news-table.component';
@@ -21,5 +22,6 @@ export const ORGANISATION_WIDGETS = [
   OrganisationNewsTableComponent,
   OrganisationDetailsV2Component,
   OrganisationContactsComponent,
+  OrganisationChartsComponent,
   OrganisationFundingDataTableComponent,
 ];

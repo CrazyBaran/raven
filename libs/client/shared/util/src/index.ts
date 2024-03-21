@@ -11,5 +11,6 @@ export * from './lib/max-visible-index';
 export * from './lib/signal-input.transform';
 export * from './lib/success-payload';
 export * from './lib/truncate-elements.directive';
+export * from './lib/with.chart';
 export * from './lib/with.infinite-table';
 export * from './lib/with.table';

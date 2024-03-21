@@ -9,6 +9,7 @@ import { Organisation } from '../models/organisation.model';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { PagedData } from 'rvns-shared';
 import { OrganisationContact } from '../models/contact.model';
+import { EmployeeChartData } from '../models/employee-chart-data.model';
 import { OrganisationFundingData } from '../models/organisation-funding-data.model';
 
 export type OrganisationsResponse = {
@@ -100,6 +101,16 @@ export class OrganisationsService {
   ): Observable<GenericResponse<PagedData<OrganisationContact>>> {
     return this.http.get<GenericResponse<PagedData<OrganisationContact>>>(
       `${this.url}/${id}/contacts`,
+      { params },
+    );
+  }
+
+  public getEmployeesChartData(
+    id: string,
+    params?: Record<string, string | number | boolean | string[] | number[]>,
+  ): Observable<GenericResponse<PagedData<EmployeeChartData>>> {
+    return this.http.get<GenericResponse<PagedData<EmployeeChartData>>>(
+      `${this.url}/${id}/employees`,
       { params },
     );
   }

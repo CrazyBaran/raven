@@ -1,0 +1,52 @@
+<ui-tilelayout-item class="organisation-employees">
+  <header header class="flex items-center justify-between gap-2">
+    <h5 class="k-card-title">Employees</h5>
+    <img
+      title="Source: DealRoom"
+      kendoTooltip
+      position="left"
+      ngSrc="assets/images/dealroom-icon.svg"
+      alt="Dealroom logo"
+      width="26"
+      height="26"
+    />
+  </header>
+
+  <div body class="flex">
+    <div>
+      <div class="chart-box">
+        <p class="value">{{ getTotalEmployees() }}</p>
+        <p class="description">Total Employees</p>
+      </div>
+    </div>
+    <div class="flex-1">
+      <kendo-chart class="max-h-[330px]" [axisDefaults]="defaults">
+        <kendo-chart-tooltip format="{0}" />
+
+        <kendo-chart-value-axis>
+          <kendo-chart-value-axis-item type="numeric" [narrowRange]="false" />
+        </kendo-chart-value-axis>
+        <kendo-chart-x-axis>
+          <kendo-chart-x-axis-item
+            [baseUnit]="'years'"
+            [type]="'date'"
+          ></kendo-chart-x-axis-item>
+        </kendo-chart-x-axis>
+        <kendo-chart-series>
+          <kendo-chart-series-item
+            [style]="'smooth'"
+            type="line"
+            [data]="organisationChartsStore.chartData().data"
+            field="numberOfEmployees"
+            categoryField="observationDate"
+            [autoFit]="true"
+            [aggregate]="'max'"
+            color="#D84661"
+          >
+            <kendo-chart-series-item-tooltip />
+          </kendo-chart-series-item>
+        </kendo-chart-series>
+      </kendo-chart>
+    </div>
+  </div>
+</ui-tilelayout-item>
