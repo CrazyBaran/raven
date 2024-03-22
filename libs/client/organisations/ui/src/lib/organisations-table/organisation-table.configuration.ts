@@ -58,18 +58,19 @@ export const organisationTableConfiguration: TableColumn[] = [
       };
     },
   },
-  {
-    componentPath: () =>
-      import('../dynamic-string-column/dynamic-string-column.component').then(
-        (m) => m.DynamicStringColumnComponent,
-      ),
-    name: 'MCV Score',
-    field: 'mcvLeadScore',
-    type: 'number',
-    filter: null,
-    sortable: true,
-    width: 105,
-  },
+  // Column hidden as per client's request:
+  // {
+  //   componentPath: () =>
+  //     import('../dynamic-string-column/dynamic-string-column.component').then(
+  //       (m) => m.DynamicStringColumnComponent,
+  //     ),
+  //   name: 'MCV Score',
+  //   field: 'mcvLeadScore',
+  //   type: 'number',
+  //   filter: null,
+  //   sortable: true,
+  //   width: 105,
+  // },
   {
     componentPath: () =>
       import('../dynamic-string-column/dynamic-string-column.component').then(
