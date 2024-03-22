@@ -9,6 +9,20 @@ export const FilesActions = createActionGroup({
     'Get Files Success': props<{ data: FileEntity[]; folderId: string }>(),
     'Get Files Failure': props<{ error: string; folderId: string }>(),
 
+    'Get Files By Tags': props<{
+      directoryUrl: string;
+      opportunityId: string;
+      tags: string[];
+    }>(),
+    'Get Files By Tags Success': props<{
+      opportunityId: string;
+      tags: string[];
+      data: FileEntity[];
+    }>(),
+    'Get Files By Tags Failure': props<{
+      error: string;
+    }>(),
+
     'Update File Tags': props<{
       id: string;
       tags: string[];

@@ -9,8 +9,10 @@ import {
   filter,
   interval,
   Observable,
+  of,
   switchMap,
   take,
+  zip,
 } from 'rxjs';
 import { File } from './models/file.model';
 
@@ -29,6 +31,43 @@ export class FilesService {
     directoryUrl: string;
   }): Observable<GraphQLResponse<File[]>> {
     return this.http.get<GraphQLResponse<File[]>>(params!.directoryUrl);
+  }
+
+  public getFileById(params: {
+    itemsUrl: string;
+    itemId: string;
+  }): Observable<File> {
+    return this.http.get<File>(`${params.itemsUrl}/${params.itemId}`);
+  }
+
+  public getFilesByTags(params: {
+    directoryUrl: string;
+    opportunityId: string;
+    tags: string[];
+  }): Observable<File[]> {
+    return this.http
+      .get<GenericResponse<FileData[]>>(
+        `/api/opportunities/${params.opportunityId}/files`,
+        {
+          params: { tagIds: params.tags },
+        },
+      )
+      .pipe(
+        switchMap((res) => {
+          return res.data?.length
+            ? zip(
+                res.data!.map((el) =>
+                  this.getFileById({
+                    itemsUrl: `${
+                      params.directoryUrl.split('/items/')[0]
+                    }/items`,
+                    itemId: el.internalSharepointId,
+                  }),
+                ),
+              )
+            : of([]);
+        }),
+      );
   }
 
   public updateFileTags(params: {

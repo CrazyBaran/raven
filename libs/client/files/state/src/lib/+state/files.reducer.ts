@@ -9,6 +9,7 @@ import { FileEntity } from './files.model';
 export interface FilesState extends EntityState<FileEntity> {
   loadedFolders: Record<string, boolean | undefined>;
   fileTags: Record<string, TagData[]>;
+  filteredFilesByTags: Record<string, FileEntity[]>;
 }
 
 export const fileAdapter: EntityAdapter<FileEntity> =
@@ -17,6 +18,7 @@ export const fileAdapter: EntityAdapter<FileEntity> =
 export const initialFileState: FilesState = fileAdapter.getInitialState({
   loadedFolders: {},
   fileTags: {},
+  filteredFilesByTags: {},
 });
 
 export const filesFeature = createFeature({
@@ -77,6 +79,16 @@ export const filesFeature = createFeature({
         [data!.internalSharepointId]: data?.tags ?? [],
       },
     })),
+    on(
+      FilesActions.getFilesByTagsSuccess,
+      (state, { data, tags, opportunityId }) => ({
+        ...state,
+        filteredFilesByTags: {
+          ...state.filteredFilesByTags,
+          [opportunityId + tags[0]]: data,
+        },
+      }),
+    ),
   ),
   extraSelectors: ({ selectFilesState }) => ({
     ...fileAdapter.getSelectors(selectFilesState),

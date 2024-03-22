@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  computed,
-  inject,
   TrackByFunction,
   ViewChild,
   ViewEncapsulation,
+  computed,
+  inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
-import { Environment, ENVIRONMENT } from '@app/client/core/environment';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ENVIRONMENT, Environment } from '@app/client/core/environment';
 import { FilesService } from '@app/client/files/feature/data-access';
 import {
   FileEntity,
@@ -34,11 +34,12 @@ import { NotificationsActions } from '@app/client/shared/util-notifications';
 import {
   buildDropdownNavigation,
   buildPageParamsSelector,
+  selectQueryParam,
 } from '@app/client/shared/util-router';
 import { TagsActions, tagsQuery } from '@app/client/tags/state';
 import { TagData } from '@app/rvns-tags';
 import { Actions, ofType } from '@ngrx/effects';
-import { createSelector, Store } from '@ngrx/store';
+import { Store, createSelector } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
@@ -51,7 +52,7 @@ import {
   TreeListModule,
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
-import { filter, first, map, Observable } from 'rxjs';
+import { Observable, combineLatest, filter, first, map, startWith } from 'rxjs';
 import { PickerComponent } from '../picker/picker.component';
 
 const opportunityFilesQueryParams = ['tag'] as const;
@@ -101,6 +102,8 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
     filesQuery.selectFileTags,
     selectOrganisationsTableParams,
     opportunitiesQuery.selectIsTeamMemberForCurrentOpportunity,
+    selectQueryParam('tag'),
+    filesQuery.selectFilteredFilesByTags,
     (
       files,
       tags,
@@ -109,6 +112,8 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
       fileTags,
       params,
       isTeamMember,
+      tag,
+      filteredFilesByTags,
     ) => {
       return {
         source: files
@@ -125,13 +130,20 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
         filters: buildDropdownNavigation({
           params,
           name: 'tag',
-          data: tags.map((t) => ({ name: t.name, id: t.name })),
+          data: tags.map((t) => ({ name: t.name, id: t.id })),
           loading: false,
           defaultItem: {
             name: 'All Files',
             id: null,
           },
         }),
+        tag,
+        filteredFilesByTags:
+          opportunity && tag
+            ? filteredFilesByTags[opportunity.id + tag]?.map(
+                toFileRow(environment),
+              )
+            : undefined,
       };
     },
   );
@@ -174,6 +186,7 @@ export const selectFolderChildrenFactory =
     DropdownNavigationComponent,
     QuickFiltersTemplateComponent,
     RouterOutlet,
+    NgClass,
   ],
   templateUrl: './files-table.component.html',
   styleUrls: ['./files-table.component.scss'],
@@ -211,6 +224,7 @@ export class FilesTableComponent {
     private actions$: Actions,
     private filesService: FilesService,
     private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
   ) {
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({ tagTypes: ['tab'] }),
@@ -235,6 +249,26 @@ export class FilesTableComponent {
       .subscribe(() => {
         this.activeFile = null;
         this.cdr.detectChanges();
+      });
+
+    combineLatest([
+      this.store.select(opportunitiesQuery.selectRouteOpportunityDetails),
+      this.route.queryParams,
+    ])
+      .pipe(
+        startWith([undefined, this.route.snapshot.queryParams] as const),
+        takeUntilDestroyed(),
+      )
+      .subscribe(([opportunity, params]) => {
+        if (opportunity && params['tag']) {
+          this.store.dispatch(
+            FilesActions.getFilesByTags({
+              directoryUrl: opportunity.sharePointDirectory!,
+              opportunityId: opportunity.id,
+              tags: [params['tag']],
+            }),
+          );
+        }
       });
   }
 

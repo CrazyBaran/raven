@@ -45,3 +45,6 @@ Thumbs.db
 
 # nx cache
 .nx/**
+
+# kendo licence
+kendo-ui-license.txt

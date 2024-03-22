@@ -36,6 +36,36 @@ export const loadFiles = createEffect(
   },
 );
 
+export const loadFilesByTags = createEffect(
+  (actions$ = inject(Actions), filesService = inject(FilesService)) => {
+    return actions$.pipe(
+      ofType(FilesActions.getFilesByTags),
+      switchMap((action) =>
+        filesService.getFilesByTags(action).pipe(
+          map((response) => {
+            return FilesActions.getFilesByTagsSuccess({
+              opportunityId: action.opportunityId,
+              tags: action.tags,
+              data: response || [],
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              FilesActions.getFilesByTagsFailure({
+                error,
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
 export const updateFile = createEffect(
   (actions$ = inject(Actions), filesService = inject(FilesService)) => {
     return actions$.pipe(

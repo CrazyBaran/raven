@@ -16,7 +16,57 @@
     </div>
   </app-quick-filters-template>
 
-  <div class="flex-1 overflow-hidden">
+  @if (vm().tag) {
+    <kendo-grid
+      [data]="vm().filteredFilesByTags || []"
+      [loading]="vm().filteredFilesByTags === undefined"
+      scrollable="scrollable"
+      class="grid-borderless flex-1 overflow-hidden"
+    >
+      <kendo-grid-column
+        [headerStyle]="{ 'font-weight': '700' }"
+        title="File Name"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <i class="fa-file fa-regular"></i>
+          <span class="ml-2">
+            {{ dataItem.name }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [headerStyle]="{ 'font-weight': '700' }"
+        title="Added by"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <ui-tag uiUserTag [label]="dataItem.createdBy" size="medium" />
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [width]="120" title="">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div class="flex gap-1">
+            <kendo-button
+              themeColor="primary"
+              iconClass="fa-solid fa-arrow-up-right-from-square"
+              (click)="openFileWebUrl(dataItem)"
+            />
+
+            @if (vm().canEditFiles) {
+              <kendo-button
+                class="mr-10"
+                iconClass="fa-regular fa-tag"
+                (click)="openFileManage(dataItem)"
+              />
+            }
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  }
+
+  <div class="flex-1 overflow-hidden" [ngClass]="{ hidden: vm().tag }">
     <div class="flex h-full flex-col">
       <kendo-treelist
         [data]="source()"
