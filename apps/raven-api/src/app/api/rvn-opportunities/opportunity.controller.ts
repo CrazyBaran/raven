@@ -251,9 +251,9 @@ export class OpportunityController {
   @ApiQuery({ name: 'tagIds', type: String, required: false })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
-  @Get(':opportunityId/files')
+  @Get(':id/files')
   public async getFiles(
-    @Param('opportunityId', ParseUUIDPipe, ParseOpportunityPipe)
+    @Param('id', ParseUUIDPipe, ParseOpportunityPipe)
     opportunity: OpportunityEntity,
     @Query('tagIds', ParseTagsPipe, ValidateTabTagsPipe)
     tagEntities?: TagEntity[] | null,

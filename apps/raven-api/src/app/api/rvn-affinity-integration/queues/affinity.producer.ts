@@ -9,7 +9,7 @@ import {
   AFFINITY_QUEUE__REGENERATE,
   AFFINITY_QUEUE__SETUP_WEBHOOK,
 } from '../affinity.const';
-import { WebhookPayloadDto } from '../api/dtos/webhook-payload.dto';
+import { AffinityWebhookPayloadDto } from '../api/dtos/webhook-payload.affinity.dto';
 
 @Injectable()
 export class AffinityProducer implements OnModuleInit {
@@ -37,7 +37,9 @@ export class AffinityProducer implements OnModuleInit {
     }
   }
 
-  public async enqueueHandleWebhook(body: WebhookPayloadDto): Promise<void> {
+  public async enqueueHandleWebhook(
+    body: AffinityWebhookPayloadDto,
+  ): Promise<void> {
     await this.affinityQueue.add(AFFINITY_QUEUE__HANDLE_WEBHOOK, { body });
   }
 

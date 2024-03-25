@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AffinitySettingsService } from '../affinity-settings.service';
 import { AffinityApiService } from '../api/affinity-api.service';
-import { DropdownOptionDto } from '../api/dtos/dropdown-option.dto';
+import { AffinityDropdownOptionDto } from '../api/dtos/dropdown-option.affinity.dto';
 import { AffinityCacheService } from '../cache/affinity-cache.service';
 import { OrganizationStageDto } from '../dtos/organisation-stage.dto';
 
@@ -96,7 +96,7 @@ export class OpportunityStageChangedEventHandler {
   private async updateCompanyStatus(
     company: OrganizationStageDto,
     statusFieldId: number,
-    stage: DropdownOptionDto,
+    stage: AffinityDropdownOptionDto,
   ): Promise<void> {
     const fieldValues = await this.affinityApiService.getFieldValues(
       company.listEntryId,
@@ -118,7 +118,7 @@ export class OpportunityStageChangedEventHandler {
     listId: number,
     statusFieldId: number,
     stage: string,
-  ): Promise<DropdownOptionDto> {
+  ): Promise<AffinityDropdownOptionDto> {
     const listFields = await this.affinityCacheService.getListFields();
     const statusField = listFields.find((field) => field.id === statusFieldId);
     if (!statusField) {

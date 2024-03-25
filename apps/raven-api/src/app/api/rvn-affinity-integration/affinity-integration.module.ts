@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullService } from '../../core/bull.service';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
+import { AffinityInteractionMapper } from './affinity-interaction.mapper';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { AffinityWebhookService } from './affinity-webhook.service';
@@ -62,8 +63,9 @@ import { AffinityProducer } from './queues/affinity.producer';
     AffinityEnricher,
     AffinityDataWatchdogProducer,
     AffinityDataWatchdogProcessor,
+    AffinityInteractionMapper,
   ],
   controllers: [AffinityController],
-  exports: [AffinityCacheService, AffinityEnricher],
+  exports: [AffinityCacheService, AffinityEnricher, AffinityService],
 })
 export class AffinityIntegrationModule {}

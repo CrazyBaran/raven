@@ -1,10 +1,10 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AFFINITY_CACHE, AFFINITY_FIELDS_CACHE } from '../affinity.const';
-import { FieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-dropdown.dto';
-import { FieldDto } from '../api/dtos/field.dto';
-import { EntityType } from '../api/dtos/list-type.dto';
-import { OrganizationDto } from '../api/dtos/organization.dto';
+import { AffinityFieldValueRankedDropdownDto } from '../api/dtos/field-value-ranked-dropdown.affinity.dto';
+import { AffinityFieldDto } from '../api/dtos/field.affinity.dto';
+import { AffinityEntityType } from '../api/dtos/list-type.affinity.dto';
+import { AffinityOrganizationDto } from '../api/dtos/organization.affinity.dto';
 import { OrganizationStageDto } from '../dtos/organisation-stage.dto';
 import { AffinityCacheService } from './affinity-cache.service';
 
@@ -12,16 +12,16 @@ const organisationStageDtos = [
   {
     organizationDto: {
       id: 123,
-      type: EntityType.Organization,
+      type: AffinityEntityType.Organization,
       name: 'Organisation 1',
       domain: 'first-test.com',
       domains: ['first-test.com'],
       global: true,
-    } as OrganizationDto,
+    } as AffinityOrganizationDto,
     entityId: 456,
     listEntryId: 789,
     entryAdded: new Date(),
-    stage: {} as FieldValueRankedDropdownDto,
+    stage: {} as AffinityFieldValueRankedDropdownDto,
     fields: [
       {
         displayName: 'test',
@@ -33,16 +33,16 @@ const organisationStageDtos = [
   {
     organizationDto: {
       id: 124,
-      type: EntityType.Organization,
+      type: AffinityEntityType.Organization,
       name: 'Organisation 2',
       domain: 'test.com',
       domains: ['test.com', 'test.co.uk'],
       global: true,
-    } as OrganizationDto,
+    } as AffinityOrganizationDto,
     entityId: 456,
     listEntryId: 789,
     entryAdded: new Date(),
-    stage: {} as FieldValueRankedDropdownDto,
+    stage: {} as AffinityFieldValueRankedDropdownDto,
     fields: [
       {
         displayName: 'test',
@@ -52,7 +52,7 @@ const organisationStageDtos = [
   } as OrganizationStageDto,
 ];
 
-const fields = [{ id: 1, name: 'test' } as FieldDto];
+const fields = [{ id: 1, name: 'test' } as AffinityFieldDto];
 
 describe('AffinityCacheService', () => {
   let service: AffinityCacheService;

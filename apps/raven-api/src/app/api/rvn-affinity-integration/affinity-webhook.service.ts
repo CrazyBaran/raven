@@ -14,22 +14,22 @@ import { RavenLogger } from '../rvn-logger/raven.logger';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { FIELD_MAPPING, STATUS_FIELD_NAME } from './affinity.const';
 import { AffinityApiService } from './api/affinity-api.service';
-import { ActionType } from './api/dtos/action-type.dto';
-import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
-import { FieldValueEntityDto } from './api/dtos/field-value-entity.dto';
-import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
+import { AffinityActionType } from './api/dtos/action-type.affinity.dto';
+import { AffinityFieldValueChangeDto } from './api/dtos/field-value-change.affinity.dto';
+import { AffinityFieldValueEntityDto } from './api/dtos/field-value-entity.affinity.dto';
+import { AffinityFieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.affinity.dto';
 import {
-  OrganizationBaseDto,
-  OrganizationDto,
-} from './api/dtos/organization.dto';
-import { PersonDto } from './api/dtos/person.dto';
+  AffinityOrganizationBaseDto,
+  AffinityOrganizationDto,
+} from './api/dtos/organization.affinity.dto';
+import { AffinityPersonDto } from './api/dtos/person.affinity.dto';
 import {
-  WebhookPayloadDto,
-  WebhookPayloadFieldValueDto,
-  WebhookPayloadListEntryDto,
-  WebhookPayloadOrganisationDto,
-} from './api/dtos/webhook-payload.dto';
-import { WebhookSubscriptions } from './api/dtos/webhook-subscriptions.dto';
+  AffinityWebhookPayloadDto,
+  AffinityWebhookPayloadFieldValueDto,
+  AffinityWebhookPayloadListEntryDto,
+  AffinityWebhookPayloadOrganisationDto,
+} from './api/dtos/webhook-payload.affinity.dto';
+import { AffinityWebhookSubscriptions } from './api/dtos/webhook-subscriptions.affinity.dto';
 import { AffinityCacheService } from './cache/affinity-cache.service';
 import { OrganizationStageDto } from './dtos/organisation-stage.dto';
 
@@ -47,20 +47,22 @@ export class AffinityWebhookService {
     this.logger.setContext(AffinityWebhookService.name);
   }
 
-  public async handleWebhookPayload(payload: WebhookPayloadDto): Promise<void> {
+  public async handleWebhookPayload(
+    payload: AffinityWebhookPayloadDto,
+  ): Promise<void> {
     switch (payload.type) {
-      case WebhookSubscriptions.LIST_ENTRY_CREATED:
+      case AffinityWebhookSubscriptions.LIST_ENTRY_CREATED:
         this.logger.debug('Handling list entry created');
         await this.handleListEntryCreated(payload);
         break;
-      case WebhookSubscriptions.FIELD_VALUE_CREATED:
-      case WebhookSubscriptions.FIELD_VALUE_DELETED:
-      case WebhookSubscriptions.FIELD_VALUE_UPDATED:
+      case AffinityWebhookSubscriptions.FIELD_VALUE_CREATED:
+      case AffinityWebhookSubscriptions.FIELD_VALUE_DELETED:
+      case AffinityWebhookSubscriptions.FIELD_VALUE_UPDATED:
         this.logger.debug('Handling field value change');
         await this.handleFieldValueUpdated(payload);
         break;
-      case WebhookSubscriptions.ORGANIZATION_CREATED:
-      case WebhookSubscriptions.ORGANIZATION_UPDATED:
+      case AffinityWebhookSubscriptions.ORGANIZATION_CREATED:
+      case AffinityWebhookSubscriptions.ORGANIZATION_UPDATED:
         this.logger.debug('Handling organization created');
         await this.handleOrganizationCreated(payload);
     }
@@ -84,22 +86,22 @@ export class AffinityWebhookService {
     const webhook = await this.affinityApiService.subscribeWebhook({
       webhook_url: `${environment.app.apiUrl}/affinity/webhook?token=${environment.affinity.webhookToken}`,
       subscriptions: [
-        WebhookSubscriptions.LIST_ENTRY_CREATED,
-        WebhookSubscriptions.FIELD_VALUE_CREATED,
-        WebhookSubscriptions.FIELD_VALUE_DELETED,
-        WebhookSubscriptions.FIELD_VALUE_UPDATED,
+        AffinityWebhookSubscriptions.LIST_ENTRY_CREATED,
+        AffinityWebhookSubscriptions.FIELD_VALUE_CREATED,
+        AffinityWebhookSubscriptions.FIELD_VALUE_DELETED,
+        AffinityWebhookSubscriptions.FIELD_VALUE_UPDATED,
       ],
     });
   }
 
   private async handleListEntryCreated(
-    payload: WebhookPayloadListEntryDto,
+    payload: AffinityWebhookPayloadListEntryDto,
   ): Promise<void> {
     this.logger.log(
       `Handling list entry created: entity_id: ${payload.body.entity_id}`,
     );
     this.logger.log({ payloadBody: payload.body });
-    const organizationDto = payload.body.entity as OrganizationDto;
+    const organizationDto = payload.body.entity as AffinityOrganizationDto;
     const organizationData: OrganizationStageDto = {
       entityId: payload.body.entity_id,
       listEntryId: payload.body.id,
@@ -118,7 +120,7 @@ export class AffinityWebhookService {
 
     const statusField = fieldValues.find((fieldValue) => {
       return fieldValue.field_id === statusFieldId;
-    }).value as FieldValueRankedDropdownDto;
+    }).value as AffinityFieldValueRankedDropdownDto;
 
     this.logger.log({ statusField, entity_id: payload.body.entity_id });
 
@@ -136,12 +138,12 @@ export class AffinityWebhookService {
   }
 
   private async handleOrganizationCreated(
-    payload: WebhookPayloadOrganisationDto,
+    payload: AffinityWebhookPayloadOrganisationDto,
   ): Promise<void> {
     this.logger.log(
       `Handling organisation created: domain: ${payload.body.domain}`,
     );
-    const organizationDto = payload.body as OrganizationBaseDto;
+    const organizationDto = payload.body as AffinityOrganizationBaseDto;
     const organizationData: OrganizationStageDto = {
       entityId: payload.body.id,
       listEntryId: null,
@@ -160,7 +162,7 @@ export class AffinityWebhookService {
 
     const statusField = fieldValues.find((fieldValue) => {
       return fieldValue.field_id === statusFieldId;
-    }).value as FieldValueRankedDropdownDto;
+    }).value as AffinityFieldValueRankedDropdownDto;
 
     this.logger.log({ statusField, domain: payload.body.domain });
 
@@ -178,7 +180,7 @@ export class AffinityWebhookService {
   }
 
   private async handleFieldValueUpdated(
-    payload: WebhookPayloadFieldValueDto,
+    payload: AffinityWebhookPayloadFieldValueDto,
   ): Promise<void> {
     this.logger.log(
       `Handling field value updated: entity_id: ${payload.body.entity_id}`,
@@ -218,21 +220,21 @@ export class AffinityWebhookService {
         action_type:
           (payload.body.action_type as unknown as string) ===
           'field_value.deleted'
-            ? ActionType.Delete
-            : ActionType.Create,
+            ? AffinityActionType.Delete
+            : AffinityActionType.Create,
       };
 
       const finalValue = AffinityValueResolverService.resolveValue(
         handledField,
-        [update as FieldValueChangeDto],
+        [update as AffinityFieldValueChangeDto],
         initialValue,
       );
       const persons = [];
-      for (const person of finalValue as FieldValueEntityDto[]) {
-        if (!(person as PersonDto).first_name) {
+      for (const person of finalValue as AffinityFieldValueEntityDto[]) {
+        if (!(person as AffinityPersonDto).first_name) {
           // we fetch for value as we have only id here
           const personEntity = await this.affinityApiService.getPerson(
-            (person as PersonDto).id,
+            (person as AffinityPersonDto).id,
           );
           persons.push(personEntity);
         } else {
@@ -252,7 +254,7 @@ export class AffinityWebhookService {
   }
 
   private async handleStatusFieldChange(
-    payload: WebhookPayloadFieldValueDto,
+    payload: AffinityWebhookPayloadFieldValueDto,
   ): Promise<void> {
     this.logger.log(
       `Handling status field change: entity_id: ${payload.body.entity_id}`,
@@ -268,7 +270,7 @@ export class AffinityWebhookService {
       return;
     }
     const company = companies[0];
-    const value = payload.body.value as FieldValueRankedDropdownDto;
+    const value = payload.body.value as AffinityFieldValueRankedDropdownDto;
     company.stage = value;
     await this.affinityCacheService.addOrReplaceMany([company]);
     this.logger.debug('Emitting affinity status changed event');

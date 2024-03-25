@@ -1,9 +1,9 @@
 import { AffinityValueType } from '@app/rvns-affinity-integration';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
-import { ActionType } from './api/dtos/action-type.dto';
-import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
-import { FieldDto } from './api/dtos/field.dto';
-import { PersonDto } from './api/dtos/person.dto';
+import { AffinityActionType } from './api/dtos/action-type.affinity.dto';
+import { AffinityFieldValueChangeDto } from './api/dtos/field-value-change.affinity.dto';
+import { AffinityFieldDto } from './api/dtos/field.affinity.dto';
+import { AffinityPersonDto } from './api/dtos/person.affinity.dto';
 
 describe('AffinityValueResolverService', () => {
   describe('resolveValue for multiple person type', () => {
@@ -14,7 +14,7 @@ describe('AffinityValueResolverService', () => {
     it('create when empty initial value', async () => {
       const fieldUpdates = [
         {
-          action_type: ActionType.Create,
+          action_type: AffinityActionType.Create,
           value: {
             id: 1,
           },
@@ -22,8 +22,8 @@ describe('AffinityValueResolverService', () => {
       ];
 
       const result = AffinityValueResolverService.resolveValue(
-        fieldDefinition as FieldDto,
-        fieldUpdates as FieldValueChangeDto[],
+        fieldDefinition as AffinityFieldDto,
+        fieldUpdates as AffinityFieldValueChangeDto[],
       );
 
       const expected = [
@@ -38,7 +38,7 @@ describe('AffinityValueResolverService', () => {
     it('create when initial value', async () => {
       const fieldUpdates = [
         {
-          action_type: ActionType.Create,
+          action_type: AffinityActionType.Create,
           value: {
             id: 1,
           },
@@ -47,12 +47,12 @@ describe('AffinityValueResolverService', () => {
       const initialState = [
         {
           id: 2,
-        } as PersonDto,
+        } as AffinityPersonDto,
       ];
 
       const result = AffinityValueResolverService.resolveValue(
-        fieldDefinition as FieldDto,
-        fieldUpdates as FieldValueChangeDto[],
+        fieldDefinition as AffinityFieldDto,
+        fieldUpdates as AffinityFieldValueChangeDto[],
         initialState,
       );
 
@@ -70,7 +70,7 @@ describe('AffinityValueResolverService', () => {
     it('delete when initial value', async () => {
       const fieldUpdates = [
         {
-          action_type: ActionType.Delete,
+          action_type: AffinityActionType.Delete,
           value: {
             id: 1,
           },
@@ -79,15 +79,15 @@ describe('AffinityValueResolverService', () => {
       const initialState = [
         {
           id: 1,
-        } as PersonDto,
+        } as AffinityPersonDto,
         {
           id: 2,
-        } as PersonDto,
+        } as AffinityPersonDto,
       ];
 
       const result = AffinityValueResolverService.resolveValue(
-        fieldDefinition as FieldDto,
-        fieldUpdates as FieldValueChangeDto[],
+        fieldDefinition as AffinityFieldDto,
+        fieldUpdates as AffinityFieldValueChangeDto[],
         initialState,
       );
 

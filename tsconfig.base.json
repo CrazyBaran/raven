@@ -267,6 +267,7 @@
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"],
       "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
+      "@app/shared/affinity": ["libs/shared/affinity/src/index.ts"],
       "opentelemetry-instrumentation-bullmqpro": [
         "libs/shared/opentelemetry-instrumentation-bullmqpro/src/index.ts"
       ],

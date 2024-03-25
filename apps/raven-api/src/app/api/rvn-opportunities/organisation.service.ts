@@ -7,6 +7,7 @@ import { Injectable, Optional } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { InteractionsDto } from '@app/shared/affinity';
 import {
   CompanyDto,
   ContactDto,
@@ -19,6 +20,7 @@ import { CompanyStatus, PagedData } from 'rvns-shared';
 import { EntityManager, In, Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
+import { AffinityService } from '../rvn-affinity-integration/affinity.service';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
@@ -77,6 +79,7 @@ export class OrganisationService {
     private readonly organisationHelperService: OrganisationHelperService,
     @Optional()
     private readonly dataWarehouseService: DataWarehouseService,
+    private readonly affinityService: AffinityService,
   ) {
     this.logger.setContext(OrganisationService.name);
   }
@@ -355,14 +358,19 @@ export class OrganisationService {
   }
 
   public async removeMany(ids: string[]): Promise<void> {
-    const queryBuilder = this.tagRepository.createQueryBuilder('tags');
-    queryBuilder.where('tags.organisationId IN (:...ids)', { ids });
+    const chunkSize = 1000;
 
-    const tags = await queryBuilder.getMany();
+    for (let i = 0; i < ids.length; i += chunkSize) {
+      const chunk = ids.slice(i, i + chunkSize);
+      const queryBuilder = this.tagRepository.createQueryBuilder('tags');
+      queryBuilder.where('tags.organisationId IN (:...chunk)', { chunk });
 
-    await this.tagRepository.remove(tags);
+      const tags = await queryBuilder.getMany();
 
-    await this.organisationRepository.delete(ids);
+      await this.tagRepository.remove(tags);
+
+      await this.organisationRepository.delete(chunk);
+    }
   }
 
   public async ensureAllAffinityOrganisationsAsOrganisations(): Promise<void> {
@@ -687,6 +695,36 @@ export class OrganisationService {
     )?.domains;
 
     return await this.dataWarehouseService.getContacts(domains, skip, take);
+  }
+
+  public async findInteractions(
+    organisationId: string,
+    startTime?: Date,
+    endTime?: Date,
+  ): Promise<Partial<InteractionsDto>> {
+    const domains = (
+      await this.organisationRepository.findOne({
+        where: { id: organisationId },
+        relations: ['organisationDomains'],
+      })
+    )?.domains;
+
+    const organisations = await this.affinityCacheService.getByDomains(domains);
+
+    if (organisations == null && organisations.length == 0) {
+      return {
+        interactions: [],
+      };
+    }
+
+    const interactions = await this.affinityService.getInteractions({
+      organizationIds: organisations.map((org) => org.organizationDto.id),
+      startDate:
+        startTime ?? new Date(new Date().setDate(new Date().getDate() - 30)),
+      endDate: endTime ?? new Date(),
+    });
+
+    return interactions;
   }
 
   private async updateDomains(

@@ -1,16 +1,24 @@
+import { InteractionsDto } from '@app/shared/affinity';
 import { Injectable } from '@nestjs/common';
 import { RavenLogger } from '../rvn-logger/raven.logger';
+import { AffinityInteractionMapper } from './affinity-interaction.mapper';
 import { AffinitySettingsService } from './affinity-settings.service';
 import { AffinityValueResolverService } from './affinity-value-resolver.service';
 import { FIELD_MAPPING } from './affinity.const';
 import { AffinityApiService } from './api/affinity-api.service';
-import { FieldValueChangeDto } from './api/dtos/field-value-change.dto';
-import { FieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.dto';
-import { ListEntryDto } from './api/dtos/list-entry.dto';
+import { AffinityFieldValueChangeDto } from './api/dtos/field-value-change.affinity.dto';
+import { AffinityFieldValueRankedDropdownDto } from './api/dtos/field-value-ranked-dropdown.affinity.dto';
+import { AffinityInteractionType } from './api/dtos/interaction.affinity.dto';
+import { AffinityListEntryDto } from './api/dtos/list-entry.affinity.dto';
 import {
-  OrganizationBaseDto,
-  OrganizationWithCrunchbaseDto,
-} from './api/dtos/organization.dto';
+  AffinityOrganizationBaseDto,
+  AffinityOrganizationWithCrunchbaseDto,
+} from './api/dtos/organization.affinity.dto';
+import {
+  PaginatedAffinityEmailInteractionsDto,
+  PaginatedAffinityEventInteractionsDto,
+  PaginatedAffinityInteractionDto,
+} from './api/dtos/paginated-interaction.affinity.dto';
 import { AffinityCacheService } from './cache/affinity-cache.service';
 import { OrganizationStageDto } from './dtos/organisation-stage.dto';
 
@@ -21,6 +29,7 @@ export class AffinityService {
     private readonly affinityApiService: AffinityApiService,
     private readonly logger: RavenLogger,
     private readonly affinityCacheService: AffinityCacheService,
+    private readonly interactionMapper: AffinityInteractionMapper,
   ) {
     this.logger.setContext(AffinityService.name);
   }
@@ -86,7 +95,7 @@ export class AffinityService {
         await this.affinityApiService.getFieldValueChanges(field.field?.id);
 
       const fieldValueChangesByEntryId: {
-        [key: string]: FieldValueChangeDto[];
+        [key: string]: AffinityFieldValueChangeDto[];
       } = fieldValueChanges.reduce((acc, change) => {
         if (!acc[change.list_entry_id]) {
           acc[change.list_entry_id] = [];
@@ -127,10 +136,72 @@ export class AffinityService {
     this.logger.debug('Stored data in cache');
   }
 
+  public async getInteractions(options: {
+    domains?: string[];
+    organizationIds?: number[];
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<Partial<InteractionsDto>> {
+    let organisationIds = options.organizationIds;
+
+    if (
+      (!organisationIds || organisationIds.length === 0) &&
+      options.domains &&
+      options.domains.length > 0
+    ) {
+      const organisations = await this.affinityCacheService.getByDomains(
+        options.domains,
+      );
+      if (!organisations || organisations.length === 0) {
+        return {};
+      }
+
+      organisationIds = organisations.map((org) => org.organizationDto.id);
+    }
+
+    const interactions: Partial<InteractionsDto> = {
+      interactions: [],
+    };
+
+    for (const organisationId of organisationIds) {
+      let response: PaginatedAffinityInteractionDto = undefined;
+      do {
+        response = await this.affinityApiService.getInteractions(
+          organisationId,
+          AffinityInteractionType.Email,
+          options.startDate?.toISOString(),
+          options.endDate?.toISOString(),
+          500,
+        );
+        interactions.interactions.push(
+          ...this.interactionMapper.mapEmails(
+            (response as PaginatedAffinityEmailInteractionsDto).emails,
+          ),
+        );
+      } while (response.next_page_token);
+      do {
+        response = await this.affinityApiService.getInteractions(
+          organisationId,
+          AffinityInteractionType.Meeting,
+          options.startDate?.toISOString(),
+          options.endDate?.toISOString(),
+          500,
+        );
+        interactions.interactions.push(
+          ...this.interactionMapper.mapMeetings(
+            (response as PaginatedAffinityEventInteractionsDto).events,
+          ),
+        );
+      } while (response.next_page_token);
+    }
+
+    return interactions;
+  }
+
   private matchListEntriesWithStages(
-    organizations: OrganizationWithCrunchbaseDto[],
-    entries: ListEntryDto[],
-    fieldChanges: FieldValueChangeDto[],
+    organizations: AffinityOrganizationWithCrunchbaseDto[],
+    entries: AffinityListEntryDto[],
+    fieldChanges: AffinityFieldValueChangeDto[],
   ): OrganizationStageDto[] {
     const matchedData: OrganizationStageDto[] = [];
     for (const organization of organizations) {
@@ -151,8 +222,8 @@ export class AffinityService {
         entityId: organization.id,
         listEntryId: matchingEntry?.id,
         entryAdded: matchingEntry ? new Date(matchingEntry.created_at) : null,
-        organizationDto: organization as OrganizationBaseDto,
-        stage: latestFieldChange?.value as FieldValueRankedDropdownDto,
+        organizationDto: organization as AffinityOrganizationBaseDto,
+        stage: latestFieldChange?.value as AffinityFieldValueRankedDropdownDto,
         fields: [],
       });
     }
@@ -161,10 +232,10 @@ export class AffinityService {
   }
 
   private async getAllOrganizations(): Promise<
-    OrganizationWithCrunchbaseDto[]
+    AffinityOrganizationWithCrunchbaseDto[]
   > {
     let pageToken: string | undefined;
-    const allOrganizations: OrganizationWithCrunchbaseDto[] = [];
+    const allOrganizations: AffinityOrganizationWithCrunchbaseDto[] = [];
     do {
       const organizations = await this.affinityApiService.getOrganizations(
         500,
@@ -176,9 +247,11 @@ export class AffinityService {
     return allOrganizations;
   }
 
-  private async getListEntries(defaultListId: number): Promise<ListEntryDto[]> {
+  private async getListEntries(
+    defaultListId: number,
+  ): Promise<AffinityListEntryDto[]> {
     let pageToken: string | undefined;
-    const allEntries: ListEntryDto[] = [];
+    const allEntries: AffinityListEntryDto[] = [];
     do {
       const entries = await this.affinityApiService.getListEntries(
         defaultListId,

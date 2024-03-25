@@ -5,6 +5,7 @@ import {
 } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
+import { InteractionsDto } from '@app/shared/affinity';
 import {
   ContactDto,
   FundingRoundDto,
@@ -165,6 +166,26 @@ export class OrganisationController {
     @Query('take') take?: number,
   ): Promise<PagedData<Partial<ContactDto>>> {
     return await this.organisationService.findContacts(id, skip, take);
+  }
+
+  @Get(':id/interactions')
+  @ApiOperation({ summary: 'Get interactions for a single organisation' })
+  @ApiResponse({ status: 200, description: 'The organisation interactions' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'startTime', type: Number, required: false })
+  @ApiQuery({ name: 'endTime', type: Number, required: false })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async findInteractions(
+    @Param('id') id: string,
+    @Query('startTime') startTime?: number,
+    @Query('endTime') endTime?: number,
+  ): Promise<Partial<InteractionsDto>> {
+    return await this.organisationService.findInteractions(
+      id,
+      startTime ? new Date(startTime) : null,
+      endTime ? new Date(endTime) : null,
+    );
   }
 
   @Post()

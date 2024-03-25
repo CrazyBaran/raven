@@ -33,7 +33,8 @@ export class DuplicatesController {
   public async getCandidates() //@Body() body: DuplicatesDto,
   : Promise<CandidatesDto> {
     const body = await this.duplicateDetector.getDuplicates();
-    return await this.duplicateDetector.getDeletionCandidates(body);
+    const candidates = await this.duplicateDetector.getDeletionCandidates(body);
+    return candidates;
   }
 
   @Get('fix-domains')

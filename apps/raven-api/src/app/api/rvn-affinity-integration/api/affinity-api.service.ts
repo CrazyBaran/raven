@@ -2,23 +2,25 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import { CreateFieldValueDto } from './dtos/create-field-value.dto';
-import { DetailedListDto } from './dtos/detailed-list.dto';
-import { FieldValueChangeDto } from './dtos/field-value-change.dto';
-import { FieldValueDto } from './dtos/field-value.dto';
-import { FieldDto } from './dtos/field.dto';
-import { ListEntryDto } from './dtos/list-entry.dto';
-import { ListDto } from './dtos/list.dto';
-import { OrganizationDto } from './dtos/organization.dto';
-import { PaginatedListEntriesDto } from './dtos/paginated-list-entries.dto';
-import { PaginatedOrganizationsDto } from './dtos/paginated-organizations.dto';
-import { PersonDto } from './dtos/person.dto';
-import { UpdateFieldValueDto } from './dtos/update-field-value.dto';
-import { WebhookDeleteResponseDto } from './dtos/webhook-delete.dto';
-import { WebhookSubscribeDto } from './dtos/webhook-subscribe.dto';
-import { WebhookUpdateDto } from './dtos/webhook-update.dto';
-import { WebhookDto } from './dtos/webhook.dto';
-import { WhoAmIDto } from './dtos/whoami.dto';
+import { AffinityCreateFieldValueDto } from './dtos/create-field-value.affinity.dto';
+import { AffinityDetailedListDto } from './dtos/detailed-list.affinity.dto';
+import { AffinityFieldValueChangeDto } from './dtos/field-value-change.affinity.dto';
+import { AffinityFieldValueDto } from './dtos/field-value.affinity.dto';
+import { AffinityFieldDto } from './dtos/field.affinity.dto';
+import { AffinityInteractionType } from './dtos/interaction.affinity.dto';
+import { AffinityListEntryDto } from './dtos/list-entry.affinity.dto';
+import { AffinityListDto } from './dtos/list.affinity.affinity.dto';
+import { AffinityOrganizationDto } from './dtos/organization.affinity.dto';
+import { PaginatedAffinityInteractionDto } from './dtos/paginated-interaction.affinity.dto';
+import { PaginatedAffinityListEntriesDto } from './dtos/paginated-list-entries.affinity.dto';
+import { PaginatedAffinityOrganizationsDto } from './dtos/paginated-organizations.affinity.dto';
+import { AffinityPersonDto } from './dtos/person.affinity.dto';
+import { AffinityUpdateFieldValueDto } from './dtos/update-field-value.affinity.dto';
+import { AffinityWebhookDeleteResponseDto } from './dtos/webhook-delete.affinity.dto';
+import { AffinityWebhookSubscribeDto } from './dtos/webhook-subscribe.affinity.dto';
+import { AffinityWebhookUpdateDto } from './dtos/webhook-update.affinity.dto';
+import { AffinityWebhookDto } from './dtos/webhook.affinity.dto';
+import { AffinityWhoAmIDto } from './dtos/whoami.affinity.dto';
 
 @Injectable()
 export class AffinityApiService {
@@ -36,9 +38,9 @@ export class AffinityApiService {
     };
   }
 
-  public async getLists(): Promise<ListDto[]> {
+  public async getLists(): Promise<AffinityListDto[]> {
     return await this.httpService
-      .get<ListDto[]>(`/lists`, {
+      .get<AffinityListDto[]>(`/lists`, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -46,9 +48,11 @@ export class AffinityApiService {
       .toPromise();
   }
 
-  public async getListDetails(listId: number): Promise<DetailedListDto> {
+  public async getListDetails(
+    listId: number,
+  ): Promise<AffinityDetailedListDto> {
     return await this.httpService
-      .get<DetailedListDto>(`/lists/${listId}`, {
+      .get<AffinityDetailedListDto>(`/lists/${listId}`, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -60,9 +64,9 @@ export class AffinityApiService {
     listId: number,
     pageSize = 500,
     pageToken?: string,
-  ): Promise<PaginatedListEntriesDto> {
+  ): Promise<PaginatedAffinityListEntriesDto> {
     return await this.httpService
-      .get<PaginatedListEntriesDto>(`/lists/${listId}/list-entries`, {
+      .get<PaginatedAffinityListEntriesDto>(`/lists/${listId}/list-entries`, {
         baseURL: this.baseURL,
         headers: this.headers,
         params: {
@@ -74,9 +78,9 @@ export class AffinityApiService {
       .toPromise();
   }
 
-  public async getPerson(personId: number): Promise<PersonDto> {
+  public async getPerson(personId: number): Promise<AffinityPersonDto> {
     return await this.httpService
-      .get<PersonDto>(`/persons/${personId}`, {
+      .get<AffinityPersonDto>(`/persons/${personId}`, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -87,7 +91,7 @@ export class AffinityApiService {
   public async getFieldValues(
     listEntryId?: number,
     personId?: number,
-  ): Promise<FieldValueDto[]> {
+  ): Promise<AffinityFieldValueDto[]> {
     const params = {};
     if (listEntryId) {
       params['list_entry_id'] = listEntryId;
@@ -96,7 +100,7 @@ export class AffinityApiService {
       params['person_id'] = personId;
     }
     return await this.httpService
-      .get<FieldValueDto[]>(`/field-values`, {
+      .get<AffinityFieldValueDto[]>(`/field-values`, {
         baseURL: this.baseURL,
         headers: this.headers,
         params: params,
@@ -106,10 +110,10 @@ export class AffinityApiService {
   }
 
   public async createFieldValue(
-    dto: CreateFieldValueDto,
-  ): Promise<FieldValueDto> {
+    dto: AffinityCreateFieldValueDto,
+  ): Promise<AffinityFieldValueDto> {
     return await this.httpService
-      .post<FieldValueDto>(`/field-values`, dto, {
+      .post<AffinityFieldValueDto>(`/field-values`, dto, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -119,10 +123,10 @@ export class AffinityApiService {
 
   public async updateFieldValue(
     fieldValueId: number,
-    dto: UpdateFieldValueDto,
-  ): Promise<FieldValueDto> {
+    dto: AffinityUpdateFieldValueDto,
+  ): Promise<AffinityFieldValueDto> {
     return await this.httpService
-      .put<FieldValueDto>(`/field-values/${fieldValueId}`, dto, {
+      .put<AffinityFieldValueDto>(`/field-values/${fieldValueId}`, dto, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -130,9 +134,9 @@ export class AffinityApiService {
       .toPromise();
   }
 
-  public async getFields(listId: number): Promise<FieldDto[]> {
+  public async getFields(listId: number): Promise<AffinityFieldDto[]> {
     return await this.httpService
-      .get<FieldDto[]>(`/fields`, {
+      .get<AffinityFieldDto[]>(`/fields`, {
         baseURL: this.baseURL,
         headers: this.headers,
         params: { list_id: listId },
@@ -143,9 +147,9 @@ export class AffinityApiService {
 
   public async getFieldValueChanges(
     fieldId: number,
-  ): Promise<FieldValueChangeDto[]> {
+  ): Promise<AffinityFieldValueChangeDto[]> {
     return await this.httpService
-      .get<FieldValueChangeDto[]>(`/field-value-changes`, {
+      .get<AffinityFieldValueChangeDto[]>(`/field-value-changes`, {
         baseURL: this.baseURL,
         headers: this.headers,
         params: { field_id: fieldId },
@@ -157,9 +161,9 @@ export class AffinityApiService {
   public async getOrganizations(
     pageSize = 500,
     pageToken?: string,
-  ): Promise<PaginatedOrganizationsDto> {
+  ): Promise<PaginatedAffinityOrganizationsDto> {
     return await this.httpService
-      .get<PaginatedOrganizationsDto>(`/organizations`, {
+      .get<PaginatedAffinityOrganizationsDto>(`/organizations`, {
         baseURL: this.baseURL,
         headers: this.headers,
         params: {
@@ -174,9 +178,9 @@ export class AffinityApiService {
   public async createOrganization(
     name: string,
     domain: string,
-  ): Promise<OrganizationDto> {
+  ): Promise<AffinityOrganizationDto> {
     return await this.httpService
-      .post<OrganizationDto>(
+      .post<AffinityOrganizationDto>(
         `/organizations`,
         { name, domain },
         {
@@ -188,9 +192,9 @@ export class AffinityApiService {
       .toPromise();
   }
 
-  public async whoAmI(): Promise<WhoAmIDto> {
+  public async whoAmI(): Promise<AffinityWhoAmIDto> {
     return await this.httpService
-      .get<WhoAmIDto>('/auth/whoami', {
+      .get<AffinityWhoAmIDto>('/auth/whoami', {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -198,9 +202,9 @@ export class AffinityApiService {
       .toPromise();
   }
 
-  public async getWebhooks(): Promise<WebhookDto[]> {
+  public async getWebhooks(): Promise<AffinityWebhookDto[]> {
     return await this.httpService
-      .get<WebhookDto[]>('/webhook', {
+      .get<AffinityWebhookDto[]>('/webhook', {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -208,9 +212,11 @@ export class AffinityApiService {
       .toPromise();
   }
 
-  public async subscribeWebhook(dto: WebhookSubscribeDto): Promise<WebhookDto> {
+  public async subscribeWebhook(
+    dto: AffinityWebhookSubscribeDto,
+  ): Promise<AffinityWebhookDto> {
     return await this.httpService
-      .post<WebhookDto>('/webhook/subscribe', dto, {
+      .post<AffinityWebhookDto>('/webhook/subscribe', dto, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -220,10 +226,10 @@ export class AffinityApiService {
 
   public async updateWebhook(
     webhookId: number,
-    dto: WebhookUpdateDto,
-  ): Promise<WebhookDto> {
+    dto: AffinityWebhookUpdateDto,
+  ): Promise<AffinityWebhookDto> {
     return await this.httpService
-      .put<WebhookDto>(`/webhook/${webhookId}`, dto, {
+      .put<AffinityWebhookDto>(`/webhook/${webhookId}`, dto, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -233,9 +239,9 @@ export class AffinityApiService {
 
   public async deleteWebhook(
     webhookId: number,
-  ): Promise<WebhookDeleteResponseDto> {
+  ): Promise<AffinityWebhookDeleteResponseDto> {
     return await this.httpService
-      .delete<WebhookDeleteResponseDto>(`/webhook/${webhookId}`, {
+      .delete<AffinityWebhookDeleteResponseDto>(`/webhook/${webhookId}`, {
         baseURL: this.baseURL,
         headers: this.headers,
       })
@@ -246,9 +252,9 @@ export class AffinityApiService {
   public async createListEntry(
     defaultListId: number,
     entity_id: number,
-  ): Promise<ListEntryDto> {
+  ): Promise<AffinityListEntryDto> {
     return await this.httpService
-      .post<ListEntryDto>(
+      .post<AffinityListEntryDto>(
         `/lists/${defaultListId}/list-entries`,
         { entity_id },
         {
@@ -256,6 +262,30 @@ export class AffinityApiService {
           headers: this.headers,
         },
       )
+      .pipe(map((response) => response.data))
+      .toPromise();
+  }
+
+  public async getInteractions(
+    organizationId: number,
+    type: AffinityInteractionType,
+    start_time: string,
+    end_time: string,
+    page_size?: number,
+    page_token?: string,
+  ): Promise<PaginatedAffinityInteractionDto> {
+    const params = `organization_id=${organizationId}&type=${type}&start_time=${start_time}&end_time=${end_time}`;
+    if (page_size) {
+      params.concat(`&page_size=${page_size}`);
+    }
+    if (page_token) {
+      params.concat(`&page_token=${page_token}`);
+    }
+    return await this.httpService
+      .get<PaginatedAffinityInteractionDto>(`/interactions?${params}`, {
+        baseURL: this.baseURL,
+        headers: this.headers,
+      })
       .pipe(map((response) => response.data))
       .toPromise();
   }

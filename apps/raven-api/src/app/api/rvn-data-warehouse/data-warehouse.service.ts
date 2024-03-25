@@ -2,7 +2,6 @@ import {
   CompanyDto,
   ContactDto,
   DataWarehouseLastUpdatedDto,
-  FounderDto,
   FundingRoundDto,
   NewsDto,
   NumberOfEmployeesSnapshotDto,
@@ -123,13 +122,6 @@ export class DataWarehouseService {
     await this.dataWarehouseCacheService.addOrReplaceMany(companiesFromApi);
 
     return [...companies, ...companiesFromApi];
-  }
-
-  public async getFoundersByName(
-    name: string,
-  ): Promise<FounderDto[] | FounderDto> {
-    const founders = await this.dataWarehouseCacheService.getFounder(name);
-    return founders;
   }
 
   public async dataWarehouseChanged(): Promise<boolean> {

@@ -4,7 +4,7 @@ import * as oTel from '@opentelemetry/api';
 import { Cache } from 'cache-manager';
 import { RedisStore } from 'cache-manager-ioredis-yet';
 import { AFFINITY_CACHE, AFFINITY_FIELDS_CACHE } from '../affinity.const';
-import { FieldDto } from '../api/dtos/field.dto';
+import { AffinityFieldDto } from '../api/dtos/field.affinity.dto';
 import { OrganizationStageDto } from '../dtos/organisation-stage.dto';
 
 @Injectable()
@@ -84,7 +84,7 @@ export class AffinityCacheService {
     }
   }
 
-  public async setListFields(fields: FieldDto[]): Promise<void> {
+  public async setListFields(fields: AffinityFieldDto[]): Promise<void> {
     const pipeline = this.store.client.pipeline();
 
     for (const field of fields) {
@@ -93,7 +93,7 @@ export class AffinityCacheService {
     await pipeline.exec();
   }
 
-  public async getListFields(): Promise<FieldDto[]> {
+  public async getListFields(): Promise<AffinityFieldDto[]> {
     const rawData = await this.store.client.hgetall(AFFINITY_FIELDS_CACHE);
     return Object.values(rawData).map((item) => JSON.parse(item));
   }

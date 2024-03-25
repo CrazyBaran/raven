@@ -1,6 +1,7 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { AffinityService } from '../rvn-affinity-integration/affinity.service';
 import { AffinityCacheService } from '../rvn-affinity-integration/cache/affinity-cache.service';
 import { AffinityEnricher } from '../rvn-affinity-integration/cache/affinity.enricher';
 import { OrganizationStageDto } from '../rvn-affinity-integration/dtos/organisation-stage.dto';
@@ -90,6 +91,10 @@ describe('OrganisationService', () => {
         },
         {
           provide: OpportunityService,
+          useValue: {},
+        },
+        {
+          provide: AffinityService,
           useValue: {},
         },
       ],

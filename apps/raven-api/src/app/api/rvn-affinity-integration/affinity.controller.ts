@@ -8,7 +8,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { environment } from '../../../environments/environment';
-import { WebhookPayloadDto } from './api/dtos/webhook-payload.dto';
+import { AffinityWebhookPayloadDto } from './api/dtos/webhook-payload.affinity.dto';
 import { AffinityProducer } from './queues/affinity.producer';
 
 @ApiTags('Affinity')
@@ -31,7 +31,7 @@ export class AffinityController {
     }
 
     return this.affinityProducer.enqueueHandleWebhook(
-      body as WebhookPayloadDto,
+      body as AffinityWebhookPayloadDto,
     );
   }
 }

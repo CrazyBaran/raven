@@ -1,4 +1,4 @@
-import { CompanyDto, FounderDto } from '@app/shared/data-warehouse';
+import { CompanyDto } from '@app/shared/data-warehouse';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
@@ -58,14 +58,6 @@ export class DataWarehouseCacheService {
     return fieldsEven.map((field) => this.parseCompany(field));
   }
 
-  public async getFounder(name: string): Promise<FounderDto> {
-    const item = await this.store.client.hget(DWH_CACHE.FOUNDERS, name.trim());
-    if (!item) {
-      return null;
-    }
-    return this.parseFounder(item);
-  }
-
   public async setLastUpdated(date: Date): Promise<void> {
     await this.store.client.set(DWH_CACHE.LAST_UPDATED, date.toISOString());
   }
@@ -112,18 +104,6 @@ export class DataWarehouseCacheService {
 
   public async getCompanyKeys(): Promise<string[]> {
     return await this.store.client.hkeys(DWH_CACHE.COMPANIES);
-  }
-
-  public async getFounders(names: string[]): Promise<FounderDto[]> {
-    const items: FounderDto[] = [];
-
-    for (const name of names) {
-      const item = await this.getFounder(name);
-      if (item) {
-        items.push(item);
-      }
-    }
-    return items;
   }
 
   public async getCompany(domain: string): Promise<CompanyDto> {
@@ -201,13 +181,6 @@ export class DataWarehouseCacheService {
 
   private parseCompany(item: string): CompanyDto {
     const parsedItem = JSON.parse(item) as CompanyDto;
-    return {
-      ...parsedItem,
-    };
-  }
-
-  private parseFounder(item: string): FounderDto {
-    const parsedItem = JSON.parse(item) as FounderDto;
     return {
       ...parsedItem,
     };
