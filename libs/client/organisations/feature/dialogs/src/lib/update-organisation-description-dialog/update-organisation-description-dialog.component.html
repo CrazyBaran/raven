@@ -9,7 +9,7 @@
       <kendo-textbox
         [disabled]="true"
         [placeholder]="vm().organisation?.name!"
-        formControlName="companyName"
+        formControlName="name"
       />
     </kendo-formfield>
     <kendo-formfield>
@@ -18,7 +18,7 @@
         #description
         [maxlength]="maxDescriptionLength"
         [rows]="7"
-        formControlName="description"
+        formControlName="customDescription"
         placeholder=""
       />
 
@@ -30,7 +30,7 @@
 
       <footer class="px-3 pt-3 text-end text-sm">
         Character Limit:
-        {{ form.controls?.description?.value?.length ?? 0 }} /
+        {{ form.controls?.customDescription?.value?.length ?? 0 }} /
         {{ maxDescriptionLength }}
       </footer>
     </kendo-formfield>

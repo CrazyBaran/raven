@@ -63,7 +63,7 @@ export class UpdateOrganisationDescriptionDialogComponent extends DynamicDialogC
       },
       [],
     ],
-    description: ['', []],
+    customDescription: [this.vm().organisation?.customDescription, []],
   });
 
   protected onDialogClose(): void {
@@ -74,7 +74,7 @@ export class UpdateOrganisationDescriptionDialogComponent extends DynamicDialogC
     this.store.dispatch(
       OrganisationsActions.updateOrganisationDescription({
         id: this.vm().organisationId!,
-        description: this.form.controls.description.value!,
+        customDescription: this.form.controls.customDescription.value!,
       }),
     );
 

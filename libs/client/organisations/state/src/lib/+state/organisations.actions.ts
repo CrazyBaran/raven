@@ -77,7 +77,7 @@ export const OrganisationsActions = createActionGroup({
 
     'Update Organisation Description': props<{
       id: string;
-      description: string;
+      customDescription: string;
     }>(),
     'Update Organisation Description Success': props<{
       data: Organisation;

@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   inject,
+  input,
   signal,
 } from '@angular/core';
 
@@ -12,6 +13,7 @@ import { DatePipe, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TilelayoutItemComponent, fadeIn } from '@app/client/shared/ui';
 import { ClampedChangedDirective } from '@app/client/shared/ui-directives';
+import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -29,6 +31,7 @@ import { selectOrganisationDetailsViewModel } from './organisation-details-v2.se
     DatePipe,
     ClampedChangedDirective,
     NgClass,
+    TimesPipe,
   ],
   templateUrl: './organisation-details-v2.component.html',
   styleUrls: ['./organisation-details-v2.component.scss'],
@@ -36,6 +39,7 @@ import { selectOrganisationDetailsViewModel } from './organisation-details-v2.se
   animations: [trigger('fadeIn', fadeIn())],
 })
 export class OrganisationDetailsV2Component {
+  public type = input.required<'public' | 'details'>();
   public store = inject(Store);
   public cdr = inject(ChangeDetectorRef);
 
@@ -48,6 +52,14 @@ export class OrganisationDetailsV2Component {
     [DialogUtil.queryParams.updateOrganisationDescription]:
       this.vm().currentOrganisationId,
   }));
+
+  public descriptionByType = computed(() => {
+    if (this.type() === 'public') {
+      return this.vm().description;
+    }
+
+    return this.vm().customDescription;
+  });
 
   public setIsDescriptionClamped(isClamped: boolean): void {
     this.isDescriptionClamped.set(isClamped);

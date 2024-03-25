@@ -81,7 +81,10 @@
       <kendo-tabstrip-tab title="Public Profile" [selected]="true">
         <ng-template kendoTabContent>
           <div class="flex flex-col gap-6">
-            <ng-container [ngTemplateOutlet]="header" />
+            <ng-container
+              [ngTemplateOutlet]="header"
+              [ngTemplateOutletContext]="{ type: 'public' }"
+            />
           </div>
           <div class="mb-6 grid gap-6">
             <app-organisation-funding-data-table />
@@ -95,7 +98,10 @@
 
       <kendo-tabstrip-tab title="Company Details">
         <ng-template kendoTabContent>
-          <ng-container [ngTemplateOutlet]="header" />
+          <ng-container
+            [ngTemplateOutlet]="header"
+            [ngTemplateOutletContext]="{ type: 'details' }"
+          />
           <div class="flex flex-col gap-6">
             <app-organisation-opportunities-v2 />
 
@@ -116,11 +122,11 @@
   </div>
 </app-page-template>
 
-<ng-template #header>
+<ng-template #header let-type="type">
   <div class="mb-6 flex flex-col gap-6">
     <div class="grid grid-cols-3 gap-6">
       <div class="col col-start-1 col-end-3">
-        <app-organisation-details-v2 />
+        <app-organisation-details-v2 [type]="type" />
       </div>
       <div class="col col-start-3 col-end-4">
         <app-organisation-contacts-table />

@@ -353,8 +353,8 @@ export const updateOrganisationDescription = createEffect(
   ) => {
     return actions$.pipe(
       ofType(OrganisationsActions.updateOrganisationDescription),
-      switchMap(({ id, description }) =>
-        organisationsService.patchOrganisation(id, { description }).pipe(
+      switchMap(({ id, customDescription }) =>
+        organisationsService.patchOrganisation(id, { customDescription }).pipe(
           map((response) => {
             return OrganisationsActions.updateOrganisationDescriptionSuccess({
               data: response.data!,

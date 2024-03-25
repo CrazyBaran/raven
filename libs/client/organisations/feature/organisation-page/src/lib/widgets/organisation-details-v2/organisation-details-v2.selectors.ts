@@ -18,6 +18,7 @@ export type OrganisationDetailsViewModel = {
   name?: string;
   domain?: string;
   description?: string;
+  customDescription?: string;
   descriptionUpdatedAt?: string | Date;
   isLoading: boolean;
 };
@@ -29,15 +30,15 @@ export const selectOrganisationDetailsViewModel = createSelector(
   (
     currentOrganisationId,
     isLoading,
-    currentOrganisaiton,
+    currentOrganisation,
   ): OrganisationDetailsViewModel => ({
-    name: currentOrganisaiton?.name,
-    domain: currentOrganisaiton?.domains[0],
-    descriptionUpdatedAt: new Date(),
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim i, sunt in culpa qui officia deserunt mollit anim i d est laborum.',
+    name: currentOrganisation?.name,
+    domain: currentOrganisation?.domains[0],
+    descriptionUpdatedAt: new Date(), // TODO - get this from the API
+    description: currentOrganisation?.data?.description,
+    customDescription: currentOrganisation?.customDescription,
     currentOrganisationId,
-    details: getOrganisationDetailsTiles(currentOrganisaiton),
+    details: getOrganisationDetailsTiles(currentOrganisation),
     isLoading,
   }),
 );

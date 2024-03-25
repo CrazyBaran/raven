@@ -1,81 +1,102 @@
 <div class="flex flex-col gap-6">
   <div class="border-component-border border p-4">
-    <div class="grid grid-cols-4 gap-4">
-      <div class="">
-        <h1 class="ml-2 text-xl">{{ vm().name }}</h1>
-        <a [href]="'https://' + vm().domain" target="_blank">
-          <kendo-button class="mt-2" fillMode="link" themeColor="primary">
-            {{ vm().domain }}
-          </kendo-button>
-        </a>
-      </div>
-      <div class="relative col-start-2 col-end-5">
-        @if (vm().description) {
-          <p
-            class="ml-2 line-clamp-4"
-            clampedChangedListener
-            [ngClass]="{
-              absolute: showMoreDescription(),
-              invisible: showMoreDescription()
-            }"
-            (clampedChanged)="setIsDescriptionClamped($event)"
-          >
-            {{ vm().description }}
-          </p>
-          <p class="ml-2" [class.hidden]="!showMoreDescription()">
-            {{ vm().description }}
-          </p>
-          <div class="mt-2 flex">
-            @if (isDescriptionClamped()) {
-              <kendo-button
-                (click)="toggleShowMoreBtn()"
-                themeColor="primary"
-                fillMode="flat"
-              >
-                Show {{ showMoreDescription() ? 'less' : 'more' }}
-              </kendo-button>
-            }
+    @if (vm().isLoading) {
+      @for (item of 4 | times; track $index) {
+        <kendo-skeleton />
+      }
+    } @else {
+      <div class="grid grid-cols-4 gap-4">
+        <div>
+          <h1 class="ml-2 text-xl">{{ vm().name }}</h1>
+          <a [href]="'https://' + vm().domain" target="_blank">
+            <kendo-button class="mt-2" fillMode="link" themeColor="primary">
+              {{ vm().domain }}
+            </kendo-button>
+          </a>
+        </div>
+        <div class="relative col-start-2 col-end-5">
+          @if (descriptionByType()) {
+            <p
+              class="ml-2 line-clamp-4"
+              clampedChangedListener
+              [ngClass]="{
+                absolute: showMoreDescription(),
+                invisible: showMoreDescription()
+              }"
+              (clampedChanged)="setIsDescriptionClamped($event)"
+            >
+              {{ descriptionByType() }}
+            </p>
+            <p class="ml-2" [class.hidden]="!showMoreDescription()">
+              {{ descriptionByType() }}
+            </p>
+            <div class="mt-2 flex">
+              @if (isDescriptionClamped()) {
+                <kendo-button
+                  (click)="toggleShowMoreBtn()"
+                  themeColor="primary"
+                  fillMode="flat"
+                >
+                  Show {{ showMoreDescription() ? 'less' : 'more' }}
+                </kendo-button>
+              }
 
-            <div class="text-disabledText ml-auto flex items-center gap-2">
-              <p class="text-sm">
-                @if (vm().descriptionUpdatedAt) {
-                  Edited {{ vm().descriptionUpdatedAt | date: 'dd/MM/yyyy' }}
-                } @else {
-                  Add Description
-                }
+              @if (type() === 'details') {
+                <div class="text-disabledText ml-auto flex items-center gap-2">
+                  <p class="text-sm">
+                    @if (vm().descriptionUpdatedAt) {
+                      Edited
+                      {{ vm().descriptionUpdatedAt | date: 'dd/MM/yyyy' }}
+                    } @else {
+                      Add Description
+                    }
+                  </p>
+                  <kendo-button
+                    fillMode="flat"
+                    iconClass="fa-solid fa-sharp fa-pen text-disabledText"
+                    [routerLink]="['./']"
+                    queryParamsHandling="merge"
+                    [skipLocationChange]="true"
+                    [queryParams]="updateDescriptionParam()"
+                  />
+                </div>
+              }
+            </div>
+          } @else {
+            @if (type() === 'details') {
+              <p class="text-placeholder-text ml-2 h-[96px] text-center">
+                There is no existing custom description for this company.
+                <br />
+                To add one, select the pencil icon below
               </p>
-              <kendo-button
-                fillMode="flat"
-                iconClass="fa-solid fa-sharp fa-pen text-disabledText"
-                [routerLink]="['./']"
-                queryParamsHandling="merge"
-                [skipLocationChange]="true"
-                [queryParams]="updateDescriptionParam()"
-              />
-            </div>
-          </div>
-        } @else {
-          <p class="text-placeholder-text ml-2 h-[96px] text-center">
-            There is no existing custom description for this company.
-            <br />
-            To add one, select the pencil icon below
-          </p>
-          <div class="mt-2 flex">
-            <div class="text-disabledText ml-auto flex items-center gap-2">
-              <label [for]="addDescriptionBtn" class="text-sm">
-                Add Description
-              </label>
-              <kendo-button
-                #addDescriptionBtn
-                fillMode="flat"
-                iconClass="fa-solid fa-sharp fa-pen text-disabledText"
-              />
-            </div>
-          </div>
-        }
+
+              <div class="mt-2 flex">
+                <div class="text-disabledText ml-auto flex items-center gap-2">
+                  <label [for]="addDescriptionBtn" class="text-sm">
+                    Add Description
+                  </label>
+                  <kendo-button
+                    #addDescriptionBtn
+                    fillMode="flat"
+                    iconClass="fa-solid fa-sharp fa-pen text-disabledText"
+                    [routerLink]="['./']"
+                    queryParamsHandling="merge"
+                    [skipLocationChange]="true"
+                    [queryParams]="updateDescriptionParam()"
+                  />
+                </div>
+              </div>
+            } @else {
+              <p class="text-placeholder-text ml-2 h-[96px] text-center">
+                There is no existing public description for this company.
+              </p>
+            }
+          }
+        </div>
       </div>
-    </div>
+    }
   </div>
+
   <div class="grid grid-cols-[repeat(auto-fit,minmax(125px,1fr))] gap-3">
     @for (detail of vm().details; track detail.label) {
       <div
