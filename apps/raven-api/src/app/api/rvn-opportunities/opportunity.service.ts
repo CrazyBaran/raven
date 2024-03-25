@@ -417,6 +417,7 @@ export class OpportunityService {
       organisation: {
         id: entity.organisationId,
         name: entity.organisation?.name,
+        customDescription: entity.organisation?.customDescription,
         domains: entity.organisation?.domains,
       },
       stage: {

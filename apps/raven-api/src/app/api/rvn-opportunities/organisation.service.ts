@@ -51,6 +51,7 @@ interface CreateOrganisationOptions {
 
 interface UpdateOrganisationOptions {
   name?: string;
+  customDescription?: string;
   domains?: string[];
   companyStatus?: CompanyStatus | null;
 }
@@ -314,6 +315,9 @@ export class OrganisationService {
     if (options.name) {
       organisation.name = options.name;
     }
+    if (options.customDescription != undefined) {
+      organisation.customDescription = options.customDescription;
+    }
     if (options.domains) {
       await this.updateDomains(organisation, options.domains);
     }
@@ -545,6 +549,7 @@ export class OrganisationService {
     return {
       id: entity.id,
       name: entity.name,
+      customDescription: entity.customDescription,
       domains: entity.domains,
       companyStatus: entity.companyStatusOverride,
     };

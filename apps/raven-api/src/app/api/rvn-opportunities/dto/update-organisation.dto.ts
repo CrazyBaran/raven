@@ -14,6 +14,11 @@ export class UpdateOrganisationDto {
   @IsString()
   public readonly name?: string;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  public readonly customDescription?: string;
+
   @ApiProperty({
     type: 'enum',
     enum: CompanyStatus,

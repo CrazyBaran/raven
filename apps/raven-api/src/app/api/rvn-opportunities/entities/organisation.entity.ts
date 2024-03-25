@@ -26,6 +26,9 @@ export class OrganisationEntity implements SharepointEnabledEntity {
   @Column()
   public name: string;
 
+  @Column({ type: 'nvarchar', length: '1000', nullable: true })
+  public customDescription: string;
+
   @OneToMany(
     (type) => OpportunityEntity,
     (opportunity) => opportunity.organisation,

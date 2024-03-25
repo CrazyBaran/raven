@@ -177,6 +177,7 @@ export class AffinityEnricher {
       name: affinityOrganization
         ? affinityOrganization.organizationDto.name
         : organisation.name,
+      customDescription: organisation.customDescription,
       domains: affinityOrganization
         ? affinityOrganization.organizationDto.domains
         : organisation.domains,
