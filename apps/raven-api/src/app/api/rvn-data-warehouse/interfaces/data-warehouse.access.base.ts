@@ -11,7 +11,6 @@ import { PagedData } from 'rvns-shared';
 export abstract class DataWarehouseAccessBase {
   public abstract getLastUpdated(): Promise<{
     lastUpdated: Date;
-    specter: Date;
     dealRoom: Date;
   }>;
 

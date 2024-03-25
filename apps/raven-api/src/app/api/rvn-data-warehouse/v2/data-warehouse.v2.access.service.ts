@@ -50,7 +50,6 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
   }
   public async getLastUpdated(): Promise<{
     lastUpdated: Date;
-    specter: Date;
     dealRoom: Date;
   }> {
     const lastUpdatedDealRoom = await this.companyRepository.findOne({
@@ -59,15 +58,6 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
       },
       where: {
         dealRoomLastUpdated: Not(IsNull()),
-      },
-    });
-
-    const lastUpdatedSpecter = await this.companyRepository.findOne({
-      order: {
-        specterLastUpdated: 'DESC',
-      },
-      where: {
-        specterLastUpdated: Not(IsNull()),
       },
     });
 
@@ -82,7 +72,6 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
 
     return {
       lastUpdated: lastRefreshedUtc.lastRefreshedUtc,
-      specter: lastUpdatedSpecter.specterLastUpdated,
       dealRoom: lastUpdatedDealRoom.dealRoomLastUpdated,
     };
   }
