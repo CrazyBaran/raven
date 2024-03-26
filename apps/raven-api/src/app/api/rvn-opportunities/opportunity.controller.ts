@@ -202,15 +202,9 @@ export class OpportunityController {
       await this.opportunityService.update(
         opportunity,
         {
+          ...dto,
           pipelineStage: pipelineStage as PipelineStageEntity,
           tagEntity: tag as TagEntity,
-          roundSize: dto.roundSize,
-          valuation: dto.valuation,
-          proposedInvestment: dto.proposedInvestment,
-          positioning: dto.positioning,
-          timing: dto.timing,
-          underNda: dto.underNda,
-          ndaTerminationDate: dto.ndaTerminationDate,
         },
         userEntity,
       ),
