@@ -75,9 +75,14 @@ export class OpportunityService {
       .leftJoinAndSelect('shares.actor', 'member');
 
     if (options.pipelineStageId) {
-      queryBuilder.andWhere('opportunity.pipelineStageId = :pipelineStageId', {
-        pipelineStageId: options.pipelineStageId,
-      });
+      const pipelineStageIds = options.pipelineStageId.split(',');
+
+      queryBuilder.andWhere(
+        'opportunity.pipelineStageId in IN (:...pipelineStageIds)',
+        {
+          pipelineStageIds,
+        },
+      );
     }
 
     if (options.member) {
