@@ -5,6 +5,7 @@ import { ILike, Repository } from 'typeorm';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
+  TabTagEntity,
   TagEntity,
 } from './entities/tag.entity';
 import { TagEntityFactory } from './tag-entity.factory';
@@ -68,14 +69,15 @@ export class TagsService {
   }
 
   public tagEntityToTagData(
-    tag: TagEntity | PeopleTagEntity | OrganisationTagEntity,
+    tag: TagEntity | PeopleTagEntity | OrganisationTagEntity | TabTagEntity,
   ): TagData {
     return {
       id: tag.id,
       name: tag.name,
       type: tag.type,
-      userId: (tag as PeopleTagEntity).userId,
-      organisationId: (tag as OrganisationTagEntity).organisationId,
+      userId: (tag as PeopleTagEntity)?.userId,
+      organisationId: (tag as OrganisationTagEntity)?.organisationId,
+      tabId: (tag as TabTagEntity)?.tabId,
     };
   }
 }
