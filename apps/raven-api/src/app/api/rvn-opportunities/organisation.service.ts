@@ -320,6 +320,7 @@ export class OrganisationService {
     }
     if (options.customDescription != undefined) {
       organisation.customDescription = options.customDescription;
+      organisation.customDescriptionUpdatedAt = new Date();
     }
     if (options.domains) {
       await this.updateDomains(organisation, options.domains);
@@ -558,6 +559,7 @@ export class OrganisationService {
       id: entity.id,
       name: entity.name,
       customDescription: entity.customDescription,
+      customDescriptionUpdatedAt: entity.customDescriptionUpdatedAt,
       domains: entity.domains,
       companyStatus: entity.companyStatusOverride,
     };

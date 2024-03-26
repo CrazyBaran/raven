@@ -9,7 +9,8 @@ export interface OrganisationData {
   readonly id?: string;
   readonly affinityInternalId?: number;
   readonly name: string;
-  readonly customDescription: string;
+  readonly customDescription?: string;
+  readonly customDescriptionUpdatedAt?: Date;
   readonly domains: string[];
   readonly affinityUrl?: string;
   companyStatus?: CompanyStatus | null;

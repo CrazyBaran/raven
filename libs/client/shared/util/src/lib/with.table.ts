@@ -121,7 +121,6 @@ export function withTable<Entity>(settings?: {
             store.loadData(params).pipe(
               tapResponse({
                 next: (data) => {
-                  console.log(data);
                   patchState(store, {
                     data,
                     isLoading: false,

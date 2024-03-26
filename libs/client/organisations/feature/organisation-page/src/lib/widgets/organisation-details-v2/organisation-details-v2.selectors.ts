@@ -34,7 +34,7 @@ export const selectOrganisationDetailsViewModel = createSelector(
   ): OrganisationDetailsViewModel => ({
     name: currentOrganisation?.name,
     domain: currentOrganisation?.domains[0],
-    descriptionUpdatedAt: new Date(), // TODO - get this from the API
+    descriptionUpdatedAt: currentOrganisation?.customDescriptionUpdatedAt,
     description: currentOrganisation?.data?.description,
     customDescription: currentOrganisation?.customDescription,
     currentOrganisationId,

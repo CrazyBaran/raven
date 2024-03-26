@@ -55,8 +55,6 @@ export const organisationOpportunitiesStore = signalStore(
       opportunityService = inject(OpportunitiesService),
     ) => ({
       loadData: <LoadDataMethod<OpportunityData>>((params) => {
-        console.log('params', params);
-
         return opportunityService.getOpportunities(params).pipe(
           map(({ data }) => ({
             data:
