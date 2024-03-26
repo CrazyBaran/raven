@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
-import { createFeature, createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
+import { LoadingState } from '@app/client/shared/util';
 import { TagData } from '@app/rvns-tags';
 import { FilesActions } from './files.actions';
 import { FileEntity } from './files.model';
 
 export interface FilesState extends EntityState<FileEntity> {
   loadedFolders: Record<string, boolean | undefined>;
-  fileTags: Record<string, TagData[]>;
+  filesTags: Record<string, TagData[]>;
+  loadingStates: LoadingState<'updateTags'>;
   filteredFilesByTags: Record<string, FileEntity[]>;
 }
 
@@ -17,7 +20,8 @@ export const fileAdapter: EntityAdapter<FileEntity> =
 
 export const initialFileState: FilesState = fileAdapter.getInitialState({
   loadedFolders: {},
-  fileTags: {},
+  filesTags: {},
+  loadingStates: {},
   filteredFilesByTags: {},
 });
 
@@ -60,8 +64,8 @@ export const filesFeature = createFeature({
       OpportunitiesActions.getOpportunityDetailsSuccess,
       (state, { data }) => ({
         ...state,
-        fileTags: {
-          ...state.fileTags,
+        filesTags: {
+          ...state.filesTags,
           ...(data?.files?.reduce(
             (acc, file) => {
               acc[file.internalSharepointId] = file.tags ?? [];
@@ -72,11 +76,30 @@ export const filesFeature = createFeature({
         },
       }),
     ),
+
+    on(FilesActions.updateFileTags, (state, { id }) => ({
+      ...state,
+      loadingStates: {
+        ...state.loadingStates,
+        updateTags: true,
+      },
+    })),
     on(FilesActions.updateFileTagsSuccess, (state, { data }) => ({
       ...state,
-      fileTags: {
-        ...state.fileTags,
+      filesTags: {
+        ...state.filesTags,
         [data!.internalSharepointId]: data?.tags ?? [],
+      },
+      loadingStates: {
+        ...state.loadingStates,
+        updateTags: false,
+      },
+    })),
+    on(FilesActions.updateFileTagsFailure, (state) => ({
+      ...state,
+      loadingStates: {
+        ...state.loadingStates,
+        updateTags: false,
       },
     })),
     on(
@@ -90,7 +113,9 @@ export const filesFeature = createFeature({
       }),
     ),
   ),
-  extraSelectors: ({ selectFilesState }) => ({
+  extraSelectors: ({ selectFilesState, selectFilesTags }) => ({
     ...fileAdapter.getSelectors(selectFilesState),
+    selectFileTags: (id: string) =>
+      createSelector(selectFilesTags, (tags) => tags[id] ?? []),
   }),
 });

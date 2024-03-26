@@ -1,0 +1,25 @@
+<ui-tilelayout-item>
+  <div header class="flex items-center justify-between gap-2">
+    <h5>Financial KPIs</h5>
+    <kendo-button (click)="edit.emit()" iconClass="fa-regular fa-pen">
+      Edit
+    </kendo-button>
+  </div>
+
+  <div body class="flex flex-col gap-3">
+    @for (fieldGroup of heatmap().fields; track fieldGroup.uniqId) {
+      <div>
+        <div
+          class="bg-chart-tooltip-bg border-chart-border mb-0.5 border px-3 py-2"
+        >
+          {{ fieldGroup.title }}
+        </div>
+        <div class="financial-grid | grid gap-0.5">
+          @for (field of fieldGroup.noteFields; track field.uniqId) {
+            <app-heatmap-item [item]="field" />
+          }
+        </div>
+      </div>
+    }
+  </div>
+</ui-tilelayout-item>

@@ -1,0 +1,12 @@
+<app-picker
+  (selectFiles)="onPickerChange($event)"
+  [folder]="sharepointFolder()"
+  [list]="environment.sharepointList!"
+  [origin]="environment.adRedirectUri"
+  [theme]="theme()"
+  [url]="environment.sharepointRoot!"
+  [web]="environment.sharepointWeb!"
+  [instance]="msal.instance!"
+  class="ml-auto mr-2"
+  name="Manage Files"
+/>

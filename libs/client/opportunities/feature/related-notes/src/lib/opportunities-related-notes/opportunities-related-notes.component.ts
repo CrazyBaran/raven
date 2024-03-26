@@ -1,69 +1,45 @@
 //TODO: fix opportunity note typings
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { CommonModule } from '@angular/common';
+import { JsonPipe, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   HostListener,
-  inject,
   QueryList,
-  signal,
   ViewChildren,
+  inject,
+  signal,
 } from '@angular/core';
 
-import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { NotesActions } from '@app/client/opportunities/api-notes';
-import {
-  getSchemaWithCrossorigin,
-  imageUploader,
-  RichTextComponent,
-} from '@app/client/shared/dynamic-form-util';
-import { UploadFileService } from '@app/client/shared/storage/data-access';
-import {
-  fadeIn,
-  KendoDynamicPagingDirective,
-  LoaderComponent,
-} from '@app/client/shared/ui';
-import {
-  HearColorPipe,
-  SafeHtmlPipe,
-  TimesPipe,
-} from '@app/client/shared/ui-pipes';
-import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
-import { Store } from '@ngrx/store';
-import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { EditorView } from '@progress/kendo-angular-editor';
-import { GridModule } from '@progress/kendo-angular-grid';
-import {
-  ExpansionPanelModule,
-  TileLayoutModule,
-} from '@progress/kendo-angular-layout';
-import { RxFor } from '@rx-angular/template/for';
-import { RxIf } from '@rx-angular/template/if';
-import { RxLet } from '@rx-angular/template/let';
-
 import { trigger } from '@angular/animations';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NoteTypeBadgeComponent } from '@app/client/notes/ui';
-// import { selectNoteFields2 } from '@app/client/opportunities/data-access';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotesActions } from '@app/client/opportunities/api-notes';
 import { selectNoteFields } from '@app/client/opportunities/data-access';
 import {
-  RelatedNotesTableComponent,
-  StatusIndicatorComponent,
+  NoteFieldComponent,
+  NoteFieldSkeletonComponent,
+  NoteHeatmapFieldComponent,
   StatusIndicatorState,
 } from '@app/client/opportunities/ui';
-import { PopulateAzureImagesPipe } from '@app/client/shared/ui-pipes';
+import {
+  RichTextComponent,
+  getSchemaWithCrossorigin,
+  imageUploader,
+} from '@app/client/shared/dynamic-form-util';
+import { UploadFileService } from '@app/client/shared/storage/data-access';
+import { delayedFadeIn, fadeIn } from '@app/client/shared/ui';
 import { selectQueryParam } from '@app/client/shared/util-router';
+import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Actions, ofType } from '@ngrx/effects';
-import {
-  LoaderModule,
-  SkeletonModule,
-} from '@progress/kendo-angular-indicators';
+import { Store } from '@ngrx/store';
+import { EditorView } from '@progress/kendo-angular-editor';
 import * as _ from 'lodash';
 import { firstValueFrom, map } from 'rxjs';
+import { RelatedNotesContainerComponent } from '../related-notes-container/related-notes-container.component';
 import {
   selectOpportunitiesRelatedNotesViewModel,
   selectOpportunityFormRecord,
@@ -74,38 +50,28 @@ import {
   selector: 'app-opportunities-related-notes',
   standalone: true,
   imports: [
-    CommonModule,
-    TileLayoutModule,
-    RxFor,
-    SafeHtmlPipe,
+    NoteFieldSkeletonComponent,
     ReactiveFormsModule,
-    RichTextComponent,
-    ButtonModule,
-    RouterLink,
-    LoaderComponent,
-    RxIf,
-    ExpansionPanelModule,
-    RxLet,
-    GridModule,
-    KendoDynamicPagingDirective,
-    TimesPipe,
-    SkeletonModule,
-    NoteTypeBadgeComponent,
-    RelatedNotesTableComponent,
-    LoaderModule,
-    HearColorPipe,
-    PopulateAzureImagesPipe,
-    StatusIndicatorComponent,
+    NoteFieldComponent,
+    RelatedNotesContainerComponent,
+    NgClass,
+    NoteHeatmapFieldComponent,
+    JsonPipe,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [trigger('fadeIn', fadeIn())],
+  animations: [
+    trigger('fadeIn', fadeIn()),
+    trigger('delayedFadeIn', delayedFadeIn()),
+  ],
 })
 export class OpportunitiesRelatedNotesComponent {
   @ViewChildren(RichTextComponent)
   public richTextEditors: QueryList<RichTextComponent>;
 
+  protected router = inject(Router);
+  protected activeRoute = inject(ActivatedRoute);
   protected store = inject(Store);
 
   protected actions = inject(Actions);
@@ -155,6 +121,8 @@ export class OpportunitiesRelatedNotesComponent {
       map(({ visibleFields }) => visibleFields),
       distinctUntilChangedDeep(),
     );
+
+  protected fields = toSignal(this.fields$);
 
   public constructor() {
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
@@ -254,6 +222,18 @@ export class OpportunitiesRelatedNotesComponent {
       updatingField: formControlName,
       state: 'none',
     }));
+  }
+
+  protected getState(field: string): StatusIndicatorState {
+    return this.state().updatingField === field ? this.state().state : 'none';
+  }
+
+  protected onHeatmapEdit(): void {
+    this.router.navigate([], {
+      queryParams: { 'edit-financial-kpi': 'true' },
+      queryParamsHandling: 'merge',
+      relativeTo: this.activeRoute,
+    });
   }
 
   private updateNotes(): void {

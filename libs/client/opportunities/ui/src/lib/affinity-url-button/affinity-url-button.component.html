@@ -1,5 +1,5 @@
-<kendo-button (click)="openAffinityUrl()" fillMode="flat" themeColor="primary">
-  <span class="flex gap-1" [class.flex-col]="vertical">
+<kendo-button [openInNewTab]="url()" fillMode="flat" themeColor="primary">
+  <span class="flex gap-1" [class.flex-col]="vertical()">
     Open in
     <img alt="affinity logo" src="assets/images/affinity.svg" />
   </span>

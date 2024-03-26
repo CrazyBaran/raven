@@ -1,0 +1,57 @@
+<kendo-dialog
+  (close)="dialogClose.emit()"
+  [width]="480"
+  title="Manage File Tags"
+>
+  <form [formGroup]="form" class="flex flex-col gap-4 p-10">
+    <kendo-formfield>
+      <kendo-label text="File Name"></kendo-label>
+      <kendo-textbox formControlName="name"></kendo-textbox>
+    </kendo-formfield>
+    <kendo-formfield>
+      <kendo-label>Add Related Tags</kendo-label>
+      <kendo-multiselect
+        [autoClose]="false"
+        [checkboxes]="true"
+        [data]="vm().tabTags"
+        [textField]="'name'"
+        [valueField]="'id'"
+        [valuePrimitive]="true"
+        class="w-full overflow-hidden"
+        formControlName="tags"
+      ></kendo-multiselect>
+    </kendo-formfield>
+    @if (selectedTags()?.length) {
+      <div>
+        <p>Added Tags</p>
+        <div class="flex w-full flex-wrap gap-2 overflow-hidden">
+          @for (tag of selectedTags(); track tag!.id) {
+            <ui-tag
+              (tagRemove)="removeTag(tag!.id)"
+              [clickable]="true"
+              [label]="tag!.name"
+              [removable]="true"
+              icon="fa-regular fa-tag"
+            />
+          }
+        </div>
+      </div>
+    }
+  </form>
+
+  <kendo-dialog-actions>
+    <kendo-button (click)="dialogClose.emit()" class="w-40">
+      Cancel
+    </kendo-button>
+    <kendo-button
+      (click)="submit()"
+      [disabled]="(form | controlInvalid$ | push) || vm().isLoading!"
+      themeColor="primary"
+    >
+      @if (vm().isLoading) {
+        <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+      }
+      Confirm File Tags
+    </kendo-button>
+  </kendo-dialog-actions>
+</kendo-dialog>

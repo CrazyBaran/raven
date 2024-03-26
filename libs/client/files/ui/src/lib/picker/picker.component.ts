@@ -4,11 +4,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  inject,
   Input,
   Output,
 } from '@angular/core';
-import { ENVIRONMENT } from '@app/client/core/environment';
 import {
   IFilePickerOptions,
   IPicker,
@@ -16,7 +14,7 @@ import {
   Picker,
   Popup,
 } from '@app/client/files/sdk-pnptimeline';
-import { MsalService } from '@azure/msal-angular';
+import { IPublicClientApplication } from '@azure/msal-browser';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { ButtonThemeColor } from '@progress/kendo-angular-buttons/common/models';
 
@@ -36,11 +34,9 @@ export class PickerComponent {
   @Input() public folder: string;
   @Input() public url: string;
   @Input() public theme: ButtonThemeColor = 'primary';
-
+  @Input() public origin: string;
+  @Input() public instance: IPublicClientApplication;
   @Output() public selectFiles = new EventEmitter<any>();
-
-  protected env = inject(ENVIRONMENT);
-  protected msal = inject(MsalService);
 
   public async createWindow(e: MouseEvent): Promise<void> {
     e.preventDefault();
@@ -65,7 +61,7 @@ export class PickerComponent {
             },
       authentication: {},
       messaging: {
-        origin: this.env.adRedirectUri,
+        origin: this.origin,
         channelId: '27',
       },
       search: {
@@ -83,7 +79,7 @@ export class PickerComponent {
     // setup the picker with the desired behaviors
     const picker = Picker(
       window.open('', 'Picker', 'width=800,height=600')!,
-    ).using(Popup(), MSALAuthenticate(this.msal.instance));
+    ).using(Popup(), MSALAuthenticate(this.instance));
 
     // optionally log notifications to the console
     picker.on.notification(function (this: IPicker, message) {
