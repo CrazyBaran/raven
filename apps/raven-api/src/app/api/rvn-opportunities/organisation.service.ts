@@ -140,6 +140,9 @@ export class OrganisationService {
       await this.affinityEnricher.enrichOrganisations(
         organisations,
         async (entity, data) => {
+          data.opportunities.sort(
+            (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+          );
           for (const opportunity of data.opportunities) {
             const pipelineStage =
               await this.pipelineUtilityService.getPipelineStageOrDefault(
@@ -204,6 +207,9 @@ export class OrganisationService {
       await this.affinityEnricher.enrichOrganisation(
         organisation,
         async (entity, data) => {
+          data.opportunities.sort(
+            (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+          );
           for (const opportunity of data.opportunities) {
             const pipelineStage =
               await this.pipelineUtilityService.getPipelineStageOrDefault(
@@ -777,10 +783,6 @@ export class OrganisationService {
       return null;
     }
 
-    const latestOpportunity = data.opportunities.sort((x, y) => {
-      return y.createdAt.getTime() - x.createdAt.getTime();
-    })[0];
-
-    return latestOpportunity.stage.relatedCompanyStatus;
+    return data.opportunities[0].stage.relatedCompanyStatus;
   }
 }
