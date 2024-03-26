@@ -1,0 +1,1 @@
+export const TIMELINE_DAYS_INTERVAL = 30;

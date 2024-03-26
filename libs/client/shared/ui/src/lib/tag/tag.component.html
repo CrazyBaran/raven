@@ -6,7 +6,9 @@
   }"
   [ngStyle]="style"
 >
-  <i [className]="icon + ' h-fit p-0.5 mr-1'"></i>
+  @if (icon) {
+   <i [className]="icon + ' h-fit p-0.5 mr-1'"></i>
+  }
   <ng-container
     *ngTemplateOutlet="
       labelTemplate ?? defaultLabel;

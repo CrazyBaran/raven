@@ -2,6 +2,11 @@
   display: block;
 }
 
+.order-last {
+  .delimeter {
+    display: none;
+  }
+}
 //.dynamic-tile {
 //  padding: var(--spacing-2);
 //}

@@ -6,11 +6,11 @@ import { TagItem } from '@app/client/shared/ui';
   standalone: true,
 })
 export class ToUserTagPipe implements PipeTransform {
-  public transform(users: string[] | undefined | null): TagItem[] {
+  public transform(users: string[] | undefined | null, hideIcon = false): TagItem[] {
     return (
       users?.map((user) => ({
         name: user,
-        icon: 'fa-solid fa-user-circle',
+        icon: hideIcon ? '' : 'fa-solid fa-user-circle',
         id: user,
         size: 'medium',
       })) ?? []

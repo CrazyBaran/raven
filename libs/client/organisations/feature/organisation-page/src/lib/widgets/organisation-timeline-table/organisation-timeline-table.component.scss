@@ -1,0 +1,22 @@
+.organisation-timeline {
+  .people {
+    display: flex;
+    align-items: center;
+
+    span {
+      display: inline;
+    }
+  }
+
+  .icon {
+    font-size: 1.25rem;
+
+    &-email {
+      color: #77b8e4;
+    }
+
+    &-call {
+      color: #f0882d;
+    }
+  }
+}

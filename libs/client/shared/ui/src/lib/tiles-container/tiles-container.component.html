@@ -4,15 +4,22 @@
 >
   @for (tile of tiles(); track trackBy; let i = $index) {
     <li
-      class="tile-list max-w-full p-1 pl-0 pr-2 last:pr-0"
+      class="tile-list max-w-full flex p-1 pl-0 pr-2 last:pr-0"
       [ngClass]="{
-        'invisible order-last h-0 !py-0': i > maxIndexSignal()!
+        'invisible order-last h-0 !py-0': i > maxIndexSignal()!,
+        'flex pr-1': delimeter,
+        'pr-2': !delimeter
       }"
     >
       <ng-container
         [ngTemplateOutlet]="itemTemplate"
         [ngTemplateOutletContext]="{ $implicit: tile }"
       />
+      @if (delimeter && i < maxIndexSignal()!) {
+        <span class="delimeter">
+          {{ delimeter }}
+        </span>
+        }
     </li>
   }
   <li

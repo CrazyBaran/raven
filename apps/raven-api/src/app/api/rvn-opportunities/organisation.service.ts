@@ -715,7 +715,7 @@ export class OrganisationService {
 
     if (organisations == null && organisations.length == 0) {
       return {
-        interactions: [],
+        items: [],
       };
     }
 

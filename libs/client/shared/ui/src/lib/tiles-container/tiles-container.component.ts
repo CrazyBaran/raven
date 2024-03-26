@@ -36,6 +36,8 @@ export class TilesContainerComponent {
 
   @Input({ required: true }) trackBy!: (index: number, item: any) => any;
 
+  @Input() delimeter = '';
+
   @ViewChild('placeholder', { read: ElementRef, static: true })
   placeholder!: ElementRef;
 

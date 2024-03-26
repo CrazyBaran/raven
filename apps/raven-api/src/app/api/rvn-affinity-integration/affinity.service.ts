@@ -160,7 +160,7 @@ export class AffinityService {
     }
 
     const interactions: Partial<InteractionsDto> = {
-      interactions: [],
+      items: [],
     };
 
     for (const organisationId of organisationIds) {
@@ -173,7 +173,7 @@ export class AffinityService {
           options.endDate?.toISOString(),
           500,
         );
-        interactions.interactions.push(
+        interactions.items.push(
           ...this.interactionMapper.mapEmails(
             (response as PaginatedAffinityEmailInteractionsDto).emails,
           ),
@@ -187,7 +187,7 @@ export class AffinityService {
           options.endDate?.toISOString(),
           500,
         );
-        interactions.interactions.push(
+        interactions.items.push(
           ...this.interactionMapper.mapMeetings(
             (response as PaginatedAffinityEventInteractionsDto).events,
           ),
