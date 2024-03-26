@@ -20,6 +20,7 @@ export class CompanyV2Mapper extends MapperBase<
       domain: this.domainResolver.cleanDomain(entity.domain),
       name: entity.name,
       description: entity.description,
+      descriptionDataSource: entity.descriptionDataSource,
       mcvLeadScore: entity.mcvLeadScore,
       industry: {
         industries: DataWarehouseParser.parseSemicolonData(entity.industries),
@@ -39,6 +40,10 @@ export class CompanyV2Mapper extends MapperBase<
       specterLastUpdated: entity.specterLastUpdated,
       dealRoomLastUpdated: entity.dealRoomLastUpdated,
       lastRefreshedUtc: entity.lastRefreshedUtc,
+      urls: {
+        dealRoomUrl: entity.dealRoomUrl,
+        pitchBookUrl: entity.pitchBookUrl,
+      },
     };
   }
 }

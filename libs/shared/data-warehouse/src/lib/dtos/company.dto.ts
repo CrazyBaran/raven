@@ -6,12 +6,14 @@ import { HqDto } from './hq.dto';
 import { IndustryDto } from './industry.dto';
 import { NewsDto } from './news.dto';
 import { NumberOfEmployeesSnapshotDto } from './number-of-employees-snapshot.dto';
+import { UrlsDto } from './urls.dto';
 
 export class CompanyDto {
   public domain: string;
   public name: string;
   public mcvLeadScore?: number;
   public description?: string;
+  public descriptionDataSource?: string;
   public numberOfEmployees?: Partial<NumberOfEmployeesSnapshotDto>[];
   public tags?: string[];
   public fundingRounds?: Partial<FundingRoundDto>[];
@@ -29,12 +31,14 @@ export class CompanyDto {
 
   public news?: Partial<NewsDto>[];
   public contacts?: Partial<ContactDto>[];
+  public urls?: Partial<UrlsDto>;
 }
 
 export const exposedCompanyData: Partial<keyof CompanyDto>[] = [
   'name',
   'domain',
   'description',
+  'descriptionDataSource',
   'hq',
   'actors',
   'funding',
@@ -47,4 +51,5 @@ export const exposedCompanyData: Partial<keyof CompanyDto>[] = [
   'fundingRounds',
   'news',
   'contacts',
+  'urls',
 ];

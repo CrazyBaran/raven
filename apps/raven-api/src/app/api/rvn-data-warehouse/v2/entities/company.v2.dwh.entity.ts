@@ -12,17 +12,23 @@ export class CompanyV2DwhEntity {
   @Column({ name: 'Domain', type: 'varchar', length: 300 })
   public domain: string;
 
-  @Column({ name: 'Website', type: 'nvarchar', length: 'MAX' })
-  public website: string;
-
   @Column({ name: 'Description', type: 'nvarchar', length: 'MAX' })
   public description: string;
+
+  @Column({ name: 'Description Data Source', type: 'varchar', length: 50 })
+  public descriptionDataSource: string;
 
   @Column({ name: 'Country', type: 'nvarchar', length: 4000 })
   public country: string;
 
   @Column({ name: 'City', type: 'nvarchar', length: 4000 })
   public city: string;
+
+  @Column({ name: 'DealRoom URL', type: 'nvarchar', length: '4000' })
+  public dealRoomUrl: string;
+
+  @Column({ name: 'PitchBook URL', type: 'nvarchar', length: '4000' })
+  public pitchBookUrl: string;
 
   @Column({ name: 'Industries', type: 'varchar', length: 'MAX' })
   public industries: string;
@@ -71,7 +77,7 @@ export class CompanyV2DwhEntity {
   public lastRefreshedUtc: Date;
 
   @PrimaryColumn({ name: 'DealRoomCompanyID', type: 'bigint' })
-  public companyId: number;
+  public dealRoomCompanyId: number;
 }
 
 export const DWH_V2_COMPANY_SELECT_COLUMNS: Partial<
@@ -80,7 +86,10 @@ export const DWH_V2_COMPANY_SELECT_COLUMNS: Partial<
   'name',
   'domain',
   'description',
+  'descriptionDataSource',
   'country',
+  'dealRoomUrl',
+  'pitchBookUrl',
   'industries',
   'investors',
   'totalFundingAmount',
