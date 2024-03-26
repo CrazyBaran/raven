@@ -25,7 +25,7 @@ export class FundingRoundV2Mapper extends MapperBase<
       currency: entity.currency,
       amount: entity.amount,
       amountInUsd: entity.amountInUsd,
-      investors: DataWarehouseParser.parseSemicolonData(entity.investors, ','),
+      investors: DataWarehouseParser.parseSemicolonData(entity.investors),
     };
   }
 }
