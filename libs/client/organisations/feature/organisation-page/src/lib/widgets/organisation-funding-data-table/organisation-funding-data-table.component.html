@@ -14,7 +14,7 @@
   </header>
 
   <main body class="grid gap-6 lg:grid-cols-2">
-    <kendo-chart class="max-h-[330px]">
+    <kendo-chart [axisDefaults]="defaults" class="max-h-[330px]">
       <kendo-chart-tooltip format="${0}M" />
 
       <kendo-chart-value-axis>

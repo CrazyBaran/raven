@@ -39,6 +39,17 @@ export class OrganisationFundingDataTableComponent {
     organisationFundingDataTableStore,
   );
 
+  public defaults = {
+    labels: {
+      rotation: 0,
+      dateFormats: {
+        years: 'yyyy',
+      },
+    },
+    type: 'Date',
+    baseUnit: 'years',
+  };
+
   public loadMore(): void {
     this.organisationFundingDataStore.loadMore();
   }
