@@ -1,0 +1,22 @@
+<ui-tilelayout-item>
+  <div class="flex items-center justify-between gap-2" header>
+    <h5>{{ field().title }}</h5>
+
+    <app-status-indicator [state]="state()!" />
+  </div>
+  <app-rich-text
+    (valueChange)="onValueChange($event)"
+    (obBlur)="onBlur()"
+    [borderless]="true"
+    [disabled]="state() === 'validate'"
+    [formControl]="richTextControl"
+    [grow]="true"
+    [proseSettings]="{
+      proseMirrorSettings: proseMirrorSettings()!
+    }"
+    [readonly]="readonly()"
+    body
+    class="h-full min-h-[225px]"
+    placeholder="Click to write content here..."
+  ></app-rich-text>
+</ui-tilelayout-item>

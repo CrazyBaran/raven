@@ -4,12 +4,18 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types-beta';
 
 import { GenericResponse } from '@app/rvns-api';
 import { FileData } from '@app/rvns-files';
+import * as _ from 'lodash';
 import {
-  exhaustMap,
-  filter,
-  interval,
+  EMPTY,
   Observable,
+  exhaustMap,
+  expand,
+  filter,
+  forkJoin,
+  interval,
+  map,
   of,
+  reduce,
   switchMap,
   take,
   zip,
@@ -20,7 +26,6 @@ export type GraphQLResponse<T> = {
   '@odata.context': string;
   value: T;
 };
-
 @Injectable({
   providedIn: 'root',
 })
@@ -28,9 +33,13 @@ export class FilesService {
   public constructor(private http: HttpClient) {}
 
   public getFiles(params?: {
-    directoryUrl: string;
-  }): Observable<GraphQLResponse<File[]>> {
-    return this.http.get<GraphQLResponse<File[]>>(params!.directoryUrl);
+    directoryUrl: string | string[];
+  }): Observable<File[]> {
+    return forkJoin(
+      _.castArray(params!.directoryUrl).map((url) =>
+        this.http.get<GraphQLResponse<File[]>>(url),
+      ),
+    ).pipe(map((responses) => _.flatten(responses.map((x) => x.value))));
   }
 
   public getFileById(params: {
@@ -80,6 +89,27 @@ export class FilesService {
       {
         tagIds: params.tags,
       },
+    );
+  }
+
+  public getFilesRecursive(
+    directoryUrl: string,
+    sharepointSiteId: string,
+  ): Observable<File[]> {
+    return this.getFiles({ directoryUrl }).pipe(
+      expand((files) => {
+        const foldersWithChildren = files.filter((x) => x.folder?.childCount);
+        if (foldersWithChildren.length === 0) {
+          return EMPTY;
+        }
+        return this.getFiles({
+          directoryUrl: foldersWithChildren.map(
+            (x) =>
+              `https://graph.microsoft.com/v1.0/sites/${sharepointSiteId}/drive/items/${x.id}/children`,
+          ),
+        });
+      }),
+      reduce((acc, x) => acc.concat(x), [] as File[]),
     );
   }
 

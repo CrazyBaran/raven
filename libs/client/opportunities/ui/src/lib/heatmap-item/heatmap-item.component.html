@@ -1,0 +1,12 @@
+<div
+  [ngStyle]="style()"
+  class="flex min-h-[60px] flex-col justify-between px-2 py-1"
+>
+  <div class="text-sm">{{ item().title }}</div>
+
+  <div class="text-end text-sm">
+    @if (item().value) {
+      {{ item().value || '' }} {{ item().unit }}
+    }
+  </div>
+</div>

@@ -96,6 +96,15 @@ export class OpportunitiesService {
     );
   }
 
+  public getOpportunityFiles(
+    id: string,
+    tags?: string[],
+  ): Observable<GenericResponse<any[]>> {
+    return this.http.get<GenericResponse<any[]>>(`${this.url}/${id}/files`, {
+      params: { tagIds: tags ?? [] },
+    });
+  }
+
   public reopenOpportunity(
     opportunityId: string,
     duplicateAndReopen?: boolean,

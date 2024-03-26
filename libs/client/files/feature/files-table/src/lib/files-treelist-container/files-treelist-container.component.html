@@ -1,0 +1,96 @@
+<kendo-treelist
+  [data]="store.entities()"
+  [fetchChildren]="store.fetchChildren()"
+  [hasChildren]="hasChildren"
+  [loading]="store.loading()"
+  [rowClass]="rowCallback"
+  [trackBy]="trackBy"
+  class="grid-borderless flex-1 overflow-hidden"
+  kendoTreeListExpandable
+  scrollable="scrollable"
+>
+  <kendo-treelist-column
+    [expandable]="true"
+    [headerStyle]="{ 'font-weight': '700' }"
+    title="Folder/File Name"
+  >
+    <ng-template kendoTreeListCellTemplate let-fileRow>
+      <span
+        [ngClass]="{
+          'font-bold': fileRow.type === 'folder'
+        }"
+      >
+        <i
+          [ngClass]="{
+            'fa-file': fileRow.type === 'file',
+            'fa-folder': fileRow.type === 'folder'
+          }"
+          class="fa-regular"
+        ></i>
+        <span class="ml-2">
+          {{ fileRow.name }}
+        </span>
+      </span>
+    </ng-template>
+  </kendo-treelist-column>
+  <kendo-treelist-column [headerStyle]="{ 'font-weight': '700' }" title="Tags">
+    <ng-template kendoTreeListCellTemplate let-fileRow>
+      @if (fileRow.type === 'file') {
+        <div
+          *rxLet="fileRow.tags$; let tags"
+          class="text-button flex flex-wrap gap-2 overflow-hidden"
+        >
+          @for (tag of tags; track tag.id) {
+            <ui-tag
+              class="text-buttons-button-text"
+              [label]="tag.name"
+              [wrap]="false"
+              size="medium"
+              icon="fa-regular fa-tag"
+            />
+          }
+        </div>
+      }
+    </ng-template>
+  </kendo-treelist-column>
+  <kendo-treelist-column
+    [headerStyle]="{ 'font-weight': '700' }"
+    title="Added by"
+  >
+    <ng-template kendoTreeListCellTemplate let-fileRow>
+      @if (fileRow.type === 'file') {
+        <ui-tag uiUserTag [label]="fileRow.createdBy" size="medium" />
+      }
+    </ng-template>
+  </kendo-treelist-column>
+  <kendo-treelist-column [width]="120" title="">
+    <ng-template kendoTreeListCellTemplate let-fileRow>
+      @if (fileRow.type === 'file') {
+        <div class="flex gap-1">
+          <kendo-button
+            [openInNewTab]="fileRow.url"
+            themeColor="primary"
+            iconClass="fa-solid fa-arrow-up-right-from-square"
+          />
+
+          @if (canEditFiles()) {
+            <kendo-button
+              class="mr-10"
+              iconClass="fa-regular fa-tag"
+              (click)="activeFile.set(fileRow)"
+            />
+          }
+        </div>
+      }
+    </ng-template>
+  </kendo-treelist-column>
+</kendo-treelist>
+
+@if (activeFile()) {
+  <app-file-tags-update-dialog
+    *rxLet="activeFile()!.tags$; let tags"
+    [activeFile]="activeFile()!"
+    [activeFileTags]="tags"
+    (dialogClose)="activeFile.set(null)"
+  />
+}

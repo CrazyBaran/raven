@@ -1,0 +1,23 @@
+<div class="flex items-center justify-between gap-2 p-3">
+  <kendo-button
+    (click)="prev()"
+    [disabled]="prevDisabled()"
+    class="min-w-[80px]"
+    themeColor="primary"
+  >
+    Previous
+  </kendo-button>
+
+  <div class="text-lg">
+    {{ page() + 1 + ' of ' + pageSize() }}
+  </div>
+
+  <kendo-button
+    (click)="next()"
+    [disabled]="nextDisabled()"
+    class="min-w-[80px]"
+    themeColor="primary"
+  >
+    Next
+  </kendo-button>
+</div>

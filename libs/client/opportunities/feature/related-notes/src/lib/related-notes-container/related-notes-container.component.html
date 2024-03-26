@@ -1,0 +1,113 @@
+<div
+  [class.flex-1]="relatedNotesExpanded()"
+  class="relative h-full transition-all duration-300 ease-in-out"
+>
+  <button
+    (click)="toggleRelatedNotesExpand()"
+    aria-label="Toggle Related Notes Menu"
+    class="text-primary absolute -left-4 top-[150px] flex h-8 w-8 rounded-full bg-white text-[2rem]"
+    type="button"
+  >
+    <i
+      [ngClass]="{ 'rotate-180': !relatedNotesExpanded() }"
+      class="fa-solid fa-circle-chevron-right duration-300"
+    ></i>
+  </button>
+
+  <ui-tilelayout-item>
+    <div class="flex gap-4" header>
+      @if (relatedNotesExpanded()) {
+        <kendo-buttongroup [@delayedFadeIn] selection="single">
+          <button
+            kendoButton
+            [selected]="group() === 'notes'"
+            (click)="group.set('notes')"
+            [toggleable]="true"
+            themeColor="primary"
+            fillMode="flat"
+          >
+            Related Notes
+          </button>
+          <button
+            kendoButton
+            [selected]="group() === 'files'"
+            [toggleable]="true"
+            (click)="group.set('files')"
+            themeColor="primary"
+            fillMode="flat"
+          >
+            Related Files
+          </button>
+        </kendo-buttongroup>
+        <kendo-button
+          class="ml-auto"
+          [@delayedFadeIn]
+          themeColor="primary"
+          fillMode="clear"
+          (click)="onCollapse()"
+        >
+          Collapse
+        </kendo-button>
+      } @else {
+        <div class="flex flex-col gap-6" [@delayedFadeIn]>
+          <kendo-button fillMode="flat" (click)="onExpand('notes')">
+            <div class="flex flex-col gap-2">
+              <i class="fa-solid fa-notebook text-2xl"></i>
+              <p class="text-sm">Notes</p>
+            </div>
+          </kendo-button>
+          <kendo-button fillMode="flat" (click)="onExpand('files')">
+            <div class="flex flex-col gap-2">
+              <i class="fa-solid fa-file text-2xl"></i>
+              <p class="text-sm">Files</p>
+            </div>
+          </kendo-button>
+        </div>
+      }
+    </div>
+    <ng-container body>
+      @if (relatedNotesExpanded()) {
+        @if (group() === 'notes') {
+          @switch (relatedNoteView()) {
+            @case ('loading') {
+              <app-related-note-skeleton
+                [@delayedFadeIn]
+                class="block h-full"
+              />
+            }
+            @case ('note') {
+              <app-related-note
+                [note]="vm().visibleNoteWithFields!"
+                [page]="vm().index"
+                (pageChange)="onPageChange($event)"
+                [pageSize]="vm().notesWithFields?.length!"
+              />
+            }
+            @case ('table') {
+              <app-related-notes-table
+                *recreateView="vm().notes"
+                [@delayedFadeIn]
+                class="block h-full"
+                [notes]="vm().notes!"
+              />
+            }
+            @case ('empty') {
+              <p
+                [@delayedFadeIn]
+                class="text-placeholder-text flex-1 p-3 font-light opacity-60"
+              >
+                There are no related notes for this section at this time
+              </p>
+            }
+          }
+        } @else {
+          <app-related-files
+            [directoryUrl]="vm().directoryUrl!"
+            [currentTab]="vm().activeTab!"
+            [fileTagDictionary]="vm().fileTagDictionary"
+          />
+        }
+      }
+    </ng-container>
+  </ui-tilelayout-item>
+</div>

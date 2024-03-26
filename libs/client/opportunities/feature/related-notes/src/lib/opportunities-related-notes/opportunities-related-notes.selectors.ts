@@ -8,9 +8,9 @@ import {
   selectIsTeamMemberForCurrentOpportunity,
 } from '@app/client/opportunities/data-access';
 import { routerQuery } from '@app/client/shared/util-router';
-import { getRouterSelectors } from '@ngrx/router-store';
 import { createSelector } from '@ngrx/store';
 
+import { Heat, NoteHeatmap } from '@app/client/opportunities/ui';
 import * as _ from 'lodash';
 
 export const selectOpportunityNoteTabsDictionary = createSelector(
@@ -35,39 +35,6 @@ export const selectRelatedNotesWithFields = createSelector(
   },
 );
 
-export const selectRelatedNotes = createSelector(
-  selectActiveNoteTab,
-  (tab): any => (tab && 'relatedNotes' in tab ? tab.relatedNotes : []),
-);
-
-export const selectOpportunityRelatedNotes = createSelector(
-  selectRelatedNotesWithFields,
-  selectRelatedNotes,
-  getRouterSelectors().selectQueryParam('noteIndex'),
-  (notesWithFields, notes, visibleNoteWithFieldsIndex) => {
-    const index =
-      visibleNoteWithFieldsIndex &&
-      +visibleNoteWithFieldsIndex > 0 &&
-      +visibleNoteWithFieldsIndex < notesWithFields.length
-        ? +visibleNoteWithFieldsIndex
-        : 0;
-
-    return {
-      notesWithFields,
-      notes,
-      visibleNoteWithFields: notesWithFields?.length
-        ? notesWithFields[Number(visibleNoteWithFieldsIndex ?? 0)] ??
-          notesWithFields[0]
-        : null,
-      nextQueryParam: { noteIndex: index + 1 },
-      disabledNext: index + 1 >= notesWithFields.length,
-      prevQueryParam: { noteIndex: index - 1 },
-      disabledPrev: index - 1 < 0,
-      index: notesWithFields?.length ? index : -1,
-    };
-  },
-);
-
 export const selectNoteFields = createSelector(
   opportunitiesQuery.selectNoteFields,
   (notes) =>
@@ -79,7 +46,6 @@ export const selectNoteFields = createSelector(
 export const selectOpportunitiesRelatedNotesViewModel = createSelector(
   routerQuery.selectActiveTab,
   notesQuery.selectOpportunityNotes,
-  selectOpportunityRelatedNotes,
   selectNoteFields,
   selectFinancialGroups,
   notesQuery.selectOpportunityNotesIsLoading,
@@ -88,7 +54,6 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
   (
     tab,
     opportunityNotes,
-    relatedNotes,
     fields,
     financialGroups,
     isLoading,
@@ -105,6 +70,21 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
           formControlName: f.uniqId,
         })),
       heatmapFields: financialGroups.filter((x) => x.tabName === tab),
+      heatMap: {
+        fields: financialGroups
+          .filter((x) => x.tabName === tab)
+          .map((g) => ({
+            uniqId: g.uniqId,
+            title: g.title,
+            noteFields: g.noteFields.map((f) => ({
+              uniqId: f.uniqId,
+              title: f.title,
+              value: f.value,
+              heat: f.heat as Heat,
+              unit: f.name,
+            })),
+          })),
+      } as NoteHeatmap,
       fields: tabFields,
       fieldValues: _.chain(tabFields)
         .mapKeys(({ id }) => id)
@@ -115,7 +95,6 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
       isLoading,
       opportunityId,
       canEditFields: isMember,
-      ...relatedNotes,
     };
   },
 );

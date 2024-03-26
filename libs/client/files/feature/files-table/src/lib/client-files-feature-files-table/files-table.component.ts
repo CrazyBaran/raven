@@ -14,13 +14,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { ENVIRONMENT, Environment } from '@app/client/core/environment';
-import { FilesService } from '@app/client/files/feature/data-access';
 import {
   FileEntity,
   FilesActions,
   filesQuery,
 } from '@app/client/files/feature/state';
-import { SPItem } from '@app/client/files/sdk-pnptimeline';
 import { FileTypeBadgeComponent } from '@app/client/files/ui';
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
@@ -30,7 +28,6 @@ import {
 } from '@app/client/shared/ui';
 import { DropdownNavigationComponent } from '@app/client/shared/ui-router';
 import { QuickFiltersTemplateComponent } from '@app/client/shared/ui-templates';
-import { NotificationsActions } from '@app/client/shared/util-notifications';
 import {
   buildDropdownNavigation,
   buildPageParamsSelector,
@@ -53,7 +50,7 @@ import {
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
 import { Observable, combineLatest, filter, first, map, startWith } from 'rxjs';
-import { PickerComponent } from '../picker/picker.component';
+import { PickerContainerComponent } from '../picker-container/picker-container.component';
 
 const opportunityFilesQueryParams = ['tag'] as const;
 
@@ -72,7 +69,7 @@ type FileRow = {
   childrenCount?: number | null;
 };
 
-export const toFileRow =
+const toFileRow =
   (environment: Environment) =>
   (file: FileEntity): FileRow => ({
     type: file.file ? 'file' : 'folder',
@@ -89,7 +86,7 @@ export const toFileRow =
 
 export const selectFileTags = (file: FileEntity) =>
   createSelector(
-    filesQuery.selectFileTags,
+    filesQuery.selectFilesTags,
     (fileTags) => fileTags[file.id!] ?? [],
   );
 
@@ -99,7 +96,7 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
     tagsQuery.tagsFeature.selectTabTags,
     opportunitiesQuery.selectRouteOpportunityDetails,
     filesQuery.selectLoadedFolders,
-    filesQuery.selectFileTags,
+    filesQuery.selectFilesTags,
     selectOrganisationsTableParams,
     opportunitiesQuery.selectIsTeamMemberForCurrentOpportunity,
     selectQueryParam('tag'),
@@ -172,7 +169,7 @@ export const selectFolderChildrenFactory =
     ButtonModule,
     BadgeComponent,
     FileTypeBadgeComponent,
-    PickerComponent,
+    PickerContainerComponent,
     PanelBarModule,
     TagComponent,
     UserTagDirective,
@@ -199,10 +196,6 @@ export class FilesTableComponent {
 
   public environment = inject(ENVIRONMENT);
 
-  public sharepointUrl = this.environment.sharepointRoot;
-  public sharepointList = this.environment.sharepointList;
-  public sharepointWeb = this.environment.sharepointWeb;
-
   public vm = this.store.selectSignal(
     selectFilesTableViewModelFactory(this.environment),
   );
@@ -222,7 +215,6 @@ export class FilesTableComponent {
   public constructor(
     private store: Store,
     private actions$: Actions,
-    private filesService: FilesService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
   ) {
@@ -332,45 +324,6 @@ export class FilesTableComponent {
         tags: this.manageFileGroup.controls.tags.value?.map((t) => t.id) ?? [],
       }),
     );
-  }
-
-  public onPickerChange(event: SPItem[]): void {
-    const opportunity = this.vm().opportunity;
-    if (!opportunity) return;
-
-    const parentReference = {
-      id: opportunity.sharepointDirectoryId!,
-      driveId: this.environment.sharepointDriveId,
-    };
-
-    event.forEach((file) => {
-      this.filesService
-        .copyFile(file.sharepointIds.siteId, file.id, {
-          parentReference,
-        })
-        .subscribe((res) => {
-          if (res.status === 'failed') {
-            this.store.dispatch(
-              NotificationsActions.showErrorNotification({
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                content: (res as any).error.message,
-              }),
-            );
-          } else {
-            this.store.dispatch(
-              FilesActions.getFiles({
-                directoryUrl: opportunity!.sharePointDirectory!,
-                folderId: this.rootFolder(),
-              }),
-            );
-            this.store.dispatch(
-              NotificationsActions.showSuccessNotification({
-                content: `'${file.name}' copied successfully`,
-              }),
-            );
-          }
-        });
-    });
   }
 
   public rowCallback = (context: RowClassArgs): Record<string, boolean> => {

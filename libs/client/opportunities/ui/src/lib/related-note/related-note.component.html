@@ -1,0 +1,56 @@
+<div class="flex h-full flex-col">
+  <div class="flex flex-1 flex-col">
+    @if (note(); as note) {
+      <div class="flex h-full flex-col" *recreateView="note" [@delayedFadeIn]>
+        <header>
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <app-note-type-badge [type]="note.template" />
+
+              <app-create-info [note]="note"></app-create-info>
+
+              <!--        ACTION ICON       -->
+              <div class="p-3">
+                <kendo-button
+                  [queryParams]="{ 'note-details': note.id }"
+                  [routerLink]="['./']"
+                  iconClass="fa-solid fa-eye"
+                  queryParamsHandling="merge"
+                  themeColor="primary"
+                />
+              </div>
+            </div>
+            <div class="px-3 pb-6 pt-3">
+              <p class="font-bold">{{ note.name }}</p>
+            </div>
+          </div>
+        </header>
+        <article
+          class="border-component-border grow basis-0 overflow-auto border-b border-t"
+        >
+          <div class="h-full">
+            @for (field of note.fields; track field.id) {
+              <div class="flex flex-col gap-3">
+                <div class="p-3">
+                  <div class="mb-2 text-[10px] uppercase">
+                    {{ field.name }}
+                  </div>
+                  <div
+                    [innerHTML]="field.value | safeHtml"
+                    class="ProseMirror"
+                  ></div>
+                </div>
+              </div>
+            }
+          </div>
+        </article>
+      </div>
+    }
+  </div>
+  <app-related-notes-footer
+    [@delayedFadeIn]
+    [page]="page()"
+    [pageSize]="pageSize()"
+    (pageChange)="onPageChange($event)"
+  />
+</div>

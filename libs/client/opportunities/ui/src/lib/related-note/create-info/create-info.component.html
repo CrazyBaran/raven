@@ -1,0 +1,11 @@
+<span>
+  <i class="fa-solid fa-circle-user mr-1"></i>
+  {{ note().createdBy || '' }}
+</span>
+
+@if (note().updatedAt) {
+  <span class="text-xs">
+    Updated:
+    {{ note().updatedAt || '' | date: 'dd/MM/yyyy hh:mm a' }}
+  </span>
+}

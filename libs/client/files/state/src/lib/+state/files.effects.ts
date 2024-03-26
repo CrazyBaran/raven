@@ -14,7 +14,7 @@ export const loadFiles = createEffect(
         filesService.getFiles(action).pipe(
           map((response) => {
             return FilesActions.getFilesSuccess({
-              data: response?.value || [],
+              data: response || [],
               folderId: action.folderId,
             });
           }),

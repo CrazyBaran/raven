@@ -4,13 +4,9 @@
       <app-dropdown-navigation [model]="vm().filters" />
 
       @if (vm().canEditFiles) {
-        <app-picker
-          (selectFiles)="onPickerChange($event)"
-          [web]="sharepointWeb!"
-          [list]="sharepointList!"
-          [folder]="vm().sharepointFolder!"
-          [url]="sharepointUrl!"
-          name="Manage Files"
+        <app-picker-container
+          [sharepointFolder]="vm().sharepointFolder!"
+          theme="primary"
         />
       }
     </div>
