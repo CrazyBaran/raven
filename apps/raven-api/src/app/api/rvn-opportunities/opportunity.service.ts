@@ -441,6 +441,7 @@ export class OpportunityService {
       timing: entity.timing,
       underNda: entity.underNda,
       ndaTerminationDate: entity.ndaTerminationDate,
+      description: entity.description,
     };
   }
 
@@ -557,6 +558,9 @@ export class OpportunityService {
     }
     if (options.ndaTerminationDate !== undefined) {
       opportunity.ndaTerminationDate = options.ndaTerminationDate;
+    }
+    if (options.description !== undefined) {
+      opportunity.description = options.description;
     }
   }
 

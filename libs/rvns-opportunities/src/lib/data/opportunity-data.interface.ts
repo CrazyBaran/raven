@@ -28,6 +28,7 @@ export interface OpportunityDataWithoutOrganisation {
   readonly positioning?: string;
   readonly timing?: string;
   readonly underNda?: string;
+  readonly description?: string;
   readonly ndaTerminationDate?: Date;
   readonly files?: FileData[];
   readonly sharePointDirectory?: string;

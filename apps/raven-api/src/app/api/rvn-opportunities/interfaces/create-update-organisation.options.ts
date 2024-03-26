@@ -31,4 +31,5 @@ export interface CommonUpdateOptions {
   timing?: string;
   underNda?: string;
   ndaTerminationDate?: Date;
+  description?: string;
 }

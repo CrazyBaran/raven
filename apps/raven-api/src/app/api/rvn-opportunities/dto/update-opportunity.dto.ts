@@ -63,4 +63,9 @@ export class UpdateOpportunityDto {
   @IsOptional()
   @IsDate()
   public readonly ndaTerminationDate?: Date;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  public readonly description?: string;
 }

@@ -129,6 +129,9 @@ export class OpportunityEntity
   @Column({ nullable: true })
   public valuation: string | null;
 
+  @Column({ nullable: true, type: 'nvarchar', length: 1000 })
+  public description: string | null;
+
   @Column({ nullable: true })
   public proposedInvestment: string | null;
 
