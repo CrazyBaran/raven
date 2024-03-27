@@ -135,7 +135,7 @@ export class NotesController {
     @Query('skip') skip?: number,
     @Query('take') take?: number,
     @Query('dir') dir?: 'asc' | 'desc',
-    @Query('field') field?: 'name' | 'id',
+    @Query('field') field?: 'name' | 'id' | 'updatedAt',
     @Query('query') query?: string,
   ): Promise<PagedData<WorkflowNoteData | NoteData>> {
     if (opportunityId) {
@@ -143,10 +143,13 @@ export class NotesController {
         opportunityId,
         type,
         tabId,
+        noteType,
+        (dir ?? 'asc').toUpperCase() as 'ASC' | 'DESC',
+        field,
       );
       return {
         total: items.length,
-        items,
+        items: items,
       };
     }
     if (

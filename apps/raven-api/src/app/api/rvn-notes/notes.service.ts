@@ -286,6 +286,9 @@ export class NotesService {
     opportunityId: string,
     type: TemplateTypeEnum,
     tabId: string,
+    noteType?: string,
+    dir?: 'ASC' | 'DESC',
+    field?: string,
   ): Promise<(WorkflowNoteData | NoteWithRelationsData)[]> {
     let s = Date.now();
     const opportunity = await this.opportunityRepository.findOne({
@@ -406,6 +409,12 @@ export class NotesService {
       .andWhere('note.deletedAt IS NULL')
       .andWhere('template.type = :type', { type: TemplateTypeEnum.Note });
 
+    if (noteType) {
+      qb.andWhere('template.name = :noteType', { noteType });
+    }
+
+    qb.orderBy(`note.${field ?? 'createdAt'}`, dir ?? 'DESC');
+
     const relatedNotes = await qb.getMany();
 
     this.logger.debug(
@@ -517,6 +526,7 @@ export class NotesService {
         return rn; // we remove note fields data to make response smaller
       })
       .map(this.noteEntityToNoteData.bind(this));
+
     return [workflowNote, ...mappedRelatedNotes];
   }
 
