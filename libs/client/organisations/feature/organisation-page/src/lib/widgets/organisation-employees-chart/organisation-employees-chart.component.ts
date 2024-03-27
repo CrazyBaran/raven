@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   ViewEncapsulation,
 } from '@angular/core';
@@ -31,6 +32,18 @@ import { organisationEmployeesChartsStore } from './organisation-employees-chart
 })
 export class OrganisationChartsComponent {
   public organisationChartsStore = inject(organisationEmployeesChartsStore);
+
+  public steps = computed(() => {
+    const years = this.organisationChartsStore.data().total / 12;
+
+    if (years <= 1) {
+      return 2;
+    } else if (years <= 2) {
+      return 5;
+    } else {
+      return 11;
+    }
+  });
 
   public getTotalEmployees(): string {
     return (

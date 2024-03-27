@@ -31,7 +31,10 @@
           <kendo-chart-category-axis-item
             [type]="'date'"
             [baseUnit]="'months'"
-            [labels]="{ format: 'yyyy', step: 4 }"
+            [labels]="{
+              format: 'yyyy',
+              step: steps()
+            }"
           />
         </kendo-chart-category-axis>
 

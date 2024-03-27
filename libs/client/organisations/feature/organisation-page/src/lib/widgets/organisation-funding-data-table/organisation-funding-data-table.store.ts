@@ -28,7 +28,17 @@ export const organisationFundingDataTableStore = signalStore(
       ...data(),
       data: data()
         .data.slice()
-        .map((item) => ({ ...item, amountInUsd: item.amountInUsd ?? 0 })),
+        .reverse()
+        .map((item, i, allItems) => ({
+          ...item,
+          amountInUsd: allItems
+            .slice(0, i)
+            .reduce(
+              (acc, curr) => acc + curr.amountInUsd ?? 0,
+              item.amountInUsd ?? 0,
+            )
+            .toFixed(2),
+        })),
     })),
   })),
 );
