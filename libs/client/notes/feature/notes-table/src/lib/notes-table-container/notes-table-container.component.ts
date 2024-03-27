@@ -10,9 +10,10 @@ import { NotesActions, notesQuery } from '@app/client/notes/state';
 import { NotesTableComponent } from '@app/client/notes/ui';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { TemplateActions } from '@app/client/templates/data-access';
-import { Actions, concatLatestFrom, ofType } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
+import { debounceTime } from 'rxjs';
 import { selectNotesGridModel } from './notes-table-container.selectors';
 
 @Component({
@@ -47,13 +48,11 @@ export class NotesTableContainerComponent {
     this.actions
       .pipe(
         takeUntilDestroyed(),
-        ofType(NotesActions.liveCreateNote),
-        concatLatestFrom(() =>
-          this.store.select(notesQuery.selectNotesTableParams),
-        ),
+        ofType(NotesActions.liveCreateNote, NotesActions.createNoteSuccess),
+        debounceTime(100),
       )
-      .subscribe(([action, params]) => {
-        this._loadNotes(params, true);
+      .subscribe(() => {
+        this.store.dispatch(NotesActions.refreshNotesTable());
       });
   }
 

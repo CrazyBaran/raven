@@ -4,7 +4,7 @@
       <div class="k-card-title !m-0 flex w-full items-center !text-black">
         Related Notes
         <kendo-button
-          (click)="openNoteShelf()"
+          (click)="openNoteShelf(); $event.stopPropagation()"
           iconClass="fa-sharp fa-solid fa-pen"
           size="small"
           class="ml-auto mr-2"

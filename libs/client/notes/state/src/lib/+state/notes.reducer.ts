@@ -109,6 +109,16 @@ export const notesReducer = createReducer(
       },
     }),
   ),
+  on(NotesActions.refreshNotesTableSuccess, (state, { data, total }) =>
+    notesAdapter.upsertMany(data, {
+      ...state,
+      table: {
+        isLoading: false,
+        ids: data.map((note) => note.id),
+        total: total,
+      },
+    }),
+  ),
   on(NotesActions.getNotesFailure, (state, { error }) => ({
     ...state,
     table: {

@@ -4,7 +4,7 @@
   overflow: hidden;
 }
 .rich-text-full {
-  @apply grid grow;
+  @apply grid grow overflow-hidden;
 }
 
 :host:not(.rich-text-full) {
@@ -17,7 +17,7 @@
 }
 
 .k-form-field-wrap {
-  @apply grid grow;
+  @apply grid grow overflow-hidden;
   display: grid !important;
   grid-template-rows: 1fr auto;
 }

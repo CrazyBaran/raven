@@ -74,6 +74,13 @@ export const NotesActions = createActionGroup({
       changedFields: string[];
     }>(),
 
+    'Refresh Notes Table': emptyProps(),
+    'Refresh Notes Table Success': props<{
+      data: NoteData[];
+      total: number;
+    }>(),
+    'Refresh Notes Table Failure': props<{ error: string }>(),
+
     //websocket events
     'Live Create Note': props<{ id: string }>(),
     'Live Change Note': props<{ id: string; newSyncId: string }>(),
