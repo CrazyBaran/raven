@@ -24,11 +24,30 @@ export class FundingRoundV2DwhEntity {
   @Column({ name: 'Investors', type: 'nvarchar', length: 'MAX' })
   public investors: string;
 
-  @Column({ name: 'XRateFromUSD', type: 'decimal', precision: 18, scale: 2 })
-  public xRateFromUSD: number;
-
   @Column({ name: 'AmountInUSD', type: 'decimal', precision: 18, scale: 2 })
   public amountInUsd: number;
+
+  @Column({
+    name: 'PreValuationInUSD',
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+  })
+  public preValuationInUsd: number;
+
+  @Column({
+    name: 'PostValuationInUSD',
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+  })
+  public postValuationInUsd: number;
+
+  @Column({ name: 'DataSource', type: 'nvarchar', length: 50 })
+  public dataSource: string;
+
+  @Column({ name: 'LeadInvestors', type: 'nvarchar', length: 'MAX' })
+  public leadInvestors: string;
 }
 
 export const DWH_V2_FUNDING_ROUND_SELECT_COLUMNS: Partial<
@@ -41,4 +60,7 @@ export const DWH_V2_FUNDING_ROUND_SELECT_COLUMNS: Partial<
   'amount',
   'investors',
   'amountInUsd',
+  'preValuationInUsd',
+  'postValuationInUsd',
+  'dataSource',
 ];

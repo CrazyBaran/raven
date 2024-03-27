@@ -26,6 +26,9 @@ export class FundingRoundV2Mapper extends MapperBase<
       amount: entity.amount,
       amountInUsd: entity.amountInUsd,
       investors: DataWarehouseParser.parseSemicolonData(entity.investors),
+      dataSource: entity.dataSource,
+      preValuationInUsd: entity.preValuationInUsd,
+      postValuationInUsd: entity.postValuationInUsd,
     };
   }
 }

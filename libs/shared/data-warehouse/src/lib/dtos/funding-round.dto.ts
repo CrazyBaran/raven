@@ -6,6 +6,9 @@ export class FundingRoundDto {
   public currency: string;
   public amountInUsd: number;
   public investors: string[];
+  public dataSource?: string;
+  public preValuationInUsd?: number;
+  public postValuationInUsd?: number;
 }
 
 export const exposedFundingRoundData: Partial<keyof FundingRoundDto>[] = [

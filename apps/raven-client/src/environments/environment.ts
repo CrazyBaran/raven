@@ -24,7 +24,7 @@ export const environment: Environment = {
   // websocketUrl: 'http://localhost:3333',
   shortlistsFeature: true,
   remindersFeature: true,
-  organisationLayout: false,
+  organisationLayout: true,
 };
 /*
  * For easier debugging in development mode, you can import the following file
