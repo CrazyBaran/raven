@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 
 import { NotesService } from '@app/client/notes/data-access';
+import { OrganisationsActions } from '@app/client/organisations/state';
 import {
   StorageActions,
   storageQuery,
@@ -11,8 +12,17 @@ import { routerQuery } from '@app/client/shared/util-router';
 import { NoteWithRelationsData } from '@app/rvns-notes/data-access';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { catchError, concatMap, filter, map, of, switchMap } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  concatMap,
+  filter,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
 import { NotesActions } from './notes.actions';
+import { notesQuery } from './notes.selectors';
 
 @Injectable()
 export class NotesEffects {
@@ -219,6 +229,41 @@ export class NotesEffects {
           ]),
           catchError((error) => of(NotesActions.deleteNoteFailure({ error }))),
         ),
+      ),
+    );
+  });
+
+  private refreshNotes = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(NotesActions.refreshNotesTable),
+      concatLatestFrom(() =>
+        combineLatest({
+          params: this.store.select(notesQuery.selectNotesTableParams),
+          table: this.store.select(notesQuery.selectTable),
+        }),
+      ),
+      switchMap(([_, { params, table }]) =>
+        this.notesService
+          .getNotes({
+            ...params,
+            take: (table?.ids.length + 1 || 0).toString(),
+          })
+          .pipe(
+            map(({ data }) => {
+              return NotesActions.refreshNotesTableSuccess({
+                data: data?.items || [],
+                total: data?.total ?? 0,
+              });
+            }),
+            catchError((error) =>
+              of(
+                OrganisationsActions.refreshOrganisationsFailure({
+                  error,
+                  message: 'Failed to refresh notes',
+                }),
+              ),
+            ),
+          ),
       ),
     );
   });

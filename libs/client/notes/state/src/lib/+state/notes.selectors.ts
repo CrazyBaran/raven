@@ -183,6 +183,11 @@ const selectNotesTypeBadgeColors = createSelector(
   },
 );
 
+const selectTable = createSelector(
+  selectNotesState,
+  (state: NotesState) => state.table,
+);
+
 export const notesQuery = {
   selectAllNotes,
   selectIsTableLoading,
@@ -198,4 +203,5 @@ export const notesQuery = {
   selectNotesTableParams,
   selectTotal,
   selectNotesTypeBadgeColors,
+  selectTable,
 };
