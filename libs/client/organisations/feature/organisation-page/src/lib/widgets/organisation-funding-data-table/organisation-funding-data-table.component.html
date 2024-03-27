@@ -14,7 +14,7 @@
   </header>
 
   <main body class="grid gap-6 lg:grid-cols-2">
-    <kendo-chart [axisDefaults]="defaults" class="max-h-[330px]">
+    <kendo-chart class="max-h-[330px]">
       <kendo-chart-tooltip format="${0}M" />
 
       <kendo-chart-value-axis>
@@ -22,6 +22,13 @@
           [title]="{ text: 'Cumulative Funding ($m)' }"
         />
       </kendo-chart-value-axis>
+
+      <kendo-chart-category-axis>
+        <kendo-chart-category-axis-item
+          [type]="'date'"
+          [labels]="{ format: 'yyyy' }"
+        />
+      </kendo-chart-category-axis>
 
       <kendo-chart-series>
         <kendo-chart-series-item
@@ -70,13 +77,7 @@
         <kendo-grid-column title="Investors" headerClass="!font-bold">
           <ng-template kendoGridCellTemplate let-fundingData>
             @for (investor of fundingData.investors; track $index) {
-              <p
-                [title]="investor"
-                kendoTooltip
-                position="top"
-                [tooltipWidth]="240"
-                class="line-clamp-1"
-              >
+              <p class="line-clamp-1">
                 {{ investor }}
               </p>
             }

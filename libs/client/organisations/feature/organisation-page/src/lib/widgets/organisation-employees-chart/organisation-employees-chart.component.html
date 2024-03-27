@@ -20,31 +20,30 @@
       </div>
     </div>
     <div class="flex-1">
-      <kendo-chart class="max-h-[330px]" [axisDefaults]="defaults">
-        <kendo-chart-tooltip format="{0}" />
+      <kendo-chart class="max-h-[330px]">
+        <kendo-chart-tooltip
+          [shared]="true"
+          background="#D84661"
+          color="#fff"
+        />
 
-        <kendo-chart-value-axis>
-          <kendo-chart-value-axis-item type="numeric" [narrowRange]="false" />
-        </kendo-chart-value-axis>
-        <kendo-chart-x-axis>
-          <kendo-chart-x-axis-item
-            [baseUnit]="'years'"
+        <kendo-chart-category-axis>
+          <kendo-chart-category-axis-item
             [type]="'date'"
-          ></kendo-chart-x-axis-item>
-        </kendo-chart-x-axis>
+            [baseUnit]="'months'"
+            [labels]="{ format: 'yyyy', step: 4 }"
+          />
+        </kendo-chart-category-axis>
+
         <kendo-chart-series>
           <kendo-chart-series-item
             [style]="'smooth'"
             type="line"
-            [data]="organisationChartsStore.chartData().data"
+            [data]="organisationChartsStore.data().data"
             field="numberOfEmployees"
             categoryField="observationDate"
-            [autoFit]="true"
-            [aggregate]="'max'"
             color="#D84661"
-          >
-            <kendo-chart-series-item-tooltip />
-          </kendo-chart-series-item>
+          />
         </kendo-chart-series>
       </kendo-chart>
     </div>

@@ -1,13 +1,13 @@
-import { computed, inject } from '@angular/core';
-import { LoadDataMethod, withChart } from '@app/client/shared/util';
-import { routerQuery } from '@app/client/shared/util-router';
-import { signalStore, withComputed, withMethods } from '@ngrx/signals';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
+import { inject } from '@angular/core';
 import {
   EmployeeChartData,
   OrganisationsService,
-} from '../../../../../../data-access/src';
+} from '@app/client/organisations/data-access';
+import { LoadDataMethod, withChart } from '@app/client/shared/util';
+import { routerQuery } from '@app/client/shared/util-router';
+import { signalStore, withMethods } from '@ngrx/signals';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
 
 export const organisationEmployeesChartsStore = signalStore(
   withMethods(
@@ -31,17 +31,4 @@ export const organisationEmployeesChartsStore = signalStore(
     }),
   ),
   withChart<EmployeeChartData>(),
-  withComputed(({ data }) => ({
-    chartData: computed(() => ({
-      ...data(),
-      data: data()
-        .data.slice()
-        .reverse()
-        .map((item) => ({
-          ...item,
-          observationDate: item.observationDate,
-          numberOfEmployees: item.numberOfEmployees,
-        })),
-    })),
-  })),
 );

@@ -42,7 +42,13 @@
               }
 
               @if (type() === 'details') {
-                <div class="text-disabledText ml-auto flex items-center gap-2">
+                <a
+                  [routerLink]="['./']"
+                  queryParamsHandling="merge"
+                  [skipLocationChange]="true"
+                  [queryParams]="updateDescriptionParam()"
+                  class="text-disabledText ml-auto flex items-center gap-2"
+                >
                   <p class="text-sm">
                     @if (vm().descriptionUpdatedAt) {
                       Edited
@@ -54,12 +60,8 @@
                   <kendo-button
                     fillMode="flat"
                     iconClass="fa-solid fa-sharp fa-pen text-disabledText"
-                    [routerLink]="['./']"
-                    queryParamsHandling="merge"
-                    [skipLocationChange]="true"
-                    [queryParams]="updateDescriptionParam()"
                   />
-                </div>
+                </a>
               }
             </div>
           } @else {

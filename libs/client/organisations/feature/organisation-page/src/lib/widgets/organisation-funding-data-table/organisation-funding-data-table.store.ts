@@ -28,7 +28,6 @@ export const organisationFundingDataTableStore = signalStore(
       ...data(),
       data: data()
         .data.slice()
-        .reverse()
         .map((item) => ({ ...item, amountInUsd: item.amountInUsd ?? 0 })),
     })),
   })),
