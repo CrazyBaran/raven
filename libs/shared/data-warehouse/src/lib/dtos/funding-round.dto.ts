@@ -19,4 +19,7 @@ export const exposedFundingRoundData: Partial<keyof FundingRoundDto>[] = [
   'currency',
   'amountInUsd',
   'investors',
+  'dataSource',
+  'preValuationInUsd',
+  'postValuationInUsd',
 ];

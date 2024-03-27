@@ -14,8 +14,11 @@ export class EmployeesV2DwhEntity {
 
   @Column({ name: 'Number of Employees', type: 'bigint' })
   public numberOfEmployees: number;
+
+  @Column({ name: 'Data Source', type: 'nvarchar', length: 50 })
+  public dataSource: string;
 }
 
 export const DWH_V2_EMPLOYEES_SELECT_COLUMNS: Partial<
   keyof EmployeesV2DwhEntity
->[] = ['domain', 'observationDate', 'numberOfEmployees'];
+>[] = ['domain', 'observationDate', 'numberOfEmployees', 'dataSource'];

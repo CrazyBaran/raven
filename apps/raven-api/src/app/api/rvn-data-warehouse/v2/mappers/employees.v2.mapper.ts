@@ -23,6 +23,7 @@ export class EmployeesV2Mapper extends MapperBase<
       domain: entity.domain,
       observationDate: entity.observationDate,
       numberOfEmployees: entity.numberOfEmployees,
+      dataSource: entity.dataSource,
     };
   }
 }
