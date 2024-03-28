@@ -1,0 +1,17 @@
+<ui-tilelayout-item>
+  <div class="flex items-center justify-between gap-2" header>
+    <h5>Opportunity Overview Description</h5>
+
+    <app-status-indicator [state]="store.state()!" />
+  </div>
+  <kendo-textarea
+    [formControl]="opportunityDescriptionControl"
+    body
+    placeholder="Click to write content here..."
+    class="h-full !border-x-0 !border-t-0"
+    id="opportunityDescription"
+    [rows]="5"
+    [maxlength]="1000"
+    resizable="auto"
+  />
+</ui-tilelayout-item>

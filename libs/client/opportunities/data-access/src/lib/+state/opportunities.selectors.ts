@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import {
   OpportunitiesState,
   opportunitiesAdapter,
+  opportunitiesFeature,
   opportunitiesFeatureKey,
 } from './opportunities.reducer';
 
@@ -321,7 +322,6 @@ export const selectOpportunityUpdateIsLoading = createSelector(
 
 export const opportunitiesQuery = {
   selectAllOpportunities,
-  selectIsLoading,
   selectNoteFields,
   selectOpportunitiesDictionary,
   selectRouteOpportunityDetails,
@@ -336,4 +336,5 @@ export const opportunitiesQuery = {
   selectFinancialGroups,
   selectIsTeamMemberForCurrentOpportunity,
   selectOpportunityDetails,
+  ...opportunitiesFeature,
 };

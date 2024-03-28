@@ -42,18 +42,27 @@
   <div
     class="custom-scroll-on-hover | flex h-full flex-1 flex-col gap-6 overflow-auto"
   >
+    @if (vm().opportunity) {
+      <app-opportunity-description
+        [opportunityId]="vm().opportunity?.id!"
+        [description]="$any(vm().opportunity)?.description"
+      />
+    } @else {
+      <app-note-field-skeleton />
+    }
     <!--  DEAL TEAM   -->
     <ui-tilelayout-item>
       <div header class="flex items-center justify-between gap-2">
         <h5 class="k-card-title">Deal Team</h5>
-        <kendo-button
-          *ngIf="vm().canEditTeam"
-          (click)="openTeamEdit()"
-          iconClass="fa-sharp fa-solid fa-pen"
-          size="small"
-        >
-          Edit
-        </kendo-button>
+        @if (vm().canEditTeam) {
+          <kendo-button
+            (click)="openTeamEdit()"
+            iconClass="fa-sharp fa-solid fa-pen"
+            size="small"
+          >
+            Edit
+          </kendo-button>
+        }
       </div>
       <kendo-grid body [data]="vm().team" class="grid-borderless h-full">
         <kendo-grid-column
@@ -63,14 +72,13 @@
           title="Deal Lead"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <ng-container *ngIf="!vm().isLoading; else tagSkeleton">
-              <ui-tag
-                *rxFor="let name of dataItem.dealLeads"
-                [label]="name"
-                [wrap]="true"
-                uiUserTag
-              />
-            </ng-container>
+            @if (!vm().isLoading) {
+              @for (name of dataItem.dealLeads; track $index) {
+                <ui-tag [label]="name" [wrap]="true" uiUserTag />
+              }
+            } @else {
+              <app-tag-skeleton />
+            }
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column
@@ -81,22 +89,20 @@
           class="!align-top"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <div
-              *ngIf="!vm().isLoading; else tagSkeleton"
-              class="flex flex-wrap gap-x-6 gap-y-1"
-            >
-              <ui-tag
-                *rxFor="let user of dataItem.dealTeam; trackBy: 'name'"
-                [label]="user.name"
-                uiUserTag
-              ></ui-tag>
-            </div>
+            @if (vm().isLoading) {
+              <app-tag-skeleton />
+            } @else {
+              <div class="flex flex-wrap gap-x-6 gap-y-1">
+                @for (user of dataItem.dealTeam; track user.name) {
+                  <ui-tag [label]="user.name" uiUserTag />
+                }
+              </div>
+            }
           </ng-template>
         </kendo-grid-column>
       </kendo-grid>
     </ui-tilelayout-item>
 
-    <!--  DEAL TEAM   -->
     <app-opportunity-reminders-table />
 
     <!--  MISSING DD DETAILS-->
@@ -146,65 +152,6 @@
   </div>
 </div>
 
-<ng-template #tagSkeleton>
-  <div class="flex gap-1">
-    <kendo-skeleton shape="circle" width="20px"></kendo-skeleton>
-    <kendo-skeleton width="80px"></kendo-skeleton>
-  </div>
-</ng-template>
-
-<kendo-dialog
-  *ngIf="showEditTeam()"
-  (close)="showEditTeam.set(false)"
-  [width]="480"
-  title="Deal Team Admin"
->
-  <!--  themeColor="primary"-->
-  <div [formGroup]="teamFormGroup" class="flex flex-col gap-4 p-10">
-    <kendo-formfield>
-      <kendo-label text="Add People to Deal Team"></kendo-label>
-      <kendo-multiselect
-        [autoClose]="false"
-        [checkboxes]="true"
-        [data]="vm().users"
-        [itemDisabled]="(peopleItemDisabled$ | async)!"
-        [textField]="'name'"
-        [valueField]="'id'"
-        class="multiselect-without-remove-all w-full overflow-hidden"
-        formControlName="people"
-      />
-    </kendo-formfield>
-
-    <div
-      *ngFor="let role of teamFormGroup.controls.roles!.controls ?? []"
-      class="flex justify-between"
-    >
-      <ui-tag [label]="role.controls.user.value?.name" uiUserTag />
-      <kendo-dropdownlist
-        [data]="rolesData"
-        class="!w-[126px] overflow-hidden"
-        [formControl]="role.controls.role"
-        [disabled]="
-          adminCount() < 2 && role.controls.role.value === 'Deal Lead'
-        "
-        fillMode="outline"
-      />
-    </div>
-  </div>
-
-  <kendo-dialog-actions>
-    <kendo-button (click)="showEditTeam.set(false)">Cancel</kendo-button>
-    <kendo-button
-      (click)="updateTeam()"
-      [disabled]="vm().isLoading! || !adminCount()"
-      themeColor="primary"
-    >
-      <kendo-loader
-        *ngIf="vm().isLoading"
-        class="!text-secondary-100 mr-1"
-        size="small"
-      />
-      Confirm Deal Team
-    </kendo-button>
-  </kendo-dialog-actions>
-</kendo-dialog>
+@if (showEditTeam()) {
+  <app-deal-team-admin-dialog (dialogClose)="showEditTeam.set(false)" />
+}
