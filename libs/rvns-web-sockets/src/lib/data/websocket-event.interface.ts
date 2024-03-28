@@ -45,6 +45,25 @@ export interface RemovedFromShortlistEvent
   eventType: 'removed-from-shortlist';
 }
 
+export interface CreateReminderEvent
+  extends BaseWebsocketEvent<{ id: string; dueDate: Date }> {
+  eventType: 'reminder-created';
+}
+
+export interface UpdateReminderEvent
+  extends BaseWebsocketEvent<{
+    id: string;
+    dueDate: Date;
+    completed?: boolean;
+  }> {
+  eventType: 'reminder-updated';
+}
+
+export interface DeleteReminderEvent
+  extends BaseWebsocketEvent<{ id: string }> {
+  eventType: 'reminder-deleted';
+}
+
 export type WebsocketEvent =
   | CreateNoteEvent
   | UpdateNoteEvent
@@ -52,4 +71,7 @@ export type WebsocketEvent =
   | PipelineStageEvent
   | OpportunityFieldChangedEvent
   | AddedToShortlistEvent
-  | RemovedFromShortlistEvent;
+  | RemovedFromShortlistEvent
+  | CreateReminderEvent
+  | UpdateReminderEvent
+  | DeleteReminderEvent;

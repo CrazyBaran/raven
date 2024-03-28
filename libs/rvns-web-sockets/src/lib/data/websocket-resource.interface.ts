@@ -1,6 +1,11 @@
 type Prefix<P extends string, S extends string> = `${P}${S}`;
 
-export const websocketResources = ['notes', 'pipelines', 'shortlists'] as const;
+export const websocketResources = [
+  'notes',
+  'pipelines',
+  'shortlists',
+  'reminders',
+] as const;
 
 export type WebsocketResourceType = (typeof websocketResources)[number];
 

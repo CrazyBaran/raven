@@ -13,6 +13,7 @@ import {
   TagEntity,
 } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
 import { ReminderAssigneeEntity } from './entities/reminder-assignee.entity';
 import { ReminderEntity } from './entities/reminder.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
@@ -48,6 +49,7 @@ export class RemindersService {
     private readonly usersRepository: Repository<UserEntity>,
     @InjectRepository(ComplexTagEntity)
     private readonly complexTagRepository: Repository<ComplexTagEntity>,
+    private readonly gatewayEventService: GatewayEventService,
   ) {}
 
   public async findAll(
@@ -226,6 +228,11 @@ export class RemindersService {
 
     await this.remindersRepository.save(reminder);
 
+    this.gatewayEventService.emit('resource-reminders', {
+      eventType: 'reminder-created',
+      data: { id: reminder.id, dueDate: reminder.dueDate },
+    });
+
     return await this.remindersRepository.findOne({
       where: { id: reminder.id },
       relations: ['assignees', 'tag', 'tag.tags', 'assignedBy'],
@@ -293,6 +300,16 @@ export class RemindersService {
     }
 
     await this.remindersRepository.save(reminderEntity);
+
+    this.gatewayEventService.emit('resource-reminders', {
+      eventType: 'reminder-updated',
+      data: {
+        id: reminderEntity.id,
+        dueDate: reminderEntity.dueDate,
+        completed: options.completed,
+      },
+    });
+
     return await this.remindersRepository.findOne({
       where: { id: reminderEntity.id },
       relations: ['assignees', 'tag', 'tag.tags', 'assignedBy'],
@@ -348,6 +365,11 @@ export class RemindersService {
     }
 
     await this.remindersRepository.softDelete(reminderEntity.id);
+
+    this.gatewayEventService.emit('resource-reminders', {
+      eventType: 'reminder-deleted',
+      data: { id: reminderEntity.id },
+    });
   }
 
   private async getOrCreateComplexTag(
