@@ -15,7 +15,12 @@ import { fadeIn } from '@app/client/shared/ui';
 import { Store } from '@ngrx/store';
 
 import { trigger } from '@angular/animations';
-import { NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
+import {
+  DatePipe,
+  NgClass,
+  NgTemplateOutlet,
+  TitleCasePipe,
+} from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FilesActions } from '@app/client/files/feature/state';
 import { PipelinesActions } from '@app/client/pipelines/state';
@@ -56,6 +61,7 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
     TabStripModule,
     NgTemplateOutlet,
     OrganisationDetailsV2Component,
+    DatePipe,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],

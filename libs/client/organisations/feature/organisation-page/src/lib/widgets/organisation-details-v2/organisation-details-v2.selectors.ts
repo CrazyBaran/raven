@@ -8,30 +8,11 @@ import { routerQuery } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 
-export type OrganisationDetailsViewModel = {
-  currentOrganisationId?: string;
-  details: {
-    label: string | number | undefined;
-    subLabel: string;
-    background: string;
-  }[];
-  name?: string;
-  domain?: string;
-  description?: string;
-  customDescription?: string;
-  descriptionUpdatedAt?: string | Date;
-  isLoading: boolean;
-};
-
 export const selectOrganisationDetailsViewModel = createSelector(
   routerQuery.selectCurrentOrganisationId,
   organisationsFeature.selectLoadingOrganisation,
   organisationsFeature.selectCurrentOrganisation,
-  (
-    currentOrganisationId,
-    isLoading,
-    currentOrganisation,
-  ): OrganisationDetailsViewModel => ({
+  (currentOrganisationId, isLoading, currentOrganisation) => ({
     name: currentOrganisation?.name,
     domain: currentOrganisation?.domains[0],
     descriptionUpdatedAt: currentOrganisation?.customDescriptionUpdatedAt,
@@ -39,6 +20,16 @@ export const selectOrganisationDetailsViewModel = createSelector(
     customDescription: currentOrganisation?.customDescription,
     currentOrganisationId,
     details: getOrganisationDetailsTiles(currentOrganisation),
+    industryTags:
+      currentOrganisation?.data?.industry?.industries?.map((i) => ({
+        id: i,
+        name: i,
+        style: {},
+        icon: 'fa-regular fa-tag',
+        size: 'small' as const,
+      })) ?? [],
+    dealroomUrl: currentOrganisation?.data?.urls?.dealRoomUrl,
+    pitchbookUrl: currentOrganisation?.data?.urls?.pitchBookUrl,
     isLoading,
   }),
 );
