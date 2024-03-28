@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
+import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { ShortlistContributorEntity } from './entities/shortlist-contributor.entity';
 import { ShortlistOrganisationEntity } from './entities/shortlist-organisation.entity';
 import { ShortlistEntity } from './entities/shortlist.entity';
@@ -17,6 +18,7 @@ import { ShortlistsService } from './shortlists.service';
       ShortlistContributorEntity,
       OrganisationEntity,
     ]),
+    WebSocketsModule,
   ],
   controllers: [ShortlistsController],
   providers: [

@@ -8,6 +8,7 @@ import { CompanyStatus, PagedDataWithExtras, ShortlistType } from 'rvns-shared';
 import { Brackets, In, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
 import { BulkAddOrganisationsDto } from './dto/bulk-add-organisations.dto';
 import { DeleteOrganisationFromShortlistDto } from './dto/delete-organisation-from-shortlist.dto';
 import { ShortlistContributorEntity } from './entities/shortlist-contributor.entity';
@@ -52,6 +53,7 @@ export class ShortlistsService {
     private readonly shortlistOrganisationRepository: Repository<ShortlistOrganisationEntity>,
     @InjectRepository(ShortlistContributorEntity)
     private readonly shortlistContributorRepository: Repository<ShortlistContributorEntity>,
+    private readonly gatewayEventService: GatewayEventService,
   ) {}
 
   public async findAll(
@@ -342,6 +344,14 @@ export class ShortlistsService {
       });
     }
 
+    this.gatewayEventService.emit('resource-shortlists', {
+      eventType: 'removed-from-shortlist',
+      data: {
+        organisationIds: options?.organisations || [],
+        shortlistId: shortlistEntity.id,
+      },
+    });
+
     return await this.shortlistRepository.findOne({
       where: {
         id: shortlistEntity.id,
@@ -407,6 +417,14 @@ export class ShortlistsService {
         shortlistId: personalShortlist.id,
       }),
     );
+    this.gatewayEventService.emit('resource-shortlists', {
+      eventType: 'added-to-shortlist',
+      data: {
+        organisationId: organisationId,
+        shortlistId: personalShortlist.id,
+        shortlistName: personalShortlist.name,
+      },
+    });
   }
   private addStatsQuery(
     queryBuilder: SelectQueryBuilder<ShortlistEntity>,

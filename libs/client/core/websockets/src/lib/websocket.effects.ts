@@ -11,6 +11,7 @@ import { WebsocketResourceType } from '@app/rvns-web-sockets';
 import { concatLatestFrom, createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { filter, map, tap } from 'rxjs';
+import { OrganisationsActions } from '../../../../organisations/state/src';
 
 const URL_RESOURCE_CONFIG: Record<
   WebsocketResourceType,
@@ -18,6 +19,7 @@ const URL_RESOURCE_CONFIG: Record<
 > = {
   pipelines: (url) => url.includes('/companies/pipeline'),
   notes: (url) => url.includes('/notes') || url.includes('/companies/'),
+  shortlists: (url) => url.includes('/companies'),
 };
 
 @Injectable()
@@ -77,6 +79,29 @@ export class WebsocketEffects {
     this.websocketService.eventsOfType('note-created').pipe(
       map(({ data: id }) => {
         return NotesActions.liveCreateNote({ id });
+      }),
+    ),
+  );
+
+  private liveAddedToShortlistEvent$ = createEffect(() =>
+    this.websocketService.eventsOfType('added-to-shortlist').pipe(
+      map(({ data: { organisationId, shortlistId, shortlistName } }) => {
+        return OrganisationsActions.liveAddToShortlist({
+          organisationId,
+          shortlistId,
+          shortlistName,
+        });
+      }),
+    ),
+  );
+
+  private liveRemovedFromShortlistEvent$ = createEffect(() =>
+    this.websocketService.eventsOfType('removed-from-shortlist').pipe(
+      map(({ data: { organisationIds, shortlistId } }) => {
+        return OrganisationsActions.liveRemoveFromShortlist({
+          organisationIds,
+          shortlistId,
+        });
       }),
     ),
   );

@@ -83,6 +83,15 @@ export const OrganisationsActions = createActionGroup({
       data: Organisation;
     }>(),
     'Update Organisation Description Failure': props<FailurePayload>(),
+    'Live Add To Shortlist': props<{
+      organisationId: string;
+      shortlistId: string;
+      shortlistName: string;
+    }>(),
+    'Live Remove From Shortlist': props<{
+      organisationIds: string[];
+      shortlistId: string;
+    }>(),
   },
 });
 

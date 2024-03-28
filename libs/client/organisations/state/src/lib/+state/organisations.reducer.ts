@@ -92,6 +92,51 @@ export const organisationsFeature = createFeature({
     ),
 
     on(
+      OrganisationsActions.liveAddToShortlist,
+
+      (state, { organisationId, shortlistId, shortlistName }) => {
+        return OrganisationAdapter.updateOne(
+          {
+            id: organisationId,
+            changes: {
+              shortlists: [
+                ...(state.entities[organisationId]?.shortlists?.filter(
+                  (sl) => sl.id !== shortlistId,
+                ) || []),
+                { id: shortlistId, name: shortlistName },
+              ],
+            },
+          },
+          {
+            ...state,
+          },
+        );
+      },
+    ),
+
+    on(
+      OrganisationsActions.liveRemoveFromShortlist,
+
+      (state, { organisationIds, shortlistId }) => {
+        return OrganisationAdapter.updateMany(
+          organisationIds.map((id) => ({
+            id,
+            changes: {
+              shortlists: [
+                ...(state.entities[id]?.shortlists?.filter(
+                  (sl) => sl.id !== shortlistId,
+                ) || []),
+              ],
+            },
+          })),
+          {
+            ...state,
+          },
+        );
+      },
+    ),
+
+    on(
       OrganisationsActions.getOrganisations,
       ShortlistsActions.openShortlistOrganisationsTable,
       OrganisationsActions.openOrganisationsTable,

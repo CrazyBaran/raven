@@ -28,9 +28,28 @@ export interface OpportunityFieldChangedEvent
   eventType: 'opportunity-field-changed';
 }
 
+export interface AddedToShortlistEvent
+  extends BaseWebsocketEvent<{
+    organisationId: string;
+    shortlistId: string;
+    shortlistName: string;
+  }> {
+  eventType: 'added-to-shortlist';
+}
+
+export interface RemovedFromShortlistEvent
+  extends BaseWebsocketEvent<{
+    organisationIds: string[];
+    shortlistId: string;
+  }> {
+  eventType: 'removed-from-shortlist';
+}
+
 export type WebsocketEvent =
   | CreateNoteEvent
   | UpdateNoteEvent
   | DeleteNoteEvent
   | PipelineStageEvent
-  | OpportunityFieldChangedEvent;
+  | OpportunityFieldChangedEvent
+  | AddedToShortlistEvent
+  | RemovedFromShortlistEvent;
