@@ -21,11 +21,19 @@
     </div>
     <div class="flex-1">
       <kendo-chart class="max-h-[330px]">
-        <kendo-chart-tooltip
-          [shared]="true"
-          background="#D84661"
-          color="#fff"
-        />
+        <kendo-chart-tooltip [shared]="true" background="#D84661" color="#fff">
+          <ng-template
+            kendoChartSharedTooltipTemplate
+            let-category="category"
+            let-points="points"
+          >
+            <h4>{{ category | date }}</h4>
+
+            @for (point of points; track $index) {
+              <p>{{ point.value }}</p>
+            }
+          </ng-template>
+        </kendo-chart-tooltip>
 
         <kendo-chart-category-axis>
           <kendo-chart-category-axis-item

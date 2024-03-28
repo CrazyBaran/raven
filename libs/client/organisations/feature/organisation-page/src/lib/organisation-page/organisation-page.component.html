@@ -91,12 +91,13 @@
               [ngTemplateOutletContext]="{ type: 'public' }"
             />
           </div>
-          <div class="mb-6 grid gap-6">
+          <div class="grid gap-6">
             <app-organisation-funding-data-table />
-          </div>
-          <div class="mb-6 grid grid-cols-2 gap-6">
-            <app-organisation-news-table />
-            <app-organisation-employees-chart />
+
+            <div class="grid gap-6 lg:grid-cols-2">
+              <app-organisation-news-table />
+              <app-organisation-employees-chart />
+            </div>
           </div>
         </ng-template>
       </kendo-tabstrip-tab>

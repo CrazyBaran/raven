@@ -69,11 +69,19 @@
 
         <kendo-grid-column title="Investors" headerClass="!font-bold">
           <ng-template kendoGridCellTemplate let-fundingData>
-            @for (investor of fundingData.investors; track $index) {
-              <p class="line-clamp-1">
-                {{ investor }}
-              </p>
-            }
+            <p>
+              {{ fundingData.investors.join('; ') }}
+            </p>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          [width]="100"
+          title="Valuation"
+          headerClass="!font-bold"
+        >
+          <ng-template kendoGridCellTemplate let-fundingData>
+            <p>*{{ fundingData.postValuationInUsd || 0 | currency: 'USD' }}M</p>
           </ng-template>
         </kendo-grid-column>
       </kendo-grid>

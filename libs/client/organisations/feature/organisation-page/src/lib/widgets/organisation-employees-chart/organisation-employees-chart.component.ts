@@ -8,7 +8,7 @@ import {
 
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
 
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import { DatePipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import 'hammerjs';
@@ -23,6 +23,7 @@ import { organisationEmployeesChartsStore } from './organisation-employees-chart
     TooltipModule,
     NgClass,
     NgOptimizedImage,
+    DatePipe,
   ],
   templateUrl: './organisation-employees-chart.component.html',
   styleUrls: ['./organisation-employees-chart.component.scss'],
