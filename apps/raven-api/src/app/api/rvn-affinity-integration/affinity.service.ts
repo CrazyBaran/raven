@@ -136,6 +136,85 @@ export class AffinityService {
     this.logger.debug('Stored data in cache');
   }
 
+  public async getLatestInteraction(options: {
+    domains?: string[];
+    organizationIds?: number[];
+  }): Promise<Date> {
+    let organisationIds = options.organizationIds;
+
+    if (
+      (!organisationIds || organisationIds.length === 0) &&
+      options.domains &&
+      options.domains.length > 0
+    ) {
+      const organisations = await this.affinityCacheService.getByDomains(
+        options.domains,
+      );
+      if (!organisations || organisations.length === 0) {
+        return null;
+      }
+
+      organisationIds = organisations.map((org) => org.organizationDto.id);
+    }
+
+    let latestInteraction: Date = null;
+
+    for (const organisationId of organisationIds) {
+      const emailResponse = await this.affinityApiService.getInteractions(
+        organisationId,
+        AffinityInteractionType.Email,
+        new Date(
+          new Date().setFullYear(new Date().getFullYear() - 10),
+        ).toISOString(),
+        new Date().toISOString(),
+        1,
+      );
+
+      const emailDate =
+        (emailResponse as PaginatedAffinityEmailInteractionsDto).emails.length >
+        0
+          ? new Date(
+              (
+                emailResponse as PaginatedAffinityEmailInteractionsDto
+              ).emails[0].date,
+            )
+          : null;
+
+      if (emailDate && (!latestInteraction || emailDate > latestInteraction)) {
+        latestInteraction = emailDate;
+      }
+
+      const meetingResponse = await this.affinityApiService.getInteractions(
+        organisationId,
+        AffinityInteractionType.Meeting,
+        new Date(
+          new Date().setFullYear(new Date().getFullYear() - 10),
+        ).toISOString(),
+        new Date().toISOString(),
+        1,
+      );
+
+      const meetingDate =
+        (meetingResponse as PaginatedAffinityEventInteractionsDto).events
+          .length > 0
+          ? new Date(
+              (
+                meetingResponse as PaginatedAffinityEventInteractionsDto
+              ).events[0].date,
+            )
+          : null;
+
+      if (
+        meetingDate &&
+        (!latestInteraction || meetingDate > latestInteraction)
+      ) {
+        latestInteraction = meetingDate;
+      }
+    }
+
+    return latestInteraction;
+  }
+
   public async getInteractions(options: {
     domains?: string[];
     organizationIds?: number[];

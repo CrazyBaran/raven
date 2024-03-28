@@ -188,6 +188,18 @@ export class OrganisationController {
     );
   }
 
+  @Get(':id/interactions/latest')
+  @ApiOperation({
+    summary: 'Get date for the latest interaction for a single organisation',
+  })
+  @ApiResponse({ status: 200, description: 'The organisation interactions' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async findLatestInteraction(@Param('id') id: string): Promise<Date> {
+    return await this.organisationService.findLatestInteraction(id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a new organisation' })
   @ApiResponse({

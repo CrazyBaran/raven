@@ -735,6 +735,27 @@ export class OrganisationService {
     return interactions;
   }
 
+  public async findLatestInteraction(organisationId: string): Promise<Date> {
+    const domains = (
+      await this.organisationRepository.findOne({
+        where: { id: organisationId },
+        relations: ['organisationDomains'],
+      })
+    )?.domains;
+
+    const organisations = await this.affinityCacheService.getByDomains(domains);
+
+    if (organisations == null && organisations.length == 0) {
+      return null;
+    }
+
+    const latest = await this.affinityService.getLatestInteraction({
+      organizationIds: organisations.map((org) => org.organizationDto.id),
+    });
+
+    return latest;
+  }
+
   private async updateDomains(
     organisation: OrganisationEntity,
     domains: string[],
