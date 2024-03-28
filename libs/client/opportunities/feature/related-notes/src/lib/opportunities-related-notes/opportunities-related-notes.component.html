@@ -1,37 +1,39 @@
 <div class="flex h-full gap-3">
-  @if (vm().fields?.length || vm().isLoading) {
+  @if (vm().isLoading) {
+    <ui-loader class="h-full" />
+  } @else if (vm().fields?.length) {
     <div
       class="custom-scroll-on-hover -mr-1.5 h-full flex-1 overflow-auto pr-1.5"
     >
       <div class="flex flex-col gap-4">
-        @if (vm().isLoading) {
-          <app-note-field-skeleton />
-          <app-note-field-skeleton />
-          <app-note-field-skeleton />
-        } @else {
-          @if (vm().heatmapFields.length) {
-            <app-note-heatmap-field
-              [heatmap]="vm().heatMap"
-              (edit)="onHeatmapEdit()"
+        @if (vm().heatmapFields.length) {
+          <app-note-heatmap-field
+            [heatmap]="vm().heatMap"
+            (edit)="onHeatmapEdit()"
+          />
+        }
+        <ng-container [formGroup]="formGroup" *recreateView="fieldIds()">
+          @for (field of fields(); track field.formControlName) {
+            <app-note-field
+              [@delayedFadeIn]
+              (valueChange)="onValueChange(field.formControlName)"
+              [formControlName]="field.formControlName"
+              [proseMirrorSettings]="proseMirrorSettings"
+              [readonly]="!vm().canEditFields"
+              [field]="field"
+              [state]="getState(field.formControlName)"
             />
           }
-          <ng-container [formGroup]="formGroup">
-            @for (field of fields(); track field.formControlName) {
-              <app-note-field
-                [@delayedFadeIn]
-                (valueChange)="onValueChange(field.formControlName)"
-                [formControlName]="field.formControlName"
-                [proseMirrorSettings]="proseMirrorSettings"
-                [readonly]="!vm().canEditFields"
-                [field]="field"
-                [state]="getState(field.formControlName)"
-              />
-            }
-          </ng-container>
-        }
+        </ng-container>
       </div>
     </div>
-  }
 
-  <app-related-notes-container />
+    <app-related-notes-container class="ml-auto" />
+  } @else {
+    <div class="flex flex-1 items-center justify-center">
+      <p class="text-gray-500">
+        Tab doesn't exist for current opportunity status
+      </p>
+    </div>
+  }
 </div>

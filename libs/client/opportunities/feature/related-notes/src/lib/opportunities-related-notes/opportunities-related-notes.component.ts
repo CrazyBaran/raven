@@ -8,6 +8,7 @@ import {
   HostListener,
   QueryList,
   ViewChildren,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -30,7 +31,8 @@ import {
   imageUploader,
 } from '@app/client/shared/dynamic-form-util';
 import { UploadFileService } from '@app/client/shared/storage/data-access';
-import { delayedFadeIn, fadeIn } from '@app/client/shared/ui';
+import { LoaderComponent, delayedFadeIn, fadeIn } from '@app/client/shared/ui';
+import { RecreateViewDirective } from '@app/client/shared/ui-directives';
 import { selectQueryParam } from '@app/client/shared/util-router';
 import { distinctUntilChangedDeep } from '@app/client/shared/util-rxjs';
 import { TemplateActions } from '@app/client/templates/data-access';
@@ -57,6 +59,8 @@ import {
     NgClass,
     NoteHeatmapFieldComponent,
     JsonPipe,
+    LoaderComponent,
+    RecreateViewDirective,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
@@ -123,6 +127,13 @@ export class OpportunitiesRelatedNotesComponent {
     );
 
   protected fields = toSignal(this.fields$);
+
+  protected fieldIds = computed(
+    () => this.fields()?.map((x) => x.formControlName),
+    {
+      equal: _.isEqual,
+    },
+  );
 
   public constructor() {
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());

@@ -231,6 +231,18 @@ export const notesReducer = createReducer(
                       relatedNotesWithFields:
                         state.opportunityNotes.data?.[0]?.noteTabs?.[i]
                           ?.relatedNotesWithFields,
+                      noteFieldGroups: data.noteTabs[i].noteFieldGroups?.map(
+                        (group, j) => ({
+                          ...group,
+                          noteFields: group.noteFields?.map((field, h) => ({
+                            ...field,
+                            hideOnPipelineStages:
+                              state.opportunityNotes.data?.[0]?.noteTabs?.[i]
+                                ?.noteFieldGroups?.[j]?.noteFields?.[h]
+                                ?.hideOnPipelineStages,
+                          })),
+                        }),
+                      ),
                     })),
                   },
                 ] as WorkflowNoteData[],
