@@ -71,9 +71,14 @@
   </div>
 
   <div
-    class="organisation-details | bg-base-background flex h-full flex-col overflow-y-scroll"
+    class="organisation-details | bg-base-background relative flex h-full flex-col overflow-y-scroll"
     page-content
   >
+    @if (vm().lastChecked) {
+      <p class="text-subtle-text absolute right-0 mr-8 mt-2 text-xs">
+        Last DW sync: {{ vm().lastChecked | date: 'dd/MM/yyyy hh:mm a' }}
+      </p>
+    }
     <kendo-tabstrip
       *featureFlag="'organisationLayout'; else legacyLayout"
       class="organisation-layout-tabstrip"

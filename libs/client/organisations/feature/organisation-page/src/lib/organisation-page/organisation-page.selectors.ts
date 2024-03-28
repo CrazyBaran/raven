@@ -15,12 +15,14 @@ export const selectOrganisationPageViewModel = createSelector(
   organisationsFeature.selectLoadingOrganisation,
   organisationsFeature.selectUpdateLoading,
   opportunitiesFeature.selectCreate,
+  organisationsFeature.selectDataWarehouseLastUpdated,
   (
     currentOrganisation,
     currentOrganisationId,
     isLoading,
     updateLoading,
     { isLoading: createLoading },
+    dataWarehouseLastUpdated,
   ) => {
     const companyStatusDisplayName = currentOrganisation?.companyStatus
       ?.split('_')
@@ -55,6 +57,7 @@ export const selectOrganisationPageViewModel = createSelector(
       addToShortlistQueryParam: {
         [DialogUtil.queryParams.addToShortlist]: currentOrganisation?.id,
       },
+      lastChecked: dataWarehouseLastUpdated?.lastChecked ?? new Date(),
     };
   },
 );

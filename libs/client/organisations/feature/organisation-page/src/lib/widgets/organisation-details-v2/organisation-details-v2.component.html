@@ -1,18 +1,49 @@
 <div class="flex flex-col gap-6">
-  <div class="border-component-border border p-4">
+  <div class="border-component-border bg-component-bg border p-4">
     @if (vm().isLoading) {
       @for (item of 4 | times; track $index) {
         <kendo-skeleton />
       }
     } @else {
       <div class="grid grid-cols-4 gap-4">
-        <div>
+        <div class="flex flex-col">
           <h1 class="ml-2 text-xl">{{ vm().name }}</h1>
           <a [href]="'https://' + vm().domain" target="_blank">
-            <kendo-button class="mt-2" fillMode="link" themeColor="primary">
+            <kendo-button fillMode="link" themeColor="primary">
               {{ vm().domain }}
             </kendo-button>
           </a>
+          @if (type() === 'public') {
+            <ul class="mt-3">
+              @if (vm().dealroomUrl) {
+                <li class="px-3 py-2">
+                  <a [href]="vm().dealroomUrl!" target="_blank">
+                    <img
+                      title="Organisation DealRoom profile"
+                      ngSrc="assets/images/dealroom-icon.svg"
+                      alt="Dealroom logo"
+                      width="98"
+                      height="28"
+                    />
+                  </a>
+                </li>
+              }
+
+              @if (vm().pitchbookUrl) {
+                <li class="px-3 py-2">
+                  <a [href]="vm().pitchbookUrl!" target="_blank">
+                    <img
+                      title="Organisation Pitchbook profile"
+                      ngSrc="assets/images/pitchbook-icon.svg"
+                      alt="Pitchbook logo"
+                      width="106"
+                      height="30"
+                    />
+                  </a>
+                </li>
+              }
+            </ul>
+          }
         </div>
         <div class="relative col-start-2 col-end-5">
           @if (descriptionByType()) {
@@ -118,4 +149,6 @@
       </div>
     }
   </div>
+
+  <ui-tags-container [tags]="vm().industryTags" />
 </div>

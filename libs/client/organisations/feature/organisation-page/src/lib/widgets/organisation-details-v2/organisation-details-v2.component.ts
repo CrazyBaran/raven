@@ -9,10 +9,17 @@ import {
 } from '@angular/core';
 
 import { trigger } from '@angular/animations';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TilelayoutItemComponent, fadeIn } from '@app/client/shared/ui';
-import { ClampedChangedDirective } from '@app/client/shared/ui-directives';
+import {
+  TagsContainerComponent,
+  TilelayoutItemComponent,
+  fadeIn,
+} from '@app/client/shared/ui';
+import {
+  ClampedChangedDirective,
+  OpenInNewTabDirective,
+} from '@app/client/shared/ui-directives';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { Store } from '@ngrx/store';
@@ -32,6 +39,9 @@ import { selectOrganisationDetailsViewModel } from './organisation-details-v2.se
     ClampedChangedDirective,
     NgClass,
     TimesPipe,
+    TagsContainerComponent,
+    OpenInNewTabDirective,
+    NgOptimizedImage,
   ],
   templateUrl: './organisation-details-v2.component.html',
   styleUrls: ['./organisation-details-v2.component.scss'],
