@@ -25,6 +25,7 @@ import { DialogUtil } from '@app/client/shared/util';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { selectOrganisationDetailsViewModel } from './organisation-details-v2.selectors';
 
 @Component({
@@ -42,6 +43,7 @@ import { selectOrganisationDetailsViewModel } from './organisation-details-v2.se
     TagsContainerComponent,
     OpenInNewTabDirective,
     NgOptimizedImage,
+    TooltipModule,
   ],
   templateUrl: './organisation-details-v2.component.html',
   styleUrls: ['./organisation-details-v2.component.scss'],

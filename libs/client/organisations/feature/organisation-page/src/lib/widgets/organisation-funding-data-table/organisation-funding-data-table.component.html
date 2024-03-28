@@ -1,16 +1,6 @@
 <ui-tilelayout-item id="organisation-funding-data">
-  <header header class="flex items-center justify-between gap-2">
+  <header header>
     <h5 class="k-card-title">Funding data</h5>
-
-    <img
-      title="Source: Pitchbook"
-      kendoTooltip
-      position="left"
-      ngSrc="assets/images/pitchbook-logo-icon.svg"
-      alt="PitchBook logo"
-      width="26"
-      height="26"
-    />
   </header>
 
   <main body class="grid gap-6 lg:grid-cols-2">
@@ -82,6 +72,27 @@
         >
           <ng-template kendoGridCellTemplate let-fundingData>
             <p>*{{ fundingData.postValuationInUsd || 0 | currency: 'USD' }}M</p>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [width]="80" title="Source" headerClass="!font-bold">
+          <ng-template kendoGridCellTemplate let-fundingData>
+            @if (fundingData.dataSource) {
+              <img
+                [title]="'Source: ' + fundingData.dataSource"
+                kendoTooltip
+                position="left"
+                [ngSrc]="
+                  'assets/images/' + fundingData.dataSource + '-logo-icon.svg'
+                "
+                [alt]="fundingData.dataSource + ' logo'"
+                width="26"
+                height="26"
+                class="mx-auto"
+              />
+            } @else {
+              <p>-</p>
+            }
           </ng-template>
         </kendo-grid-column>
       </kendo-grid>

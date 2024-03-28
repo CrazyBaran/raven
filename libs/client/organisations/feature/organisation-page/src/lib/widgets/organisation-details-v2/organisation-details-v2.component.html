@@ -45,7 +45,9 @@
             </ul>
           }
         </div>
-        <div class="relative col-start-2 col-end-5">
+        <div
+          class="relative col-start-2 col-end-5 flex flex-col justify-between"
+        >
           @if (descriptionByType()) {
             <p
               class="ml-2 line-clamp-4"
@@ -61,7 +63,7 @@
             <p class="ml-2" [class.hidden]="!showMoreDescription()">
               {{ descriptionByType() }}
             </p>
-            <div class="mt-2 flex">
+            <div class="mt-2 flex justify-between">
               @if (isDescriptionClamped()) {
                 <kendo-button
                   (click)="toggleShowMoreBtn()"
@@ -93,6 +95,20 @@
                     iconClass="fa-solid fa-sharp fa-pen text-disabledText"
                   />
                 </a>
+              } @else if (vm().descriptionDataSource) {
+                <img
+                  [title]="'Source: ' + vm().descriptionDataSource"
+                  kendoTooltip
+                  position="left"
+                  [ngSrc]="
+                    'assets/images/' +
+                    vm().descriptionDataSource +
+                    '-logo-icon.svg'
+                  "
+                  [alt]="vm().descriptionDataSource + ' logo'"
+                  width="26"
+                  height="26"
+                />
               }
             </div>
           } @else {
@@ -104,7 +120,13 @@
               </p>
 
               <div class="mt-2 flex">
-                <div class="text-disabledText ml-auto flex items-center gap-2">
+                <a
+                  [routerLink]="['./']"
+                  queryParamsHandling="merge"
+                  [skipLocationChange]="true"
+                  [queryParams]="updateDescriptionParam()"
+                  class="text-disabledText ml-auto flex items-center gap-2"
+                >
                   <label [for]="addDescriptionBtn" class="text-sm">
                     Add Description
                   </label>
@@ -112,12 +134,8 @@
                     #addDescriptionBtn
                     fillMode="flat"
                     iconClass="fa-solid fa-sharp fa-pen text-disabledText"
-                    [routerLink]="['./']"
-                    queryParamsHandling="merge"
-                    [skipLocationChange]="true"
-                    [queryParams]="updateDescriptionParam()"
                   />
-                </div>
+                </a>
               </div>
             } @else {
               <p class="text-placeholder-text ml-2 h-[96px] text-center">

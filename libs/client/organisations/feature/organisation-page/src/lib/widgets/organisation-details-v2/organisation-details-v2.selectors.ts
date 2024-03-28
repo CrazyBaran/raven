@@ -30,6 +30,7 @@ export const selectOrganisationDetailsViewModel = createSelector(
       })) ?? [],
     dealroomUrl: currentOrganisation?.data?.urls?.dealRoomUrl,
     pitchbookUrl: currentOrganisation?.data?.urls?.pitchBookUrl,
+    descriptionDataSource: currentOrganisation?.data?.descriptionDataSource,
     isLoading,
   }),
 );
