@@ -171,6 +171,7 @@ export class ShortlistsService {
     shortlist.name = options.name;
     shortlist.description = options.description || '';
     shortlist.creatorId = userData.id;
+    shortlist.contributors = [userData];
 
     if (options.organisations?.length) {
       const queryBuilder =
