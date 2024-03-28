@@ -102,8 +102,7 @@ export class ReminderFormComponent {
       : this.companySource();
   });
 
-  public today: Date = new Date();
-
+  public today: Date = new Date(new Date().setHours(0, 0, 0, 0));
   public get assignButtonDisabled(): boolean {
     return !!this.form().controls.assignees.value?.includes(
       this.loggedUserTag()?.id,
