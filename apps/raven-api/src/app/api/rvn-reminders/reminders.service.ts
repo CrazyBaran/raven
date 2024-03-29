@@ -17,6 +17,7 @@ import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.se
 import { ReminderAssigneeEntity } from './entities/reminder-assignee.entity';
 import { ReminderEntity } from './entities/reminder.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
+import { GetRemindersStatsOptions } from './interfaces/get-reminders-stats.options';
 import {
   GetRemindersOptions,
   defaultGetRemindersOptions,
@@ -75,36 +76,7 @@ export class RemindersService {
     }
 
     if (options.organisationId) {
-      const ids = [options.organisationId];
-      options.opportunityId && ids.push(options.opportunityId);
-
-      const complexTagQueryBuilder =
-        this.complexTagRepository.createQueryBuilder('complexTags');
-      complexTagQueryBuilder.leftJoin('complexTags.tags', 'tags');
-      complexTagQueryBuilder.where('tags.organisationId = :organisationId', {
-        organisationId: options.organisationId,
-      });
-
-      if (options.opportunityId) {
-        complexTagQueryBuilder.orWhere('tags.id = :opportunityId', {
-          opportunityId: options.opportunityId,
-        });
-      }
-
-      complexTagQueryBuilder.leftJoinAndSelect('complexTags.tags', 'tags_full');
-      const existingComplexTags = await complexTagQueryBuilder.getMany();
-
-      const filteredTags = options.opportunityId
-        ? existingComplexTags.filter(
-            (ct) =>
-              ct.tags.length === ids.length &&
-              ct.tags.every((t: TagEntity) =>
-                t instanceof OrganisationTagEntity
-                  ? ids.includes(t.organisationId)
-                  : ids.includes(t.id),
-              ),
-          )
-        : existingComplexTags;
+      const filteredTags = await this.getTagsForOrganisation(options);
 
       if (filteredTags.length === 0) {
         return {
@@ -352,6 +324,53 @@ export class RemindersService {
       overdue: {
         forMe: overdueForMeCount,
         forOthers: overdueForOthersCount,
+        total: overdueForMeCount + overdueForOthersCount,
+      },
+    };
+  }
+
+  public async getStatsForOrganisation(
+    options: GetRemindersStatsOptions,
+  ): Promise<ReminderStats> {
+    const overdueForOrganisationQueryBuilder =
+      this.remindersRepository.createQueryBuilder('reminders');
+    overdueForOrganisationQueryBuilder
+      .where('reminders.dueDate < :date', {
+        date: new Date(),
+      })
+      .andWhere('reminders.completedDate IS NULL');
+
+    if (options.organisationId) {
+      const filteredTags = await this.getTagsForOrganisation(options);
+
+      if (filteredTags.length === 0) {
+        return {
+          overdue: {
+            total: 0,
+            forMe: null,
+            forOthers: null,
+          },
+        };
+      }
+
+      const tags = options.opportunityId
+        ? [filteredTags[0].id]
+        : [...filteredTags.map((tag) => tag.id)];
+      overdueForOrganisationQueryBuilder.andWhere(
+        'reminders.tagId IN (:...tagIds)',
+        {
+          tagIds: tags,
+        },
+      );
+    }
+
+    const overdueCount = await overdueForOrganisationQueryBuilder.getCount();
+
+    return {
+      overdue: {
+        forMe: null,
+        forOthers: null,
+        total: overdueCount,
       },
     };
   }
@@ -405,6 +424,43 @@ export class RemindersService {
 
       return complexTag;
     }
+  }
+
+  private async getTagsForOrganisation(
+    options: GetRemindersStatsOptions,
+  ): Promise<ComplexTagEntity[]> {
+    const ids = [options.organisationId];
+    options.opportunityId && ids.push(options.opportunityId);
+
+    const complexTagQueryBuilder =
+      this.complexTagRepository.createQueryBuilder('complexTags');
+    complexTagQueryBuilder.leftJoin('complexTags.tags', 'tags');
+    complexTagQueryBuilder.where('tags.organisationId = :organisationId', {
+      organisationId: options.organisationId,
+    });
+
+    if (options.opportunityId) {
+      complexTagQueryBuilder.orWhere('tags.id = :opportunityId', {
+        opportunityId: options.opportunityId,
+      });
+    }
+
+    complexTagQueryBuilder.leftJoinAndSelect('complexTags.tags', 'tags_full');
+    const existingComplexTags = await complexTagQueryBuilder.getMany();
+
+    const filteredTags = options.opportunityId
+      ? existingComplexTags.filter(
+          (ct) =>
+            ct.tags.length === ids.length &&
+            ct.tags.every((t: TagEntity) =>
+              t instanceof OrganisationTagEntity
+                ? ids.includes(t.organisationId)
+                : ids.includes(t.id),
+            ),
+        )
+      : existingComplexTags;
+
+    return filteredTags;
   }
 
   private addStatusQuery(

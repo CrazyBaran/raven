@@ -21,8 +21,9 @@ export interface ReminderTag {
 }
 
 export interface ReminderStatsEntity {
-  forMe: number;
-  forOthers: number;
+  forMe: number | null;
+  forOthers: number | null;
+  total?: number;
 }
 
 export interface ReminderStats {

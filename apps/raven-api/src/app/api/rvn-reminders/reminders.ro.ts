@@ -190,6 +190,9 @@ export class RemindersStatsEntityRO implements ReminderStatsEntity {
   @ApiProperty()
   public forOthers: number;
 
+  @ApiProperty()
+  public total: number;
+
   public static createFromStatsEntityData = (
     statsEntity: ReminderStatsEntity,
   ): ReminderStatsEntity =>

@@ -68,7 +68,7 @@ const selectToOthersCount = createSelector(
 const selectTotalCount = createSelector(
   selectToMeCount,
   selectToOthersCount,
-  (my, other) => my + other,
+  (my, other) => (my ?? 0) + (other ?? 0),
 );
 
 export const remindersQuery = {

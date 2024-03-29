@@ -34,6 +34,7 @@ import { ReminderEntity } from './entities/reminder.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
 import { ParseCompanyOpportunityTagPipe } from './pipes/parse-company-opportunity-tags.pipe';
 import { ParseGetRemindersOptionsPipe } from './pipes/parse-get-reminders-options.pipe';
+import { ParseGetRemindersStatsOptionsPipe } from './pipes/parse-get-reminders-stats-options.pipe';
 import { ParseReminderPipe } from './pipes/parse-reminder.pipe';
 import { PagedReminderRO, ReminderRO, RemindersStatsRO } from './reminders.ro';
 import { RemindersService } from './reminders.service';
@@ -82,21 +83,27 @@ export class RemindersController {
   @Get('/stats')
   @ApiOperation({
     summary: 'Get stats for my reminders',
-    description:
-      'Returns stats for reminders assigned to me or that I assigned to others.',
+    description: `Returns stats for reminders assigned to me or that I assigned to others when no params passed.
+       With organisationId (+opportunityId) returns stats for organisation.
+      `,
   })
   @ApiResponse({
     status: 200,
     description: 'Stats object',
     type: RemindersStatsRO,
   })
+  @ApiQuery({ name: 'organisationId', type: String, required: false })
+  @ApiQuery({ name: 'opportunityId', type: String, required: false })
   @ApiOAuth2(['openid'])
   @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
   public async getStats(
+    @Query(ParseGetRemindersStatsOptionsPipe) options?: Record<string, string>,
     @Identity(ParseUserFromIdentityPipe) userEntity?: UserEntity,
   ): Promise<ReminderStats> {
     return RemindersStatsRO.createFromStatsData(
-      await this.remindersService.getStatsForUser(userEntity),
+      options.organisationId
+        ? await this.remindersService.getStatsForOrganisation(options)
+        : await this.remindersService.getStatsForUser(userEntity),
     );
   }
 
