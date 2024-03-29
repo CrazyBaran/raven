@@ -144,15 +144,15 @@ export class OpportunityService {
       queryBuilder.skip(options.skip ?? 0).take(options.take ?? 10);
     }
 
-    const result = await queryBuilder.getManyAndCount();
+    const [opportunities, count] = await queryBuilder.getManyAndCount();
 
     const teamsForOpportunities =
-      await this.opportunityTeamService.getOpportunitiesTeams(result[0]);
+      await this.opportunityTeamService.getOpportunitiesTeams(opportunities);
 
     const defaultPipelineDefinition =
       await this.pipelineUtilityService.getDefaultPipelineDefinition();
     const items = await this.affinityEnricher.enrichOpportunities(
-      result[0],
+      opportunities,
       async (entity, data) => {
         const pipelineStage =
           await this.pipelineUtilityService.getPipelineStageOrDefault(
@@ -174,7 +174,7 @@ export class OpportunityService {
       },
     );
 
-    return { items, total: result[1] } as PagedOpportunityData;
+    return { items, total: count } as PagedOpportunityData;
   }
 
   public async findOne(id: string): Promise<OpportunityData | null> {
@@ -240,6 +240,10 @@ export class OpportunityService {
 
     const defaultPipelineDefinition =
       await this.pipelineUtilityService.getDefaultPipelineDefinition();
+
+    const teamsForOpportunities =
+      await this.opportunityTeamService.getOpportunitiesTeams(opportunities);
+
     const items = await this.affinityEnricher.enrichOpportunities(
       opportunities,
       async (entity, data) => {
@@ -257,6 +261,7 @@ export class OpportunityService {
             order: pipelineStage.order,
             mappedFrom: pipelineStage.mappedFrom,
           },
+          team: teamsForOpportunities[entity.id],
         };
         return data;
       },
