@@ -34,6 +34,13 @@ export const getLoadNewsData =
     organisationService.getNews(organisationId, params).pipe(
       map((response) => ({
         total: response.data?.total ?? 0,
-        data: response.data?.items ?? [],
+        data:
+          response.data?.items.map((item) => {
+            const newsArticleUrl = item.newsArticleUrl
+              ? new URL(item.newsArticleUrl).hostname.replace('www.', '')
+              : '';
+
+            return { ...item, domain: newsArticleUrl };
+          }) ?? [],
       })),
     );

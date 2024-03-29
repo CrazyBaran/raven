@@ -45,14 +45,10 @@
                 {{ news.title }}
               </p>
 
-              <p class="text-sm">{{ news.domain }}</p>
+              <p class="text-sm">
+                {{ news.publicationDate | whenDate }} - {{ news.domain }}
+              </p>
             </a>
-          </ng-template>
-        </kendo-grid-column>
-
-        <kendo-grid-column [width]="100" title="When" headerClass="!font-bold">
-          <ng-template kendoGridCellTemplate let-news>
-            <p>{{ news.publicationDate | whenDate }}</p>
           </ng-template>
         </kendo-grid-column>
       </kendo-grid>
