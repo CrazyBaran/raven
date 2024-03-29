@@ -140,9 +140,8 @@ export class OrganisationService {
       await this.affinityEnricher.enrichOrganisations(
         organisations,
         async (entity, data) => {
-          data.opportunities.sort(
-            (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
-          );
+          this.sortOpportunities(data);
+
           for (const opportunity of data.opportunities) {
             const pipelineStage =
               await this.pipelineUtilityService.getPipelineStageOrDefault(
@@ -207,9 +206,8 @@ export class OrganisationService {
       await this.affinityEnricher.enrichOrganisation(
         organisation,
         async (entity, data) => {
-          data.opportunities.sort(
-            (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
-          );
+          this.sortOpportunities(data);
+
           for (const opportunity of data.opportunities) {
             const pipelineStage =
               await this.pipelineUtilityService.getPipelineStageOrDefault(
@@ -331,7 +329,12 @@ export class OrganisationService {
     if (options.domains) {
       await this.updateDomains(organisation, options.domains);
     }
-    if (Object.prototype.hasOwnProperty.call(options, 'companyStatus')) {
+
+    const overridingCompanyStatus = Object.prototype.hasOwnProperty.call(
+      options,
+      'companyStatus',
+    );
+    if (overridingCompanyStatus) {
       organisation.companyStatusOverride = options.companyStatus;
 
       if (options.companyStatus === CompanyStatus.PASSED) {
@@ -349,6 +352,10 @@ export class OrganisationService {
       where: { id: organisation.id },
       relations: ['organisationDomains'],
     });
+
+    updatedOrganisation.companyStatusOverride = overridingCompanyStatus
+      ? options.companyStatus
+      : undefined;
 
     return updatedOrganisation;
   }
@@ -754,6 +761,28 @@ export class OrganisationService {
     });
 
     return latest;
+  }
+
+  private sortOpportunities(data: OrganisationDataWithOpportunities): void {
+    data.opportunities.sort((a, b) => {
+      if (
+        b.previousPipelineStageId === null &&
+        a.previousPipelineStageId !== null
+      )
+        return 1;
+      if (
+        b.previousPipelineStageId === null &&
+        a.previousPipelineStageId === null
+      )
+        return 0;
+      if (
+        b.previousPipelineStageId !== null &&
+        a.previousPipelineStageId === null
+      )
+        return -1;
+
+      return b.updatedAt.getTime() - a.updatedAt.getTime();
+    });
   }
 
   private async updateDomains(
