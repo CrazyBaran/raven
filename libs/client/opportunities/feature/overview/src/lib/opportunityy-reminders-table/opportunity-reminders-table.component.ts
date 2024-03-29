@@ -12,12 +12,18 @@ import { PanelBarModule } from '@progress/kendo-angular-layout';
 import { RemindersLightTableComponent } from '@app/client/reminders/ui';
 import { DialogUtil } from '@app/client/shared/util';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { BadgeModule } from '@progress/kendo-angular-indicators';
 import { opportunityRemindersTableStore } from './opportunity-reminders-table.store';
 
 @Component({
   selector: 'app-opportunity-reminders-table',
   standalone: true,
-  imports: [PanelBarModule, RemindersLightTableComponent, ButtonModule],
+  imports: [
+    PanelBarModule,
+    RemindersLightTableComponent,
+    ButtonModule,
+    BadgeModule,
+  ],
   templateUrl: './opportunity-reminders-table.component.html',
   styleUrls: ['./opportunity-reminders-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

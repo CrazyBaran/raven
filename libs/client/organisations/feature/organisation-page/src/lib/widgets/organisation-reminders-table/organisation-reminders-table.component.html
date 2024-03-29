@@ -1,8 +1,23 @@
 <kendo-panelbar class="white-tilelayout">
   <kendo-panelbar-item [expanded]="false" title="Reminders">
     <ng-template kendoPanelBarItemTitle>
-      <h5 class="k-card-title !m-0 flex w-full items-center !text-black">
+      <h5 class="k-card-title !m-0 flex w-full items-center gap-2 !text-black">
         Reminders
+
+        @if (organisationRemindersStore.statsCount()) {
+          <kendo-badge-container class="w-5">
+            <kendo-badge
+              class="-mt-3"
+              rounded="full"
+              size="medium"
+              fill="solid"
+              themeColor="error"
+              position="inside"
+            >
+              {{ organisationRemindersStore.statsCount() }}
+            </kendo-badge>
+          </kendo-badge-container>
+        }
         <kendo-button
           size="small"
           class="ml-auto mr-2"
