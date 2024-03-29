@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GenericResponse } from '@app/rvns-api';
 
+import * as _ from 'lodash';
 import { PagedData } from 'rvns-shared';
 import { forkJoin, map, Observable } from 'rxjs';
 import { CreateReminderDto } from './models/create-reminder.model';
@@ -81,7 +82,12 @@ export class RemindersService {
     );
   }
 
-  public getRemindersStats(): Observable<GenericResponse<ReminderStats>> {
-    return this.http.get<GenericResponse<ReminderStats>>(`${this.url}/stats`);
+  public getRemindersStats(params?: {
+    organisationId?: string;
+    opportunityId?: string;
+  }): Observable<GenericResponse<ReminderStats>> {
+    return this.http.get<GenericResponse<ReminderStats>>(`${this.url}/stats`, {
+      params: _.omitBy(params, _.isUndefined),
+    });
   }
 }

@@ -7,7 +7,7 @@ import {
 } from '@app/client/reminders/data-access';
 import { RemindersActions } from '@app/client/reminders/state';
 import { RemindersLightTableRow } from '@app/client/reminders/ui';
-import { ReminderUtils } from '@app/client/reminders/utils';
+import { ReminderUtils, withReminderStats } from '@app/client/reminders/utils';
 import { LoadDataMethod, withTable } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { tagsQuery } from '@app/client/tags/state';
@@ -49,6 +49,7 @@ export const opportunityRemindersTableStore = signalStore(
       )),
   })),
   withTable<ReminderDto>(),
+  withReminderStats(),
   withComputed((store, ngrxStore = inject(Store)) => ({
     data: computed(() => {
       const loggedUserTag = ngrxStore.selectSignal(
@@ -82,6 +83,7 @@ export const opportunityRemindersTableStore = signalStore(
         ),
       );
       store.refresh(resetPage$);
+      store.loadStats(store.additionalParams);
     },
   })),
 );

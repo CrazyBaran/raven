@@ -11,12 +11,17 @@ import { PanelBarModule } from '@progress/kendo-angular-layout';
 import { RemindersLightTableComponent } from '@app/client/reminders/ui';
 import { DialogUtil } from '@app/client/shared/util';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { BadgeModule } from '@progress/kendo-angular-indicators';
 import { organisationRemindersTableStore } from './organisation-reminders-table.store';
-
 @Component({
   selector: 'app-organisation-reminders-table',
   standalone: true,
-  imports: [PanelBarModule, RemindersLightTableComponent, ButtonModule],
+  imports: [
+    PanelBarModule,
+    RemindersLightTableComponent,
+    ButtonModule,
+    BadgeModule,
+  ],
   templateUrl: './organisation-reminders-table.component.html',
   styleUrls: ['./organisation-reminders-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
