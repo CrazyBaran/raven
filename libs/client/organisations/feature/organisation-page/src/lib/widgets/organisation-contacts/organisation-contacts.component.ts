@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  ViewEncapsulation,
-} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
 
@@ -28,13 +22,9 @@ import { organisationContactsStore } from './organisation-contacts.store';
   templateUrl: './organisation-contacts.component.html',
   styleUrls: ['./organisation-contacts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None,
-  providers: [organisationContactsStore],
 })
 export class OrganisationContactsComponent {
   public organisationContactsStore = inject(organisationContactsStore);
-  public router = inject(Router);
-  public activatedRoute = inject(ActivatedRoute);
 
   public getMailto(email: string): string {
     return `mailto:${email}`;

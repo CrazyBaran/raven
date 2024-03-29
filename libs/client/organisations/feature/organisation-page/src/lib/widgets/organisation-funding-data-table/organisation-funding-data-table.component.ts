@@ -32,7 +32,6 @@ import { organisationFundingDataTableStore } from './organisation-funding-data-t
   templateUrl: './organisation-funding-data-table.component.html',
   styleUrls: ['./organisation-funding-data-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [organisationFundingDataTableStore],
 })
 export class OrganisationFundingDataTableComponent {
   public organisationFundingDataStore = inject(

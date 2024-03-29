@@ -72,6 +72,8 @@
                 >
                   Show {{ showMoreDescription() ? 'less' : 'more' }}
                 </kendo-button>
+              } @else {
+                <div></div>
               }
 
               @if (type() === 'details') {
@@ -127,11 +129,8 @@
                   [queryParams]="updateDescriptionParam()"
                   class="text-disabledText ml-auto flex items-center gap-2"
                 >
-                  <label [for]="addDescriptionBtn" class="text-sm">
-                    Add Description
-                  </label>
+                  <p class="text-sm">Add Description</p>
                   <kendo-button
-                    #addDescriptionBtn
                     fillMode="flat"
                     iconClass="fa-solid fa-sharp fa-pen text-disabledText"
                   />
@@ -149,21 +148,21 @@
   </div>
 
   <div class="grid grid-cols-[repeat(auto-fit,minmax(125px,1fr))] gap-3">
-    @for (detail of vm().details; track detail.label) {
+    @for (tile of detailTiles(); track tile.label) {
       <div
         [@fadeIn]
         class="px-2 py-3"
-        [style.background-color]="detail.background"
+        [style.background-color]="tile.background"
       >
         @if (vm().isLoading) {
           <kendo-skeleton width="60%" height="24px" />
         } @else {
-          <h1 class="text-lg" [class.text-placeholder-text]="!detail.label">
-            {{ detail.label || 'No Data' }}
+          <h1 class="text-lg" [class.text-placeholder-text]="!tile.label">
+            {{ tile.label || 'No Data' }}
           </h1>
         }
 
-        <p class="!m-0 text-sm">{{ detail.subLabel }}</p>
+        <p class="!m-0 text-sm">{{ tile.subLabel }}</p>
       </div>
     }
   </div>

@@ -6,4 +6,5 @@ export type OrganisationFundingData = {
   readonly domain: string;
   readonly round: string;
   readonly investors: Array<string>;
+  readonly postValuationInUsd: number;
 };

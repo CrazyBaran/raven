@@ -3,7 +3,6 @@ import {
   Component,
   computed,
   inject,
-  ViewEncapsulation,
 } from '@angular/core';
 
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
@@ -28,8 +27,6 @@ import { organisationEmployeesChartsStore } from './organisation-employees-chart
   templateUrl: './organisation-employees-chart.component.html',
   styleUrls: ['./organisation-employees-chart.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None,
-  providers: [organisationEmployeesChartsStore],
 })
 export class OrganisationChartsComponent {
   public organisationChartsStore = inject(organisationEmployeesChartsStore);

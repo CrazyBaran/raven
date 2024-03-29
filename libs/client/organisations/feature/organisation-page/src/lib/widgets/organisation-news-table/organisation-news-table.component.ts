@@ -22,7 +22,6 @@ import { organisationNewsTableStore } from './organisation-news-table.store';
   templateUrl: './organisation-news-table.component.html',
   styleUrls: ['./organisation-news-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [organisationNewsTableStore],
 })
 export class OrganisationNewsTableComponent {
   public organisationNewsStore = inject(organisationNewsTableStore);

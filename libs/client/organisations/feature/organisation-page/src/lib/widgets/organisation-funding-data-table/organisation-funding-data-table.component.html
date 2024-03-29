@@ -71,7 +71,13 @@
           headerClass="!font-bold"
         >
           <ng-template kendoGridCellTemplate let-fundingData>
-            <p>*{{ fundingData.postValuationInUsd || 0 | currency: 'USD' }}M</p>
+            @if (fundingData.postValuationInUsd) {
+              <p>
+                *{{ fundingData.postValuationInUsd || 0 | currency: 'USD' }}M
+              </p>
+            } @else {
+              <p>No data</p>
+            }
           </ng-template>
         </kendo-grid-column>
 

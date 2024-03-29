@@ -40,7 +40,11 @@ import { TabStripModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { filter } from 'rxjs';
 import { ORGANISATION_WIDGETS } from '../widgets';
+import { organisationContactsStore } from '../widgets/organisation-contacts/organisation-contacts.store';
 import { OrganisationDetailsV2Component } from '../widgets/organisation-details-v2/organisation-details-v2.component';
+import { organisationEmployeesChartsStore } from '../widgets/organisation-employees-chart/organisation-employees-chart.store';
+import { organisationFundingDataTableStore } from '../widgets/organisation-funding-data-table/organisation-funding-data-table.store';
+import { organisationNewsTableStore } from '../widgets/organisation-news-table/organisation-news-table.store';
 import { OrganisationShortlistsTableComponent } from '../widgets/organisation-shortlists-table/organisation-shortlists-table.component';
 import { selectOrganisationPageViewModel } from './organisation-page.selectors';
 
@@ -67,6 +71,12 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
   styleUrls: ['./organisation-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  providers: [
+    organisationEmployeesChartsStore,
+    organisationFundingDataTableStore,
+    organisationNewsTableStore,
+    organisationContactsStore,
+  ],
   animations: [trigger('fadeIn', fadeIn())],
 })
 export class OrganisationPageComponent {
