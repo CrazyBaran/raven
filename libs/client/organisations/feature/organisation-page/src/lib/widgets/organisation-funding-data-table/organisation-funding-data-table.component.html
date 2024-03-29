@@ -65,15 +65,17 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column
-          [width]="100"
-          title="Valuation"
-          headerClass="!font-bold"
-        >
+        <kendo-grid-column [width]="100" headerClass="!font-bold">
+          <ng-template kendoGridHeaderTemplate>
+            <p title="Estimate values" kendoTooltip position="top">
+              Valuation*
+            </p>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-fundingData>
             @if (fundingData.postValuationInUsd) {
               <p>
-                *{{ fundingData.postValuationInUsd || 0 | currency: 'USD' }}M
+                {{ fundingData.postValuationInUsd || 0 | currency: 'USD' }}M
               </p>
             } @else {
               <p>No data</p>
