@@ -55,6 +55,12 @@ export const RemindersActions = createActionGroup({
     }>(),
     'Reload Reminders Table Failure': props<FailurePayload>(),
 
+    'Silently Reload Reminders Table': emptyProps(),
+    'Silently Reload Reminders Table Success': props<{
+      data: PagedData<ReminderDto>;
+    }>(),
+    'Silently Reload Reminders Table Failure': props<FailurePayload>(),
+
     'Open Reminder Table': emptyProps(),
 
     'Get Reminders Stats': emptyProps(),
@@ -67,5 +73,7 @@ export const RemindersActions = createActionGroup({
       };
     }>(),
     'Get Reminders Stats Failure': props<FailurePayload>(),
+
+    'Any Reminder Websocket Event': emptyProps(),
   },
 });

@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideFileFeature } from '@app/client/files/feature/state';
 import { provideNotesFeature } from '@app/client/notes/state';
 import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
@@ -21,7 +20,6 @@ export const ORGANISATION_ROUTES: Routes = [
       provideOpportunitiesFeature(),
       providePipelinesFeature(),
       provideTagsFeature(),
-      provideWebsocketEffects(),
       provideRemindersFeature(),
     ],
     children: [

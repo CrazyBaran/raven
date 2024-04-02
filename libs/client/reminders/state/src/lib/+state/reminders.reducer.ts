@@ -250,8 +250,19 @@ export const remindersFeature = createFeature({
       ...state,
       loadingStates: { ...state.loadingStates, getStats: false },
     })),
+    ///////////////////////
+    on(
+      RemindersActions.silentlyReloadRemindersTableSuccess,
+      (state, { data: { items, total } }) =>
+        remindersAdapter.upsertMany(items, {
+          ...state,
+          table: {
+            total: total,
+            ids: items.map((x) => x.id),
+          },
+        }),
+    ),
   ),
-
   extraSelectors: ({ selectRemindersState }) => ({
     ...remindersAdapter.getSelectors(selectRemindersState),
   }),

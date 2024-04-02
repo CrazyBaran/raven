@@ -1,5 +1,4 @@
 import { Route } from '@angular/router';
-import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideOpportunitiesFeature } from '@app/client/opportunities/data-access';
 import { providePipelinesFeature } from '@app/client/pipelines/state';
 import { provideShortlistsFeature } from '@app/client/shortlists/state';
@@ -10,7 +9,6 @@ export const PIPELINES_ROUTES: Route[] = [
   {
     path: '',
     providers: [
-      provideWebsocketEffects(),
       provideOpportunitiesFeature(),
       providePipelinesFeature(),
       provideTagsFeature(),
