@@ -19,5 +19,5 @@ export const environment: Environment = {
   websocketUrl: 'https://app-raven-prod-uks.azurewebsites.net/',
   shortlistsFeature: true,
   remindersFeature: true,
-  organisationLayout: false,
+  organisationLayout: true,
 };
