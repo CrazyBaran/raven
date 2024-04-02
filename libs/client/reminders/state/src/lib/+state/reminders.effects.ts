@@ -231,7 +231,10 @@ export const createReminder$ = createEffect(
 export const getRemindersStats$ = createEffect(
   (actions$ = inject(Actions), remindersService = inject(RemindersService)) => {
     return actions$.pipe(
-      ofType(RemindersActions.getRemindersStats),
+      ofType(
+        RemindersActions.getRemindersStats,
+        RemindersActions.anyReminderWebsocketEvent,
+      ),
       switchMap(() =>
         remindersService.getRemindersStats().pipe(
           map((response) => {
@@ -257,39 +260,6 @@ export const getRemindersStats$ = createEffect(
   },
 );
 
-export const showReminderSuccessMessage$ = createEffect(
-  (actions$ = inject(Actions)) => {
-    return actions$.pipe(
-      ofType(
-        RemindersActions.deleteReminderSuccess,
-        RemindersActions.updateReminderSuccess,
-        RemindersActions.createReminderSuccess,
-        RemindersActions.completeReminderSuccess,
-      ),
-      filter(({ message }) => !!message),
-      map(({ message }) => {
-        return NotificationsActions.showSuccessNotification({
-          content: message!,
-        });
-      }),
-    );
-  },
-  {
-    functional: true,
-  },
-);
-
-export const reloadRemindersTableEvents$ = createEffect(
-  (actions$ = inject(Actions)) => {
-    return actions$.pipe(
-      ofType(RemindersActions.createReminderSuccess),
-      map(() => RemindersActions.reloadRemindersTable()),
-    );
-  },
-  {
-    functional: true,
-  },
-);
 export const reloadRemindersTable$ = createEffect(
   (
     actions$ = inject(Actions),
@@ -325,6 +295,64 @@ export const reloadRemindersTable$ = createEffect(
           }),
         ),
       ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const silentReloadRemindersTable$ = createEffect(
+  (
+    actions$ = inject(Actions),
+    store = inject(Store),
+    remindersService = inject(RemindersService),
+  ) => {
+    return actions$.pipe(
+      ofType(RemindersActions.silentlyReloadRemindersTable),
+      concatLatestFrom(() =>
+        store.select(remindersQuery.selectReloadTableParams),
+      ),
+      switchMap(([, query]) =>
+        remindersService.getReminders(query).pipe(
+          map((response) => {
+            return RemindersActions.silentlyReloadRemindersTableSuccess({
+              data: response.data!,
+            });
+          }),
+          catchError((error) => {
+            console.error('Error', error);
+            return of(
+              RemindersActions.silentlyReloadRemindersTableFailure({
+                error,
+                message: 'Load More Reminders Failed.',
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const showReminderSuccessMessage$ = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(
+        RemindersActions.deleteReminderSuccess,
+        RemindersActions.updateReminderSuccess,
+        RemindersActions.createReminderSuccess,
+        RemindersActions.completeReminderSuccess,
+      ),
+      filter(({ message }) => !!message),
+      map(({ message }) => {
+        return NotificationsActions.showSuccessNotification({
+          content: message!,
+        });
+      }),
     );
   },
   {

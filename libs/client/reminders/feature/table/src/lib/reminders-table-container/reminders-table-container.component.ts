@@ -106,6 +106,15 @@ export class RemindersTableContainerComponent {
         this.remindersTable.checkedRows$.next([]);
         this.store.dispatch(RemindersActions.reloadRemindersTable());
       });
+
+    this.actions$
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(RemindersActions.anyReminderWebsocketEvent),
+      )
+      .subscribe(() => {
+        this.store.dispatch(RemindersActions.silentlyReloadRemindersTable());
+      });
   }
 
   protected onLoadMore($event: { skip: number; take: number }): void {

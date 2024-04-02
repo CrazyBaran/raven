@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { computed, inject } from '@angular/core';
 import { RemindersService } from '@app/client/reminders/data-access';
+import { RemindersActions } from '@app/client/reminders/state';
 import { ReminderStats } from '@app/rvns-reminders';
 import { tapResponse } from '@ngrx/component-store';
+import { Actions, ofType } from '@ngrx/effects';
 import {
   patchState,
   signalStoreFeature,
@@ -35,8 +37,17 @@ export function withReminderStats() {
     withMethods((store, remindersService = inject(RemindersService)) => ({
       setStatsParams: rxMethod<{
         organisationId: string | undefined;
-        opportunityId: string | undefined;
-      }>(tap((params) => patchState(store, { reminderStatsParams: params }))),
+        opportunityId?: string | undefined;
+      }>(
+        tap((params) =>
+          patchState(store, {
+            reminderStatsParams: {
+              organisationId: params.organisationId,
+              opportunityId: params.opportunityId,
+            },
+          }),
+        ),
+      ),
       loadStats: rxMethod<
         | {
             organisationId: string | undefined;
@@ -57,10 +68,30 @@ export function withReminderStats() {
           ),
         ),
       ),
+      refreshStats: rxMethod(
+        pipe(
+          switchMap(() =>
+            remindersService
+              .getRemindersStats(store.reminderStatsParams()!)
+              .pipe(
+                tapResponse({
+                  next: (stats) => patchState(store, { stats: stats.data }),
+                  error: console.error,
+                }),
+              ),
+          ),
+        ),
+      ),
     })),
-    withHooks((store) => ({
+    withHooks((store, actions$ = inject(Actions)) => ({
       onInit: (): void => {
         store.loadStats(store.reminderStatsParams);
+
+        const refreshActions$ = actions$.pipe(
+          ofType(RemindersActions.anyReminderWebsocketEvent),
+        );
+
+        store.refreshStats(refreshActions$);
       },
     })),
   );

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { provideWebsocketEffects } from '@app/client/core/websockets';
 import { provideRemindersFeature } from '@app/client/reminders/state';
 import { HomeComponent } from './home.component';
 
@@ -7,7 +8,7 @@ export const HOME_ROUTES: Routes = [
   {
     path: '',
     component: HomeComponent,
-    providers: [provideRemindersFeature()],
+    providers: [provideRemindersFeature(), provideWebsocketEffects()],
     children: [
       {
         path: '',

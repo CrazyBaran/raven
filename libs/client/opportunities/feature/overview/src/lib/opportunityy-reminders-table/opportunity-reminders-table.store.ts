@@ -80,10 +80,11 @@ export const opportunityRemindersTableStore = signalStore(
           RemindersActions.deleteReminderSuccess,
           RemindersActions.completeReminderSuccess,
           RemindersActions.updateReminderSuccess,
+          RemindersActions.anyReminderWebsocketEvent,
         ),
       );
       store.refresh(resetPage$);
-      store.loadStats(store.additionalParams);
+      store.setStatsParams(store.additionalParams);
     },
   })),
 );

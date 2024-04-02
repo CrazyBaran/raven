@@ -6,11 +6,12 @@ import { ENVIRONMENT, Environment } from '@app/client/core/environment';
 import { WebsocketService } from '@app/client/core/websockets';
 import { NotesActions, notesQuery } from '@app/client/notes/state';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
+import { RemindersActions } from '@app/client/reminders/state';
 import { selectUrl } from '@app/client/shared/util-router';
 import { WebsocketResourceType } from '@app/rvns-web-sockets';
 import { concatLatestFrom, createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { filter, map, tap } from 'rxjs';
+import { filter, map, merge, tap } from 'rxjs';
 import { OrganisationsActions } from '../../../../organisations/state/src';
 
 const URL_RESOURCE_CONFIG: Record<
@@ -20,7 +21,7 @@ const URL_RESOURCE_CONFIG: Record<
   pipelines: (url) => url.includes('/companies/pipeline'),
   notes: (url) => url.includes('/notes') || url.includes('/companies/'),
   shortlists: (url) => url.includes('/companies'),
-  reminders: (_url) => false, // TODO: Frontend implementation
+  reminders: (_url) => true,
 };
 
 @Injectable()
@@ -30,15 +31,17 @@ export class WebsocketEffects {
       this.store.select(selectUrl).pipe(
         filter((url) => !!url),
         tap((url) => {
-          const resource = Object.entries(URL_RESOURCE_CONFIG).find(
-            ([_, isMatch]) => isMatch(url),
-          )?.[0] as WebsocketResourceType;
+          const resource = Object.entries(URL_RESOURCE_CONFIG)
+            .filter(([_, isMatch]) => isMatch(url))
+            .map(([resource]) => resource) as WebsocketResourceType[];
 
-          if (resource) {
+          if (resource.length) {
             if (!this.websocketService.connected()) {
               this.websocketService.connect(this.environment.websocketUrl);
             }
-            this.websocketService.joinResourceEvents(resource);
+            resource.forEach((resource) =>
+              this.websocketService.joinResourceEvents(resource),
+            );
           } else if (this.websocketService.connected()) {
             this.websocketService.disconnect();
           }
@@ -103,6 +106,18 @@ export class WebsocketEffects {
           organisationIds,
           shortlistId,
         });
+      }),
+    ),
+  );
+
+  private reminderStatsRefresh = createEffect(() =>
+    merge(
+      this.websocketService.eventsOfType('reminder-created'),
+      this.websocketService.eventsOfType('reminder-updated'),
+      this.websocketService.eventsOfType('reminder-deleted'),
+    ).pipe(
+      map(() => {
+        return RemindersActions.anyReminderWebsocketEvent();
       }),
     ),
   );
