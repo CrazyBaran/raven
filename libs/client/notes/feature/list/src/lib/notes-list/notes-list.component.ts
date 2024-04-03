@@ -34,6 +34,6 @@ export class NotesListComponent {
   public constructor(private readonly store: Store) {}
 
   public handleOpenNotepad(): void {
-    this.store.dispatch(ShelfActions.openNotepad());
+    this.store.dispatch(ShelfActions.openNotepad({}));
   }
 }

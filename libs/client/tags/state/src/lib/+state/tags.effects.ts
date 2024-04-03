@@ -15,6 +15,7 @@ import {
 } from 'rxjs';
 import { TagsActions } from './tags.actions';
 import { tagsFeature } from './tags.reducer';
+import { tagsQuery } from './tags.selectors';
 
 export const loadTags = createEffect(
   (actions$ = inject(Actions), tagsService = inject(TagsService)) => {
@@ -104,6 +105,46 @@ export const createTag = createEffect(
             );
           }),
         ),
+      ),
+    );
+  },
+  {
+    functional: true,
+  },
+);
+
+export const getTagByOrganisationIdIfNotLoaded = createEffect(
+  (
+    actions$ = inject(Actions),
+    store = inject(Store),
+    tagsService = inject(TagsService),
+  ) => {
+    return actions$.pipe(
+      ofType(TagsActions.getTagByOrganisationIdIfNotLoaded),
+      concatLatestFrom((action) =>
+        store.select(
+          tagsQuery.selectTagsByOrganisationId(action.organisationId),
+        ),
+      ),
+      filter(([, tags]) => !tags.filter((t) => t?.type === 'company')?.length),
+      switchMap(([{ organisationId }]) =>
+        tagsService
+          .getTags({
+            organisationId,
+          })
+          .pipe(
+            map((response) => {
+              return TagsActions.getTagByOrganisationIdIfNotLoadedSuccess({
+                data: response.data || [],
+              });
+            }),
+            catchError((error) => {
+              console.error('Error', error);
+              return of(
+                TagsActions.getTagByOrganisationIdIfNotLoadedFailure({ error }),
+              );
+            }),
+          ),
       ),
     );
   },
