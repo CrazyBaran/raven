@@ -6,7 +6,7 @@
 
   <div class="text-end text-sm">
     @if (item().value) {
-      {{ item().value || '' }} {{ item().unit }}
+      {{ item().value! | number: '1.2-2' }} {{ item().unit }}
     }
   </div>
 </div>
