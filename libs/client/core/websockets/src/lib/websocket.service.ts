@@ -6,9 +6,7 @@ import { distinctUntilChangedDeep, log } from '@app/client/shared/util-rxjs';
 import { WebsocketEvent, WebsocketResourceType } from '@app/rvns-web-sockets';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class WebsocketService {
   private socket: Socket;
   private events$: Subject<WebsocketEvent> = new Subject();
@@ -20,12 +18,6 @@ export class WebsocketService {
   private authErrorEvents$: BehaviorSubject<boolean> = new BehaviorSubject(
     false,
   );
-
-  private _currentResource?: WebsocketResourceType;
-
-  public get currentResource(): WebsocketResourceType | undefined {
-    return this._currentResource;
-  }
 
   public connect(wsUrl: string, token?: string): void {
     this.socket = io(wsUrl, {
@@ -85,19 +77,16 @@ export class WebsocketService {
     if (this.socket?.connected) {
       console.log('disconnect');
       this.socket.disconnect();
-      this.setCurrentResource(undefined);
     }
   }
 
-  public joinResourceEvents(resourceId: WebsocketResourceType): void {
-    console.log('join resource Id', resourceId);
-    this.socket.emit('ws.join.resource', resourceId);
-    this.setCurrentResource(resourceId);
+  public joinResourcesEvents(resourceIds: Array<WebsocketResourceType>): void {
+    console.log('join resources Id', resourceIds);
+    this.socket.emit('ws.join.resources', resourceIds);
   }
 
-  public leaveResourceEvents(resourceId: string): void {
-    this.socket.emit('ws.leave.resource', resourceId);
-    this.setCurrentResource(undefined);
+  public leaveResourcesEvents(resourceIds: Array<WebsocketResourceType>): void {
+    this.socket.emit('ws.leave.resources', resourceIds);
   }
 
   public events(): Observable<WebsocketEvent> {
@@ -125,11 +114,5 @@ export class WebsocketService {
 
   public connected(): boolean {
     return this.socket?.connected ?? false;
-  }
-
-  private setCurrentResource(
-    resourceId: WebsocketResourceType | undefined,
-  ): void {
-    this._currentResource = resourceId;
   }
 }

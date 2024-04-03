@@ -48,7 +48,11 @@ export class NotesTableContainerComponent {
     this.actions
       .pipe(
         takeUntilDestroyed(),
-        ofType(NotesActions.liveCreateNote, NotesActions.createNoteSuccess),
+        ofType(
+          NotesActions.liveCreateNote,
+          NotesActions.createNoteSuccess,
+          NotesActions.liveDeleteNote,
+        ),
         debounceTime(100),
       )
       .subscribe(() => {

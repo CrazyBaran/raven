@@ -209,7 +209,10 @@ export class OpportunitiesRelatedNotesComponent {
       });
 
     this.actions
-      .pipe(takeUntilDestroyed(), ofType(NotesActions.liveCreateNote))
+      .pipe(
+        takeUntilDestroyed(),
+        ofType(NotesActions.liveCreateNote, NotesActions.liveDeleteNote),
+      )
       .subscribe(() => {
         this.store.dispatch(
           NotesActions.getOpportunityNotes({

@@ -31,17 +31,15 @@ export class WebsocketEffects {
       this.store.select(selectUrl).pipe(
         filter((url) => !!url),
         tap((url) => {
-          const resource = Object.entries(URL_RESOURCE_CONFIG)
+          const resources = Object.entries(URL_RESOURCE_CONFIG)
             .filter(([_, isMatch]) => isMatch(url))
             .map(([resource]) => resource) as WebsocketResourceType[];
 
-          if (resource.length) {
+          if (resources.length) {
             if (!this.websocketService.connected()) {
               this.websocketService.connect(this.environment.websocketUrl);
             }
-            resource.forEach((resource) =>
-              this.websocketService.joinResourceEvents(resource),
-            );
+            this.websocketService.joinResourcesEvents(resources);
           } else if (this.websocketService.connected()) {
             this.websocketService.disconnect();
           }
@@ -83,6 +81,14 @@ export class WebsocketEffects {
     this.websocketService.eventsOfType('note-created').pipe(
       map(({ data: id }) => {
         return NotesActions.liveCreateNote({ id });
+      }),
+    ),
+  );
+
+  private notesDeleteEvent$ = createEffect(() =>
+    this.websocketService.eventsOfType('note-deleted').pipe(
+      map(({ data: id }) => {
+        return NotesActions.liveDeleteNote({ id });
       }),
     ),
   );

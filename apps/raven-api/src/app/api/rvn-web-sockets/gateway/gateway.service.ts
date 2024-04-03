@@ -27,34 +27,36 @@ export class GatewayService implements OnGatewayInit, OnGatewayConnection {
   }
 
   // @UseGuards(WsJoinResourceGuard)
-  @SubscribeMessage('ws.join.resource')
+  @SubscribeMessage('ws.join.resources')
   public async joinResource(
-    @MessageBody() resourceId: string,
+    @MessageBody() resourceIds: Array<string>,
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
     const rooms = Array.from(client.rooms);
     for (const room of rooms) {
-      if (room !== client.id) {
+      if (![...resourceIds, client.id].includes(room)) {
         await client.leave(room);
       }
     }
-    // resource room
-    await client.join(`resource-${resourceId}`);
-    this.logger.debug(`Client joined resource room: ${resourceId}`);
+    await client.join(
+      resourceIds.map((resourceId) => `resource-${resourceId}`),
+    );
+    this.logger.debug(`Client joined resource rooms: ${resourceIds}`);
     this.eventEmitter.emit('ws.message.join-resource', {
       client,
-      resourceId,
+      resourceIds,
     });
   }
 
-  @SubscribeMessage('ws.leave.resource')
+  @SubscribeMessage('ws.leave.resources')
   public async leaveResource(
-    @MessageBody() resourceId: string,
+    @MessageBody() resourceIds: Array<string>,
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
-    // resource room
-    await client.leave(`resource-${resourceId}`);
-    this.logger.debug(`Client left resource room: ${resourceId}`);
+    for (const resourceId of resourceIds) {
+      await client.leave(`resource-${resourceId}`);
+      this.logger.debug(`Client left resource room: ${resourceId}`);
+    }
   }
 
   public afterInit(server: Server): void {

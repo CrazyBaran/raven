@@ -84,5 +84,6 @@ export const NotesActions = createActionGroup({
     //websocket events
     'Live Create Note': props<{ id: string }>(),
     'Live Change Note': props<{ id: string; newSyncId: string }>(),
+    'Live Delete Note': props<{ id: string }>(),
   },
 });
