@@ -88,7 +88,6 @@ export class DataWarehouseModule {
             description: 'Communicate with Data Warehouse',
             defaultJobOptions: {
               attempts: 3,
-              // exponential fn: 2 ^ ($attempts - 1) * $delay
               backoff: { type: 'exponential', delay: 60000 },
             },
           },

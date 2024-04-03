@@ -10,19 +10,37 @@ export class DataWarehouseProducer {
   ) {}
 
   public async enqueueRegenerateDataWarehouse(): Promise<void> {
-    await this.queue.add(DWH_QUEUE.JOBS.REGENERATE, {});
+    await this.queue.add(
+      DWH_QUEUE.JOBS.REGENERATE,
+      {},
+      {
+        jobId: DWH_QUEUE.JOBS.REGENERATE,
+      },
+    );
   }
 
   public async enqueueRegenerateStatic(): Promise<void> {
-    await this.queue.add(DWH_QUEUE.JOBS.REGENERATE_STATIC, {});
+    await this.queue.add(
+      DWH_QUEUE.JOBS.REGENERATE_STATIC,
+      {},
+      {
+        jobId: DWH_QUEUE.JOBS.REGENERATE_STATIC,
+      },
+    );
   }
 
   public async enqueueRegenerateProxy(
     skip?: number,
     take?: number,
   ): Promise<void> {
-    await this.queue.add(DWH_QUEUE.JOBS.REGENERATE_PROXY, {
-      options: { skip, take },
-    });
+    await this.queue.add(
+      DWH_QUEUE.JOBS.REGENERATE_PROXY,
+      {
+        options: { skip, take },
+      },
+      {
+        jobId: `${DWH_QUEUE.JOBS.REGENERATE_PROXY}-${skip}-${take}`,
+      },
+    );
   }
 }

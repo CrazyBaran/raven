@@ -17,7 +17,8 @@ export interface DataWarehouseJobData {
 @Processor(DWH_QUEUE.NAME, {
   concurrency: 1,
   group: { concurrency: 1 },
-  removeOnComplete: { age: 2592000 },
+  removeOnComplete: { count: 100 },
+  removeOnFail: { count: 100 },
 })
 export class DataWarehouseProcessor extends AbstractSimpleQueueProcessor<DataWarehouseJobData> {
   public constructor(
