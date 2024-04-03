@@ -10,6 +10,16 @@ export const TagsActions = createActionGroup({
     'Get Tags Success': props<{ data: TagEntity[] }>(),
     'Get Tags Failure': props<{ error: string }>(),
 
+    'Get Tag By OrganisationId If Not Loaded': props<{
+      organisationId: string;
+    }>(),
+    'Get Tag By OrganisationId If Not Loaded Success': props<{
+      data: TagEntity[];
+    }>(),
+    'Get Tag By OrganisationId If Not Loaded Failure': props<{
+      error: string;
+    }>(),
+
     'Get Tags By Types': props<{
       tagTypes: TagEntity['type'][];
     }>(),

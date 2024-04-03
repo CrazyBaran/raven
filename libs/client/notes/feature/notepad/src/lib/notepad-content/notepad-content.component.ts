@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { CommonModule } from '@angular/common';
 
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  OnInit,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -54,7 +56,10 @@ import { filter, take } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [],
 })
-export class NotepadContentComponent {
+export class NotepadContentComponent implements OnInit {
+  public organisationId?: string;
+  public opportunityId?: string;
+
   @ViewChild('container', { read: ViewContainerRef })
   public containerRef: ViewContainerRef;
 
@@ -81,6 +86,14 @@ export class NotepadContentComponent {
     tags: [],
   });
 
+  public ngOnInit(): void {
+    if (this.organisationId) {
+      this.notepadForm.patchValue({
+        ...this.notepadForm.value!,
+        tags: [this.organisationId],
+      });
+    }
+  }
   public constructor() {
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
   }
@@ -174,5 +187,8 @@ export class NotepadContentComponent {
 }
 
 export const componentDataResolver = (data: ComponentData): unknown => {
-  return {};
+  return {
+    organisationId: data?.['organisationId'],
+    opportunityId: data?.['opportunityId'],
+  };
 };

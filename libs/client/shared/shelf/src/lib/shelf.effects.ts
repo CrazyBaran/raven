@@ -105,7 +105,7 @@ export class ShelfEffects {
     () => {
       return this.actions$.pipe(
         ofType(ShelfActions.openNotepad),
-        tap(async () =>
+        tap(async (action) =>
           this.shelfService.openLazyShelf({
             template: {
               name: 'notepad',
@@ -114,6 +114,10 @@ export class ShelfEffects {
                   (m) => m.NotepadDialogModule,
                 ),
               showLoading: true,
+              componentData: {
+                organisationId: action.organisationId,
+                opportunityId: action.opportunityId,
+              },
             },
             width: 720,
             title: 'Create Note',
