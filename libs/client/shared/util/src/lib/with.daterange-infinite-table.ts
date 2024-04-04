@@ -12,7 +12,15 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { SortDescriptor } from '@progress/kendo-data-query';
-import { debounceTime, pipe, switchMap, tap } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  Observable,
+  of,
+  pipe,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { LoadDataMethod, WithTableSettings } from './with.table';
 
 export type DateRangeInfiniteTableState<Entity> = {
@@ -28,6 +36,8 @@ export type DateRangeInfiniteTableState<Entity> = {
   defaultAmountOfRecords: number;
   loadedMore: boolean;
   tableHeight: number;
+  canLoadMore: boolean;
+  firstInteraction: number | null;
 };
 
 type WithDateRangeTableSettings = WithTableSettings & {
@@ -40,6 +50,8 @@ const defaultSettings: WithDateRangeTableSettings = {
   datePagination: false,
 };
 
+export type LoadParamMethod<Entity> = () => Observable<{ data: Entity }>;
+
 export function withDateRangeInfiniteTable<Entity>(settings?: {
   defaultSort?: SortDescriptor[];
   defaultAmountOfRecords?: number;
@@ -47,11 +59,9 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
   startTime?: Date | null;
   endTime?: Date | null;
   daysInterval?: number;
+  canLoadMore?: boolean;
 }) {
   const options = { ...defaultSettings, ...settings };
-  const startDate = new Date();
-  startDate.setDate(options.endTime!.getDate()! - options.daysInterval!);
-  options.startTime = startDate;
   return signalStoreFeature(
     {
       signals: type<{
@@ -61,12 +71,13 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
       }>(),
       methods: type<{
         loadData: LoadDataMethod<Entity>;
+        preloadEndTime: LoadParamMethod<Date | null>;
       }>(),
     },
     withState<DateRangeInfiniteTableState<Entity>>({
       pageState: {
-        startTime: options.startTime?.getTime()!,
-        endTime: options.endTime?.getTime()!,
+        startTime: options.startTime?.getTime(),
+        endTime: options.endTime?.getTime(),
       },
       isLoading: false,
       data: {
@@ -76,13 +87,14 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
       defaultAmountOfRecords: options?.defaultAmountOfRecords ?? 4,
       loadedMore: false,
       tableHeight: 0,
+      canLoadMore: true,
+      firstInteraction: null,
     }),
     withComputed((store) => ({
       tableParams: computed(() => ({
         ...store.pageState(),
         ...(store.additionalParams?.() ?? {}),
       })),
-      canLoadMore: computed(() => true),
       loadMoreAmount: computed(
         () => store.data().total - store.defaultAmountOfRecords(),
       ),
@@ -118,9 +130,47 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
           }),
         ),
       ),
+      preloadEndTime: rxMethod<void>(
+        pipe(
+          debounceTime(options.debounceTime!),
+          tap(() => {
+            patchState(store, { isLoading: true });
+          }),
+          switchMap(() => store.preloadEndTime()),
+          switchMap((dateParam: { data: Date | null }) => {
+            if (dateParam.data) {
+              const startDate = new Date(dateParam.data);
+              const endDate = new Date(dateParam.data);
+
+              startDate.setDate(startDate.getDate()! - options.daysInterval!);
+              const params = {
+                endTime: endDate.getTime(),
+                startTime: startDate.getTime(),
+              };
+              patchState(store, {
+                pageState: {
+                  ...params,
+                },
+                canLoadMore: true,
+                firstInteraction: endDate.getTime(),
+              });
+            } else {
+              patchState(store, {
+                canLoadMore: false,
+                isLoading: false,
+              });
+            }
+
+            return of(dateParam);
+          }),
+        ),
+      ),
       loadData: rxMethod<Record<string, any>>(
         pipe(
           debounceTime(options.debounceTime!),
+          filter(
+            (params) => params && params['startTime'] && params['endTime'],
+          ),
           tap(() => patchState(store, { isLoading: true })),
           switchMap((params) =>
             store.loadData(params).pipe(
@@ -146,17 +196,21 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
       ),
       reset: rxMethod(
         pipe(
-          tap(() => {
-            const startDate = new Date();
-            startDate.setDate(startDate.getDate()! - options.daysInterval!);
-            patchState(store, {
-              data: { total: 0, data: [] },
-              pageState: {
-                ...store.pageState(),
-                startTime: startDate.getTime(),
-                endTime: new Date().getTime(),
-              },
-            });
+          tap((firstInteraction: number | null) => {
+            if (firstInteraction) {
+              const endTime = firstInteraction;
+              const startDate = new Date(firstInteraction);
+
+              startDate.setDate(startDate.getDate()! - options.daysInterval!);
+              patchState(store, {
+                data: { total: 0, data: [] },
+                pageState: {
+                  ...store.pageState(),
+                  startTime: startDate.getTime(),
+                  endTime: endTime,
+                },
+              });
+            }
           }),
         ),
       ),
@@ -164,6 +218,7 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
     withHooks((store) => ({
       onInit: () => {
         if (options.listenOnInit) {
+          store.preloadEndTime();
           store.loadData(store.tableParams);
         }
       },

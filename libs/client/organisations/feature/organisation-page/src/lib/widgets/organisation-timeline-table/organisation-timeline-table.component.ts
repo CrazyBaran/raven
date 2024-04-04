@@ -64,6 +64,8 @@ export class OrganisationTimelineTableComponent {
   }
 
   public onCollapse(): void {
-    this.organisationTimelineStore.reset({});
+    this.organisationTimelineStore.reset(
+      this.organisationTimelineStore.firstInteraction(),
+    );
   }
 }

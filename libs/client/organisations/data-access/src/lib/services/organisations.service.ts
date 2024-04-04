@@ -146,4 +146,14 @@ export class OrganisationsService {
       { params },
     );
   }
+
+  public getLatestInteractionDate(
+    id: string,
+    params?: Record<string, string | number | boolean | string[] | number[]>,
+  ): Observable<GenericResponse<Date>> {
+    return this.http.get<GenericResponse<Date>>(
+      `${this.url}/${id}/interactions/latest`,
+      { params },
+    );
+  }
 }
