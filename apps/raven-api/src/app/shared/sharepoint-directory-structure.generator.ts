@@ -18,15 +18,22 @@ export class SharepointDirectoryStructureGenerator {
   public static getDirectoryNameForOrganisation(
     organisation: OrganisationEntity,
   ): string {
+    /*
+    https://support.microsoft.com/en-gb/office/restrictions-and-limitations-in-onedrive-and-sharepoint-64883a5d-228e-48f5-b3d2-eb39e07630fa#invalidcharacters
+    Characters that aren't allowed in file and folder names in OneDrive for home or OneDrive for work or school
+    " * : < > ? / \ |
+      */
     return `${organisation.name}(${this.removeLeadingProtocol(
       organisation.domains[0],
-    )})`.trim();
+    )})`
+      .trim()
+      .replace(/["*:<>?/\\|]/g, '');
   }
 
   public static getDirectoryNameForOpportunity(
     opportunityEntity: OpportunityEntity,
   ): string {
-    return `${opportunityEntity.tag?.name}`;
+    return `${opportunityEntity.tag?.name}`.replace(/["*:<>?/\\|]/g, '');
   }
 
   private static removeLeadingProtocol(url: string): string {
