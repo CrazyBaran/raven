@@ -27,13 +27,13 @@ export class SharepointDirectoryStructureGenerator {
       organisation.domains[0],
     )})`
       .trim()
-      .replace(/["*:<>?/\\|]/g, '');
+      .replace(/["#*:<>?/\\|]/g, '');
   }
 
   public static getDirectoryNameForOpportunity(
     opportunityEntity: OpportunityEntity,
   ): string {
-    return `${opportunityEntity.tag?.name}`.replace(/["*:<>?/\\|]/g, '');
+    return `${opportunityEntity.tag?.name}`.replace(/["#*:<>?/\\|]/g, '');
   }
 
   private static removeLeadingProtocol(url: string): string {
