@@ -92,6 +92,10 @@ export const tagsFeature = createFeature({
         state,
       ),
     ),
+    on(
+      TagsActions.getTagByOrganisationIdIfNotLoadedSuccess,
+      (state, { data }) => tagAdapter.upsertMany([...data], { ...state }),
+    ),
   ),
   extraSelectors: ({ selectTagsState }) => ({
     ...tagAdapter.getSelectors(selectTagsState),

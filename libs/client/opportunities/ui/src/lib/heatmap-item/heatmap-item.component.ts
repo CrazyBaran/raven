@@ -1,4 +1,4 @@
-import { NgStyle } from '@angular/common';
+import { DecimalPipe, NgStyle } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -40,7 +40,7 @@ export const HEATMAP_ITEM_STYLE_DICTIONARY: Record<
 @Component({
   selector: 'app-heatmap-item',
   standalone: true,
-  imports: [NgStyle],
+  imports: [NgStyle, DecimalPipe],
   templateUrl: './heatmap-item.component.html',
   styleUrl: './heatmap-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

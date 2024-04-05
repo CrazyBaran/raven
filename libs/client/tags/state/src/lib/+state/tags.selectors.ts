@@ -24,10 +24,16 @@ export const selectTagById = (id: string | undefined) =>
     id ? tags[id] : undefined,
   );
 
+export const selectTagsByOrganisationId = (organisationId: string) =>
+  createSelector(tagsFeature.selectEntities, (tags) =>
+    Object.values(tags).filter((tag) => tag?.organisationId === organisationId),
+  );
+
 export const tagsQuery = {
   selectCurrentUserTag,
   tagsFeature,
   selectIsLoadingTags,
   selectTagById,
+  selectTagsByOrganisationId,
   ...tagsFeature,
 };

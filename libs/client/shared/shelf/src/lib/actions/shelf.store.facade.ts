@@ -6,7 +6,10 @@ import { ShelfActions } from './shelf.actions';
 export class ShelfStoreFacade {
   public constructor(private store: Store) {}
 
-  public openNotepad(): void {
-    this.store.dispatch(ShelfActions.openNotepad());
+  public openNotepad(props?: {
+    organisationId?: string;
+    opportunityId?: string;
+  }): void {
+    this.store.dispatch(ShelfActions.openNotepad(props ?? {}));
   }
 }
