@@ -160,55 +160,64 @@ export class AffinityService {
     let latestInteraction: Date = null;
 
     for (const organisationId of organisationIds) {
-      const emailResponse = await this.affinityApiService.getInteractions(
-        organisationId,
-        AffinityInteractionType.Email,
-        new Date(
-          new Date().setFullYear(new Date().getFullYear() - 10),
-        ).toISOString(),
-        new Date().toISOString(),
-        1,
-      );
+      for (let i = 10; i > 0; i--) {
+        const emailResponse = await this.affinityApiService.getInteractions(
+          organisationId,
+          AffinityInteractionType.Email,
+          new Date(
+            new Date().setFullYear(new Date().getFullYear() - i),
+          ).toISOString(),
+          new Date(
+            new Date().setFullYear(new Date().getFullYear() - i + 1),
+          ).toISOString(),
+          1,
+        );
 
-      const emailDate =
-        (emailResponse as PaginatedAffinityEmailInteractionsDto).emails.length >
-        0
-          ? new Date(
-              (
-                emailResponse as PaginatedAffinityEmailInteractionsDto
-              ).emails[0].date,
-            )
-          : null;
+        const emailDate =
+          (emailResponse as PaginatedAffinityEmailInteractionsDto).emails
+            .length > 0
+            ? new Date(
+                (
+                  emailResponse as PaginatedAffinityEmailInteractionsDto
+                ).emails[0].date,
+              )
+            : null;
 
-      if (emailDate && (!latestInteraction || emailDate > latestInteraction)) {
-        latestInteraction = emailDate;
-      }
+        if (
+          emailDate &&
+          (!latestInteraction || emailDate > latestInteraction)
+        ) {
+          latestInteraction = emailDate;
+        }
 
-      const meetingResponse = await this.affinityApiService.getInteractions(
-        organisationId,
-        AffinityInteractionType.Meeting,
-        new Date(
-          new Date().setFullYear(new Date().getFullYear() - 10),
-        ).toISOString(),
-        new Date().toISOString(),
-        1,
-      );
+        const meetingResponse = await this.affinityApiService.getInteractions(
+          organisationId,
+          AffinityInteractionType.Meeting,
+          new Date(
+            new Date().setFullYear(new Date().getFullYear() - i),
+          ).toISOString(),
+          new Date(
+            new Date().setFullYear(new Date().getFullYear() - i + 1),
+          ).toISOString(),
+          1,
+        );
 
-      const meetingDate =
-        (meetingResponse as PaginatedAffinityEventInteractionsDto).events
-          .length > 0
-          ? new Date(
-              (
-                meetingResponse as PaginatedAffinityEventInteractionsDto
-              ).events[0].date,
-            )
-          : null;
+        const meetingDate =
+          (meetingResponse as PaginatedAffinityEventInteractionsDto).events
+            .length > 0
+            ? new Date(
+                (
+                  meetingResponse as PaginatedAffinityEventInteractionsDto
+                ).events[0].date,
+              )
+            : null;
 
-      if (
-        meetingDate &&
-        (!latestInteraction || meetingDate > latestInteraction)
-      ) {
-        latestInteraction = meetingDate;
+        if (
+          meetingDate &&
+          (!latestInteraction || meetingDate > latestInteraction)
+        ) {
+          latestInteraction = meetingDate;
+        }
       }
     }
 
@@ -250,7 +259,7 @@ export class AffinityService {
           AffinityInteractionType.Email,
           options.startDate?.toISOString(),
           options.endDate?.toISOString(),
-          500,
+          100,
         );
         interactions.items.push(
           ...this.interactionMapper.mapEmails(
