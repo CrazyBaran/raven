@@ -73,9 +73,6 @@
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
-      "@app/client/opportunities/feature/create-dialog": [
-        "libs/client/opportunities/feature/create-dialog/src/index.ts"
-      ],
       "@app/client/opportunities/feature/edit-financial-kpi": [
         "libs/client/opportunities/feature/edit-financial-kpi/src/index.ts"
       ],
@@ -94,8 +91,8 @@
       "@app/client/opportunities/feature/shell": [
         "libs/client/opportunities/feature/shell/src/index.ts"
       ],
-      "@app/client/opportunities/feature/update-dialog": [
-        "libs/client/opportunities/feature/update-dialog/src/index.ts"
+      "@app/client/opportunities/feature/dialogs": [
+        "libs/client/opportunities/feature/dialogs/src/index.ts"
       ],
       "@app/client/opportunities/page/opportunity-details": [
         "libs/client/opportunities/page/opportunity-details/src/index.ts"

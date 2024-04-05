@@ -30,11 +30,19 @@
         }
 
         <app-kanban-board
-          [board]="board()"
+          #board
+          [board]="boardModel()"
           [class.opacity-50]="vm().isLoading"
           (dragEndEvent)="onDragEvent($event)"
           (removeCompanyFromShortlist)="removeCompanyFromShortlist($event)"
         />
+        @if (board.paramsEditId()) {
+          <app-create-opportunity-on-stage-dialog
+            [params]="board.paramsEditId()!"
+            (onCancel)="board.onOpportunityEditCancel()"
+            (onSubmit)="board.onOpportunityEditSubmit()"
+          />
+        }
       </div>
     </div>
   </app-page-template>

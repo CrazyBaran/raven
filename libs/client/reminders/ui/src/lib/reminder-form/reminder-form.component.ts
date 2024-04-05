@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
+  MultiSelectSourceFnDirective,
   OnControlStateDirective,
   OnErrorDirective,
 } from '@app/client/shared/ui-directives';
@@ -28,7 +29,6 @@ import {
 import { LabelModule } from '@progress/kendo-angular-label';
 import * as _ from 'lodash';
 import { Observable, of, take } from 'rxjs';
-import { MultiSelectSourceFnDirective } from './multi-select-source-fn.directive';
 
 export type CompanyOpportunityTreeItem = {
   company: {

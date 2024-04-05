@@ -208,7 +208,13 @@ export class OpportunitiesEffects {
       ),
       concatMap(([{ payload }, pipelineStages]) =>
         this.opportunitiesService
-          .createOpportunity({ organisationId: payload.organisationId })
+          .createOpportunity({
+            organisationId: payload.organisationId,
+            team: payload.team ?? {
+              owners: [],
+              members: [],
+            },
+          })
           .pipe(
             switchMap(({ data }) => {
               const returnActions = [];

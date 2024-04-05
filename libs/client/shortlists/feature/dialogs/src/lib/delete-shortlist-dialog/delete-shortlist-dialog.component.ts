@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { DynamicDialogContentBase } from '@app/client/shared/shelf';
+import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
 import { DialogUtil } from '@app/client/shared/util';
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import { Actions, ofType } from '@ngrx/effects';
