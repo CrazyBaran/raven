@@ -63,21 +63,19 @@
         <div class="flex flex-row gap-3" kendoTooltip>
           <div class="flex items-center justify-center gap-3 text-xs">
             <span>
-              Created:{{
-                noteDetails()?.createdAt | date: 'dd/MM/yyyy hh:mm a'
-              }}
+              Created:{{ noteDetails().createdAt | date: 'dd/MM/yyyy hh:mm a' }}
             </span>
             <span>
               Updated:{{
-                noteDetails()?.updatedAt
-                  ? (noteDetails()?.updatedAt | date: 'dd/MM/yyyy hh:mm a')
+                noteDetails().updatedAt
+                  ? (noteDetails().updatedAt | date: 'dd/MM/yyyy hh:mm a')
                   : '-'
               }}
             </span>
           </div>
 
           <kendo-button
-            (click)="handleDeleteNote(noteDetails()?.id)"
+            (click)="handleDeleteNote(noteDetails().id)"
             fillMode="outline"
             iconClass="fa-regular fa-trash-can"
             size="large"

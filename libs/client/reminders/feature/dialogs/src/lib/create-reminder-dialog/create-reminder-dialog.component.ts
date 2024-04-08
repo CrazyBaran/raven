@@ -1,4 +1,3 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,7 +13,7 @@ import {
   CRAETE_REMINDER_FORM,
   providerReminderForm,
 } from '@app/client/reminders/utils';
-import { DynamicDialogContentBase } from '@app/client/shared/shelf';
+import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
 import {
   ControlInvalidPipe,
   ControlStatePipe,
