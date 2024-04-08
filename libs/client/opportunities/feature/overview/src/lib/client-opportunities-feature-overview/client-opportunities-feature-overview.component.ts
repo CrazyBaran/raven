@@ -22,7 +22,6 @@ import {
   TilelayoutItemComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
-import { dynamicDialogDirective } from '@app/client/shared/ui-directives';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import { TagsActions } from '@app/client/tags/state';
 import { Store } from '@ngrx/store';
@@ -77,7 +76,6 @@ import { TagSkeletonComponent } from './tag-skeleton/tag-skeleton.component';
     NoteFieldComponent,
     OpportunityDescriptionComponent,
     NoteFieldSkeletonComponent,
-    dynamicDialogDirective,
   ],
   templateUrl: './client-opportunities-feature-overview.component.html',
   styleUrls: ['./client-opportunities-feature-overview.component.scss'],

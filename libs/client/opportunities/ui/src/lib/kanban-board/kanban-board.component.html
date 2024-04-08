@@ -51,3 +51,11 @@
   [opportunityId]="draggedCard()?.id"
   [organisationId]="draggedCard()?.organisation?.id"
 />
+
+@if (paramsEditId()) {
+  <app-create-opportunity-dialog
+    [params]="paramsEditId()!"
+    (onCancel)="onOpportunityEditCancel()"
+    (onSubmit)="onOpportunityEditSubmit()"
+  />
+}

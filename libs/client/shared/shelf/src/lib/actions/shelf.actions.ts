@@ -8,5 +8,6 @@ export const ShelfActions = createActionGroup({
       opportunityId?: string;
     }>(),
     'Open Note Details': props<{ noteId: string }>(),
+    'Open Opportunity Form': props<{ payload?: { organisationId?: string } }>(),
   },
 });

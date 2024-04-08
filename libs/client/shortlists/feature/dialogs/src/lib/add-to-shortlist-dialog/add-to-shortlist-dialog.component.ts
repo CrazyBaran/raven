@@ -15,7 +15,7 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
+import { DynamicDialogContentBase } from '@app/client/shared/shelf';
 import { DialogUtil } from '@app/client/shared/util';
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import { ShortlistFormComponent } from '@app/client/shortlists/ui';

@@ -3,18 +3,45 @@
   [width]="480"
   title="Deal Team Admin"
 >
-  <app-deal-team-picker
-    #picker
-    class="block p-10"
-    [formControl]="dealTeamPickerControl"
-    [people]="vm().people!"
-  />
+  <div [formGroup]="teamFormGroup" class="flex flex-col gap-4 p-10">
+    <kendo-formfield>
+      <kendo-label text="Add People to Deal Team"></kendo-label>
+      <kendo-multiselect
+        [autoClose]="false"
+        [checkboxes]="true"
+        [data]="vm().people"
+        [itemDisabled]="peopleItemDisabled()!"
+        [textField]="'name'"
+        [valueField]="'id'"
+        class="multiselect-without-remove-all w-full overflow-hidden"
+        formControlName="people"
+      />
+    </kendo-formfield>
+
+    @for (
+      role of teamFormGroup.controls.roles!.controls ?? [];
+      track role.value
+    ) {
+      <div class="flex justify-between">
+        <ui-tag [label]="role.controls.user.value?.name" uiUserTag />
+        <kendo-dropdownlist
+          [data]="rolesData"
+          class="!w-[126px] overflow-hidden"
+          [formControl]="role.controls.role"
+          [disabled]="
+            adminCount() < 2 && role.controls.role.value === 'Deal Lead'
+          "
+          fillMode="outline"
+        />
+      </div>
+    }
+  </div>
 
   <kendo-dialog-actions>
     <kendo-button (click)="dialogClose.emit()">Cancel</kendo-button>
     <kendo-button
       (click)="updateTeam()"
-      [disabled]="vm().isLoading! || !picker.adminCount()"
+      [disabled]="vm().isLoading! || !adminCount()"
       themeColor="primary"
     >
       @if (vm().isLoading) {
