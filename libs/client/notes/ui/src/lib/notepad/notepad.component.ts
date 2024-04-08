@@ -1,3 +1,4 @@
+import { trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -18,7 +19,7 @@ import {
   DynamicControlResolver,
   comparatorFn,
 } from '@app/client/shared/dynamic-form-util';
-import { LoaderComponent } from '@app/client/shared/ui';
+import { LoaderComponent, delayedFadeIn } from '@app/client/shared/ui';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxUnpatch } from '@rx-angular/template/unpatch';
@@ -54,6 +55,7 @@ export type Tab = {
   styleUrls: ['./notepad.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DynamicControlFocusHandler],
+  animations: [trigger('delayedFadeIn', delayedFadeIn())],
 })
 export class NotepadComponent implements OnInit {
   @Input() public notepadFormGroup = new FormRecord({});
@@ -165,5 +167,34 @@ export class NotepadComponent implements OnInit {
 
   public setActiveTab(tab: { id: string }): void {
     this.dynamicControlFocusHandler.focusTo(tab.id);
+  }
+
+  protected setPreviousTabActive(): void {
+    const tabs = this.tabs();
+    const notDisabledTabs = tabs.filter(
+      (t) => !this.state().disabledTabIds.includes(t.id),
+    );
+    const currentTabIndex = tabs.findIndex(
+      (t) => t.id === this.state().activeTabId,
+    );
+    const prevTabs = tabs.slice(0, currentTabIndex).reverse();
+    const notDisabledPrevTab = prevTabs.find(
+      (t) => !this.state().disabledTabIds.includes(t.id),
+    );
+    this.setActiveTab(
+      notDisabledPrevTab || notDisabledTabs[notDisabledTabs.length - 1],
+    );
+  }
+
+  protected setNextTabActive(): void {
+    const tabs = this.tabs();
+    const currentTabIndex = tabs.findIndex(
+      (t) => t.id === this.state().activeTabId,
+    );
+    const nextTabs = tabs.slice(currentTabIndex + 1);
+    const notDisabledNextTab = nextTabs.find(
+      (t) => !this.state().disabledTabIds.includes(t.id),
+    );
+    this.setActiveTab(notDisabledNextTab || tabs[0]);
   }
 }
