@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { componentWrapperDecorator, Meta, StoryObj } from '@storybook/angular';
 import { OpportunitiesCardComponent } from './opportunities-card.component';
 

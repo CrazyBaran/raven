@@ -1,3 +1,5 @@
+// todo: remove any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
@@ -25,8 +27,6 @@ export type OpportunitiesResponse = {
   total: number;
 };
 
-// todo: remove any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CreateOpportunity = any & {
   organisationId: string;
   domain: string;

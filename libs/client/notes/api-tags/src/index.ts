@@ -1,2 +1,14 @@
-export { TagsStoreFacade, provideTagsFeature } from '@app/client/tags/state';
-export { TagDropdownComponent, TagFormComponent } from '@app/client/tags/ui';
+export { TagsService } from '@app/client/tags/data-access';
+export {
+  TagsActions,
+  TagsStoreFacade,
+  provideTagsFeature,
+  tagsQuery,
+} from '@app/client/tags/state';
+export {
+  TagDropdownComponent,
+  TagDropdownValue,
+  TagFormComponent,
+  isOpportunityComplexTag,
+  isSimpleTagDropdownValue,
+} from '@app/client/tags/ui';

@@ -1,12 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ShortListTableRow } from './shortlist-table/shortlist-table.component';
+
+type ShortlistType = 'custom' | 'personal' | 'main' | 'my';
 
 @Pipe({
   name: 'isPersonalShortlistType',
   standalone: true,
 })
 export class IsPersonalShortlistTypePipe implements PipeTransform {
-  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
+  public transform(shortlist?: { type?: ShortlistType }): boolean {
     return shortlist?.type === 'personal';
   }
 }
@@ -16,7 +17,7 @@ export class IsPersonalShortlistTypePipe implements PipeTransform {
   standalone: true,
 })
 export class IisMainShortlistTypePipe implements PipeTransform {
-  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
+  public transform(shortlist?: { type?: ShortlistType }): boolean {
     return shortlist?.type === 'main';
   }
 }
@@ -26,7 +27,7 @@ export class IisMainShortlistTypePipe implements PipeTransform {
   standalone: true,
 })
 export class IsMyShortlistTypePipe implements PipeTransform {
-  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
+  public transform(shortlist?: { type?: ShortlistType }): boolean {
     return shortlist?.type === 'my';
   }
 }
@@ -36,7 +37,7 @@ export class IsMyShortlistTypePipe implements PipeTransform {
   standalone: true,
 })
 export class IsCustomShortlistTypePipe implements PipeTransform {
-  public transform(shortlist?: { type?: ShortListTableRow['type'] }): boolean {
+  public transform(shortlist?: { type?: ShortlistType }): boolean {
     return shortlist?.type === 'custom';
   }
 }

@@ -1,9 +1,10 @@
 import { EnvironmentProviders, inject, Provider } from '@angular/core';
 import { Routes } from '@angular/router';
 import { FileTypeBadgeColorsResolver } from '@app/client/files/ui';
+import { provideTagsFeature } from '@app/client/notes/api-tags';
 import { notesQuery, provideNotesFeature } from '@app/client/notes/state';
 import { NOTE_TYPE_BADGE_COLORS } from '@app/client/notes/ui';
-import { provideTagsFeature } from '@app/client/tags/state';
+
 import { provideTemplatesFeature } from '@app/client/templates/data-access';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';

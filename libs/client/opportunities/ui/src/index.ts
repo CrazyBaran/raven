@@ -12,6 +12,7 @@ export * from './lib/opportunities-card/opportunities-card.component';
 export * from './lib/opportunity-form/opportunity-form.component';
 export * from './lib/related-note-skeleton/related-note-skeleton.component';
 export * from './lib/related-note/related-note.component';
+export * from './lib/related-note/related.note';
 export * from './lib/related-notes-footer/related-notes-footer.component';
 export * from './lib/related-notes-tables/related-notes-table.component';
 export * from './lib/status-indicator/status-indicator.component';

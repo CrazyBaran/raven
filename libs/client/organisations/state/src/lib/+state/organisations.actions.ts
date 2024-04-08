@@ -4,8 +4,6 @@ import {
   OrganisationsResponse,
 } from '@app/client/organisations/data-access';
 
-//TODO: QUICK FIX FOR DEMO, Remove this dependency
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { FailurePayload } from '@app/client/shared/util';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { OpportunityData } from '@app/rvns-opportunities';

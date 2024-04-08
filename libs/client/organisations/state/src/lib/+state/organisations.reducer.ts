@@ -1,9 +1,9 @@
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 
+import { LoadingState } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { LoadingState } from '@app/client/shared/util';
 import { ShortlistsActions } from '@app/client/shortlists/state';
 import {
   OrganisationsActions,
@@ -234,7 +234,7 @@ export const organisationsFeature = createFeature({
     ),
     on(
       OrganisationsActions.createOrganisationSharepointFolderFailure,
-      (state, { error }) => ({
+      (state) => ({
         ...state,
         creatingSharepointFolder: false,
       }),
@@ -251,7 +251,7 @@ export const organisationsFeature = createFeature({
       updateLoading: true,
     })),
 
-    on(OrganisationsActions.updateOrganisationFailure, (state, { error }) => ({
+    on(OrganisationsActions.updateOrganisationFailure, (state) => ({
       ...state,
       updateLoading: false,
     })),

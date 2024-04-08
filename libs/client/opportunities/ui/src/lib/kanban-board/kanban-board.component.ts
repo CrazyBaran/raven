@@ -20,7 +20,6 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { isBoolean } from 'lodash';
 import { Subject, delayWhen, filter } from 'rxjs';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
-import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {
   KanbanColumn,
   KanbanColumnComponent,
@@ -60,6 +59,7 @@ export class DisabledFooterGroupPipe implements PipeTransform {
 }
 
 import * as _ from 'lodash';
+import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 @Component({
   selector: 'app-kanban-board',
   standalone: true,

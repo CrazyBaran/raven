@@ -3,7 +3,7 @@ export interface PipelineGroupData {
   readonly name: string;
   readonly stages: { id: string; displayName: string }[];
 }
-export interface PipelineGroupingDataInterface {
+export interface PipelineGroupingData {
   readonly pipelineId: string;
   readonly groups: PipelineGroupData[];
 }

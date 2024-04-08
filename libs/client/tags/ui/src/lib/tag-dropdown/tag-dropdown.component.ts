@@ -8,6 +8,7 @@ import {
   EventEmitter,
   forwardRef,
   inject,
+  input,
   Input,
   Output,
   signal,
@@ -25,11 +26,7 @@ import {
   ControlValueAccessor,
 } from '@app/client/shared/util';
 
-//TODO: rethink the boundaries
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { TagsService } from '@app/client/tags/data-access';
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { TagsActions } from '@app/client/tags/state';
+import { TagData } from '@app/rvns-tags';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -44,7 +41,6 @@ import {
   Observable,
   startWith,
   switchMap,
-  tap,
 } from 'rxjs';
 import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
 
@@ -121,7 +117,6 @@ export const isVersionComplexTag = (
 export class TagDropdownComponent extends ControlValueAccessor<
   TagDropdownValue[]
 > {
-  protected tagService = inject(TagsService);
   protected store = inject(Store);
 
   protected value: WritableSignal<TagDropdownValue[]> = signal([]);
@@ -137,6 +132,9 @@ export class TagDropdownComponent extends ControlValueAccessor<
   }>();
 
   @Output() public tagClicked = new EventEmitter<DropdownTag>();
+
+  public companySourceFn$ =
+    input.required<(filter: string) => Observable<TagData[]>>();
 
   @Input() public loading = false;
 
@@ -175,20 +173,10 @@ export class TagDropdownComponent extends ControlValueAccessor<
   protected companyTags$ = this.filter$.pipe(
     debounceTime(250),
     distinctUntilChanged(),
-    switchMap((filter) =>
-      this.tagService.getTags({ type: 'company', query: filter, take: 50 }),
-    ),
-    tap((response) => {
-      this.store.dispatch(
-        TagsActions.getTagsByTypesSuccess({
-          data: response.data!,
-          tagTypes: ['company'],
-        }),
-      );
-    }),
+    switchMap((filter) => this.companySourceFn$()(filter)),
     map(
-      (response): DropdownTag[] =>
-        response.data?.map((item) => ({
+      (tags): DropdownTag[] =>
+        tags.map((item) => ({
           ...item,
           type: 'company',
         })) ?? [],

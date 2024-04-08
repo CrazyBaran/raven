@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, HostBinding, input } from '@angular/core';
-import { RelatedNote } from '../related-note.component';
+
+import { RelatedNote } from '../related.note';
 
 @Component({
   selector: 'app-create-info',

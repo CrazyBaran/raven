@@ -1,15 +1,10 @@
-//TODO: fix colors boundaries
-/* eslint-disable @nx/enforce-module-boundaries */
-import { authQuery } from '@app/client/core/auth';
-import { NoteTableRow } from '@app/client/notes/ui';
-import { BadgeStyle, tagTypeStyleDictionary } from '@app/client/shared/ui';
+import { notesQueries } from '@app/client/notes/data-access';
+import { BadgeStyle } from '@app/client/shared/ui';
 import { buildPageParamsSelector } from '@app/client/shared/util-router';
 import { templateQueries } from '@app/client/templates/data-access';
-import { NoteData, NoteTagData } from '@app/rvns-notes/data-access';
-import { TagType } from '@app/rvns-tags';
+import { NoteData } from '@app/rvns-notes/data-access';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
-import { notesQueries } from '../../../../data-access/src/lib/domain/get-notes.params';
 import { NotesState, notesAdapter, notesFeatureKey } from './notes.reducer';
 
 export const { selectAll, selectEntities } = notesAdapter.getSelectors();
@@ -63,53 +58,6 @@ export const selectNoteDetailsIsLoading = createSelector(
 export const selectNoteUpdateIsLoading = createSelector(
   selectNotesState,
   (state: NotesState) => state.update.isLoading,
-);
-
-export const selectAllNotesTableRows = createSelector(
-  selectTableNotes,
-  authQuery.selectUserEmail,
-  (notes, userEmail) =>
-    notes.map((note): NoteTableRow => {
-      const complexTags: NoteTagData[] =
-        note.complexTags?.map((t) => ({
-          id: t.id,
-          name: `${[...t.tags]
-            .sort((a, b) => (a.type !== 'company' ? 1 : -1))
-            .map((t) => t.name)
-            .join(' / ')}`,
-          type: 'opportunity',
-        })) ?? [];
-      return {
-        ...note,
-        deleteButtonSettings: {
-          disabled: note.createdBy?.email !== userEmail,
-          tooltip:
-            note.createdBy?.email !== userEmail
-              ? 'You can only delete your own notes'
-              : '',
-        },
-        peopleTags: note.tags
-          .filter((t) => t.type === 'people')
-          .sort((a, b) => a.name.length - b.name.length)
-          .map((t) => ({
-            name: t.name,
-            id: t.id,
-            style: { color: '#424242' },
-            size: 'medium',
-            icon: 'fa-solid fa-circle-user',
-          })),
-        tags: [...note.tags, ...complexTags]
-          .filter((t) => t.type !== 'people')
-          .sort((a, b) => a.name.length - b.name.length)
-          .map((t) => ({
-            name: t.name,
-            id: t.id,
-            style: tagTypeStyleDictionary[t.type as TagType] ?? '',
-            size: 'small',
-            icon: 'fa-solid fa-tag',
-          })),
-      };
-    }),
 );
 
 const selectOpportunityNotesState = createSelector(
@@ -195,7 +143,6 @@ export const notesQuery = {
   selectNoteDetails,
   selectNoteDetailsIsLoading,
   selectNoteUpdateIsLoading,
-  selectAllNotesTableRows,
   selectOpportunityNotes,
   selectOpportunityNotesIsLoading,
   selectNotesDictionary,

@@ -9,6 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CreateReminderContainerComponent } from '@app/client/reminders/feature/dialogs';
 import { RemindersActions } from '@app/client/reminders/state';
 import {
   CRAETE_REMINDER_FORM,
@@ -20,7 +21,6 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { SwitchModule } from '@progress/kendo-angular-inputs';
 import { RxPush } from '@rx-angular/template/push';
-import { CreateReminderContainerComponent } from '../../../../../reminders/feature/dialogs/src/lib/create-reminder-container/create-reminder-container.component';
 import { KanbanFooterGroup } from '../kanban-board/kanban-board.component';
 
 @Component({
@@ -34,8 +34,8 @@ import { KanbanFooterGroup } from '../kanban-board/kanban-board.component';
     SwitchModule,
     LowerCasePipe,
     ReactiveFormsModule,
-    CreateReminderContainerComponent,
     ControlInvalidPipe,
+    CreateReminderContainerComponent,
     RxPush,
   ],
   templateUrl: './drop-confirmation.component.html',

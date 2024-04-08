@@ -5,7 +5,8 @@ import { CompanyColumn } from '../dynamic-company-column/dynamic-company-column.
 import { CompanyStatusColumn } from '../dynamic-company-status-column/dynamic-company-status-column.component';
 import { DateColumn } from '../dynamic-date-column/dynamic-date-column.component';
 import { CompanyShortlistIndicatorColumn } from '../dynamic-shortlist-indicator-column/dynamic-shortlist-indicator-column.component';
-import { TableColumn } from './organisations-table.component';
+
+import { TableColumn } from './models';
 
 /**
  * Warehouse rows configurations

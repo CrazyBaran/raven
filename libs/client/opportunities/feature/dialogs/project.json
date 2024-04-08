@@ -1,7 +1,7 @@
 {
   "name": "client-opportunities-feature-dialogs",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/client/opportunities/feature/update-dialog/src",
+  "sourceRoot": "libs/client/opportunities/feature/dialogs/src",
   "prefix": "app",
   "tags": ["type:feature"],
   "projectType": "library",
@@ -18,8 +18,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/client/opportunities/feature/update-dialog/**/*.ts",
-          "libs/client/opportunities/feature/update-dialog/**/*.html"
+          "libs/client/opportunities/feature/dialogs/**/*.ts",
+          "libs/client/opportunities/feature/dialogs/**/*.html"
         ]
       }
     }

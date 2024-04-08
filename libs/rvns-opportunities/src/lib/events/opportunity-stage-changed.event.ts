@@ -1,4 +1,4 @@
-import { CompanyStatus } from '../../../../rvns-shared/src';
+import { CompanyStatus } from 'rvns-shared';
 
 export class OpportunityStageChangedEvent {
   public constructor(

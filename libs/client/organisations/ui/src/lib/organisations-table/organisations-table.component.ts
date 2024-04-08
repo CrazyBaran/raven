@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any,@nx/enforce-module-boundaries */
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -13,6 +14,14 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';
+import {
+  ClipboardService,
+  KendoUrlPagingDirective,
+  KendoUrlSortingDirective,
+  LoaderComponent,
+} from '@app/client/shared/ui';
 import {
   FeatureFlagDirective,
   InfinityTableViewBaseComponent,
@@ -21,26 +30,16 @@ import {
   ResizedEvent,
 } from '@app/client/shared/ui-directives';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
-import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { GridItem, GridModule, RowClassFn } from '@progress/kendo-angular-grid';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-
-import { RouterLink } from '@angular/router';
-import { RenderTemplateComponent } from '@app/client/shared/dynamic-renderer/feature';
-
-import {
-  ClipboardService,
-  KendoUrlPagingDirective,
-  KendoUrlSortingDirective,
-  LoaderComponent,
-} from '@app/client/shared/ui';
 import {
   DropdownAction,
   DropdownButtonNavigationComponent,
   DropdownbuttonNavigationModel,
 } from '@app/client/shared/ui-router';
 import { DialogUtil } from '@app/client/shared/util';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { GridItem, GridModule, RowClassFn } from '@progress/kendo-angular-grid';
 import { CheckBoxModule } from '@progress/kendo-angular-inputs';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { RxIf } from '@rx-angular/template/if';
 import { RxUnpatch } from '@rx-angular/template/unpatch';
 import param from 'jquery-param';
@@ -49,43 +48,15 @@ import { CompanyStatus } from 'rvns-shared';
 import { DateRangeFilterComponent } from '../date-range-filter/date-range-filter.component';
 import { MultiCheckFilterComponent } from '../multicheck-filter/multicheck-filter.component';
 import { NumberRangeFilterComponent } from '../number-range-filter/number-range-filter.component';
-import {
-  OpportunitiesTableComponent,
-  OpportunityRow,
-} from '../opportunities-table/opportunities-table.component';
+import { OpportunitiesTableComponent } from '../opportunities-table/opportunities-table.component';
 import { DynamicColumnPipe } from './dynamic-column.pipe';
+import {
+  OrganisationRowV2,
+  OrganisationTableBulkAction,
+  TableColumn,
+} from './models';
 import { SourceFnPipe } from './source-fn.pipe';
 import { parseToFilterObject } from './table-filters';
-
-export type TableColumn = {
-  componentPath: () => Promise<any>;
-  name: string;
-  field: string;
-  filter: string | null;
-  sortable: boolean;
-  type?: string;
-  dataFn?: (row: OrganisationRowV2) => any;
-  width?: number;
-};
-
-export type OrganisationRowV2 = {
-  id: string;
-  name: string;
-  domains: string[];
-  status: {
-    name: string;
-    color: string;
-  };
-  opportunities: OpportunityRow[];
-  data: any;
-  shortlists?: { name: string; id: string }[];
-  actionData?: DropdownAction[];
-};
-
-export type OrganisationTableBulkAction = {
-  text: string;
-  queryParamName: string;
-};
 
 @Component({
   selector: 'app-organisations-table',

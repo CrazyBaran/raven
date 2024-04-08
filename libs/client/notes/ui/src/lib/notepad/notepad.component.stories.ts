@@ -5,7 +5,6 @@ import { DynamicControl } from '@app/client/shared/dynamic-form-util';
 import { componentWrapperDecorator } from '@storybook/angular';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 
 const meta: Meta<NotepadComponent> = {
   component: NotepadComponent,

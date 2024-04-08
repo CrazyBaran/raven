@@ -6,7 +6,7 @@ import {
 import {
   PipelineDefinitionData,
   PipelineGroupData,
-  PipelineGroupingDataInterface,
+  PipelineGroupingData,
   PipelineStageData,
 } from '@app/rvns-pipelines';
 import { RoleEnum } from '@app/rvns-roles';
@@ -106,7 +106,7 @@ export class PipelineController {
     @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
     pipelineEntity: PipelineDefinitionEntity,
     @Body() dto: CreatePipelineGroupDto,
-  ): Promise<PipelineGroupingDataInterface> {
+  ): Promise<PipelineGroupingData> {
     const groups = await this.pipelineService.createPipelineGroups(
       pipelineEntity,
       dto.groups,
@@ -165,7 +165,7 @@ export class PipelineController {
   public async getPipelineGroups(
     @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
     pipelineEntity: PipelineDefinitionEntity,
-  ): Promise<PipelineGroupingDataInterface> {
+  ): Promise<PipelineGroupingData> {
     return this.pipelineService.pipelineGroupsEntityToGroupingData(
       pipelineEntity,
       await this.pipelineService.getPipelineGroups(pipelineEntity),

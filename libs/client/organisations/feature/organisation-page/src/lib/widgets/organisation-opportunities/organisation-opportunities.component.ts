@@ -3,6 +3,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { OpportunitiesActions } from '@app/client/opportunities/data-access';
+import { OrganisationsActions } from '@app/client/organisations/state';
 import {
   LoaderComponent,
   TagComponent,
@@ -16,8 +18,6 @@ import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { SortDescriptor } from '@progress/kendo-data-query';
-import { OpportunitiesActions } from '../../../../../../../opportunities/data-access/src';
-import { OrganisationsActions } from '../../../../../../state/src';
 import { selectOrganisationOpportunitiesViewModel } from './organisation-opportunities.selectors';
 
 @Component({
@@ -42,7 +42,6 @@ import { selectOrganisationOpportunitiesViewModel } from './organisation-opportu
 export class OrganisationOpportunitiesComponent {
   public store = inject(Store);
   public vm = this.store.selectSignal(selectOrganisationOpportunitiesViewModel);
-  protected actions$ = inject(Actions);
 
   public sort: SortDescriptor[] = [
     {
@@ -51,7 +50,9 @@ export class OrganisationOpportunitiesComponent {
     },
   ];
 
-  constructor() {
+  protected actions$ = inject(Actions);
+
+  public constructor() {
     this.actions$
       .pipe(
         takeUntilDestroyed(),

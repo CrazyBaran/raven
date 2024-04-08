@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-types,@typescript-eslint/no-this-alias,@typescript-eslint/explicit-member-accessibility */
 import * as oTel from '@opentelemetry/api';
 import {
   Attributes,
@@ -152,7 +153,9 @@ export class Instrumentation extends InstrumentationBase {
 
       this._wrap(
         moduleExports.WorkerPro.prototype,
-        // @ts-expect-error This is protected method
+        /**
+         * @ts-expect-error This is protected method
+         */
         'callProcessJob',
         this._patchCallProcessJob(),
       );
@@ -185,7 +188,9 @@ export class Instrumentation extends InstrumentationBase {
       this._unwrap(moduleExports.FlowProducer.prototype, 'addBulk');
       this._unwrap(moduleExports.JobPro.prototype, 'addJob');
 
-      // @ts-expect-error This is protected method
+      /**
+       * @ts-expect-error This is protected method
+       */
       this._unwrap(moduleExports.WorkerPro.prototype, 'callProcessJob');
       // this._unwrap(moduleExports.WorkerPro.prototype, 'run');
 

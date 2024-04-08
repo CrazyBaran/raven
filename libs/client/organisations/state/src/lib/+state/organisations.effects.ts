@@ -317,7 +317,7 @@ export const refreshOrganisations = createEffect(
           table: store.select(organisationsQuery.selectTable),
         }),
       ),
-      switchMap(([_, { params, table }]) =>
+      switchMap(([, { params, table }]) =>
         organisationsService
           .getOrganisations({
             ...params,

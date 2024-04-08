@@ -1,4 +1,3 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 //TODO: refactor notes table
 
 import { CommonModule } from '@angular/common';
@@ -9,7 +8,9 @@ import {
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { NoteStoreFacade, NotesActions } from '@app/client/notes/state';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { TagFilterPipe } from '@app/client/notes/util';
 import {
   ClipboardDirective,
@@ -27,12 +28,14 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogService } from '@progress/kendo-angular-dialog';
 
 import { TagItem, TagsContainerComponent } from '@app/client/shared/ui';
-import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
+import {
+  InfinityTableViewBaseComponent,
+  IsEllipsisActiveDirective,
+} from '@app/client/shared/ui-directives';
 import { Store } from '@ngrx/store';
 import { GridItem, GridModule } from '@progress/kendo-angular-grid';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
-import { InfinityTableViewBaseComponent } from '../../../../../shared/ui-directives/src/lib/infinity-table-view-base.directive';
 import { DeleteNoteComponent } from '../delete-note/delete-note.component';
 import { NoteTypeBadgeComponent } from '../note-type-badge/note-type-badge.component';
 

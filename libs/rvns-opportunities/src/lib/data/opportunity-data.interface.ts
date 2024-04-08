@@ -11,16 +11,14 @@ export interface OpportunityData extends OpportunityDataWithoutOrganisation {
   readonly organisation: OrganisationData;
 }
 
-interface TagData {
-  readonly id: string;
-  readonly name: string;
-}
-
 export interface OpportunityDataWithoutOrganisation {
   readonly id: string;
   stage: PipelineStageData;
   readonly fields: FieldData[];
-  readonly tag?: TagData;
+  readonly tag?: {
+    readonly id: string;
+    readonly name: string;
+  };
   readonly createdAt?: Date;
   readonly roundSize?: string;
   readonly valuation?: string;

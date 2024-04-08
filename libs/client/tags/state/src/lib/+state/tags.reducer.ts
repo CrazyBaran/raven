@@ -1,8 +1,8 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import * as _ from 'lodash';
 
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { NotesActions } from '@app/client/notes/state';
 import { Tag } from '@app/client/tags/data-access';
 import { TagsActions } from './tags.actions';

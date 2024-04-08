@@ -1,12 +1,8 @@
-import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { createFeature, createReducer, on } from '@ngrx/store';
 
 import { StorageActions } from './storage.actions';
-
-export type AzureImageEntity = {
-  fileName: string;
-  url: string;
-};
+import { AzureImageEntity } from './storage.models';
 
 export type AzureImagesState = EntityState<AzureImageEntity>;
 

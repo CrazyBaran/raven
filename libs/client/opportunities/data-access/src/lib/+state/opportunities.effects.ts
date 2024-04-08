@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { pipelinesQuery } from '@app/client/opportunities/api-pipelines';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { OrganisationsActions } from '@app/client/organisations/state';
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
+import { CompanyStatus } from 'rvns-shared';
 import { combineLatest, mergeMap, of, switchMap } from 'rxjs';
 import { catchError, concatMap, filter, map } from 'rxjs/operators';
-import { CompanyStatus } from '../../../../../../rvns-shared/src';
-import { OrganisationsActions } from '../../../../api-organisations/src';
 import { OpportunitiesService } from '../services/opportunities.service';
 import { OpportunitiesActions } from './opportunities.actions';
 import { opportunitiesQuery } from './opportunities.selectors';
@@ -229,7 +230,7 @@ export class OpportunitiesEffects {
               if (shouldPatchOpportunity) {
                 returnActions.push(
                   OpportunitiesActions.updateOpportunity({
-                    id: data?.id!,
+                    id: data?.id ?? '',
                     changes: {
                       pipelineStageId:
                         pipelineStages?.find(

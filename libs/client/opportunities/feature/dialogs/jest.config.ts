@@ -1,10 +1,10 @@
 /* eslint-disable */
 export default {
-  displayName: 'client-opportunities-feature-update-dialog',
+  displayName: 'client-opportunities-feature-dialogs',
   preset: '../../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory:
-    '../../../../../coverage/libs/client/opportunities/feature/update-dialog',
+    '../../../../../coverage/libs/client/opportunities/feature/dialogs',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
