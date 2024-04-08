@@ -33,6 +33,8 @@ import {
 } from '../../base-dynamic-control-component.directive';
 import { DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS } from '../dynamic-rich-text/provide-prose-mirror-settings.directive';
 
+import { inputRule } from '../../utils/input.rule';
+
 @Component({
   selector: 'app-rich-text',
   standalone: true,
@@ -124,6 +126,7 @@ export class RichTextComponent
   public myPlugins = (args: Plugin[]): Plugin[] => [
     ...args,
     ...(this.proseSettings?.proseMirrorSettings?.plugins ?? []),
+    inputRule(this.mySchema),
   ];
 
   public writeValue(value: string): void {

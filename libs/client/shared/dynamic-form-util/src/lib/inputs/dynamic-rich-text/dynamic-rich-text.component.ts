@@ -23,6 +23,7 @@ import {
   dynamicControlProvider,
   sharedDynamicControlDeps,
 } from '../../base-dynamic-control-component.directive';
+import { inputRule } from '../../utils/input.rule';
 import { DYNAMIC_RICH_TEXT_PROSE_MIRROR_SETTINGS } from './provide-prose-mirror-settings.directive';
 
 @Component({
@@ -51,6 +52,7 @@ export class DynamicRichTextComponent
   public myPlugins = (args: Plugin[]): Plugin[] => [
     ...args,
     ...(this.proseSettings?.proseMirrorSettings?.plugins ?? []),
+    inputRule(this.mySchema),
   ];
 
   public override ngOnInit(): void {
@@ -76,4 +78,11 @@ export class DynamicRichTextComponent
       block: 'center',
     });
   };
+
+  protected removeIndent(): void {
+    this.editor.exec('outdent');
+    setTimeout(() => {
+      this.editor.focus();
+    }, 5);
+  }
 }

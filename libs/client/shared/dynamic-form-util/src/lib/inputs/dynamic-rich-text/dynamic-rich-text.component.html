@@ -5,7 +5,8 @@
     labelCssClass="k-form-label text-secondary-900 text-sm"
   ></kendo-label>
   <kendo-editor
-    (keydown.shift.tab)="addIndent()"
+    (keydown.shift.tab)="removeIndent()"
+    (keydown.tab)="addIndent()"
     (focus)="setFocus()"
     [formControlName]="control.controlKey"
     [id]="control.controlKey"

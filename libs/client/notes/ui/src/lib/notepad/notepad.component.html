@@ -1,24 +1,28 @@
 <app-notepad-template [hideTabs]="hideTabs">
   <ng-container tabs>
     <p class="mb-2 text-[10px] uppercase">quick scroll</p>
-    <app-scroll-tab
-      (eyeClick)="toggleDisabled(tab, i)"
-      (labelClick)="setActiveTab(tab)"
-      *rxFor="let tab of tabs(); trackBy: 'id'; let i = index"
-      [label]="tab.label"
-      [showEye]="tab.canBeDisabled"
-      [state]="tab.state"
-    ></app-scroll-tab>
+    @for (tab of tabs(); track tab.id; let i = $index) {
+      <app-scroll-tab
+        [@delayedFadeIn]
+        (eyeClick)="toggleDisabled(tab, i)"
+        (labelClick)="setActiveTab(tab)"
+        [label]="tab.label"
+        [showEye]="tab.canBeDisabled"
+        [state]="tab.state"
+      />
+    }
   </ng-container>
 
   <div
     [class.opacity-0]="!visible()"
-    class="relative h-full overflow-auto transition-opacity duration-150 ease-in-out"
+    class="custom-scroll-on-hover relative h-full overflow-auto transition-opacity duration-150 ease-in-out"
     controls
   >
     <form
       [formGroup]="notepadFormGroup"
       class="ml-2 mr-1 flex h-full min-h-full flex-col gap-4"
+      (keydown.control.arrowDown)="setNextTabActive()"
+      (keydown.control.arrowUp)="setPreviousTabActive()"
     >
       <ng-container
         *rxFor="
