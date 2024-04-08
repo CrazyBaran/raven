@@ -5,8 +5,10 @@
       <h5 class="k-card-title">Details</h5>
       @if (vm().canEditOpportunity) {
         <kendo-button
-          [dynamicDialog]="['update-opportunity', this.vm().id]"
+          [queryParams]="{ 'opportunity-edit': vm().id }"
+          [routerLink]="['./']"
           iconClass="fa-sharp fa-solid fa-pen"
+          queryParamsHandling="merge"
           size="small"
         >
           Edit

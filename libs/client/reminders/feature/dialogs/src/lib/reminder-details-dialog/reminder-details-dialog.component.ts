@@ -8,11 +8,10 @@ import { Store } from '@ngrx/store';
 
 import { DatePipe } from '@angular/common';
 import { RemindersActions } from '@app/client/reminders/state';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { DynamicDialogContentBase } from '@app/client/shared/shelf';
 import { LoaderComponent, TagsContainerComponent } from '@app/client/shared/ui';
-import {
-  DynamicDialogContentBase,
-  ShowTooltipIfClampedDirective,
-} from '@app/client/shared/ui-directives';
+import { ShowTooltipIfClampedDirective } from '@app/client/shared/ui-directives';
 import { PicklistPipe, ToUserTagPipe } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { DialogModule } from '@progress/kendo-angular-dialog';

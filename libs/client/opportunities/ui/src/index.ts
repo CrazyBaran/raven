@@ -1,5 +1,4 @@
 export * from './lib/affinity-url-button/affinity-url-button.component';
-export * from './lib/deal-team-picker/deal-team-picker.component';
 export * from './lib/drop-confirmation/drop-confirmation.component';
 export * from './lib/heatmap-item/heatmap-item.component';
 export * from './lib/kanban-board/kanban-board.component';
@@ -9,7 +8,6 @@ export * from './lib/note-field-skeleton/note-field-skeleton.component';
 export * from './lib/note-field/note-field.component';
 export * from './lib/note-heatmap-field/note-heatmap-field.component';
 export * from './lib/opportunities-card/opportunities-card.component';
-export * from './lib/opportunity-form/opportunity-form.component';
 export * from './lib/related-note-skeleton/related-note-skeleton.component';
 export * from './lib/related-note/related-note.component';
 export * from './lib/related-notes-footer/related-notes-footer.component';

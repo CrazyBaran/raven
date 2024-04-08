@@ -3,16 +3,16 @@
     <h5 class="k-card-title">Opportunities</h5>
     <kendo-button
       [queryParams]="{
-        'create-opportunity': vm().currentOrganisationId
+        'opportunity-create': vm().currentOrganisationId
       }"
       [routerLink]="['./']"
       iconClass="fa-sharp fa-solid fa-pen"
       size="small"
-      [skipLocationChange]="true"
     >
       Add new
     </kendo-button>
   </div>
+  <!--            [skipLocationChange]="true"-->
 
   @if (vm().opportunities.length || vm().isLoading) {
     <kendo-grid
