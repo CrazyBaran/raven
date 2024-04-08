@@ -1,11 +1,12 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { OrganisationsActions } from '@app/client/organisations/state';
-import { DynamicDialogContentBase } from '@app/client/shared/shelf';
-import { OnErrorDirective } from '@app/client/shared/ui-directives';
+import {
+  DynamicDialogContentBase,
+  OnErrorDirective,
+} from '@app/client/shared/ui-directives';
 import { ControlInvalidPipe } from '@app/client/shared/ui-pipes';
 import { DialogUtil } from '@app/client/shared/util';
 import { Actions, ofType } from '@ngrx/effects';

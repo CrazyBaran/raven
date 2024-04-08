@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { RemindersActions } from '@app/client/reminders/state';
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { DynamicDialogContentBase } from '@app/client/shared/shelf';
+import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
 import { DialogUtil } from '@app/client/shared/util';
 import { Actions, ofType } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';

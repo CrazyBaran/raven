@@ -2,6 +2,7 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 
 import { Injectable } from '@angular/core';
+import { OPPORTUNITY_DYNAMIC_DIALOGS } from '@app/client/opportunities/feature/dialogs';
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
 import { DialogUtil } from '@app/client/shared/util';
 import {
@@ -29,14 +30,7 @@ export const dynamicDialogsConfig: Record<
     }
   | ComponentTemplate['load']
 > = {
-  [DialogUtil.queryParams.reopenOpportunity]: () =>
-    import('@app/client/opportunities/feature/update-dialog').then(
-      (m) => m.ReopenOpportunityDialogModule,
-    ),
-  [DialogUtil.queryParams.updateOpportunityStage]: () =>
-    import('@app/client/opportunities/feature/update-dialog').then(
-      (m) => m.UpdateOpportunityStageModule,
-    ),
+  ...OPPORTUNITY_DYNAMIC_DIALOGS,
   [DialogUtil.queryParams.passCompany]: {
     template: {
       load: () =>
@@ -124,66 +118,6 @@ export class ShelfEffects {
             preventClose: (ev: unknown, widowRef): boolean =>
               this._notepadShelfPreventHandler(ev, widowRef),
           }),
-        ),
-      );
-    },
-    { dispatch: false },
-  );
-
-  private openOpportunityDialogForm = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(ShelfActions.openOpportunityForm),
-        exhaustMap(
-          (action) =>
-            this.dynamicDialogService.openDynamicDialog({
-              width: 480,
-              minHeight: 'min(723px,95vh)',
-              maxHeight: '95vh',
-              cssClass: 'raven-custom-dialog',
-              template: {
-                name: 'opportunity dialog form',
-                componentData: { payload: action.payload },
-                load: () =>
-                  import(
-                    '@app/client/opportunities/feature/create-dialog'
-                  ).then((m) => m.CreateOpportunityDialogModule),
-                showLoading: true,
-              },
-            }).result,
-        ),
-      );
-    },
-    { dispatch: false },
-  );
-
-  private openCreateOpportunityDetails$ = createEffect(() => {
-    return this.store.select(selectQueryParam('opportunity-create')).pipe(
-      filter((id) => !!id),
-      map(() => ShelfActions.openOpportunityForm({})),
-    );
-  });
-
-  private openEditOpportunityDetails$ = createEffect(
-    () => {
-      return this.store.select(selectQueryParam('opportunity-edit')).pipe(
-        filter((id) => !!id),
-        exhaustMap(
-          () =>
-            this.dynamicDialogService.openDynamicDialog({
-              width: 480,
-              minHeight: 'min(723px,95vh)',
-              maxHeight: '95vh',
-              cssClass: 'raven-custom-dialog',
-              template: {
-                name: 'opportunity dialog edit form',
-                load: () =>
-                  import(
-                    '@app/client/opportunities/feature/update-dialog'
-                  ).then((m) => m.CreateOpportunityDialogModule),
-                showLoading: true,
-              },
-            }).result,
         ),
       );
     },

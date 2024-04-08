@@ -1,4 +1,3 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
@@ -11,7 +10,7 @@ import {
   REMINDER_USERS_SOURCE,
   UPDATE_REMINDER_FORM_FN,
 } from '@app/client/reminders/utils';
-import { DynamicDialogContentBase } from '@app/client/shared/shelf';
+import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
 import {
   ControlHasChangesPipe,
   ControlInvalidPipe,
@@ -23,7 +22,6 @@ import { DialogModule, DialogRef } from '@progress/kendo-angular-dialog';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { RxPush } from '@rx-angular/template/push';
 import { first } from 'rxjs';
-import { createReminderStore } from '../create-reminder-container/create-reminder-container.component';
 import {
   selectUpdateReminderViewModel,
   selectUpdatingReminder,
@@ -106,6 +104,4 @@ export class UpdateReminderDialogComponent extends DynamicDialogContentBase {
         this.dialog.close();
       });
   }
-
-  protected readonly createReminderStore = createReminderStore;
 }
