@@ -1,6 +1,7 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 
 import { notesQuery } from '@app/client/opportunities/api-notes';
+import { PipelineUtils } from '@app/client/opportunities/api-pipelines';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { organisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
@@ -61,7 +62,9 @@ export const selectOpportunityPipelines = createSelector(
     isLoadingUpdateState,
     stage,
   ) => ({
-    data: stages.filter(({ isHidden }) => !isHidden),
+    data: stages.filter(
+      ({ isHidden, order }) => !isHidden && order > PipelineUtils.metStageOrder,
+    ),
     value: isLoading ? null : opportunity?.stage.id,
     disabled: isLoading || isLoadingUpdateState,
     isLoading: isLoading || isLoadingUpdateState,
@@ -149,7 +152,7 @@ export const selectOpportunityDetailViewModel = createSelector(
       opportunityDetails,
       currentOrganisationId,
       currentOrganisation,
-      lines,
+      lines: lines,
       details,
       navigations,
       affinityUrl: opportunityDetails?.organisation?.affinityUrl,
