@@ -97,6 +97,17 @@
               <p>{{ shortlist.updatedAt | date: 'MMMM d, y' }}</p>
             </ng-template>
           </kendo-grid-column>
+
+          <kendo-grid-column title="" [width]="60">
+            <ng-template kendoGridCellTemplate let-shortlist>
+              @if (getActionData(shortlist).actions.length) {
+                <app-dropdownbutton-navigation
+                  class="w-100 flex justify-end"
+                  [model]="getActionData(shortlist)"
+                />
+              }
+            </ng-template>
+          </kendo-grid-column>
         </kendo-grid>
       </div>
     </ng-template>

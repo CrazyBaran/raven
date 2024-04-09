@@ -148,6 +148,7 @@ export const organisationShortlistsTableStore = signalStore(
           ShortlistsActions.deleteShortlistSuccess,
           ShortlistsActions.createShortlistSuccess,
           ShortlistsActions.updateShortlistSuccess,
+          ShortlistsActions.bulkRemoveOrganisationsFromShortlistSuccess,
         ),
       );
       store.refresh(resetPage$);

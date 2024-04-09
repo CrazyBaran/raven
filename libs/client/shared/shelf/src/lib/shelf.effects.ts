@@ -67,6 +67,10 @@ export const dynamicDialogsConfig: Record<
     import('@app/client/shortlists/feature/dialogs').then(
       (m) => m.RemoveFromShortlistDialogModule,
     ),
+  [DialogUtil.queryParams.removeShortlistFromOrganisation]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.RemoveShortlistFromOrganisationDialogModule,
+    ),
   [DialogUtil.queryParams.updateReminder]: () =>
     import('@app/client/reminders/feature/dialogs').then(
       (m) => m.UpdateReminderDialogModule,
