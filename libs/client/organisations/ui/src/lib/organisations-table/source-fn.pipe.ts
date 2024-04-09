@@ -9,7 +9,8 @@ import {
   lastFundingTypes,
 } from '@app/shared/data-warehouse';
 import { map, Observable, of } from 'rxjs';
-import { TableColumn } from './organisations-table.component';
+
+import { TableColumn } from './models';
 
 @Pipe({
   name: 'sourceFn',

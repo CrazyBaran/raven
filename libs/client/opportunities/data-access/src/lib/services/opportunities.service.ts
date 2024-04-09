@@ -1,3 +1,5 @@
+// todo: remove any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
@@ -6,11 +8,18 @@ import { Params } from '@angular/router';
 import { PipelinesService } from '@app/client/pipelines/data-access';
 import { GenericResponse } from '@app/rvns-api';
 import { OpportunityData, OpportunityTeamData } from '@app/rvns-opportunities';
-import { Observable, switchMap } from 'rxjs';
+import * as _ from 'lodash';
+import { Observable, of, switchMap } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export type OpportunityChanges = {
   pipelineStageId?: string;
   tagId?: string;
+  team?: {
+    owners: string[];
+    members: string[];
+  } | null;
+  hasTeam?: boolean;
 } & Record<string, unknown>;
 
 export type OpportunitiesResponse = {
@@ -18,14 +27,15 @@ export type OpportunitiesResponse = {
   total: number;
 };
 
-// todo: remove any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CreateOpportunity = any & {
   organisationId: string;
   domain: string;
   name: string;
+  team?: {
+    owners: string[];
+    members: string[];
+  };
 };
-
 @Injectable({
   providedIn: 'root',
 })
@@ -55,19 +65,63 @@ export class OpportunitiesService {
     opportunityId: string,
     changes: OpportunityChanges,
   ): Observable<GenericResponse<OpportunityData>> {
-    return this.http.patch<GenericResponse<OpportunityData>>(
-      `${this.url}/${opportunityId}`,
-      changes,
-    );
+    return this.http
+      .patch<GenericResponse<OpportunityData>>(
+        `${this.url}/${opportunityId}`,
+        _.omit(changes, 'team'),
+      )
+      .pipe(
+        switchMap((opportunityResponse) => {
+          return changes.team && changes.team.owners.length
+            ? (changes.hasTeam
+                ? this.patchOpportunityTeam(
+                    opportunityResponse.data!.id,
+                    changes.team,
+                  )
+                : this.createOpportunityTeam(
+                    opportunityResponse.data!.id,
+                    changes.team,
+                  )
+              ).pipe(
+                map((teamResponse) => ({
+                  ...opportunityResponse,
+                  data: {
+                    ...opportunityResponse.data,
+                    team: teamResponse.data,
+                  } as OpportunityData,
+                })),
+              )
+            : of(opportunityResponse);
+        }),
+      );
   }
 
   public createOpportunity(
     createOpportunity: CreateOpportunity,
   ): Observable<GenericResponse<OpportunityData>> {
-    return this.http.post<GenericResponse<OpportunityData>>(
-      this.url,
-      createOpportunity,
-    );
+    return this.http
+      .post<GenericResponse<OpportunityData>>(
+        this.url,
+        _.omit(createOpportunity, 'team'),
+      )
+      .pipe(
+        switchMap((opportunityResponse) => {
+          return createOpportunity.team && createOpportunity.team.owners.length
+            ? this.createOpportunityTeam(
+                opportunityResponse.data!.id,
+                createOpportunity.team,
+              ).pipe(
+                map((teamResponse) => ({
+                  ...opportunityResponse,
+                  data: {
+                    ...opportunityResponse.data,
+                    team: teamResponse.data,
+                  } as OpportunityData,
+                })),
+              )
+            : of(opportunityResponse);
+        }),
+      );
   }
 
   public patchOpportunityTeam(

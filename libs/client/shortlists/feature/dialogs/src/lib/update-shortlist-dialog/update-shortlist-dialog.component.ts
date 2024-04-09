@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { AsyncPipe } from '@angular/common';
-import { DynamicDialogContentBase } from '@app/client/shared/shelf';
+import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
 import {
   ControlHasChangesPipe,
   ControlInvalidPipe,

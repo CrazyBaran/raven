@@ -1,5 +1,8 @@
 import { inject } from '@angular/core';
-import { OrganisationsService } from '@app/client/organisations/data-access';
+import {
+  OrganisationInteraction,
+  OrganisationsService,
+} from '@app/client/organisations/data-access';
 import {
   LoadDataMethod,
   LoadParamMethod,
@@ -9,7 +12,6 @@ import { routerQuery } from '@app/client/shared/util-router';
 import { signalStore, withMethods } from '@ngrx/signals';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
-import { OrganisationInteraction } from '../../../../../../data-access/src/lib/models/interaction.model';
 import { TIMELINE_DAYS_INTERVAL } from './organisation-timeline-table.const';
 
 export const organisationTimelineTableStore = signalStore(

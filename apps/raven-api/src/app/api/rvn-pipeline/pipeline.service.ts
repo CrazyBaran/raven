@@ -1,7 +1,7 @@
 import {
   PipelineDefinitionData,
   PipelineGroupData,
-  PipelineGroupingDataInterface,
+  PipelineGroupingData,
   PipelineStageData,
 } from '@app/rvns-pipelines';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -291,7 +291,7 @@ export class PipelineService {
   public pipelineGroupsEntityToGroupingData(
     pipelineEntity: PipelineDefinitionEntity,
     groups: PipelineGroupEntity[],
-  ): PipelineGroupingDataInterface {
+  ): PipelineGroupingData {
     return {
       pipelineId: pipelineEntity.id,
       groups: groups.map((group) => this.pipelineGroupEntityToData(group)),

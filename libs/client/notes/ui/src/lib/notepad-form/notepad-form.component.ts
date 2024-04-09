@@ -1,6 +1,3 @@
-/* eslint-disable @nx/enforce-module-boundaries */
-//TODO: refactor note form
-
 /* eslint-disable @typescript-eslint/member-ordering */
 import { CommonModule } from '@angular/common';
 import {
@@ -21,9 +18,16 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from '@angular/forms';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import {
+  isOpportunityComplexTag,
+  isSimpleTagDropdownValue,
   TagDropdownComponent,
+  TagDropdownValue,
   TagFormComponent,
+  TagsActions,
+  tagsQuery,
+  TagsService,
   TagsStoreFacade,
 } from '@app/client/notes/api-tags';
 import {
@@ -32,6 +36,7 @@ import {
   imageUploader,
 } from '@app/client/shared/dynamic-form-util';
 import { ControlValueAccessor } from '@app/client/shared/util';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { TemplatesStoreFacade } from '@app/client/templates/data-access';
 import { TagData } from '@app/rvns-tags';
 import { TemplateWithRelationsData } from '@app/rvns-templates';
@@ -49,15 +54,10 @@ import { EditorView } from '@progress/kendo-angular-editor';
 
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
 import { TagComponent, TagTypeColorPipe } from '@app/client/shared/ui';
-import { TagsActions, tagsQuery } from '@app/client/tags/state';
-import {
-  isOpportunityComplexTag,
-  isSimpleTagDropdownValue,
-  TagDropdownValue,
-} from '@app/client/tags/ui';
+
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { firstValueFrom, map, startWith, tap } from 'rxjs';
+import { firstValueFrom, map, Observable, startWith, tap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 export interface NotepadForm {
   template: TemplateWithRelationsData | null;
@@ -145,6 +145,7 @@ export class NotepadFormComponent
 
   protected templateFacade = inject(TemplatesStoreFacade);
   protected tagFacade = inject(TagsStoreFacade);
+  protected tagService = inject(TagsService);
   protected uploadFileService = inject(UploadFileService);
   protected store = inject(Store);
   protected actions$ = inject(Actions);
@@ -169,6 +170,19 @@ export class NotepadFormComponent
       ({ id }) => id !== this.defaultTemplate()?.id,
     );
   });
+
+  protected companySourceFn$ = (filter: string): Observable<TagData[]> =>
+    this.tagService.getTags({ type: 'company', query: filter, take: 50 }).pipe(
+      map((response) => response.data!),
+      tap((tags) => {
+        this.store.dispatch(
+          TagsActions.getTagsByTypesSuccess({
+            data: tags,
+            tagTypes: ['company'],
+          }),
+        );
+      }),
+    );
 
   //todo move it to standlone component
   protected standaloneTemplateForm =

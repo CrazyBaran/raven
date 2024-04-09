@@ -15,15 +15,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { RelatedNotesFooterComponent } from '../related-notes-footer/related-notes-footer.component';
 import { RelatedNotesTableComponent } from '../related-notes-tables/related-notes-table.component';
 import { CreateInfoComponent } from './create-info/create-info.component';
-
-export interface RelatedNote {
-  id: string;
-  name: string;
-  template: string;
-  createdBy: string;
-  updatedAt: Date | string | null;
-  fields: { id: string; value: string; name: string }[];
-}
+import { RelatedNote } from './related.note';
 
 @Component({
   selector: 'app-related-note',

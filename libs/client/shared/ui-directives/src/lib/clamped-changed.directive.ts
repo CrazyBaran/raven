@@ -2,17 +2,16 @@ import {
   DestroyRef,
   Directive,
   ElementRef,
-  EventEmitter,
   inject,
-  Output,
+  output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  Observable,
+  Subject,
   debounceTime,
   distinctUntilChanged,
   map,
-  Observable,
-  Subject,
 } from 'rxjs';
 
 @Directive({
@@ -21,11 +20,11 @@ import {
   standalone: true,
 })
 export class ClampedChangedDirective {
+  public clampedChanged = output<boolean>();
+
   protected elementRef = inject(ElementRef);
 
   protected resizedEvent = injectHostResizedEvent();
-
-  @Output() public clampedChanged = new EventEmitter<boolean>();
 
   public constructor() {
     this.resizedEvent

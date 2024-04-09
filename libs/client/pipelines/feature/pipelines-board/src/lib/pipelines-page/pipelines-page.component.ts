@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
+import { CreateOpportunityOnStageDialogComponent } from '@app/client/opportunities/feature/dialogs';
 import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
 import {
@@ -34,6 +35,7 @@ import {
     LoaderModule,
     KanbanBoardComponent,
     DropdownNavigationComponent,
+    CreateOpportunityOnStageDialogComponent,
   ],
   templateUrl: './pipelines-page.component.html',
   styleUrls: ['./pipelines-page.component.scss'],
@@ -41,7 +43,7 @@ import {
 })
 export class PipelinesPageComponent {
   public vm = this.store.selectSignal(selectPipelinesPageViewModel);
-  public board = this.store.selectSignal(selectKanbanBoard);
+  public boardModel = this.store.selectSignal(selectKanbanBoard);
 
   public constructor(private readonly store: Store) {
     this.store.dispatch(PipelinesActions.getPipelines());

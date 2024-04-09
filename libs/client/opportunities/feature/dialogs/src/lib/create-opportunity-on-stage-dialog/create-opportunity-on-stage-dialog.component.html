@@ -1,0 +1,40 @@
+@if (vm(); as vm) {
+  <kendo-dialog [width]="480" (close)="onCancel.emit()">
+    <kendo-dialog-titlebar (close)="onDialogClose()">
+      <span class="k-window-title">Add New Opportunity</span>
+    </kendo-dialog-titlebar>
+
+    <p class="text-placeholder-text">
+      You have selected to create a new opportunity in Raven for this company,
+      please fill in this form related to this opportunity.
+    </p>
+
+    <p class="text-placeholder-text">
+      You can enter this information later from the opportunity overview page if
+      you wish to skip this step.
+    </p>
+
+    <app-opportunity-form
+      [isLoadingOpportunityTags]="vm.opportunityDropdown.isLoading"
+      [opportunityForm]="opportunityForm"
+      [opportunityTags]="vm.opportunityDropdown.data"
+      [peopleTags]="vm.people"
+      [staticOrganisation]="vm.organisation!"
+      class="block min-h-0 flex-1 overflow-auto p-10"
+    />
+
+    <kendo-dialog-actions>
+      <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+      <kendo-button
+        (click)="onCreate()"
+        [disabled]="!opportunityForm.valid || vm.isCreating"
+        themeColor="primary"
+      >
+        @if (vm.isCreating) {
+          <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+        }
+        Add New Opportunity
+      </kendo-button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}

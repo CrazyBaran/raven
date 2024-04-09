@@ -23,6 +23,7 @@ import {
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganisationsActions } from '@app/client/organisations/state';
+import { CreateReminderContainerComponent } from '@app/client/reminders/feature/dialogs';
 import { RemindersActions } from '@app/client/reminders/state';
 import { ReminderFormComponent } from '@app/client/reminders/ui';
 import {
@@ -44,7 +45,6 @@ import { StepperModule } from '@progress/kendo-angular-layout';
 import { RxPush } from '@rx-angular/template/push';
 import { CompanyStatus } from 'rvns-shared';
 import { first } from 'rxjs';
-import { CreateReminderContainerComponent } from '../../../../../../reminders/feature/dialogs/src/lib/create-reminder-container/create-reminder-container.component';
 import { selectPassCompanyDialogViewModel } from './pass-company-dialog.selectors';
 
 export const expandOnInitAnimation = trigger('expandOnInit', [

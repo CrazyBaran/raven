@@ -5,8 +5,6 @@ import {
   Pipe,
   PipeTransform,
 } from '@angular/core';
-// TODO: fix colors boundaries
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { TagType } from '@app/rvns-tags';
 import { TagComponent } from './tag.component';
 

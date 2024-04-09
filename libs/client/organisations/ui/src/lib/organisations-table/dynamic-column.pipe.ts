@@ -2,10 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { ComponentTemplate } from '@app/client/shared/dynamic-renderer/data-access';
 import * as _ from 'lodash';
-import {
-  OrganisationRowV2,
-  TableColumn,
-} from './organisations-table.component';
+
+import { OrganisationRowV2, TableColumn } from './models';
 
 @Pipe({
   name: 'dynamicColumn',

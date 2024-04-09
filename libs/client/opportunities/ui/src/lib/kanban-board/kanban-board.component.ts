@@ -14,16 +14,12 @@ import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/overlay';
 import { LowerCasePipe, NgClass } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-// TODO: fix boundaries
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { CreateOpportunityDialogComponent } from '@app/client/opportunities/feature/update-dialog';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { isBoolean } from 'lodash';
 import { Subject, delayWhen, filter } from 'rxjs';
 import { DropAreaComponent } from '../drop-area/drop-area.component';
-import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 import {
   KanbanColumn,
   KanbanColumnComponent,
@@ -63,6 +59,7 @@ export class DisabledFooterGroupPipe implements PipeTransform {
 }
 
 import * as _ from 'lodash';
+import { DropConfirmationComponent } from '../drop-confirmation/drop-confirmation.component';
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
@@ -78,7 +75,6 @@ import * as _ from 'lodash';
     LowerCasePipe,
     DropConfirmationComponent,
     DisabledFooterGroupPipe,
-    CreateOpportunityDialogComponent,
   ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
@@ -86,17 +82,35 @@ import * as _ from 'lodash';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanBoardComponent {
-  private _board: KanbanBoard = {
-    columns: [],
-    footers: [],
-    preliminiaryColumn: null,
-  };
+  @Output() public dragEndEvent = new EventEmitter<{
+    pipelineStageId: string;
+    opportunityId: string;
+  }>();
+
+  @Output() public removeCompanyFromShortlist = new EventEmitter<{
+    organisationId: string;
+  }>();
+
+  public paramsEditId = signal<{
+    opportunityId: string;
+    organisationId: string;
+    pipelineStageId?: string;
+  } | null>(null);
+
+  protected draggedCard = signal<OpportunityCard | null>(null);
+
+  protected receiveMode = signal<KanbanDragStartEvent | null>(null);
+
+  protected receiveMode$ = toObservable(this.receiveMode);
+
+  protected destinationStageId = signal<string | null>(null);
+
+  protected confirmDrop = signal<{
+    footerGroup: KanbanFooterGroup;
+    opportunityId: string;
+  } | null>(null);
 
   private value$ = new Subject<KanbanBoard>();
-
-  @Input() public set board(value: KanbanBoard) {
-    this.value$.next(value);
-  }
 
   public constructor() {
     // wait for the receiveMode to be set to null before setting the board
@@ -110,34 +124,31 @@ export class KanbanBoardComponent {
       });
   }
 
+  private _board: KanbanBoard = {
+    columns: [],
+    footers: [],
+    preliminiaryColumn: null,
+  };
+
   public get board(): KanbanBoard {
     return this._board;
   }
 
-  @Output() public dragEndEvent = new EventEmitter<{
-    pipelineStageId: string;
-    opportunityId: string;
-  }>();
+  @Input() public set board(value: KanbanBoard) {
+    this.value$.next(value);
+  }
 
-  @Output() public removeCompanyFromShortlist = new EventEmitter<{
-    organisationId: string;
-  }>();
+  public onOpportunityEditCancel(): void {
+    this.paramsEditId.set(null);
+    this.destinationStageId.set(null);
+    this.receiveMode.set(null);
+  }
 
-  protected draggedCard = signal<OpportunityCard | null>(null);
-  protected receiveMode = signal<KanbanDragStartEvent | null>(null);
-  protected receiveMode$ = toObservable(this.receiveMode);
-
-  protected paramsEditId = signal<{
-    opportunityId: string;
-    organisationId: string;
-    pipelineStageId?: string;
-  } | null>(null);
-  protected destinationStageId = signal<string | null>(null);
-
-  protected confirmDrop = signal<{
-    footerGroup: KanbanFooterGroup;
-    opportunityId: string;
-  } | null>(null);
+  public onOpportunityEditSubmit(): void {
+    this.paramsEditId.set(null);
+    this.destinationStageId.set(null);
+    this.receiveMode.set(null);
+  }
 
   protected dragStarted($event: KanbanDragStartEvent): void {
     this.receiveMode.set($event);
@@ -226,17 +237,5 @@ export class KanbanBoardComponent {
     } else {
       this.dragEndEvent.emit($event);
     }
-  }
-
-  protected onOpportunityEditCancel(): void {
-    this.paramsEditId.set(null);
-    this.destinationStageId.set(null);
-    this.receiveMode.set(null);
-  }
-
-  protected onOpportunityEditSubmit(): void {
-    this.paramsEditId.set(null);
-    this.destinationStageId.set(null);
-    this.receiveMode.set(null);
   }
 }
