@@ -1,14 +1,14 @@
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
-import {
-  KanbanBoard,
-  KanbanFooterGroup,
-  OpportunityCard,
-} from '@app/client/opportunities/ui';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
 import {
   pipelinesQuery,
   selectAllPipelineStages,
 } from '@app/client/pipelines/state';
+import {
+  KanbanBoard,
+  KanbanFooterGroup,
+  OpportunityCard,
+} from '@app/client/pipelines/ui';
 import {
   ButtongroupNavigationModel,
   DropdownNavigationModel,

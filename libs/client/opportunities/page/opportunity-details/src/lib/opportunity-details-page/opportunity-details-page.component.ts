@@ -14,13 +14,15 @@ import { NotesActions } from '@app/client/opportunities/api-notes';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import {
   AffinityUrlButtonComponent,
-  DropConfirmationComponent,
-  KanbanFooterGroup,
   StatusIndicatorComponent,
 } from '@app/client/opportunities/ui';
 import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { PipelinesActions } from '@app/client/pipelines/state';
+import {
+  DropConfirmationComponent,
+  KanbanFooterGroup,
+} from '@app/client/pipelines/ui';
 import { FadeInOutDirective, fadeIn } from '@app/client/shared/ui';
 import { TimesPipe } from '@app/client/shared/ui-pipes';
 import {
