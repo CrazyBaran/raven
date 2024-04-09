@@ -15,4 +15,8 @@ export const OPPORTUNITY_DYNAMIC_DIALOGS: DialogConfigs = {
     import('./lib/create-opportunity-dialog/providers').then(
       (m) => m.CreateOpportunityDialogModule,
     ),
+  'edit-financial-kpi': () =>
+    import('./lib/edit-financial-kpi-dialog/providers').then(
+      (m) => m.EditFinancialKpiDialogModule,
+    ),
 };

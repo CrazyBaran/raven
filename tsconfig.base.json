@@ -73,9 +73,6 @@
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
-      "@app/client/opportunities/feature/edit-financial-kpi": [
-        "libs/client/opportunities/feature/edit-financial-kpi/src/index.ts"
-      ],
       "@app/client/opportunities/feature/files": [
         "libs/client/opportunities/feature/files/src/index.ts"
       ],

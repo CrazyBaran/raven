@@ -1,10 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
+import { dynamicDialogDirective } from '@app/client/shared/ui-directives';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import {
   HeatmapItem,
@@ -24,13 +20,16 @@ export interface NoteHeatmap {
 @Component({
   selector: 'app-note-heatmap-field',
   standalone: true,
-  imports: [TilelayoutItemComponent, ButtonModule, HeatmapItemComponent],
+  imports: [
+    TilelayoutItemComponent,
+    ButtonModule,
+    HeatmapItemComponent,
+    dynamicDialogDirective,
+  ],
   templateUrl: './note-heatmap-field.component.html',
   styleUrl: './note-heatmap-field.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NoteHeatmapFieldComponent {
-  public edit = output();
-
   public heatmap = input.required<NoteHeatmap>();
 }

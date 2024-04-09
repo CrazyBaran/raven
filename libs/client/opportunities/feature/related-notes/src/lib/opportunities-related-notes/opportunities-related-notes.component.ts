@@ -242,14 +242,6 @@ export class OpportunitiesRelatedNotesComponent {
     return this.state().updatingField === field ? this.state().state : 'none';
   }
 
-  protected onHeatmapEdit(): void {
-    this.router.navigate([], {
-      queryParams: { 'edit-financial-kpi': 'true' },
-      queryParamsHandling: 'merge',
-      relativeTo: this.activeRoute,
-    });
-  }
-
   private updateNotes(): void {
     const noteId = this.vm().opportunityNoteId;
     this.state.update((state) => ({

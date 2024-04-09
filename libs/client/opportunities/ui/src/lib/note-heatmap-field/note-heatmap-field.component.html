@@ -1,7 +1,10 @@
 <ui-tilelayout-item>
   <div header class="flex items-center justify-between gap-2">
     <h5>Financial KPIs</h5>
-    <kendo-button (click)="edit.emit()" iconClass="fa-regular fa-pen">
+    <kendo-button
+      [dynamicDialog]="['edit-financial-kpi', true]"
+      iconClass="fa-regular fa-pen"
+    >
       Edit
     </kendo-button>
   </div>
