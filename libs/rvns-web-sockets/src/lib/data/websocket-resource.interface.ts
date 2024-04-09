@@ -5,6 +5,7 @@ export const websocketResources = [
   'pipelines',
   'shortlists',
   'reminders',
+  'opportunities',
 ] as const;
 
 export type WebsocketResourceType = (typeof websocketResources)[number];

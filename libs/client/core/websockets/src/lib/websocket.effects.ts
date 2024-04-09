@@ -21,6 +21,8 @@ const URL_RESOURCE_CONFIG: Record<
   pipelines: (url) => url.includes('/companies/pipeline'),
   notes: (url) => url.includes('/notes') || url.includes('/companies/'),
   shortlists: (url) => url.includes('/companies'),
+  opportunities: (url) =>
+    url.includes('/companies') && url.includes('/opportunities'),
   reminders: (_url) => true,
 };
 

@@ -7,6 +7,7 @@ import { environment } from '../../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../../shared/sharepoint-directory-structure.generator';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { OpportunityEntity } from '../../rvn-opportunities/entities/opportunity.entity';
+import { GatewayEventService } from '../../rvn-web-sockets/gateway/gateway-event.service';
 
 @Injectable()
 export class OpportunityCreatedEventHandler {
@@ -14,6 +15,7 @@ export class OpportunityCreatedEventHandler {
     private readonly entityManager: EntityManager,
     private readonly graphClient: Client,
     private readonly logger: RavenLogger,
+    private readonly gatewayEventService: GatewayEventService,
   ) {
     this.logger.setContext(OpportunityCreatedEventHandler.name);
   }
@@ -65,6 +67,11 @@ export class OpportunityCreatedEventHandler {
       }
       await this.createDirectory(directory, opportunityFolderId);
     }
+
+    this.gatewayEventService.emit(`resource-opportunities`, {
+      eventType: 'opportunity-note-created-progress-finished',
+      data: { id: event.opportunityEntityId },
+    });
   }
 
   private async createSharepointDirectoryForOpportunityOrganisation(
