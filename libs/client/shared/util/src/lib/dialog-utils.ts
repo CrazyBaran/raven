@@ -26,6 +26,7 @@ export class DialogUtil {
 
     createOpportunity: 'create-opportunity' as const,
     updateOpportunity: 'update-opportunity' as const,
+    editFinancial: 'edit-financial-kpi' as const,
   };
 }
 
