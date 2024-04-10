@@ -34,6 +34,7 @@ import {
 } from '@app/client/shared/ui-router';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
 import { DialogUtil } from '@app/client/shared/util';
+import { TagsActions } from '@app/client/tags/state';
 import { Actions } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { TabStripModule } from '@progress/kendo-angular-layout';
@@ -110,6 +111,10 @@ export class OrganisationPageComponent {
 
     this.store.dispatch(
       OrganisationsActions.getOrganisation({ id: organizationId }),
+    );
+
+    this.store.dispatch(
+      TagsActions.getTagsByTypesIfNotLoaded({ tagTypes: ['people'] }),
     );
 
     this.store.dispatch(PipelinesActions.getPipelines());
