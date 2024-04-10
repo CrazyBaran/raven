@@ -44,7 +44,7 @@ import { selectCreateOpportunityDialogViewModel } from './reopen-opportunity-dia
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReopenOpportunityDialogComponent extends DynamicDialogContentBase {
-  public readonly route = 'update-opportunity';
+  public readonly route = 'reopen-opportunity';
 
   public isCreating = signal(false);
 
