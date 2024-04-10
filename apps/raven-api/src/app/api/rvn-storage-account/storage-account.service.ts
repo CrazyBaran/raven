@@ -33,7 +33,7 @@ export class StorageAccountService {
       containerName,
       savedEntity.fileName,
       { create: true },
-      600,
+      4 * 60 * 60,
     );
 
     return {
@@ -50,7 +50,7 @@ export class StorageAccountService {
       containerName,
       fileName,
       { read: true },
-      600,
+      4 * 60 * 60,
     );
   }
 
