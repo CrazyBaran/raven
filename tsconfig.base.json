@@ -76,9 +76,6 @@
       "@app/client/opportunities/feature/edit-financial-kpi": [
         "libs/client/opportunities/feature/edit-financial-kpi/src/index.ts"
       ],
-      "@app/client/opportunities/feature/files": [
-        "libs/client/opportunities/feature/files/src/index.ts"
-      ],
       "@app/client/opportunities/feature/opportunity-notes": [
         "libs/client/opportunities/feature/opportunity-notes/src/index.ts"
       ],
