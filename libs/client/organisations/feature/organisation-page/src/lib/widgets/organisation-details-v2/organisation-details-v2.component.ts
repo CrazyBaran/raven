@@ -115,12 +115,12 @@ export class OrganisationDetailsV2Component {
       },
       {
         label: lastFunding?.postValuationInUsd
-          ? `*${this.currency.transform(
+          ? `${this.currency.transform(
               lastFunding.postValuationInUsd || 0,
               'USD',
             )}M`
           : undefined,
-        subLabel: 'Enterprise Valuation',
+        subLabel: 'Enterprise Valuation (estimate)',
         background: 'var(--series-c-lighten-20)',
       },
     ];
