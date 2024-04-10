@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AffinityUrlButtonComponent } from '@app/client/opportunities/ui';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { AffinityUrlButtonComponent } from '../affinity-url-button/affinity-url-button.component';
 
 export type OpportunityCard = {
   id: string;
@@ -35,7 +35,6 @@ export type OpportunityCard = {
 })
 export class OpportunitiesCardComponent {
   @Input() public model: OpportunityCard;
-
   protected get additionalFields(): {
     label: string;
     value: string | undefined;

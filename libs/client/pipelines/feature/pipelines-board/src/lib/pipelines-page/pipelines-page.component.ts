@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { CreateOpportunityOnStageDialogComponent } from '@app/client/opportunities/feature/dialogs';
-import { KanbanBoardComponent } from '@app/client/opportunities/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
+import { KanbanBoardComponent } from '@app/client/pipelines/ui';
 import {
   ButtongroupNavigationComponent,
   DropdownNavigationComponent,

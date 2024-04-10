@@ -142,6 +142,7 @@
       "@app/client/pipelines/state": [
         "libs/client/pipelines/state/src/index.ts"
       ],
+      "@app/client/pipelines/ui": ["libs/client/pipelines/ui/src/index.ts"],
       "@app/client/pipelines/utils": ["libs/client/pipelines/utils/src/index.ts"],
       "@app/client/reminders/data-access": [
         "libs/client/reminders/data-access/src/index.ts"
