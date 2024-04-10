@@ -3,6 +3,7 @@ import { pipelinesQuery } from '@app/client/organisations/api-pipelines';
 import { tagsFeature, tagsQuery } from '@app/client/organisations/api-tags';
 import { organisationsFeature } from '@app/client/organisations/state';
 
+import { OpportunityUtils } from '@app/client/opportunities/utils';
 import {
   FilterParam,
   OpportunityRow,
@@ -211,6 +212,8 @@ export const selectOrganisationRows = createSelector(
                   opportunity!.team?.owners.map((owner) => owner.actorName) ??
                   [],
                 updatedAt: opportunity!.createdAt?.toString() ?? '',
+                actionData: [],
+                active: OpportunityUtils.isActiveStage(opportunity?.stage),
               }),
             ),
         }) ?? [],
