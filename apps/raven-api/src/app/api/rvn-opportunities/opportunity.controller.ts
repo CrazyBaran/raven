@@ -104,7 +104,10 @@ export class OpportunityController {
     @Query('round') round?: string,
   ): Promise<PagedOpportunityData> {
     if (domain) {
-      return await this.opportunityService.findByDomain(domain);
+      return await this.opportunityService.findByDomain(domain, {
+        skip: skip ?? 0,
+        take: take ?? 5,
+      });
     } else {
       const options = {
         skip: skip ?? 0,

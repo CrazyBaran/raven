@@ -1,10 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'edit-financial-kpi',
-  preset: '../../../../../jest.preset.js',
+  displayName: 'client-pipelines-utils',
+  preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory:
-    '../../../../../coverage/libs/client/opportunities/feature/edit-financial-kpi',
+  coverageDirectory: '../../../../coverage/libs/client/pipelines/utils',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

@@ -232,11 +232,29 @@ export class OpportunityService {
     );
   }
 
-  public async findByDomain(domain: string): Promise<PagedOpportunityData> {
-    const opportunities = await this.opportunityRepository.find({
-      where: { organisation: { organisationDomains: { domain: domain } } },
-      relations: ['organisation', 'tag', 'organisation.organisationDomains'],
-    });
+  public async findByDomain(
+    domain: string,
+    options: { skip: number; take: number },
+  ): Promise<PagedOpportunityData> {
+    const qb = this.opportunityRepository
+      .createQueryBuilder('opportunities')
+      .addSelect(
+        'IIF(opportunities.previousPipelineStageId IS NULL, 0, 1)',
+        'activeFirst',
+      )
+      .leftJoinAndSelect('opportunities.organisation', 'organisation')
+      .leftJoinAndSelect('opportunities.tag', 'tag')
+      .leftJoinAndSelect(
+        'organisation.organisationDomains',
+        'organisationDomains',
+      )
+      .where('organisationDomains.domain = :domain', { domain: domain })
+      .orderBy('activeFirst', 'ASC')
+      .addOrderBy('opportunities.updatedAt', 'DESC')
+      .skip(options.skip)
+      .take(options.take);
+
+    const [opportunities, total] = await qb.getManyAndCount();
 
     const defaultPipelineDefinition =
       await this.pipelineUtilityService.getDefaultPipelineDefinition();
@@ -267,7 +285,7 @@ export class OpportunityService {
       },
     );
 
-    return { items, total: items.length } as PagedOpportunityData;
+    return { items, total } as PagedOpportunityData;
   }
 
   public async createFromOrganisation(

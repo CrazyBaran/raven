@@ -64,6 +64,11 @@ export interface DeleteReminderEvent
   eventType: 'reminder-deleted';
 }
 
+export interface OpportunityNoteCreatedProgressFinishedEvent
+  extends BaseWebsocketEvent<{ id: string }> {
+  eventType: 'opportunity-note-created-progress-finished';
+}
+
 export type WebsocketEvent =
   | CreateNoteEvent
   | UpdateNoteEvent
@@ -74,4 +79,5 @@ export type WebsocketEvent =
   | RemovedFromShortlistEvent
   | CreateReminderEvent
   | UpdateReminderEvent
-  | DeleteReminderEvent;
+  | DeleteReminderEvent
+  | OpportunityNoteCreatedProgressFinishedEvent;

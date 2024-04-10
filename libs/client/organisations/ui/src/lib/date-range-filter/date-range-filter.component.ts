@@ -111,21 +111,22 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
 
   private filterRange(start: Date | null, end: Date | null): void {
     const filters = [];
+    const { startValue, endValue } = this.getUTCRangeValues(start, end);
 
-    if (start || end) {
+    if (startValue || endValue) {
       filters.push({
         field: this.field,
         operator: 'gte',
-        value: start?.getTime() ?? 'any',
+        value: startValue ?? 'any',
       });
       this.start = start;
     }
 
-    if (end) {
+    if (endValue) {
       filters.push({
         field: this.field,
         operator: 'lte',
-        value: end?.getTime(),
+        value: endValue,
       });
       this.end = end;
     }
@@ -139,5 +140,19 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
       logic: 'and',
       filters: filters,
     });
+  }
+
+  private getUTCRangeValues(
+    start: Date | null,
+    end: Date | null,
+  ): { startValue: number | null; endValue: number | null } {
+    const startValue = start
+      ? start.getTime() - start.getTimezoneOffset() * 60 * 1000
+      : null;
+    const endValue = end
+      ? end.getTime() - end.getTimezoneOffset() * 60 * 1000
+      : null;
+
+    return { startValue, endValue };
   }
 }

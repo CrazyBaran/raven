@@ -16,6 +16,7 @@ import {
   parseToFilters,
 } from '@app/client/organisations/ui';
 
+import { OpportunityUtils } from '@app/client/opportunities/utils';
 import { organisationTableConfiguration } from '@app/client/organisations/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
@@ -227,6 +228,7 @@ export const selectOrganisationRows = createSelector(
                   opportunity!.team?.owners.map((owner) => owner.actorName) ??
                   [],
                 updatedAt: opportunity!.updatedAt?.toString() ?? '',
+                active: OpportunityUtils.isActiveStage(opportunity?.stage),
                 actionData: isOpportunityClosed(opportunity!)
                   ? [
                       {

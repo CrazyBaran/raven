@@ -67,6 +67,10 @@ export const dynamicDialogsConfig: Record<
     import('@app/client/shortlists/feature/dialogs').then(
       (m) => m.RemoveFromShortlistDialogModule,
     ),
+  [DialogUtil.queryParams.removeShortlistFromOrganisation]: () =>
+    import('@app/client/shortlists/feature/dialogs').then(
+      (m) => m.RemoveShortlistFromOrganisationDialogModule,
+    ),
   [DialogUtil.queryParams.updateReminder]: () =>
     import('@app/client/reminders/feature/dialogs').then(
       (m) => m.UpdateReminderDialogModule,
@@ -163,32 +167,6 @@ export class ShelfEffects {
                     load: config.template!.load,
                   },
                 }).result,
-        ),
-      );
-    },
-    { dispatch: false },
-  );
-
-  private openEditFinancialKpi$ = createEffect(
-    () => {
-      return this.store.select(selectQueryParam('edit-financial-kpi')).pipe(
-        filter((id) => !!id),
-        exhaustMap(
-          () =>
-            this.dynamicDialogService.openDynamicDialog({
-              width: 508,
-              height: 716,
-              maxHeight: '90vh',
-              cssClass: 'raven-custom-dialog',
-              template: {
-                name: 'edit financial kpi form',
-                load: () =>
-                  import(
-                    '@app/client/opportunities/feature/edit-financial-kpi'
-                  ).then((m) => m.EditFinancialKpiDialogModule),
-                showLoading: true,
-              },
-            }).result,
         ),
       );
     },
