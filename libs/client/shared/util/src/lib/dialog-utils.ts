@@ -15,6 +15,8 @@ export class DialogUtil {
     deleteShortlist: 'delete-shortlist' as const,
     addToShortlist: 'add-to-shortlist' as const,
     removeFromShortlist: 'remove-from-shortlist' as const,
+    removeShortlistFromOrganisation:
+      'remove-shortlist-from-organisation' as const,
 
     updateReminder: 'update-reminder' as const,
     createReminder: 'create-reminder' as const,

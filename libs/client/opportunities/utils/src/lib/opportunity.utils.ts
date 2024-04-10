@@ -1,3 +1,4 @@
+import { PipelineUtils } from '@app/client/pipelines/utils';
 import { ItemArgs, ItemDisabledFn } from '@progress/kendo-angular-dropdowns';
 
 export class OpportunityUtils {
@@ -65,6 +66,16 @@ export class OpportunityUtils {
       this.isLostStage(stage) ||
       this.isPassStage(stage) ||
       this.isWonStage(stage)
+    );
+  }
+
+  public static isActiveStage(stage?: { order: number }): boolean {
+    if (!stage) {
+      return false;
+    }
+    return (
+      stage?.order > PipelineUtils.metStageOrder &&
+      stage?.order < PipelineUtils.wonStageOrder
     );
   }
 }

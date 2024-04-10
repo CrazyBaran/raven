@@ -73,9 +73,6 @@
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
-      "@app/client/opportunities/feature/files": [
-        "libs/client/opportunities/feature/files/src/index.ts"
-      ],
       "@app/client/opportunities/feature/opportunity-notes": [
         "libs/client/opportunities/feature/opportunity-notes/src/index.ts"
       ],
@@ -145,6 +142,7 @@
       "@app/client/pipelines/state": [
         "libs/client/pipelines/state/src/index.ts"
       ],
+      "@app/client/pipelines/utils": ["libs/client/pipelines/utils/src/index.ts"],
       "@app/client/reminders/data-access": [
         "libs/client/reminders/data-access/src/index.ts"
       ],

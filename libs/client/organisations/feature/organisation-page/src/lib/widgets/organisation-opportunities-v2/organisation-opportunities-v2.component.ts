@@ -71,12 +71,6 @@ export const organisationOpportunitiesStore = signalStore(
     }),
   ),
   withTable<OpportunityData>({
-    defaultSort: [
-      {
-        field: 'createdAt',
-        dir: 'desc',
-      },
-    ],
     refreshOnActions: [
       OpportunitiesActions.createOpportunitySuccess,
       OpportunitiesActions.updateOpportunitySuccess,

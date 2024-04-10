@@ -33,6 +33,7 @@ export type OpportunityRow = {
   dealTeam: string[];
   updatedAt: string;
   actionData: DropdownAction[];
+  active: boolean;
 };
 
 @Component({

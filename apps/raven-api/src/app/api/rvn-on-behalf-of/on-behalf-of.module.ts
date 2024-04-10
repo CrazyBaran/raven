@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
 import { environment } from '../../../environments/environment';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
+import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { CCA_CONFIG, ccaConfig } from './cca.config';
 import { ConfidentialClientApplicationLogger } from './confidential-client-application.logger';
 import { CustomAuthenticationProvider } from './custom-authentication.provider';
@@ -25,6 +26,7 @@ import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
       key: environment.azureAd.ccaCacheEncryptionKey,
       initVector: environment.azureAd.ccaCacheEncryptionInitVector,
     }),
+    WebSocketsModule,
   ],
   providers: [
     TypeOrmTokenCacheClient,

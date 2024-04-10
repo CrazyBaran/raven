@@ -54,4 +54,8 @@ export abstract class DynamicDialogContentBase extends DialogContentBase {
         }
       });
   }
+
+  protected closeDialog(): void {
+    this.dialog.close();
+  }
 }
