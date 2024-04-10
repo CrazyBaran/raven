@@ -18,6 +18,12 @@ import {
 } from '@app/client/shared/ui-directives';
 import { ToUserTagPipe } from '@app/client/shared/ui-pipes';
 import {
+  DropdownButtonNavigationComponent,
+  DropdownbuttonNavigationModel,
+} from '@app/client/shared/ui-router';
+import { DialogUtil } from '@app/client/shared/util';
+import { ShortlistEntity } from '@app/client/shortlists/state';
+import {
   IsMyShortlistTypePipe,
   IsPersonalShortlistTypePipe,
 } from '@app/client/shortlists/ui';
@@ -42,6 +48,7 @@ import { organisationShortlistsTableStore } from './organisation-shortlists-tabl
     IsMyShortlistTypePipe,
     IsPersonalShortlistTypePipe,
     LoaderComponent,
+    DropdownButtonNavigationComponent,
   ],
   templateUrl: './organisation-shortlists-table.component.html',
   styleUrls: ['./organisation-shortlists-table.component.scss'],
@@ -52,4 +59,26 @@ import { organisationShortlistsTableStore } from './organisation-shortlists-tabl
 export class OrganisationShortlistsTableComponent {
   public actions$ = inject(Actions);
   public organisationShortlistsStore = inject(organisationShortlistsTableStore);
+
+  protected getActionData(
+    shortlist: ShortlistEntity,
+  ): DropdownbuttonNavigationModel {
+    return {
+      actions:
+        shortlist.type === 'custom'
+          ? [
+              {
+                text: 'Remove Shortlist',
+                queryParamsHandling: 'merge',
+                routerLink: ['./'],
+                queryParams: {
+                  [DialogUtil.queryParams.removeShortlistFromOrganisation]:
+                    shortlist.id!,
+                },
+                skipLocationChange: true,
+              },
+            ]
+          : [],
+    };
+  }
 }
