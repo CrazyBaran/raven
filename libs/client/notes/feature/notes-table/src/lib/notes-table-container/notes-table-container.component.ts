@@ -57,6 +57,15 @@ export class NotesTableContainerComponent {
       )
       .subscribe(() => {
         this.store.dispatch(NotesActions.refreshNotesTable());
+
+        if (this.params().opportunityId) {
+          this.store.dispatch(
+            NotesActions.getOpportunityNotes({
+              opportunityId: this.params().opportunityId,
+              silently: true,
+            }),
+          );
+        }
       });
   }
 
