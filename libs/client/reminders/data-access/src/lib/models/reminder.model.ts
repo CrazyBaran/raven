@@ -27,7 +27,7 @@ export interface ReminderData {
   updatedAt: Date;
   status: ReminderStatus;
   assignees: ReminderAssignee[];
-  assignedBy: { name: string };
+  assignedBy: { name: string; id: string };
   tag: ReminderComplexTag;
 }
 

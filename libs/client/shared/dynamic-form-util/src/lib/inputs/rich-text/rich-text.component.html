@@ -1,4 +1,6 @@
 <kendo-editor
+  (keydown.shift.tab)="removeIndent($event)"
+  (keydown.tab)="addIndent($event)"
   (blur)="onBlur()"
   [iframe]="false"
   [placeholder]="placeholder!"
@@ -13,6 +15,7 @@
     [class.!hidden]="!active() || readonly"
     class="space border-top order-last !-mx-[1px] !-mb-[1px] flex gap-2 !border-b-0 !bg-white"
   >
+    <kendo-toolbar-dropdownlist kendoEditorFormat></kendo-toolbar-dropdownlist>
     <kendo-toolbar-buttongroup class="space-x-2">
       <kendo-toolbar-button kendoEditorBoldButton></kendo-toolbar-button>
       <kendo-toolbar-button kendoEditorItalicButton></kendo-toolbar-button>
@@ -21,7 +24,11 @@
         kendoEditorStrikethroughButton
       ></kendo-toolbar-button>
     </kendo-toolbar-buttongroup>
-
+    <kendo-toolbar-colorpicker kendoEditorForeColor></kendo-toolbar-colorpicker>
+    <kendo-toolbar-colorpicker
+      kendoEditorBackColor
+      view="gradient"
+    ></kendo-toolbar-colorpicker>
     <kendo-toolbar-buttongroup class="space-x-2">
       <kendo-toolbar-button kendoEditorAlignLeftButton></kendo-toolbar-button>
       <kendo-toolbar-button kendoEditorAlignCenterButton></kendo-toolbar-button>

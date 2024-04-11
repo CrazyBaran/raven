@@ -60,13 +60,14 @@ export class DynamicRichTextComponent
     this.grow = this.control.config.grow;
   }
 
-  public addIndent(): void {
+  public addIndent($event: Event): void {
+    $event.preventDefault();
     this.editor.exec('indent');
-    setTimeout(() => {
-      this.editor.focus();
-    }, 5);
   }
-
+  public removeIndent($event: Event): void {
+    $event.preventDefault();
+    this.editor.exec('outdent');
+  }
   protected setFocus(): void {
     this.focusHandler?.focusTo(this.control.controlKey);
   }
@@ -78,11 +79,4 @@ export class DynamicRichTextComponent
       block: 'center',
     });
   };
-
-  protected removeIndent(): void {
-    this.editor.exec('outdent');
-    setTimeout(() => {
-      this.editor.focus();
-    }, 5);
-  }
 }
