@@ -81,7 +81,7 @@ export const selectOpportunitiesRelatedNotesViewModel = createSelector(
               title: f.title,
               value: f.value,
               heat: f.heat as Heat,
-              unit: f.name,
+              unit: f.unit,
             })),
           })),
       } as NoteHeatmap,

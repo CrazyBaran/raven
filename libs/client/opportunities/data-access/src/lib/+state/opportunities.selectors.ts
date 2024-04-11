@@ -293,6 +293,7 @@ export const selectFinancialGroups = createSelector(
                     heat: heatmapFn(value!),
                     min: field.configuration!['min'],
                     max: field.configuration!['max'],
+                    unit: field.configuration!['unit'],
                     templateId: field.templateFieldId,
                     ...(field.configuration ?? {}),
                   };
