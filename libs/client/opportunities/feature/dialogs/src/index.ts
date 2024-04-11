@@ -11,6 +11,10 @@ export const OPPORTUNITY_DYNAMIC_DIALOGS: DialogConfigs = {
     import('./lib/update-opportunity-dialog/providers').then(
       (m) => m.CreateOpportunityDialogModule,
     ),
+  'update-opportunity-stage': () =>
+    import('./lib/update-opportunity-stage-dialog/providers').then(
+      (m) => m.UpdateOpportunityStageModule,
+    ),
   'create-opportunity': () =>
     import('./lib/create-opportunity-dialog/providers').then(
       (m) => m.CreateOpportunityDialogModule,
