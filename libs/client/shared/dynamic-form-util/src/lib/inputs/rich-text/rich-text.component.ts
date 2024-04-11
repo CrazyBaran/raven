@@ -136,4 +136,14 @@ export class RichTextComponent
   public onBlur(): void {
     this.onTouched?.();
   }
+
+  public addIndent($event: Event): void {
+    $event.preventDefault();
+    this.editor.exec('indent');
+  }
+
+  public removeIndent($event: Event): void {
+    $event.preventDefault();
+    this.editor.exec('outdent');
+  }
 }
