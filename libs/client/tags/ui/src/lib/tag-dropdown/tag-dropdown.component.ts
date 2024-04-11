@@ -32,6 +32,7 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { FilterExpandSettings } from '@progress/kendo-angular-treeview';
+import * as _ from 'lodash';
 import { isEqual } from 'lodash';
 import {
   combineLatest,
@@ -43,7 +44,6 @@ import {
   switchMap,
 } from 'rxjs';
 import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
-
 export type DropdownTag = {
   id: string;
   name: string;
@@ -229,11 +229,16 @@ export class TagDropdownComponent extends ControlValueAccessor<
             companyId: companyId,
           }));
 
+        const orderedTags = _.orderBy(
+          [...opportunityTags, ...versionTags],
+          (x) => x.name,
+        );
+
         return this.value().some(
           (t) => typeof t === 'string' && t === companyId,
         )
-          ? [...opportunityTags, ...versionTags]
-          : [companyTag, ...opportunityTags, ...versionTags];
+          ? orderedTags
+          : [companyTag, ...orderedTags];
       }),
       distinctUntilChanged(isEqual),
     )) as (node: object) => Observable<object[]>;

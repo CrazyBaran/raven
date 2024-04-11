@@ -26,7 +26,7 @@
   <kendo-formfield>
     <kendo-label text="Funding Round" />
     <kendo-dropdownlist
-      [data]="opportunityTags()"
+      [data]="opportunityTags()! | orderBy: 'name'"
       [defaultItem]="defaultFundingRound"
       [loading]="isLoadingOpportunityTags()!"
       [valuePrimitive]="true"
