@@ -3,7 +3,9 @@
 </kendo-dialog-titlebar>
 
 <div class="p-10">
-  @if (updateForm) {
+  @if (vm().isLoading) {
+    <ui-loader class="block !h-[490px]" />
+  } @else if (updateForm) {
     <app-reminder-form
       [versionTags]="vm().versionTags"
       [form]="updateForm"
