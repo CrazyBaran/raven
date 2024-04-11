@@ -10,6 +10,7 @@
   [disabled]="isDisabled!"
   class="grow-1 relative"
   [readonly]="readonly!"
+  (focus)="onFocus()"
 >
   <kendo-toolbar
     [class.!hidden]="!active() || readonly"

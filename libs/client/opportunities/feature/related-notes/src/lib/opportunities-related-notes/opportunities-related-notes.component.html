@@ -5,7 +5,7 @@
     <div
       class="custom-scroll-on-hover -mr-1.5 h-full flex-1 overflow-auto pr-1.5"
     >
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4" [arrowNavigation]="richEditors()">
         @if (vm().heatmapFields.length) {
           <app-note-heatmap-field [heatmap]="vm().heatMap" />
         }

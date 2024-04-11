@@ -6,19 +6,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   HostListener,
-  QueryList,
-  ViewChildren,
   computed,
   inject,
   signal,
+  viewChildren,
 } from '@angular/core';
 
 import { trigger } from '@angular/animations';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NotesActions } from '@app/client/opportunities/api-notes';
-import { selectNoteFields } from '@app/client/opportunities/data-access';
 import {
   NoteFieldComponent,
   NoteFieldSkeletonComponent,
@@ -26,7 +24,6 @@ import {
   StatusIndicatorState,
 } from '@app/client/opportunities/ui';
 import {
-  RichTextComponent,
   getSchemaWithCrossorigin,
   imageUploader,
 } from '@app/client/shared/dynamic-form-util';
@@ -42,6 +39,7 @@ import { EditorView } from '@progress/kendo-angular-editor';
 import * as _ from 'lodash';
 import { firstValueFrom, map } from 'rxjs';
 import { RelatedNotesContainerComponent } from '../related-notes-container/related-notes-container.component';
+import { CustomKeyboardNavigationDirective } from './custom-keyboard-navigation.directive';
 import {
   selectOpportunitiesRelatedNotesViewModel,
   selectOpportunityFormRecord,
@@ -61,6 +59,7 @@ import {
     JsonPipe,
     LoaderComponent,
     RecreateViewDirective,
+    CustomKeyboardNavigationDirective,
   ],
   templateUrl: './opportunities-related-notes.component.html',
   styleUrls: ['./opportunities-related-notes.component.scss'],
@@ -71,11 +70,13 @@ import {
   ],
 })
 export class OpportunitiesRelatedNotesComponent {
-  @ViewChildren(RichTextComponent)
-  public richTextEditors: QueryList<RichTextComponent>;
+  public noteFields = viewChildren(NoteFieldComponent);
+  public richEditors = computed(() =>
+    this.noteFields().map((x) => x.richText()!),
+  );
 
   protected router = inject(Router);
-  protected activeRoute = inject(ActivatedRoute);
+
   protected store = inject(Store);
 
   protected actions = inject(Actions);
@@ -83,8 +84,6 @@ export class OpportunitiesRelatedNotesComponent {
   protected uploadFileService = inject(UploadFileService);
 
   protected formGroup = new FormRecord({});
-
-  protected allFields = this.store.select(selectNoteFields);
 
   protected state = signal(
     {
@@ -225,7 +224,7 @@ export class OpportunitiesRelatedNotesComponent {
 
   @HostListener('window:beforeunload', ['$event'])
   public showAlertMessageWhenClosingTab($event: any): void {
-    if (this.richTextEditors?.some((editor) => editor.active()!)) {
+    if (this.richEditors()?.some((editor) => editor.focused()!)) {
       $event.returnValue = 'Changes that you made may not be saved.';
     }
   }
