@@ -263,6 +263,18 @@ export class NotesService {
           }
         }),
       );
+      queryBuilder
+        .leftJoinAndMapMany('note.tags', 'note.tags', 'tagsFull')
+        .leftJoinAndMapMany(
+          'note.complexTags',
+          'note.complexTags',
+          'complexTagsFull',
+        )
+        .leftJoinAndMapMany(
+          'complexTagsFull.tags',
+          'complexTagsFull.tags',
+          'complexTagsFullTags',
+        );
     }
 
     const [items, total] = await queryBuilder.getManyAndCount();
