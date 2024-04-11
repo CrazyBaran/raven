@@ -10,6 +10,7 @@ import {
   REMINDER_USERS_SOURCE,
   UPDATE_REMINDER_FORM_FN,
 } from '@app/client/reminders/utils';
+import { LoaderComponent } from '@app/client/shared/ui';
 import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
 import {
   ControlHasChangesPipe,
@@ -39,6 +40,7 @@ import {
     RxPush,
     ControlInvalidPipe,
     ReminderFormComponent,
+    LoaderComponent,
   ],
   templateUrl: './update-reminder-dialog.component.html',
   styleUrls: ['./update-reminder-dialog.component.scss'],
@@ -62,6 +64,7 @@ export class UpdateReminderDialogComponent extends DynamicDialogContentBase {
     super(dialog);
     const updateFormFn = inject(UPDATE_REMINDER_FORM_FN);
 
+    this.store.dispatch(RemindersActions.getReminder({ id: this.vm().id }));
     this.curentReminder$.pipe(first((x) => !!x)).subscribe((reminder) => {
       this.updateForm = updateFormFn(reminder!);
     });

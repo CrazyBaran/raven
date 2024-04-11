@@ -21,7 +21,7 @@ export const selectUpdateReminderViewModel = createSelector(
   tagsQuery.selectCurrentUserTag,
   (
     id,
-    { update: isUpdating },
+    { update: isUpdating, get: isLoading },
     reminder,
     opportunityTags,
     versionTags,
@@ -37,6 +37,7 @@ export const selectUpdateReminderViewModel = createSelector(
         id: currentUser?.userId ?? '',
         name: currentUser?.name ?? '',
       },
+      isLoading,
     };
   },
 );
