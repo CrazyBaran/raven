@@ -131,11 +131,6 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
       this.end = end;
     }
 
-    console.log({
-      start,
-      end,
-      filters,
-    });
     this.filterService.filter({
       logic: 'and',
       filters: filters,

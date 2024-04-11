@@ -2,7 +2,6 @@
 import { Directive, HostListener, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { RichTextComponent } from '@app/client/shared/dynamic-form-util';
-import { log } from '@app/client/shared/util-rxjs';
 import { map, merge, switchMap, tap } from 'rxjs';
 
 @Directive({
@@ -33,7 +32,6 @@ export class CustomKeyboardNavigationDirective {
           );
 
           return merge(...focusChanges$).pipe(
-            log({ message: 'active' }),
             tap(({ editor, index }) => {
               this.activeField = editor;
               editors
