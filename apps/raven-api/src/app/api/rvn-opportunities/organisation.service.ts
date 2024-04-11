@@ -3,7 +3,7 @@ import {
   OrganisationDataWithOpportunities,
   PagedOrganisationData,
 } from '@app/rvns-opportunities';
-import { Injectable, Optional } from '@nestjs/common';
+import { BadRequestException, Injectable, Optional } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -89,6 +89,10 @@ export class OrganisationService {
   ): Promise<PagedOrganisationData> {
     if (!options) {
       throw new Error('Options are required');
+    }
+
+    if (options.take === 0) {
+      throw new BadRequestException('options.take cannot be 0.');
     }
 
     const { organisationIds, count } =
