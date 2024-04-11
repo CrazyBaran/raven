@@ -1,6 +1,37 @@
+$styles: (
+  p: (
+    min-height: 20px,
+    font-size: 14px,
+  ),
+  h1: (
+    min-height: 34px,
+    font-size: 2em,
+  ),
+  h2: (
+    min-height: 35px,
+    font-size: 1.5em,
+  ),
+  h3: (
+    min-height: 30px,
+    font-size: 1.17em,
+  ),
+  h4: (
+    min-height: 25px,
+    font-size: 1em,
+  ),
+  h5: (
+    min-height: 20px,
+    font-size: 0.83em,
+  ),
+  h6: (
+    min-height: 15px,
+    font-size: 0.67em,
+  ),
+);
+
 .ProseMirror {
   p {
-    @apply mb-1;
+    @apply mb-1 #{!important};
   }
 
   ul {
@@ -21,7 +52,20 @@
     list-style: decimal;
   }
 
-  strong {
+  strong,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold;
+  }
+
+  @each $element, $style in $styles {
+    #{$element} {
+      min-height: map-get($style, min-height);
+      font-size: map-get($style, font-size);
+    }
   }
 }

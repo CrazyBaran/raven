@@ -11,6 +11,11 @@
   height: 150px;
 }
 
+app-dynamic-rich-text:not(.rich-text-full) {
+  .k-editor-content {
+    max-height: 400px !important;
+  }
+}
 .k-form-field {
   display: grid !important;
   grid-template-rows: auto 1fr;

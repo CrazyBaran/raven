@@ -2,7 +2,7 @@ import { Component, computed, effect, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
 import { MultiSelectSourceFnDirective } from '@app/client/shared/ui-directives';
-import { ControlErrorsPipe } from '@app/client/shared/ui-pipes';
+import { ControlErrorsPipe, OrderByPipe } from '@app/client/shared/ui-pipes';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 import {
   ComboBoxModule,
@@ -49,6 +49,7 @@ export type OpportunityForm = FormGroup<{
     ControlErrorsPipe,
     ErrorMessagePipe,
     RxPush,
+    OrderByPipe,
   ],
   templateUrl: './opportunity-form.component.html',
   styleUrl: './opportunity-form.component.scss',

@@ -4,6 +4,7 @@ import {
   forwardRef,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -43,6 +44,8 @@ export type ProseMirrorSettings = { plugins: Plugin[]; schema: Schema };
 })
 export class NoteFieldComponent extends ControlValueAccessor<string> {
   public valueChange = output<string>();
+
+  public richText = viewChild(RichTextComponent);
 
   public field = input.required<{
     title: string;

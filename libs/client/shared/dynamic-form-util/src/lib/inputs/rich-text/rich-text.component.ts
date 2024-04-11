@@ -10,13 +10,17 @@ import {
   inject,
   Input,
   Output,
+  signal,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ControlValueAccessor } from '@app/client/shared/util';
+import {
+  ClickOutsideDirective,
+  ControlValueAccessor,
+} from '@app/client/shared/util';
 import { takeAfterViewInit } from '@app/client/shared/util-rxjs';
 import {
   EditorComponent,
@@ -26,7 +30,7 @@ import {
   schema,
 } from '@progress/kendo-angular-editor';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
-import { mapTo, merge, switchMap } from 'rxjs';
+import { mapTo, merge, Subject, switchMap } from 'rxjs';
 import {
   dynamicControlProvider,
   sharedDynamicControlDeps,
@@ -38,7 +42,12 @@ import { inputRule } from '../../utils/input.rule';
 @Component({
   selector: 'app-rich-text',
   standalone: true,
-  imports: [sharedDynamicControlDeps, EditorModule, TextBoxModule],
+  imports: [
+    sharedDynamicControlDeps,
+    EditorModule,
+    TextBoxModule,
+    ClickOutsideDirective,
+  ],
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],
   viewProviders: [dynamicControlProvider],
@@ -56,6 +65,8 @@ export class RichTextComponent
   extends ControlValueAccessor<string>
   implements AfterViewInit
 {
+  protected elementRef = inject(ElementRef);
+
   @Input() @HostBinding('class.rich-text-full') public grow:
     | boolean
     | undefined;
@@ -98,16 +109,20 @@ export class RichTextComponent
   protected editorElement: ElementRef;
 
   public value = '';
-  public focus$ = takeAfterViewInit(() => this.editor).pipe(
-    switchMap((editor) => editor.onFocus),
+  public manualFocus$ = new Subject<void>();
+  public focus$ = merge(
+    takeAfterViewInit(() => this.editor).pipe(
+      switchMap((editor) => editor.onFocus),
+    ),
+    this.manualFocus$.pipe(mapTo(true)),
   );
 
-  public active$ = merge(
+  public focused$ = merge(
     this.focus$.pipe(mapTo(true)),
     this.obBlur.pipe(mapTo(false)),
   );
 
-  public active = toSignal(this.active$);
+  public focused = toSignal(this.focused$);
 
   public destroyRef$ = inject(DestroyRef);
 
@@ -145,5 +160,26 @@ export class RichTextComponent
   public removeIndent($event: Event): void {
     $event.preventDefault();
     this.editor.exec('outdent');
+  }
+
+  protected active = signal(false);
+
+  public setActive(): void {
+    this.elementRef?.nativeElement?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+    this.manualFocus$.next();
+    this.editor.focus();
+    this.active.set(true);
+  }
+
+  public setInactive(): void {
+    this.active.set(false);
+    this.editor.blur();
+  }
+
+  public onFocus(): void {
+    this.setActive();
   }
 }
