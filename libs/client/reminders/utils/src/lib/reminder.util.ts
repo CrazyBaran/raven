@@ -90,8 +90,7 @@ export class ReminderUtils {
     }
     return (
       reminder.assignees.some((assignee) => assignee.id === userId) ||
-      //TODO: should check by assignedBy.id
-      reminder.assignedBy.name === userId
+      reminder.assignedBy.id === userId
     );
   }
 }
