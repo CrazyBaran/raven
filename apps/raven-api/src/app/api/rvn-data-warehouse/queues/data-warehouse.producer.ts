@@ -76,7 +76,10 @@ export class DataWarehouseProducer {
     );
 
     // if any of the proxy jobs is active, return false
-    const activeProxyJob = proxyJobs.find((job) => job.isActive());
+    const activeProxyJob = proxyJobs.find(async (job) => {
+      const state = await job.getState();
+      return state !== 'completed' && state !== 'failed';
+    });
     if (activeProxyJob) {
       return false;
     }
