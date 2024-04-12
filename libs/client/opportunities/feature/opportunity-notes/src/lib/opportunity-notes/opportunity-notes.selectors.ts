@@ -1,8 +1,11 @@
 import { notesQuery } from '@app/client/opportunities/api-notes';
+import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
   buildButtonGroupNavigation,
   buildDropdownNavigation,
+  routerQuery,
 } from '@app/client/shared/util-router';
+import { tagsQuery } from '@app/client/tags/state';
 import {
   selectTemplatesLoaded,
   templateQueries,
@@ -14,7 +17,18 @@ export const selectOpportunityNotesViewModel = createSelector(
   notesQuery.selectAllNotes,
   templateQueries.selectAllNoteTemplates,
   selectTemplatesLoaded,
-  (params, notes, templates, templateLoaded) => ({
+  routerQuery.selectCurrentOrganisationId,
+  opportunitiesQuery.selectRouteOpportunityDetails,
+  tagsQuery.selectCurrentOrganisationTags,
+  (
+    params,
+    notes,
+    templates,
+    templateLoaded,
+    organisationId,
+    opportuntiy,
+    tags,
+  ) => ({
     notes,
     buttonGroupAssignedTo: buildButtonGroupNavigation({
       params,
@@ -36,6 +50,9 @@ export const selectOpportunityNotesViewModel = createSelector(
       ],
       staticQueryParams: { skip: null },
     }),
+    organisationId,
+    organisationTagId: tags?.find((x) => x?.type === 'company')?.id,
+    opportunityTagId: opportuntiy?.tag?.id ?? '',
     dropdownTemplates: buildDropdownNavigation({
       params,
       name: 'noteType',
