@@ -49,19 +49,17 @@
   <kendo-grid-column title="">
     <ng-template kendoGridCellTemplate let-opportunity>
       <div class="flex gap-2">
-        @if (opportunity.active) {
-          <kendo-button
-            [routerLink]="getRouterLink(opportunity)"
-            themeColor="primary"
-          >
-            {{ 'View Opportunity' }}
-          </kendo-button>
-        } @else {
-          <kendo-button [routerLink]="getRouterLink(opportunity)">
-            {{ 'View' }}
-          </kendo-button>
-        }
-
+        <a [routerLink]="getRouterLink(opportunity)">
+          @if (opportunity.active) {
+            <kendo-button themeColor="primary">
+              {{ 'View Opportunity' }}
+            </kendo-button>
+          } @else {
+            <kendo-button>
+              {{ 'View' }}
+            </kendo-button>
+          }
+        </a>
         <app-dropdownbutton-navigation [model]="getActionData(opportunity)" />
       </div>
     </ng-template>

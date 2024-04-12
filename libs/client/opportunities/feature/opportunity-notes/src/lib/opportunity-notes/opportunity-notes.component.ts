@@ -12,10 +12,12 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { NotesTableComponent } from '@app/client/notes/ui';
+import { ShelfActions } from '@app/client/shared/shelf';
 import {
   ButtongroupNavigationComponent,
   DropdownNavigationComponent,
 } from '@app/client/shared/ui-router';
+import { TagsActions } from '@app/client/tags/state';
 import { TemplateActions } from '@app/client/templates/data-access';
 import { Store } from '@ngrx/store';
 import {
@@ -58,6 +60,12 @@ export class OpportunityNotesComponent implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
+
+    this.store.dispatch(
+      TagsActions.getTagByOrganisationIdIfNotLoaded({
+        organisationId: this.vm().organisationId!,
+      }),
+    );
   }
 
   public valueChange($event: { id: string }): void {
@@ -66,5 +74,14 @@ export class OpportunityNotesComponent implements OnInit {
       queryParams: { noteType: $event.id },
       queryParamsHandling: 'merge',
     });
+  }
+
+  public handleOpenNotepad(): void {
+    this.store.dispatch(
+      ShelfActions.openNotepad({
+        organisationId: this.vm().organisationTagId,
+        opportunityId: this.vm().opportunityTagId,
+      }),
+    );
   }
 }

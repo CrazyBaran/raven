@@ -82,11 +82,9 @@
     <kendo-grid-column [width]="70">
       <ng-template kendoGridCellTemplate let-dataItem>
         <div class="flex flex-row gap-1">
-          <kendo-button
-            [routerLink]="['opportunities', dataItem.id]"
-            iconClass="fa-solid fa-eye"
-            themeColor="primary"
-          />
+          <a [routerLink]="['opportunities', dataItem.id]">
+            <kendo-button iconClass="fa-solid fa-eye" themeColor="primary" />
+          </a>
         </div>
       </ng-template>
     </kendo-grid-column>

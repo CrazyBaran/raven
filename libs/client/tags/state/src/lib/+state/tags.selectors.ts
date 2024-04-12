@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { authQuery } from '@app/client/core/auth';
+import { routerQuery } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
 import { TagEntity } from './tags.model';
 import { tagsFeature } from './tags.reducer';
@@ -24,6 +25,25 @@ export const selectTagById = (id: string | undefined) =>
     id ? tags[id] : undefined,
   );
 
+export const selectTagsByOrganisationDictionary = createSelector(
+  tagsFeature.selectEntities,
+  (tags) =>
+    Object.values(tags).reduce(
+      (acc, tag) => {
+        if (tag?.organisationId) {
+          acc[tag.organisationId] = [...(acc[tag.organisationId] || []), tag];
+        }
+        return acc;
+      },
+      {} as Record<string, TagEntity[]>,
+    ),
+);
+
+export const selectCurrentOrganisationTags = createSelector(
+  routerQuery.selectCurrentOrganisationId,
+  selectTagsByOrganisationDictionary,
+  (organisationId, tagsDictionary) => tagsDictionary[organisationId!],
+);
 export const selectTagsByOrganisationId = (organisationId: string) =>
   createSelector(tagsFeature.selectEntities, (tags) =>
     Object.values(tags).filter((tag) => tag?.organisationId === organisationId),
@@ -35,5 +55,7 @@ export const tagsQuery = {
   selectIsLoadingTags,
   selectTagById,
   selectTagsByOrganisationId,
+  selectTagsByOrganisationDictionary,
+  selectCurrentOrganisationTags,
   ...tagsFeature,
 };

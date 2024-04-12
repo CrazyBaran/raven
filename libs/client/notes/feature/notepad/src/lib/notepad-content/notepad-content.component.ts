@@ -87,7 +87,17 @@ export class NotepadContentComponent implements OnInit {
   });
 
   public ngOnInit(): void {
-    if (this.organisationId) {
+    if (this.opportunityId && this.organisationId) {
+      this.notepadForm.patchValue({
+        ...this.notepadForm.value!,
+        tags: [
+          {
+            opportunityTagId: this.opportunityId,
+            organisationId: this.organisationId,
+          },
+        ],
+      });
+    } else if (this.organisationId) {
       this.notepadForm.patchValue({
         ...this.notepadForm.value!,
         tags: [this.organisationId],
