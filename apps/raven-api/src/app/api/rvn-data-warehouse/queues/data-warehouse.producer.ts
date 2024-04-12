@@ -75,16 +75,20 @@ export class DataWarehouseProducer {
       job.id.startsWith(DWH_QUEUE.JOBS.REGENERATE_PROXY),
     );
 
-    // if any of the proxy jobs is active, return false
-    const activeProxyJob = proxyJobs.find(async (job) => {
-      const state = await job.getState();
-      return state !== 'completed' && state !== 'failed';
-    });
-    if (activeProxyJob) {
+    const jobStates = await Promise.all(
+      proxyJobs.map(async (job) => {
+        return { job: job, state: await job.getState() };
+      }),
+    );
+
+    if (
+      jobStates.some(
+        (job) => job.state !== 'completed' && job.state !== 'failed',
+      )
+    ) {
       return false;
     }
 
-    // remove all proxy jobs
     await Promise.all(proxyJobs.map((job) => job.remove()));
 
     return true;
