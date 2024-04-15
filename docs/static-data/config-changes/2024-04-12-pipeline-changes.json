@@ -1,0 +1,32 @@
+[
+  {
+    "changeType": "Modified",
+    "entityClass": "PipelineStageEntity",
+    "oldData": {
+      "id": "e555560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Won",
+      "order": 12,
+      "mappedFrom": "Portfolio",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": "{\"color\":\"success\",\"order\":3,\"droppableFrom\":[\"df55560e-7293-ee11-8927-6045bdd178c1\",\"e055560e-7293-ee11-8927-6045bdd178c1\",\"e155560e-7293-ee11-8927-6045bdd178c1\",\"e255560e-7293-ee11-8927-6045bdd178c1\",\"e355560e-7293-ee11-8927-6045bdd178c1\",\"e455560e-7293-ee11-8927-6045bdd178c1\"]}",
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "portfolio",
+      "correspondingEntity": "PipelineStageEntity"
+    },
+    "newData": {
+      "id": "e555560e-7293-ee11-8927-6045bdd178c1",
+      "displayName": "Portfolio",
+      "order": 12,
+      "mappedFrom": "Portfolio",
+      "isHidden": false,
+      "isDefault": false,
+      "configuration": "{\"color\":\"success\",\"order\":3,\"droppableFrom\":[\"df55560e-7293-ee11-8927-6045bdd178c1\",\"e055560e-7293-ee11-8927-6045bdd178c1\",\"e155560e-7293-ee11-8927-6045bdd178c1\",\"e255560e-7293-ee11-8927-6045bdd178c1\",\"e355560e-7293-ee11-8927-6045bdd178c1\",\"e455560e-7293-ee11-8927-6045bdd178c1\"]}",
+      "showFields": null,
+      "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
+      "relatedCompanyStatus": "portfolio",
+      "correspondingEntity": "PipelineStageEntity"
+    }
+  }
+]

@@ -261,7 +261,7 @@ export const environment = {
   features: {
     dataWareHouse: env
       .get('FEATURE_DATA_WAREHOUSE')
-      .default('false')
+      .default('true')
       .asBoolStrict(),
   },
 };
