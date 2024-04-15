@@ -10,6 +10,8 @@ import { trigger } from '@angular/animations';
 import { JsonPipe, NgStyle } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { WebsocketService } from '@app/client/core/websockets';
 import { NotesActions } from '@app/client/opportunities/api-notes';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import {
@@ -65,9 +67,12 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpportunityDetailsPageComponent {
+  public noteProgress = signal(false);
+
   protected store = inject(Store);
   protected router = inject(Router);
   protected actions = inject(Actions);
+  protected websocketService = inject(WebsocketService);
 
   protected vm = this.store.selectSignal(selectOpportunityDetailViewModel);
 
@@ -128,6 +133,41 @@ export class OpportunityDetailsPageComponent {
             id: opportunityId,
           }),
         );
+      });
+
+    this.websocketService
+      .eventsOfType('opportunity-note-created-progress-started')
+      .pipe(takeUntilDestroyed())
+      .subscribe((event) => {
+        if (opportunityId === event.data.id) {
+          this.noteProgress.set(true);
+        }
+      });
+
+    this.websocketService
+      .eventsOfType('opportunity-note-created-progress-finished')
+      .pipe(takeUntilDestroyed())
+      .subscribe((event) => {
+        if (opportunityId === event.data.id) {
+          this.noteProgress.set(false);
+
+          // refresh all the things
+          this.store.dispatch(
+            OpportunitiesActions.getOpportunityDetails({
+              id: opportunityId,
+            }),
+          );
+
+          this.store.dispatch(
+            OrganisationsActions.getOrganisation({ id: organizationId }),
+          );
+
+          this.store.dispatch(
+            NotesActions.getOpportunityNotes({ opportunityId }),
+          );
+
+          this.store.dispatch(PipelinesActions.getPipelines());
+        }
       });
   }
 

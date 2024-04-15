@@ -20,8 +20,8 @@ export const environment: Environment = {
   sharepointDriveId:
     'b!RAtLR_rMHU6q6EHlSvfDLAASJHjBXgVDjdZqm3u-M8xaIH4wn66DSb1tnKWcYlEx',
   sharepointRootDirectoryId: '01RVXLZIUM2GLOT2SNUZDZBGFRP3ZBORTK',
-  websocketUrl: 'https://as-wa-mc-raven-dev.azurewebsites.net/',
-  // websocketUrl: 'http://localhost:3333',
+  // websocketUrl: 'https://as-wa-mc-raven-dev.azurewebsites.net/',
+  websocketUrl: 'http://localhost:3333',
   shortlistsFeature: true,
   remindersFeature: true,
   organisationLayout: true,

@@ -20,6 +20,7 @@ import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { TagEntityFactory } from '../rvn-tags/tag-entity.factory';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
 import {
@@ -48,6 +49,7 @@ export class OpportunityService {
     private readonly eventEmitter: EventEmitter2,
     private readonly pipelineUtilityService: PipelineUtilityService,
     private readonly opportunityChecker: OpportunityChecker,
+    private readonly gatewayEventService: GatewayEventService,
   ) {
     this.logger.setContext(OpportunityService.name);
   }
@@ -426,6 +428,12 @@ export class OpportunityService {
 
     // if opportunity had no workflow note and tag is now set, it's time for opportunity to become a real opportunity with note and folder structure
     if (!opportunity.noteId && options.tagEntity) {
+      // emit event right away so frontend can show loader
+      this.gatewayEventService.emit(`resource-opportunities`, {
+        eventType: 'opportunity-note-created-progress-started',
+        data: { id: opportunityEntity.id },
+      });
+
       this.eventEmitter.emit(
         'opportunity-created',
         new OpportunityCreatedEvent(opportunityEntity.id, null, userEntity.id),

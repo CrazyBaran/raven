@@ -1,4 +1,7 @@
-<app-page-template>
+<app-page-template
+  [isLoading]="noteProgress()"
+  loadingMessage="Creating workflow note with directories"
+>
   <div class="flex items-center gap-2" page-header-title>
     <kendo-button
       [routerLink]="['/companies']"

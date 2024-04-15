@@ -1,4 +1,12 @@
-<div class="grid h-screen grid-rows-[auto_1fr]">
+<div class="relative grid h-screen grid-rows-[auto_1fr]">
+  @if (isLoading) {
+    <div
+      class="absolute left-0 top-0 z-50 flex h-screen w-screen items-center justify-center"
+    >
+      <ui-loader [loaderInfo]="loadingMessage" />
+    </div>
+  }
+
   <header
     class="bg-primary-4 flex h-20 items-center justify-between gap-10 px-10"
   >

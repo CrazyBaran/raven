@@ -68,6 +68,7 @@ export class OpportunityCreatedEventHandler {
       await this.createDirectory(directory, opportunityFolderId);
     }
 
+    // emit event after directory creation so frontend can hide loader
     this.gatewayEventService.emit(`resource-opportunities`, {
       eventType: 'opportunity-note-created-progress-finished',
       data: { id: event.opportunityEntityId },

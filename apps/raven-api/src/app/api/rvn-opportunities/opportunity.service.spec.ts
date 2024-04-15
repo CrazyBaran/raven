@@ -8,6 +8,7 @@ import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineDefinitionEntity } from '../rvn-pipeline/entities/pipeline-definition.entity';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import { GatewayEventService } from '../rvn-web-sockets/gateway/gateway-event.service';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OpportunityTeamService } from './opportunity-team.service';
 import { OpportunityChecker } from './opportunity.checker';
@@ -71,6 +72,10 @@ describe('OpportunityService', () => {
         },
         {
           provide: OpportunityChecker,
+          useValue: {},
+        },
+        {
+          provide: GatewayEventService,
           useValue: {},
         },
       ],

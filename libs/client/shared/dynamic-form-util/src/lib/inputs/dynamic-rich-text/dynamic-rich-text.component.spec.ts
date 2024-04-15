@@ -4,6 +4,7 @@ import {
   FormGroup,
   FormGroupDirective,
 } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CONTROL_DATA, ControlData } from '../../control-data.token';
 import { DynamicRichTextComponent } from './dynamic-rich-text.component';
@@ -14,7 +15,7 @@ describe('DynamicRichTextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DynamicRichTextComponent],
+      imports: [NoopAnimationsModule, DynamicRichTextComponent],
       providers: [
         {
           provide: ControlContainer,
