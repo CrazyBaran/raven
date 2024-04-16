@@ -11,6 +11,7 @@ import { GridModule } from '@progress/kendo-angular-grid';
 import { PanelBarModule } from '@progress/kendo-angular-layout';
 
 import { DatePipe } from '@angular/common';
+import { selectUserData } from '@app/client/core/auth';
 import {
   FeatureFlagDirective,
   IsEllipsisActiveDirective,
@@ -28,6 +29,7 @@ import {
   IsPersonalShortlistTypePipe,
 } from '@app/client/shortlists/ui';
 import { Actions } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { organisationShortlistsTableStore } from './organisation-shortlists-table.store';
 
@@ -54,18 +56,23 @@ import { organisationShortlistsTableStore } from './organisation-shortlists-tabl
   styleUrls: ['./organisation-shortlists-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  providers: [organisationShortlistsTableStore],
 })
 export class OrganisationShortlistsTableComponent {
   public actions$ = inject(Actions);
+  public store = inject(Store);
+
   public organisationShortlistsStore = inject(organisationShortlistsTableStore);
+  public userData = this.store.selectSignal(selectUserData); // NOTE we dont have user id, only email/username
 
   protected getActionData(
     shortlist: ShortlistEntity,
   ): DropdownbuttonNavigationModel {
     return {
       actions:
-        shortlist.type === 'custom'
+        shortlist.type === 'custom' ||
+        (this.userData()
+          ? shortlist.name.includes(this.userData()!.name!)
+          : false)
           ? [
               {
                 text: 'Remove Shortlist',

@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
@@ -46,7 +45,7 @@ import { OrganisationDetailsV2Component } from '../widgets/organisation-details-
 import { organisationEmployeesChartsStore } from '../widgets/organisation-employees-chart/organisation-employees-chart.store';
 import { organisationFundingDataTableStore } from '../widgets/organisation-funding-data-table/organisation-funding-data-table.store';
 import { organisationNewsTableStore } from '../widgets/organisation-news-table/organisation-news-table.store';
-import { OrganisationShortlistsTableComponent } from '../widgets/organisation-shortlists-table/organisation-shortlists-table.component';
+import { organisationShortlistsTableStore } from '../widgets/organisation-shortlists-table/organisation-shortlists-table.store';
 import { selectOrganisationPageViewModel } from './organisation-page.selectors';
 
 @Component({
@@ -77,16 +76,16 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
     organisationFundingDataTableStore,
     organisationNewsTableStore,
     organisationContactsStore,
+    organisationShortlistsTableStore,
   ],
   animations: [trigger('fadeIn', fadeIn())],
 })
 export class OrganisationPageComponent {
-  @ViewChild(OrganisationShortlistsTableComponent)
-  public shortlistsTable: OrganisationShortlistsTableComponent;
-
   public store = inject(Store);
 
   public vm = this.store.selectSignal(selectOrganisationPageViewModel);
+
+  public organisationShortlistsStore = inject(organisationShortlistsTableStore);
 
   public dropdownButtonActions = {
     actions: [
@@ -103,7 +102,6 @@ export class OrganisationPageComponent {
   };
 
   protected actions$ = inject(Actions);
-
   protected router = inject(Router);
 
   public constructor() {

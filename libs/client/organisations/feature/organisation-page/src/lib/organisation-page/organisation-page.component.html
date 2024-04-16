@@ -28,8 +28,7 @@
   <div class="flex gap-2" page-header-actions>
     <kendo-button
       [ngClass]="{
-        '!text-informational-warning':
-          !!shortlistsTable?.organisationShortlistsStore?.data?.()?.total
+        '!text-informational-warning': organisationShortlistsStore.data().total
       }"
       class="mr-2"
       kendoTooltip
