@@ -4,14 +4,22 @@
 
     <app-status-indicator [state]="store.state()!" />
   </div>
-  <kendo-textarea
-    [formControl]="opportunityDescriptionControl"
-    body
-    placeholder="Click to write content here..."
-    class="h-full !border-x-0 !border-t-0"
-    id="opportunityDescription"
-    [rows]="5"
-    [maxlength]="1000"
-    resizable="auto"
-  />
+
+  <div body>
+    @if (canEdit()) {
+      <kendo-textarea
+        id="opportunityDescription"
+        [formControl]="opportunityDescriptionControl"
+        [rows]="5"
+        [maxlength]="1000"
+        placeholder="Click to write content here..."
+        resizable="auto"
+        class="h-full !border-x-0 !border-t-0"
+      />
+    } @else {
+      <p class="text-[14px]">
+        {{ opportunityDescriptionControl.value }}
+      </p>
+    }
+  </div>
 </ui-tilelayout-item>

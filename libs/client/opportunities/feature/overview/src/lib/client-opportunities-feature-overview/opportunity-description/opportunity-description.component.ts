@@ -37,6 +37,7 @@ export class OpportunityDescriptionComponent implements OnInit {
 
   public opportunityId = input.required<string>();
   public description = input<string | null>();
+  public canEdit = input<boolean>(false);
 
   protected opportunityDescriptionControl = new FormControl('', {
     updateOn: 'blur',

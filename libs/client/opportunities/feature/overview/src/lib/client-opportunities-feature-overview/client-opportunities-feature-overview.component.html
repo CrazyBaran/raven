@@ -44,6 +44,7 @@
       <app-opportunity-description
         [opportunityId]="vm().opportunity?.id!"
         [description]="$any(vm().opportunity)?.description"
+        [canEdit]="!!vm().canEditOpportunity"
       />
     } @else {
       <app-note-field-skeleton />
