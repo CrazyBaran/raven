@@ -14,7 +14,7 @@
       </div>
     </ng-template>
     <ng-template kendoPanelBarContent>
-      <div class="h-[363px]">
+      <div class="h-[363px] overflow-auto">
         @if (vm().isLoading) {
         } @else if (vm().hasFileFolder) {
           <app-files-treelist-container
