@@ -4,8 +4,7 @@ import {
   OrganisationsService,
 } from '@app/client/organisations/data-access';
 import {
-  LoadDataMethod,
-  LoadParamMethod,
+  LoadDataWithExtrasMethod,
   withDateRangeInfiniteTable,
 } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
@@ -25,10 +24,6 @@ export const organisationTimelineTableStore = signalStore(
         organisationService,
         ngrxStore.selectSignal(routerQuery.selectCurrentOrganisationId)()!,
       ),
-      preloadEndTime: loadLatestInteractionDate(
-        organisationService,
-        ngrxStore.selectSignal(routerQuery.selectCurrentOrganisationId)()!,
-      ),
     }),
   ),
   withDateRangeInfiniteTable<OrganisationInteraction>({
@@ -40,24 +35,14 @@ export const loadTimelineData =
   (
     organisationService: OrganisationsService,
     organisationId: string,
-  ): LoadDataMethod<OrganisationInteraction> =>
+  ): LoadDataWithExtrasMethod<OrganisationInteraction> =>
   (params) =>
     organisationService.getTimelineData(organisationId, params).pipe(
-      map((response) => ({
-        total: response.data?.total ?? 500,
-        data: response.data?.items ?? [],
-      })),
+      map((response) => {
+        return {
+          total: response.data?.total ?? 500,
+          data: response.data?.items ?? [],
+          extras: response.data?.nextInteraction!,
+        };
+      }),
     );
-
-export const loadLatestInteractionDate =
-  (
-    organisationService: OrganisationsService,
-    organisationId: string,
-  ): LoadParamMethod<Date | null> =>
-  () => {
-    return organisationService.getLatestInteractionDate(organisationId).pipe(
-      map((response) => ({
-        data: response.data ?? null,
-      })),
-    );
-  };

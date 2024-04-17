@@ -6,3 +6,7 @@ export interface PagedData<Data> {
 export interface PagedDataWithExtras<Data> extends PagedData<Data> {
   extras: Data[];
 }
+
+export interface PagedDataWithCustomExtras<Data> extends PagedData<Data> {
+  nextInteraction: string;
+}

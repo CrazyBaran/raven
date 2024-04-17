@@ -12,16 +12,8 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { SortDescriptor } from '@progress/kendo-data-query';
-import {
-  debounceTime,
-  filter,
-  Observable,
-  of,
-  pipe,
-  switchMap,
-  tap,
-} from 'rxjs';
-import { LoadDataMethod, WithTableSettings } from './with.table';
+import { debounceTime, Observable, pipe, switchMap, tap } from 'rxjs';
+import { WithTableSettings } from './with.table';
 
 export type DateRangeInfiniteTableState<Entity> = {
   pageState: {
@@ -38,6 +30,7 @@ export type DateRangeInfiniteTableState<Entity> = {
   tableHeight: number;
   canLoadMore: boolean;
   firstInteraction: number | null;
+  nextInteraction: number | null;
 };
 
 type WithDateRangeTableSettings = WithTableSettings & {
@@ -51,6 +44,10 @@ const defaultSettings: WithDateRangeTableSettings = {
 };
 
 export type LoadParamMethod<Entity> = () => Observable<{ data: Entity }>;
+
+export type LoadDataWithExtrasMethod<Entity> = (
+  params: Record<string, string | string[] | number | number[] | boolean>,
+) => Observable<{ data: Entity[]; total: number; extras: string }>;
 
 export function withDateRangeInfiniteTable<Entity>(settings?: {
   defaultSort?: SortDescriptor[];
@@ -70,8 +67,7 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
         >;
       }>(),
       methods: type<{
-        loadData: LoadDataMethod<Entity>;
-        preloadEndTime: LoadParamMethod<Date | null>;
+        loadData: LoadDataWithExtrasMethod<Entity>;
       }>(),
     },
     withState<DateRangeInfiniteTableState<Entity>>({
@@ -89,6 +85,7 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
       tableHeight: 0,
       canLoadMore: true,
       firstInteraction: null,
+      nextInteraction: null,
     }),
     withComputed((store) => ({
       tableParams: computed(() => ({
@@ -110,7 +107,7 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
         pipe(
           debounceTime(options.scrollDebounceTime!),
           tap(() => {
-            const nextStartDate = new Date(store.pageState().startTime!);
+            const nextStartDate = new Date(store.nextInteraction()!);
             nextStartDate.setDate(
               nextStartDate.getDate()! - options.daysInterval!,
             );
@@ -122,7 +119,7 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
               patchState(store, {
                 pageState: {
                   ...store.pageState(),
-                  endTime: store.pageState().startTime,
+                  endTime: store.nextInteraction()! + 1,
                   startTime: nextStartDate.getTime(),
                 },
               });
@@ -130,58 +127,25 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
           }),
         ),
       ),
-      preloadEndTime: rxMethod<void>(
-        pipe(
-          debounceTime(options.debounceTime!),
-          tap(() => {
-            patchState(store, { isLoading: true });
-          }),
-          switchMap(() => store.preloadEndTime()),
-          switchMap((dateParam: { data: Date | null }) => {
-            if (dateParam.data) {
-              const startDate = new Date(dateParam.data);
-              const endDate = new Date(dateParam.data);
-
-              startDate.setDate(startDate.getDate()! - options.daysInterval!);
-              const params = {
-                endTime: endDate.getTime(),
-                startTime: startDate.getTime(),
-              };
-              patchState(store, {
-                pageState: {
-                  ...params,
-                },
-                canLoadMore: true,
-                firstInteraction: endDate.getTime(),
-              });
-            } else {
-              patchState(store, {
-                canLoadMore: false,
-                isLoading: false,
-              });
-            }
-
-            return of(dateParam);
-          }),
-        ),
-      ),
       loadData: rxMethod<Record<string, any>>(
         pipe(
           debounceTime(options.debounceTime!),
-          filter(
-            (params) => params && params['startTime'] && params['endTime'],
-          ),
           tap(() => patchState(store, { isLoading: true })),
-          switchMap((params) =>
-            store.loadData(params).pipe(
+          switchMap((params) => {
+            return store.loadData(params).pipe(
               tapResponse({
                 next: (data) => {
+                  const nextInteraction = data.extras
+                    ? new Date(data.extras).getTime()
+                    : null;
                   patchState(store, {
                     data: {
                       data: [...store.data().data, ...data.data],
                       total: data.total,
                     },
                     loadedMore: true,
+                    nextInteraction,
+                    canLoadMore: nextInteraction !== null,
                   });
                 },
                 error: (error) => console.error('Error', error),
@@ -190,27 +154,21 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
                     isLoading: false,
                   }),
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
       reset: rxMethod(
         pipe(
-          tap((firstInteraction: number | null) => {
-            if (firstInteraction) {
-              const endTime = firstInteraction;
-              const startDate = new Date(firstInteraction);
-
-              startDate.setDate(startDate.getDate()! - options.daysInterval!);
-              patchState(store, {
-                data: { total: 0, data: [] },
-                pageState: {
-                  ...store.pageState(),
-                  startTime: startDate.getTime(),
-                  endTime: endTime,
-                },
-              });
-            }
+          tap(() => {
+            patchState(store, {
+              data: { total: 0, data: [] },
+              pageState: {
+                ...store.pageState(),
+                startTime: undefined,
+                endTime: undefined,
+              },
+            });
           }),
         ),
       ),
@@ -218,7 +176,6 @@ export function withDateRangeInfiniteTable<Entity>(settings?: {
     withHooks((store) => ({
       onInit: () => {
         if (options.listenOnInit) {
-          store.preloadEndTime();
           store.loadData(store.tableParams);
         }
       },

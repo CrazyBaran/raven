@@ -7,7 +7,7 @@ import { DataWarehouseLastUpdated } from '../models/data-warehouse-last-updated'
 import { OrganisationNews } from '../models/organisation-news.model';
 import { Organisation } from '../models/organisation.model';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { PagedData } from 'rvns-shared';
+import { PagedData, PagedDataWithCustomExtras } from 'rvns-shared';
 import { OrganisationContact } from '../models/contact.model';
 import { OrganisationInteraction } from '../models/interaction.model';
 
@@ -140,11 +140,12 @@ export class OrganisationsService {
   public getTimelineData(
     id: string,
     params?: Record<string, string | number | boolean | string[] | number[]>,
-  ): Observable<GenericResponse<PagedData<OrganisationInteraction>>> {
-    return this.http.get<GenericResponse<PagedData<OrganisationInteraction>>>(
-      `${this.url}/${id}/interactions`,
-      { params },
-    );
+  ): Observable<
+    GenericResponse<PagedDataWithCustomExtras<OrganisationInteraction>>
+  > {
+    return this.http.get<
+      GenericResponse<PagedDataWithCustomExtras<OrganisationInteraction>>
+    >(`${this.url}/${id}/interactions`, { params });
   }
 
   public getLatestInteractionDate(

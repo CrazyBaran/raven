@@ -139,7 +139,11 @@ export class AffinityService {
   public async getLatestInteraction(options: {
     domains?: string[];
     organizationIds?: number[];
+    fromDate?: Date | null;
   }): Promise<Date> {
+    if (!options.fromDate) {
+      options.fromDate = new Date();
+    }
     let organisationIds = options.organizationIds;
 
     if (
@@ -158,18 +162,27 @@ export class AffinityService {
     }
 
     let latestInteraction: Date = null;
-
+    let iteration = 0;
     for (const organisationId of organisationIds) {
-      for (let i = 10; i > 0; i--) {
+      iteration = 0;
+      const now = new Date();
+      let monthsDiff =
+        (now.getFullYear() - options.fromDate.getFullYear()) * 12;
+      monthsDiff -= options.fromDate.getMonth();
+      monthsDiff += now.getMonth();
+      let monthsInterval = this.getMonthsIntervalForIteration(iteration);
+
+      for (let i = 0; i < 12 * 10 - monthsDiff; i += monthsInterval) {
+        monthsInterval = this.getMonthsIntervalForIteration(iteration);
+        const startDate = new Date(options.fromDate.getTime());
+        const endDate = new Date(options.fromDate.getTime());
+        startDate.setMonth(startDate.getMonth() - (i + monthsInterval));
+        endDate.setMonth(endDate.getMonth() - i);
         const emailResponse = await this.affinityApiService.getInteractions(
           organisationId,
           AffinityInteractionType.Email,
-          new Date(
-            new Date().setFullYear(new Date().getFullYear() - i),
-          ).toISOString(),
-          new Date(
-            new Date().setFullYear(new Date().getFullYear() - i + 1),
-          ).toISOString(),
+          startDate.toISOString(),
+          endDate.toISOString(),
           1,
         );
 
@@ -193,12 +206,8 @@ export class AffinityService {
         const meetingResponse = await this.affinityApiService.getInteractions(
           organisationId,
           AffinityInteractionType.Meeting,
-          new Date(
-            new Date().setFullYear(new Date().getFullYear() - i),
-          ).toISOString(),
-          new Date(
-            new Date().setFullYear(new Date().getFullYear() - i + 1),
-          ).toISOString(),
+          startDate.toISOString(),
+          endDate.toISOString(),
           1,
         );
 
@@ -217,6 +226,11 @@ export class AffinityService {
           (!latestInteraction || meetingDate > latestInteraction)
         ) {
           latestInteraction = meetingDate;
+        }
+        iteration++;
+
+        if (latestInteraction) {
+          break;
         }
       }
     }
@@ -251,14 +265,28 @@ export class AffinityService {
       items: [],
     };
 
+    let dynamicStartTime = options.startDate;
+    let dynamicEndTime = options.endDate;
+    let lookForNextInteraction = true;
+    if (!options.startDate) {
+      dynamicStartTime = await this.getLatestInteraction({ ...options });
+      if (!dynamicStartTime) {
+        dynamicStartTime = new Date();
+        lookForNextInteraction = false;
+      }
+      dynamicEndTime = new Date();
+      dynamicEndTime.setDate(dynamicEndTime.getDate() + 15);
+      dynamicStartTime.setDate(new Date().getDate() - 90);
+    }
+
     for (const organisationId of organisationIds) {
       let response: PaginatedAffinityInteractionDto = undefined;
       do {
         response = await this.affinityApiService.getInteractions(
           organisationId,
           AffinityInteractionType.Email,
-          options.startDate?.toISOString(),
-          options.endDate?.toISOString(),
+          dynamicStartTime.toISOString(),
+          dynamicEndTime.toISOString(),
           100,
         );
         interactions.items.push(
@@ -271,8 +299,8 @@ export class AffinityService {
         response = await this.affinityApiService.getInteractions(
           organisationId,
           AffinityInteractionType.Meeting,
-          options.startDate?.toISOString(),
-          options.endDate?.toISOString(),
+          dynamicStartTime.toISOString(),
+          dynamicEndTime.toISOString(),
           500,
         );
         interactions.items.push(
@@ -282,6 +310,18 @@ export class AffinityService {
         );
       } while (response.next_page_token);
     }
+
+    interactions.items.sort((a, b) => {
+      return b.date.getTime() - a.date.getTime();
+    });
+
+    const nextInteractionDate = lookForNextInteraction
+      ? await this.getLatestInteraction({
+          ...options,
+          fromDate: dynamicStartTime,
+        })
+      : null;
+    interactions.nextInteraction = nextInteractionDate;
 
     return interactions;
   }
@@ -350,5 +390,20 @@ export class AffinityService {
       pageToken = entries.next_page_token;
     } while (pageToken);
     return allEntries;
+  }
+
+  private getMonthsIntervalForIteration(iteration: number): number {
+    let monthsInterval = 18;
+    if (iteration === 1) {
+      monthsInterval = 24;
+    }
+    if (iteration === 2) {
+      monthsInterval = 28;
+    }
+    if (iteration > 2) {
+      monthsInterval = 36;
+    }
+
+    return monthsInterval;
   }
 }

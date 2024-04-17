@@ -4,7 +4,12 @@ import {
   NgClass,
   NgOptimizedImage,
 } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  inject,
+} from '@angular/core';
 import { TagsContainerComponent } from '@app/client/shared/ui';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { ToUserTagPipe, WhenDatePipe } from '@app/client/shared/ui-pipes';
@@ -44,6 +49,8 @@ export class OrganisationTimelineTableComponent {
   public TIMELINE_DAYS_INTERVAL = TIMELINE_DAYS_INTERVAL;
   public organisationTimelineStore = inject(organisationTimelineTableStore);
 
+  @Input()
+  public sourceUrl: string | undefined;
   public loadMore(): void {
     this.organisationTimelineStore.loadMore();
   }

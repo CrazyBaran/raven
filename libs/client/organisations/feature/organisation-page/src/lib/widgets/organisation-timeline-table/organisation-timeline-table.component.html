@@ -37,7 +37,6 @@
                     From: {{ details.mainActor || '-' }} |&nbsp;
                   </span>
                 }
-
                 <ui-tags-container
                   [rows]="1"
                   [tags]="details.people | toUserTag: true"
@@ -48,15 +47,32 @@
             </ng-template>
             @if (organisationTimelineStore.canLoadMore()) {
               <ng-template kendoGridFooterTemplate>
-                <div class="flex justify-center font-normal">
+                <div class="flex justify-between font-normal">
                   <button
                     (click)="loadMore()"
                     kendoButton
                     fillMode="flat"
                     themeColor="primary"
                   >
-                    Load {{ TIMELINE_DAYS_INTERVAL }} more days
+                    Show more
                   </button>
+                  @if (sourceUrl) {
+                    <a [href]="sourceUrl" target="_blank">
+                      <kendo-button fillMode="flat" themeColor="primary">
+                        <span class="align-center flex gap-1">
+                          See full list of interactions in
+                          <img
+                            class="inline"
+                            alt="affinity logo"
+                            src="assets/images/affinity.svg"
+                          />
+                          <i
+                            class="fa-sharp fa-solid fa-arrow-up-right-from-square"
+                          ></i>
+                        </span>
+                      </kendo-button>
+                    </a>
+                  }
                 </div>
               </ng-template>
             }

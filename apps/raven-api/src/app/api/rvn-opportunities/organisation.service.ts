@@ -738,8 +738,7 @@ export class OrganisationService {
 
     const interactions = await this.affinityService.getInteractions({
       organizationIds: organisations.map((org) => org.organizationDto.id),
-      startDate:
-        startTime ?? new Date(new Date().setDate(new Date().getDate() - 30)),
+      startDate: startTime,
       endDate: endTime ?? new Date(),
     });
 
