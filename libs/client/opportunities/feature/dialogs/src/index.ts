@@ -1,7 +1,5 @@
 import { DialogConfigs } from '@app/client/shared/util';
 
-export * from './lib/create-opportunity-on-stage-dialog/create-opportunity-on-stage-dialog.component';
-
 export const OPPORTUNITY_DYNAMIC_DIALOGS: DialogConfigs = {
   'reopen-opportunity': () =>
     import('./lib/reopen-opportunity-dialog/providers').then(
@@ -24,3 +22,5 @@ export const OPPORTUNITY_DYNAMIC_DIALOGS: DialogConfigs = {
       (m) => m.EditFinancialKpiDialogModule,
     ),
 };
+
+export * from './lib/create-opportunity-on-stage-dialog/create-opportunity-on-stage-dialog.component';

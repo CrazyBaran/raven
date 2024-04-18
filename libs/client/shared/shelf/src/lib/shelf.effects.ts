@@ -46,7 +46,10 @@ export const dynamicDialogsConfig: Record<
     import('@app/client/organisations/feature/dialogs').then(
       (m) => m.MoveToOutreachCompanyDialogModule,
     ),
-
+  [DialogUtil.queryParams.moveToMetCompany]: () =>
+    import('@app/client/organisations/feature/dialogs').then(
+      (m) => m.MoveToMetCompanyDialogModule,
+    ),
   [DialogUtil.queryParams.updateShortlist]: () =>
     import('@app/client/shortlists/feature/dialogs').then(
       (m) => m.UpdateShortlistDialogModule,

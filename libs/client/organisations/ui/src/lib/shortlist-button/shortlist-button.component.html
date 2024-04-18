@@ -1,0 +1,28 @@
+<div class="flex min-w-8 items-center justify-center">
+  @if (isShortlisted()) {
+    <button
+      kendoTooltip
+      title="Shortlisted"
+      [queryParams]="queryParams()"
+      queryParamsHandling="merge"
+      [skipLocationChange]="true"
+      [routerLink]="['./']"
+      class="text-primary"
+    >
+      <i class="fa-solid fa-star"></i>
+    </button>
+  } @else {
+    <button
+      kendoTooltip
+      title="Add to Shortlist"
+      [queryParams]="queryParams()"
+      queryParamsHandling="merge"
+      [skipLocationChange]="true"
+      [routerLink]="['./']"
+      class="text-primary flex items-center gap-0.5 opacity-70 hover:opacity-100"
+    >
+      <i class="fa-regular fa-star"></i>
+      <i class="fa-regular fa-plus text-xs"></i>
+    </button>
+  }
+</div>

@@ -9,6 +9,7 @@ export class DialogUtil {
     updateOrganisationDescription: 'update-organisation-description' as const,
     passCompany: 'pass-company' as const,
     moveToOutreachCompany: 'move-to-outreach-company' as const,
+    moveToMetCompany: 'move-to-met-company' as const,
 
     updateShortlist: 'update-shortlist' as const,
     createShortlist: 'create-shortlist' as const,

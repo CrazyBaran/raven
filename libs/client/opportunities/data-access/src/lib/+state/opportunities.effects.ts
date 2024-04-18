@@ -227,6 +227,7 @@ export class OpportunitiesEffects {
 
               const shouldPatchOpportunity =
                 Object.keys(_.omit(payload, 'organisationId')).length > 0;
+
               if (shouldPatchOpportunity) {
                 returnActions.push(
                   OpportunitiesActions.updateOpportunity({
@@ -238,7 +239,7 @@ export class OpportunitiesEffects {
                             stage.relatedCompanyStatus ===
                             CompanyStatus.LIVE_OPPORTUNITY,
                         )?.id || undefined,
-                      ...payload,
+                      ..._.omit(payload, 'team'),
                     },
                   }),
                   OrganisationsActions.updateOrganisation({

@@ -22,7 +22,6 @@ import {
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { DealLeadsPipe } from '@app/client/shared/ui-pipes';
 import { LoadDataMethod, withTable } from '@app/client/shared/util';
-import { routerQuery } from '@app/client/shared/util-router';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { signalStore, withComputed, withMethods } from '@ngrx/signals';
 import { Store } from '@ngrx/store';
@@ -44,9 +43,6 @@ export const organisationOpportunitiesStore = signalStore(
         ngrxStore.selectSignal(organisationsQuery.selectCurrentOrganisation)()
           ?.domains[0] ?? '',
     })),
-    currentOrganisationId: ngrxStore.selectSignal(
-      routerQuery.selectCurrentOrganisationId,
-    ),
   })),
   withMethods(
     (

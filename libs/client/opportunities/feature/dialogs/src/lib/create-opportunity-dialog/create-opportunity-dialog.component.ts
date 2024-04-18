@@ -128,6 +128,7 @@ export class CreateOpportunityDialogComponent extends DynamicDialogContentBase {
             }),
           );
         }
+
         this.dialog?.close();
       });
 
@@ -135,6 +136,22 @@ export class CreateOpportunityDialogComponent extends DynamicDialogContentBase {
       .pipe(ofType(OpportunitiesActions.createOpportunityFailure), take(1))
       .subscribe((data) => {
         this.dialog?.close();
+      });
+
+    this.actions$
+      .pipe(
+        ofType(
+          OrganisationsActions.updateOrganisationSuccess,
+          OrganisationsActions.updateOrganisationFailure,
+        ),
+        take(1),
+      )
+      .subscribe(() => {
+        this.store.dispatch(
+          OrganisationsActions.getOrganisation({
+            id: this.opportunityForm.controls.organisationId.value!,
+          }),
+        );
       });
   }
 }

@@ -1,5 +1,5 @@
 @if (vm(); as vm) {
-  <kendo-dialog [width]="480" (close)="onCancel.emit()">
+  <kendo-dialog [width]="480" (close)="onCancel.emit()" class="overflow-auto">
     <kendo-dialog-titlebar (close)="onDialogClose()">
       <span class="k-window-title">Add New Opportunity</span>
     </kendo-dialog-titlebar>

@@ -1,5 +1,5 @@
 <app-page-template>
-  <div class="flex items-center gap-2" page-header-title>
+  <div page-header-title class="flex items-center gap-2">
     <kendo-button
       [routerLink]="['/companies']"
       fillMode="flat"
@@ -25,53 +25,94 @@
     }
   </div>
 
-  <div class="flex gap-2" page-header-actions>
-    <kendo-button
-      [ngClass]="{
-        '!text-informational-warning': organisationShortlistsStore.data().total
-      }"
-      class="mr-2"
-      kendoTooltip
-      title="Add to Shortlist"
-      themeColor="primary"
-      iconClass="fa-solid fa-star"
-      [queryParams]="vm().addToShortlistQueryParam"
-      queryParamsHandling="merge"
-      [skipLocationChange]="true"
-      [routerLink]="['./']"
-    />
-    @if (vm().showStatus) {
-      <div class="flex items-center gap-3">
-        <i
-          [style.color]="vm().status.color"
-          class="fa-solid fa-circle text-xs"
-        ></i>
-        <p [isEllipsisActive]="true" class="flex-1 text-black">
-          {{ vm().status.name | titlecase }}
-        </p>
+  <div page-header-actions class="flex gap-2">
+    @if (vm().isLoading || organisationShortlistsStore.isLoading()) {
+      <kendo-skeleton width="270px" height="30px" />
+    } @else {
+      <div class="flex items-center gap-6">
+        @if (vm().showShortlistButton) {
+          <app-shortlist-button
+            [isShortlisted]="!!organisationShortlistsStore.data().total"
+            [queryParams]="vm().shortlistQueryParam"
+          />
+        }
+
+        @if (vm().showStatus) {
+          <app-organisation-status
+            [name]="vm().status.name!"
+            [color]="vm().status.color"
+          />
+        }
       </div>
-    }
 
-    @if (vm().showOutreachButton) {
-      <kendo-button
-        [queryParams]="vm().outreachQueryParam"
-        queryParamsHandling="merge"
-        [skipLocationChange]="true"
-        [routerLink]="['./']"
-        themeColor="primary"
-      >
-        Add To Outreach
-      </kendo-button>
-    }
+      @if (
+        vm().showPassButton ||
+        vm().showOutreachButton ||
+        vm().showOpportunityButton
+      ) {
+        <div class="bg-grey-300 ml-4 mr-2 h-7 w-0.5"></div>
+      }
 
-    @if (vm().showPassButton) {
-      <app-dropdownbutton-navigation [model]="dropdownButtonActions" />
+      @if (vm().showOutreachButton) {
+        <kendo-button
+          [queryParams]="vm().outreachQueryParam"
+          queryParamsHandling="merge"
+          [skipLocationChange]="true"
+          [routerLink]="['./']"
+          themeColor="primary"
+          iconClass="fa-regular fa-plus"
+        >
+          Outreach
+        </kendo-button>
+      }
+
+      @if (vm().showMetButton) {
+        <kendo-button
+          [queryParams]="vm().metQueryParam"
+          queryParamsHandling="merge"
+          [skipLocationChange]="true"
+          [routerLink]="['./']"
+          themeColor="primary"
+          iconClass="fa-regular fa-plus"
+        >
+          Met
+        </kendo-button>
+      }
+
+      @if (vm().showOpportunityButton) {
+        <kendo-button
+          (click)="
+            !vm().opportunityQueryParam
+              ? openCreateOpportunityOnStageDialog()
+              : null
+          "
+          [queryParams]="vm().opportunityQueryParam"
+          queryParamsHandling="merge"
+          [skipLocationChange]="true"
+          [routerLink]="['./']"
+          iconClass="fa-regular fa-plus"
+        >
+          Opportunity
+        </kendo-button>
+      }
+
+      @if (vm().showPassButton) {
+        <kendo-button
+          [queryParams]="vm().passQueryParams"
+          queryParamsHandling="merge"
+          [skipLocationChange]="true"
+          [routerLink]="['./']"
+          iconClass="fa-regular fa-ban"
+        >
+          Pass
+        </kendo-button>
+      }
     }
   </div>
 
   <div
-    class="organisation-details | bg-base-background relative flex h-full flex-col overflow-y-scroll"
     page-content
+    class="organisation-details bg-base-background relative flex h-full flex-col overflow-y-scroll"
   >
     @if (vm().lastChecked) {
       <p class="text-subtle-text absolute right-0 mr-8 mt-2 text-xs">
@@ -157,3 +198,15 @@
     <app-organisation-notes />
   </div>
 </ng-template>
+
+@if (showCreateOpportunityOnStageDialog()) {
+  <app-create-opportunity-on-stage-dialog
+    [params]="{
+      opportunityId: vm().opportunityId!,
+      organisationId: vm().currentOrganisationId!,
+      pipelineStageId: vm().preliminaryStageId
+    }"
+    (onCancel)="closeCreateOpportunityOnStageDialog()"
+    (onSubmit)="submitCreateOpportunityOnStageDialog()"
+  />
+}

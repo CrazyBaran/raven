@@ -1,20 +1,10 @@
 <ui-tilelayout-item id="organisation-opportunities">
-  <div class="flex items-center justify-between gap-2" header>
+  <div header>
     <h5 class="k-card-title">Opportunities</h5>
-    <kendo-button
-      [queryParams]="{
-        'create-opportunity': signalStore.currentOrganisationId()!
-      }"
-      [routerLink]="['./']"
-      [skipLocationChange]="true"
-      iconClass="fa-sharp fa-solid fa-pen"
-      size="small"
-    >
-      Add new
-    </kendo-button>
   </div>
 
   <kendo-grid
+    body
     (pageChange)="signalStore.pageChange($event)"
     (sortChange)="signalStore.sortChange($event)"
     [data]="signalStore.data()"
@@ -27,7 +17,6 @@
     [skip]="signalStore.pageState().skip"
     [sort]="signalStore.sort()!"
     [sortable]="true"
-    body
     class="grid-borderless"
   >
     @if (!signalStore.data().total && !signalStore.isLoading()) {

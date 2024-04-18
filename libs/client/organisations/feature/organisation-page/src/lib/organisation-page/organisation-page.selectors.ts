@@ -4,6 +4,7 @@ import {
   organisationStatusColorDictionary,
   organisationsFeature,
 } from '@app/client/organisations/state';
+import { pipelinesQuery } from '@app/client/pipelines/state';
 import { DialogUtil } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
@@ -16,6 +17,7 @@ export const selectOrganisationPageViewModel = createSelector(
   organisationsFeature.selectUpdateLoading,
   opportunitiesFeature.selectCreate,
   organisationsFeature.selectDataWarehouseLastUpdated,
+  pipelinesQuery.selectAllPipelineStages,
   (
     currentOrganisation,
     currentOrganisationId,
@@ -23,6 +25,7 @@ export const selectOrganisationPageViewModel = createSelector(
     updateLoading,
     { isLoading: createLoading },
     dataWarehouseLastUpdated,
+    pipelines,
   ) => {
     const companyStatusDisplayName = currentOrganisation?.companyStatus
       ?.split('_')
@@ -36,27 +39,62 @@ export const selectOrganisationPageViewModel = createSelector(
         ],
     };
 
+    const opportunityId = currentOrganisation?.opportunities.find(
+      (opportunity) =>
+        !opportunity.stage.isHidden && !opportunity.stage.configuration,
+    )?.id;
+
     return {
       currentOrganisationId,
       currentOrganisation,
+      isLoading,
       status,
       createLoading,
       updateLoading,
-      showPassButton:
-        ![CompanyStatus.PASSED, CompanyStatus.PORTFOLIO].some(
-          (status) => status === currentOrganisation?.companyStatus,
-        ) && !isLoading,
-      showStatus: !isLoading && companyStatusDisplayName,
+      opportunityId,
+      showShortlistButton:
+        currentOrganisation?.companyStatus !== CompanyStatus.PORTFOLIO,
+      showStatus: !!status.name,
+      showPassButton: ![CompanyStatus.PASSED, CompanyStatus.PORTFOLIO].some(
+        (status) => status === currentOrganisation?.companyStatus,
+      ),
       showOutreachButton:
-        !isLoading &&
-        (!currentOrganisation?.companyStatus ||
-          currentOrganisation?.companyStatus === CompanyStatus.PASSED),
+        !currentOrganisation?.companyStatus ||
+        currentOrganisation?.companyStatus === CompanyStatus.PASSED,
+      showMetButton:
+        currentOrganisation?.companyStatus === CompanyStatus.OUTREACH,
+      showOpportunityButton:
+        !currentOrganisation?.companyStatus ||
+        [
+          CompanyStatus.OUTREACH,
+          CompanyStatus.MET,
+          CompanyStatus.PASSED,
+        ].includes(currentOrganisation?.companyStatus),
+      shortlistQueryParam: {
+        [DialogUtil.queryParams.addToShortlist]: currentOrganisation?.id,
+      },
+      passQueryParams: {
+        [DialogUtil.queryParams.passCompany]: currentOrganisation?.id,
+      },
       outreachQueryParam: {
         [DialogUtil.queryParams.moveToOutreachCompany]: currentOrganisation?.id,
       },
-      addToShortlistQueryParam: {
-        [DialogUtil.queryParams.addToShortlist]: currentOrganisation?.id,
+      opportunityQueryParam:
+        currentOrganisation?.companyStatus &&
+        [CompanyStatus.OUTREACH, CompanyStatus.MET].includes(
+          currentOrganisation?.companyStatus,
+        )
+          ? null
+          : {
+              [DialogUtil.queryParams.createOpportunity]:
+                currentOrganisation?.id,
+            },
+      metQueryParam: {
+        [DialogUtil.queryParams.moveToMetCompany]: opportunityId,
       },
+      preliminaryStageId: pipelines.find(
+        (stage) => stage.displayName === 'Preliminary DD - In progress',
+      )?.id,
       lastChecked: dataWarehouseLastUpdated?.lastChecked ?? new Date(),
     };
   },

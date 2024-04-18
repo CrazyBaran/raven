@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  signal,
   ViewEncapsulation,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
@@ -22,20 +23,21 @@ import {
 } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FilesActions } from '@app/client/files/feature/state';
+import { CreateOpportunityOnStageDialogComponent } from '@app/client/opportunities/feature/dialogs';
+import {
+  OrganisationStatusComponent,
+  ShortlistButtonComponent,
+} from '@app/client/organisations/ui';
 import { PipelinesActions } from '@app/client/pipelines/state';
 import {
   FeatureFlagDirective,
   IsEllipsisActiveDirective,
 } from '@app/client/shared/ui-directives';
-import {
-  DropdownAction,
-  DropdownButtonNavigationComponent,
-} from '@app/client/shared/ui-router';
 import { PageTemplateComponent } from '@app/client/shared/ui-templates';
-import { DialogUtil } from '@app/client/shared/util';
 import { TagsActions } from '@app/client/tags/state';
 import { Actions } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { TabStripModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { filter } from 'rxjs';
@@ -59,13 +61,16 @@ import { selectOrganisationPageViewModel } from './organisation-page.selectors';
     TooltipModule,
     RouterLink,
     ButtonModule,
-    DropdownButtonNavigationComponent,
     TitleCasePipe,
     IsEllipsisActiveDirective,
     TabStripModule,
     NgTemplateOutlet,
     OrganisationDetailsV2Component,
     DatePipe,
+    ShortlistButtonComponent,
+    OrganisationStatusComponent,
+    SkeletonModule,
+    CreateOpportunityOnStageDialogComponent,
   ],
   templateUrl: './organisation-page.component.html',
   styleUrls: ['./organisation-page.component.scss'],
@@ -87,19 +92,7 @@ export class OrganisationPageComponent {
 
   public organisationShortlistsStore = inject(organisationShortlistsTableStore);
 
-  public dropdownButtonActions = {
-    actions: [
-      {
-        text: 'Pass on Company',
-        routerLink: ['./'],
-        queryParams: {
-          [DialogUtil.queryParams.passCompany]: this.vm().currentOrganisationId,
-        },
-        skipLocationChange: true,
-        queryParamsHandling: 'merge',
-      } as DropdownAction,
-    ],
-  };
+  public showCreateOpportunityOnStageDialog = signal(false);
 
   protected actions$ = inject(Actions);
   protected router = inject(Router);
@@ -131,5 +124,23 @@ export class OrganisationPageComponent {
           }),
         );
       });
+  }
+
+  public openCreateOpportunityOnStageDialog(): void {
+    this.showCreateOpportunityOnStageDialog.set(true);
+  }
+
+  public closeCreateOpportunityOnStageDialog(): void {
+    this.showCreateOpportunityOnStageDialog.set(false);
+  }
+
+  public submitCreateOpportunityOnStageDialog(): void {
+    this.store.dispatch(
+      OrganisationsActions.getOrganisation({
+        id: this.vm().currentOrganisation!.id!,
+      }),
+    );
+
+    this.closeCreateOpportunityOnStageDialog();
   }
 }
