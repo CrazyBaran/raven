@@ -19,10 +19,11 @@ export class OrganisationStatusComponent {
   public name = input.required<string>();
   public subName = input<string>();
 
-  public statusName = computed(() =>
-    this.titleCasePipe.transform(
-      `${this.name()} ${this.subName() ? `(${this.subName()})` : ''}`,
-    ),
+  public statusName = computed(
+    () =>
+      `${this.titleCasePipe.transform(this.name())} ${
+        this.subName() ? `(${this.subName()})` : ''
+      }`,
   );
 
   private titleCasePipe = new TitleCasePipe();
