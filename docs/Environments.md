@@ -48,3 +48,21 @@ Links:
 ### Production
 
 This environment is not yet set up. It should follow the same Bicep definition as the staging environment, but with different configuration values.
+
+
+## Maintenance
+
+### Removal of old container images
+
+The Azure Container Registry stores old container images, even after they are no longer used. To remove them, you can use the Azure CLI. The best approach is to use `az acr purge`, but if we don't want to build the `acr-cli` ourselves locally and for don't have access to Cloud Shell, we can use the following simple script:
+
+  ```bash
+#!/bin/bash
+
+for i in $(seq 2000 2040); do
+    echo "Deleting image with tag $i..."
+    az acr repository delete --name REGISTRY_NAME --image REPOSITORY_NAME:$i --yes || echo "Image with tag $i not found"
+done
+  ```
+
+Where numbers in for loop are the tags of the images you want to delete. The script will try to delete all images with the specified tags, and if the image is not found, it will just print a message and continue to the next tag. Please remember to keep the image that is tagged by the `latest`.
