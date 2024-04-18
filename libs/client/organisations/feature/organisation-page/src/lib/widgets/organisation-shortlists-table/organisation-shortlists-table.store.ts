@@ -1,4 +1,5 @@
 import { computed, inject } from '@angular/core';
+import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { LoadDataMethod, withTable } from '@app/client/shared/util';
 import { routerQuery } from '@app/client/shared/util-router';
 import { ShortlistsService } from '@app/client/shortlists/data-access';
@@ -149,6 +150,7 @@ export const organisationShortlistsTableStore = signalStore(
           ShortlistsActions.createShortlistSuccess,
           ShortlistsActions.updateShortlistSuccess,
           ShortlistsActions.bulkRemoveOrganisationsFromShortlistSuccess,
+          OpportunitiesActions.createOpportunitySuccess,
         ),
       );
       store.refresh(resetPage$);
