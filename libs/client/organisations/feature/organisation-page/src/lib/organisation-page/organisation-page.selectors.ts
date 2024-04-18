@@ -27,22 +27,26 @@ export const selectOrganisationPageViewModel = createSelector(
     dataWarehouseLastUpdated,
     pipelines,
   ) => {
+    const activeOpportunity = currentOrganisation?.opportunities.find(
+      (opportunity) =>
+        !opportunity.stage.isHidden && !opportunity.stage.configuration,
+    );
+
     const companyStatusDisplayName = currentOrganisation?.companyStatus
       ?.split('_')
       .join(' ');
 
     const status = {
       name: companyStatusDisplayName,
+      subName:
+        currentOrganisation?.companyStatus === CompanyStatus.LIVE_OPPORTUNITY
+          ? activeOpportunity?.stage.displayName
+          : undefined,
       color:
         organisationStatusColorDictionary[
           currentOrganisation?.companyStatus as CompanyStatus
         ],
     };
-
-    const opportunityId = currentOrganisation?.opportunities.find(
-      (opportunity) =>
-        !opportunity.stage.isHidden && !opportunity.stage.configuration,
-    )?.id;
 
     return {
       currentOrganisationId,
@@ -51,7 +55,7 @@ export const selectOrganisationPageViewModel = createSelector(
       status,
       createLoading,
       updateLoading,
-      opportunityId,
+      opportunityId: activeOpportunity?.id,
       showShortlistButton:
         currentOrganisation?.companyStatus !== CompanyStatus.PORTFOLIO,
       showStatus: !!status.name,
@@ -90,7 +94,7 @@ export const selectOrganisationPageViewModel = createSelector(
                 currentOrganisation?.id,
             },
       metQueryParam: {
-        [DialogUtil.queryParams.moveToMetCompany]: opportunityId,
+        [DialogUtil.queryParams.moveToMetCompany]: activeOpportunity?.id,
       },
       preliminaryStageId: pipelines.find(
         (stage) => stage.displayName === 'Preliminary DD - In progress',
