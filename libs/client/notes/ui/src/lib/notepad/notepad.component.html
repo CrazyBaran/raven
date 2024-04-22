@@ -26,19 +26,25 @@
     >
       <ng-container
         *rxFor="
-          let control of visibleControls() | keyvalue: comparatorFn;
+          let control of formConfig() | keyvalue: comparatorFn;
           trackBy: 'key';
           renderCallback: itemsRendered
         "
       >
-        <ng-container
-          [ngComponentOutletInjector]="
-            control.key | controlInjector: control.value
-          "
-          [ngComponentOutlet]="
-            controlResolver.resolve(control.value.type) | async
-          "
-        ></ng-container>
+        <div
+          [ngClass]="{
+            'invisible absolute': state().disabledTabIds.includes(control.key)
+          }"
+        >
+          <ng-container
+            [ngComponentOutletInjector]="
+              control.key | controlInjector: control.value
+            "
+            [ngComponentOutlet]="
+              controlResolver.resolve(control.value.type) | async
+            "
+          ></ng-container>
+        </div>
       </ng-container>
     </form>
   </div>

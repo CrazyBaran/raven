@@ -1,5 +1,5 @@
 import { trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -50,6 +50,7 @@ export type Tab = {
     RxUnpatch,
     LoaderComponent,
     RxIf,
+    NgClass,
   ],
   templateUrl: './notepad.component.html',
   styleUrls: ['./notepad.component.scss'],
@@ -100,20 +101,6 @@ export class NotepadComponent implements OnInit {
       this.itemsRendered.pipe(map(() => true)),
     ),
   );
-
-  protected visibleControls = computed(() => {
-    const formConfig = this.formConfig();
-    //remove disabled keys from object
-    return Object.keys(formConfig).reduce(
-      (acc, key) => {
-        if (!this.state().disabledTabIds.includes(key)) {
-          acc[key] = formConfig[key];
-        }
-        return acc;
-      },
-      {} as Record<string, DynamicControl>,
-    );
-  });
 
   @Input() public set config(value: Record<string, DynamicControl>) {
     this.startRender.next();
