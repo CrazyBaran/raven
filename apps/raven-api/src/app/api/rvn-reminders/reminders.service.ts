@@ -1,4 +1,5 @@
 import { ReminderStats, ReminderStatus } from '@app/rvns-reminders';
+import { TagTypeEnum } from '@app/rvns-tags';
 import {
   ForbiddenException,
   Injectable,
@@ -76,7 +77,14 @@ export class RemindersService {
     }
 
     if (options.organisationId) {
-      const filteredTags = await this.getTagsForOrganisation(options);
+      let filteredTags = await this.getTagsForOrganisation(options);
+
+      if (options.opportunityId) {
+        filteredTags = this.filterByOpportunityRelatedTags(
+          filteredTags,
+          options.opportunityId,
+        );
+      }
 
       if (filteredTags.length === 0) {
         return {
@@ -341,7 +349,14 @@ export class RemindersService {
       .andWhere('reminders.completedDate IS NULL');
 
     if (options.organisationId) {
-      const filteredTags = await this.getTagsForOrganisation(options);
+      let filteredTags = await this.getTagsForOrganisation(options);
+
+      if (options.opportunityId) {
+        filteredTags = this.filterByOpportunityRelatedTags(
+          filteredTags,
+          options.opportunityId,
+        );
+      }
 
       if (filteredTags.length === 0) {
         return {
@@ -529,5 +544,21 @@ export class RemindersService {
     }
 
     return assignees;
+  }
+
+  private filterByOpportunityRelatedTags(
+    complexTags: ComplexTagEntity[],
+    opportunityId: string,
+  ): ComplexTagEntity[] {
+    const opportunityTag = complexTags.find(
+      (cTag) =>
+        cTag.tags.filter(
+          (tag) =>
+            (tag.type === TagTypeEnum.Version ||
+              tag.type === TagTypeEnum.Opportunity) &&
+            tag.id === opportunityId,
+        ).length,
+    );
+    return opportunityTag ? [opportunityTag] : [];
   }
 }
