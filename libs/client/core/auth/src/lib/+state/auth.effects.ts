@@ -4,13 +4,15 @@ import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionStatus } from '@azure/msal-browser';
 import { AccountInfo } from '@azure/msal-node';
 import { createEffect } from '@ngrx/effects';
-import { filter, map } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs';
+import { UserService } from '../services/user.service';
 import { AuthActions } from './auth.actions';
 
 export const syncAuthState = createEffect(
   (
     msalBroadcastService = inject(MsalBroadcastService),
     msalService = inject(MsalService),
+    userService = inject(UserService),
   ) => {
     return msalBroadcastService.inProgress$.pipe(
       filter((status) => status == InteractionStatus.None),
@@ -27,12 +29,14 @@ export const syncAuthState = createEffect(
         return null;
       }),
       distinctUntilChangedDeep(),
-      map((account) =>
-        AuthActions.syncAuthState({
-          email: account?.username || '',
-          name: account?.name || '',
-        }),
-      ),
+      switchMap(() => userService.me()),
+      map((account) => {
+        return AuthActions.syncAuthState({
+          email: account?.data?.email || '',
+          name: account?.data?.name || '',
+          id: account?.data?.id || '',
+        });
+      }),
     );
   },
   {

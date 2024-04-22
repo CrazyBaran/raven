@@ -14,6 +14,7 @@ import { SsoComponent } from './pages/sso/sso.component';
 import { AzureAdSsoComponent } from './components/azure-ad-sso/azure-ad-sso.component';
 import { RvncAuthRoutingModule } from './rvnc-auth-routing.module';
 import { RvncAuthComponent } from './rvnc-auth.component';
+import { UserService } from './services/user.service';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { RvncAuthComponent } from './rvnc-auth.component';
     StoreModule.forFeature(fromAuth.AUTH_FEATURE_KEY, fromAuth.authReducer),
     EffectsModule.forFeature([AuthEffects]),
   ],
+  providers: [UserService],
   declarations: [RvncAuthComponent, SsoComponent, AzureAdSsoComponent],
 })
 export class RvncAuthModule {}

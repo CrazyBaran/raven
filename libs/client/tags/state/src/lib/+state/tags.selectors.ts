@@ -9,9 +9,9 @@ import { tagsFeature } from './tags.reducer';
  * Select tag by logged users name
  */
 export const selectCurrentUserTag = createSelector(
-  authQuery.selectUserName,
+  authQuery.selectUserId,
   tagsFeature.selectPeopleTags,
-  (name, tags) => tags.find((t) => t.name === name),
+  (id, tags) => tags.find((t) => t.userId === id),
 );
 
 export const selectIsLoadingTags = (tagType: TagEntity['type']) =>

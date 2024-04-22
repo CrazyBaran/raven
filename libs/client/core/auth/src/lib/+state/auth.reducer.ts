@@ -7,7 +7,7 @@ export const AUTH_FEATURE_KEY = 'auth';
 export interface AuthState {
   // isLoading: boolean;
   // isPending: boolean;
-  user: Partial<{ email: string; name: string }> | null;
+  user: Partial<{ id: string; email: string; name: string }> | null;
   // acl: ShareData[] | null;
   // error?: string | null;
 }
@@ -27,10 +27,11 @@ export const initialAuthState: AuthState = {
 const reducer = createReducer(
   initialAuthState,
 
-  on(AuthActions.syncAuthState, (state, { name, email }) => ({
+  on(AuthActions.syncAuthState, (state, { id, name, email }) => ({
     ...state,
     user: {
       ...state.user,
+      id,
       name,
       email,
     },

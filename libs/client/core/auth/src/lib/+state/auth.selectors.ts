@@ -9,6 +9,11 @@ export const selectUserData = createSelector(
   (state: AuthState) => state.user,
 );
 
+export const selectUserId = createSelector(
+  selectUserData,
+  (state) => state?.id,
+);
+
 export const selectUserEmail = createSelector(
   selectUserData,
   (state) => state?.email,
@@ -23,4 +28,5 @@ export const authQuery = {
   selectUserData,
   selectUserEmail,
   selectUserName,
+  selectUserId,
 };
