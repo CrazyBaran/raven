@@ -25,6 +25,9 @@ export const selectOpportunityOverviewTeam = createSelector(
         !opportunity.team.owners?.length ||
         opportunity.team.owners?.some(
           (owner) => owner.actorEmail === userEmail,
+        ) ||
+        opportunity.team.members?.some(
+          (member) => member.actorEmail === userEmail,
         ),
       team: [
         {

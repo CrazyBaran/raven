@@ -333,7 +333,7 @@ export class OpportunityController {
   @ApiOAuth2(['openid'])
   @CheckShare((ability: ShareAbility, context) =>
     ability.can(
-      ShareAction.Share,
+      ShareAction.Edit,
       'o',
       (context.params.id as string)?.toString().toLowerCase(),
     ),
