@@ -97,7 +97,8 @@ export class NotesTableComponent extends InfinityTableViewBaseComponent<NoteTabl
   }
 
   public getNoteUrl(noteId: string): string {
-    return `${window.location.href}?note-details=${noteId}`;
+    const delimeter = window.location.search?.length > 0 ? '&' : '?';
+    return `${window.location.href}${delimeter}note-details=${noteId}`;
   }
 
   public handleSyncNote(newSyncId: string, id: string): void {
