@@ -185,7 +185,7 @@ export const environment = {
   sharePoint: {
     rootDirectory: env
       .get('SHAREPOINT_ROOT_DIRECTORY')
-      .default('RavenRoot')
+      .default('Raven')
       .asString(),
     driveId: env.get('SHAREPOINT_DRIVE_ID').asString(),
     siteId: env.get('SHAREPOINT_SITE_ID').asString(),
