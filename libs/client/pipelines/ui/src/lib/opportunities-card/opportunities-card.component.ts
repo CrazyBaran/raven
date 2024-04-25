@@ -61,7 +61,7 @@ export const calculateOpportunityCardHeight = (
 
   const fieldHeight =
     additionalFields.filter((x) => x?.trim()).length * 24 +
-    (item.dealLeads?.length ? 24 : 0);
+    (item.dealLeads?.length ? item.dealLeads?.length * 24 : 0);
 
   return margin + padding + header + createdAt + separator + fieldHeight;
 };
