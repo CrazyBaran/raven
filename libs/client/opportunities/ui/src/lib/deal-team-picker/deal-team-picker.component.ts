@@ -136,7 +136,7 @@ export class DealTeamPickerComponent
     this.teamFormGroup.patchValue(this._mapValueToFormValue(value), {
       onlySelf: true,
     });
-    this._syncDropdownWithRolesList();
+    this._syncDropdownWithRolesList(value);
   }
 
   public validate(control: AbstractControl) {
@@ -170,7 +170,9 @@ export class DealTeamPickerComponent
     };
   }
 
-  private _syncDropdownWithRolesList(): void {
+  private _syncDropdownWithRolesList(
+    roles: DealTeamPickerValue = { members: [], owners: [] },
+  ): void {
     const value = this.teamFormGroup.controls.people.getRawValue();
     const rolesArray = this.teamFormGroup.controls.roles;
     const rolesArrayValue = rolesArray.getRawValue();
@@ -184,19 +186,22 @@ export class DealTeamPickerComponent
     );
 
     removed.forEach((r) => {
-      rolesArray.removeAt(rolesArray.getRawValue().indexOf(r));
+      rolesArray.removeAt(
+        rolesArray.getRawValue().findIndex((el) => r.user.id === el.user.id),
+      );
     });
 
     added.forEach((r) => {
       const hasAdmin = rolesArray.controls.some(
         ({ value }) => value.role === 'Deal Lead',
       );
+      const isLead = roles.owners?.find((owner) => r.userId === owner);
 
       rolesArray.push(
         this.fb.group({
           user: [r],
           role: [
-            hasAdmin
+            hasAdmin && !isLead
               ? 'Team Member'
               : ('Deal Lead' as 'Team Member' | 'Deal Lead'),
           ],
