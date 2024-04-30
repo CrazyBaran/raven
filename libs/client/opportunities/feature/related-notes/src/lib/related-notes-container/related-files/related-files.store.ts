@@ -34,7 +34,7 @@ export const relatedFilesStore = signalStore(
       return files().filter(
         (file) =>
           file.file &&
-          fileTagDictionary()[file.id!].some(
+          fileTagDictionary()[file.id!]?.some(
             (tag) => tag.name === currentTab(),
           ),
       );
