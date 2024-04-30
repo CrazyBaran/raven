@@ -179,14 +179,18 @@ export class NotesEffects {
               content: 'Fields updated successfully.',
             }),
           ]),
-          catchError((error) =>
-            of(
+          catchError((error) => {
+            const errorMessage: string | undefined = error?.error?.message;
+            const errorContent = errorMessage?.startsWith('verbose:')
+              ? errorMessage.split('verbose:')[1]
+              : 'Note update failed.';
+            return of(
               NotesActions.updateNoteFailure({ error, originId: noteId }),
               NotificationsActions.showErrorNotification({
-                content: 'Note update failed.',
+                content: errorContent,
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
     );

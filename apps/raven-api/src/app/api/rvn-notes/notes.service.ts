@@ -755,6 +755,10 @@ export class NotesService {
           opportunity.noteId = savedNewNoteVersion.id;
 
           await tem.save(opportunity);
+        } else {
+          throw new BadRequestException(
+            'verbose:It seems you are viewing an older version of this page. Please copy your changes and refresh the page to work on latest version.',
+          );
         }
         this.logger.debug(
           'update opportunity noteId took: ',
@@ -894,6 +898,46 @@ export class NotesService {
           };
         }),
     };
+  }
+
+  public async restoreWorkflowNoteVersion(
+    noteEntity: NoteEntity,
+    versionIdToRestore: string,
+  ): Promise<void> {
+    const opportunity = await this.opportunityRepository.findOne({
+      where: { noteId: noteEntity.id },
+    });
+    if (!opportunity) {
+      throw new BadRequestException(
+        'Given noteId is not set in any opportunity as workflow note.',
+      );
+    }
+
+    const versionToRestoreEntity = await this.noteRepository.findOne({
+      where: {
+        id: versionIdToRestore,
+        template: {
+          type: TemplateTypeEnum.Workflow,
+        },
+      },
+      relations: ['template'],
+    });
+    if (!versionToRestoreEntity) {
+      throw new BadRequestException(
+        'Cannot find note to restore. Make sure it exists and is of Workflow type.',
+      );
+    }
+
+    if (noteEntity.rootVersionId !== versionToRestoreEntity.rootVersionId) {
+      throw new BadRequestException(
+        'rootVersionId does not match - version belongs to different note.',
+      );
+    }
+
+    await this.opportunityRepository.save({
+      id: opportunity.id,
+      noteId: versionIdToRestore,
+    });
   }
 
   public noteFieldEntityToNoteFieldData(

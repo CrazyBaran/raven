@@ -49,6 +49,7 @@ import {
   TagEntity,
 } from '../rvn-tags/entities/tag.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
+import { RestoreNoteVersionDto } from './dto/restore-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { NoteEntity } from './entities/note.entity';
 import { CompanyOpportunityTag } from './interfaces/company-opportunity-tag.interface';
@@ -214,6 +215,23 @@ export class NotesController {
     @Param('id', ParseUUIDPipe, ParseSimpleNotePipe) noteEntity: NoteEntity,
   ): Promise<NoteAttachmentData[]> {
     return this.notesService.getNoteAttachments(noteEntity);
+  }
+
+  @ApiOperation({ description: 'Restore workflow note version.' })
+  @ApiResponse(GenericCreateResponseSchema())
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
+  @Patch(':id/restore')
+  @ApiParam({ name: 'id', type: String })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async restoreNoteVersion(
+    @Param('id', ParseUUIDPipe, ParseSimpleNotePipe) noteEntity: NoteEntity,
+    @Body() payload: RestoreNoteVersionDto,
+  ): Promise<EmptyResponseData> {
+    await this.notesService.restoreWorkflowNoteVersion(
+      noteEntity,
+      payload.versionId,
+    );
   }
 
   @ApiOperation({ description: 'Update note' })
