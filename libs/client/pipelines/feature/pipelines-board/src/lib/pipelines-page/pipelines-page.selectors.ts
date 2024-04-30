@@ -100,7 +100,7 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
         data: peopleData,
         defaultItem: {
           id: null,
-          name: 'Deal Lead',
+          name: 'Deal Team',
         },
         loading: loadingTags.people,
       }),
