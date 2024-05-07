@@ -87,3 +87,13 @@ export interface NoteAttachmentData {
   readonly fileName: string;
   readonly url: string;
 }
+
+export type NoteFieldDiff = {
+  [key: string]: {
+    firstNote: string;
+    secondNote: string;
+  };
+};
+export interface NoteDiffData {
+  [key: string]: NoteFieldDiff;
+}

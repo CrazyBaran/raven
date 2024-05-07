@@ -6,6 +6,7 @@ import {
 import {
   NoteAttachmentData,
   NoteData,
+  NoteDiffData,
   WorkflowNoteData,
 } from '@app/rvns-notes/data-access';
 import {
@@ -48,6 +49,7 @@ import {
   OrganisationTagEntity,
   TagEntity,
 } from '../rvn-tags/entities/tag.entity';
+import { CompareNotesDto } from './dto/compare-notes.dto';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { RestoreNoteVersionDto } from './dto/restore-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -181,6 +183,22 @@ export class NotesController {
       total,
       items: items.map((note) => this.notesService.noteEntityToNoteData(note)),
     };
+  }
+
+  @ApiOperation({
+    description: 'Compare note versions. Shows only fields that are different.',
+  })
+  @ApiResponse(GenericResponseSchema())
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
+  @Patch('compare')
+  public async compareVersions(
+    @Body() dto: CompareNotesDto,
+  ): Promise<NoteDiffData> {
+    return await this.notesService.compareNoteVersions(
+      dto.firstNote,
+      dto.secondNote,
+    );
   }
 
   @ApiOperation({ description: 'Get single note' })

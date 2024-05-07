@@ -1,6 +1,7 @@
 import {
   NoteAttachmentData,
   NoteData,
+  NoteDiffData,
   NoteFieldData,
   NoteFieldGroupsWithFieldData,
   NoteTabsWithRelatedNotesData,
@@ -774,6 +775,40 @@ export class NotesService {
       }
       return savedNewNoteVersion;
     });
+  }
+
+  public async compareNoteVersions(
+    firstNoteId: string,
+    secondNoteId: string,
+  ): Promise<NoteDiffData> {
+    const firstNote = await this.getNoteForUpdate(firstNoteId);
+    const secondNote = await this.getNoteForUpdate(secondNoteId);
+
+    if (firstNote.rootVersionId !== secondNote.rootVersionId) {
+      throw new BadRequestException(
+        'rootVersionId for notes to compare is different',
+      );
+    }
+    const diffs = {};
+    for (let i = 0; i < firstNote.noteFieldGroups.length; i++) {
+      for (let j = 0; j < firstNote.noteFieldGroups[i].noteFields.length; j++) {
+        if (
+          firstNote.noteFieldGroups[i].noteFields[j].value !==
+          secondNote.noteFieldGroups[i].noteFields[j].value
+        ) {
+          !diffs[firstNote.noteFieldGroups[i].name] &&
+            (diffs[firstNote.noteFieldGroups[i].name] = {});
+          diffs[firstNote.noteFieldGroups[i].name][
+            firstNote.noteFieldGroups[i].noteFields[j].name
+          ] = {
+            firstNote: firstNote.noteFieldGroups[i].noteFields[j].value,
+            secondNote: secondNote.noteFieldGroups[i].noteFields[j].value,
+          };
+        }
+      }
+    }
+
+    return diffs;
   }
 
   public async getNoteForUpdate(id: string): Promise<NoteEntity> {
