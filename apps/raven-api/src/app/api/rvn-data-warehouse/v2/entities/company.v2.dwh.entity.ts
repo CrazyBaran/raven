@@ -9,7 +9,7 @@ export class CompanyV2DwhEntity {
   @Column({ name: 'Name', type: 'nvarchar', length: 'MAX' })
   public name: string;
 
-  @Column({ name: 'Domain', type: 'varchar', length: 300 })
+  @PrimaryColumn({ name: 'Domain', type: 'varchar', length: 300 })
   public domain: string;
 
   @Column({ name: 'Description', type: 'nvarchar', length: 'MAX' })
@@ -76,7 +76,7 @@ export class CompanyV2DwhEntity {
   @Column({ name: 'LastRefreshedUTC', type: 'datetime' })
   public lastRefreshedUtc: Date;
 
-  @PrimaryColumn({ name: 'DealRoomCompanyID', type: 'bigint' })
+  @Column({ name: 'DealRoomCompanyID', type: 'bigint' })
   public dealRoomCompanyId: number;
 }
 
