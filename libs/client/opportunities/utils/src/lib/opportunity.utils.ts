@@ -32,7 +32,7 @@ export class OpportunityUtils {
     if (!stage) {
       return false;
     }
-    return !['outreach', 'met', 'won', 'pass', 'lost'].some((s) =>
+    return !['outreach', 'met', 'portfolio', 'pass', 'lost'].some((s) =>
       stage.displayName.toLowerCase().includes(s),
     );
   }
@@ -48,7 +48,9 @@ export class OpportunityUtils {
     if (!stage) {
       return false;
     }
-    return ['won'].some((s) => stage.displayName.toLowerCase().includes(s));
+    return ['portfolio'].some((s) =>
+      stage.displayName.toLowerCase().includes(s),
+    );
   }
 
   public static isPassStage(stage?: { displayName: string }): boolean {

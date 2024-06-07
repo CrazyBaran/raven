@@ -55,7 +55,7 @@ export const organisationOpportunitiesStore = signalStore(
           map(({ data }) => ({
             data:
               data?.items.filter(({ stage }) =>
-                ['preliminary', 'dd', 'ic', 'pass', 'lost', 'won'].some(
+                ['preliminary', 'dd', 'ic', 'pass', 'lost', 'portfolio'].some(
                   (allowedStage) =>
                     stage.displayName.toLowerCase().includes(allowedStage),
                 ),

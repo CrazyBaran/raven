@@ -18,7 +18,7 @@ export const selectOrganisationOpportunitiesViewModel = createSelector(
     const opportunities =
       currentOrganisation?.opportunities
         ?.filter(({ stage }) =>
-          ['preliminary', 'dd', 'ic', 'pass', 'lost', 'won'].some(
+          ['preliminary', 'dd', 'ic', 'pass', 'lost', 'portfolio'].some(
             (allowedStage) =>
               stage.displayName.toLowerCase().includes(allowedStage),
           ),

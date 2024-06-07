@@ -118,7 +118,7 @@ export const selectIsLoadingOrganisationsTable = createSelector(
 );
 
 export const isOpportunityClosed = (opportunity: OpportunityData): boolean =>
-  ['pass', 'won', 'lost'].some(
+  ['pass', 'portfolio', 'lost'].some(
     (status) => status === opportunity.stage.displayName.toLowerCase(),
   );
 
