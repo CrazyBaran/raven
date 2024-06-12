@@ -14,6 +14,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { ENVIRONMENT, Environment } from '@app/client/core/environment';
+import { SharepointHelperService } from '@app/client/files/feature/data-access';
 import {
   FileEntity,
   FilesActions,
@@ -50,6 +51,7 @@ import {
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
 import { Observable, combineLatest, filter, first, map, startWith } from 'rxjs';
+import { OpenInNewTabDirective } from '../../../../../../shared/ui-directives/src';
 import { PickerContainerComponent } from '../picker-container/picker-container.component';
 
 const opportunityFilesQueryParams = ['tag'] as const;
@@ -184,6 +186,7 @@ export const selectFolderChildrenFactory =
     QuickFiltersTemplateComponent,
     RouterOutlet,
     NgClass,
+    OpenInNewTabDirective,
   ],
   templateUrl: './files-table.component.html',
   styleUrls: ['./files-table.component.scss'],
@@ -195,6 +198,7 @@ export class FilesTableComponent {
   public treeList: TreeListComponent;
 
   public environment = inject(ENVIRONMENT);
+  public sharepointHelper = inject(SharepointHelperService);
 
   public vm = this.store.selectSignal(
     selectFilesTableViewModelFactory(this.environment),
@@ -332,4 +336,10 @@ export class FilesTableComponent {
     }
     return { 'file-row': true };
   };
+
+  public sharepointUrl(): string {
+    return this.sharepointHelper.getSharepointUrl(
+      this.vm()?.opportunity?.sharePointPath,
+    );
+  }
 }

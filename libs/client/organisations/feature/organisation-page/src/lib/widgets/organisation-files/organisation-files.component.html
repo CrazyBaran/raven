@@ -5,11 +5,14 @@
         Company Files
 
         @if (vm().hasFileFolder) {
-          <app-picker-container
+          <kendo-button
+            [openInNewTab]="sharepointUrl()"
+            [themeColor]="'base'"
+            id="launchPicker"
             class="ml-auto"
-            theme="base"
-            [sharepointFolder]="vm().sharepointFolder!"
-          />
+          >
+            Manage files
+          </kendo-button>
         }
       </div>
     </ng-template>

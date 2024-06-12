@@ -10,6 +10,8 @@ import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { PanelBarModule } from '@progress/kendo-angular-layout';
+import { SharepointHelperService } from '../../../../../../../files/data-access/src';
+import { OpenInNewTabDirective } from '../../../../../../../shared/ui-directives/src';
 import { selectOrganisationFilesViewModel } from './organisation-files.selectors';
 
 @Component({
@@ -21,6 +23,7 @@ import { selectOrganisationFilesViewModel } from './organisation-files.selectors
     FilesTreelistContainerComponent,
     ButtonModule,
     LoaderModule,
+    OpenInNewTabDirective,
   ],
   templateUrl: './organisation-files.component.html',
   styleUrls: ['./organisation-files.component.scss'],
@@ -28,6 +31,7 @@ import { selectOrganisationFilesViewModel } from './organisation-files.selectors
 })
 export class OrganisationFilesComponent {
   public store = inject(Store);
+  public sharepointHelper = inject(SharepointHelperService);
 
   protected readonly vm = this.store.selectSignal(
     selectOrganisationFilesViewModel,
@@ -39,5 +43,9 @@ export class OrganisationFilesComponent {
         id: this.vm().currentOrganisationId!,
       }),
     );
+  }
+
+  public sharepointUrl(): string {
+    return this.sharepointHelper.getSharepointUrl(this.vm()?.sharepointFolder);
   }
 }

@@ -4,10 +4,13 @@
       <app-dropdown-navigation [model]="vm().filters" />
 
       @if (vm().canEditFiles) {
-        <app-picker-container
-          [sharepointFolder]="vm().sharepointFolder!"
-          theme="primary"
-        />
+        <kendo-button
+          [openInNewTab]="sharepointUrl()"
+          [themeColor]="'primary'"
+          class="ml-auto mr-2"
+        >
+          Manage files
+        </kendo-button>
       }
     </div>
   </app-quick-filters-template>
