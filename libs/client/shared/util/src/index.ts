@@ -1,3 +1,4 @@
+export * from './lib/active-opportunity.token';
 export * from './lib/calculate-text';
 export * from './lib/click-outside.directive';
 export * from './lib/control-drag-area';

@@ -16,7 +16,7 @@ import {
   ControlHasChangesPipe,
   ControlInvalidPipe,
 } from '@app/client/shared/ui-pipes';
-import { DialogUtil } from '@app/client/shared/util';
+import { ACTIVE_OPPORTUNITY_SOURCE, DialogUtil } from '@app/client/shared/util';
 import { Actions, ofType } from '@ngrx/effects';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule, DialogRef } from '@progress/kendo-angular-dialog';
@@ -51,6 +51,7 @@ export class UpdateReminderDialogComponent extends DynamicDialogContentBase {
 
   protected store = inject(Store);
   protected actions$ = inject(Actions);
+  protected activeOpportunityFn = inject(ACTIVE_OPPORTUNITY_SOURCE);
 
   protected vm = this.store.selectSignal(selectUpdateReminderViewModel);
   protected curentReminder$ = this.store.select(selectUpdatingReminder);

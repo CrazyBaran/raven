@@ -26,6 +26,7 @@ import {
   ControlValueAccessor,
 } from '@app/client/shared/util';
 
+import { ACTIVE_OPPORTUNITY_SOURCE } from '@app/client/shared/util';
 import { TagData } from '@app/rvns-tags';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -44,10 +45,12 @@ import {
   switchMap,
 } from 'rxjs';
 import { TagsButtonGroupComponent } from '../tags-button-group/tags-button-group.component';
+
 export type DropdownTag = {
   id: string;
   name: string;
   companyId?: string;
+  organisationId?: string;
   type:
     | 'company'
     | 'opportunity'
@@ -125,6 +128,7 @@ export class TagDropdownComponent extends ControlValueAccessor<
   public override writeValue(value: TagDropdownValue[]): void {
     this.value.set(value);
   }
+  protected activeOpportunityFn = inject(ACTIVE_OPPORTUNITY_SOURCE);
 
   @Output() public openTagDialog = new EventEmitter<{
     type: string;
@@ -155,6 +159,8 @@ export class TagDropdownComponent extends ControlValueAccessor<
   );
 
   public tagsSignal = signal([] as DropdownTag[]);
+
+  public activeIconColor = '#b6d8a8';
 
   protected filterValue = signal('');
 
@@ -188,58 +194,90 @@ export class TagDropdownComponent extends ControlValueAccessor<
     'type' in dataItem && dataItem.type === 'company_root';
 
   protected children = ((dataItem: DropdownTag): Observable<object[]> =>
-    combineLatest([this.opportunityTags$, this.value$, this.versionTags$]).pipe(
-      map(([allOpportunityTags, value, allVersionTags]) => {
-        const companyId = dataItem.id;
-        const companyTag = {
-          id: companyId,
-          name: dataItem.name,
-          label: '(No linked opportunity)',
-          type: 'company',
-          companyId: dataItem.id,
-        };
+    combineLatest([
+      this.activeOpportunityFn(dataItem.organisationId!),
+      this.opportunityTags$,
+      this.value$,
+      this.versionTags$,
+    ]).pipe(
+      map(
+        ([orgActiveOpportunity, allOpportunityTags, value, allVersionTags]) => {
+          const companyId = dataItem.id;
+          const companyTag = {
+            id: companyId,
+            name: dataItem.name,
+            label: '(No linked opportunity)',
+            type: 'company',
+            companyId: dataItem.id,
+          };
 
-        const opportunityTags = allOpportunityTags
-          .filter(
-            ({ id }) =>
-              !value.some(
-                (v) =>
-                  isOpportunityComplexTag(v) &&
-                  v.organisationId === companyId &&
-                  v.opportunityTagId === id,
+          const opportunityTags = allOpportunityTags
+            .filter(
+              ({ id }) =>
+                !value.some(
+                  (v) =>
+                    isOpportunityComplexTag(v) &&
+                    v.organisationId === companyId &&
+                    v.opportunityTagId === id,
+                ),
+            )
+            .map((t) => ({
+              ...t,
+              companyId: companyId,
+            }));
+
+          const versionTags = allVersionTags
+            .filter(
+              (versionTag) =>
+                !value.some(
+                  (v) =>
+                    isVersionComplexTag(v) && v.versionTagId === versionTag.id,
+                ) &&
+                ('organisationId' in versionTag &&
+                  versionTag.organisationId) ===
+                  ('organisationId' in dataItem && dataItem['organisationId']),
+            )
+            .map((t) => ({
+              ...t,
+              companyId: companyId,
+            }));
+
+          const orderedTags = _.orderBy(
+            [...opportunityTags, ...versionTags],
+            (x) => x.name,
+          );
+
+          let index = 0;
+          let activeOppIndex = -1;
+          let opportunitiesList = [...orderedTags].map((o) => {
+            let isActive = false;
+            if (o.id === orgActiveOpportunity?.tag?.id) {
+              activeOppIndex = index;
+              isActive = true;
+            }
+            index++;
+
+            return {
+              ...o,
+              active: isActive,
+            };
+          });
+          if (activeOppIndex > -1) {
+            opportunitiesList = [
+              opportunitiesList[activeOppIndex],
+              ...opportunitiesList.filter(
+                (item) => item.id !== orgActiveOpportunity?.tag?.id,
               ),
+            ];
+          }
+
+          return this.value().some(
+            (t) => typeof t === 'string' && t === companyId,
           )
-          .map((t) => ({
-            ...t,
-            companyId: companyId,
-          }));
-
-        const versionTags = allVersionTags
-          .filter(
-            (versionTag) =>
-              !value.some(
-                (v) =>
-                  isVersionComplexTag(v) && v.versionTagId === versionTag.id,
-              ) &&
-              ('organisationId' in versionTag && versionTag.organisationId) ===
-                ('organisationId' in dataItem && dataItem['organisationId']),
-          )
-          .map((t) => ({
-            ...t,
-            companyId: companyId,
-          }));
-
-        const orderedTags = _.orderBy(
-          [...opportunityTags, ...versionTags],
-          (x) => x.name,
-        );
-
-        return this.value().some(
-          (t) => typeof t === 'string' && t === companyId,
-        )
-          ? orderedTags
-          : [companyTag, ...orderedTags];
-      }),
+            ? opportunitiesList
+            : [companyTag, ...opportunitiesList];
+        },
+      ),
       distinctUntilChanged(isEqual),
     )) as (node: object) => Observable<object[]>;
 

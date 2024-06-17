@@ -42,7 +42,18 @@
       (click)="itemClicked(dataItem); $event.stopPropagation()"
       class="align-center flex w-full px-2 py-1"
     >
-      <span class="truncate">{{ dataItem.label || dataItem.name }}</span>
+      <span class="truncate">
+        @if (dataItem.active) {
+          <i
+            [style.color]="activeIconColor"
+            class="fa-solid fa-circle text-xs"
+          ></i>
+        }
+        {{ dataItem.label || dataItem.name }}
+        @if (dataItem.active) {
+          <span class="font-bold">- active</span>
+        }
+      </span>
     </div>
   </ng-template>
 </kendo-dropdowntree>

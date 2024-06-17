@@ -39,7 +39,16 @@
 
       <ng-template kendoDropDownTreeNodeTemplate let-dataItem>
         @if (dataItem?.opportunity) {
+          @if (dataItem.opportunity.active) {
+            <i
+              [style.color]="activeIconColor"
+              class="fa-solid fa-circle text-xs"
+            ></i>
+          }
           {{ dataItem?.opportunity?.name }}
+          @if (dataItem.opportunity.active) {
+            <span class="font-bold">- active</span>
+          }
         } @else {
           <div (click)="$event.preventDefault()" class="pointer-events-none">
             {{ dataItem?.company?.name }}

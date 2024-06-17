@@ -28,12 +28,13 @@ import {
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import * as _ from 'lodash';
-import { Observable, of, take } from 'rxjs';
+import { Observable, of, switchMap, take } from 'rxjs';
 
 export type CompanyOpportunityTreeItem = {
   company: {
     id: string;
     name: string;
+    organisationId?: string;
   };
   opportunity?: {
     id: string;
@@ -79,12 +80,20 @@ export const MAX_SHORTLIST_DESCRIPTION_LENGTH = 1000;
 export class ReminderFormComponent {
   public maxTitleLength = MAX_SHORTLIST_NAME_LENGTH;
   public maxDescriptionLength = MAX_SHORTLIST_DESCRIPTION_LENGTH;
+  public activeIconColor = '#b6d8a8';
 
   public injector = inject(Injector);
 
   public form = input.required<ReminderForm>();
   public loggedUserTag = input.required<{ id: string; name: string }>();
-  public opportunities = input.required<{ id: string; name: string }[]>();
+  public opportunities =
+    input.required<{ id: string; name: string; active?: boolean }[]>();
+  public parentDetailsFn =
+    input<
+      (
+        organisationId: string,
+      ) => Observable<{ id: string; tag: { id: string } }>
+    >();
   public usersSource =
     input.required<
       (text: string) => Observable<{ name: string; id: string }[]>
@@ -94,7 +103,9 @@ export class ReminderFormComponent {
 
   public staticCompany = input<{ id: string; name: string }>();
   public versionTags =
-    input.required<{ id: string; name: string; organisationId: string }[]>();
+    input.required<
+      { id: string; name: string; organisationId: string; active?: boolean }[]
+    >();
 
   public tagSource = computed(() => {
     return this.staticCompany()
@@ -114,21 +125,44 @@ export class ReminderFormComponent {
 
   public fetchChildrenFn: (node: object) => Observable<object[]> = (node) => {
     const treeNode = node as CompanyOpportunityTreeItem;
+
     const versionTags = this.versionTags().filter(
       ({ organisationId }) =>
         organisationId ===
         ('organisationId' in treeNode.company &&
           treeNode.company.organisationId),
     );
-    return of(
-      [...this.opportunities(), ...versionTags].map((o) => {
-        return {
-          opportunity: o,
-          company: treeNode.company,
-          id: `${treeNode.company.id}-${o.id}`,
-        };
+
+    return this.parentDetailsFn()!(treeNode.company!.organisationId!).pipe(
+      take(1),
+      switchMap((orgActiveOpportunity) => {
+        let index = 0;
+        let activeOppIndex = -1;
+        let oppList = [...this.opportunities(), ...versionTags].map((o) => {
+          let isActive = false;
+          if (o.id === orgActiveOpportunity?.tag?.id) {
+            activeOppIndex = index;
+            isActive = true;
+          }
+          index++;
+
+          return {
+            opportunity: { ...o, active: isActive },
+            company: treeNode.company,
+            id: `${treeNode.company.id}-${o.id}`,
+          };
+        });
+        if (activeOppIndex > -1) {
+          oppList = [
+            oppList[activeOppIndex],
+            ...oppList.filter(
+              (item) => item.opportunity.id !== orgActiveOpportunity?.tag?.id,
+            ),
+          ];
+        }
+        return of(oppList);
       }),
-    ).pipe(take(1));
+    );
   };
 
   public onAssignToMe(): void {

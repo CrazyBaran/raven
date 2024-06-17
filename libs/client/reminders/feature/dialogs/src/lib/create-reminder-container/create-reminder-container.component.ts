@@ -1,4 +1,5 @@
 /* eslint-disable @nx/enforce-module-boundaries */
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,9 +8,6 @@ import {
   input,
   OnInit,
 } from '@angular/core';
-import { Store } from '@ngrx/store';
-
-import { AsyncPipe, JsonPipe } from '@angular/common';
 import { opportunitiesQuery } from '@app/client/opportunities/data-access';
 import {
   CompanyOpportunityTreeItem,
@@ -25,6 +23,7 @@ import {
   ControlInvalidPipe,
   ControlStatePipe,
 } from '@app/client/shared/ui-pipes';
+import { ACTIVE_OPPORTUNITY_SOURCE } from '@app/client/shared/util';
 import { TagsService } from '@app/client/tags/data-access';
 import { TagsActions, tagsQuery } from '@app/client/tags/state';
 import { tapResponse } from '@ngrx/component-store';
@@ -37,6 +36,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
@@ -187,6 +187,7 @@ export class CreateReminderContainerComponent implements OnInit {
 
   protected companySourceFn = inject(REMINDER_COMPANY_SOURCE);
   protected usersSourceFn = inject(REMINDER_USERS_SOURCE);
+  protected activeOpportunityFn = inject(ACTIVE_OPPORTUNITY_SOURCE);
 
   public ngOnInit(): void {
     this.createReminderStore.setForm(this.form);
