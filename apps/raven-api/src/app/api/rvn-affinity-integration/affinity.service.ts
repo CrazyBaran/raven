@@ -210,7 +210,6 @@ export class AffinityService {
           endDate.toISOString(),
           1,
         );
-
         const meetingDate =
           (meetingResponse as PaginatedAffinityEventInteractionsDto).events
             .length > 0
@@ -261,55 +260,37 @@ export class AffinityService {
       organisationIds = organisations.map((org) => org.organizationDto.id);
     }
 
-    const interactions: Partial<InteractionsDto> = {
-      items: [],
-    };
-
     let dynamicStartTime = options.startDate;
     let dynamicEndTime = options.endDate;
     let lookForNextInteraction = true;
+    let loadFuture = false;
     if (!options.startDate) {
+      loadFuture = true;
       dynamicStartTime = await this.getLatestInteraction({ ...options });
       if (!dynamicStartTime) {
         dynamicStartTime = new Date();
         lookForNextInteraction = false;
       }
-      dynamicEndTime = new Date();
-      dynamicEndTime.setDate(dynamicEndTime.getDate() + 15);
-      dynamicStartTime.setDate(new Date().getDate() - 90);
+      dynamicEndTime = new Date(dynamicStartTime);
+      dynamicStartTime.setDate(dynamicStartTime.getDate() - 30 * 3);
     }
 
-    for (const organisationId of organisationIds) {
-      let response: PaginatedAffinityInteractionDto = undefined;
-      do {
-        response = await this.affinityApiService.getInteractions(
-          organisationId,
-          AffinityInteractionType.Email,
-          dynamicStartTime.toISOString(),
-          dynamicEndTime.toISOString(),
-          100,
-        );
-        interactions.items.push(
-          ...this.interactionMapper.mapEmails(
-            (response as PaginatedAffinityEmailInteractionsDto).emails,
-          ),
-        );
-      } while (response.next_page_token);
-      do {
-        response = await this.affinityApiService.getInteractions(
-          organisationId,
-          AffinityInteractionType.Meeting,
-          dynamicStartTime.toISOString(),
-          dynamicEndTime.toISOString(),
-          500,
-        );
-        interactions.items.push(
-          ...this.interactionMapper.mapMeetings(
-            (response as PaginatedAffinityEventInteractionsDto).events,
-          ),
-        );
-      } while (response.next_page_token);
+    const interactions: Partial<InteractionsDto> = await this.fetchInteractions(
+      organisationIds,
+      dynamicStartTime,
+      dynamicEndTime,
+    );
+    let futureInteractions: Partial<InteractionsDto> = { items: [] };
+    if (loadFuture) {
+      const futureEndDate = new Date();
+      futureEndDate.setDate(futureEndDate.getDate() + 15);
+      futureInteractions = await this.fetchInteractions(
+        organisationIds,
+        new Date(),
+        futureEndDate,
+      );
     }
+    interactions.items.push(...futureInteractions.items);
 
     interactions.items.sort((a, b) => {
       return b.date.getTime() - a.date.getTime();
@@ -322,6 +303,54 @@ export class AffinityService {
         })
       : null;
     interactions.nextInteraction = nextInteractionDate;
+
+    return interactions;
+  }
+
+  protected async fetchInteractions(
+    organisationIds: number[],
+    dynamicStartTime: Date,
+    dynamicEndTime: Date,
+  ): Promise<Partial<InteractionsDto>> {
+    const interactions = { items: [] };
+    for (const organisationId of organisationIds) {
+      let response: PaginatedAffinityInteractionDto = undefined;
+      let nextPageToken = null;
+      do {
+        response = await this.affinityApiService.getInteractions(
+          organisationId,
+          AffinityInteractionType.Email,
+          dynamicStartTime.toISOString(),
+          dynamicEndTime.toISOString(),
+          100,
+          nextPageToken,
+        );
+        nextPageToken = response?.next_page_token;
+        interactions.items.push(
+          ...this.interactionMapper.mapEmails(
+            (response as PaginatedAffinityEmailInteractionsDto).emails,
+          ),
+        );
+      } while (response.next_page_token);
+      nextPageToken = null;
+      do {
+        response = await this.affinityApiService.getInteractions(
+          organisationId,
+          AffinityInteractionType.Meeting,
+          dynamicStartTime.toISOString(),
+          dynamicEndTime.toISOString(),
+          100,
+          nextPageToken,
+        );
+        nextPageToken = response?.next_page_token;
+
+        interactions.items.push(
+          ...this.interactionMapper.mapMeetings(
+            (response as PaginatedAffinityEventInteractionsDto).events,
+          ),
+        );
+      } while (response.next_page_token);
+    }
 
     return interactions;
   }
@@ -392,17 +421,8 @@ export class AffinityService {
     return allEntries;
   }
 
-  private getMonthsIntervalForIteration(iteration: number): number {
-    let monthsInterval = 18;
-    if (iteration === 1) {
-      monthsInterval = 24;
-    }
-    if (iteration === 2) {
-      monthsInterval = 28;
-    }
-    if (iteration > 2) {
-      monthsInterval = 36;
-    }
+  private getMonthsIntervalForIteration(_iteration: number): number {
+    const monthsInterval = 11;
 
     return monthsInterval;
   }

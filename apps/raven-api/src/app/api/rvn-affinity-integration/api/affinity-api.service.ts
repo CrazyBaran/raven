@@ -274,13 +274,14 @@ export class AffinityApiService {
     page_size?: number,
     page_token?: string,
   ): Promise<PaginatedAffinityInteractionDto> {
-    const params = `organization_id=${organizationId}&type=${type}&start_time=${start_time}&end_time=${end_time}`;
+    let params = `organization_id=${organizationId}&type=${type}&start_time=${start_time}&end_time=${end_time}`;
     if (page_size) {
-      params.concat(`&page_size=${page_size}`);
+      params = params.concat(`&page_size=${page_size}`);
     }
     if (page_token) {
-      params.concat(`&page_token=${page_token}`);
+      params = params.concat(`&page_token=${page_token}`);
     }
+
     return await this.httpService
       .get<PaginatedAffinityInteractionDto>(`/interactions?${params}`, {
         baseURL: this.baseURL,
