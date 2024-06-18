@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  OnInit,
+} from '@angular/core';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import {
   AuthenticationResult,
@@ -18,8 +23,19 @@ export class AppComponent implements OnInit {
     private authService: MsalService,
     private msalBroadcastService: MsalBroadcastService,
   ) {}
+
   public get isDarkMode(): boolean {
     return localStorage.getItem('isDarkMode') === 'true';
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  public beforeUnload($event: BeforeUnloadEvent): void {
+    $event?.preventDefault();
+
+    // Deprecated, but included for legacy support, e.g. Chrome/Edge < 119
+    if ($event) {
+      $event.returnValue = true;
+    }
   }
 
   public ngOnInit(): void {
