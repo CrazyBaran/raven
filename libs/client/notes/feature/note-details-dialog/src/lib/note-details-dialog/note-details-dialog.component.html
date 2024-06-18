@@ -17,7 +17,19 @@
         [formControl]="notepadForm"
         class="block min-h-0 grow basis-0"
       />
-      <div class="flex gap-3">
+      <div class="ml-auto flex gap-3">
+        <div class="flex items-center justify-center gap-3 text-xs">
+          <span>
+            Created:{{ noteDetails().createdAt | date: 'dd/MM/yyyy hh:mm a' }}
+          </span>
+          <span>
+            Updated:{{
+              noteDetails().updatedAt
+                ? (noteDetails().updatedAt | date: 'dd/MM/yyyy hh:mm a')
+                : '-'
+            }}
+          </span>
+        </div>
         <kendo-button
           (click)="closeEdit()"
           class="ml-auto"
@@ -27,6 +39,17 @@
           themeColor="primary"
         >
           Cancel
+        </kendo-button>
+        <kendo-button
+          (click)="updateNote(true)"
+          [disabled]="
+            isUpdating() ||
+            (notepadFormComponent?.notepadForm | controlInvalid$ | push)
+          "
+          size="large"
+          themeColor="primary"
+        >
+          Save
         </kendo-button>
         <kendo-button
           (click)="updateNote()"

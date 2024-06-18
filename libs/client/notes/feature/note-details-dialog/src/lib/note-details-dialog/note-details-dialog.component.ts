@@ -46,6 +46,7 @@ import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { xIcon } from '@progress/kendo-svg-icons';
 import { RxPush } from '@rx-angular/template/push';
 import { filter, take } from 'rxjs';
+import { selectQueryParam } from '../../../../../../shared/util-router/src';
 import {
   selectNoteDetailsDialogViewModel,
   selectNoteDetailsForm,
@@ -135,6 +136,7 @@ export class NoteDetailsDialogComponent
       relativeTo: this.activatedRoute,
       queryParams: {
         'note-details': null,
+        'note-edit': null,
       },
       queryParamsHandling: 'merge',
     });
@@ -153,11 +155,17 @@ export class NoteDetailsDialogComponent
       .subscribe((form) => {
         this.notepadForm.setValue(form);
       });
+
+    this.store
+      .select(selectQueryParam('note-edit'))
+      .pipe(distinctUntilChangedDeep())
+      .subscribe((enterEditMode) => {
+        this.editMode = this.vm()?.canEditNote && !!enterEditMode;
+      });
   }
 
-  public updateNote(): void {
+  public updateNote(stayInEditMode = false): void {
     const payload = this.getPayload();
-
     this.store.dispatch(
       NotesActions.updateNote({
         noteId: this.noteDetails()!.id!,
@@ -173,7 +181,19 @@ export class NoteDetailsDialogComponent
       )
       .subscribe((action) => {
         this.editMode = false;
-        this.closeWindow();
+        if (!stayInEditMode) {
+          this.closeWindow();
+        } else {
+          this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: {
+              'note-details': action.data.id,
+              'note-edit': true,
+            },
+            queryParamsHandling: 'merge',
+          });
+          this.windowRef.close();
+        }
       });
   }
 

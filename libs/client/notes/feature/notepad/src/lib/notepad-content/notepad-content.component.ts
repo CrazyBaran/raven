@@ -24,6 +24,7 @@ import {
   WindowRef,
 } from '@progress/kendo-angular-dialog';
 
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotesActions } from '@app/client/notes/state';
 import {
   NotepadForm,
@@ -77,7 +78,9 @@ export class NotepadContentComponent implements OnInit {
   //TODO: MOVE TO COMPONENT STORE
   protected defaultTemplate = this.templateFacade.defaultTemplate;
   protected isCreatePending = this.noteFacade.isCreatingNote;
+  protected router = inject(Router);
 
+  protected activatedRoute = inject(ActivatedRoute);
   protected fb = inject(FormBuilder);
   protected notepadForm = new FormControl<NotepadForm>({
     template: null,
@@ -118,7 +121,7 @@ export class NotepadContentComponent implements OnInit {
     );
   }
 
-  public submit(): void {
+  public submit(closeNotepad = true): void {
     const imageDictionary =
       this.imagePathDictionaryService.getImageDictionary();
     const fields = Object.entries(this.notepadForm.value?.notes ?? {})
@@ -164,7 +167,19 @@ export class NotepadContentComponent implements OnInit {
         filter(({ data }) => data.name === payload.name),
         take(1),
       )
-      .subscribe(() => this.windowRef?.close());
+      .subscribe((data) => {
+        if (!closeNotepad) {
+          this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: {
+              'note-details': data.data.id,
+              'note-edit': true,
+            },
+            queryParamsHandling: 'merge',
+          });
+        }
+        this.windowRef?.close();
+      });
   }
 
   public close(): void {

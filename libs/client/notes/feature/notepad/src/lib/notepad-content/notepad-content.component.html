@@ -9,6 +9,24 @@
       Cancel
     </button>
     <button
+      (click)="submit(false)"
+      [disabled]="
+        (notepadFormComponent?.notepadForm | controlInvalid$ | push) ||
+        isCreatePending()
+      "
+      [iconClass]="isCreatePending() ? '' : 'fa-solid fa-plus'"
+      kendoButton
+      size="large"
+      themeColor="primary"
+    >
+      <kendo-loader
+        *ngIf="isCreatePending()"
+        class="!text-secondary-100 mr-1"
+        size="small"
+      ></kendo-loader>
+      Save
+    </button>
+    <button
       (click)="submit()"
       [disabled]="
         (notepadFormComponent?.notepadForm | controlInvalid$ | push) ||
