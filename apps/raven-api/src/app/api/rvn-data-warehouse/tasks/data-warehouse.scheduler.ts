@@ -15,7 +15,7 @@ export class DataWarehouseScheduler {
     this.logger.setContext(DataWarehouseScheduler.name);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_2AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_5AM, {
     name: 'dataWarehouseRegeneration',
     disabled: !environment.features.dataWareHouse,
   })
