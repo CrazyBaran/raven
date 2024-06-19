@@ -120,6 +120,8 @@ export class NoteDetailsDialogComponent
 
   protected windowRef = inject(WindowRef);
 
+  protected tryGoInEditMode = false;
+
   public constructor(
     private store: Store,
     private readonly noteStoreFacade: NoteStoreFacade,
@@ -154,13 +156,15 @@ export class NoteDetailsDialogComponent
       )
       .subscribe((form) => {
         this.notepadForm.setValue(form);
+        if (this.tryGoInEditMode) {
+          this.editMode = this.vm()?.canEditNote;
+        }
       });
 
     this.store
       .select(selectQueryParam('note-edit'))
-      .pipe(distinctUntilChangedDeep())
       .subscribe((enterEditMode) => {
-        this.editMode = this.vm()?.canEditNote && !!enterEditMode;
+        this.tryGoInEditMode = !!enterEditMode;
       });
   }
 
@@ -226,6 +230,13 @@ export class NoteDetailsDialogComponent
     } else {
       this.editMode = false;
     }
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        'note-edit': null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   public onClose($event: Event): void {
