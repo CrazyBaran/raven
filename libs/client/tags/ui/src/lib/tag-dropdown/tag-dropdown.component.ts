@@ -204,13 +204,6 @@ export class TagDropdownComponent extends ControlValueAccessor<
       map(
         ([orgActiveOpportunity, allOpportunityTags, value, allVersionTags]) => {
           const companyId = dataItem.id;
-          const companyTag = {
-            id: companyId,
-            name: dataItem.name,
-            label: '(No linked opportunity)',
-            type: 'company',
-            companyId: dataItem.id,
-          };
 
           const opportunityTags = allOpportunityTags
             .filter(
@@ -272,11 +265,7 @@ export class TagDropdownComponent extends ControlValueAccessor<
             ];
           }
 
-          return this.value().some(
-            (t) => typeof t === 'string' && t === companyId,
-          )
-            ? opportunitiesList
-            : [companyTag, ...opportunitiesList];
+          return opportunitiesList;
         },
       ),
       distinctUntilChanged(isEqual),
