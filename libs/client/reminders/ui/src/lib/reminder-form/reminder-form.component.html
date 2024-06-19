@@ -29,6 +29,9 @@
       <ng-template kendoDropDownTreeValueTemplate let-dataItem>
         @if (dataItem) {
           {{ dataItem?.company?.name }}
+          @if (dataItem.company?.domain) {
+            ({{ dataItem?.company?.domain }})
+          }
           @if (dataItem?.opportunity) {
             / {{ dataItem?.opportunity?.name }}
           }
@@ -51,7 +54,7 @@
           }
         } @else {
           <div (click)="$event.preventDefault()" class="pointer-events-none">
-            {{ dataItem?.company?.name }}
+            {{ dataItem?.company?.name }} ({{ dataItem?.company?.domain }})
           </div>
         }
       </ng-template>

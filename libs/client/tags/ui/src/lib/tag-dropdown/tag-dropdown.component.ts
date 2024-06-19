@@ -59,6 +59,7 @@ export type DropdownTag = {
     | 'business-model'
     | 'version'
     | 'company_root';
+  domain?: string;
 };
 
 export type OpportunityComplexTag = {
@@ -287,6 +288,7 @@ export class TagDropdownComponent extends ControlValueAccessor<
     if (type === 'company') {
       return (this.companyTags() ?? []).map((item) => ({
         ...item,
+        name: `${item?.name} (${item?.domain})`,
         type: 'company_root',
       }));
     }

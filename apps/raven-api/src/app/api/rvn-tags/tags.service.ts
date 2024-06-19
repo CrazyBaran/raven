@@ -1,7 +1,7 @@
 import { TagData, TagTypeEnum } from '@app/rvns-tags';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
@@ -36,18 +36,36 @@ export class TagsService {
     skip?: number,
     take?: number,
   ): Promise<TagEntity[]> {
-    const where = type ? { type } : {};
+    const qb = this.tagsRepository.createQueryBuilder('tag');
+
+    if (type && type === TagTypeEnum.Company) {
+      qb.leftJoinAndSelect(
+        'tag.organisation',
+        'organisation',
+      ).leftJoinAndSelect('organisation.organisationDomains', 'domains');
+    }
+
     if (query) {
-      where['name'] = ILike(`%${query}%`);
+      qb.andWhere('LOWER(tag.name) LIKE :name', {
+        name: `%${query.toLowerCase()}%`,
+      });
     }
     if (organisationId) {
-      where['organisationId'] = organisationId;
+      qb.andWhere('tag.organisationId = :organisationId', {
+        organisationId: organisationId,
+      });
     }
-    return await this.tagsRepository.find({
-      where,
-      skip: skip || 0,
-      take: take || 0,
-    });
+
+    if (type) {
+      qb.andWhere('tag.type = :tagType', { tagType: type });
+    }
+
+    qb.skip(skip || 0);
+    qb.take(take || 500);
+
+    const tags = await qb.getMany();
+
+    return tags;
   }
 
   public async createTag(options: CreateTagOptions): Promise<TagEntity> {
@@ -78,6 +96,9 @@ export class TagsService {
       userId: (tag as PeopleTagEntity)?.userId,
       organisationId: (tag as OrganisationTagEntity)?.organisationId,
       tabId: (tag as TabTagEntity)?.tabId,
+      domain: (tag as OrganisationTagEntity)?.organisation?.domains
+        ?.toString()
+        ?.toLowerCase(),
     };
   }
 }

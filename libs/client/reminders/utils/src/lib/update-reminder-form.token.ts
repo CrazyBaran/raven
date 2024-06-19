@@ -37,6 +37,7 @@ export const UPDATE_REMINDER_FORM_FN = new InjectionToken(
                   company: {
                     id: ReminderUtils.getReminderCompanyTag(value)?.id,
                     name: ReminderUtils.getReminderCompanyTag(value)?.name,
+                    domain: ReminderUtils.getReminderCompanyTag(value)?.domain,
                   },
                   opportunity: ReminderUtils.getReminderOpportunityTag(value)
                     ?.id

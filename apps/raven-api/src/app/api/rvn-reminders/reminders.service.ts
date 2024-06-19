@@ -165,6 +165,11 @@ export class RemindersService {
     queryBuilder
       .leftJoin('tag.tags', 'tags')
       .addSelect(['tags.id', 'tags.name', 'tags.type', 'tags.organisationId']);
+
+    queryBuilder
+      .leftJoinAndSelect('tags.organisation', 'organisation')
+      .leftJoinAndSelect('organisation.organisationDomains', 'domains');
+
     queryBuilder
       .leftJoin('reminders.assignedBy', 'assignedBy')
       .addSelect(['assignedBy.id', 'assignedBy.name']);

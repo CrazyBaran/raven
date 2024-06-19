@@ -51,7 +51,7 @@ export class ReminderUtils {
 
   public static getReminderCompanyTag(
     reminder: ReminderEntity | undefined,
-  ): { name: string; id: string } | undefined {
+  ): { name: string; id: string; domain?: string } | undefined {
     if (!reminder) {
       return undefined;
     }

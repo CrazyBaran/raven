@@ -11,6 +11,8 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, plainToInstance } from 'class-transformer';
 import { PagedData } from 'rvns-shared';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
+import { OrganisationTagEntity } from '../rvn-tags/entities/tag.entity';
 import { ReminderEntity } from './entities/reminder.entity';
 
 class ReminderAssigneeRO implements ReminderAssignee {
@@ -49,6 +51,13 @@ class ReminderTagRO implements ReminderTag {
 
   @ApiProperty()
   public organisationId: string;
+
+  @ApiProperty()
+  public domain?: string;
+
+  @Exclude()
+  @ApiProperty()
+  public organisation: OrganisationEntity;
 
   @Exclude()
   @ApiProperty()
@@ -139,9 +148,12 @@ export class ReminderRO implements ReminderData {
       tag: entity.tag
         ? plainToInstance(ReminderComplexTagRO, {
             ...entity.tag,
-            tags: entity.tag.tags?.map((tag) =>
-              plainToInstance(ReminderTagRO, tag),
-            ),
+            tags: entity.tag.tags?.map((tag) => ({
+              ...plainToInstance(ReminderTagRO, tag),
+              domain: (tag as OrganisationTagEntity)?.organisation?.domains
+                ?.toString()
+                ?.toLowerCase(),
+            })),
           })
         : null,
       status: ReminderRO.mapReminderStatus(entity),

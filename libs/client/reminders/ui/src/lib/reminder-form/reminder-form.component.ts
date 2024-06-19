@@ -41,6 +41,7 @@ export type CompanyOpportunityTreeItem = {
     name: string;
   };
   id: string;
+  domain?: string;
 };
 
 export type ReminderForm = FormGroup<{
