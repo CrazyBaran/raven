@@ -2,6 +2,7 @@ import { OrganisationDataWithOpportunities } from '@app/rvns-opportunities';
 import { CompanyDto } from '@app/shared/data-warehouse';
 import { Injectable } from '@nestjs/common';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
+import { ExecutionTimeHelper } from '../../rvn-utils/execution-time-helper';
 import { DataWarehouseService } from '../data-warehouse.service';
 
 @Injectable()
@@ -16,11 +17,23 @@ export class DataWarehouseEnricher {
   ): Promise<OrganisationDataWithOpportunities[]> {
     const combinedData: OrganisationDataWithOpportunities[] = [];
 
+    ExecutionTimeHelper.startTime(
+      'organisationSerice.dwhEnrich',
+      'getCompaniesByDomains',
+    );
     const dataWarehouseData =
       await this.dataWarehouseService.getCompaniesByDomains(
         organisations.flatMap((organisation) => organisation.domains),
       );
+    ExecutionTimeHelper.endTime(
+      'organisationSerice.dwhEnrich',
+      'getCompaniesByDomains',
+    );
 
+    ExecutionTimeHelper.startTime(
+      'organisationSerice.dwhEnrich',
+      'enrichmentLoop',
+    );
     for (const organisation of organisations) {
       if (!organisation.domains[0]) {
         continue;
@@ -31,6 +44,10 @@ export class DataWarehouseEnricher {
 
       combinedData.push(result);
     }
+    ExecutionTimeHelper.endTime(
+      'organisationSerice.dwhEnrich',
+      'enrichmentLoop',
+    );
 
     return combinedData;
   }

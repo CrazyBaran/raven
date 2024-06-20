@@ -33,6 +33,7 @@ import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
+import { ExecutionTimeHelper } from '../rvn-utils/execution-time-helper';
 import { OpportunityEntity } from './entities/opportunity.entity';
 import { OrganisationDomainEntity } from './entities/organisation-domain.entity';
 import { OrganisationEntity } from './entities/organisation.entity';
@@ -95,11 +96,13 @@ export class OrganisationService {
       throw new BadRequestException('options.take cannot be 0.');
     }
 
+    ExecutionTimeHelper.startTime('organisationProvider.getOrganisations');
     const { organisationIds, count } =
       await this.organisationProvider.getOrganisations(
         options,
         options?.filters,
       );
+    ExecutionTimeHelper.endTime('organisationProvider.getOrganisations');
 
     const queryBuilder =
       this.organisationRepository.createQueryBuilder('organisations');
@@ -131,20 +134,30 @@ export class OrganisationService {
       organisationIds,
     });
 
+    ExecutionTimeHelper.startTime('organisationService.mainQuery');
     const organisations = await queryBuilder.getMany();
+    ExecutionTimeHelper.endTime('organisationService.mainQuery');
 
+    ExecutionTimeHelper.startTime('organisationSerice.getTeams');
     const teamsForOpportunities =
       await this.opportunityTeamService.getOpportunitiesTeams(
         (organisations as unknown as OrganisationDataWithOpportunities[])
           .map((org) => org.opportunities)
           .flat() as unknown as OpportunityEntity[],
       );
+    ExecutionTimeHelper.endTime('organisationSerice.getTeams');
+
+    ExecutionTimeHelper.startTime('organisationSerice.affinityEnrich');
 
     const affinityEnrichedData =
       await this.affinityEnricher.enrichOrganisations(
         organisations,
         async (entity, data) => {
           this.sortOpportunities(data);
+          ExecutionTimeHelper.startTime(
+            'organisationSerice.affinityEnrich',
+            'stage-assign',
+          );
 
           for (const opportunity of data.opportunities) {
             const pipelineStage =
@@ -162,6 +175,10 @@ export class OrganisationService {
 
             opportunity.team = teamsForOpportunities[opportunity.id];
           }
+          ExecutionTimeHelper.endTime(
+            'organisationSerice.affinityEnrich',
+            'stage-assign',
+          );
 
           data.companyStatus = this.evaluateCompanyStatus(entity, data);
           data.shortlists = entity.shortlists
@@ -171,13 +188,16 @@ export class OrganisationService {
           return data;
         },
       );
+    ExecutionTimeHelper.endTime('organisationSerice.affinityEnrich');
 
+    ExecutionTimeHelper.startTime('organisationSerice.dwhEnrich');
     const enrichedData = this.dataWarehouseEnricher
       ? await this.dataWarehouseEnricher?.enrichOrganisations(
           affinityEnrichedData,
         )
       : affinityEnrichedData;
-
+    ExecutionTimeHelper.endTime('organisationSerice.dwhEnrich');
+    ExecutionTimeHelper.printFullLog();
     return {
       items: enrichedData.sort((a, b) => {
         const lowestIndexA = organisationIds.indexOf(a.id);

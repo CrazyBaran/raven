@@ -12,6 +12,7 @@ import { JobPro } from '@taskforcesh/bullmq-pro';
 import { PagedData } from 'rvns-shared';
 import { Repository } from 'typeorm';
 import { RavenLogger } from '../rvn-logger/raven.logger';
+import { ExecutionTimeHelper } from '../rvn-utils/execution-time-helper';
 import { DataWarehouseCacheService } from './cache/data-warehouse-cache.service';
 import { DataWarehouseAccessBase } from './interfaces/data-warehouse.access.base';
 import { DataWarehouseCompaniesIndustryV1Entity } from './proxy/entities/data-warehouse-company-industries.v1.entity';
@@ -102,8 +103,17 @@ export class DataWarehouseService {
   public async getCompaniesByDomains(
     domains: string[],
   ): Promise<Partial<CompanyDto>[]> {
+    ExecutionTimeHelper.startTime(
+      'organisationSerice.dwhEnrich',
+      'get-from-cache',
+    );
+
     const companies =
       await this.dataWarehouseCacheService.getCompanies(domains);
+    ExecutionTimeHelper.endTime(
+      'organisationSerice.dwhEnrich',
+      'get-from-cache',
+    );
 
     const missingDomains = domains.filter(
       (domain) => !companies.some((company) => company.domain === domain),
@@ -113,13 +123,29 @@ export class DataWarehouseService {
       return companies;
     }
 
+    ExecutionTimeHelper.startTime(
+      'organisationSerice.dwhEnrich',
+      'not-in-cache-gather',
+    );
     const companiesFromApi = await this.dataWarehouseAccessService.getCompanies(
       {
         domains: missingDomains,
       },
     );
 
+    ExecutionTimeHelper.endTime(
+      'organisationSerice.dwhEnrich',
+      'not-in-cache-gather',
+    );
+    ExecutionTimeHelper.startTime(
+      'organisationSerice.dwhEnrich',
+      'not-in-cache-addtocache',
+    );
     await this.dataWarehouseCacheService.addOrReplaceMany(companiesFromApi);
+    ExecutionTimeHelper.endTime(
+      'organisationSerice.dwhEnrich',
+      'not-in-cache-addtocache',
+    );
 
     return [...companies, ...companiesFromApi];
   }
