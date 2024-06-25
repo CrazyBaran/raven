@@ -1,35 +1,44 @@
 export class ExecutionTimeHelper {
   public static logJobs = {};
   public static startTime(jobName: string, subjob = ''): void {
-    if (!subjob) {
-      ExecutionTimeHelper.logJobs[jobName] = {
-        startTime: process.uptime(),
-        endTime: process.uptime(),
-        executionTime: ExecutionTimeHelper.logJobs[jobName]?.executionTime || 0,
-        subJobs: {},
-      };
-    } else {
-      ExecutionTimeHelper.logJobs[jobName].subJobs[subjob] = {
-        startTime: process.uptime(),
-        endTime: process.uptime(),
-        executionTime:
-          ExecutionTimeHelper.logJobs[jobName].subJobs[subjob]?.executionTime ||
-          0,
-      };
+    try {
+      if (!subjob) {
+        ExecutionTimeHelper.logJobs[jobName] = {
+          startTime: process.uptime(),
+          endTime: process.uptime(),
+          executionTime:
+            ExecutionTimeHelper.logJobs[jobName]?.executionTime || 0,
+          subJobs: {},
+        };
+      } else {
+        ExecutionTimeHelper.logJobs[jobName].subJobs[subjob] = {
+          startTime: process.uptime(),
+          endTime: process.uptime(),
+          executionTime:
+            ExecutionTimeHelper.logJobs[jobName].subJobs[subjob]
+              ?.executionTime || 0,
+        };
+      }
+    } catch (err) {
+      console.log(`[${ExecutionTimeHelper.name}] Can't log time.`);
     }
   }
   public static endTime(jobName: string, subjob = ''): void {
-    if (!subjob) {
-      ExecutionTimeHelper.logJobs[jobName].endTime = process.uptime();
-      ExecutionTimeHelper.logJobs[jobName].executionTime +=
-        ExecutionTimeHelper.logJobs[jobName].endTime -
-        ExecutionTimeHelper.logJobs[jobName].startTime;
-    } else {
-      ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].endTime =
-        process.uptime();
-      ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].executionTime +=
-        ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].endTime -
-        ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].startTime;
+    try {
+      if (!subjob) {
+        ExecutionTimeHelper.logJobs[jobName].endTime = process.uptime();
+        ExecutionTimeHelper.logJobs[jobName].executionTime +=
+          ExecutionTimeHelper.logJobs[jobName].endTime -
+          ExecutionTimeHelper.logJobs[jobName].startTime;
+      } else {
+        ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].endTime =
+          process.uptime();
+        ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].executionTime +=
+          ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].endTime -
+          ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].startTime;
+      }
+    } catch (err) {
+      console.log(`[${ExecutionTimeHelper.name}] Can't log time.`);
     }
   }
 

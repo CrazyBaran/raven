@@ -148,7 +148,7 @@ export class OrganisationService {
     ExecutionTimeHelper.endTime('organisationSerice.getTeams');
 
     ExecutionTimeHelper.startTime('organisationSerice.affinityEnrich');
-
+    const pipelineStageTemp = {};
     const affinityEnrichedData =
       await this.affinityEnricher.enrichOrganisations(
         organisations,
@@ -161,9 +161,12 @@ export class OrganisationService {
 
           for (const opportunity of data.opportunities) {
             const pipelineStage =
-              await this.pipelineUtilityService.getPipelineStageOrDefault(
+              pipelineStageTemp[opportunity.stage.id] ??
+              (await this.pipelineUtilityService.getPipelineStageOrDefault(
                 opportunity.stage.id,
-              );
+              ));
+
+            pipelineStageTemp[opportunity.stage.id] = pipelineStage;
 
             opportunity.stage = {
               ...opportunity.stage,

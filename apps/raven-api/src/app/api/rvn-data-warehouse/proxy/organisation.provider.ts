@@ -31,21 +31,27 @@ export class OrganisationProvider {
     const queryBuilder =
       this.organisationRepository.createQueryBuilder('organisations');
 
-    queryBuilder
-      .leftJoinAndSelect('organisations.organisationDomains', 'domains')
-      .leftJoinAndSelect('organisations.dataV1', 'data')
-      .leftJoinAndSelect('data.industries', 'industries')
-      .leftJoinAndSelect('data.investors', 'investors')
-      .leftJoinAndSelect('organisations.opportunities', 'opportunities')
-      .leftJoinAndSelect('opportunities.tag', 'tag')
-      .leftJoinAndSelect('opportunities.pipelineStage', 'pipelineStage')
-      .leftJoinAndSelect('opportunities.shares', 'shares')
-      .leftJoinAndSelect('shares.actor', 'member')
-      .leftJoinAndSelect('organisations.shortlists', 'shortlists');
-
     queryBuilder.where('organisations.name is not null');
 
+    if (
+      Object.keys(filterOptions).length > 0 ||
+      this.orderByMapper.map(options?.orderBy).startsWith('data.')
+    ) {
+      queryBuilder.leftJoinAndSelect('organisations.dataV1', 'data');
+    }
+
+    if (
+      options?.member ||
+      (options.filters?.status && options.filters.status.length > 0)
+    ) {
+      queryBuilder.leftJoinAndSelect(
+        'organisations.opportunities',
+        'opportunities',
+      );
+    }
     if (options?.shortlistId) {
+      queryBuilder.leftJoinAndSelect('organisations.shortlists', 'shortlists');
+
       const mainShortlist =
         await this.shortlistsService.getMainShortlist(false);
       if (mainShortlist?.id === options.shortlistId) {
@@ -61,13 +67,13 @@ export class OrganisationProvider {
 
     const collate = 'COLLATE SQL_Latin1_General_CP1_CI_AS';
     if (options?.query) {
+      queryBuilder.leftJoinAndSelect(
+        'organisations.organisationDomains',
+        'domains',
+      );
       queryBuilder.andWhere(
         new Brackets((qb) => {
-          qb.where(`data.name ${collate} LIKE :dataNameSearch ${collate}`, {
-            dataNameSearch: `%${options.query}%`,
-          });
-
-          qb.orWhere(
+          qb.where(
             `organisations.name ${collate} LIKE :organisationNameSearch ${collate}`,
             {
               organisationNameSearch: `%${options.query}%`,
@@ -88,6 +94,9 @@ export class OrganisationProvider {
     }
 
     if (options.member) {
+      queryBuilder
+        .leftJoinAndSelect('opportunities.shares', 'shares')
+        .leftJoinAndSelect('shares.actor', 'member');
       queryBuilder.andWhere('member.id = :member', {
         member: options.member,
       });
@@ -127,6 +136,10 @@ export class OrganisationProvider {
     }
 
     if (options.filters?.status && options.filters.status.length > 0) {
+      queryBuilder.leftJoinAndSelect(
+        'opportunities.pipelineStage',
+        'pipelineStage',
+      );
       queryBuilder.leftJoin(
         (subQuery) => {
           return subQuery
@@ -191,12 +204,14 @@ export class OrganisationProvider {
     }
 
     if (filterOptions?.industries && filterOptions.industries.length > 0) {
+      queryBuilder.leftJoinAndSelect('data.industries', 'industries');
       queryBuilder.andWhere('industries.name IN (:...industries)', {
         industries: filterOptions.industries,
       });
     }
 
     if (filterOptions?.investors && filterOptions.investors.length > 0) {
+      queryBuilder.leftJoinAndSelect('data.investors', 'investors');
       queryBuilder.andWhere('investors.name IN (:...investors)', {
         investors: filterOptions.investors,
       });
