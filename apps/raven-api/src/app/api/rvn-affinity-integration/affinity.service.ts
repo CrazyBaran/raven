@@ -272,6 +272,7 @@ export class AffinityService {
         lookForNextInteraction = false;
       }
       dynamicEndTime = new Date(dynamicStartTime);
+      dynamicEndTime.setSeconds(dynamicEndTime.getSeconds() + 1);
       dynamicStartTime.setDate(dynamicStartTime.getDate() - 30 * 3);
     }
 
