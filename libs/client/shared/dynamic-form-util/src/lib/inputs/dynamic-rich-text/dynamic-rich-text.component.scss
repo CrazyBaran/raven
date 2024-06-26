@@ -13,6 +13,7 @@
 
 app-dynamic-rich-text:not(.rich-text-full) {
   .k-editor-content {
+    min-height: 120px !important;
     max-height: 400px !important;
   }
 }
