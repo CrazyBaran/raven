@@ -74,6 +74,11 @@ export class DynamicRichTextComponent
 
   protected override onFocus = (): void => {
     this.editor?.focus();
+
+    if (!this.editor.value) {
+      this.editor.exec('insertUnorderedList');
+    }
+
     this.elementRef?.nativeElement?.scrollIntoView({
       behavior: 'smooth',
       block: 'center',

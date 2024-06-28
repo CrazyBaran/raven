@@ -171,6 +171,11 @@ export class RichTextComponent
     });
     this.manualFocus$.next();
     this.editor.focus();
+
+    if (!this.editor.value) {
+      this.editor.exec('insertUnorderedList');
+    }
+
     this.active.set(true);
   }
 
