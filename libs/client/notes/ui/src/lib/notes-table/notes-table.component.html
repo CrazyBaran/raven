@@ -52,7 +52,7 @@
     <ng-template kendoGridCellTemplate let-dataItem>
       <div class="flex flex-col gap-1">
         <ui-tag
-          [label]="dataItem?.createdBy?.name || ''"
+          [label]="dataItem?.updatedBy?.name || ''"
           size="medium"
           uiUserTag
         />
