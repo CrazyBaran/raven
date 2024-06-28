@@ -12,6 +12,8 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormRecord, ReactiveFormsModule } from '@angular/forms';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { NotesActions, notesQuery } from '@app/client/notes/state';
 import {
   ControlInjectorPipe,
   DynamicControl,
@@ -20,6 +22,7 @@ import {
   comparatorFn,
 } from '@app/client/shared/dynamic-form-util';
 import { LoaderComponent, delayedFadeIn } from '@app/client/shared/ui';
+import { Store } from '@ngrx/store';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxUnpatch } from '@rx-angular/template/unpatch';
@@ -66,14 +69,16 @@ export class NotepadComponent implements OnInit {
     {},
   );
 
-  protected state = signal({
-    activeTabId: null as string | null,
-    disabledTabIds: [] as string[],
-  });
+  protected activeTabId = signal<string | null>(null);
 
+  protected store = inject(Store);
   protected controlResolver = inject(DynamicControlResolver);
   protected readonly comparatorFn = comparatorFn;
   protected dynamicControlFocusHandler = inject(DynamicControlFocusHandler);
+
+  protected readonly disabledNoteTabs = this.store.selectSignal(
+    notesQuery.selectDisabledNoteTabs,
+  );
 
   protected tabs = computed(() => {
     const formConfig = this.formConfig();
@@ -81,9 +86,9 @@ export class NotepadComponent implements OnInit {
       (key): Tab => ({
         id: key,
         label: formConfig[key].name,
-        state: (this.state().disabledTabIds.includes(key)
+        state: (this.isDisabled(key)
           ? 'disabled'
-          : this.state().activeTabId === key
+          : this.activeTabId() === key
             ? 'active'
             : 'default') as ScrollTabState,
         canBeDisabled: this.formConfig()[key].id !== 'TITLE',
@@ -111,45 +116,39 @@ export class NotepadComponent implements OnInit {
 
   public ngOnInit(): void {
     this.dynamicControlFocusHandler.focus$().subscribe((controlKey) => {
-      this.state.update((state) => ({
-        ...state,
-        activeTabId: controlKey,
-      }));
+      this.activeTabId.set(controlKey);
     });
   }
 
   public toggleDisabled(tab: Tab, currentTabIndex: number): void {
-    const isDisabled = this.state().disabledTabIds.includes(tab.id);
-
     //set as active the closest tab that are not disabled to the bottom or top if not exists
-    if (tab.id === this.state().activeTabId) {
+    if (tab.id === this.activeTabId()) {
       const tabs = this.tabs();
 
       const nextTabs = tabs.slice(currentTabIndex + 1);
       const prevTabs = tabs.slice(0, currentTabIndex);
 
-      const notDisabledNextTab = nextTabs.find(
-        (t) => !this.state().disabledTabIds.includes(t.id),
-      );
+      const notDisabledNextTab = nextTabs.find((t) => !this.isDisabled(t.id));
       const notDisabledPrevTab = prevTabs
         .reverse()
-        .find((t) => !this.state().disabledTabIds.includes(t.id));
+        .find((t) => !this.isDisabled(t.id));
 
       this.setActiveTab(notDisabledNextTab || notDisabledPrevTab || tabs[0]);
     }
 
-    if (isDisabled) {
+    if (this.isDisabled(tab.id)) {
       setTimeout(() => {
         this.setActiveTab(tab);
       }, 5);
     }
 
-    this.state.update((state) => ({
-      ...state,
-      disabledTabIds: state.disabledTabIds.includes(tab.id)
-        ? state.disabledTabIds.filter((id) => id !== tab.id)
-        : [...state.disabledTabIds, tab.id],
-    }));
+    this.store.dispatch(
+      NotesActions.toggleDisabledNoteTabs({ id: tab.id, label: tab.label }),
+    );
+  }
+
+  public isDisabled(id: string): boolean {
+    return !!this.disabledNoteTabs().find((el) => el.id === id);
   }
 
   public setActiveTab(tab: { id: string }): void {
@@ -158,16 +157,10 @@ export class NotepadComponent implements OnInit {
 
   protected setPreviousTabActive(): void {
     const tabs = this.tabs();
-    const notDisabledTabs = tabs.filter(
-      (t) => !this.state().disabledTabIds.includes(t.id),
-    );
-    const currentTabIndex = tabs.findIndex(
-      (t) => t.id === this.state().activeTabId,
-    );
+    const notDisabledTabs = tabs.filter((t) => !this.isDisabled(t.id));
+    const currentTabIndex = tabs.findIndex((t) => t.id === this.activeTabId());
     const prevTabs = tabs.slice(0, currentTabIndex).reverse();
-    const notDisabledPrevTab = prevTabs.find(
-      (t) => !this.state().disabledTabIds.includes(t.id),
-    );
+    const notDisabledPrevTab = prevTabs.find((t) => !this.isDisabled(t.id));
     this.setActiveTab(
       notDisabledPrevTab || notDisabledTabs[notDisabledTabs.length - 1],
     );
@@ -175,13 +168,9 @@ export class NotepadComponent implements OnInit {
 
   protected setNextTabActive(): void {
     const tabs = this.tabs();
-    const currentTabIndex = tabs.findIndex(
-      (t) => t.id === this.state().activeTabId,
-    );
+    const currentTabIndex = tabs.findIndex((t) => t.id === this.activeTabId());
     const nextTabs = tabs.slice(currentTabIndex + 1);
-    const notDisabledNextTab = nextTabs.find(
-      (t) => !this.state().disabledTabIds.includes(t.id),
-    );
+    const notDisabledNextTab = nextTabs.find((t) => !this.isDisabled(t.id));
     this.setActiveTab(notDisabledNextTab || tabs[0]);
   }
 }

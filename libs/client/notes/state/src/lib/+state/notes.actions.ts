@@ -81,6 +81,18 @@ export const NotesActions = createActionGroup({
     }>(),
     'Refresh Notes Table Failure': props<{ error: string }>(),
 
+    'Toggle Disabled Note Tabs': props<{
+      id: string;
+      label: string;
+    }>(),
+    'Replace Disabled Note Tabs': props<{
+      beforeSaveTabIds: Array<string>;
+      afterSave: Array<{
+        id: string;
+        label: string;
+      }>;
+    }>(),
+
     //websocket events
     'Live Create Note': props<{ id: string }>(),
     'Live Change Note': props<{ id: string; newSyncId: string }>(),

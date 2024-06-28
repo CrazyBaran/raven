@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { NotepadComponent } from './notepad.component';
 
 describe('NotepadComponent', () => {
@@ -8,6 +9,7 @@ describe('NotepadComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NotepadComponent],
+      providers: [provideMockStore({})],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotepadComponent);

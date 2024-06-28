@@ -33,7 +33,7 @@
       >
         <div
           [ngClass]="{
-            'invisible absolute': state().disabledTabIds.includes(control.key)
+            'invisible absolute': isDisabled(control.key)
           }"
         >
           <ng-container

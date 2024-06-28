@@ -131,10 +131,20 @@ export class NotesEffects {
       ofType(NotesActions.createNote),
       concatMap(({ data }) =>
         this.notesService.createNote(data).pipe(
-          switchMap(({ data }) => [
-            NotesActions.createNoteSuccess({ data: data! }),
+          switchMap((res) => [
+            NotesActions.createNoteSuccess({ data: res.data! }),
             NotificationsActions.showSuccessNotification({
               content: 'Note created successfully',
+            }),
+            NotesActions.replaceDisabledNoteTabs({
+              beforeSaveTabIds: data.fields
+                .filter((el) => el.id)
+                .map((el) => el.id!),
+              afterSave:
+                res.data?.noteFieldGroups[0].noteFields.map((el) => ({
+                  id: el.id,
+                  label: el.name,
+                })) ?? [],
             }),
           ]),
           catchError((error) => of(NotesActions.createNoteFailure({ error }))),
@@ -173,10 +183,23 @@ export class NotesEffects {
       })),
       switchMap(({ noteId, data }) =>
         this.notesService.patchNote(noteId, data).pipe(
-          switchMap(({ data }) => [
-            NotesActions.updateNoteSuccess({ data: data!, originId: noteId }),
+          switchMap((res) => [
+            NotesActions.updateNoteSuccess({
+              data: res.data!,
+              originId: noteId,
+            }),
             NotificationsActions.showSuccessNotification({
               content: 'Fields updated successfully.',
+            }),
+            NotesActions.replaceDisabledNoteTabs({
+              beforeSaveTabIds: data.fields
+                .filter((el) => el.id)
+                .map((el) => el.id!),
+              afterSave:
+                res.data?.noteFieldGroups[0].noteFields.map((el) => ({
+                  id: el.id,
+                  label: el.name,
+                })) ?? [],
             }),
           ]),
           catchError((error) => {

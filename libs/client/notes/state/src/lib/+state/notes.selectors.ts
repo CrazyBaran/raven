@@ -136,6 +136,11 @@ const selectTable = createSelector(
   (state: NotesState) => state.table,
 );
 
+const selectDisabledNoteTabs = createSelector(
+  selectNotesState,
+  (state) => state.disabledNoteTabs,
+);
+
 export const notesQuery = {
   selectAllNotes,
   selectIsTableLoading,
@@ -151,4 +156,5 @@ export const notesQuery = {
   selectTotal,
   selectNotesTypeBadgeColors,
   selectTable,
+  selectDisabledNoteTabs,
 };

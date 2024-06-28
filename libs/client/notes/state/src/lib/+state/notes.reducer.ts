@@ -43,6 +43,7 @@ export interface NotesState extends EntityState<NoteEntity> {
     data: WorkflowNoteData[];
     isLoading: boolean;
   };
+  disabledNoteTabs: Array<{ id: string; label: string }>;
 }
 
 export const notesAdapter: EntityAdapter<NoteEntity> =
@@ -78,6 +79,7 @@ export const initialState: NotesState = notesAdapter.getInitialState({
     data: [],
     isLoading: false,
   },
+  disabledNoteTabs: [],
 });
 
 export const notesReducer = createReducer(
@@ -312,7 +314,43 @@ export const notesReducer = createReducer(
       isLoading: false,
     },
   })),
+  on(NotesActions.toggleDisabledNoteTabs, (state, { id, label }) => ({
+    ...state,
+    disabledNoteTabs: state.disabledNoteTabs.find((tab) => tab.id === id)
+      ? state.disabledNoteTabs.filter((tab) => tab.id !== id)
+      : [...state.disabledNoteTabs, { id, label }],
+  })),
+  on(
+    NotesActions.replaceDisabledNoteTabs,
+    (state, { beforeSaveTabIds, afterSave }) => {
+      // NOTE: before create/update note, fields have different ids than after save - we have note versioning
+      // so we need to replace disabled note tabs with new ids after save
+      const replacedDisabledNoteTabs = state.disabledNoteTabs.slice();
 
+      beforeSaveTabIds.forEach((tabId) => {
+        const tabIndex = replacedDisabledNoteTabs.findIndex(
+          (el) => el.id === tabId,
+        );
+
+        if (tabIndex !== -1) {
+          const newItem = afterSave.find(
+            (el) => el.label === replacedDisabledNoteTabs[tabIndex].label,
+          );
+
+          if (newItem) {
+            replacedDisabledNoteTabs.push(newItem);
+          }
+
+          replacedDisabledNoteTabs.splice(tabIndex, 1);
+        }
+      });
+
+      return {
+        ...state,
+        disabledNoteTabs: replacedDisabledNoteTabs,
+      };
+    },
+  ),
   on(NotesActions.liveChangeNote, (state, { id, newSyncId }) =>
     notesAdapter.updateOne(
       {
