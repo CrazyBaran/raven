@@ -30,8 +30,15 @@ export class OrganisationProvider {
   ): Promise<{ organisationIds: string[]; count: number }> {
     const queryBuilder =
       this.organisationRepository.createQueryBuilder('organisations');
+    queryBuilder.leftJoinAndSelect(
+      'organisations.organisationDomains',
+      'domains',
+    );
 
     queryBuilder.where('organisations.name is not null');
+    queryBuilder.andWhere('domains.domain NOT IN (:...domains)', {
+      domains: ['https://placeholder.com', 'placeholder.com'],
+    });
 
     if (
       Object.keys(filterOptions).length > 0 ||
@@ -67,10 +74,6 @@ export class OrganisationProvider {
 
     const collate = 'COLLATE SQL_Latin1_General_CP1_CI_AS';
     if (options?.query) {
-      queryBuilder.leftJoinAndSelect(
-        'organisations.organisationDomains',
-        'domains',
-      );
       queryBuilder.andWhere(
         new Brackets((qb) => {
           qb.where(
