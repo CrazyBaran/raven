@@ -197,6 +197,7 @@ export class OpportunityController {
           opportunity,
           userEntity,
           dto.versionName,
+          dto.name,
         ),
       );
     }

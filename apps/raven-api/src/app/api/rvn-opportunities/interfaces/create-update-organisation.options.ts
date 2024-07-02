@@ -32,4 +32,5 @@ export interface CommonUpdateOptions {
   underNda?: string;
   ndaTerminationDate?: Date;
   description?: string;
+  name?: string;
 }

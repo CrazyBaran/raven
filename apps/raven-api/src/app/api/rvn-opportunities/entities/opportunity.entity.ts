@@ -153,6 +153,9 @@ export class OpportunityEntity
   @Column({ nullable: true })
   public sharepointDirectoryId: string | null;
 
+  @Column({ nullable: true, type: 'varchar', length: '50' })
+  public name: string | null;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {

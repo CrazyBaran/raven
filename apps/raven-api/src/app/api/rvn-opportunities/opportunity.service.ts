@@ -109,6 +109,7 @@ export class OpportunityService {
         .andWhere(
           `opportunity.organisationId IN (${organisationSubQuery.getQuery()})`,
         )
+        .orWhere('LOWER(opportunity.name) LIKE :searchString')
         .setParameter('searchString', searchString);
     }
 
@@ -450,6 +451,7 @@ export class OpportunityService {
   public opportunityEntityToData(entity: OpportunityEntity): OpportunityData {
     return {
       id: entity.id,
+      name: entity.name,
       organisation: {
         id: entity.organisationId,
         name: entity.organisation?.name,
@@ -516,6 +518,7 @@ export class OpportunityService {
     opportunity: OpportunityEntity,
     userEntity: UserEntity,
     versionName: string,
+    name?: string | undefined,
   ): Promise<OpportunityEntity> {
     await this.opportunityChecker.ensureNoConflictingOpportunity(
       opportunity.organisation,
@@ -551,6 +554,7 @@ export class OpportunityService {
         underNda: opportunity.underNda,
         ndaTerminationDate: opportunity.ndaTerminationDate,
         tagEntity: createdTag,
+        name,
       },
       userEntity,
     );
@@ -597,6 +601,9 @@ export class OpportunityService {
     }
     if (options.description !== undefined) {
       opportunity.description = options.description;
+    }
+    if (options.name !== undefined) {
+      opportunity.name = options.name;
     }
   }
 

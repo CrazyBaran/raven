@@ -68,4 +68,9 @@ export class UpdateOpportunityDto {
   @IsOptional()
   @IsString()
   public readonly description?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  public readonly name?: string;
 }
