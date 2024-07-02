@@ -35,7 +35,7 @@
       title="Funding Round"
     >
       <ng-template kendoGridCellTemplate let-dataItem>
-        <p>{{ dataItem.tag?.name ?? 'No Opportunity' }}</p>
+        <p>{{ getOpportunityName(dataItem) }}</p>
         <p class="text-xs">
           Updated:
           {{ dataItem?.updatedAt || '' | date: 'dd/MM/yyyy' }}

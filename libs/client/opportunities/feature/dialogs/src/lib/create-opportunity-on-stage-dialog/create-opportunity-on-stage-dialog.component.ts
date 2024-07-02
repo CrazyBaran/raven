@@ -81,6 +81,7 @@ export class CreateOpportunityOnStageDialogComponent implements OnInit {
   protected opportunityForm: OpportunityForm = this.fb.group({
     organisationId: [<string | null>null],
     opportunityTagId: [<string | null>null, [Validators.required]],
+    name: [<string | null>''],
     roundSize: [''],
     valuation: [''],
     proposedInvestment: [''],

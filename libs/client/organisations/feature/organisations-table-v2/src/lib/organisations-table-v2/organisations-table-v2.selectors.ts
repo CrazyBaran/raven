@@ -23,7 +23,7 @@ import {
   ButtongroupNavigationModel,
   DropdownAction,
 } from '@app/client/shared/ui-router';
-import { DialogUtil } from '@app/client/shared/util';
+import { DialogUtil, getOpportunityName } from '@app/client/shared/util';
 import {
   buildButtonGroupNavigation,
   buildInputNavigation,
@@ -183,11 +183,10 @@ export const selectOrganisationRows = createSelector(
                 },
                 skipLocationChange: true,
               } satisfies DropdownAction;
-
               return {
                 id: opportunity!.id,
                 companyId: company.id!,
-                name: opportunity!.tag?.name ?? '',
+                name: getOpportunityName(opportunity),
                 status: {
                   name: opportunity!.stage?.displayName ?? '',
                   color:

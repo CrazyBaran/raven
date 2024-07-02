@@ -24,6 +24,11 @@
   </kendo-formfield>
 
   <kendo-formfield>
+    <kendo-label text="Opportunity Name" />
+    <kendo-textbox formControlName="name" placeholder="Custom name" />
+  </kendo-formfield>
+
+  <kendo-formfield>
     <kendo-label text="Funding Round" />
     <kendo-dropdownlist
       [data]="opportunityTags()! | orderBy: 'name'"

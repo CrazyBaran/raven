@@ -77,6 +77,7 @@ export class CreateOpportunityDialogComponent extends DynamicDialogContentBase {
   protected opportunityForm: OpportunityForm = this.fb.group({
     organisationId: [''],
     opportunityTagId: [<string | null>null, [Validators.required]],
+    name: [<string | null>''],
     roundSize: [''],
     valuation: [''],
     proposedInvestment: [''],

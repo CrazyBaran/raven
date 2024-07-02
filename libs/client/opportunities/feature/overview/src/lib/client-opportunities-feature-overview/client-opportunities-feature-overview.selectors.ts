@@ -74,6 +74,10 @@ export const selectOpportunityOverviewViewModel = createSelector(
           subLabel: organisation?.domains[0],
         },
         {
+          label: opportunity?.name,
+          subLabel: 'Opportunity Name',
+        },
+        {
           label: opportunity?.tag?.name,
           subLabel: 'Funding Round',
         },

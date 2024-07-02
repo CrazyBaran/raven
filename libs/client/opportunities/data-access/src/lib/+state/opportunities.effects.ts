@@ -64,26 +64,27 @@ export class OpportunitiesEffects {
       concatLatestFrom(({ id }) =>
         this.store.select(opportunitiesQuery.selectOpportunityById(id)),
       ),
-      concatMap(([{ id, reopenAndDuplicate, versionName }, opportunity]) =>
-        this.opportunitiesService
-          .reopenOpportunity(id, reopenAndDuplicate, versionName)
-          .pipe(
-            switchMap(({ data }) => [
-              OpportunitiesActions.reopenOpportunitySuccess({
-                data: data!,
-              }),
-              NotificationsActions.showSuccessNotification({
-                content: 'Opportunity reopened.',
-              }),
-            ]),
-            catchError((error) =>
-              of(
-                OpportunitiesActions.reopenOpportunityFailure({
-                  error,
+      concatMap(
+        ([{ id, reopenAndDuplicate, versionName, name }, opportunity]) =>
+          this.opportunitiesService
+            .reopenOpportunity(id, reopenAndDuplicate, versionName, name)
+            .pipe(
+              switchMap(({ data }) => [
+                OpportunitiesActions.reopenOpportunitySuccess({
+                  data: data!,
                 }),
+                NotificationsActions.showSuccessNotification({
+                  content: 'Opportunity reopened.',
+                }),
+              ]),
+              catchError((error) =>
+                of(
+                  OpportunitiesActions.reopenOpportunityFailure({
+                    error,
+                  }),
+                ),
               ),
             ),
-          ),
       ),
     );
   });

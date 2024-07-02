@@ -19,6 +19,7 @@ import { DealTeamPickerComponent } from '../deal-team-picker/deal-team-picker.co
 export type OpportunityForm = FormGroup<{
   organisationId: FormControl<string | null>;
   opportunityTagId: FormControl<string | null>;
+  name: FormControl<string | null>;
   roundSize: FormControl<string | null>;
   valuation: FormControl<string | null>;
   proposedInvestment: FormControl<string | null>;

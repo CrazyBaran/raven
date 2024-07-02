@@ -163,11 +163,13 @@ export class OpportunitiesService {
     opportunityId: string,
     duplicateAndReopen?: boolean,
     versionName?: string,
+    name?: string | undefined,
   ): Observable<GenericResponse<OpportunityData>> {
     if (duplicateAndReopen && versionName) {
       return this.patchOpportunity(opportunityId, {
         duplicateAndReopen,
         versionName,
+        name,
       });
     }
     return this.getOpportunityDetails(opportunityId).pipe(

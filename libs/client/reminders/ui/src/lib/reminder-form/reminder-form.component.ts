@@ -29,6 +29,8 @@ import {
 import { LabelModule } from '@progress/kendo-angular-label';
 import * as _ from 'lodash';
 import { Observable, of, switchMap, take } from 'rxjs';
+import { OpportunityData } from '../../../../../../rvns-opportunities/src';
+import { getOpportunityName } from '../../../../../shared/util/src';
 
 export type CompanyOpportunityTreeItem = {
   company: {
@@ -93,7 +95,7 @@ export class ReminderFormComponent {
     input<
       (
         organisationId: string,
-      ) => Observable<{ id: string; tag: { id: string } }>
+      ) => Observable<{ id: string; name: string; tag: { id: string } }>
     >();
   public usersSource =
     input.required<
@@ -146,9 +148,14 @@ export class ReminderFormComponent {
             isActive = true;
           }
           index++;
-
           return {
-            opportunity: { ...o, active: isActive },
+            opportunity: {
+              ...o,
+              name: isActive
+                ? getOpportunityName(orgActiveOpportunity as OpportunityData)
+                : o.name,
+              active: isActive,
+            },
             company: treeNode.company,
             id: `${treeNode.company.id}-${o.id}`,
           };

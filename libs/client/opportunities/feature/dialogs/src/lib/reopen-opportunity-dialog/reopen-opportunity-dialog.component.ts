@@ -56,6 +56,7 @@ export class ReopenOpportunityDialogComponent extends DynamicDialogContentBase {
     round: [{ value: null, disabled: true }],
     option: ['duplicate' as 'duplicate' | 'existing'],
     newName: [''],
+    opportunityName: [''],
   });
 
   protected vm = this.store.selectSignal(
@@ -104,6 +105,7 @@ export class ReopenOpportunityDialogComponent extends DynamicDialogContentBase {
         id: this.vm().opportunityId!,
         versionName: this.form.controls.newName.value!,
         reopenAndDuplicate: this.form.controls.option.value === 'duplicate',
+        name: this.form.controls.opportunityName.value || undefined,
       }),
     );
 

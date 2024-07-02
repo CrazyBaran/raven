@@ -7,6 +7,8 @@ import { organisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
+import { OpportunityData } from '../../../../../../../rvns-opportunities/src';
+import { getOpportunityName } from '../../../../../../shared/util/src';
 
 const OPPORTUNITY_DETAILS_ROUTES = [
   {
@@ -96,7 +98,7 @@ export const selectOpportunityDetails = createSelector(
         subLabel: organisation?.domains[0],
       },
       {
-        label: opportunity?.tag?.name ?? '',
+        label: getOpportunityName(opportunity as OpportunityData),
         subLabel: 'Opportunity',
       },
       {

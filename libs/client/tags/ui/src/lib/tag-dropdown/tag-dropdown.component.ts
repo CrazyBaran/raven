@@ -24,6 +24,7 @@ import {
 import {
   ClickOutsideDirective,
   ControlValueAccessor,
+  getOpportunityName,
 } from '@app/client/shared/util';
 
 import { ACTIVE_OPPORTUNITY_SOURCE } from '@app/client/shared/util';
@@ -253,6 +254,9 @@ export class TagDropdownComponent extends ControlValueAccessor<
 
             return {
               ...o,
+              name: isActive
+                ? getOpportunityName(orgActiveOpportunity)
+                : o.name,
               active: isActive,
             };
           });

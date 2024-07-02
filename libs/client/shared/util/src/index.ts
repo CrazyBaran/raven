@@ -7,6 +7,7 @@ export * from './lib/dialog-utils';
 export * from './lib/failure-payload';
 export * from './lib/get-deal.leads';
 export * from './lib/get-deal.team';
+export * from './lib/get-opportunity-name';
 export * from './lib/loading-state';
 export * from './lib/max-visible-index';
 export * from './lib/signal-input.transform';

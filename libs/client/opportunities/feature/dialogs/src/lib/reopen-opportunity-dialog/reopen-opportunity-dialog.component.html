@@ -51,8 +51,20 @@
           class="px-6"
           [class.opacity-75]="form.controls.option.value !== 'duplicate'"
         >
-          <kendo-label text="Please enter a name for this new opportunity" />
+          <kendo-label text="Please enter a version for this new opportunity" />
           <kendo-textbox formControlName="newName" placeholder="eg. v2" />
+        </kendo-formfield>
+        <kendo-formfield
+          class="px-6"
+          [class.opacity-75]="form.controls.option.value !== 'duplicate'"
+        >
+          <kendo-label
+            text="Please enter a custom name for this new opportunity"
+          />
+          <kendo-textbox
+            formControlName="opportunityName"
+            placeholder="Custom name"
+          />
         </kendo-formfield>
         <li class="k-radio-item">
           <input

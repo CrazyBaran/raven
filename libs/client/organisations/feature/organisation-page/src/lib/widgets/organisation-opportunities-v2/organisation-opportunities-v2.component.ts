@@ -21,7 +21,11 @@ import {
 } from '@app/client/shared/ui';
 import { IsEllipsisActiveDirective } from '@app/client/shared/ui-directives';
 import { DealLeadsPipe } from '@app/client/shared/ui-pipes';
-import { LoadDataMethod, withTable } from '@app/client/shared/util';
+import {
+  LoadDataMethod,
+  getOpportunityName,
+  withTable,
+} from '@app/client/shared/util';
 import { OpportunityData } from '@app/rvns-opportunities';
 import { signalStore, withComputed, withMethods } from '@ngrx/signals';
 import { Store } from '@ngrx/store';
@@ -115,4 +119,8 @@ export const organisationOpportunitiesStore = signalStore(
 })
 export class OrganisationOpportunitiesV2Component {
   public signalStore = inject(organisationOpportunitiesStore);
+
+  public getOpportunityName(dataItem: OpportunityData) {
+    return getOpportunityName(dataItem);
+  }
 }
