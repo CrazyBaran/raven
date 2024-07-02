@@ -11,9 +11,14 @@
   height: 150px;
 }
 
-app-dynamic-rich-text:not(.rich-text-full) {
+app-dynamic-rich-text {
   .k-editor-content {
     min-height: 120px !important;
+  }
+}
+
+app-dynamic-rich-text:not(.rich-text-full) {
+  .k-editor-content {
     max-height: 400px !important;
   }
 }

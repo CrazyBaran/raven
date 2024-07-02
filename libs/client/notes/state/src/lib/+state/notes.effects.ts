@@ -195,11 +195,12 @@ export class NotesEffects {
               beforeSaveTabIds: data.fields
                 .filter((el) => el.id)
                 .map((el) => el.id!),
-              afterSave:
-                res.data?.noteFieldGroups[0].noteFields.map((el) => ({
-                  id: el.id,
-                  label: el.name,
-                })) ?? [],
+              afterSave: res.data?.noteFieldGroups?.length
+                ? res.data.noteFieldGroups[0].noteFields.map((el) => ({
+                    id: el.id,
+                    label: el.name,
+                  }))
+                : [],
             }),
           ]),
           catchError((error) => {
