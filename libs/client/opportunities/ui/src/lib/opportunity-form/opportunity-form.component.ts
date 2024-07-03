@@ -33,6 +33,8 @@ export type OpportunityForm = FormGroup<{
   } | null>;
 }>;
 
+export const OPPORTUNITY_NAME_MAX_LENGTH = 50;
+
 @Component({
   selector: 'app-opportunity-form',
   standalone: true,
@@ -56,6 +58,8 @@ export type OpportunityForm = FormGroup<{
   styleUrl: './opportunity-form.component.scss',
 })
 export class OpportunityFormComponent {
+  public readonly nameMaxLength = OPPORTUNITY_NAME_MAX_LENGTH;
+
   public opportunityForm = input.required<OpportunityForm>();
 
   public staticOrganisation = input<{ name?: string; id?: string }>();

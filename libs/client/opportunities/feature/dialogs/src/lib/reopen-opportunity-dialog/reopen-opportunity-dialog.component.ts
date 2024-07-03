@@ -24,6 +24,7 @@ import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
 import { DialogUtil } from '@app/client/shared/util';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { take } from 'rxjs';
+import { OPPORTUNITY_NAME_MAX_LENGTH } from '../../../../../ui/src';
 import { selectCreateOpportunityDialogViewModel } from './reopen-opportunity-dialog.selectors';
 
 @Component({
@@ -45,6 +46,7 @@ import { selectCreateOpportunityDialogViewModel } from './reopen-opportunity-dia
 })
 export class ReopenOpportunityDialogComponent extends DynamicDialogContentBase {
   public readonly route = 'reopen-opportunity';
+  public readonly nameMaxLength = OPPORTUNITY_NAME_MAX_LENGTH;
 
   public isCreating = signal(false);
 

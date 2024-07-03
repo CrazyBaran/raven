@@ -25,7 +25,11 @@
 
   <kendo-formfield>
     <kendo-label text="Opportunity Name" />
-    <kendo-textbox formControlName="name" placeholder="Custom name" />
+    <kendo-textbox
+      formControlName="name"
+      placeholder="Custom name"
+      [maxlength]="nameMaxLength"
+    />
   </kendo-formfield>
 
   <kendo-formfield>
