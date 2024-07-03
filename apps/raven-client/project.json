@@ -17,6 +17,7 @@
         "inlineStyleLanguage": "scss",
         "assets": [
           "apps/raven-client/src/favicon.ico",
+          "apps/raven-client/src/assets/favicon.png",
           "apps/raven-client/src/assets"
         ],
         "styles": [
