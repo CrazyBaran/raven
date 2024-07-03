@@ -66,7 +66,7 @@
         "isHidden": false,
         "isDefault": false,
         "configuration": null,
-        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "showFields": "[{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"tag.name\",\"displayName\":\"Instrument\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
         "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "relatedCompanyStatus": "live_opportunity",
         "correspondingEntity": "PipelineStageEntity"
@@ -79,7 +79,7 @@
         "isHidden": false,
         "isDefault": false,
         "configuration": null,
-        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "showFields": "[{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"tag.name\",\"displayName\":\"Instrument\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
         "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "relatedCompanyStatus": "live_opportunity",
         "correspondingEntity": "PipelineStageEntity"
@@ -92,7 +92,7 @@
         "isHidden": false,
         "isDefault": false,
         "configuration": null,
-        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "showFields": "[{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"tag.name\",\"displayName\":\"Instrument\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
         "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "relatedCompanyStatus": "live_opportunity",
         "correspondingEntity": "PipelineStageEntity"
@@ -105,7 +105,7 @@
         "isHidden": false,
         "isDefault": false,
         "configuration": null,
-        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "showFields": "[{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"tag.name\",\"displayName\":\"Instrument\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
         "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "relatedCompanyStatus": "live_opportunity",
         "correspondingEntity": "PipelineStageEntity"
@@ -118,7 +118,7 @@
         "isHidden": false,
         "isDefault": false,
         "configuration": null,
-        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "showFields": "[{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"tag.name\",\"displayName\":\"Instrument\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
         "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "relatedCompanyStatus": "live_opportunity",
         "correspondingEntity": "PipelineStageEntity"
@@ -131,7 +131,7 @@
         "isHidden": false,
         "isDefault": false,
         "configuration": null,
-        "showFields": "[{\"fieldName\":\"tag.name\",\"displayName\":\"Opportunity\"},{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
+        "showFields": "[{\"fieldName\":\"name\",\"displayName\":\"Name\"},{\"fieldName\":\"tag.name\",\"displayName\":\"Instrument\"},{\"fieldName\":\"roundSize\",\"displayName\":\"Deal Size\"},{\"fieldName\":\"timing\",\"displayName\":\"Timing\"}]",
         "pipelineDefinitionId": "d955560e-7293-ee11-8927-6045bdd178c1",
         "relatedCompanyStatus": "live_opportunity",
         "correspondingEntity": "PipelineStageEntity"
