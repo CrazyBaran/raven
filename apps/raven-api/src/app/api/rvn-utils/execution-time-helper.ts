@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 export class ExecutionTimeHelper {
   public static logJobs = {};
   public static startTime(jobName: string, subjob = ''): void {
@@ -19,9 +20,7 @@ export class ExecutionTimeHelper {
               ?.executionTime || 0,
         };
       }
-    } catch (err) {
-      console.log(`[${ExecutionTimeHelper.name}] Can't log time.`);
-    }
+    } catch (err) {}
   }
   public static endTime(jobName: string, subjob = ''): void {
     try {
@@ -37,42 +36,44 @@ export class ExecutionTimeHelper {
           ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].endTime -
           ExecutionTimeHelper.logJobs[jobName].subJobs[subjob].startTime;
       }
-    } catch (err) {
-      console.log(`[${ExecutionTimeHelper.name}] Can't log time.`);
-    }
+    } catch (err) {}
   }
 
   public static printTime(jobName: string): void {
-    console.log(
-      `[${
-        ExecutionTimeHelper.name
-      }] job ${jobName} took: (${ExecutionTimeHelper.logJobs[
-        jobName
-      ].executionTime.toFixed(8)})`,
-    );
+    try {
+      console.log(
+        `[${
+          ExecutionTimeHelper.name
+        }] job ${jobName} took: (${ExecutionTimeHelper.logJobs[
+          jobName
+        ].executionTime.toFixed(8)})`,
+      );
+    } catch (err) {}
   }
 
   public static printFullLog(clear = true): void {
-    let logs = `[${ExecutionTimeHelper.name}] Execution times:\n`;
-    let totalTime = 0;
-    for (const key of Object.keys(ExecutionTimeHelper.logJobs)) {
-      logs += `${key}: (${ExecutionTimeHelper.logJobs[
-        key
-      ].executionTime.toFixed(8)})\n`;
-      const subjobs = Object.keys(ExecutionTimeHelper.logJobs[key].subJobs);
-      if (subjobs.length) {
-        for (const skey of subjobs) {
-          logs += `  - ${skey}: (${ExecutionTimeHelper.logJobs[key].subJobs[
-            skey
-          ].executionTime.toFixed(8)})\n`;
+    try {
+      let logs = `[${ExecutionTimeHelper.name}] Execution times:\n`;
+      let totalTime = 0;
+      for (const key of Object.keys(ExecutionTimeHelper.logJobs)) {
+        logs += `${key}: (${ExecutionTimeHelper.logJobs[
+          key
+        ].executionTime.toFixed(8)})\n`;
+        const subjobs = Object.keys(ExecutionTimeHelper.logJobs[key].subJobs);
+        if (subjobs.length) {
+          for (const skey of subjobs) {
+            logs += `  - ${skey}: (${ExecutionTimeHelper.logJobs[key].subJobs[
+              skey
+            ].executionTime.toFixed(8)})\n`;
+          }
         }
+        totalTime += ExecutionTimeHelper.logJobs[key].executionTime;
       }
-      totalTime += ExecutionTimeHelper.logJobs[key].executionTime;
-    }
-    logs += `TOTAL EXECUTION TIME: (${totalTime})`;
-    console.log(logs);
-    if (clear) {
-      ExecutionTimeHelper.logJobs = {};
-    }
+      logs += `TOTAL EXECUTION TIME: (${totalTime})`;
+      console.log(logs);
+      if (clear) {
+        ExecutionTimeHelper.logJobs = {};
+      }
+    } catch (err) {}
   }
 }
