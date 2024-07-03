@@ -103,7 +103,7 @@ export class OrganisationDetailsV2Component {
       },
       {
         label: lastFunding?.round,
-        subLabel: 'Last Funding Round',
+        subLabel: 'Last Instrument',
         background: 'var(--series-g-lighten-20)',
       },
       {

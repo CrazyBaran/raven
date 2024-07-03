@@ -42,12 +42,10 @@ test.describe('Raven Regression: Pages', () => {
     ).toBeVisible();
     await expect(page.getByText('All deals')).toBeVisible();
     await expect(page.getByText('My deals')).toBeVisible();
-    await expect(page.getByText('All Funding Rounds')).toBeVisible();
+    await expect(page.getByText('All Instruments')).toBeVisible();
     await expect(page.getByText('Deal Member')).toBeVisible();
     await expect(page.getByText('Company')).toBeVisible();
-    await expect(
-      page.getByText('Funding Round', { exact: true }),
-    ).toBeVisible();
+    await expect(page.getByText('Instrument', { exact: true })).toBeVisible();
     await expect(page.getByText('Pipeline Status')).toBeVisible();
     await expect(page.getByText('Deal Lead')).toBeVisible();
     await expect(page.getByText('Deal Team')).toBeVisible();
@@ -92,7 +90,7 @@ test.describe('Raven Regression: Pages', () => {
     await expect(page).toHaveURL(new RegExp('/companies/([a-f0-9-]+)$'));
     await expect(page.getByText('Company detailsEdit')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Pipeline' })).toBeVisible();
-    await expect(page.getByText('Funding Round')).toBeVisible();
+    await expect(page.getByText('Instrument')).toBeVisible();
     await expect(page.getByText('Deal Lead')).toBeVisible();
     await expect(page.getByText('Deal Team')).toBeVisible();
     await expect(page.getByText('Created')).toBeVisible();
@@ -143,7 +141,7 @@ test.describe('Raven Regression: Pages', () => {
     await expect(page.getByRole('button', { name: 'All deals' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'My deals' })).toBeVisible();
     await expect(
-      page.getByRole('main').getByText('All funding Rounds'),
+      page.getByRole('main').getByText('All Instruments'),
     ).toBeVisible();
     await expect(
       page.locator('app-quick-filters-template').getByText('Deal Lead'),

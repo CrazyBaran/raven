@@ -153,7 +153,7 @@ export const selectOrganisationsTableNavigationDropdowns = createSelector(
         data: opportunityData,
         defaultItem: {
           id: null,
-          name: 'All Funding Rounds',
+          name: 'All Instruments',
         },
         loading: loadingTags.opportunity,
       }),

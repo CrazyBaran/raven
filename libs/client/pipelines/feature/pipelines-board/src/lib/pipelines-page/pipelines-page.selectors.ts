@@ -89,7 +89,7 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
         data: opportunityData,
         defaultItem: {
           id: null,
-          name: 'All funding Rounds',
+          name: 'All Instruments',
         },
         loading: loadingTags.opportunity,
       }),
