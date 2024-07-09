@@ -3,7 +3,10 @@ import {
   useAzureMonitor,
 } from '@azure/monitor-opentelemetry';
 import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import {
+  SEMRESATTRS_SERVICE_INSTANCE_ID,
+  SEMRESATTRS_SERVICE_NAME,
+} from '@opentelemetry/semantic-conventions';
 import * as env from 'env-var';
 
 let customResource: Resource = new Resource({});
@@ -12,8 +15,8 @@ if (
 ) {
   customResource = customResource.merge(
     new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: 'as-wa-mc-raven-dev',
-      [SemanticResourceAttributes.SERVICE_INSTANCE_ID]: env
+      [SEMRESATTRS_SERVICE_NAME]: 'as-wa-mc-raven-dev',
+      [SEMRESATTRS_SERVICE_INSTANCE_ID]: env
         .get('LOCAL_INSTANCE_NAME')
         .asString(),
     }),
