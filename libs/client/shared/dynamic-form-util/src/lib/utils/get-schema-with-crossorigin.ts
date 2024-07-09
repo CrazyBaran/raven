@@ -12,7 +12,7 @@ const imageSpec: any = {
     crossorigin: { default: 'anonymous' }, /// added
     uploadId: { default: null }, /// added
     error: { default: null }, /// added
-    style: { default: null },
+    style: { default: 'width: auto; height: auto;' },
   },
   parseDOM: [
     {
@@ -46,7 +46,17 @@ const imageSpec: any = {
     } = node.attrs; /// updated
     return [
       'img',
-      { src, alt, title, uploadId, error, crossorigin, style, height, width },
+      {
+        src,
+        alt,
+        title,
+        uploadId,
+        error,
+        crossorigin,
+        style,
+        height,
+        width,
+      },
     ]; /// updated
   },
 };
@@ -55,11 +65,9 @@ export function getSchemaWithCrossorigin(): Schema {
   const { nodes, marks } = schema.spec;
 
   const updateNodes = schema.spec.nodes.update('image', imageSpec);
-
   const newSchema = new Schema({
     nodes: updateNodes,
     marks,
   });
-
   return newSchema;
 }
