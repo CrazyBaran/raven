@@ -1,0 +1,27 @@
+{
+  "name": "client-opportunities-feature-pdf-export",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/client/opportunities/feature/pdf-export/src",
+  "prefix": "app",
+  "tags": ["type:feature"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/client/opportunities/feature/pdf-export/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/client/opportunities/feature/pdf-export/**/*.ts",
+          "libs/client/opportunities/feature/pdf-export/**/*.html"
+        ]
+      }
+    }
+  }
+}

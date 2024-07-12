@@ -73,6 +73,9 @@
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
+      "@app/client/opportunities/feature/pdf-export": [
+        "libs/client/opportunities/feature/pdf-export/src/index.ts"
+      ],
       "@app/client/opportunities/feature/opportunity-notes": [
         "libs/client/opportunities/feature/opportunity-notes/src/index.ts"
       ],

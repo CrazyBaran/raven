@@ -36,4 +36,5 @@ export interface OpportunityDataWithoutOrganisation {
   team?: OpportunityTeamData;
   readonly updatedAt?: Date;
   readonly previousPipelineStageId?: string;
+  readonly pipelineStageId?: string;
 }

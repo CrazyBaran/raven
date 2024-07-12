@@ -1,15 +1,22 @@
-<ui-tilelayout-item>
-  <div header class="flex items-center justify-between gap-2">
-    <h5>Financial KPIs</h5>
-    <kendo-button
-      [dynamicDialog]="['edit-financial-kpi', true]"
-      iconClass="fa-regular fa-pen"
-    >
-      Edit
-    </kendo-button>
-  </div>
-
-  <div body class="flex flex-col gap-3">
+<ui-tilelayout-item [printMode]="printMode()">
+  @if (!printMode()) {
+    <div header class="flex items-center justify-between gap-2">
+      <h5>Financial KPIs</h5>
+      <kendo-button
+        [dynamicDialog]="['edit-financial-kpi', true]"
+        iconClass="fa-regular fa-pen"
+      >
+        Edit
+      </kendo-button>
+    </div>
+  }
+  <div
+    body
+    class="flex flex-col gap-3"
+    [ngClass]="{
+      'heatmap-print-mode': printMode(),
+    }"
+  >
     @for (fieldGroup of heatmap().fields; track fieldGroup.uniqId) {
       <div>
         <div

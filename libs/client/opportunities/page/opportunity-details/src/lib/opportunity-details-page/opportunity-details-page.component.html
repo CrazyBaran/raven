@@ -65,26 +65,34 @@
     page-content
   >
     <ng-container>
-      <div class="grid min-h-[92px] grid-cols-4 gap-6 px-8 py-2">
-        @if (
-          vm().opportunityIsLoading ||
-          vm().organisationIsLoading ||
-          vm().updatingPipeline
-        ) {
-          @for (i of 3 | times; track i) {
-            <div class="px-2 py-3">
-              <kendo-skeleton [height]="24" class="mb-2" width="50%" />
-              <kendo-skeleton [height]="20" width="30%" />
-            </div>
+      <div class="flex justify-between">
+        <div class="grid min-h-[92px] grow grid-cols-4 gap-6 px-8 py-2">
+          @if (
+            vm().opportunityIsLoading ||
+            vm().organisationIsLoading ||
+            vm().updatingPipeline
+          ) {
+            @for (i of 3 | times; track i) {
+              <div class="px-2 py-3">
+                <kendo-skeleton [height]="24" class="mb-2" width="50%" />
+                <kendo-skeleton [height]="20" width="30%" />
+              </div>
+            }
+          } @else {
+            @for (detail of vm().details; track detail.label) {
+              <div [@fadeIn] class="grow px-2 py-3">
+                <h1 class="mb-2 text-lg">{{ detail.label }}</h1>
+                <p class="text-sm">{{ detail.subLabel }}</p>
+              </div>
+            }
           }
-        } @else {
-          @for (detail of vm().details; track detail.label) {
-            <div [@fadeIn] class="grow px-2 py-3">
-              <h1 class="mb-2 text-lg">{{ detail.label }}</h1>
-              <p class="text-sm">{{ detail.subLabel }}</p>
-            </div>
-          }
-        }
+        </div>
+        <div class="pdf-toolkit">
+          <app-pdf-export
+            [fileName]="getExportFilename()"
+            [loading]="vm().opportunityIsLoading || vm().organisationIsLoading"
+          ></app-pdf-export>
+        </div>
       </div>
       <div class="grid flex-1 grid-cols-[180px_1fr] overflow-hidden">
         <div class="h-100 flex flex-col overflow-hidden bg-white">

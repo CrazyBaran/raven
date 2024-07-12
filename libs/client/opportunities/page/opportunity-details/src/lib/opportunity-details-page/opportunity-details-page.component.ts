@@ -14,6 +14,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { WebsocketService } from '@app/client/core/websockets';
 import { NotesActions } from '@app/client/opportunities/api-notes';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
+import { PDFExportComponent } from '@app/client/opportunities/feature/pdf-export';
 import {
   AffinityUrlButtonComponent,
   StatusIndicatorComponent,
@@ -60,6 +61,7 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     DropConfirmationComponent,
     ReactiveFormsModule,
     DropdownButtonNavigationComponent,
+    PDFExportComponent,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
@@ -193,6 +195,10 @@ export class OpportunityDetailsPageComponent {
         }),
       );
     }
+  }
+
+  public getExportFilename(): string {
+    return `${this.vm()?.currentOrganisation?.name}_briefing_materials-RAVEN`;
   }
 
   protected onCloseDialog(): void {

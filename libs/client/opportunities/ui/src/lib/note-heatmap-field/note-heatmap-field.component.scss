@@ -1,3 +1,11 @@
 .financial-grid {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
+
+.heatmap-print-mode {
+  font-size: 10px;
+
+  .financial-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)) !important;
+  }
+}

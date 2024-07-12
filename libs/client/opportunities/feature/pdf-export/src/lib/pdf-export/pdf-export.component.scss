@@ -1,0 +1,64 @@
+.pdf-expanded {
+  width: 730px;
+
+  .pdf-preview {
+    right: 0;
+    left: unset;
+    height: 80vh;
+  }
+}
+
+.pdf-folded {
+  width: 7rem;
+
+  .pdf-preview {
+    right: -900px;
+    height: 100%;
+  }
+}
+
+.pdf-preview {
+  overflow: auto;
+  width: 600px;
+  padding: 57px;
+  background: white;
+  position: absolute;
+  z-index: 2;
+  box-shadow: -4px 8px 16px 1px #f1f1f1;
+}
+
+.export-button {
+  align-items: center;
+  padding-left: 1rem;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.nav-icon {
+  z-index: 2;
+}
+
+.pageNum,
+.headerBar {
+  position: absolute;
+  color: #424242;
+  font-size: 9px;
+  left: 57px;
+  right: 57px;
+}
+.pageNum {
+  bottom: 10px;
+  .pdf-footer-line {
+    border-top: 1px solid #424242;
+  }
+
+  .pdf-page-value {
+    padding-left: 5px;
+  }
+}
+
+.headerBar {
+  position: absolute;
+  top: 10px;
+  border-bottom: 1px solid #424242;
+}

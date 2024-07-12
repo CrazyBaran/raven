@@ -3,7 +3,7 @@
     <h5 class="k-card-title">Opportunities</h5>
     <kendo-button
       [queryParams]="{
-        'create-opportunity': vm().currentOrganisationId
+        'create-opportunity': vm().currentOrganisationId,
       }"
       [routerLink]="['./']"
       iconClass="fa-sharp fa-solid fa-pen"
@@ -28,7 +28,7 @@
       </ng-template>
       <kendo-grid-column
         [headerStyle]="{ 'font-weight': '700' }"
-        title="Funding Round"
+        title="Instrument"
       >
         <ng-template kendoGridCellTemplate let-dataItem>
           <p>{{ dataItem.tag?.name ?? 'No Opportunity' }}</p>

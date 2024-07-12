@@ -1,0 +1,67 @@
+<div class="lex h-full w-full flex-row">
+  <h1>{{ getObjectValue(config.title) }}</h1>
+  <div class="summary-table">
+    @for (section of config.headerSection; track trackByFn; let i = $index) {
+      <div class="summary-table-row flex flex-row">
+        <div class="summary-table-row__category flex">{{ section.label }}</div>
+        <div class="summary-table-row__subfields flex flex-col">
+          @for (subSection of section.items; track trackByFn; let j = $index) {
+            @if (getObjectValue(subSection)) {
+              <div class="flex grow flex-row">
+                <div>{{ subSection.label }}</div>
+                @if (subSection.type === 'url') {
+                  <div class="flex grow">
+                    <a
+                      target="_blank"
+                      [href]="prepareURL(getObjectValue(subSection))"
+                    >
+                      {{ prepareURL(getObjectValue(subSection)) }}
+                    </a>
+                  </div>
+                } @else {
+                  <div class="flex grow">{{ getObjectValue(subSection) }}</div>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+  </div>
+  <div>
+    @for (section of vm().noteTabs; track trackByFn; let i = $index) {
+      @if (!section.isEmpty) {
+        <h2>{{ i + 1 }}. {{ section.name }}</h2>
+        @for (
+          subSection of section.noteFieldGroups;
+          track trackByFn;
+          let j = $index
+        ) {
+          @if (isHeatmap(subSection)) {
+            <app-note-heatmap-field
+              [printMode]="true"
+              [heatmap]="subSection.heatMap"
+            />
+          }
+          @for (
+            contentSection of subSection.noteFields;
+            track trackByFn;
+            let k = $index
+          ) {
+            @if (contentSection?.value && contentSection.value != 'null') {
+              <div class="pdf-note-content-section">
+                <h3>
+                  {{ i + 1 }}.{{ (j + 1) * (k + 1) }}. {{ contentSection.name }}
+                </h3>
+                <div
+                  class="embedded-content"
+                  [innerHTML]="getHtml(contentSection.value)"
+                ></div>
+              </div>
+            }
+          }
+        }
+      }
+    }
+  </div>
+</div>

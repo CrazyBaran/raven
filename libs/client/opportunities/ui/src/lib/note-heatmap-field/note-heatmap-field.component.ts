@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
 import { dynamicDialogDirective } from '@app/client/shared/ui-directives';
@@ -25,6 +26,7 @@ export interface NoteHeatmap {
     ButtonModule,
     HeatmapItemComponent,
     dynamicDialogDirective,
+    NgClass,
   ],
   templateUrl: './note-heatmap-field.component.html',
   styleUrl: './note-heatmap-field.component.scss',
@@ -32,4 +34,5 @@ export interface NoteHeatmap {
 })
 export class NoteHeatmapFieldComponent {
   public heatmap = input.required<NoteHeatmap>();
+  public printMode = input<boolean>(false);
 }

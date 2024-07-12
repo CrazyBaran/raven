@@ -1,0 +1,63 @@
+<div
+  class="border-component-border flex h-full flex-col gap-4 rounded-md border bg-white transition-all duration-300 ease-in-out"
+  [ngClass]="{
+    'pdf-expanded': exportPanelExpanded(),
+    'pdf-folded': !exportPanelExpanded(),
+  }"
+>
+  <div [class.flex-1]="exportPanelExpanded()" class="relative h-full">
+    <button
+      (click)="toggleExportPanelExpand()"
+      aria-label="Toggle PDF Export preview"
+      class="nav-icon text-primary absolute -left-[14px] top-[32px] flex h-6 w-6 rounded-full bg-white text-[1.5rem]"
+      type="button"
+    >
+      <i
+        [ngClass]="{ 'rotate-180': !exportPanelExpanded() }"
+        class="fa-solid fa-circle-chevron-right duration-300"
+      ></i>
+    </button>
+    <div class="export-button flex gap-4" header>
+      <div class="flex flex-col gap-6" [ngClass]="{ loading: loading }">
+        <kendo-button
+          fillMode="flat"
+          (click)="exportPreAction(); pdf.saveAs(getPDFFileName())"
+          [disabled]="!!loading()"
+        >
+          <div class="flex flex-col gap-2">
+            <i class="fa-solid fa-file-export text-2xl"></i>
+            <p class="text-sm">Export PDF</p>
+          </div>
+        </kendo-button>
+      </div>
+    </div>
+    <div class="relative">
+      <div
+        class="pdf-preview border-component-border duration-600 rounded-md border bg-white transition-all ease-in-out"
+      >
+        <kendo-pdf-export
+          [paperSize]="config.paperSize"
+          [margin]="config.margin"
+          [scale]="config.scale"
+          #pdf
+        >
+          <ng-template kendoPDFTemplate let-pageNum="pageNum">
+            <div class="headerBar">
+              <div class="flex grow justify-between">
+                <div>Briefing Materials</div>
+                <div>PRIVATE & CONFIDENTIAL</div>
+              </div>
+            </div>
+            <div class="pageNum">
+              <div class="flex grow justify-between">
+                <div class="pdf-footer-line flex grow"></div>
+                <div class="pdf-page-value">{{ pageNum }}</div>
+              </div>
+            </div>
+          </ng-template>
+          <app-pdf-content></app-pdf-content>
+        </kendo-pdf-export>
+      </div>
+    </div>
+  </div>
+</div>

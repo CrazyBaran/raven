@@ -4,11 +4,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoteStoreFacade } from '@app/client/notes/state';
+import { NoteStoreFacade, selectNotesState } from '@app/client/notes/state';
 import { OpportunitiesFacade } from '@app/client/opportunities/data-access';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
+import { storageQuery } from '../../../../../../shared/storage/data-access/src';
+import {
+  PDFContentComponent,
+  PDFExportComponent,
+} from '../../../../../feature/pdf-export/src';
 import { OpportunityDetailsPageComponent } from './opportunity-details-page.component';
 import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
 
@@ -18,7 +23,12 @@ describe('OpportunityDetailsPageComponent', () => {
   let actions$: Observable<unknown>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OpportunityDetailsPageComponent, RouterTestingModule],
+      imports: [
+        OpportunityDetailsPageComponent,
+        RouterTestingModule,
+        PDFExportComponent,
+        PDFContentComponent,
+      ],
       providers: [
         provideAnimations(),
         provideMockActions(() => actions$),
@@ -32,6 +42,19 @@ describe('OpportunityDetailsPageComponent', () => {
                 lines: {
                   disabledItem: (): boolean => true,
                 },
+              },
+            },
+            {
+              selector: selectNotesState,
+              value: {
+                opportunityId: '1',
+                opportunityNotes: [],
+              },
+            },
+            {
+              selector: storageQuery.selectAzureImageDictionary,
+              value: {
+                images: [],
               },
             },
           ],
