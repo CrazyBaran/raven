@@ -102,6 +102,7 @@
                 [ngStyle]="$any(navigation).style ?? {}"
                 (click)="tabNavigated.next(navigation.label)"
                 [queryParams]="navigation.queryParams"
+                [queryParamsHandling]="'merge'"
                 [routerLink]="navigation.link"
                 [selected]="navigation.active"
                 [toggleable]="true"

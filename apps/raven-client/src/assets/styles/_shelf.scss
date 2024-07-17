@@ -29,7 +29,6 @@ $shelf-window-padding: 15px;
   width: calc(100dvw - ($shelf-window-padding * 2)) !important;
   height: calc(100dvh - ($shelf-window-padding * 2)) !important;
   box-shadow: 22px 0px 0px 147px rgba(0, 0, 0, 0.28) !important;
-  z-index: 99999999 !important;
 }
 
 .grid-borderless {
