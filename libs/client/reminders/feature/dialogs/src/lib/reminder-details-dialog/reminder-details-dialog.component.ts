@@ -7,6 +7,7 @@ import {
 import { Store } from '@ngrx/store';
 
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { RemindersActions } from '@app/client/reminders/state';
 import { LoaderComponent, TagsContainerComponent } from '@app/client/shared/ui';
 import {
@@ -29,6 +30,7 @@ import { selectCreateReminderViewModel } from './remidner-details-dialog.selecto
     DatePipe,
     ShowTooltipIfClampedDirective,
     LoaderComponent,
+    RouterLink,
   ],
   templateUrl: './reminder-details-dialog.component.html',
   styleUrls: ['./reminder-details-dialog.component.scss'],
@@ -48,6 +50,14 @@ export class ReminderDetailsDialogComponent
     this.store.dispatch(
       RemindersActions.getReminder({ id: this.vm().reminderId }),
     );
+  }
+
+  public reminderDetailsQuery(id: string): Record<string, string> {
+    return { [DialogUtil.queryParams.reminderDetails]: id };
+  }
+
+  public getReminderTagLink(): string[] {
+    return ['/companies', this.vm()?.organisationId];
   }
 
   protected onDialogClose(): void {

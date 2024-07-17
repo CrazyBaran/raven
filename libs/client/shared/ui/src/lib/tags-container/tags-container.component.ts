@@ -21,6 +21,7 @@ export interface TagItem {
   style?: Record<string, string | undefined | boolean>;
   icon: string;
   size: ButtonSize;
+  link?: string[] | null;
 }
 
 @Component({

@@ -42,3 +42,9 @@ body {
 .k-badge-edge {
   z-index: 1;
 }
+
+a.tag-link {
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -12,7 +12,13 @@
       <section>
         <p class="text-subtle-text">Company / Opportunity</p>
         <p class="text-lg">
-          {{ vm().companyOpportunityLabel }}
+          <a
+            class="tag-link"
+            [routerLink]="getReminderTagLink()"
+            [queryParams]="reminderDetailsQuery(vm().reminderId)"
+          >
+            {{ vm().companyOpportunityLabel }}
+          </a>
         </p>
       </section>
       <section>

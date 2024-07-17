@@ -92,10 +92,12 @@
 
     <kendo-grid-column headerClass="!font-bold" title="Company / Opportunity">
       <ng-template kendoGridCellTemplate let-reminder>
-        {{ reminder.tag.company }}
-        @if (reminder.tag.opportunity) {
-          / {{ reminder.tag.opportunity }}
-        }
+        <a class="tag-link" [routerLink]="getReminderTagLink(reminder)">
+          {{ reminder.tag.company }}
+          @if (reminder.tag.opportunity) {
+            / {{ reminder.tag.opportunity }}
+          }
+        </a>
       </ng-template>
     </kendo-grid-column>
 

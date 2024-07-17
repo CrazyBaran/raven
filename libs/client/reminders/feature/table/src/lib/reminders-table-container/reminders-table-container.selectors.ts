@@ -97,6 +97,7 @@ export const selectTableModel = createSelector(
           company: ReminderUtils.getReminderCompanyTag(reminder)?.name,
           opportunity: ReminderUtils.getReminderOpportunityTag(reminder)?.name,
         },
+        organisationId: ReminderUtils.getReminderOrganisationId(reminder),
         actionsModel: ReminderUtils.canEditReminder(
           reminder,
           loggedUserTag?.userId,

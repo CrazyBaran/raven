@@ -267,7 +267,14 @@ export class NotepadFormComponent
       this.addedTagIds()
         ?.map((tag) => {
           if (isSimpleTagDropdownValue(tag)) {
-            return this.tags().find((t) => t?.id === tag) as TagData;
+            const referencedTag = this.tags().find((t) => t?.id === tag);
+            return {
+              ...referencedTag,
+              link:
+                referencedTag?.type === 'company'
+                  ? ['/companies', referencedTag.organisationId]
+                  : null,
+            } as TagData;
           }
           if (isOpportunityComplexTag(tag)) {
             const oppotunityTag = this.tags().find(
@@ -283,6 +290,9 @@ export class NotepadFormComponent
               ...oppotunityTag,
               organisationId: organisationTag?.id,
               name: `${organisationTag?.name} / ${oppotunityTag?.name}`,
+              link: organisationTag?.organisationId
+                ? ['/companies', organisationTag?.organisationId]
+                : null,
             } as TagData;
           } else {
             const versionTag = this.tags().find(
@@ -298,6 +308,9 @@ export class NotepadFormComponent
               ...versionTag,
               organisationId: organisationTag?.id,
               name: `${organisationTag?.name} / ${versionTag?.name}`,
+              link: organisationTag?.organisationId
+                ? ['/companies', organisationTag?.organisationId]
+                : null,
             } as TagData;
           }
         })

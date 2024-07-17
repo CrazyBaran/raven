@@ -15,7 +15,11 @@
     @if (notPersonTags.length) {
       <ul class="flex flex-row flex-wrap gap-[0_0.75rem]">
         @for (tag of notPersonTags; track tag.id) {
-          <ui-tag [label]="tag.name" [style]="tag.type | tagTypeColor" />
+          <ui-tag
+            [label]="tag.name"
+            [style]="tag.type | tagTypeColor"
+            [link]="tag.link"
+          />
         }
       </ul>
     }

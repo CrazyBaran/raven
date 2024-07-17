@@ -20,6 +20,8 @@ export const selectAllNotesTableRows = createSelector(
             .map((t) => t.name)
             .join(' / ')}`,
           type: 'opportunity',
+          organisationId: t.tags?.find((innerTag) => !!innerTag?.organisationId)
+            ?.organisationId,
         })) ?? [];
       return {
         ...note,
@@ -49,6 +51,7 @@ export const selectAllNotesTableRows = createSelector(
             style: tagTypeStyleDictionary[t.type as TagType] ?? '',
             size: 'small',
             icon: 'fa-solid fa-tag',
+            link: t.organisationId ? ['/companies', t.organisationId] : null,
           })),
       };
     }),

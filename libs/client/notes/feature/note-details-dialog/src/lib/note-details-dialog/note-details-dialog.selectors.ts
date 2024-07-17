@@ -58,8 +58,19 @@ export const selectNoteDetailsDialogViewModel = createSelector(
     noteDetails: {
       ...noteDetails,
       tags: [
-        ...(noteDetails?.tags ?? []),
+        ...(noteDetails?.tags?.map((tag) => {
+          return {
+            ...tag,
+            link:
+              tag?.type === 'company'
+                ? ['/companies', tag.organisationId]
+                : null,
+          };
+        }) ?? []),
         ...(noteDetails?.complexTags?.map((tag) => {
+          const organisationTag = tag?.tags?.filter(
+            (t) => t?.type === 'company',
+          )?.[0];
           return {
             id: tag.id,
             name: [...tag.tags]
@@ -67,6 +78,9 @@ export const selectNoteDetailsDialogViewModel = createSelector(
               .map((t) => t.name)
               .join(' / '),
             type: 'opportunity',
+            link: organisationTag?.organisationId
+              ? ['/companies', organisationTag?.organisationId]
+              : null,
           };
         }) ?? []),
       ],

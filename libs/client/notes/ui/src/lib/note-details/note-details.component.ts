@@ -19,7 +19,7 @@ export interface NoteDetails {
   createdBy: {
     name: string;
   };
-  tags: { id: string; name: string; type: string }[];
+  tags: { id: string; name: string; type: string; link?: string[] }[];
   createdAt: string;
   updatedAt: string;
 }

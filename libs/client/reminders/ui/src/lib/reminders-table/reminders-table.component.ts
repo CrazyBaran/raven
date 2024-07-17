@@ -55,6 +55,7 @@ export interface ReminderTableRow {
   dueDate: string | Date;
   status: 'overdue' | 'due' | 'completed';
   actionsModel: DropdownbuttonNavigationModel | undefined;
+  organisationId?: string;
 }
 
 @Component({
@@ -113,6 +114,9 @@ export class RemindersTableComponent extends InfinityTableViewBaseComponent<Remi
     return { [DialogUtil.queryParams.reminderDetails]: id };
   }
 
+  public getReminderTagLink(reminder: ReminderTableRow): string[] {
+    return ['/companies', reminder?.organisationId || ''];
+  }
   public rowCallback: RowClassFn = (context: RowClassArgs) => {
     const row = context.dataItem as ReminderTableRow;
 

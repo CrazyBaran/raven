@@ -51,7 +51,9 @@ export class ReminderUtils {
 
   public static getReminderCompanyTag(
     reminder: ReminderEntity | undefined,
-  ): { name: string; id: string; domain?: string } | undefined {
+  ):
+    | { name: string; id: string; domain?: string; organisationId?: string }
+    | undefined {
     if (!reminder) {
       return undefined;
     }
@@ -79,6 +81,13 @@ export class ReminderUtils {
     return `${company?.name ?? ''} ${
       opportunity?.name ? `/ ${opportunity.name}` : ``
     }`;
+  }
+
+  public static getReminderOrganisationId(
+    reminder: ReminderEntity | undefined,
+  ): string {
+    const company = ReminderUtils.getReminderCompanyTag(reminder);
+    return company?.organisationId || '';
   }
 
   public static canEditReminder(

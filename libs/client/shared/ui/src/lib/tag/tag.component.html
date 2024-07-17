@@ -7,7 +7,7 @@
   [ngStyle]="style"
 >
   @if (icon) {
-   <i [className]="icon + ' h-fit p-0.5 mr-1'"></i>
+    <i [className]="icon + ' h-fit p-0.5 mr-1'"></i>
   }
   <ng-container
     *ngTemplateOutlet="
@@ -36,6 +36,12 @@
     [isEllipsisActive]="!wrap"
     class="overflow-hidden leading-5"
   >
-    {{ label }}
+    @if (link) {
+      <a class="tag-link" [routerLink]="link" queryParamsHandling="preserve">
+        {{ label }}
+      </a>
+    } @else {
+      {{ label }}
+    }
   </span>
 </ng-template>

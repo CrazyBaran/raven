@@ -23,6 +23,7 @@ export const selectCreateReminderViewModel = createSelector(
       reminder,
       companyOpportunityLabel:
         ReminderUtils.getReminderCompanyOpportunityLabel(reminder),
+      organisationId: ReminderUtils.getReminderOrganisationId(reminder),
     };
   },
 );
