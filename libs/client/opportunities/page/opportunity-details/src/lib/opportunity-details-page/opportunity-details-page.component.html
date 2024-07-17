@@ -87,12 +87,6 @@
             }
           }
         </div>
-        <div class="pdf-toolkit">
-          <app-pdf-export
-            [fileName]="getExportFilename()"
-            [loading]="vm().opportunityIsLoading || vm().organisationIsLoading"
-          ></app-pdf-export>
-        </div>
       </div>
       <div class="grid flex-1 grid-cols-[180px_1fr] overflow-hidden">
         <div class="h-100 flex flex-col overflow-hidden bg-white">
@@ -106,6 +100,7 @@
             ) {
               <kendo-button
                 [ngStyle]="$any(navigation).style ?? {}"
+                (click)="tabNavigated.next(navigation.label)"
                 [queryParams]="navigation.queryParams"
                 [routerLink]="navigation.link"
                 [selected]="navigation.active"
@@ -130,10 +125,15 @@
             />
           }
         </div>
-        <div class="border-grey-300 overflow-hidden border p-3">
+        <div class="border-grey-300 flex overflow-hidden border p-3">
           <div class="h-full w-full">
             <router-outlet />
           </div>
+          <app-related-notes-container
+            [tabNavigated]="tabNavigated"
+            [drawerConfiguration]="opportunityNavigationVm()"
+            class="ml-auto"
+          />
         </div>
       </div>
     </ng-container>

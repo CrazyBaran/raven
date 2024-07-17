@@ -1,3 +1,39 @@
+.pdf-preview {
+  width: 600px;
+  overflow: auto;
+  width: 485px;
+  padding: 0;
+  background: white;
+  margin: auto;
+
+  .pageNum,
+  .headerBar {
+    position: absolute;
+    color: #424242;
+    font-size: 9px;
+    left: 57px;
+    right: 57px;
+  }
+
+  .pageNum {
+    bottom: 10px;
+
+    .pdf-footer-line {
+      border-top: 1px solid #424242;
+    }
+
+    .pdf-page-value {
+      padding-left: 5px;
+    }
+  }
+
+  .headerBar {
+    position: absolute;
+    top: 10px;
+    border-bottom: 1px solid #424242;
+  }
+}
+
 h1,
 h2 {
   color: #00a59b;
@@ -22,6 +58,16 @@ p,
   color: #424242;
   font-size: 9px;
   font-family: Arial;
+}
+
+.download-button {
+  p {
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .embedded-content {

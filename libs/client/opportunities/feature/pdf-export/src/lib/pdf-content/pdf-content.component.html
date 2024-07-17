@@ -1,67 +1,119 @@
-<div class="lex h-full w-full flex-row">
-  <h1>{{ getObjectValue(config.title) }}</h1>
-  <div class="summary-table">
-    @for (section of config.headerSection; track trackByFn; let i = $index) {
-      <div class="summary-table-row flex flex-row">
-        <div class="summary-table-row__category flex">{{ section.label }}</div>
-        <div class="summary-table-row__subfields flex flex-col">
-          @for (subSection of section.items; track trackByFn; let j = $index) {
-            @if (getObjectValue(subSection)) {
-              <div class="flex grow flex-row">
-                <div>{{ subSection.label }}</div>
-                @if (subSection.type === 'url') {
-                  <div class="flex grow">
-                    <a
-                      target="_blank"
-                      [href]="prepareURL(getObjectValue(subSection))"
-                    >
-                      {{ prepareURL(getObjectValue(subSection)) }}
-                    </a>
-                  </div>
-                } @else {
-                  <div class="flex grow">{{ getObjectValue(subSection) }}</div>
+<div class="flex h-full flex-col">
+  <kendo-button
+    fillMode="clear"
+    (click)="exportPreAction(); pdf.saveAs(getPDFFileName())"
+    class="download-button flex w-full"
+  >
+    <div class="flex flex-col gap-2">
+      <i class="fa-solid fa-download text-2xl"></i>
+      <p>Download PDF file</p>
+    </div>
+  </kendo-button>
+  <div class="relative h-full overflow-auto">
+    <div class="pdf-preview">
+      <kendo-pdf-export
+        [paperSize]="pageConfig.paperSize"
+        [margin]="pageConfig.margin"
+        [scale]="pageConfig.scale"
+        #pdf
+      >
+        <ng-template kendoPDFTemplate let-pageNum="pageNum">
+          <div class="headerBar">
+            <div class="flex grow justify-between">
+              <div>{{ vm()?.organisation?.name }} - Briefing Materials</div>
+              <div>PRIVATE & CONFIDENTIAL</div>
+            </div>
+          </div>
+          <div class="pageNum">
+            <div class="flex grow justify-between">
+              <div class="pdf-footer-line flex grow"></div>
+              <div class="pdf-page-value">{{ pageNum }}</div>
+            </div>
+          </div>
+        </ng-template>
+        <div class="h-full w-full flex-row">
+          <h1>{{ getObjectValue(config.title) }}</h1>
+          <div class="summary-table">
+            @for (
+              section of config.headerSection;
+              track trackByFn;
+              let i = $index
+            ) {
+              <div class="summary-table-row flex flex-row">
+                <div class="summary-table-row__category flex">
+                  {{ section.label }}
+                </div>
+                <div class="summary-table-row__subfields flex flex-col">
+                  @for (
+                    subSection of section.items;
+                    track trackByFn;
+                    let j = $index
+                  ) {
+                    @if (getObjectValue(subSection)) {
+                      <div class="flex grow flex-row">
+                        <div>{{ subSection.label }}</div>
+                        @if (subSection.type === 'url') {
+                          <div class="flex grow">
+                            <a
+                              target="_blank"
+                              [href]="prepareURL(getObjectValue(subSection))"
+                            >
+                              {{ prepareURL(getObjectValue(subSection)) }}
+                            </a>
+                          </div>
+                        } @else {
+                          <div class="flex grow">
+                            {{ getObjectValue(subSection) }}
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          <div>
+            @for (section of vm().noteTabs; track trackByFn; let i = $index) {
+              @if (!section.isEmpty) {
+                <h2>{{ i + 1 }}. {{ section.name }}</h2>
+                @for (
+                  subSection of section.noteFieldGroups;
+                  track trackByFn;
+                  let j = $index
+                ) {
+                  @if (isHeatmap(subSection)) {
+                    <app-note-heatmap-field
+                      [printMode]="true"
+                      [heatmap]="subSection.heatMap"
+                    />
+                  }
+                  @for (
+                    contentSection of subSection.noteFields;
+                    track trackByFn;
+                    let k = $index
+                  ) {
+                    @if (
+                      contentSection?.value && contentSection.value != 'null'
+                    ) {
+                      <div class="pdf-note-content-section">
+                        <h3>
+                          {{ i + 1 }}.{{ (j + 1) * (k + 1) }}.
+                          {{ contentSection.name }}
+                        </h3>
+                        <div
+                          class="embedded-content"
+                          [innerHTML]="getHtml(contentSection.value)"
+                        ></div>
+                      </div>
+                    }
+                  }
                 }
-              </div>
+              }
             }
-          }
+          </div>
         </div>
-      </div>
-    }
-  </div>
-  <div>
-    @for (section of vm().noteTabs; track trackByFn; let i = $index) {
-      @if (!section.isEmpty) {
-        <h2>{{ i + 1 }}. {{ section.name }}</h2>
-        @for (
-          subSection of section.noteFieldGroups;
-          track trackByFn;
-          let j = $index
-        ) {
-          @if (isHeatmap(subSection)) {
-            <app-note-heatmap-field
-              [printMode]="true"
-              [heatmap]="subSection.heatMap"
-            />
-          }
-          @for (
-            contentSection of subSection.noteFields;
-            track trackByFn;
-            let k = $index
-          ) {
-            @if (contentSection?.value && contentSection.value != 'null') {
-              <div class="pdf-note-content-section">
-                <h3>
-                  {{ i + 1 }}.{{ (j + 1) * (k + 1) }}. {{ contentSection.name }}
-                </h3>
-                <div
-                  class="embedded-content"
-                  [innerHTML]="getHtml(contentSection.value)"
-                ></div>
-              </div>
-            }
-          }
-        }
-      }
-    }
+      </kendo-pdf-export>
+    </div>
   </div>
 </div>

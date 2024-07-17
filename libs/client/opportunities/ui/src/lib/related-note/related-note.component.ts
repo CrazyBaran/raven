@@ -3,10 +3,11 @@ import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   input,
   output,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NoteTypeBadgeComponent } from '@app/client/notes/ui';
 import { TilelayoutItemComponent, delayedFadeIn } from '@app/client/shared/ui';
 import { RecreateViewDirective } from '@app/client/shared/ui-directives';
@@ -43,8 +44,13 @@ export class RelatedNoteComponent {
   public note = input.required<RelatedNote>();
   public page = input(0);
   public pageSize = input(0);
+  protected router = inject(Router);
 
   protected onPageChange($event: number): void {
     this.pageChange.emit($event);
+  }
+
+  protected getNoteRouterLink(): string[] {
+    return [this.router?.url?.split?.('?')?.[0]] || ['./'];
   }
 }

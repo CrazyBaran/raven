@@ -4,6 +4,9 @@ import {
   Component,
   computed,
   inject,
+  Input,
+  input,
+  OnInit,
   signal,
 } from '@angular/core';
 
@@ -25,11 +28,14 @@ import {
   ButtonGroupModule,
   ButtonModule,
 } from '@progress/kendo-angular-buttons';
+import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import * as _ from 'lodash';
+import { Subject } from 'rxjs';
+import { PDFContentComponent, PDFPageConfig } from '../../../../pdf-export/src';
 import { selectOpportunitiesRelatedNotesViewModel } from './opportunities-related-notes.selectors';
 import { RelatedFilesComponent } from './related-files/related-files.component';
 
-export type RelatedGroup = 'notes' | 'files';
+export type RelatedGroup = 'notes' | 'files' | 'export-pdf';
 
 @Component({
   selector: 'app-related-notes-container',
@@ -45,22 +51,37 @@ export type RelatedGroup = 'notes' | 'files';
     ButtonGroupModule,
     FilesTreelistContainerComponent,
     RelatedFilesComponent,
+    PDFExportModule,
+    PDFContentComponent,
   ],
   templateUrl: './related-notes-container.component.html',
   styleUrls: ['./related-notes-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [trigger('delayedFadeIn', delayedFadeIn())],
 })
-export class RelatedNotesContainerComponent {
+export class RelatedNotesContainerComponent implements OnInit {
   public relatedNotesExpanded = signal<boolean>(false);
 
-  public group = signal<RelatedGroup>('notes');
+  public group = signal<RelatedGroup>('export-pdf');
 
+  public drawerConfiguration = input<any>({});
+
+  @Input()
+  public tabNavigated: Subject<string>;
   protected router = inject(Router);
 
   protected activeRoute = inject(ActivatedRoute);
 
   protected store = inject(Store);
+  public config = PDFPageConfig;
+
+  public ngOnInit() {
+    this.tabNavigated?.subscribe?.((activeTab) => {
+      if (this.shouldHideDrawerSection(this.group(), activeTab)) {
+        this.group.set('export-pdf');
+      }
+    });
+  }
 
   protected state = signal(
     {
@@ -90,6 +111,19 @@ export class RelatedNotesContainerComponent {
     },
     {},
   );
+  public getExportFilename(): string {
+    return `test_briefing_materials-RAVEN`;
+  }
+
+  public shouldHideDrawerSection(
+    section: string,
+    groupLabel?: string,
+  ): boolean {
+    const label = groupLabel ?? this.drawerConfiguration()?.activeTab.label;
+    return this.drawerConfiguration()?.hideConfiguration[section]?.some(
+      (s: any) => s.label === label,
+    );
+  }
 
   protected toggleRelatedNotesExpand(): void {
     this.relatedNotesExpanded.update((expanded) => !expanded);

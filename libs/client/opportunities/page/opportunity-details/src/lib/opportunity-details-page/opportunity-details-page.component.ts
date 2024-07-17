@@ -14,7 +14,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { WebsocketService } from '@app/client/core/websockets';
 import { NotesActions } from '@app/client/opportunities/api-notes';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
-import { PDFExportComponent } from '@app/client/opportunities/feature/pdf-export';
+import { RelatedNotesContainerComponent } from '@app/client/opportunities/feature/related-notes';
 import {
   AffinityUrlButtonComponent,
   StatusIndicatorComponent,
@@ -40,7 +40,11 @@ import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
-import { selectOpportunityDetailViewModel } from './opportunity-details-page.selectors';
+import { Subject } from 'rxjs';
+import {
+  selectOpportunityDetailViewModel,
+  selectOpportunityPageDrawerFeatures,
+} from './opportunity-details-page.selectors';
 
 @Component({
   selector: 'app-opportunity-details-page',
@@ -61,7 +65,7 @@ import { selectOpportunityDetailViewModel } from './opportunity-details-page.sel
     DropConfirmationComponent,
     ReactiveFormsModule,
     DropdownButtonNavigationComponent,
-    PDFExportComponent,
+    RelatedNotesContainerComponent,
   ],
   templateUrl: './opportunity-details-page.component.html',
   styleUrls: ['./opportunity-details-page.component.scss'],
@@ -77,10 +81,14 @@ export class OpportunityDetailsPageComponent {
   protected websocketService = inject(WebsocketService);
 
   protected vm = this.store.selectSignal(selectOpportunityDetailViewModel);
+  protected opportunityNavigationVm = this.store.selectSignal(
+    selectOpportunityPageDrawerFeatures,
+  );
 
   protected footerGroup = signal<KanbanFooterGroup | null>(null);
   protected pipelineStageFormControl = new FormControl<string | null>(null);
 
+  protected tabNavigated = new Subject<string>();
   protected dropdownButtonActions = {
     actions: [
       {

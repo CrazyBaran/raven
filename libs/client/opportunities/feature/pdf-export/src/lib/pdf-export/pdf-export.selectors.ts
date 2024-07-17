@@ -68,9 +68,9 @@ export const selectPDFExportModel = createSelector(
                   !!value?.value &&
                   value?.value != null &&
                   (opportunityDetails?.pipelineStageId
-                    ? !value?.hideOnPipelineStages?.includes?.({
-                        id: opportunityDetails.pipelineStageId,
-                      })
+                    ? !value?.hideOnPipelineStages?.some?.(
+                        (v) => v.id === opportunityDetails?.pipelineStageId,
+                      )
                     : true);
                 return shouldDisplay;
               });
@@ -100,13 +100,26 @@ export const selectPDFExportModel = createSelector(
               } as NoteHeatmap,
             };
           });
-          const noteFieldGroups = mappedNoteFieldsGroups.filter(
+          let noteFieldGroups = mappedNoteFieldsGroups.filter(
             (x) => x.noteFields?.length,
           );
+          const heatMapEntity = mappedNoteFieldsGroups.find(
+            (h) => !!h.heatmapFields.length,
+          );
+          if (!noteFieldGroups.length && heatMapEntity) {
+            noteFieldGroups = [
+              {
+                noteFields: [],
+                heatMap: heatMapEntity.heatMap,
+                heatmapFields: heatMapEntity.heatmapFields,
+              },
+            ] as any;
+          }
+
           return {
             ...tab,
             noteFieldGroups: noteFieldGroups,
-            isEmpty: i === emptyFields || !noteFieldGroups.length,
+            isEmpty: !noteFieldGroups.length,
           };
         })
         .filter((y) => !y.isEmpty),

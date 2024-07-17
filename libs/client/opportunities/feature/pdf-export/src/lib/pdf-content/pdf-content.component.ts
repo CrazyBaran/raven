@@ -18,13 +18,17 @@ import {
   ButtonModule,
 } from '@progress/kendo-angular-buttons';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
+import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { RxFor } from '@rx-angular/template/for';
 import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
 import * as _ from 'lodash';
 import { ImagePathDictionaryService } from '../../../../../../shared/storage/data-access/src';
 import { NoteHeatmapFieldComponent } from '../../../../../ui/src';
-import { pdfFieldsConfig } from '../pdf-export/pdf-export.config';
+import {
+  PDFPageConfig,
+  pdfFieldsConfig,
+} from '../pdf-export/pdf-export.config';
 import { selectPDFExportModel } from '../pdf-export/pdf-export.selectors';
 import {
   PDFExportBaseField,
@@ -49,6 +53,7 @@ import {
     DropdownNavigationComponent,
     NoteHeatmapFieldComponent,
     CommonModule,
+    PDFExportModule,
   ],
   templateUrl: './pdf-content.component.html',
   styleUrls: ['./pdf-content.component.scss'],
@@ -61,10 +66,11 @@ export class PDFContentComponent {
   protected activatedRoute = inject(ActivatedRoute);
   protected trackByFn = (index: number, item: any): string => item.id;
   protected vm = this.store.selectSignal(selectPDFExportModel);
-
+  protected exportTime = new Date().getTime();
   pathResolver = inject(ImagePathDictionaryService);
 
   protected imagePathDictionaryService = inject(ImagePathDictionaryService);
+  public pageConfig = PDFPageConfig;
 
   public config: PDFExportConfiguration = pdfFieldsConfig;
 
@@ -86,6 +92,16 @@ export class PDFContentComponent {
       return 'javascript:void';
     }
     return `https://${domain}`;
+  }
+
+  public getPDFFileName(): string {
+    return `${
+      this.vm()?.organisation?.name || 'organisation'
+    }-raven-briefing_materials-${this.exportTime}.pdf`;
+  }
+
+  public exportPreAction(): void {
+    this.exportTime = new Date().getTime();
   }
 
   public getObjectValue(key: PDFExportBaseField): string | null {

@@ -1,5 +1,5 @@
 <div
-  [class.flex-1]="relatedNotesExpanded()"
+  [class.related-notes-expanded]="relatedNotesExpanded()"
   class="relative h-full transition-all duration-300 ease-in-out"
 >
   <button
@@ -18,26 +18,42 @@
     <div class="flex gap-4" header>
       @if (relatedNotesExpanded()) {
         <kendo-buttongroup [@delayedFadeIn] selection="single">
-          <button
-            kendoButton
-            [selected]="group() === 'notes'"
-            (click)="group.set('notes')"
-            [toggleable]="true"
-            themeColor="primary"
-            fillMode="flat"
-          >
-            Related Notes
-          </button>
-          <button
-            kendoButton
-            [selected]="group() === 'files'"
-            [toggleable]="true"
-            (click)="group.set('files')"
-            themeColor="primary"
-            fillMode="flat"
-          >
-            Related Files
-          </button>
+          @if (!shouldHideDrawerSection('notes')) {
+            <button
+              kendoButton
+              [selected]="group() === 'notes'"
+              (click)="group.set('notes')"
+              [toggleable]="true"
+              themeColor="primary"
+              fillMode="flat"
+            >
+              Related Notes
+            </button>
+          }
+          @if (!shouldHideDrawerSection('files')) {
+            <button
+              kendoButton
+              [selected]="group() === 'files'"
+              [toggleable]="true"
+              (click)="group.set('files')"
+              themeColor="primary"
+              fillMode="flat"
+            >
+              Related Files
+            </button>
+          }
+          @if (!shouldHideDrawerSection('export-pdf')) {
+            <button
+              kendoButton
+              [selected]="group() === 'export-pdf'"
+              [toggleable]="true"
+              (click)="group.set('export-pdf')"
+              themeColor="primary"
+              fillMode="flat"
+            >
+              PDF Preview
+            </button>
+          }
         </kendo-buttongroup>
         <kendo-button
           class="ml-auto"
@@ -50,18 +66,30 @@
         </kendo-button>
       } @else {
         <div class="flex flex-col gap-6" [@delayedFadeIn]>
-          <kendo-button fillMode="flat" (click)="onExpand('notes')">
-            <div class="flex flex-col gap-2">
-              <i class="fa-solid fa-notebook text-2xl"></i>
-              <p class="text-sm">Notes</p>
-            </div>
-          </kendo-button>
-          <kendo-button fillMode="flat" (click)="onExpand('files')">
-            <div class="flex flex-col gap-2">
-              <i class="fa-solid fa-file text-2xl"></i>
-              <p class="text-sm">Files</p>
-            </div>
-          </kendo-button>
+          @if (!shouldHideDrawerSection('notes')) {
+            <kendo-button fillMode="flat" (click)="onExpand('notes')">
+              <div class="flex flex-col gap-2">
+                <i class="fa-solid fa-notebook text-2xl"></i>
+                <p class="text-sm">Notes</p>
+              </div>
+            </kendo-button>
+          }
+          @if (!shouldHideDrawerSection('files')) {
+            <kendo-button fillMode="flat" (click)="onExpand('files')">
+              <div class="flex flex-col gap-2">
+                <i class="fa-solid fa-file text-2xl"></i>
+                <p class="text-sm">Files</p>
+              </div>
+            </kendo-button>
+          }
+          @if (!shouldHideDrawerSection('export-pdf')) {
+            <kendo-button fillMode="flat" (click)="onExpand('export-pdf')">
+              <div class="flex flex-col gap-2">
+                <i class="fa-solid fa-file-export text-2xl"></i>
+                <p class="text-sm">Export PDF</p>
+              </div>
+            </kendo-button>
+          }
         </div>
       }
     </div>
@@ -100,12 +128,14 @@
               </p>
             }
           }
-        } @else {
+        } @else if (group() === 'files') {
           <app-related-files
             [directoryUrl]="vm().directoryUrl!"
             [currentTab]="vm().activeTab!"
             [fileTagDictionary]="vm().fileTagDictionary"
           />
+        } @else if (group() === 'export-pdf') {
+          <app-pdf-content></app-pdf-content>
         }
       }
     </ng-container>

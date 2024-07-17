@@ -162,3 +162,20 @@ export const selectOpportunityDetailViewModel = createSelector(
     };
   },
 );
+
+export const selectOpportunityPageDrawerFeatures = createSelector(
+  selectOpportunityPageNavigation,
+  (nav) => {
+    const activeTab = nav?.find((n) => n.active);
+    return {
+      hideConfiguration: drawerFeaturesHide,
+      activeTab: activeTab ?? nav?.[0],
+    };
+  },
+);
+
+const drawerFeaturesHide = {
+  notes: [...OPPORTUNITY_DETAILS_ROUTES.map((d) => ({ label: d.label }))],
+  files: [...OPPORTUNITY_DETAILS_ROUTES.map((d) => ({ label: d.label }))],
+  'export-pdf': [],
+};
