@@ -39,14 +39,16 @@ import {
   DialogResult,
   DialogService,
   DialogsModule,
+  WindowMaximizeActionDirective,
   WindowRef,
 } from '@progress/kendo-angular-dialog';
 import { ExpansionPanelModule } from '@progress/kendo-angular-layout';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
-import { xIcon } from '@progress/kendo-svg-icons';
+import { exportIcon, xIcon } from '@progress/kendo-svg-icons';
 import { RxPush } from '@rx-angular/template/push';
 import { filter, take } from 'rxjs';
 import { selectQueryParam } from '../../../../../../shared/util-router/src';
+import { TemplateActions } from '../../../../../../templates/data-access/src';
 import {
   selectNoteDetailsDialogViewModel,
   selectNoteDetailsForm,
@@ -89,6 +91,9 @@ export class NoteDetailsDialogComponent
   @ViewChild(NotepadFormComponent)
   public notepadFormComponent: NotepadFormComponent;
 
+  @ViewChild('maximizeButton', { read: WindowMaximizeActionDirective })
+  public maximizeButton: WindowMaximizeActionDirective;
+
   @ViewChild('windowTitleBarRef', { static: true })
   public windowTitleBarRef: TemplateRef<unknown>;
 
@@ -109,6 +114,7 @@ export class NoteDetailsDialogComponent
   public fields: { id: string; name: string }[] = [];
 
   public icon = xIcon;
+  public newTabIcon = exportIcon;
 
   public readonly isUpdating = this.noteStoreFacade.isUpdatingNote;
 
@@ -122,6 +128,8 @@ export class NoteDetailsDialogComponent
 
   protected tryGoInEditMode = false;
 
+  protected maximizedOnInit = false;
+  protected maximizeOnInit = false;
   public constructor(
     private store: Store,
     private readonly noteStoreFacade: NoteStoreFacade,
@@ -130,6 +138,7 @@ export class NoteDetailsDialogComponent
   ) {
     super();
     this.store.dispatch(NotesActions.getCurrentNoteDetails());
+    this.store.dispatch(TemplateActions.getTemplateIfNotLoaded());
   }
 
   public closeWindow(): void {
@@ -139,6 +148,7 @@ export class NoteDetailsDialogComponent
       queryParams: {
         'note-details': null,
         'note-edit': null,
+        fullscreen: null,
       },
       queryParamsHandling: 'merge',
     });
@@ -159,6 +169,20 @@ export class NoteDetailsDialogComponent
         if (this.tryGoInEditMode) {
           this.editMode = this.vm()?.canEditNote;
         }
+        if (
+          this.maximizeButton &&
+          this.maximizeOnInit &&
+          !this.maximizedOnInit
+        ) {
+          this.maximizeButton.onClick?.();
+          this.maximizedOnInit = true;
+        }
+      });
+
+    this.store
+      .select(selectQueryParam('fullscreen'))
+      .subscribe((fullscreen) => {
+        this.maximizeOnInit = !!fullscreen;
       });
 
     this.store
@@ -246,6 +270,31 @@ export class NoteDetailsDialogComponent
         this.closeWindow();
       });
     } else {
+      this.closeWindow();
+    }
+  }
+
+  public onNewTabClick($event: Event): void {
+    let newTabLink = `${window.location.toString()}&fullscreen=true`;
+    if (this.editMode) {
+      newTabLink += '&note-edit=true';
+    }
+    if (this.editMode && this.hasChanged()) {
+      $event.preventDefault();
+      this._showUnsavedChangesWarning(() => {
+        window.open(
+          newTabLink,
+          '_blank',
+          'resizable=yes, toolbar=no, scrollbars=yes, menubar=no, status=yes, directories=no, location=no, width=1000, height=600, left=0 top=100 ',
+        );
+        this.closeWindow();
+      });
+    } else {
+      window.open(
+        newTabLink,
+        '_blank',
+        'resizable=yes, toolbar=no, scrollbars=yes, menubar=no, status=yes, directories=no, location=no, width=1000, height=600, left=0 top=100 ',
+      );
       this.closeWindow();
     }
   }

@@ -2,7 +2,13 @@
   <span class="k-window-title">Note</span>
   <button [window]="win" kendoWindowMinimizeAction></button>
   <button [window]="win" kendoWindowRestoreAction></button>
-  <button [window]="win" kendoWindowMaximizeAction></button>
+  <button [window]="win" kendoWindowMaximizeAction #maximizeButton></button>
+  <kendo-button
+    (click)="onNewTabClick($event)"
+    [svgIcon]="newTabIcon"
+    fillMode="flat"
+    title="Separate window"
+  />
   <kendo-button (click)="onClose($event)" [svgIcon]="icon" fillMode="flat" />
 </ng-template>
 
