@@ -1,3 +1,16 @@
+<ng-template #windowTitleBarRef let-win>
+  <span class="k-window-title">Create Note</span>
+  <button [window]="win" kendoWindowMinimizeAction></button>
+  <button [window]="win" kendoWindowRestoreAction></button>
+  <button [window]="win" kendoWindowMaximizeAction #maximizeButton></button>
+  <kendo-button
+    (click)="onNewTabClick($event)"
+    [svgIcon]="newTabIcon"
+    fillMode="flat"
+    title="Separate window"
+  />
+  <kendo-button (click)="close()" [svgIcon]="icon" fillMode="flat" />
+</ng-template>
 <div class="k-form flex h-full flex-col gap-4">
   <app-notepad-form
     class="block grow overflow-hidden"

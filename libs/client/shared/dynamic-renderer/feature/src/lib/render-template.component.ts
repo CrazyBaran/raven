@@ -9,15 +9,17 @@ import {
   OnDestroy,
   ViewChild,
   ViewContainerRef,
+  inject,
 } from '@angular/core';
 
-import { NgIf } from '@angular/common';
+import { NgIf, NgTemplateOutlet } from '@angular/common';
 import {
   ComponentTemplate,
   DynamicComponentsService,
   LoadedRenderItems,
 } from '@app/client/shared/dynamic-renderer/data-access';
 import { LoaderComponent } from '@app/client/shared/ui';
+import { WindowModule, WindowRef } from '@progress/kendo-angular-dialog';
 import * as _ from 'lodash';
 
 @Component({
@@ -28,7 +30,7 @@ import * as _ from 'lodash';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [LoaderComponent, NgIf],
+  imports: [LoaderComponent, NgIf, WindowModule, NgTemplateOutlet],
   providers: [DynamicComponentsService],
 })
 export class RenderTemplateComponent<T = unknown>
@@ -36,6 +38,8 @@ export class RenderTemplateComponent<T = unknown>
 {
   @ViewChild('container', { read: ViewContainerRef })
   protected container: ViewContainerRef;
+
+  protected windowRef = inject(WindowRef, { optional: true });
 
   protected componentRef: ComponentRef<T> | undefined = undefined;
 
@@ -107,6 +111,16 @@ export class RenderTemplateComponent<T = unknown>
 
     if (newComponent) {
       this.componentRef = newComponent;
+    }
+
+    if (
+      (this.componentRef?.instance as any)?.windowTitleBarRef &&
+      this.windowRef?.window?.instance
+    ) {
+      this.windowRef!.window.instance.titleBarTemplate = (
+        this.componentRef?.instance as any
+      )?.windowTitleBarRef;
+      this.windowRef?.window?.changeDetectorRef?.detectChanges?.();
     }
 
     this.cdr.markForCheck();

@@ -204,6 +204,32 @@ export class ShelfEffects {
     { dispatch: false },
   );
 
+  private openNoteCreate$ = createEffect(
+    () => {
+      return this.store.select(selectQueryParam('note-create')).pipe(
+        filter((value) => !!value),
+        concatLatestFrom(() => this.store.select(selectUrl)),
+        tap(async ([url]) =>
+          this.shelfService.openLazyShelf({
+            template: {
+              name: 'notepad',
+              load: () =>
+                import('@app/client/notes/feature/notepad').then(
+                  (m) => m.NotepadDialogModule,
+                ),
+              showLoading: true,
+            },
+            width: 720,
+            title: 'Create Note',
+            preventClose: (ev: unknown, widowRef): boolean =>
+              this._notepadShelfPreventHandler(ev, widowRef),
+          }),
+        ),
+      );
+    },
+    { dispatch: false },
+  );
+
   public constructor(
     private actions$: Actions,
     private store: Store,
