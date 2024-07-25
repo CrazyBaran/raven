@@ -3,9 +3,11 @@ import { OpportunityUtils } from '@app/client/opportunities/utils';
 import {
   pipelinesQuery,
   selectAllPipelineStages,
+  selectAllPipelineViews,
 } from '@app/client/pipelines/state';
 import {
   KanbanBoard,
+  KanbanColumn,
   KanbanFooterGroup,
   OpportunityCard,
 } from '@app/client/pipelines/ui';
@@ -24,6 +26,7 @@ import { OpportunityData } from '@app/rvns-opportunities';
 import { PipelineStageData } from '@app/rvns-pipelines';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
+import { PipelineViewConfig } from '../models/pipeline-view.model';
 
 const pipelineBoardQueryParams = [
   'member',
@@ -31,6 +34,7 @@ const pipelineBoardQueryParams = [
   'query',
   'take',
   'skip',
+  'view',
 ] as const;
 
 export const selectPipelineBoardParams = buildPageParamsSelector(
@@ -44,7 +48,8 @@ export const selectPipelineBoardParams = buildPageParamsSelector(
 export const selectPipelineBoardButtonGroupNavigation = createSelector(
   selectPipelineBoardParams,
   tagsQuery.selectCurrentUserTag,
-  (params, userTag): ButtongroupNavigationModel =>
+  selectAllPipelineViews,
+  (params, userTag, views): ButtongroupNavigationModel[] => [
     buildButtonGroupNavigation({
       params,
       name: 'member',
@@ -59,6 +64,20 @@ export const selectPipelineBoardButtonGroupNavigation = createSelector(
         },
       ],
     }),
+    buildButtonGroupNavigation({
+      params,
+      name: 'view',
+      buttons: [
+        { id: null, name: 'Full Pipeline' },
+        ...(views?.map((t) => {
+          return {
+            name: t!.name,
+            id: t!.id,
+          };
+        }) ?? []),
+      ],
+    }),
+  ],
 );
 
 export const selectPipelineBoardNavigationDropdowns = createSelector(
@@ -223,13 +242,78 @@ export const selectKanbanBoard = createSelector(
       })
       .values()
       .value();
-
     return {
       columns,
       footers,
       preliminiaryColumn: columns!.find(
         ({ name }) => name.toLowerCase().includes('preliminary dd')!,
       )!,
+    };
+  },
+);
+
+export const selectKanbanBoardByConfig = createSelector(
+  selectPipelineBoardParams,
+  selectAllPipelineStages,
+  selectOportunitiesStageDictionary,
+  selectKanbanBoard,
+  selectAllPipelineViews,
+  (
+    { view },
+    stages,
+    opportunitiesStageDictionary,
+    defaultBoard,
+    views,
+  ): KanbanBoard => {
+    if (!view) {
+      return defaultBoard;
+    }
+    const selectedView = views?.find((v) => v?.id === view);
+
+    if (!selectedView) {
+      return defaultBoard;
+    }
+    const footers: KanbanFooterGroup[] = _.chain(stages)
+      .filter(({ configuration }) => !!configuration)
+      .orderBy('configuration.order')
+      .map(toKanbanFooterGroup)
+      .value();
+
+    const selectedViewColumnsEnriched = selectedView?.columns?.map((v) => ({
+      ...v,
+      stages: v.stageIds.map((stageId) => ({
+        ...stages.find((v) => v.id === stageId),
+      })),
+    }));
+    let columnsConfig = (
+      {
+        ...selectedView,
+        columns: selectedViewColumnsEnriched,
+      } as PipelineViewConfig
+    ).columns.map((col) => {
+      return {
+        ...col,
+        backgroundColor:
+          col.backgroundColor ??
+          (col.stages[0] as any).secondaryColor ??
+          (col.stages[0] as any).primaryColor,
+        color: col.color ?? (col.stages[0] as any).primaryColor,
+        groups: col.stages.map((stage) => ({
+          id: stage.id,
+          name: stage.displayName?.split(' - ')[1] ?? stage.displayName,
+          cards:
+            opportunitiesStageDictionary[stage.id!]?.map((opportunity) =>
+              createCard(opportunity, stage as PipelineStageData),
+            ) ?? [],
+          length: opportunitiesStageDictionary[stage.id!]?.length ?? 0,
+        })),
+      };
+    });
+
+    return {
+      columns: columnsConfig as KanbanColumn[],
+      footers,
+      preliminiaryColumn: null,
     };
   },
 );

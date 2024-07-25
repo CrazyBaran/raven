@@ -3,6 +3,8 @@ import {
   PipelineGroupData,
   PipelineGroupingData,
   PipelineStageData,
+  PipelineViewData,
+  PipelineViewsData,
 } from '@app/rvns-pipelines';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +13,7 @@ import { Repository } from 'typeorm';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
 import { PipelineGroupEntity } from './entities/pipeline-group.entity';
 import { PipelineStageEntity } from './entities/pipeline-stage.entity';
+import { PipelineViewEntity } from './entities/pipeline-view.entity';
 
 interface PipelineStage {
   readonly displayName: string;
@@ -51,6 +54,30 @@ interface UpdatePipelineGroupOptions {
   readonly stageIds?: string[];
 }
 
+interface PipelineViewOptions {
+  readonly name: string;
+  readonly order: number;
+  readonly columns: {
+    name: string;
+    stageIds: string[];
+    flat?: boolean;
+    backgroundColor?: string;
+    color?: string;
+  }[];
+}
+
+interface UpdatePipelineViewOptions {
+  readonly name?: string;
+  readonly order?: number;
+  readonly columns?: {
+    readonly name?: string;
+    readonly stageIds?: string[];
+    readonly flat?: boolean;
+    readonly backgroundColor?: string;
+    readonly color?: string;
+  }[];
+}
+
 type UpdatePipelineStageOptions = Partial<CreatePipelineStageOptions>;
 
 @Injectable()
@@ -62,6 +89,8 @@ export class PipelineService {
     private readonly pipelineStageRepository: Repository<PipelineStageEntity>,
     @InjectRepository(PipelineGroupEntity)
     private readonly pipelineGroupRepository: Repository<PipelineGroupEntity>,
+    @InjectRepository(PipelineViewEntity)
+    private readonly pipelineViewRepository: Repository<PipelineViewEntity>,
   ) {}
 
   public async createPipeline(
@@ -181,6 +210,90 @@ export class PipelineService {
     });
   }
 
+  public async deletePipelineView(
+    pipelineViewEntity: PipelineViewEntity,
+  ): Promise<void> {
+    await this.pipelineViewRepository.remove(pipelineViewEntity);
+  }
+
+  public async updatePipelineView(
+    pipelineEntity: PipelineDefinitionEntity,
+    pipelineViewEntity: PipelineViewEntity,
+    options: UpdatePipelineViewOptions,
+  ): Promise<PipelineViewEntity> {
+    const updatedEntity = new PipelineViewEntity();
+    updatedEntity.id = pipelineViewEntity.id;
+    if (options.name) {
+      updatedEntity.name = options.name;
+    }
+
+    if (options.order) {
+      updatedEntity.order = options.order;
+    }
+
+    if (options.columns?.length) {
+      const columns = options.columns.map((c) => {
+        return {
+          name: c.name,
+          stages: c.stageIds
+            .filter((stageId) => {
+              return pipelineEntity.stages.some((s) => s.id === stageId);
+            })
+            .map((id) => ({
+              id,
+            })),
+          flat: c.flat || false,
+          backgroundColor: c.backgroundColor,
+          color: c.color,
+        };
+      });
+      updatedEntity.columnsConfig = JSON.stringify(columns);
+    }
+    const savedEntity = await this.pipelineViewRepository.save(updatedEntity);
+
+    return savedEntity;
+  }
+
+  public async getPipelineViews(
+    pipelineDefinition: PipelineDefinitionEntity,
+  ): Promise<PipelineViewEntity[]> {
+    return await this.pipelineViewRepository
+      .createQueryBuilder('pipelineView')
+      .where('pipelineView.pipelineDefinitionId = :pipelineDefinitionId', {
+        pipelineDefinitionId: pipelineDefinition.id,
+      })
+      .getMany();
+  }
+
+  public async createPipelineView(
+    pipelineDefinition: PipelineDefinitionEntity,
+    pipelineView: PipelineViewOptions,
+  ): Promise<PipelineViewEntity> {
+    const view = new PipelineViewEntity();
+    view.name = pipelineView.name;
+    view.order = pipelineView.order;
+    view.pipelineDefinitionId = pipelineDefinition.id;
+    const columns = pipelineView.columns.map((c) => {
+      return {
+        name: c.name,
+        stages: c.stageIds
+          .filter((stageId) => {
+            return pipelineDefinition.stages.some((s) => s.id === stageId);
+          })
+          .map((id) => ({
+            id,
+          })),
+        flat: c.flat || false,
+        backgroundColor: c.backgroundColor,
+        color: c.color,
+      };
+    });
+
+    view.columnsConfig = JSON.stringify(columns);
+
+    return await this.pipelineViewRepository.save(view);
+  }
+
   public async updatePipeline(
     pipelineEntity: PipelineDefinitionEntity,
     options: UpdatePipelineOptions,
@@ -258,6 +371,7 @@ export class PipelineService {
   public pipelineEntityToData(
     entity: PipelineDefinitionEntity,
     groups?: PipelineGroupEntity[],
+    views?: PipelineViewEntity[],
   ): PipelineDefinitionData {
     return {
       id: entity.id,
@@ -267,6 +381,7 @@ export class PipelineService {
         this.pipelineStageEntityToData(stage),
       ),
       groups: groups?.map((group) => this.pipelineGroupEntityToData(group)),
+      views: views?.map((view) => this.pipelineViewEntityToData(view)),
     };
   }
 
@@ -308,6 +423,34 @@ export class PipelineService {
         id: stage.id,
         displayName: stage.displayName,
       })),
+    };
+  }
+
+  public pipelineViewEntityToData(view: PipelineViewEntity): PipelineViewData {
+    return {
+      id: view.id,
+      name: view.name,
+      order: view.order,
+      columns: JSON.parse(view.columnsConfig || '[]')?.map((col) => {
+        return {
+          id: col.id,
+          name: col.name,
+          stageIds: col.stages.map((stage) => stage.id),
+          flat: !!col.flat,
+          color: col.color ?? null,
+          backgroundColor: col.backgroundColor ?? null,
+        };
+      }),
+    };
+  }
+
+  public pipelineViewEntitiesToViewsData(
+    pipelineEntity: PipelineDefinitionEntity,
+    views: PipelineViewEntity[],
+  ): PipelineViewsData {
+    return {
+      pipelineId: pipelineEntity.id,
+      views: views.map((v) => this.pipelineViewEntityToData(v)),
     };
   }
 

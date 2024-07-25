@@ -80,6 +80,8 @@ export class KanbanGroupComponent {
 
   @Input() public withoutPadding: boolean;
 
+  @Input() public lrPaddingOnly: boolean;
+
   @Output() public dropEvent = new EventEmitter<{
     pipelineStageId: string;
     opportunityId: string;

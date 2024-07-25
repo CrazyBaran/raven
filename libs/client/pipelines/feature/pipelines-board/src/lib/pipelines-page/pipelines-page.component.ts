@@ -19,7 +19,7 @@ import { TagsActions } from '@app/client/tags/state';
 import { Store } from '@ngrx/store';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import {
-  selectKanbanBoard,
+  selectKanbanBoardByConfig,
   selectPipelineBoardParams,
   selectPipelinesPageViewModel,
 } from './pipelines-page.selectors';
@@ -43,7 +43,7 @@ import {
 })
 export class PipelinesPageComponent {
   public vm = this.store.selectSignal(selectPipelinesPageViewModel);
-  public boardModel = this.store.selectSignal(selectKanbanBoard);
+  public boardModel = this.store.selectSignal(selectKanbanBoardByConfig);
 
   public constructor(private readonly store: Store) {
     this.store.dispatch(PipelinesActions.getPipelines());

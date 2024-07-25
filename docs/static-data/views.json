@@ -1,0 +1,94 @@
+[
+    {
+        "name": "Prospecting",
+        "order": 1,
+        "columns": [
+            {
+                "name": "Outreach - Planned",
+                "stageIds": [
+                    "db55560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true,
+                "backgroundColor": "#D6EAF7"
+            },
+            {
+                "name": "Outreach - In progress",
+                "stageIds": [
+                    "dc55560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true,
+                "backgroundColor": "#D6EAF7"
+            },
+            {
+                "name": "Outreach - Scheduling",
+                "stageIds": [
+                    "dd55560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true,
+                "backgroundColor": "#D6EAF7"
+            },
+            {
+                "name": "Met",
+                "stageIds": [
+                    "de55560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true,
+                "backgroundColor": "#f9dabf"
+            }
+        ]
+    },
+    {
+        "name": "Due Diligence",
+        "order": 2,
+        "columns": [
+            {
+                "name": "Prelim DD - In Progress",
+                "backgroundColor": "#F2D9F4",
+                "stageIds": [
+                    "df55560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true
+            },
+            {
+                "name": "Ready for Socialisation",
+                "backgroundColor": "#F2D9F4",
+                "stageIds": [
+                    "e055560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true
+            },
+            {
+                "name": "DD - In Progress",
+                "backgroundColor": "#FEF5C8",
+                "stageIds": [
+                    "e155560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true
+            },
+            {
+                "name": "Ready for Local IC",
+                "backgroundColor": "#FEF5C8",
+                "stageIds": [
+                    "e255560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true
+            },
+            {
+                "name": "Prepping for Capital IC",
+                "backgroundColor": "#F3C7D0",
+                "stageIds": [
+                    "e355560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true
+            },
+            {
+                "name": "Ready for Capital IC",
+                "backgroundColor": "#F3C7D0",
+                "stageIds": [
+                    "e455560e-7293-ee11-8927-6045bdd178c1"
+                ],
+                "flat": true
+            }
+        ]
+    }
+]

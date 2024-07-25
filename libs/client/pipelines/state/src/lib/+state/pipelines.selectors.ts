@@ -29,6 +29,15 @@ export const selectAllPipelineStages = createSelector(
       .value(),
 );
 
+export const selectAllPipelineViews = createSelector(
+  selectAllPipelines,
+  (pipelines) =>
+    _.chain(pipelines)
+      .flatMap(({ views }) => views)
+      .sortBy('order')
+      .value(),
+);
+
 export const selectPipelinesStagesDictionary = createSelector(
   selectAllPipelineStages,
   (pipelines) => _.chain(pipelines).keyBy('id').value(),

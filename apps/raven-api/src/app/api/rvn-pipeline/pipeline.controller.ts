@@ -8,6 +8,8 @@ import {
   PipelineGroupData,
   PipelineGroupingData,
   PipelineStageData,
+  PipelineViewData,
+  PipelineViewsData,
 } from '@app/rvns-pipelines';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
@@ -33,15 +35,19 @@ import {
 import { ParsePipelineStagePipe } from '../../shared/pipes/parse-pipeline-stage.pipe';
 import { CreatePipelineGroupDto } from './dto/create-pipeline-group.dto';
 import { CreatePipelineStageDto } from './dto/create-pipeline-stage.dto';
+import { CreatePipelineViewDto } from './dto/create-pipeline-view.dto';
 import { CreatePipelineDto } from './dto/create-pipeline.dto';
 import { UpdatePipelineGroupDto } from './dto/update-pipeline-group.dto';
 import { UpdatePipelineStageDto } from './dto/update-pipeline-stage.dto';
+import { UpdatePipelineViewDto } from './dto/update-pipeline-view.dto';
 import { UpdatePipelineDto } from './dto/update-pipeline.dto';
 import { PipelineDefinitionEntity } from './entities/pipeline-definition.entity';
 import { PipelineGroupEntity } from './entities/pipeline-group.entity';
 import { PipelineStageEntity } from './entities/pipeline-stage.entity';
+import { PipelineViewEntity } from './entities/pipeline-view.entity';
 import { PipelineService } from './pipeline.service';
 import { ParsePipelineGroupWithStagesPipe } from './pipes/parse-pipeline-group-with-stages.pipe';
+import { ParsePipelineView } from './pipes/parse-pipeline-view.pipe';
 import { ParsePipelineWithStagesPipe } from './pipes/parse-pipeline-with-stages.pipe';
 import { ParsePipelinePipe } from './pipes/parse-pipeline.pipe';
 
@@ -80,7 +86,12 @@ export class PipelineController {
     return await Promise.all(
       pipelines.map(async (pipeline) => {
         const groups = await this.pipelineService.getPipelineGroups(pipeline);
-        return this.pipelineService.pipelineEntityToData(pipeline, groups);
+        const views = await this.pipelineService.getPipelineViews(pipeline);
+        return this.pipelineService.pipelineEntityToData(
+          pipeline,
+          groups,
+          views,
+        );
       }),
     );
   }
@@ -259,6 +270,79 @@ export class PipelineController {
     pipelineStageEntity: PipelineStageEntity,
   ): Promise<EmptyResponseData> {
     await this.pipelineService.deletePipelineStage(pipelineStageEntity);
+  }
+
+  @ApiOperation({ description: 'Create pipeline view' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'pipelineId', type: 'string' })
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
+  @Post(':pipelineId/views')
+  public async createPipelineView(
+    @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
+    pipelineEntity: PipelineDefinitionEntity,
+    @Body() dto: CreatePipelineViewDto,
+  ): Promise<PipelineViewData> {
+    const view = await this.pipelineService.createPipelineView(
+      pipelineEntity,
+      dto,
+    );
+    return this.pipelineService.pipelineViewEntityToData(view);
+  }
+
+  @ApiOperation({ description: 'Update pipeline view' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'pipelineId', type: 'string' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
+  @Patch(':pipelineId/views/:id')
+  public async updatePipelineView(
+    @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
+    pipelineEntity: PipelineDefinitionEntity,
+    @Param('id', ParseUUIDPipe, ParsePipelineView)
+    pipelineViewEntity: PipelineViewEntity,
+    @Body() dto: UpdatePipelineViewDto,
+  ): Promise<PipelineViewData> {
+    return this.pipelineService.pipelineViewEntityToData(
+      await this.pipelineService.updatePipelineView(
+        pipelineEntity,
+        pipelineViewEntity,
+        {
+          name: dto.name,
+          columns: dto.columns || [],
+          order: dto.order,
+        },
+      ),
+    );
+  }
+
+  @ApiOperation({ description: 'Delete pipeline view' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'pipelineId', type: 'string' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @Roles(RoleEnum.SuperAdmin, RoleEnum.User)
+  @Delete(':pipelineId/views/:id')
+  public async deletePipelineView(
+    @Param('pipelineId', ParseUUIDPipe, ParsePipelinePipe)
+    pipelineEntity: PipelineDefinitionEntity,
+    @Param('id', ParseUUIDPipe, ParsePipelineView)
+    pipelineViewEntity: PipelineViewEntity,
+  ): Promise<EmptyResponseData> {
+    await this.pipelineService.deletePipelineView(pipelineViewEntity);
+  }
+
+  @ApiOperation({ description: 'Get pipeline views' })
+  @ApiResponse(GenericResponseSchema())
+  @ApiParam({ name: 'pipelineId', type: 'string' })
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @Get(':pipelineId/views')
+  public async getPipelineViews(
+    @Param('pipelineId', ParseUUIDPipe, ParsePipelineWithStagesPipe)
+    pipelineEntity: PipelineDefinitionEntity,
+  ): Promise<PipelineViewsData> {
+    return this.pipelineService.pipelineViewEntitiesToViewsData(
+      pipelineEntity,
+      await this.pipelineService.getPipelineViews(pipelineEntity),
+    );
   }
 
   @ApiOperation({ description: 'Delete pipeline' })

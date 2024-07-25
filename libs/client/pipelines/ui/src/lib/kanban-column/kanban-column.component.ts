@@ -27,6 +27,7 @@ export interface KanbanColumn {
   color: string;
   backgroundColor: string;
   groups: KanbanGroup[];
+  flat?: boolean;
 }
 
 export interface KanbanDragStartEvent {
@@ -72,6 +73,10 @@ export class KanbanColumnComponent {
 
   protected get length(): number {
     return this.column?.groups?.reduce((acc, group) => acc + group.length, 0);
+  }
+
+  protected isFlat(): boolean {
+    return !!this.column?.flat;
   }
 
   protected drop(group: KanbanGroup, $event: { opportunityId: string }): void {

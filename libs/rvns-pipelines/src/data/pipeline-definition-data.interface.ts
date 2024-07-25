@@ -1,5 +1,6 @@
 import { PipelineGroupData } from './pipeline-grouping-data.interface';
 import { PipelineStageData } from './pipeline-stage-data.interface';
+import { PipelineViewData } from './pipeline-view-data.interface';
 
 export interface PipelineDefinitionData {
   readonly id: string;
@@ -7,4 +8,5 @@ export interface PipelineDefinitionData {
   readonly isDefault: boolean;
   readonly stages: PipelineStageData[];
   readonly groups?: PipelineGroupData[];
+  readonly views?: PipelineViewData[];
 }

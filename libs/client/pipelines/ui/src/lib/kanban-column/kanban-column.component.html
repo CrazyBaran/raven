@@ -31,6 +31,7 @@
         (dragStarted)="onDragStarted($event, column.groups[0].id)"
         (dragEnded)="dragEnded.emit($event)"
         (dropEvent)="dropEvent.emit($event)"
+        [lrPaddingOnly]="isFlat()"
       />
     } @else {
       @for (group of column.groups; track group.id; let i = $index) {
@@ -43,6 +44,8 @@
           (dragStarted)="onDragStarted($event, group.id)"
           (dragEnded)="dragEnded.emit($event)"
           (dropEvent)="dropEvent.emit($event)"
+          [withoutHeader]="isFlat()"
+          [lrPaddingOnly]="isFlat()"
         />
       }
     }

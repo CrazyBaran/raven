@@ -7,8 +7,9 @@
     <div class="flex h-full flex-col gap-10" page-content>
       <app-quick-filters-template>
         <div class="flex gap-6">
-          <app-buttongroup-navigation [model]="vm().buttonGroups" />
-
+          @for (buttonGroup of vm().buttonGroups; track buttonGroup.filters) {
+            <app-buttongroup-navigation [model]="buttonGroup" />
+          }
           @for (dropdown of vm().dropdowns; track dropdown.queryParamName) {
             <app-dropdown-navigation [model]="dropdown" />
           }

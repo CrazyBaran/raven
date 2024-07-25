@@ -1,5 +1,7 @@
 <div
-  [class.p-2]="!withoutPadding"
+  [class.p-2]="!withoutPadding && !lrPaddingOnly"
+  [class.pl-2]="lrPaddingOnly"
+  [class.pr-2]="lrPaddingOnly"
   [ngStyle]="{
     'background-color': backgroundColor ?? '#D9D9D6'
   }"
