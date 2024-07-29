@@ -1,8 +1,17 @@
 <kendo-panelbar class="white-tilelayout">
-  <ng-template kendoPanelBarItemTitle>
-    <h5 class="k-card-title">Shortlists</h5>
-  </ng-template>
-  <kendo-panelbar-item [expanded]="false" title="Shortlists">
+  <kendo-panelbar-item [expanded]="true" title="Shortlists">
+    <ng-template kendoPanelBarItemTitle>
+      <h5 class="k-card-title !m-0 flex w-full items-center gap-2 !text-black">
+        Shortlists
+        <kendo-button
+          size="small"
+          class="ml-auto mr-2"
+          (click)="onAddToShortlist($event)"
+        >
+          Add to Shortlist
+        </kendo-button>
+      </h5>
+    </ng-template>
     <ng-template kendoPanelBarContent>
       <div class="h-[363px]">
         <kendo-grid

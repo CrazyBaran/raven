@@ -152,16 +152,31 @@
           <div class="flex flex-col gap-6">
             <app-organisation-opportunities-v2 />
 
+            <app-organisation-reminders-table />
+
+            <app-organisation-shortlists-table />
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+      <kendo-tabstrip-tab title="Timeline">
+        <ng-template kendoTabContent>
+          <div>
             <app-organisation-company-timeline
               [sourceUrl]="vm().currentOrganisation?.affinityUrl"
             />
-
-            <app-organisation-shortlists-table />
-
-            <app-organisation-reminders-table />
-
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+      <kendo-tabstrip-tab title="Files">
+        <ng-template kendoTabContent>
+          <div>
             <app-organisation-files />
-
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+      <kendo-tabstrip-tab title="Notes">
+        <ng-template kendoTabContent>
+          <div>
             <app-organisation-notes />
           </div>
         </ng-template>

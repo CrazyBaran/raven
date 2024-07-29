@@ -4,7 +4,7 @@ import {
   inject,
   ViewEncapsulation,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { LoaderComponent, TagsContainerComponent } from '@app/client/shared/ui';
 import { GridModule } from '@progress/kendo-angular-grid';
@@ -30,6 +30,7 @@ import {
 } from '@app/client/shortlists/ui';
 import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { organisationShortlistsTableStore } from './organisation-shortlists-table.store';
 
@@ -51,6 +52,7 @@ import { organisationShortlistsTableStore } from './organisation-shortlists-tabl
     IsPersonalShortlistTypePipe,
     LoaderComponent,
     DropdownButtonNavigationComponent,
+    ButtonModule,
   ],
   templateUrl: './organisation-shortlists-table.component.html',
   styleUrls: ['./organisation-shortlists-table.component.scss'],
@@ -63,6 +65,9 @@ export class OrganisationShortlistsTableComponent {
 
   public organisationShortlistsStore = inject(organisationShortlistsTableStore);
   public userData = this.store.selectSignal(selectUserData); // NOTE we dont have user id, only email/username
+
+  public router = inject(Router);
+  public activatedRoute = inject(ActivatedRoute);
 
   protected getActionData(
     shortlist: ShortlistEntity,
@@ -87,5 +92,21 @@ export class OrganisationShortlistsTableComponent {
             ]
           : [],
     };
+  }
+
+  public onAddToShortlist($event: MouseEvent): void {
+    $event.preventDefault();
+    $event.stopPropagation();
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        [DialogUtil.queryParams.addToShortlist]: [
+          this.organisationShortlistsStore.additionalParams().organisationId,
+        ],
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: true,
+    });
   }
 }

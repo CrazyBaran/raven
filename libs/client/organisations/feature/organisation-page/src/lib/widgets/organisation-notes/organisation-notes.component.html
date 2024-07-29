@@ -1,5 +1,5 @@
 <kendo-panelbar class="white-tilelayout">
-  <kendo-panelbar-item [expanded]="false" title="Related Notes">
+  <kendo-panelbar-item [expanded]="true" title="Related Notes">
     <ng-template kendoPanelBarItemTitle>
       <div class="k-card-title !m-0 flex w-full items-center !text-black">
         Related Notes
@@ -14,8 +14,8 @@
       </div>
     </ng-template>
     <ng-template kendoPanelBarContent>
-      <div class="h-[363px]">
-        <app-notes-table-container class="h-[364px]" />
+      <div class="h-[calc(100vh-16.5em)]">
+        <app-notes-table-container />
       </div>
     </ng-template>
   </kendo-panelbar-item>

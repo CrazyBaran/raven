@@ -5,9 +5,9 @@
   <ng-template kendoPanelBarItemTitle>
     <h5 class="k-card-title">Company Timeline</h5>
   </ng-template>
-  <kendo-panelbar-item [expanded]="false" title="Company Timeline">
+  <kendo-panelbar-item [expanded]="true" title="Company Timeline">
     <ng-template kendoPanelBarContent>
-      <div class="h-[363px]">
+      <div class="h-[calc(100vh-16.5em)]">
         <kendo-grid
           [data]="organisationTimelineStore.filteredData()"
           [loading]="organisationTimelineStore.isLoading()"
