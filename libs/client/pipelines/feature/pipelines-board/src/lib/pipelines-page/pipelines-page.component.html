@@ -11,7 +11,11 @@
             <app-buttongroup-navigation [model]="buttonGroup" />
           }
           @for (dropdown of vm().dropdowns; track dropdown.queryParamName) {
-            <app-dropdown-navigation [model]="dropdown" />
+            <app-dropdown-navigation
+              [model]="dropdown"
+              [filterable]="!!dropdown.filterable"
+              (filterChanged)="onFilterChange($event)"
+            />
           }
         </div>
       </app-quick-filters-template>

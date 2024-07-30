@@ -45,9 +45,14 @@ export class PipelinesPageComponent {
   public vm = this.store.selectSignal(selectPipelinesPageViewModel);
   public boardModel = this.store.selectSignal(selectKanbanBoardByConfig);
 
+  private readonly defaultFilterTake = 20;
   public constructor(private readonly store: Store) {
     this.store.dispatch(PipelinesActions.getPipelines());
-    this.store.dispatch(ShortlistsActions.getShortlistExtras());
+    this.store.dispatch(
+      ShortlistsActions.getShortlists({
+        query: { take: this.defaultFilterTake },
+      }),
+    );
     this.store.dispatch(
       TagsActions.getTagsByTypesIfNotLoaded({
         tagTypes: ['people', 'opportunity'],
@@ -70,6 +75,14 @@ export class PipelinesPageComponent {
       OpportunitiesActions.changeOpportunityPipelineStage({
         id: $event.opportunityId,
         pipelineStageId: $event.pipelineStageId,
+      }),
+    );
+  }
+
+  public onFilterChange($event: string): void {
+    this.store.dispatch(
+      ShortlistsActions.getShortlists({
+        query: { query: $event, take: this.defaultFilterTake },
       }),
     );
   }

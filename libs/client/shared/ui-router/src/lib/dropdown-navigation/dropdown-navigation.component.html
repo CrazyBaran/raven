@@ -1,11 +1,16 @@
 <kendo-dropdownlist
   (valueChange)="valueChange($event)"
   *ngIf="model"
-  [data]="model.data"
+  [data]="filteredItems?.()?.data"
+  [filterable]="filterable"
+  (filterChange)="filterValue.set($event)"
   [defaultItem]="model.defaultItem"
   [loading]="model.loading ?? false"
   [unpatch]
   [value]="model.value"
   textField="name"
   valueField="id"
+  [ngClass]="{
+    'filterable-w': filterable
+  }"
 ></kendo-dropdownlist>

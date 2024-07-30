@@ -8,6 +8,7 @@ export type BuildDropdownNavigation<T extends Record<string, string>> = {
   data: { id: string | null | undefined; name: string }[];
   loading: boolean | undefined | null;
   defaultItem: { id: string | null; name: string };
+  filterable?: boolean;
 };
 
 export function buildDropdownNavigation<T extends Record<string, string>>({
@@ -16,6 +17,7 @@ export function buildDropdownNavigation<T extends Record<string, string>>({
   data,
   loading,
   defaultItem,
+  filterable,
 }: BuildDropdownNavigation<T>): DropdownNavigationModel {
   return {
     queryParamName: name as string,
@@ -23,5 +25,6 @@ export function buildDropdownNavigation<T extends Record<string, string>>({
     defaultItem: defaultItem,
     value: data.find(({ id }) => id === params[name]),
     loading,
+    filterable: !!filterable,
   };
 }

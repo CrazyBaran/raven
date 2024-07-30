@@ -26,6 +26,7 @@ import { OpportunityData } from '@app/rvns-opportunities';
 import { PipelineStageData } from '@app/rvns-pipelines';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
+import { shortlistsFeature } from '../../../../../../shortlists/state/src/lib/+state/shortlists.reducer';
 import { PipelineViewConfig } from '../models/pipeline-view.model';
 
 const pipelineBoardQueryParams = [
@@ -35,6 +36,7 @@ const pipelineBoardQueryParams = [
   'take',
   'skip',
   'view',
+  'shortlist',
 ] as const;
 
 export const selectPipelineBoardParams = buildPageParamsSelector(
@@ -85,11 +87,17 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
   tagsFeature.selectOpportunityTags,
   tagsFeature.selectPeopleTags,
   tagsFeature.selectLoadingTags,
+  shortlistsFeature.selectLoadingStates,
+  shortlistsFeature.selectAll,
+  shortlistsFeature.selectMyShortlist,
   (
     params,
     opportunityTags,
     peopleTags,
     loadingTags,
+    loadingShortlists,
+    shortlists,
+    myShortlist,
   ): DropdownNavigationModel[] => {
     const opportunityData = opportunityTags.map((t) => ({
       name: t.name,
@@ -100,6 +108,14 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
       name: t.name,
       id: t.userId,
     }));
+
+    const shortlistsData = [];
+
+    if (myShortlist) {
+      shortlistsData.push(myShortlist);
+    }
+
+    shortlistsData.push(...shortlists);
 
     return [
       buildDropdownNavigation({
@@ -122,6 +138,18 @@ export const selectPipelineBoardNavigationDropdowns = createSelector(
           name: 'Deal Team',
         },
         loading: loadingTags.people,
+      }),
+
+      buildDropdownNavigation({
+        params,
+        name: 'shortlist',
+        data: shortlistsData,
+        defaultItem: {
+          id: null,
+          name: 'All Shortlists',
+        },
+        loading: loadingShortlists.get,
+        filterable: true,
       }),
     ];
   },

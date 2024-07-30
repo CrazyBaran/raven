@@ -64,6 +64,7 @@ export class OpportunityService {
       query?: string;
       member?: string;
       round?: string;
+      shortlist?: string;
     } = {},
   ): Promise<PagedOpportunityData> {
     const queryBuilder = this.opportunityRepository
@@ -75,6 +76,13 @@ export class OpportunityService {
       .leftJoinAndSelect('opportunity.files', 'files')
       .leftJoinAndSelect('opportunity.shares', 'shares')
       .leftJoinAndSelect('shares.actor', 'member');
+
+    if (options.shortlist) {
+      queryBuilder.leftJoinAndSelect('organisation.shortlists', 'shortlists');
+      queryBuilder.where('shortlists.id = :shortlistId', {
+        shortlistId: options.shortlist,
+      });
+    }
 
     if (options.pipelineStageId) {
       const pipelineStageIds = options.pipelineStageId.split(',');

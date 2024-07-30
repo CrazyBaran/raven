@@ -1,3 +1,7 @@
 kendo-dropdownlist {
   @apply min-w-dropdown w-fit;
+
+  &.filterable-w {
+    min-width: 15rem;
+  }
 }
