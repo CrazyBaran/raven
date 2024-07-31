@@ -77,7 +77,14 @@ export class PDFContentComponent {
   constructor(private readonly sanitizer: DomSanitizer) {}
 
   public getHtml(value: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(value);
+    const hasImage = value?.indexOf('<img') > -1;
+    if (!hasImage) {
+      return this.sanitizer.bypassSecurityTrustHtml(value);
+    }
+
+    const processedValue = this.scaleImagesToPageSize(value);
+
+    return this.sanitizer.bypassSecurityTrustHtml(processedValue);
   }
 
   public isHeatmap(section: any): boolean {
@@ -118,5 +125,35 @@ export class PDFContentComponent {
     }
 
     return key.value.value.replace('{{value}}', finalValue);
+  }
+
+  protected scaleImagesToPageSize(value: string): string {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(value, 'text/html');
+      const imgTags = doc.getElementsByTagName('img');
+      let resizeExecuted = false;
+      for (let i = 0; i < imgTags.length; i++) {
+        if (imgTags[i].style.width) {
+          const w = imgTags[i].style.width.split('px')[0];
+          if (parseInt(w) > 485) {
+            imgTags[i].style.width = `485px`;
+            if (imgTags[i].style.height) {
+              const h = imgTags[i].style.height.split('px')[0];
+              const wPercentageDiff = 48500 / parseInt(w);
+
+              imgTags[i].style.height = `${Math.floor(
+                parseInt(h) * (wPercentageDiff / 100),
+              )}px`;
+            }
+            resizeExecuted = true;
+          }
+        }
+      }
+
+      return resizeExecuted ? doc.body.innerHTML : value;
+    } catch (e) {
+      return value;
+    }
   }
 }
