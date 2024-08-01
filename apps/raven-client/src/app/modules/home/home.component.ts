@@ -42,6 +42,7 @@ export class HomeComponent {
       path: '',
       icon: 'fa-sharp fa-solid fa-grid',
       exact: true,
+      navigate: true,
     },
     {
       name: 'Companies',
@@ -57,7 +58,7 @@ export class HomeComponent {
         {
           name: 'Shortlist',
           path: 'companies/shortlists',
-          icon: 'fa-solid fa-star',
+          icon: 'fa-regular fa-star',
           disabled: !this.environment.shortlistsFeature,
         },
         {
@@ -71,14 +72,7 @@ export class HomeComponent {
       name: 'Notes',
       path: 'notes',
       icon: 'fa-solid fa-notebook',
-      subRoutes: [
-        {
-          name: 'All Notes',
-          path: 'notes',
-          icon: 'fa-solid fa-notebook',
-          exact: true,
-        },
-      ],
+      navigate: true,
     },
     {
       name: 'Reminders',

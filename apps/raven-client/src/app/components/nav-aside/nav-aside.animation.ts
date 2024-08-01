@@ -24,3 +24,10 @@ export const collapseAnimation = trigger('collapse', [
     animate(250 + 'ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
   ),
 ]);
+
+export const delayedFadeInAnimation = trigger('navDelayedFadeIn', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('200ms 100ms ease-in', style({ opacity: 1 })),
+  ]),
+]);

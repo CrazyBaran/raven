@@ -3,12 +3,16 @@
 }
 
 .nav-aside {
-  @apply relative grid grid-flow-col shadow-md;
+  @apply relative grid grid-flow-col shadow-md transition duration-500;
 
   background-color: #c0e9e6;
 
+  &.aside-open {
+    background-color: var(--rv-primary-tooltip);
+  }
+
   &__actions {
-    @apply grid w-20 items-start justify-center gap-10 py-6;
+    @apply grid items-start justify-center gap-10 py-6;
 
     grid-template-rows: 1fr auto;
   }
@@ -17,25 +21,40 @@
     @apply text-center;
 
     ul {
-      @apply flex flex-col items-center gap-10;
+      @apply flex flex-col items-center;
+
+      li {
+        width: 100%;
+      }
     }
   }
 
   ui-toggle-menu-button {
-    @apply absolute -right-4 top-20 z-[1];
+    @apply absolute -right-4 z-[1];
+    top: 3.5rem;
   }
 
   .action {
-    @apply relative flex cursor-pointer flex-col items-center;
-
+    @apply relative flex cursor-pointer;
+    align-items: flex-start;
     color: var(--rv-secondary);
 
-    > i {
-      @apply flex h-8 w-8 items-center justify-center rounded-md text-3xl;
+    // margin: 0 auto;
+    .action-container {
+      position: relative;
+
+      > i {
+        @apply flex h-8 w-10 items-center justify-center rounded-md text-3xl;
+      }
+    }
+
+    span.menu-sublink {
+      padding-left: 1rem;
     }
 
     &:hover {
-      > i {
+      .action-container > i,
+      > span.menu-sublink {
         @apply duration-300 ease-in-out;
 
         color: var(--rv-primary-button-bg);
@@ -43,7 +62,8 @@
     }
 
     &.active {
-      > i {
+      .action-container > i,
+      > span.menu-sublink {
         color: var(--rv-primary-button-bg);
       }
     }
@@ -54,7 +74,7 @@
       cursor: auto;
 
       &:hover {
-        > i {
+        .action-container > i {
           color: var(--rv-secondary) !important;
         }
       }
@@ -91,6 +111,12 @@
 
       color: var(--rv-secondary);
       filter: opacity(0.9);
+      outline: none !important;
+
+      &:focus-visible {
+        outline: none;
+        border: none;
+      }
 
       &:hover {
         color: var(--rv-primary);
@@ -109,9 +135,9 @@
       }
 
       &--title {
-        @apply mt-10 h-10 border-b border-solid pb-3 text-[1.1875rem];
+        @apply h-10 pb-3 text-[1.1875rem];
 
-        padding: 3px 0 11px 0;
+        padding: 3px 0 11px 1rem;
 
         border-color: #abe2de;
 
@@ -130,8 +156,67 @@
       }
     }
   }
+
+  .user-actions {
+    &:hover {
+      > i,
+      > span {
+        color: var(--rv-primary);
+      }
+    }
+
+    i {
+      @apply flex h-8 w-10 rounded-md text-3xl;
+    }
+  }
 }
 
 ::ng-deep #newNoteBtn .k-button-text {
   margin-right: auto;
+}
+
+h1.raven-logo {
+  font-family: Nexa;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 20px;
+  text-align: center;
+  color: #66666673;
+}
+
+.popover-hidden-area {
+  height: 100%;
+  width: 2rem;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: -1.5rem;
+}
+
+::ng-deep {
+  .menu__item--active {
+    color: var(--rv-primary);
+  }
+  .disable-outline {
+    &:focus,
+    &:focus-visible {
+      outline: none;
+      border: none;
+      // color: var(--rv-primary);
+    }
+  }
+
+  .menu-popover {
+    &-header-wrapper {
+      font-size: 1.025rem;
+      padding: 1rem 1rem 0 1rem;
+    }
+
+    &-submenu-content {
+      border-left: 1px solid #002c3c20;
+      padding-left: 0.75rem;
+      margin: 0 0.75rem 1rem 0.25rem;
+    }
+  }
 }

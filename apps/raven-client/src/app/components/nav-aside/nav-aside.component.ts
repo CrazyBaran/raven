@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  signal,
   WritableSignal,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -15,11 +15,14 @@ import { MsalService } from '@azure/msal-angular';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { BadgeModule } from '@progress/kendo-angular-indicators';
 import { PopupModule } from '@progress/kendo-angular-popup';
-import { TooltipModule } from '@progress/kendo-angular-tooltip';
+import { PopoverModule, TooltipModule } from '@progress/kendo-angular-tooltip';
 import { map, startWith } from 'rxjs';
 import { LoginComponent } from '../../pages/login/login.component';
 import { SidebarActionButtonComponent } from '../sidebar-action-button/sidebar-action-button.component';
-import { collapseAnimation } from './nav-aside.animation';
+import {
+  collapseAnimation,
+  delayedFadeInAnimation,
+} from './nav-aside.animation';
 import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
 
 @Component({
@@ -31,15 +34,17 @@ import { UiNavAsideRoute, UiNavAsideSubRoute } from './nav-aside.interface';
     RouterModule,
     LoginComponent,
     TooltipModule,
+    PopoverModule,
     ToggleMenuButtonComponent,
     PopupModule,
     ClickOutsideDirective,
     SidebarActionButtonComponent,
     BadgeModule,
+    NgOptimizedImage,
   ],
   templateUrl: './nav-aside.component.html',
   styleUrls: ['./nav-aside.component.scss'],
-  animations: [collapseAnimation],
+  animations: [collapseAnimation, delayedFadeInAnimation],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavAsideComponent {
@@ -49,19 +54,12 @@ export class NavAsideComponent {
   public visibleUserDetails = signal(false);
   public openRoute: WritableSignal<UiNavAsideRoute | null> = signal(null);
 
+  public openRouteSubroutes: { [key: string]: boolean } = {};
   public readonly userOptions: {
     name: string;
     icon: string;
     action?: () => void;
   }[] = [
-    {
-      name: 'Support',
-      icon: 'fa-regular fa-circle-info',
-    },
-    {
-      name: 'Settings',
-      icon: 'fa-solid fa-gear',
-    },
     {
       name: 'Logout',
       icon: 'fa-solid fa-arrow-right-to-line',
@@ -107,6 +105,15 @@ export class NavAsideComponent {
       .join('');
   }
 
+  public getContextData(anchor: Element): UiNavAsideRoute {
+    const routeIndex = parseInt(anchor.id.split('menu-popover-index-')[1]);
+    return this.routes?.[routeIndex];
+  }
+
+  public getPopoverId(route: UiNavAsideRoute): string {
+    return `menu-popover-index-${this.routes.indexOf(route)}`;
+  }
+
   public handleToggleSidebar(state?: boolean): void {
     this.isOpen.update((isOpen) =>
       typeof state === 'boolean' ? state : !isOpen,
@@ -138,6 +145,7 @@ export class NavAsideComponent {
 
     if (!this.isOpen()) {
       this.handleToggleSidebar(true);
+      this.handleOpenRouteSubroutes(route);
     }
   }
 
@@ -156,8 +164,18 @@ export class NavAsideComponent {
 
   public handleToggleUserDetails(): void {
     this.isOpen.set(true);
+  }
 
-    this.visibleUserDetails.update((value) => !value);
+  public handleToggleRouteSubroutes(route: UiNavAsideRoute): void {
+    this.openRouteSubroutes[route.name] = !this.openRouteSubroutes[route.name];
+  }
+
+  public handleOpenRouteSubroutes(route: UiNavAsideRoute): void {
+    this.openRouteSubroutes[route.name] = true;
+  }
+
+  public visibleRouteSubroute(route: UiNavAsideRoute): boolean {
+    return !!this.openRouteSubroutes[route.name];
   }
 
   public handleLogout(): void {
