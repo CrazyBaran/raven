@@ -3,30 +3,38 @@
     <h5 class="k-card-title">Funding data</h5>
   </header>
 
-  <main body class="grid gap-6 lg:grid-cols-2">
-    <kendo-chart class="max-h-[330px]">
-      <kendo-chart-tooltip format="${0}M" />
+  <main
+    body
+    class="grid"
+    [ngClass]="{
+      'gap-6': withChart,
+      'lg:grid-cols-2': withChart
+    }"
+  >
+    @if (withChart) {
+      <kendo-chart class="max-h-[330px]">
+        <kendo-chart-tooltip format="${0}M" />
 
-      <kendo-chart-value-axis>
-        <kendo-chart-value-axis-item
-          [title]="{ text: 'Cumulative Funding ($m)' }"
-        />
-      </kendo-chart-value-axis>
+        <kendo-chart-value-axis>
+          <kendo-chart-value-axis-item
+            [title]="{ text: 'Cumulative Funding ($m)' }"
+          />
+        </kendo-chart-value-axis>
 
-      <kendo-chart-series>
-        <kendo-chart-series-item
-          [style]="'smooth'"
-          type="line"
-          [data]="organisationFundingDataStore.chartData().data"
-          field="amountInUsd"
-          categoryField="date"
-          [title]="{ text: 'Cumulative Funding ($m)' }"
-        >
-          <kendo-chart-series-item-tooltip />
-        </kendo-chart-series-item>
-      </kendo-chart-series>
-    </kendo-chart>
-
+        <kendo-chart-series>
+          <kendo-chart-series-item
+            [style]="'smooth'"
+            type="line"
+            [data]="organisationFundingDataStore.chartData().data"
+            field="amountInUsd"
+            categoryField="date"
+            [title]="{ text: 'Cumulative Funding ($m)' }"
+          >
+            <kendo-chart-series-item-tooltip />
+          </kendo-chart-series-item>
+        </kendo-chart-series>
+      </kendo-chart>
+    }
     <aside #table>
       <kendo-grid
         (scrollBottom)="organisationFundingDataStore.scrollBottom()"

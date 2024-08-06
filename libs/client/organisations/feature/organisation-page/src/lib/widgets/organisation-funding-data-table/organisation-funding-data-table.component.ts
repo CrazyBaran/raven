@@ -4,7 +4,12 @@ import {
   NgClass,
   NgOptimizedImage,
 } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  inject,
+} from '@angular/core';
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
 import { WhenDatePipe } from '@app/client/shared/ui-pipes';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -34,6 +39,8 @@ import { organisationFundingDataTableStore } from './organisation-funding-data-t
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganisationFundingDataTableComponent {
+  @Input()
+  public withChart = true;
   public organisationFundingDataStore = inject(
     organisationFundingDataTableStore,
   );
