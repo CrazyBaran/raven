@@ -6,6 +6,7 @@ export const ShelfActions = createActionGroup({
     'Open Notepad': props<{
       organisationId?: string;
       opportunityId?: string;
+      versionTagId?: string;
     }>(),
     'Open Note Details': props<{ noteId: string }>(),
   },

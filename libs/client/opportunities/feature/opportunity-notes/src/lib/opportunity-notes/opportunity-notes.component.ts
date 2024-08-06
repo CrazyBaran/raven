@@ -81,6 +81,7 @@ export class OpportunityNotesComponent implements OnInit {
       ShelfActions.openNotepad({
         organisationId: this.vm().organisationTagId,
         opportunityId: this.vm().opportunityTagId,
+        versionTagId: this.vm().versionTagId,
       }),
     );
   }

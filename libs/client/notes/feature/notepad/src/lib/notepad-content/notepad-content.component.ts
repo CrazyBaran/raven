@@ -68,6 +68,7 @@ import { selectQueryParam } from '../../../../../../shared/util-router/src';
 export class NotepadContentComponent implements OnInit, AfterViewInit {
   public organisationId?: string;
   public opportunityId?: string;
+  public versionId?: string;
 
   @ViewChild('container', { read: ViewContainerRef })
   public containerRef: ViewContainerRef;
@@ -109,15 +110,20 @@ export class NotepadContentComponent implements OnInit, AfterViewInit {
   });
 
   public ngOnInit(): void {
-    if (this.opportunityId && this.organisationId) {
-      this.notepadForm.patchValue({
-        ...this.notepadForm.value!,
-        tags: [
-          {
+    if ((this.opportunityId || this.versionId) && this.organisationId) {
+      const complexTag = this.opportunityId
+        ? {
             opportunityTagId: this.opportunityId,
             organisationId: this.organisationId,
-          },
-        ],
+          }
+        : {
+            organisationId: this.organisationId,
+            versionTagId: this.versionId!,
+          };
+
+      this.notepadForm.patchValue({
+        ...this.notepadForm.value!,
+        tags: [complexTag],
       });
     } else if (this.organisationId) {
       this.notepadForm.patchValue({
@@ -311,5 +317,6 @@ export const componentDataResolver = (data: ComponentData): unknown => {
   return {
     organisationId: data?.['organisationId'],
     opportunityId: data?.['opportunityId'],
+    versionId: data?.['versionId'],
   };
 };

@@ -1,6 +1,7 @@
 import { FileData } from '@app/rvns-files';
 import { PipelineStageData } from '@app/rvns-pipelines';
 import { PagedData } from 'rvns-shared';
+import { TagTypeEnum } from '../../../../rvns-tags/src';
 import { FieldData } from './field-data.interface';
 import { OpportunityTeamData } from './opportunity-team-data.interface';
 import { OrganisationData } from './organisation-data.interface';
@@ -19,6 +20,7 @@ export interface OpportunityDataWithoutOrganisation {
   readonly tag?: {
     readonly id: string;
     readonly name: string;
+    readonly type?: TagTypeEnum;
   };
   readonly createdAt?: Date;
   readonly roundSize?: string;

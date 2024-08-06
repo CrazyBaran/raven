@@ -118,6 +118,7 @@ export class ShelfEffects {
               componentData: {
                 organisationId: action.organisationId,
                 opportunityId: action.opportunityId,
+                versionId: action.versionTagId,
               },
             },
             width: 720,
