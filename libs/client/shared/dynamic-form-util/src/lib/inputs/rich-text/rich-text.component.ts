@@ -165,10 +165,12 @@ export class RichTextComponent
   protected active = signal(false);
 
   public setActive(): void {
-    this.elementRef?.nativeElement?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
+    if (!this.editor.value) {
+      this.elementRef?.nativeElement?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
     this.manualFocus$.next();
     this.editor.focus();
 
