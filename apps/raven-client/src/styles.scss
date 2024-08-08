@@ -21,6 +21,8 @@
 // @import 'assets/fontawesome/scss/duotone';
 @import 'assets/fontawesome/scss/sharp-solid';
 
+@import 'assets/interstate/scss/interstate';
+
 /* You can add global styles to this file, and also import other style files */
 
 router-outlet.router-flex + * {
@@ -34,7 +36,7 @@ body {
 
   font-family: interstate, sans-serif;
   font-style: normal;
-  font-weight: 100;
+  font-weight: 400;
   height: 100vh;
   overflow: hidden;
 }
