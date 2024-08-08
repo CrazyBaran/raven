@@ -73,10 +73,24 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column [width]="100" headerClass="!font-bold">
+        <kendo-grid-column [width]="120" headerClass="!font-bold">
+          <ng-template kendoGridHeaderTemplate>
+            <p>Pre Valuation</p>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-fundingData>
+            @if (fundingData.preValuationInUsd) {
+              <p>{{ fundingData.preValuationInUsd || 0 | currency: 'USD' }}M</p>
+            } @else {
+              <p>No data</p>
+            }
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [width]="120" headerClass="!font-bold">
           <ng-template kendoGridHeaderTemplate>
             <p title="Estimate values" kendoTooltip position="top">
-              Valuation*
+              Post Valuation*
             </p>
           </ng-template>
 
