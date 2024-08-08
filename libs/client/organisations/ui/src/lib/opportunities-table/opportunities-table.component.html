@@ -3,7 +3,7 @@
   [trackBy]="trackByFn"
   class="grid-borderless opportunity-table"
 >
-  <kendo-grid-column headerClass="!font-bold" title="Instrument">
+  <kendo-grid-column headerClass="!font-bold" title="Stage">
     <ng-template kendoGridCellTemplate let-opportunity>
       <p [isEllipsisActive]="true">
         {{ opportunity.name || 'No Opportunity' }}
@@ -26,7 +26,11 @@
     </ng-template>
   </kendo-grid-column>
 
-  <kendo-grid-column headerClass="!font-bold" title="Deal Lead">
+  <kendo-grid-column
+    headerClass="!font-bold"
+    title="
+  "
+  >
     <ng-template kendoGridCellTemplate let-opportunity>
       <ui-tags-container
         [rows]="1"
