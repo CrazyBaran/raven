@@ -75,7 +75,9 @@
 
         <kendo-grid-column [width]="120" headerClass="!font-bold">
           <ng-template kendoGridHeaderTemplate>
-            <p>Pre Valuation</p>
+            <p title="Estimate values" kendoTooltip position="top">
+              Pre Valuation*
+            </p>
           </ng-template>
 
           <ng-template kendoGridCellTemplate let-fundingData>
