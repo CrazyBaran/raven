@@ -15,7 +15,7 @@ import {
   OpportunitiesActions,
   opportunitiesQuery,
 } from '@app/client/opportunities/data-access';
-import { TagsActions } from '@app/client/tags/state';
+import { TagsActions, tagsQuery } from '@app/client/tags/state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
@@ -29,7 +29,7 @@ import { DialogModule } from '@progress/kendo-angular-dialog';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { RxLet } from '@rx-angular/template/let';
 import * as _ from 'lodash';
-import { first, switchMap, take } from 'rxjs';
+import { combineLatest, first, switchMap, take } from 'rxjs';
 import { selectCreateOpportunityDialogViewModel } from './create-opportunity-dialog.selectors';
 
 @Component({
@@ -78,6 +78,11 @@ export class CreateOpportunityOnStageDialogComponent implements OnInit {
     first((data) => !!data),
   );
 
+  public userDetails$ = toObservable(this.params).pipe(
+    switchMap(() => this.store.select(tagsQuery.selectCurrentUserTag)),
+    first((data) => !!data),
+  );
+
   protected opportunityForm: OpportunityForm = this.fb.group({
     organisationId: [<string | null>null],
     opportunityTagId: [<string | null>null, [Validators.required]],
@@ -90,8 +95,8 @@ export class CreateOpportunityOnStageDialogComponent implements OnInit {
     underNda: [<string | null>null],
     ndaTerminationDate: [<string | null>null],
     team: this.fb.control<{
-      owners: [];
-      members: [];
+      owners: string[];
+      members: string[];
     }>({
       owners: [],
       members: [],
@@ -105,21 +110,27 @@ export class CreateOpportunityOnStageDialogComponent implements OnInit {
       }),
     );
 
-    this.opporunityDetails$?.subscribe((data) => {
-      // fix pathValue typing
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.opportunityForm.patchValue({
-        ..._.pickBy(data, (v, key) =>
-          Object.keys(this.opportunityForm.controls).includes(key),
-        ),
-        opportunityTagId: data?.tag?.id,
-        team: {
-          owners: data?.team?.owners.map((o) => o.actorId) ?? [],
-          members: data?.team?.members.map((m) => m.actorId) ?? [],
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-    });
+    combineLatest([this.opporunityDetails$, this.userDetails$]).subscribe(
+      ([data, userData]) => {
+        const owners = data?.team?.owners.map((o) => o.actorId) ?? [];
+        const members = data?.team?.members.map((m) => m.actorId) ?? [];
+        if (userData?.userId) {
+          if (!owners.length && !members.length) {
+            owners.push(userData.userId);
+          }
+        }
+        this.opportunityForm.patchValue({
+          ..._.pickBy(data, (v, key) =>
+            Object.keys(this.opportunityForm.controls).includes(key),
+          ),
+          opportunityTagId: data?.tag?.id,
+          team: {
+            owners,
+            members,
+          },
+        } as any);
+      },
+    );
   }
 
   protected onDialogClose(): void {

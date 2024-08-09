@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OpportunitiesActions } from '@app/client/opportunities/data-access';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
@@ -22,6 +27,7 @@ import {
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   DealTeamPickerComponent,
   OpportunityForm,
@@ -29,11 +35,11 @@ import {
 } from '@app/client/opportunities/ui';
 import { OrganisationsActions } from '@app/client/organisations/state';
 import { DynamicDialogContentBase } from '@app/client/shared/ui-directives';
-import { TagsActions } from '@app/client/tags/state';
+import { TagsActions, tagsQuery } from '@app/client/tags/state';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
 import { RxLet } from '@rx-angular/template/let';
-import { take } from 'rxjs';
+import { first, switchMap, take } from 'rxjs';
 import { selectCreateOpportunityDialogViewModel } from './create-opportunity-dialog.selectors';
 
 @Component({
@@ -62,7 +68,10 @@ import { selectCreateOpportunityDialogViewModel } from './create-opportunity-dia
   styleUrls: ['./create-opportunity-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateOpportunityDialogComponent extends DynamicDialogContentBase {
+export class CreateOpportunityDialogComponent
+  extends DynamicDialogContentBase
+  implements OnInit
+{
   public readonly route = 'create-opportunity';
 
   protected fb = inject(FormBuilder);
@@ -73,7 +82,10 @@ export class CreateOpportunityDialogComponent extends DynamicDialogContentBase {
     selectCreateOpportunityDialogViewModel,
   );
   protected vm$ = this.store.select(selectCreateOpportunityDialogViewModel);
-
+  public userDetails$ = toObservable(this.vmSignal).pipe(
+    switchMap(() => this.store.select(tagsQuery.selectCurrentUserTag)),
+    first((data) => !!data),
+  );
   protected opportunityForm: OpportunityForm = this.fb.group({
     organisationId: [''],
     opportunityTagId: [<string | null>null, [Validators.required]],
@@ -86,8 +98,8 @@ export class CreateOpportunityDialogComponent extends DynamicDialogContentBase {
     underNda: [null as string | null],
     ndaTerminationDate: [null as string | null],
     team: this.fb.control<{
-      owners: [];
-      members: [];
+      owners: string[];
+      members: string[];
     }>({
       owners: [],
       members: [],
@@ -102,6 +114,18 @@ export class CreateOpportunityDialogComponent extends DynamicDialogContentBase {
         tagTypes: ['opportunity', 'people'],
       }),
     );
+  }
+
+  ngOnInit(): void {
+    this.userDetails$?.subscribe((data) => {
+      const prepopuplatedOwner = data?.userId ? [data.userId] : [];
+      this.opportunityForm?.patchValue({
+        team: {
+          owners: prepopuplatedOwner,
+          members: [],
+        },
+      });
+    });
   }
 
   protected onDialogClose(): void {

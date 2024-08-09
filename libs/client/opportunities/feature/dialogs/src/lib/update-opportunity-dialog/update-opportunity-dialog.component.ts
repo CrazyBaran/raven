@@ -70,8 +70,8 @@ export class UpdateOpportunityDialogComponent
     underNda: [<string | null>null],
     ndaTerminationDate: [<string | null>null],
     team: this.fb.control<{
-      owners: [];
-      members: [];
+      owners: string[];
+      members: string[];
     }>({
       owners: [],
       members: [],
@@ -86,16 +86,13 @@ export class UpdateOpportunityDialogComponent
     );
 
     this.opporunityDetails$.subscribe((data) => {
-      // fix pathValue typing
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.opportunityForm.patchValue({
         ..._.pickBy(data, (v, key) =>
           Object.keys(this.opportunityForm.controls).includes(key),
         ),
         opportunityTagId: data?.tag?.id,
         team: null,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
+      });
     });
   }
 

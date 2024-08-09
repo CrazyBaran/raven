@@ -28,8 +28,8 @@ export type OpportunityForm = FormGroup<{
   underNda: FormControl<string | null>;
   ndaTerminationDate: FormControl<string | null>;
   team: FormControl<{
-    owners: [];
-    members: [];
+    owners: string[];
+    members: string[];
   } | null>;
 }>;
 
