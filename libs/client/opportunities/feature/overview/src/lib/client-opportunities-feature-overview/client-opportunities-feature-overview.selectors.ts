@@ -79,11 +79,11 @@ export const selectOpportunityOverviewViewModel = createSelector(
         },
         {
           label: opportunity?.tag?.name,
-          subLabel: 'Instrument',
+          subLabel: 'Stage',
         },
         {
           label: opportunity?.roundSize,
-          subLabel: 'Instrument Size',
+          subLabel: 'Stage Size',
         },
         {
           label: opportunity?.valuation,

@@ -30,10 +30,7 @@
         </div>
       </ng-template>
     }
-    <kendo-grid-column
-      [headerStyle]="{ 'font-weight': '700' }"
-      title="Instrument"
-    >
+    <kendo-grid-column [headerStyle]="{ 'font-weight': '700' }" title="Stage">
       <ng-template kendoGridCellTemplate let-dataItem>
         <p>{{ getOpportunityName(dataItem) }}</p>
         <p class="text-xs">

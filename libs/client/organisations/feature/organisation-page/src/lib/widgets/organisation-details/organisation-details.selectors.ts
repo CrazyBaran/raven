@@ -20,7 +20,7 @@ const selectOrganisationDetails = createSelector(
               'desc',
             )[0].tag?.name ?? ''
           : null,
-        subLabel: 'Last Instrument',
+        subLabel: 'Last Stage',
       },
     ].filter(({ label }) => !!label),
 );

@@ -140,7 +140,7 @@ export const organisationTableConfiguration: TableColumn[] = [
       import('../dynamic-string-column/dynamic-string-column.component').then(
         (m) => m.DynamicStringColumnComponent,
       ),
-    name: 'Last Instrument',
+    name: 'Last Stage',
     field: 'funding.lastFundingRound',
     type: 'string',
     filter: 'string',
