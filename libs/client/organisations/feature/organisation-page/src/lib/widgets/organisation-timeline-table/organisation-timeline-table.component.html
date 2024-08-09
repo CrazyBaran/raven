@@ -1,94 +1,76 @@
-<kendo-panelbar
-  class="white-tilelayout organisation-timeline"
-  (collapse)="onCollapse()"
->
-  <ng-template kendoPanelBarItemTitle>
-    <h5 class="k-card-title">Company Timeline</h5>
-  </ng-template>
-  <kendo-panelbar-item [expanded]="true" title="Company Timeline">
-    <ng-template kendoPanelBarContent>
-      <div class="h-[calc(100vh-16.5em)]">
-        <kendo-grid
-          [data]="organisationTimelineStore.filteredData()"
-          [loading]="organisationTimelineStore.isLoading()"
-          [sortable]="false"
-          [rowClass]="rowCallback"
-          [scrollable]="'scrollable'"
-          class="grid-borderless h-full !border-b-0"
-        >
-          <kendo-grid-column [width]="56" title="" headerClass="!font-bold">
-            <ng-template kendoGridCellTemplate let-details>
-              <div class="text-center">
-                <i
-                  class="fa-solid icon"
-                  [ngClass]="getTypeIcon(details.type)"
-                ></i>
-              </div>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column title="Details" headerClass="!font-bold">
-            <ng-template kendoGridCellTemplate let-details>
-              <p class="text-lg" [isEllipsisActive]="true">
-                {{ details.name }}
-              </p>
-              <p class="people text-sm">
-                @if (details.type === 'email') {
-                  <span class="whitespace-nowrap">
-                    From: {{ details.mainActor || '-' }} |&nbsp;
+<div class="organisation-timeline h-[calc(100vh-14.5em)]">
+  <kendo-grid
+    [data]="organisationTimelineStore.filteredData()"
+    [loading]="organisationTimelineStore.isLoading()"
+    [sortable]="false"
+    [rowClass]="rowCallback"
+    [scrollable]="'scrollable'"
+    [hideHeader]="hideHeader"
+    class="grid-borderless h-full !border-b-0"
+  >
+    <kendo-grid-column [width]="56" title="" headerClass="!font-bold">
+      <ng-template kendoGridCellTemplate let-details>
+        <div class="text-center">
+          <i class="fa-solid icon" [ngClass]="getTypeIcon(details.type)"></i>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column title="Details" headerClass="!font-bold">
+      <ng-template kendoGridCellTemplate let-details>
+        <p class="text-lg" [isEllipsisActive]="true">
+          {{ details.name }}
+        </p>
+        <p class="people text-sm">
+          @if (details.type === 'email') {
+            <span class="whitespace-nowrap">
+              From: {{ details.mainActor || '-' }} |&nbsp;
+            </span>
+          }
+          <ui-tags-container
+            [rows]="1"
+            [tags]="details.people | toUserTag: true"
+            delimeter=","
+            class="w-full"
+          />
+        </p>
+      </ng-template>
+      @if (organisationTimelineStore.canLoadMore()) {
+        <ng-template kendoGridFooterTemplate>
+          <div class="flex justify-between font-normal">
+            <button
+              (click)="loadMore()"
+              kendoButton
+              fillMode="flat"
+              themeColor="primary"
+            >
+              Show more
+            </button>
+            @if (sourceUrl) {
+              <a [href]="sourceUrl" target="_blank">
+                <kendo-button fillMode="flat" themeColor="primary">
+                  <span class="align-center flex gap-1">
+                    See full list of interactions in
+                    <img
+                      class="inline"
+                      alt="affinity logo"
+                      src="assets/images/affinity.svg"
+                    />
+                    <i
+                      class="fa-sharp fa-solid fa-arrow-up-right-from-square"
+                    ></i>
                   </span>
-                }
-                <ui-tags-container
-                  [rows]="1"
-                  [tags]="details.people | toUserTag: true"
-                  delimeter=","
-                  class="w-full"
-                />
-              </p>
-            </ng-template>
-            @if (organisationTimelineStore.canLoadMore()) {
-              <ng-template kendoGridFooterTemplate>
-                <div class="flex justify-between font-normal">
-                  <button
-                    (click)="loadMore()"
-                    kendoButton
-                    fillMode="flat"
-                    themeColor="primary"
-                  >
-                    Show more
-                  </button>
-                  @if (sourceUrl) {
-                    <a [href]="sourceUrl" target="_blank">
-                      <kendo-button fillMode="flat" themeColor="primary">
-                        <span class="align-center flex gap-1">
-                          See full list of interactions in
-                          <img
-                            class="inline"
-                            alt="affinity logo"
-                            src="assets/images/affinity.svg"
-                          />
-                          <i
-                            class="fa-sharp fa-solid fa-arrow-up-right-from-square"
-                          ></i>
-                        </span>
-                      </kendo-button>
-                    </a>
-                  }
-                </div>
-              </ng-template>
+                </kendo-button>
+              </a>
             }
-          </kendo-grid-column>
+          </div>
+        </ng-template>
+      }
+    </kendo-grid-column>
 
-          <kendo-grid-column
-            [width]="120"
-            title="Date"
-            headerClass="!font-bold"
-          >
-            <ng-template kendoGridCellTemplate let-details>
-              <p>{{ details.date | date: 'dd.MM.yyyy' }}</p>
-            </ng-template>
-          </kendo-grid-column>
-        </kendo-grid>
-      </div>
-    </ng-template>
-  </kendo-panelbar-item>
-</kendo-panelbar>
+    <kendo-grid-column [width]="120" title="Date" headerClass="!font-bold">
+      <ng-template kendoGridCellTemplate let-details>
+        <p>{{ details.date | date: 'dd.MM.yyyy' }}</p>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</div>

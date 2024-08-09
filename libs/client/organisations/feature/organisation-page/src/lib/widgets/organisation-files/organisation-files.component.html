@@ -1,46 +1,34 @@
-<kendo-panelbar class="white-tilelayout">
-  <kendo-panelbar-item [expanded]="true" title="Related Notes">
-    <ng-template kendoPanelBarItemTitle>
-      <div class="k-card-title !m-0 flex w-full items-center !text-black">
-        Company Files
-
-        @if (vm().hasFileFolder) {
-          <kendo-button
-            [openInNewTab]="sharepointUrl()"
-            [themeColor]="'base'"
-            id="launchPicker"
-            class="ml-auto"
-          >
-            Manage files
-          </kendo-button>
+@if (vm().hasFileFolder) {
+  <div class="flex flex-row">
+    <kendo-button
+      [openInNewTab]="sharepointUrl()"
+      [themeColor]="'base'"
+      id="launchPicker"
+      class="mb-2 ml-auto mr-2"
+    >
+      Manage files
+    </kendo-button>
+  </div>
+}
+<div class="h-[calc(100vh-16.5em)] overflow-auto">
+  @if (vm().isLoading) {
+  } @else if (vm().hasFileFolder) {
+    <app-files-treelist-container [directoryUrl]="vm().sharepointDirectory!" />
+  } @else {
+    <div class="flex h-full flex-col items-center justify-center">
+      <p class="text-subtle-text mb-1 text-sm italic">
+        There is no existing folder in SharePoint for this company. To create
+        one please click the button below.
+      </p>
+      <kendo-button
+        (click)="createOrganisationFolder()"
+        [disabled]="vm().isCreatingSharepointFolder"
+      >
+        @if (vm().isCreatingSharepointFolder) {
+          <kendo-loader class="!text-secondary-100 mr-1" size="small" />
         }
-      </div>
-    </ng-template>
-    <ng-template kendoPanelBarContent>
-      <div class="h-[calc(100vh-16.5em)] overflow-auto">
-        @if (vm().isLoading) {
-        } @else if (vm().hasFileFolder) {
-          <app-files-treelist-container
-            [directoryUrl]="vm().sharepointDirectory!"
-          />
-        } @else {
-          <div class="flex h-full flex-col items-center justify-center">
-            <p class="text-subtle-text mb-1 text-sm italic">
-              There is no existing folder in SharePoint for this company. To
-              create one please click the button below.
-            </p>
-            <kendo-button
-              (click)="createOrganisationFolder()"
-              [disabled]="vm().isCreatingSharepointFolder"
-            >
-              @if (vm().isCreatingSharepointFolder) {
-                <kendo-loader class="!text-secondary-100 mr-1" size="small" />
-              }
-              Create Organisation Folder
-            </kendo-button>
-          </div>
-        }
-      </div>
-    </ng-template>
-  </kendo-panelbar-item>
-</kendo-panelbar>
+        Create Organisation Folder
+      </kendo-button>
+    </div>
+  }
+</div>

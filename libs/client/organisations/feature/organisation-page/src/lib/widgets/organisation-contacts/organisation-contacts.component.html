@@ -16,6 +16,7 @@
         "
         class="grid-borderless !border-b-0"
         [style.max-height.px]="organisationContactsStore.tableHeight() || null"
+        [hideHeader]="hideHeader"
       >
         <kendo-grid-column [width]="50" title="">
           <ng-template kendoGridCellTemplate>

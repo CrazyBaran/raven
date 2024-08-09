@@ -48,7 +48,8 @@ import { organisationTimelineTableStore } from './organisation-timeline-table.st
 export class OrganisationTimelineTableComponent {
   public TIMELINE_DAYS_INTERVAL = TIMELINE_DAYS_INTERVAL;
   public organisationTimelineStore = inject(organisationTimelineTableStore);
-
+  @Input()
+  public hideHeader = true;
   @Input()
   public sourceUrl: string | undefined;
   public loadMore(): void {

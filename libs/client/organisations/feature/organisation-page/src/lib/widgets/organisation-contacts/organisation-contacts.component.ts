@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  inject,
+} from '@angular/core';
 
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
 
@@ -24,6 +29,9 @@ import { organisationContactsStore } from './organisation-contacts.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganisationContactsComponent {
+  @Input()
+  public hideHeader = true;
+
   public organisationContactsStore = inject(organisationContactsStore);
 
   public getMailto(email: string): string {

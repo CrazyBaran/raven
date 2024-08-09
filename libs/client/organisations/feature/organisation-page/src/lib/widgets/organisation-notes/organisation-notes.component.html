@@ -1,22 +1,14 @@
-<kendo-panelbar class="white-tilelayout">
-  <kendo-panelbar-item [expanded]="true" title="Related Notes">
-    <ng-template kendoPanelBarItemTitle>
-      <div class="k-card-title !m-0 flex w-full items-center !text-black">
-        Related Notes
-        <kendo-button
-          (click)="openNoteShelf(); $event.stopPropagation()"
-          iconClass="fa-sharp fa-solid fa-pen"
-          size="small"
-          class="ml-auto mr-2"
-        >
-          Add New
-        </kendo-button>
-      </div>
-    </ng-template>
-    <ng-template kendoPanelBarContent>
-      <div class="h-[calc(100vh-16.5em)]">
-        <app-notes-table-container />
-      </div>
-    </ng-template>
-  </kendo-panelbar-item>
-</kendo-panelbar>
+<div class="flex flex-row">
+  <kendo-button
+    (click)="openNoteShelf(); $event.stopPropagation()"
+    iconClass="fa-sharp fa-solid fa-pen"
+    size="small"
+    class="mb-2 ml-auto mr-2"
+  >
+    Add New
+  </kendo-button>
+</div>
+
+<div class="h-[calc(100vh-16.5em)]">
+  <app-notes-table-container />
+</div>

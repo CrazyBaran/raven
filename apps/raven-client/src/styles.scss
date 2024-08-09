@@ -65,3 +65,9 @@ a.tag-link {
   padding: 0;
   border: none;
 }
+
+.grid-borderless {
+  .k-grid-header-wrap {
+    border: none;
+  }
+}

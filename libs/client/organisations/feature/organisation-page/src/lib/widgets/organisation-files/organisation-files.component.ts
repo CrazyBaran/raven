@@ -9,7 +9,6 @@ import { OrganisationsActions } from '@app/client/organisations/state';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { LoaderModule } from '@progress/kendo-angular-indicators';
-import { PanelBarModule } from '@progress/kendo-angular-layout';
 import { SharepointHelperService } from '../../../../../../../files/data-access/src';
 import { OpenInNewTabDirective } from '../../../../../../../shared/ui-directives/src';
 import { selectOrganisationFilesViewModel } from './organisation-files.selectors';
@@ -18,7 +17,6 @@ import { selectOrganisationFilesViewModel } from './organisation-files.selectors
   selector: 'app-organisation-files',
   standalone: true,
   imports: [
-    PanelBarModule,
     PickerContainerComponent,
     FilesTreelistContainerComponent,
     ButtonModule,

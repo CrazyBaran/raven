@@ -1,5 +1,10 @@
 import { NgClass, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  inject,
+} from '@angular/core';
 import { TilelayoutItemComponent } from '@app/client/shared/ui';
 import { WhenDatePipe } from '@app/client/shared/ui-pipes';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -24,6 +29,9 @@ import { organisationNewsTableStore } from './organisation-news-table.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganisationNewsTableComponent {
+  @Input()
+  public hideHeader = true;
+
   public organisationNewsStore = inject(organisationNewsTableStore);
 
   public loadMore(tableHeight: number): void {

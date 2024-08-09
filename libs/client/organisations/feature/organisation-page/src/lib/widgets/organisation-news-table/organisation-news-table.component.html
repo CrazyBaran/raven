@@ -18,6 +18,7 @@
         "
         class="grid-borderless h-full !border-b-0"
         [style.max-height.px]="organisationNewsStore.tableHeight() || null"
+        [hideHeader]="hideHeader"
       >
         <kendo-grid-column [width]="60">
           <ng-template kendoGridCellTemplate>
