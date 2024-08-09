@@ -57,6 +57,8 @@ interface UpdatePipelineGroupOptions {
 interface PipelineViewOptions {
   readonly name: string;
   readonly order: number;
+  readonly isDefault?: boolean;
+  readonly icon?: string;
   readonly columns: {
     name: string;
     stageIds: string[];
@@ -69,6 +71,8 @@ interface PipelineViewOptions {
 interface UpdatePipelineViewOptions {
   readonly name?: string;
   readonly order?: number;
+  readonly icon?: string;
+  readonly isDefault?: boolean;
   readonly columns?: {
     readonly name?: string;
     readonly stageIds?: string[];
@@ -231,6 +235,14 @@ export class PipelineService {
       updatedEntity.order = options.order;
     }
 
+    if (options.icon) {
+      updatedEntity.icon = options.icon;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'isDefault')) {
+      updatedEntity.isDefault = !!options.isDefault;
+    }
+
     if (options.columns?.length) {
       const columns = options.columns.map((c) => {
         return {
@@ -273,6 +285,8 @@ export class PipelineService {
     view.name = pipelineView.name;
     view.order = pipelineView.order;
     view.pipelineDefinitionId = pipelineDefinition.id;
+    view.isDefault = !!pipelineView.isDefault;
+    view.icon = pipelineView.icon || '';
     const columns = pipelineView.columns.map((c) => {
       return {
         name: c.name,
@@ -431,6 +445,8 @@ export class PipelineService {
       id: view.id,
       name: view.name,
       order: view.order,
+      isDefault: view.isDefault,
+      icon: view.icon ?? '',
       columns: JSON.parse(view.columnsConfig || '[]')?.map((col) => {
         return {
           id: col.id,

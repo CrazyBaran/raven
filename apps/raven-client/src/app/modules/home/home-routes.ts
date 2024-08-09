@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { provideWebsocketEffects } from '@app/client/core/websockets';
+import { providePipelinesFeature } from '@app/client/pipelines/state';
 import { provideRemindersFeature } from '@app/client/reminders/state';
 import { HomeComponent } from './home.component';
 
@@ -8,7 +9,11 @@ export const HOME_ROUTES: Routes = [
   {
     path: '',
     component: HomeComponent,
-    providers: [provideRemindersFeature(), provideWebsocketEffects()],
+    providers: [
+      provideRemindersFeature(),
+      providePipelinesFeature(),
+      provideWebsocketEffects(),
+    ],
     children: [
       {
         path: '',

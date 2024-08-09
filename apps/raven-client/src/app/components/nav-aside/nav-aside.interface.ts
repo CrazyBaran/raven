@@ -1,3 +1,5 @@
+import { Params } from '@angular/router';
+
 export interface UiNavAsideRoute {
   name: string;
   icon: string;
@@ -9,6 +11,7 @@ export interface UiNavAsideRoute {
   badge?: {
     value: string | number;
   };
+  queryParams?: Params;
 }
 
 export interface UiNavAsideSubRoute extends Omit<UiNavAsideRoute, 'subRoutes'> {

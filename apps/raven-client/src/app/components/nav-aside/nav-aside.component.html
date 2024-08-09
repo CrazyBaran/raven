@@ -15,6 +15,7 @@
       'w-20': !isOpen(),
       'w-60': isOpen()
     }"
+    (click)="sidebarClicked($event)"
   >
     <div class="nav-aside__routes p-6 pt-0">
       @if (!isOpen()) {
@@ -87,6 +88,7 @@
                 <li>
                   <a
                     [routerLink]="subRoute.disabled ? null : subRoute.path"
+                    [queryParams]="subRoute.queryParams || {}"
                     [ngClass]="{ 'menu__item--disabled': subRoute.disabled }"
                     [routerLinkActiveOptions]="{
                       exact: subRoute.exact || false
@@ -134,7 +136,7 @@
                   disabled: route.disabled,
                   active: route.exact
                     ? activeUrl()! === route.path
-                    : activeUrl()!.includes(route.path)
+                    : isActiveNotExact(route.path)
                 }"
                 [disabled]="route.disabled"
                 (click)="handleOpenSubRoute(route)"
@@ -199,6 +201,7 @@
                             [routerLink]="
                               subRoute.disabled ? null : subRoute.path
                             "
+                            [queryParams]="subRoute.queryParams || {}"
                             [ngClass]="{
                               'menu__item--disabled': subRoute.disabled
                             }"

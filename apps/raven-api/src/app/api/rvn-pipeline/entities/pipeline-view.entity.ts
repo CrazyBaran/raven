@@ -24,6 +24,12 @@ export class PipelineViewEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: false })
   public columnsConfig: string;
 
+  @Column({ type: 'nvarchar', length: '50', nullable: true })
+  public icon: string;
+
+  @Column({ default: false })
+  public isDefault: boolean;
+
   @ManyToOne(() => PipelineDefinitionEntity, {
     nullable: false,
     onDelete: 'CASCADE',

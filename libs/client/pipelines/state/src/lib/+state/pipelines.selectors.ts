@@ -61,4 +61,5 @@ export const pipelinesQuery = {
   selectPipelineById,
   selectStagePrimaryColorDictionary,
   selectAllPipelineStages,
+  selectAllPipelineViews,
 };

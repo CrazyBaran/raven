@@ -134,8 +134,14 @@ export class NavAsideComponent {
     route: UiNavAsideRoute,
     navigate?: boolean,
   ): Promise<void> {
-    if (!route.subRoutes && (navigate || route.navigate)) {
-      await this.router.navigateByUrl(route.path);
+    if (!route.subRoutes || navigate || route.navigate) {
+      const extras = {
+        queryParams: {},
+      };
+      if (route.queryParams) {
+        extras.queryParams = route.queryParams;
+      }
+      await this.router.navigate([route.path], extras);
 
       this.handleToggleSidebar(false);
       return;
@@ -146,6 +152,35 @@ export class NavAsideComponent {
     if (!this.isOpen()) {
       this.handleToggleSidebar(true);
       this.handleOpenRouteSubroutes(route);
+    }
+  }
+
+  public isActiveNotExact(path: string): boolean {
+    const allMatching = [];
+    const activeWithoutQuery = this.activeUrl()!.split('?')[0];
+    if (this.activeUrl()!.includes(path)) {
+      allMatching.push(path);
+    }
+    const filteredRoutes = this.routes?.filter(
+      (r) => r.path !== path && !r.exact,
+    );
+    for (const route of filteredRoutes) {
+      if (route.path.includes(activeWithoutQuery)) {
+        allMatching.push(route.path);
+      }
+    }
+
+    const matched = allMatching.find((m) => m === activeWithoutQuery);
+    const isActive = matched
+      ? path === matched
+      : this.activeUrl()!.includes(path);
+
+    return isActive;
+  }
+
+  public sidebarClicked($event: Event): void {
+    if (($event?.target as HTMLElement).localName === 'div') {
+      this.handleToggleSidebar();
     }
   }
 

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsOptional,
   IsPositive,
   IsString,
@@ -19,6 +20,16 @@ export class UpdatePipelineViewDto {
   @IsOptional()
   @IsPositive()
   public readonly order: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  public readonly isDefault: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  public readonly icon: string;
 
   @ApiProperty({ type: [PipelineViewColumnDto] })
   @IsOptional()

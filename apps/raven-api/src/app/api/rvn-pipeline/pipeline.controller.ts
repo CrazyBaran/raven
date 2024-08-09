@@ -310,6 +310,8 @@ export class PipelineController {
           name: dto.name,
           columns: dto.columns || [],
           order: dto.order,
+          icon: dto.icon,
+          isDefault: dto.isDefault,
         },
       ),
     );

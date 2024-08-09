@@ -3,6 +3,8 @@ export interface PipelineViewData {
   readonly name: string;
   readonly order: number;
   readonly columns: { id: string; name: string; stageIds: string[] }[];
+  readonly isDefault: boolean;
+  readonly icon: string;
 }
 export interface PipelineViewsData {
   readonly pipelineId: string;

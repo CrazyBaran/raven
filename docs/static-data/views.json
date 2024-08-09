@@ -2,6 +2,8 @@
     {
         "name": "Prospecting",
         "order": 1,
+        "isDefault": false,
+        "icon": "fa-regular fa-business-time",
         "columns": [
             {
                 "name": "Outreach - Planned",
@@ -40,6 +42,8 @@
     {
         "name": "Due Diligence",
         "order": 2,
+        "isDefault": true,
+        "icon": "fa-regular fa-magnifying-glass-chart",
         "columns": [
             {
                 "name": "Prelim DD - In Progress",
