@@ -91,7 +91,7 @@ export class HomeComponent {
       {
         name: 'Pipeline',
         path: 'companies/pipeline',
-        icon: 'fa-solid fa-fire',
+        icon: 'fa-solid fa-rotate-270 fa-diagram-next',
         queryParams: defaultQueryParams,
         navigate: true,
         disabled: !this.pipelineViews(),
