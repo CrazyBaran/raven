@@ -80,6 +80,7 @@ export class OpportunityEntity
 
   @ManyToOne(() => TagEntity, {
     nullable: true,
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'tag_id' })
   public tag: TagEntity | null;
