@@ -99,7 +99,6 @@
               track navigation.label
             ) {
               <kendo-button
-                [ngStyle]="$any(navigation).style ?? {}"
                 (click)="tabNavigated.next(navigation.label)"
                 [queryParams]="navigation.queryParams"
                 [queryParamsHandling]="'merge'"
@@ -107,6 +106,7 @@
                 [selected]="navigation.active"
                 [toggleable]="true"
                 class="!justify-start"
+                [ngClass]="$any(navigation)?.customClass ?? ''"
                 fillMode="flat"
                 size="large"
                 themeColor="primary"

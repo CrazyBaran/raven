@@ -7,7 +7,7 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 import { trigger } from '@angular/animations';
-import { JsonPipe, NgStyle } from '@angular/common';
+import { JsonPipe, NgClass } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -55,7 +55,7 @@ import {
     ButtonsModule,
     StatusIndicatorComponent,
     JsonPipe,
-    NgStyle,
+    NgClass,
     PageTemplateComponent,
     SkeletonModule,
     TimesPipe,

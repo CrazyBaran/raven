@@ -21,10 +21,7 @@ const OPPORTUNITY_DETAILS_ROUTES = [
     label: 'Notes',
     link: 'notes',
     queryParams: { tab: null },
-    style: {
-      'border-bottom': '1px solid rgba(0, 44, 60, 0.08) !important',
-      'margin-bottom': '0.5em',
-    },
+    customClass: 'underlined-button',
   },
 ];
 
