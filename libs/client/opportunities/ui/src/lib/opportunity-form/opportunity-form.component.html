@@ -31,6 +31,18 @@
       [maxlength]="nameMaxLength"
     />
   </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Description" />
+    <kendo-textarea
+      id="opportunityDescription"
+      formControlName="description"
+      [rows]="3"
+      [maxlength]="1000"
+      placeholder="Click to write content here..."
+      resizable="vertical"
+      class="h-full !border-x-0 !border-t-0"
+    />
+  </kendo-formfield>
 
   <kendo-formfield>
     <kendo-label text="Stage" />
@@ -100,6 +112,30 @@
   <kendo-formfield>
     <kendo-label text="Timing" />
     <kendo-textbox formControlName="timing" placeholder="eg. Q2, 2023" />
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Co-investors" />
+    <kendo-textarea
+      id="coInvestors"
+      formControlName="coInvestors"
+      [rows]="3"
+      [maxlength]="1000"
+      placeholder="Click to write content here..."
+      resizable="vertical"
+      class="h-full !border-x-0 !border-t-0"
+    />
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label text="Capital Raise History" />
+    <kendo-textarea
+      id="crhDescription"
+      formControlName="capitalRaiseHistory"
+      [rows]="3"
+      [maxlength]="1000"
+      placeholder="Click to write content here..."
+      resizable="vertical"
+      class="h-full !border-x-0 !border-t-0"
+    />
   </kendo-formfield>
   <kendo-formfield>
     <kendo-label text="Under NDA?" />

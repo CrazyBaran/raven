@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
 } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -68,6 +69,18 @@ export class UpdateOpportunityDto {
   @IsOptional()
   @IsString()
   public readonly description?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
+  public readonly coInvestors?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
+  public readonly capitalRaiseHistory?: string;
 
   @ApiProperty()
   @IsOptional()

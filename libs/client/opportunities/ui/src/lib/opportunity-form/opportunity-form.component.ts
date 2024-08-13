@@ -31,6 +31,9 @@ export type OpportunityForm = FormGroup<{
     owners: string[];
     members: string[];
   } | null>;
+  description: FormControl<string | null | undefined>;
+  coInvestors: FormControl<string | null | undefined>;
+  capitalRaiseHistory: FormControl<string | null | undefined>;
 }>;
 
 export const OPPORTUNITY_NAME_MAX_LENGTH = 50;

@@ -90,6 +90,7 @@ export class CreateOpportunityDialogComponent
     organisationId: [''],
     opportunityTagId: [<string | null>null, [Validators.required]],
     name: [<string | null>''],
+    description: [<string | null | undefined>undefined],
     roundSize: [''],
     valuation: [''],
     proposedInvestment: [''],
@@ -97,6 +98,8 @@ export class CreateOpportunityDialogComponent
     timing: [''],
     underNda: [null as string | null],
     ndaTerminationDate: [null as string | null],
+    coInvestors: [<string | null | undefined>undefined],
+    capitalRaiseHistory: [<string | null | undefined>undefined],
     team: this.fb.control<{
       owners: string[];
       members: string[];

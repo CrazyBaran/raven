@@ -488,6 +488,8 @@ export class OpportunityService {
       underNda: entity.underNda,
       ndaTerminationDate: entity.ndaTerminationDate,
       description: entity.description,
+      coInvestors: entity.coInvestors,
+      capitalRaiseHistory: entity.capitalRaiseHistory,
     };
   }
 
@@ -612,6 +614,12 @@ export class OpportunityService {
     }
     if (options.name !== undefined) {
       opportunity.name = options.name;
+    }
+    if (options.coInvestors !== undefined) {
+      opportunity.coInvestors = options.coInvestors;
+    }
+    if (options.capitalRaiseHistory !== undefined) {
+      opportunity.capitalRaiseHistory = options.capitalRaiseHistory;
     }
   }
 

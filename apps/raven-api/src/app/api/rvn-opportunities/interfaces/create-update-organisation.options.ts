@@ -33,4 +33,6 @@ export interface CommonUpdateOptions {
   ndaTerminationDate?: Date;
   description?: string;
   name?: string;
+  coInvestors?: string;
+  capitalRaiseHistory?: string;
 }

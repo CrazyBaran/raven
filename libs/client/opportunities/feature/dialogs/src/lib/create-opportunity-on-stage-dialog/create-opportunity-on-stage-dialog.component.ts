@@ -87,6 +87,7 @@ export class CreateOpportunityOnStageDialogComponent implements OnInit {
     organisationId: [<string | null>null],
     opportunityTagId: [<string | null>null, [Validators.required]],
     name: [<string | null>''],
+    description: [<string | null | undefined>undefined],
     roundSize: [''],
     valuation: [''],
     proposedInvestment: [''],
@@ -94,6 +95,8 @@ export class CreateOpportunityOnStageDialogComponent implements OnInit {
     timing: [''],
     underNda: [<string | null>null],
     ndaTerminationDate: [<string | null>null],
+    coInvestors: [<string | null | undefined>undefined],
+    capitalRaiseHistory: [<string | null | undefined>undefined],
     team: this.fb.control<{
       owners: string[];
       members: string[];

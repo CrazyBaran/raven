@@ -39,7 +39,10 @@ import {
 } from '@progress/kendo-angular-indicators';
 import { FormFieldModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
-import { TileLayoutModule } from '@progress/kendo-angular-layout';
+import {
+  PanelBarModule,
+  TileLayoutModule,
+} from '@progress/kendo-angular-layout';
 import { RxFor } from '@rx-angular/template/for';
 import { OpportunityRemindersTableComponent } from '../opportunityy-reminders-table/opportunity-reminders-table.component';
 import { selectOpportunityOverviewViewModel } from './client-opportunities-feature-overview.selectors';
@@ -54,6 +57,7 @@ import { TagSkeletonComponent } from './tag-skeleton/tag-skeleton.component';
     CommonModule,
     TileLayoutModule,
     ButtonModule,
+    PanelBarModule,
     RxFor,
     GridModule,
     TagComponent,

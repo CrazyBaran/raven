@@ -78,6 +78,10 @@ export const selectOpportunityOverviewViewModel = createSelector(
           subLabel: 'Opportunity Name',
         },
         {
+          label: opportunity?.description,
+          subLabel: 'Description',
+        },
+        {
           label: opportunity?.tag?.name,
           subLabel: 'Stage',
         },
@@ -102,6 +106,14 @@ export const selectOpportunityOverviewViewModel = createSelector(
         {
           label: opportunity?.timing,
           subLabel: 'Timing',
+        },
+        {
+          label: opportunity?.coInvestors,
+          subLabel: 'Co-investors',
+        },
+        {
+          label: opportunity?.capitalRaiseHistory,
+          subLabel: 'Capital Raise History',
         },
         {
           label: opportunity?.underNda,

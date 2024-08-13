@@ -142,6 +142,12 @@ export class OpportunityEntity
   @Column({ nullable: true })
   public timing: string | null;
 
+  @Column({ nullable: true, type: 'nvarchar', length: 1000 })
+  public capitalRaiseHistory: string | null;
+
+  @Column({ nullable: true, type: 'nvarchar', length: 1000 })
+  public coInvestors: string | null;
+
   @Column({ nullable: true })
   public underNda: string | null;
 

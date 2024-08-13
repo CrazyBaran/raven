@@ -30,6 +30,8 @@ export interface OpportunityDataWithoutOrganisation {
   readonly timing?: string;
   readonly underNda?: string;
   readonly description?: string;
+  readonly coInvestors?: string;
+  readonly capitalRaiseHistory?: string;
   readonly ndaTerminationDate?: Date;
   readonly files?: FileData[];
   readonly sharePointDirectory?: string;
