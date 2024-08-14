@@ -32,6 +32,9 @@ export class TagEntity {
   @Column({ type: 'varchar' })
   public class: string;
 
+  @Column({ type: 'smallint', default: 0 })
+  public order: number;
+
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {

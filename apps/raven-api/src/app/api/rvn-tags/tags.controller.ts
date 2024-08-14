@@ -81,7 +81,10 @@ export class TagsController {
     @Body() updateTagDto: UpdateTagDto,
   ): Promise<TagData> {
     return this.tagsService.tagEntityToTagData(
-      await this.tagsService.updateTag(tagEntity, { name: updateTagDto.name }),
+      await this.tagsService.updateTag(tagEntity, {
+        name: updateTagDto.name,
+        order: updateTagDto.order,
+      }),
     );
   }
 

@@ -20,7 +20,9 @@ export interface CreateTagOptions {
 export type UpdateTagOptions = Omit<
   CreateTagOptions,
   'type' | 'userId' | 'organisationId'
->;
+> & {
+  order?: number;
+};
 
 @Injectable()
 export class TagsService {
@@ -79,6 +81,10 @@ export class TagsService {
     options: UpdateTagOptions,
   ): Promise<TagEntity> {
     tagEntity.name = options.name;
+    if (options.order !== undefined) {
+      tagEntity.order = options.order ?? 0;
+    }
+
     return await this.tagsRepository.save(tagEntity);
   }
 
@@ -99,6 +105,7 @@ export class TagsService {
       domain: (tag as OrganisationTagEntity)?.organisation?.domains
         ?.toString()
         ?.toLowerCase(),
+      order: tag.order,
     };
   }
 }

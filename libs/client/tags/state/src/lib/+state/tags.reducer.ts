@@ -113,7 +113,7 @@ export const tagsFeature = createFeature({
       selectTagsByTypes(state, 'people'),
     ),
     selectOpportunityTags: createSelector(selectTagsState, (state) =>
-      selectTagsByTypes(state, 'opportunity'),
+      _.sortBy(selectTagsByTypes(state, 'opportunity'), 'order'),
     ),
     selectVersionTags: createSelector(
       selectTagsState,

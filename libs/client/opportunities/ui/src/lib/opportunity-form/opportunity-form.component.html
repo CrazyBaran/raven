@@ -47,7 +47,7 @@
   <kendo-formfield>
     <kendo-label text="Stage" />
     <kendo-dropdownlist
-      [data]="opportunityTags()! | orderBy: 'name'"
+      [data]="opportunityTags()! | orderBy: 'order'"
       [defaultItem]="defaultFundingRound"
       [loading]="isLoadingOpportunityTags()!"
       [valuePrimitive]="true"

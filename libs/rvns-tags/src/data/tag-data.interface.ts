@@ -7,4 +7,5 @@ export interface TagData {
   readonly tabId?: string;
   readonly domain?: string;
   readonly link?: string[] | null;
+  readonly order?: number;
 }

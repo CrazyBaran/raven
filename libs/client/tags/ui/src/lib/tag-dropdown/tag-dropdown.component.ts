@@ -237,11 +237,10 @@ export class TagDropdownComponent extends ControlValueAccessor<
               companyId: companyId,
             }));
 
-          const orderedTags = _.orderBy(
-            [...opportunityTags, ...versionTags],
-            (x) => x.name,
-          );
-
+          const orderedTags = [
+            ..._.sortBy(opportunityTags, 'order'),
+            ..._.orderBy(versionTags, (x) => x.name),
+          ];
           let index = 0;
           let activeOppIndex = -1;
           let opportunitiesList = [...orderedTags].map((o) => {
