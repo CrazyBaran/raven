@@ -209,9 +209,9 @@ export class TemplateStaticDataService {
     );
 
     await this.applyTemplateChanges(templateChanges);
+    await this.applyTabChanges(tabChanges);
     await this.applyFieldGroupChanges(fieldGroupChanges);
     await this.applyFieldDefinitionChanges(fieldDefinitionChanges);
-    await this.applyTabChanges(tabChanges);
   }
 
   private async getTemplateChanges(
@@ -516,6 +516,7 @@ export class TemplateStaticDataService {
               id: data.id,
               name: data.name,
               order: data.order,
+              templateId: data.templateId,
             });
 
             if (data.pipelineStageIds && data.pipelineStageIds.length > 0) {
