@@ -1,0 +1,25 @@
+<app-page-template pageIcon="fa-solid fa-building-columns" pageName="Managers">
+  <div page-header-actions>
+    <app-text-box-navigation [model]="vm().queryModel" class="w-64" />
+  </div>
+
+  <div
+    class="flex h-[calc(100%+1.5em)] w-[calc(100%+1.5em)] flex-col gap-6"
+    page-content
+  >
+    <app-quick-filters-template>
+      <app-buttongroup-navigation [model]="vm().buttonGroup" />
+
+      @for (dropdown of vm().dropdows; track dropdown.queryParamName) {
+        <app-dropdown-navigation [model]="dropdown" />
+      }
+    </app-quick-filters-template>
+
+    <div class="flex-1 shrink-0 overflow-hidden">
+      <app-managers-table
+        [model]="vm().tableModel"
+        (loadMore)="onLoadMore($event)"
+      />
+    </div>
+  </div>
+</app-page-template>

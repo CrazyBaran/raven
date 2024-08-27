@@ -63,6 +63,13 @@ export const HOME_ROUTES: Routes = [
           ),
       },
       {
+        path: 'managers',
+        loadChildren: () =>
+          import('@app/client/managers/feature/shell').then(
+            (m) => m.MANAGERS_ROUTES,
+          ),
+      },
+      {
         path: 'templates',
         loadComponent: () =>
           import('./pages/templates-page/templates-page.component').then(

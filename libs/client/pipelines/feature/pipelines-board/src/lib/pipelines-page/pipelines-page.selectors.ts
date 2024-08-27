@@ -26,6 +26,7 @@ import { OpportunityData } from '@app/rvns-opportunities';
 import { PipelineStageData } from '@app/rvns-pipelines';
 import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { shortlistsFeature } from '../../../../../../shortlists/state/src/lib/+state/shortlists.reducer';
 import { PipelineViewConfig } from '../models/pipeline-view.model';
 
@@ -313,7 +314,7 @@ export const selectKanbanBoardByConfig = createSelector(
         ...stages.find((v) => v.id === stageId),
       })),
     }));
-    let columnsConfig = (
+    const columnsConfig = (
       {
         ...selectedView,
         columns: selectedViewColumnsEnriched,

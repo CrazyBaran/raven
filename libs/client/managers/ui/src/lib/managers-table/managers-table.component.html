@@ -1,0 +1,110 @@
+<div class="flex h-full flex-col">
+  <kendo-grid
+    [loading]="isLoading"
+    [clearNoneSort]="true"
+    [data]="data"
+    [sort]="sort"
+    [sortable]="true"
+    [trackBy]="trackByFn"
+    (scrollBottom)="onLoadMore()"
+    class="grid-borderless min-h-0 flex-1"
+    id="manager-table"
+    uiKendoUrlSorting
+  >
+    <kendo-grid-column
+      field="name"
+      headerClass="!font-bold"
+      title="Manager Name"
+    >
+      <ng-template kendoGridCellTemplate let-manager>
+        <p
+          [showTooltipIfClamped]="manager.name"
+          class="line-clamp-1"
+          kendoTooltip
+        >
+          {{ manager.name }}
+        </p>
+
+        <p
+          [showTooltipIfClamped]="manager.description"
+          class="line-clamp-1 text-sm"
+          kendoTooltip
+        >
+          {{ manager.description }}
+        </p>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Avg. Check Size">
+      <ng-template kendoGridCellTemplate let-manager>
+        <p>
+          {{ manager.avgCheckSize }}
+        </p>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Geography">
+      <ng-template kendoGridCellTemplate let-manager>
+        <p>
+          {{ manager.geography }}
+        </p>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Theme Focus">
+      <ng-template kendoGridCellTemplate let-manager>
+        <p>
+          {{ manager.industryTags[0]?.name }}
+
+          @if (manager.industryTags.length > 1) {
+            <span class="text-disabledText">
+              +{{ manager.industryTags.length - 1 }}
+            </span>
+          }
+        </p>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Relationship Strength">
+      <ng-template kendoGridCellTemplate let-manager>
+        @if (relationStrength(manager.relationStrength); as relationStrength) {
+          <div class="flex items-center gap-2">
+            <span
+              class="size-2 rounded-full"
+              [style.background]="relationStrength.color"
+            ></span>
+
+            <p>
+              {{ relationStrength.name }}
+            </p>
+          </div>
+        }
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column headerClass="!font-bold" title="Key Relationship">
+      <ng-template kendoGridCellTemplate let-manager>
+        <p>
+          {{ manager.keyRelationships[0]?.name }}
+
+          @if (manager.keyRelationships.length > 1) {
+            <span class="text-disabledText">
+              +{{ manager.keyRelationships.length - 1 }}
+            </span>
+          }
+        </p>
+      </ng-template>
+    </kendo-grid-column>
+
+    @if (!isLoading) {
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="text-subtle-text flex h-full w-full items-center gap-2 p-5">
+          <i class="fa-regular fa-circle-info mr-2"></i>
+          <p class="text-start text-sm italic">
+            There are no managers. Select Add New to create one.
+          </p>
+        </div>
+      </ng-template>
+    }
+  </kendo-grid>
+</div>

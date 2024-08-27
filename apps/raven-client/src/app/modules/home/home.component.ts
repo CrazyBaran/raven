@@ -106,6 +106,12 @@ export class HomeComponent {
         ],
       },
       {
+        name: 'Managers',
+        path: 'managers',
+        icon: 'fa-solid fa-building-columns',
+        navigate: true,
+      },
+      {
         name: 'Notes',
         path: 'notes',
         icon: 'fa-solid fa-notebook',

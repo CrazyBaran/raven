@@ -235,6 +235,13 @@
       "@app/client/templates/data-access": [
         "libs/client/templates/data-access/src/index.ts"
       ],
+      "@app/client/managers/data-access": [ "libs/client/managers/data-access/src/index.ts" ],
+      "@app/client/managers/feature/dialogs": [ "libs/client/managers/feature/dialogs/src/index.ts" ],
+      "@app/client/managers/feature/shell": [ "libs/client/managers/feature/shell/src/index.ts" ],
+      "@app/client/managers/feature/table": [ "libs/client/managers/feature/table/src/index.ts" ],
+      "@app/client/managers/state": ["libs/client/managers/state/src/index.ts"],
+      "@app/client/managers/ui": ["libs/client/managers/ui/src/index.ts"],
+      "@app/client/managers/utils": ["libs/client/managers/utils/src/index.ts"],
       "@app/core-ui": ["libs/core-ui/src/index.ts"],
       "@app/page/opportunity-details-page": [
         "libs/page/opportunity-details-page/src/index.ts"

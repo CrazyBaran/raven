@@ -71,7 +71,7 @@ export class DropdownNavigationComponent
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['model'] && !changes['model'].isFirstChange?.()) {
+    if (changes['model']) {
       const newModel = {
         ...this.model,
         data: this.model.data.filter(
