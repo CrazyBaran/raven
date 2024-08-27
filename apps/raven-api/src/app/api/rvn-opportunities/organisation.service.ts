@@ -188,6 +188,7 @@ export class OrganisationService {
             ?.slice(0, 25)
             ?.map((shortlist) => ({ id: shortlist.id, name: shortlist.name }));
 
+          data.fundManagerId = entity.fundManagerId ?? null;
           return data;
         },
       );
@@ -602,6 +603,7 @@ export class OrganisationService {
       customDescriptionUpdatedAt: entity.customDescriptionUpdatedAt,
       domains: entity.domains,
       companyStatus: entity.companyStatusOverride,
+      fundManagerId: entity.fundManagerId,
     };
   }
 

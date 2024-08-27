@@ -5,13 +5,16 @@ import {
   Column,
   Entity,
   Index,
+  JoinColumn,
   ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
 } from 'typeorm';
 import { SharepointEnabledEntity } from '../../../shared/interfaces/sharepoint-enabled-entity.interface';
 import { DataWarehouseCompanyV1Entity } from '../../rvn-data-warehouse/proxy/entities/data-warehouse-company.v1.entity';
+import { FundManagerEntity } from '../../rvn-fund-managers/entities/fund-manager.entity';
 import { ShortlistEntity } from '../../rvn-shortlists/entities/shortlist.entity';
 import { PrimaryDataSource } from '../interfaces/get-organisations.options';
 import { OpportunityEntity } from './opportunity.entity';
@@ -71,6 +74,26 @@ export class OrganisationEntity implements SharepointEnabledEntity {
 
   @Column({ nullable: true, type: 'varchar' })
   public initialDataSource?: PrimaryDataSource;
+
+  @OneToOne(() => FundManagerEntity, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'fund_manager_id' })
+  public fundManager: FundManagerEntity | null;
+
+  @Column({
+    nullable: true,
+  })
+  @RelationId((organisation: OrganisationEntity) => organisation.fundManager)
+  public fundManagerId: string | null;
+
+  @ManyToMany(() => FundManagerEntity, (manager) => manager.organisations, {
+    cascade: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  public fundManagers?: FundManagerEntity[];
 
   public domains: string[];
   @AfterInsert()

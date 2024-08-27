@@ -19,6 +19,8 @@ import {
 import { ContactV2DwhEntity } from './entities/contact.v2.dwh.entity';
 import { EmployeesV2DwhEntity } from './entities/employees.v2.dwh.entity';
 import { FundingRoundV2DwhEntity } from './entities/funding-round.v2.dwh.entity';
+import { InvestmentV2DwhEntity } from './entities/investment.v2.dwh.entity';
+import { InvestorV2DwhEntity } from './entities/investor.v2.dwh.entity';
 import { NewsV2DwhEntity } from './entities/news.v2.dwh.entity';
 import { CompanyV2Mapper } from './mappers/company.v2.mapper';
 import { ContactV2Mapper } from './mappers/contact.v2.mapper';
@@ -45,6 +47,10 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
     @InjectDataWarehouseRepository(NewsV2DwhEntity)
     private readonly newsRepository: Repository<NewsV2DwhEntity>,
     private readonly newsMapper: NewsV2Mapper,
+    @InjectDataWarehouseRepository(InvestorV2DwhEntity)
+    private readonly investorRepository: Repository<InvestorV2DwhEntity>,
+    @InjectDataWarehouseRepository(InvestmentV2DwhEntity)
+    private readonly investmentRepository: Repository<InvestmentV2DwhEntity>,
   ) {
     this.logger.setContext(DataWarehouseV2AccessService.name);
   }
@@ -130,6 +136,16 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
 
     return industriesFlattenedDistinct;
   }
+
+  public async getFundManagerInvestments(
+    fundDomain: string,
+  ): Promise<[InvestmentV2DwhEntity[], number]> {
+    return await this.investmentRepository.findAndCount({
+      where: {
+        fundManagerDomain: fundDomain,
+      },
+    });
+  }
   public async getInvestors(
     progressCallback?: (progress: number) => Promise<void>,
   ): Promise<string[]> {
@@ -162,6 +178,13 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
     const investorsFlattenedDistinct = [...new Set([...investors])];
 
     return investorsFlattenedDistinct;
+  }
+
+  public async getFundManagers(): Promise<InvestorV2DwhEntity[]> {
+    const [fundManagers, _length] =
+      await this.investorRepository.findAndCount();
+
+    return fundManagers;
   }
 
   public async findAndMapCompanies(options: {

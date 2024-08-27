@@ -24,11 +24,19 @@ import { DataWarehouseProcessor } from './queues/data-warehouse.processor';
 import { DataWarehouseProducer } from './queues/data-warehouse.producer';
 import { DataWarehouseScheduler } from './tasks/data-warehouse.scheduler';
 
+import { FundManagerOrganisationEntity } from '../rvn-fund-managers/entities/fund-manager-organisation.entity';
+import { FundManagerEntity } from '../rvn-fund-managers/entities/fund-manager.entity';
+import {
+  OrganisationTagEntity,
+  TagEntity,
+} from '../rvn-tags/entities/tag.entity';
 import { DataWarehouseV2AccessService } from './v2/data-warehouse.v2.access.service';
 import { CompanyV2DwhEntity } from './v2/entities/company.v2.dwh.entity';
 import { ContactV2DwhEntity } from './v2/entities/contact.v2.dwh.entity';
 import { EmployeesV2DwhEntity } from './v2/entities/employees.v2.dwh.entity';
 import { FundingRoundV2DwhEntity } from './v2/entities/funding-round.v2.dwh.entity';
+import { InvestmentV2DwhEntity } from './v2/entities/investment.v2.dwh.entity';
+import { InvestorV2DwhEntity } from './v2/entities/investor.v2.dwh.entity';
 import { NewsV2DwhEntity } from './v2/entities/news.v2.dwh.entity';
 import { CompanyV2Mapper } from './v2/mappers/company.v2.mapper';
 import { ContactV2Mapper } from './v2/mappers/contact.v2.mapper';
@@ -97,6 +105,10 @@ export class DataWarehouseModule {
           DataWarehouseCompaniesInvestorV1Entity,
           DataWarehouseCompaniesIndustryV1Entity,
           OrganisationEntity,
+          TagEntity,
+          OrganisationTagEntity,
+          FundManagerEntity,
+          FundManagerOrganisationEntity,
         ]),
         ShortlistsModule,
       ],
@@ -189,6 +201,8 @@ export class DataWarehouseModule {
             EmployeesV2DwhEntity,
             FundingRoundV2DwhEntity,
             NewsV2DwhEntity,
+            InvestorV2DwhEntity,
+            InvestmentV2DwhEntity,
           ],
           DataWarehouseDataSourceName,
         ),

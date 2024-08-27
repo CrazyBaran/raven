@@ -18,6 +18,7 @@ export interface OrganisationData {
   sharePointPath?: string;
   data?: Partial<CompanyDto>;
   shortlists?: Partial<ShortlistData>[];
+  fundManagerId?: string;
 }
 
 export interface OrganisationDataWithOpportunities extends OrganisationData {

@@ -27,6 +27,7 @@ import { AuthModule } from '../api/rvn-auth/auth.module';
 import { DataWarehouseModule } from '../api/rvn-data-warehouse/data-warehouse.module';
 import { DuplicatesModule } from '../api/rvn-duplicates/duplicates.module';
 import { FilesModule } from '../api/rvn-files/files.module';
+import { FundManagersModule } from '../api/rvn-fund-managers/fund-managers.module';
 import { LoggerModule } from '../api/rvn-logger/logger.module';
 import { NotesModule } from '../api/rvn-notes/notes.module';
 import { OnBehalfOfModule } from '../api/rvn-on-behalf-of/on-behalf-of.module';
@@ -102,6 +103,7 @@ import { TransformInterceptor } from './transform.interceptor';
     ScheduleModule.forRoot(),
     ShortlistsModule,
     RemindersModule,
+    FundManagersModule,
   ],
   providers: [
     // core

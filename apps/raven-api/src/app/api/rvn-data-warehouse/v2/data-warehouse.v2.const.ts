@@ -16,5 +16,11 @@ export const DWH_V2_SCHEMA = {
     news: {
       name: 'News',
     },
+    investors: {
+      name: 'dim_investor_domains',
+    },
+    investments: {
+      name: 'lp_commitments_and_direct_investments',
+    },
   },
 };

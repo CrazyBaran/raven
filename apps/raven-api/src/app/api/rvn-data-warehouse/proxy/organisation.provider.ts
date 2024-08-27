@@ -39,7 +39,12 @@ export class OrganisationProvider {
     queryBuilder.andWhere('domains.domain NOT IN (:...domains)', {
       domains: ['https://placeholder.com', 'placeholder.com'],
     });
-
+    queryBuilder.andWhere(
+      'organisations.initialDataSource NOT IN (:...investorSource)',
+      {
+        investorSource: ['investors_dwh'],
+      },
+    );
     if (
       Object.keys(filterOptions).length > 0 ||
       this.orderByMapper.map(options?.orderBy).startsWith('data.')
