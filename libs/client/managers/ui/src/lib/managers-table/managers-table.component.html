@@ -17,28 +17,21 @@
       title="Manager Name"
     >
       <ng-template kendoGridCellTemplate let-manager>
-        <p
-          [showTooltipIfClamped]="manager.name"
-          class="line-clamp-1"
+        <a
+          [routerLink]="['/managers', manager.id]"
           kendoTooltip
+          [showTooltipIfClamped]="manager.name"
+          class="hover:text-primary line-clamp-1"
         >
           {{ manager.name }}
-        </p>
-
-        <p
-          [showTooltipIfClamped]="manager.description"
-          class="line-clamp-1 text-sm"
-          kendoTooltip
-        >
-          {{ manager.description }}
-        </p>
+        </a>
       </ng-template>
     </kendo-grid-column>
 
     <kendo-grid-column headerClass="!font-bold" title="Avg. Check Size">
       <ng-template kendoGridCellTemplate let-manager>
         <p>
-          {{ manager.avgCheckSize }}
+          {{ manager.avgCheckSize || '-' }}
         </p>
       </ng-template>
     </kendo-grid-column>
@@ -46,7 +39,7 @@
     <kendo-grid-column headerClass="!font-bold" title="Geography">
       <ng-template kendoGridCellTemplate let-manager>
         <p>
-          {{ manager.geography }}
+          {{ manager.geography || '-' }}
         </p>
       </ng-template>
     </kendo-grid-column>
@@ -54,7 +47,7 @@
     <kendo-grid-column headerClass="!font-bold" title="Theme Focus">
       <ng-template kendoGridCellTemplate let-manager>
         <p>
-          {{ manager.industryTags[0]?.name }}
+          {{ manager.industryTags[0]?.name || '-' }}
 
           @if (manager.industryTags.length > 1) {
             <span class="text-disabledText">
@@ -67,18 +60,9 @@
 
     <kendo-grid-column headerClass="!font-bold" title="Relationship Strength">
       <ng-template kendoGridCellTemplate let-manager>
-        @if (relationStrength(manager.relationStrength); as relationStrength) {
-          <div class="flex items-center gap-2">
-            <span
-              class="size-2 rounded-full"
-              [style.background]="relationStrength.color"
-            ></span>
-
-            <p>
-              {{ relationStrength.name }}
-            </p>
-          </div>
-        }
+        <app-relationship-strength
+          [relationshipStrength]="manager.relationStrength"
+        />
       </ng-template>
     </kendo-grid-column>
 

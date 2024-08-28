@@ -9,10 +9,16 @@ export const MANAGERS_ROUTES: Route[] = [
     children: [
       {
         path: '',
-        providers: [],
         loadComponent: () =>
           import('@app/client/managers/feature/table').then(
             (m) => m.ManagersTableContainerComponent,
+          ),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('@app/client/managers/feature/details').then(
+            (m) => m.ManagerDetailsComponent,
           ),
       },
     ],

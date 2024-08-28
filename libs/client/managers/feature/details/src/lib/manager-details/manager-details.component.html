@@ -1,0 +1,71 @@
+<app-page-template>
+  <div page-header-title class="flex items-center gap-2">
+    <kendo-button
+      routerLink="/managers"
+      fillMode="flat"
+      iconClass="fa-solid fa-building-columns"
+      themeColor="primary"
+    >
+      Managers
+    </kendo-button>
+
+    @if (vm().manager?.name) {
+      <div [@fadeIn] class="flex items-center gap-2">
+        <i
+          class="fa-sharp fa-solid fa-chevron-right text-grey-800 text-xs text-opacity-60"
+        ></i>
+
+        <kendo-button [disabled]="true" fillMode="flat" themeColor="primary">
+          {{ vm().manager?.name }}
+        </kendo-button>
+      </div>
+    }
+  </div>
+
+  <div page-header-actions class="flex gap-2">
+    @if (vm().isLoading) {
+      <kendo-skeleton width="200px" height="30px" />
+    } @else if (vm().manager) {
+      <app-relationship-strength
+        [relationshipStrength]="vm().manager!.relationStrength"
+      />
+    }
+  </div>
+
+  <div
+    page-content
+    class="manager-details bg-base-background relative flex h-full flex-col overflow-y-scroll"
+  >
+    <kendo-tabstrip class="manager-layout-tabstrip">
+      <kendo-tabstrip-tab title="Manager Profile" [selected]="true">
+        <ng-template kendoTabContent>
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <app-manager-profile
+              [isLoading]="vm().isLoading"
+              [manager]="vm().manager"
+            />
+
+            <app-manager-relationships
+              [isLoading]="vm().isUpdating"
+              [manager]="vm().manager"
+              [peopleData]="vm().peopleData"
+              [peopleDataIsLoading]="vm().peopleDataIsLoading"
+              (updateKeyRelationship)="updateKeyRelationships($event)"
+              (updateRelationshipStrength)="updateRelationshipStrength($event)"
+            />
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+
+      <kendo-tabstrip-tab title="Portfolio">
+        <ng-template kendoTabContent>
+          <app-manager-portfolio-organisations
+            [isLoading]="vm().isLoading"
+            [manager]="vm().manager"
+            [organisations]="vm().manager?.organisations || []"
+          />
+        </ng-template>
+      </kendo-tabstrip-tab>
+    </kendo-tabstrip>
+  </div>
+</app-page-template>

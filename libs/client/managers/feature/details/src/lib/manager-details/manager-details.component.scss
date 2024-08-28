@@ -1,0 +1,24 @@
+//todo: remove this when we have a better solution for the grid
+.manager-details {
+  padding: 1.5em;
+  margin: -1.5em;
+  height: calc(100% + 3em);
+}
+
+.manager-layout-tabstrip {
+  .k-tabstrip-items-wrapper {
+    @apply border-none;
+  }
+
+  .k-item:first-child {
+    @apply ml-8 mr-3;
+  }
+
+  .k-item.k-active {
+    @apply bg-primary-8 border-component-border text-buttons-button-text border;
+  }
+
+  .k-tabstrip-content {
+    @apply border-none bg-transparent p-0 pt-4 outline-0;
+  }
+}

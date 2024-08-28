@@ -6,6 +6,7 @@ import { FundManagerData } from '@app/rvns-fund-managers';
 import { PagedData } from 'rvns-shared';
 import { Observable } from 'rxjs';
 import { GetManagersDto } from './models/manager.model';
+import { UpdateManagerDto } from './models/update-manager.model';
 
 @Injectable({ providedIn: 'root' })
 export class ManagersService {
@@ -23,6 +24,20 @@ export class ManagersService {
           ...(params ?? {}),
         },
       },
+    );
+  }
+
+  public getManager(id: string): Observable<GenericResponse<FundManagerData>> {
+    return this.http.get<GenericResponse<FundManagerData>>(`${this.url}/${id}`);
+  }
+
+  public updateManager(
+    id: string,
+    changes: UpdateManagerDto,
+  ): Observable<GenericResponse<FundManagerData>> {
+    return this.http.patch<GenericResponse<FundManagerData>>(
+      `${this.url}/${id}`,
+      changes,
     );
   }
 }

@@ -39,6 +39,24 @@
         "libs/client/files/sdk-pnptimeline/src/index.ts"
       ],
       "@app/client/files/ui": ["libs/client/files/ui/src/index.ts"],
+      "@app/client/managers/data-access": [
+        "libs/client/managers/data-access/src/index.ts"
+      ],
+      "@app/client/managers/feature/dialogs": [
+        "libs/client/managers/feature/dialogs/src/index.ts"
+      ],
+      "@app/client/managers/feature/shell": [
+        "libs/client/managers/feature/shell/src/index.ts"
+      ],
+      "@app/client/managers/feature/table": [
+        "libs/client/managers/feature/table/src/index.ts"
+      ],
+      "@app/client/managers/feature/details": [
+        "libs/client/managers/feature/details/src/index.ts"
+      ],
+      "@app/client/managers/state": ["libs/client/managers/state/src/index.ts"],
+      "@app/client/managers/ui": ["libs/client/managers/ui/src/index.ts"],
+      "@app/client/managers/utils": ["libs/client/managers/utils/src/index.ts"],
       "@app/client/notes/api-tags": ["libs/client/notes/api-tags/src/index.ts"],
       "@app/client/notes/data-access": [
         "libs/client/notes/data-access/src/index.ts"
@@ -73,8 +91,8 @@
       "@app/client/opportunities/data-access": [
         "libs/client/opportunities/data-access/src/index.ts"
       ],
-      "@app/client/opportunities/feature/pdf-export": [
-        "libs/client/opportunities/feature/pdf-export/src/index.ts"
+      "@app/client/opportunities/feature/dialogs": [
+        "libs/client/opportunities/feature/dialogs/src/index.ts"
       ],
       "@app/client/opportunities/feature/opportunity-notes": [
         "libs/client/opportunities/feature/opportunity-notes/src/index.ts"
@@ -82,14 +100,14 @@
       "@app/client/opportunities/feature/overview": [
         "libs/client/opportunities/feature/overview/src/index.ts"
       ],
+      "@app/client/opportunities/feature/pdf-export": [
+        "libs/client/opportunities/feature/pdf-export/src/index.ts"
+      ],
       "@app/client/opportunities/feature/related-notes": [
         "libs/client/opportunities/feature/related-notes/src/index.ts"
       ],
       "@app/client/opportunities/feature/shell": [
         "libs/client/opportunities/feature/shell/src/index.ts"
-      ],
-      "@app/client/opportunities/feature/dialogs": [
-        "libs/client/opportunities/feature/dialogs/src/index.ts"
       ],
       "@app/client/opportunities/page/opportunity-details": [
         "libs/client/opportunities/page/opportunity-details/src/index.ts"
@@ -146,7 +164,9 @@
         "libs/client/pipelines/state/src/index.ts"
       ],
       "@app/client/pipelines/ui": ["libs/client/pipelines/ui/src/index.ts"],
-      "@app/client/pipelines/utils": ["libs/client/pipelines/utils/src/index.ts"],
+      "@app/client/pipelines/utils": [
+        "libs/client/pipelines/utils/src/index.ts"
+      ],
       "@app/client/reminders/data-access": [
         "libs/client/reminders/data-access/src/index.ts"
       ],
@@ -235,13 +255,6 @@
       "@app/client/templates/data-access": [
         "libs/client/templates/data-access/src/index.ts"
       ],
-      "@app/client/managers/data-access": [ "libs/client/managers/data-access/src/index.ts" ],
-      "@app/client/managers/feature/dialogs": [ "libs/client/managers/feature/dialogs/src/index.ts" ],
-      "@app/client/managers/feature/shell": [ "libs/client/managers/feature/shell/src/index.ts" ],
-      "@app/client/managers/feature/table": [ "libs/client/managers/feature/table/src/index.ts" ],
-      "@app/client/managers/state": ["libs/client/managers/state/src/index.ts"],
-      "@app/client/managers/ui": ["libs/client/managers/ui/src/index.ts"],
-      "@app/client/managers/utils": ["libs/client/managers/utils/src/index.ts"],
       "@app/core-ui": ["libs/core-ui/src/index.ts"],
       "@app/page/opportunity-details-page": [
         "libs/page/opportunity-details-page/src/index.ts"
@@ -256,6 +269,7 @@
       "@app/rvns-auth": ["libs/rvns-auth/src/index.ts"],
       "@app/rvns-bull": ["libs/rvns-bull/src/index.ts"],
       "@app/rvns-files": ["libs/rvns-files/src/index.ts"],
+      "@app/rvns-fund-managers": ["libs/rvns-fund-managers/src/index.ts"],
       "@app/rvns-notes/data-access": [
         "libs/rvns-notes/data-access/src/index.ts"
       ],
@@ -265,13 +279,12 @@
       "@app/rvns-roles": ["libs/rvns-roles/src/index.ts"],
       "@app/rvns-roles-api": ["libs/rvns-roles/src/index-api.ts"],
       "@app/rvns-shortlists": ["libs/rvns-shortlists/src/index.ts"],
-      "@app/rvns-fund-managers": ["libs/rvns-fund-managers/src/index.ts"],
       "@app/rvns-tags": ["libs/rvns-tags/src/index.ts"],
       "@app/rvns-teams": ["libs/rvns-teams/src/index.ts"],
       "@app/rvns-templates": ["libs/rvns-templates/src/index.ts"],
       "@app/rvns-web-sockets": ["libs/rvns-web-sockets/src/index.ts"],
-      "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
       "@app/shared/affinity": ["libs/shared/affinity/src/index.ts"],
+      "@app/shared/data-warehouse": ["libs/shared/data-warehouse/src/index.ts"],
       "opentelemetry-instrumentation-bullmqpro": [
         "libs/shared/opentelemetry-instrumentation-bullmqpro/src/index.ts"
       ],

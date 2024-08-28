@@ -98,6 +98,39 @@ export const managersFeature = createFeature({
       ...state,
       loadingStates: { ...state.loadingStates, loadMoreTable: false },
     })),
+
+    on(ManagersActions.getManager, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, get: true },
+    })),
+    on(ManagersActions.getManagerSuccess, (state, { data }) =>
+      managersAdapter.upsertOne(data, {
+        ...state,
+        loadingStates: { ...state.loadingStates, get: false },
+      }),
+    ),
+    on(ManagersActions.getManagerFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, get: false },
+    })),
+
+    on(ManagersActions.updateManager, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, update: true },
+    })),
+    on(ManagersActions.updateManagerSuccess, (state, { data }) =>
+      managersAdapter.updateOne(
+        { id: data.id, changes: data },
+        {
+          ...state,
+          loadingStates: { ...state.loadingStates, update: false },
+        },
+      ),
+    ),
+    on(ManagersActions.updateManagerFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, update: false },
+    })),
   ),
   extraSelectors: ({ selectManagersState }) => ({
     ...managersAdapter.getSelectors(selectManagersState),

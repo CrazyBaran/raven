@@ -22,16 +22,18 @@ export const selectManagersTableButtonGroupNavigation = createSelector(
     return buildButtonGroupNavigation({
       params,
       name: 'keyRelationship',
-      buttons: [
-        {
-          id: null,
-          name: 'All Managers',
-        },
-        {
-          id: userId,
-          name: 'My Managers',
-        },
-      ],
+      buttons: userId
+        ? [
+            {
+              id: null,
+              name: 'All Managers',
+            },
+            {
+              id: userId,
+              name: 'My Managers',
+            },
+          ]
+        : [],
     });
   },
 );

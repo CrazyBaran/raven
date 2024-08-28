@@ -1,0 +1,118 @@
+<ui-tilelayout-item id="organisation-funding-data">
+  <header header>
+    <h5 class="k-card-title">Portfolio Companies</h5>
+  </header>
+
+  <main body class="grid">
+    <kendo-grid
+      [data]="filteredOrganisations()"
+      [loading]="isLoading()"
+      class="grid-borderless !border-b-0"
+    >
+      <kendo-grid-column title="Company name" headerClass="!font-bold">
+        <ng-template kendoGridCellTemplate let-organisation>
+          <a
+            [routerLink]="['/companies', organisation.id]"
+            class="hover:text-primary"
+          >
+            <p>{{ organisation.name }}</p>
+
+            <p class="text-sm">{{ organisation.domains[0] }}</p>
+          </a>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [width]="160"
+        title="Last Funding Data"
+        headerClass="!font-bold"
+      >
+        <ng-template kendoGridCellTemplate let-organisation>
+          <p>
+            {{ (organisation.dataV1?.fundingLastFundingDate | date) || '-' }}
+          </p>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [width]="140"
+        title="Last Stage"
+        headerClass="!font-bold"
+      >
+        <ng-template kendoGridCellTemplate let-organisation>
+          <p>
+            {{
+              organisation.dataV1?.fundingLastFundingAmount / 1000000 || 0
+                | currency: 'USD'
+            }}M
+          </p>
+
+          <p class="text-sm">
+            {{ organisation.dataV1?.fundingLastFundingRound }}
+          </p>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [width]="140"
+        title="Last Valuation"
+        headerClass="!font-bold"
+      >
+        <ng-template kendoGridCellTemplate let-organisation>
+          <p>
+            {{
+              organisation.dataV1?.fundingTotalFundingAmount / 1000000 || 0
+                | currency: 'USD'
+            }}M
+          </p>
+
+          <p class="text-sm">
+            {{ organisation.dataV1?.fundingLastFundingRound }}
+          </p>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column title="Shortlists" headerClass="!font-bold">
+        <ng-template kendoGridCellTemplate let-organisation>
+          <div class="flex flex-wrap">
+            @for (item of organisation.shortlists; track $index) {
+              <a
+                [routerLink]="['/companies/shortlists', item.id]"
+                class="hover:text-primary pr-1"
+              >
+                {{
+                  $index !== organisation.shortlists.length - 1
+                    ? item.name + ';'
+                    : item.name
+                }}
+              </a>
+            } @empty {
+              -
+            }
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column title="Other investors" headerClass="!font-bold">
+        <ng-template kendoGridCellTemplate let-organisation>
+          <div class="flex flex-wrap">
+            @for (item of organisation.fundManagers; track $index) {
+              <a
+                [routerLink]="['/managers', item.id]"
+                class="hover:text-primary pr-1"
+              >
+                {{
+                  $index !== organisation.fundManagers.length - 1
+                    ? item.name + ';'
+                    : item.name
+                }}
+              </a>
+            } @empty {
+              -
+            }
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </main>
+</ui-tilelayout-item>

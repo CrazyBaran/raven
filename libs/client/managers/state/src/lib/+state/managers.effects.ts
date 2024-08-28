@@ -55,3 +55,57 @@ export const loadMoreManagers$ = createEffect(
   },
   { functional: true },
 );
+
+export const getManager$ = createEffect(
+  (actions$ = inject(Actions), managersService = inject(ManagersService)) => {
+    return actions$.pipe(
+      ofType(ManagersActions.getManager),
+      switchMap(({ id }) =>
+        managersService.getManager(id).pipe(
+          map((response) =>
+            ManagersActions.getManagerSuccess({
+              data: response.data!,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              ManagersActions.getManagerFailure({
+                error,
+                message: 'Get Reminder Failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const updateManager$ = createEffect(
+  (actions$ = inject(Actions), managersService = inject(ManagersService)) => {
+    return actions$.pipe(
+      ofType(ManagersActions.updateManager),
+      switchMap(({ id, changes }) =>
+        managersService.updateManager(id, changes).pipe(
+          switchMap(() => managersService.getManager(id)),
+          map((response) =>
+            ManagersActions.updateManagerSuccess({
+              data: response.data!,
+              message: 'Manager Updated.',
+            }),
+          ),
+          catchError((error) =>
+            of(
+              ManagersActions.updateManagerFailure({
+                error,
+                message: 'Update Manager Failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);

@@ -1,0 +1,41 @@
+<div class="border-component-border bg-component-bg border">
+  <div class="border-component-border border-b px-4 py-3">
+    Key Relationships
+  </div>
+
+  <div class="flex flex-col gap-4 px-4 py-3">
+    <section>
+      <kendo-label text="Relationship Strength" class="mb-1 block" />
+
+      <kendo-dropdownlist
+        [disabled]="isLoading()"
+        [formControl]="relationshipStrength"
+        [data]="relationshipStrengthData"
+        [defaultItem]="{
+          id: null,
+          name: 'Choose from list'
+        }"
+        textField="name"
+        valueField="id"
+        (valueChange)="handleUpdateRelationshipStrength($event)"
+      />
+    </section>
+
+    <section>
+      <kendo-label text="Key Relationship" class="mb-1 block" />
+
+      <kendo-multiselect
+        [disabled]="isLoading()"
+        [formControl]="keyRelationship"
+        [checkboxes]="true"
+        [data]="peopleData()"
+        [loading]="peopleDataIsLoading()"
+        [textField]="'name'"
+        [valueField]="'id'"
+        placeholder="Choose from list"
+        class="k-picker-solid"
+        (valueChange)="handleUpdateKeyRelationship($event)"
+      />
+    </section>
+  </div>
+</div>
