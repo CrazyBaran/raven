@@ -1,0 +1,27 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Edit Manager Details</span>
+</kendo-dialog-titlebar>
+
+<div class="p-10">
+  @if (vm().isLoading) {
+    <ui-loader class="block !h-[490px]" />
+  } @else if (updateForm) {
+    <app-manager-form [form]="updateForm" [industries]="vm().industryTags" />
+  }
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="
+      !updateForm || (updateForm | controlInvalid$ | push) || !!vm().isUpdating
+    "
+    themeColor="primary"
+  >
+    @if (vm().isUpdating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Save Manager Details
+  </kendo-button>
+</kendo-dialog-actions>

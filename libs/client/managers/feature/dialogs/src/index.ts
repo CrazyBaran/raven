@@ -1,1 +1,1 @@
-export * from './lib/client-managers-feature-dialogs/client-managers-feature-dialogs.component';
+export * from './lib/update-manager-dialog/providers';

@@ -34,9 +34,10 @@ export class ManagerPortfolioOrganisationsComponent {
   public filteredOrganisations = computed(() =>
     this.organisations().map((organisation) => ({
       ...organisation,
-      fundManagers: (organisation as any).fundManagers.filter(
-        (item: any) => item.id !== this.manager()?.id,
-      ),
+      fundManagers:
+        (organisation as any).fundManagers?.filter(
+          (item: any) => item.id !== this.manager()?.id,
+        ) || [],
     })),
   );
 }

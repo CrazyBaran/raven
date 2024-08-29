@@ -98,6 +98,10 @@ export const dynamicDialogsConfig: Record<
     import('@app/client/organisations/feature/dialogs').then(
       (m) => m.UpdateOrganisationDescriptionModule,
     ),
+  [DialogUtil.queryParams.updateManager]: () =>
+    import('@app/client/managers/feature/dialogs').then(
+      (m) => m.UpdateManagerDialogModule,
+    ),
 };
 
 @Injectable()

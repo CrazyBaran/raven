@@ -1,8 +1,10 @@
 import { inject } from '@angular/core';
 import { ManagersService } from '@app/client/managers/data-access';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { ManagersActions } from './managers.actions';
+import { managersQuery } from './managers.selectors';
 
 export const getManagers$ = createEffect(
   (actions$ = inject(Actions), managersService = inject(ManagersService)) => {
@@ -105,6 +107,18 @@ export const updateManager$ = createEffect(
           ),
         ),
       ),
+    );
+  },
+  { functional: true },
+);
+
+export const getManagerIfNotLoaded$ = createEffect(
+  (actions$ = inject(Actions), store = inject(Store)) => {
+    return actions$.pipe(
+      ofType(ManagersActions.getManagerIfNotLoaded),
+      concatLatestFrom(() => store.select(managersQuery.selectEntities)),
+      filter(([{ id }, entities]) => !entities[id]),
+      map(([{ id }]) => ManagersActions.getManager({ id })),
     );
   },
   { functional: true },

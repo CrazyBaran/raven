@@ -1,3 +1,4 @@
+export * from './lib/manager-form/manager-form.component';
 export * from './lib/manager-portfolio-organisations/manager-portfolio-organisations.component';
 export * from './lib/manager-profile/manager-profile.component';
 export * from './lib/manager-relationships/manager-relationships.component';

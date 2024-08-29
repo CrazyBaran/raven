@@ -43,6 +43,7 @@
             <app-manager-profile
               [isLoading]="vm().isLoading"
               [manager]="vm().manager"
+              (editDetails)="openEditDetailsDialog()"
             />
 
             <app-manager-relationships

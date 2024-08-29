@@ -49,7 +49,7 @@
 
       <div class="text-black">
         @for (item of manager()?.industryTags; track $index) {
-          {{ $index > 0 ? ', ' + item.name : item.name }}
+          <span>{{ $index > 0 ? ', ' + item.name : item.name }}</span>
         } @empty {
           -
         }

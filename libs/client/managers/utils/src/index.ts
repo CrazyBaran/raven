@@ -1,1 +1,1 @@
-export * from './lib/client-managers-utils/client-managers-utils.component';
+export * from './lib/update-manager-form.token';

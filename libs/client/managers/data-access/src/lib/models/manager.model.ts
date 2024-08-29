@@ -40,3 +40,15 @@ export const RelationshipStrengthData = [
     id: FundManagerRelationStrength.NO_RELATIONSHIP,
   },
 ];
+
+export const GeographyData = [
+  'North America',
+  'Latam',
+  'Asia ex-China',
+  'China',
+  'MENA',
+  'Africa',
+  'Oceania',
+];
+
+export const CurrencyData = ['USD', 'GBP', 'EUR', 'AED'];

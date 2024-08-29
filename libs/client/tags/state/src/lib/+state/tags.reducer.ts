@@ -130,6 +130,9 @@ export const tagsFeature = createFeature({
     selectTabTags: createSelector(selectTagsState, (state) =>
       selectTagsByTypes(state, 'tab'),
     ),
+    selectIndustryTags: createSelector(selectTagsState, (state) =>
+      selectTagsByTypes(state, 'industry'),
+    ),
   }),
 });
 

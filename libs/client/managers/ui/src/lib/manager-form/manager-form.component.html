@@ -1,0 +1,82 @@
+<form [formGroup]="form()" class="flex flex-col gap-4">
+  <kendo-formfield>
+    <kendo-label [for]="description" text="Description" class="mb-1 block" />
+    <kendo-textarea
+      #description
+      [maxlength]="maxDescriptionLength"
+      [rows]="5"
+      formControlName="description"
+    />
+
+    <kendo-formerror *uiOnError="'maxlength'; let error">
+      Description should be less than
+      {{ error.requiredLength }}
+      characters
+    </kendo-formerror>
+
+    <footer class="px-3 pt-3 text-end text-sm">
+      Character Limit: {{ form()?.controls?.description?.value?.length ?? 0 }} /
+      1000
+    </footer>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label [for]="strategy" text="Strategy" class="mb-1 block" />
+    <kendo-textarea
+      #strategy
+      [maxlength]="maxDescriptionLength"
+      [rows]="5"
+      formControlName="strategy"
+    />
+
+    <kendo-formerror *uiOnError="'maxlength'; let error">
+      Strategy should be less than
+      {{ error.requiredLength }}
+      characters
+    </kendo-formerror>
+
+    <footer class="px-3 pt-3 text-end text-sm">
+      Character Limit: {{ form()?.controls?.strategy?.value?.length ?? 0 }} /
+      1000
+    </footer>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label
+      [for]="avgCheckSize"
+      text="Avg Check Size"
+      class="mb-1 block"
+    />
+    <kendo-textbox
+      #avgCheckSize
+      [formControl]="(form()?.controls)!.avgCheckSize"
+      [maxlength]="maxCurrencyLength"
+    />
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label [for]="geography" text="Geography" class="mb-1 block" />
+    <kendo-multiselect
+      #geography
+      [formControl]="(form()?.controls)!.geography"
+      [checkboxes]="true"
+      [data]="geographyData"
+      placeholder="Choose from list"
+      class="k-picker-solid"
+    />
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label [for]="themeFocus" text="Theme Focus" class="mb-1 block" />
+    <kendo-multiselect
+      #themeFocus
+      [formControl]="(form()?.controls)!.industryTags"
+      [data]="industries()"
+      [checkboxes]="true"
+      placeholder="Choose from list"
+      textField="name"
+      valueField="id"
+      class="k-picker-solid"
+    />
+  </kendo-formfield>
+</form>

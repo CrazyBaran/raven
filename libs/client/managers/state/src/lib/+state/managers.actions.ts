@@ -25,6 +25,8 @@ export const ManagersActions = createActionGroup({
     'Get Manager Success': props<SuccessPayload<FundManagerData>>(),
     'Get Manager Failure': props<FailurePayload>(),
 
+    'Get Manager If Not Loaded': props<{ id: string }>(),
+
     'Update Manager': props<{ id: string; changes: UpdateManagerDto }>(),
     'Update Manager Success': props<SuccessPayload<FundManagerData>>(),
     'Update Manager Failure': props<FailurePayload>(),
