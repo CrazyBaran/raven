@@ -12,6 +12,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import { LabelModule } from '@progress/kendo-angular-label';
+import { FundManagerRelationStrength } from 'rvns-shared';
 
 interface DropdownOption {
   id: string;
@@ -50,11 +51,20 @@ export class ManagerRelationShipsComponent {
 
   private synchronizeFormControlsEffect = effect(() => {
     if (this.manager()?.relationStrength) {
-      this.relationshipStrength.setValue(
-        this.relationshipStrengthData.find(
-          (el) => el.id === this.manager()!.relationStrength,
-        ),
-      );
+      if (this.manager()?.isPortfolio) {
+        this.relationshipStrength.setValue(
+          this.relationshipStrengthData.find(
+            (el) => el.id === FundManagerRelationStrength.PORTFOLIO,
+          ),
+        );
+        this.relationshipStrength.disable();
+      } else {
+        this.relationshipStrength.setValue(
+          this.relationshipStrengthData.find(
+            (el) => el.id === this.manager()!.relationStrength,
+          ),
+        );
+      }
     }
 
     if (this.manager()?.keyRelationships.length) {

@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
+  IsInt,
   IsOptional,
   IsString,
   IsUUID,
   MaxLength,
 } from 'class-validator';
-import { FundManagerRelationStrength } from 'rvns-shared';
+import { Currency, FundManagerRelationStrength } from 'rvns-shared';
 
 export class UpdateFundManagerDto {
   @ApiProperty()
@@ -35,9 +36,21 @@ export class UpdateFundManagerDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  @MaxLength(1000)
-  public readonly avgCheckSize?: string;
+  @IsInt()
+  public readonly avgCheckSize?: number;
+
+  @IsOptional()
+  @IsEnum(Currency)
+  public readonly avgCheckSizeCurrency?: Currency | null;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsInt()
+  public readonly aum?: number;
+
+  @IsOptional()
+  @IsEnum(Currency)
+  public readonly aumCurrency?: Currency | null;
 
   @ApiProperty()
   @IsOptional()

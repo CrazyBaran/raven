@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FundManagerRelationStrength, PagedData } from 'rvns-shared';
+import { Currency, FundManagerRelationStrength, PagedData } from 'rvns-shared';
 import { Brackets, Repository } from 'typeorm';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
@@ -14,7 +14,10 @@ interface UpdateFundManagerOptions {
   description?: string;
   strategy?: string;
   geography?: string;
-  avgCheckSize?: string;
+  avgCheckSize?: number;
+  avgCheckSizeCurrency?: Currency;
+  aum?: number;
+  aumCurrency?: Currency;
   relationshipStrength?: FundManagerRelationStrength;
   keyRelationships?: string[];
   industryTags?: TagEntity[];
@@ -149,6 +152,18 @@ export class FundManagersService {
 
     if (options.avgCheckSize !== undefined) {
       fundManagerEntity.avgCheckSize = options.avgCheckSize;
+    }
+
+    if (options.avgCheckSizeCurrency !== undefined) {
+      fundManagerEntity.avgCheckSizeCurrency = options.avgCheckSizeCurrency;
+    }
+
+    if (options.aum !== undefined) {
+      fundManagerEntity.aum = options.aum;
+    }
+
+    if (options.aumCurrency !== undefined) {
+      fundManagerEntity.aumCurrency = options.aumCurrency;
     }
 
     if (options.geography !== undefined) {

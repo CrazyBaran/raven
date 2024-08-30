@@ -107,6 +107,7 @@ export class DataWarehouseRegenerator {
     for (let j = 0; j < investors.length; j++) {
       const domain = investors[j].domain;
       const name = investors[j].investorName;
+      const isPortfolio = investors[j].isPortfolio;
 
       const currentOrganisation = await this.createInvestorOrganisation({
         domain: domain,
@@ -142,6 +143,10 @@ export class DataWarehouseRegenerator {
       } else {
         fm.name = name;
       }
+      fm.domain = domain;
+      fm.isPortfolio =
+        isPortfolio === '0' || Number(isPortfolio) === 0 ? false : true;
+
       const fundManager = await this.fundManagersRepository.save(fm);
 
       const [investments, _count] =

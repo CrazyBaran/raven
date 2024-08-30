@@ -1,4 +1,4 @@
-import { FundManagerRelationStrength } from 'rvns-shared';
+import { Currency, FundManagerRelationStrength } from 'rvns-shared';
 
 export interface GetManagersDto {
   query?: string;
@@ -51,4 +51,16 @@ export const GeographyData = [
   'Oceania',
 ];
 
-export const CurrencyData = ['USD', 'GBP', 'EUR', 'AED'];
+export const CurrencyData = [
+  Currency.USD,
+  Currency.GBP,
+  Currency.EUR,
+  Currency.AED,
+];
+
+export const CurrencySymbol: Record<string, string> = {
+  [Currency.USD]: '$',
+  [Currency.GBP]: '£',
+  [Currency.EUR]: '€',
+  [Currency.AED]: 'AED',
+};

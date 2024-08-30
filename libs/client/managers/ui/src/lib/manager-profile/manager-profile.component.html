@@ -6,9 +6,12 @@
       <i class="fa-solid fa-image text-[32px] text-black"></i>
 
       @if (isLoading()) {
-        <kendo-skeleton width="100%" />
+        <kendo-skeleton width="100%" height="48px" shape="rectangle" />
       } @else {
-        <div class="text-xl">{{ manager()?.name }}</div>
+        <div class="flex flex-col">
+          <div class="text-xl">{{ manager()?.name }}</div>
+          <div class="text-primary">{{ manager()?.domain }}</div>
+        </div>
       }
     </div>
 
@@ -27,6 +30,21 @@
     </section>
 
     <section>
+      <div class="text-sm">AUM</div>
+
+      <div class="flex text-black">
+        <span>
+          {{
+            manager()?.aumCurrency ? currencySymbol[manager()!.aumCurrency] : ''
+          }}
+        </span>
+        <span>
+          {{ manager()?.aum ? (manager()!.aum | thousandSuff) : '-' }}
+        </span>
+      </div>
+    </section>
+
+    <section>
       <div class="text-sm">Strategy</div>
 
       <div class="text-black">{{ manager()?.strategy || '-' }}</div>
@@ -35,7 +53,22 @@
     <section>
       <div class="text-sm">Avg Check Size</div>
 
-      <div class="text-black">{{ manager()?.avgCheckSize || '-' }}</div>
+      <div class="flex text-black">
+        <span>
+          {{
+            manager()?.avgCheckSizeCurrency
+              ? currencySymbol[manager()!.avgCheckSizeCurrency]
+              : ''
+          }}
+        </span>
+        <span>
+          {{
+            manager()?.avgCheckSize
+              ? (manager()!.avgCheckSize | thousandSuff)
+              : '-'
+          }}
+        </span>
+      </div>
     </section>
 
     <section>

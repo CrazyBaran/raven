@@ -8,7 +8,7 @@ import {
 import { TagData } from '@app/rvns-tags';
 import { ApiProperty } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { FundManagerRelationStrength, PagedData } from 'rvns-shared';
+import { Currency, FundManagerRelationStrength, PagedData } from 'rvns-shared';
 import { FundManagerEntity } from './entities/fund-manager.entity';
 
 export class FundManagerRO implements FundManagerData {
@@ -23,7 +23,13 @@ export class FundManagerRO implements FundManagerData {
   @ApiProperty()
   public geography: string;
   @ApiProperty()
-  public avgCheckSize: string;
+  public avgCheckSize: number;
+  @ApiProperty()
+  public avgCheckSizeCurrency: Currency;
+  @ApiProperty()
+  public aum: number;
+  @ApiProperty()
+  public aumCurrency: Currency;
   @ApiProperty()
   public createdAt: Date;
   @ApiProperty()

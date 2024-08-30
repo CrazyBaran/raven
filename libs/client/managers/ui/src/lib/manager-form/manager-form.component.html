@@ -4,7 +4,7 @@
     <kendo-textarea
       #description
       [maxlength]="maxDescriptionLength"
-      [rows]="5"
+      [rows]="3"
       formControlName="description"
     />
 
@@ -20,12 +20,29 @@
     </footer>
   </kendo-formfield>
 
+  <kendo-label [for]="aum" text="AUM" labelCssClass="!mb-1 block">
+    <div class="flex gap-1">
+      <div class="w-24">
+        <kendo-dropdownlist
+          [formControl]="(form()?.controls)!.aumCurrency"
+          [data]="currencyData"
+        />
+      </div>
+
+      <kendo-numerictextbox
+        #aum
+        [formControl]="(form()?.controls)!.aum"
+        [min]="0"
+      />
+    </div>
+  </kendo-label>
+
   <kendo-formfield>
     <kendo-label [for]="strategy" text="Strategy" class="mb-1 block" />
     <kendo-textarea
       #strategy
       [maxlength]="maxDescriptionLength"
-      [rows]="5"
+      [rows]="3"
       formControlName="strategy"
     />
 
@@ -41,18 +58,26 @@
     </footer>
   </kendo-formfield>
 
-  <kendo-formfield>
-    <kendo-label
-      [for]="avgCheckSize"
-      text="Avg Check Size"
-      class="mb-1 block"
-    />
-    <kendo-textbox
-      #avgCheckSize
-      [formControl]="(form()?.controls)!.avgCheckSize"
-      [maxlength]="maxCurrencyLength"
-    />
-  </kendo-formfield>
+  <kendo-label
+    [for]="avgCheckSize"
+    text="Avg Check Size"
+    labelCssClass="!mb-1 block"
+  >
+    <div class="flex gap-1">
+      <div class="w-24">
+        <kendo-dropdownlist
+          [formControl]="(form()?.controls)!.avgCheckSizeCurrency"
+          [data]="currencyData"
+        />
+      </div>
+
+      <kendo-numerictextbox
+        #avgCheckSize
+        [formControl]="(form()?.controls)!.avgCheckSize"
+        [min]="0"
+      />
+    </div>
+  </kendo-label>
 
   <kendo-formfield>
     <kendo-label [for]="geography" text="Geography" class="mb-1 block" />

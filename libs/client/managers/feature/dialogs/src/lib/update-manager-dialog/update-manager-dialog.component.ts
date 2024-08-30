@@ -86,7 +86,10 @@ export class UpdateManagerDialogComponent extends DynamicDialogContentBase {
         changes: {
           description: rawValue.description ?? '',
           strategy: rawValue.strategy ?? '',
-          avgCheckSize: rawValue.avgCheckSize ?? '',
+          avgCheckSize: rawValue.avgCheckSize ?? undefined,
+          avgCheckSizeCurrency: rawValue.avgCheckSizeCurrency ?? undefined,
+          aum: rawValue.aum ?? undefined,
+          aumCurrency: rawValue.aumCurrency ?? undefined,
           geography: rawValue.geography?.join(', ') ?? '',
           industryTags: rawValue.industryTags?.map((el) => el.id) ?? [],
         },

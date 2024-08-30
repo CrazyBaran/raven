@@ -1,4 +1,4 @@
-import { FundManagerRelationStrength } from 'rvns-shared';
+import { Currency, FundManagerRelationStrength } from 'rvns-shared';
 import {
   AfterInsert,
   AfterLoad,
@@ -23,6 +23,9 @@ export class FundManagerEntity {
   @Column({ type: 'nvarchar', length: '256', nullable: false })
   public name: string;
 
+  @Column({ type: 'nvarchar', length: '512', nullable: true })
+  public domain: string | null;
+
   @Column({ type: 'nvarchar', length: '1000', nullable: true })
   public description: string | null;
 
@@ -32,8 +35,32 @@ export class FundManagerEntity {
   @Column({ type: 'nvarchar', length: '1000', nullable: true })
   public geography: string | null;
 
-  @Column({ type: 'nvarchar', length: '1000', nullable: true })
-  public avgCheckSize: string | null;
+  @Column({ type: 'bigint', nullable: true })
+  public avgCheckSize: number | null;
+
+  @Column({
+    nullable: true,
+    default: null,
+    enum: Currency,
+    type: 'nvarchar',
+    length: '3',
+  })
+  public avgCheckSizeCurrency: Currency | null;
+
+  @Column({ type: 'bigint', nullable: true })
+  public aum: number | null;
+
+  @Column({
+    nullable: true,
+    default: null,
+    enum: Currency,
+    type: 'nvarchar',
+    length: '3',
+  })
+  public aumCurrency: Currency | null;
+
+  @Column({ default: false })
+  public isPortfolio: boolean;
 
   @ManyToMany(
     () => OrganisationEntity,

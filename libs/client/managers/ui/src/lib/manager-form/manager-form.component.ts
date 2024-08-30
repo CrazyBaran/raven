@@ -10,21 +10,24 @@ import {
 } from '@progress/kendo-angular-dropdowns';
 import {
   FormFieldModule,
+  NumericTextBoxModule,
   TextAreaModule,
-  TextBoxModule,
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
+import { Currency } from 'rvns-shared';
 
 export type ManagerForm = FormGroup<{
   description: FormControl<string | null>;
   strategy: FormControl<string | null>;
-  avgCheckSize: FormControl<string | null>;
+  avgCheckSize: FormControl<number | null>;
+  avgCheckSizeCurrency: FormControl<Currency | null>;
+  aum: FormControl<number | null>;
+  aumCurrency: FormControl<Currency | null>;
   geography: FormControl<Array<string> | null>;
   industryTags: FormControl<Array<TagData> | null>;
 }>;
 
 export const MAX_MANAGER_DESCRIPTION_LENGTH = 1000;
-export const MAX_MANAGER_CURRENCY_LENGTH = 50;
 
 @Component({
   selector: 'app-manager-form',
@@ -33,7 +36,7 @@ export const MAX_MANAGER_CURRENCY_LENGTH = 50;
     ReactiveFormsModule,
     FormFieldModule,
     LabelModule,
-    TextBoxModule,
+    NumericTextBoxModule,
     TextAreaModule,
     OnErrorDirective,
     MultiSelectModule,
@@ -45,7 +48,6 @@ export const MAX_MANAGER_CURRENCY_LENGTH = 50;
 })
 export class ManagerFormComponent {
   public readonly maxDescriptionLength = MAX_MANAGER_DESCRIPTION_LENGTH;
-  public readonly maxCurrencyLength = MAX_MANAGER_CURRENCY_LENGTH;
   public readonly geographyData = GeographyData;
   public readonly currencyData = CurrencyData;
 

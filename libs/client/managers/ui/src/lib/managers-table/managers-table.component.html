@@ -25,13 +25,28 @@
         >
           {{ manager.name }}
         </a>
+
+        <p class="text-sm">{{ manager.domain }}</p>
       </ng-template>
     </kendo-grid-column>
 
     <kendo-grid-column headerClass="!font-bold" title="Avg. Check Size">
       <ng-template kendoGridCellTemplate let-manager>
-        <p>
-          {{ manager.avgCheckSize || '-' }}
+        <p class="flex">
+          <span>
+            {{
+              manager?.avgCheckSizeCurrency
+                ? currencySymbol[manager!.avgCheckSizeCurrency + '']
+                : ''
+            }}
+          </span>
+          <span>
+            {{
+              manager?.avgCheckSize
+                ? (manager!.avgCheckSize | thousandSuff)
+                : '-'
+            }}
+          </span>
         </p>
       </ng-template>
     </kendo-grid-column>
