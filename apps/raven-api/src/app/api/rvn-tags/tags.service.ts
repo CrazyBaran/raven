@@ -47,6 +47,10 @@ export class TagsService {
       ).leftJoinAndSelect('organisation.organisationDomains', 'domains');
     }
 
+    if (type && type === TagTypeEnum.Investor) {
+      qb.leftJoinAndSelect('tag.organisation', 'organisation');
+    }
+
     if (query) {
       qb.andWhere('LOWER(tag.name) LIKE :name', {
         name: `%${query.toLowerCase()}%`,
@@ -101,6 +105,9 @@ export class TagsService {
       type: tag.type,
       userId: (tag as PeopleTagEntity)?.userId,
       organisationId: (tag as OrganisationTagEntity)?.organisationId,
+      fundManagerId: (tag as OrganisationTagEntity)?.organisation?.fundManagerId
+        ?.toString()
+        ?.toLowerCase(),
       tabId: (tag as TabTagEntity)?.tabId,
       domain: (tag as OrganisationTagEntity)?.organisation?.domains
         ?.toString()

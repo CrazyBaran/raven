@@ -79,7 +79,7 @@ export const selectManagersTableQueryModel = createSelector(
     buildInputNavigation({
       params,
       name: 'query',
-      placeholder: `Search managers`,
+      placeholder: `Search managers, companies`,
     }),
 );
 

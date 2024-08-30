@@ -4,6 +4,7 @@ export interface TagData {
   readonly type: string;
   readonly userId?: string;
   readonly organisationId?: string;
+  readonly fundManagerId?: string;
   readonly tabId?: string;
   readonly domain?: string;
   readonly link?: string[] | null;

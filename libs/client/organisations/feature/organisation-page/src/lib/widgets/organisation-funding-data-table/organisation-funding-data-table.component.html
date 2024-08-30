@@ -7,11 +7,11 @@
     body
     class="grid"
     [ngClass]="{
-      'gap-6': withChart,
-      'lg:grid-cols-2': withChart
+      'gap-6': withChart(),
+      'lg:grid-cols-2': withChart()
     }"
   >
-    @if (withChart) {
+    @if (withChart()) {
       <kendo-chart class="max-h-[330px]">
         <kendo-chart-tooltip format="${0}M" />
 
@@ -67,9 +67,22 @@
 
         <kendo-grid-column title="Investors" headerClass="!font-bold">
           <ng-template kendoGridCellTemplate let-fundingData>
-            <p>
-              {{ fundingData.investors.join('; ') }}
-            </p>
+            <div class="flex flex-wrap">
+              @for (investor of fundingData.investors || []; track $index) {
+                <button
+                  (click)="getInvestorTag(investor)"
+                  class="hover:text-primary pr-1 text-left"
+                >
+                  {{
+                    $index !== fundingData.investors?.length - 1
+                      ? investor + ';'
+                      : investor
+                  }}
+                </button>
+              } @empty {
+                -
+              }
+            </div>
           </ng-template>
         </kendo-grid-column>
 
@@ -146,3 +159,7 @@
     </aside>
   </main>
 </ui-tilelayout-item>
+
+@if (isFetchingInvestorTag()) {
+  <ui-loader [fixed]="true" [disableInfo]="true" />
+}

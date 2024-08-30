@@ -5,7 +5,7 @@
 
   <main body class="grid">
     <kendo-grid
-      [data]="filteredOrganisations()"
+      [data]="organisations()"
       [loading]="isLoading()"
       class="grid-borderless !border-b-0"
     >
@@ -96,17 +96,20 @@
       <kendo-grid-column title="Other investors" headerClass="!font-bold">
         <ng-template kendoGridCellTemplate let-organisation>
           <div class="flex flex-wrap">
-            @for (item of organisation.fundManagers; track $index) {
-              <a
-                [routerLink]="['/managers', item.id]"
-                class="hover:text-primary pr-1"
+            @for (
+              investor of organisation.dataV1?.investors || [];
+              track $index
+            ) {
+              <button
+                (click)="getInvestorTag(investor.name)"
+                class="hover:text-primary pr-1 text-left"
               >
                 {{
-                  $index !== organisation.fundManagers.length - 1
-                    ? item.name + ';'
-                    : item.name
+                  $index !== organisation.dataV1?.investors?.length - 1
+                    ? investor.name + ';'
+                    : investor.name
                 }}
-              </a>
+              </button>
             } @empty {
               -
             }
@@ -116,3 +119,7 @@
     </kendo-grid>
   </main>
 </ui-tilelayout-item>
+
+@if (isFetchingInvestorTag()) {
+  <ui-loader [fixed]="true" [disableInfo]="true" />
+}

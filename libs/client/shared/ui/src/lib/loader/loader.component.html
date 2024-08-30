@@ -1,4 +1,7 @@
-<div class="loader flex flex-col items-center justify-center gap-6">
+<div
+  class="loader flex flex-col items-center justify-center gap-6"
+  [ngClass]="{ 'fixed left-0 top-0 h-full w-full': fixed }"
+>
   <kendo-loader type="infinite-spinner" themeColor="primary" />
 
   <span *ngIf="!disableInfo">

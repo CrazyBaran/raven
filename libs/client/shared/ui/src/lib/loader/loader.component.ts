@@ -13,4 +13,5 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 export class LoaderComponent {
   @Input() public loaderInfo?: string = 'Loading...';
   @Input() public disableInfo?: boolean;
+  @Input() public fixed = false;
 }

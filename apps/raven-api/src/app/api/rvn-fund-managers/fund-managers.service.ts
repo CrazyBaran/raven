@@ -114,9 +114,7 @@ export class FundManagersService {
       .leftJoin('organisations.shortlists', 'shortlists')
       .addSelect(['shortlists.id', 'shortlists.name'])
       .leftJoin('data.investors', 'investors')
-      .addSelect(['investors.name'])
-      .leftJoin('organisations.fundManagers', 'fundManagers')
-      .addSelect(['fundManagers.id', 'fundManagers.name']);
+      .addSelect(['investors.name']);
 
     queryBuilder.where({ id });
 
