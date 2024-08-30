@@ -17,6 +17,8 @@ export class FundManagerRO implements FundManagerData {
   @ApiProperty()
   public name: string;
   @ApiProperty()
+  public domain: string;
+  @ApiProperty()
   public description: string;
   @ApiProperty()
   public strategy: string;
@@ -30,6 +32,8 @@ export class FundManagerRO implements FundManagerData {
   public aum: number;
   @ApiProperty()
   public aumCurrency: Currency;
+  @ApiProperty()
+  public isPortfolio: boolean;
   @ApiProperty()
   public createdAt: Date;
   @ApiProperty()
