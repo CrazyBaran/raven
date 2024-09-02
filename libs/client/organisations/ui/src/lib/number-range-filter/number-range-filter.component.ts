@@ -47,6 +47,7 @@ export class NumberRangeFilterComponent implements OnInit {
     const [start, end] = (this.filter.filters as FilterDescriptor[]).filter(
       (x) => (x as FilterDescriptor).field === this.field,
     );
+
     this.start =
       start?.value && start.value !== 'any' ? Number(start.value) : null;
     this.end = end?.value ? Number(end.value) : null;

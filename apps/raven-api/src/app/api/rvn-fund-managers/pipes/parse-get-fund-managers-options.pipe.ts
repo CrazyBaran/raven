@@ -1,5 +1,6 @@
 import { ArgumentMetadata, ParseUUIDPipe, PipeTransform } from '@nestjs/common';
 
+import deparam from 'jquery-deparam';
 import { FundManagerRelationStrength } from 'rvns-shared';
 import {
   defaultGetFundManagersOptions,
@@ -58,6 +59,8 @@ export class ParseGetFundManagersOptionsPipe
       );
     }
 
+    options.filters = this.getFilters(values);
+
     return options;
   }
 
@@ -76,5 +79,50 @@ export class ParseGetFundManagersOptionsPipe
       return value.toUpperCase() as Direction;
     }
     return null;
+  }
+
+  private getFilters(values: Record<string, string>): {
+    avgCheckSize?: { min?: number; max?: number };
+  } {
+    if (!values) {
+      return {};
+    }
+    if (values['filters'] === undefined || values['filters'] === '') {
+      return {};
+    }
+
+    const filters: {
+      avgCheckSize?: { min?: number; max?: number };
+      industryTags?: Array<string>;
+      geography?: Array<string>;
+    } = {};
+
+    const filterValues = deparam(values.filters);
+
+    filters.avgCheckSize = this.handleMinMaxNumber(
+      filterValues['avgCheckSize'],
+    );
+
+    filters.industryTags = filterValues['industryTags'] as string[];
+    filters.geography = filterValues['geography'] as string[];
+
+    return filters;
+  }
+
+  private handleMinMaxNumber(filterValue: string[]): {
+    min?: number;
+    max?: number;
+  } {
+    const result = { min: undefined, max: undefined };
+    if (filterValue) {
+      if (filterValue[0] !== 'any') {
+        result.min = +filterValue[0];
+      }
+      if (filterValue[1] !== 'any') {
+        result.max = +filterValue[1];
+      }
+    }
+
+    return result;
   }
 }

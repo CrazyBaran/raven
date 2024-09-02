@@ -84,6 +84,57 @@ export class FundManagersService {
       });
     }
 
+    if (options.filters?.avgCheckSize) {
+      if (options.filters?.avgCheckSize.min) {
+        queryBuilder.andWhere(
+          'fund_managers.avgCheckSize >= :minAvgCheckSize',
+          {
+            minAvgCheckSize: options.filters?.avgCheckSize.min,
+          },
+        );
+      }
+
+      if (options.filters?.avgCheckSize.max) {
+        queryBuilder.andWhere(
+          'fund_managers.avgCheckSize <= :maxAvgCheckSize',
+          {
+            maxAvgCheckSize: options.filters?.avgCheckSize.max,
+          },
+        );
+      }
+    }
+
+    if (options.filters?.industryTags?.length) {
+      const subQuery = this.fundManagersRepository
+        .createQueryBuilder('fund_managers')
+        .leftJoin('fund_managers.industryTags', 'industryTags')
+        .select('fund_managers.id')
+        .where('industryTags.id IN (:...industryTags)', {
+          industryTags: options.filters.industryTags,
+        });
+
+      queryBuilder.andWhere(`fund_managers.id IN (${subQuery.getQuery()})`);
+      queryBuilder.setParameters(subQuery.getParameters());
+    }
+
+    if (options.filters?.geography?.length) {
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          options.filters.geography.forEach((value, i) => {
+            if (i === 0) {
+              qb.andWhere('fund_managers.geography LIKE :name' + i, {
+                [`name${i}`]: `%${value}%`,
+              });
+            } else {
+              qb.orWhere('fund_managers.geography LIKE :name' + i, {
+                [`name${i}`]: `%${value}%`,
+              });
+            }
+          });
+        }),
+      );
+    }
+
     if (options.skip || options.take) {
       queryBuilder.skip(options.skip).take(options.take);
     }

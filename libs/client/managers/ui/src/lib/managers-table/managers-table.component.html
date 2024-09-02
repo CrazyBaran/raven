@@ -5,7 +5,10 @@
     [data]="data"
     [sort]="sort"
     [sortable]="true"
+    [filter]="filters!"
+    filterable="menu"
     [trackBy]="trackByFn"
+    (filterChange)="filterChange($event)"
     (scrollBottom)="onLoadMore()"
     class="grid-borderless min-h-0 flex-1"
     id="manager-table"
@@ -13,6 +16,7 @@
   >
     <kendo-grid-column
       field="name"
+      [filterable]="false"
       headerClass="!font-bold"
       title="Manager Name"
     >
@@ -30,7 +34,11 @@
       </ng-template>
     </kendo-grid-column>
 
-    <kendo-grid-column headerClass="!font-bold" title="Avg. Check Size">
+    <kendo-grid-column
+      field="avgCheckSize"
+      headerClass="!font-bold"
+      title="Avg. Check Size"
+    >
       <ng-template kendoGridCellTemplate let-manager>
         <p class="flex">
           <span>
@@ -49,17 +57,55 @@
           </span>
         </p>
       </ng-template>
+
+      <ng-template
+        kendoGridFilterMenuTemplate
+        let-filter
+        let-column="column"
+        let-filterService="filterService"
+      >
+        <app-number-range-filter
+          field="avgCheckSize"
+          [filter]="filter"
+          [filterService]="filterService"
+        />
+      </ng-template>
     </kendo-grid-column>
 
-    <kendo-grid-column headerClass="!font-bold" title="Geography">
+    <kendo-grid-column
+      field="geography"
+      [sortable]="false"
+      headerClass="!font-bold"
+      title="Geography"
+    >
       <ng-template kendoGridCellTemplate let-manager>
         <p>
           {{ manager.geography || '-' }}
         </p>
       </ng-template>
+
+      <ng-template
+        kendoGridFilterMenuTemplate
+        let-filter
+        let-column="column"
+        let-filterService="filterService"
+      >
+        <app-multicheck-filter
+          [sourceFn]="geographySource"
+          field="geography"
+          [filterService]="filterService"
+          [currentFilter]="filter"
+          [isPrimitive]="true"
+        />
+      </ng-template>
     </kendo-grid-column>
 
-    <kendo-grid-column headerClass="!font-bold" title="Theme Focus">
+    <kendo-grid-column
+      field="industryTags"
+      [sortable]="false"
+      headerClass="!font-bold"
+      title="Theme Focus"
+    >
       <ng-template kendoGridCellTemplate let-manager>
         <p>
           {{ manager.industryTags[0]?.name || '-' }}
@@ -70,6 +116,22 @@
             </span>
           }
         </p>
+      </ng-template>
+
+      <ng-template
+        kendoGridFilterMenuTemplate
+        let-filter
+        let-column="column"
+        let-filterService="filterService"
+      >
+        <app-multicheck-filter
+          [sourceFn]="industrySource"
+          field="industryTags"
+          [filterService]="filterService"
+          [currentFilter]="filter"
+          textField="name"
+          valueField="id"
+        />
       </ng-template>
     </kendo-grid-column>
 

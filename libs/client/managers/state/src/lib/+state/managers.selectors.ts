@@ -11,6 +11,7 @@ const managersQueryParams = [
   'organisationId',
   'keyRelationship',
   'relationshipStrength',
+  'filters',
 ] as const;
 
 const managersTableParamsOrigin = buildPageParamsSelector(managersQueryParams, {

@@ -15,6 +15,14 @@ export class GetFundManagersOptions {
   public name?: string;
   public relationshipStrength?: FundManagerRelationStrength;
   public keyRelationship?: string;
+  public filters?: {
+    avgCheckSize?: {
+      min?: number;
+      max?: number;
+    };
+    industryTags?: Array<string>;
+    geography?: Array<string>;
+  };
 }
 
 export const defaultGetFundManagersOptions: GetFundManagersOptions = {

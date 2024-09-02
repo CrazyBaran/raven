@@ -1,6 +1,7 @@
 import { selectUserId } from '@app/client/core/auth';
 import { RelationshipStrengthData } from '@app/client/managers/data-access';
 import { managersQuery } from '@app/client/managers/state';
+import { FilterParam, parseToFilters } from '@app/client/organisations/ui';
 import { TableViewModel } from '@app/client/shared/ui-directives';
 import {
   ButtongroupNavigationModel,
@@ -10,10 +11,12 @@ import {
   buildButtonGroupNavigation,
   buildDropdownNavigation,
   buildInputNavigation,
+  selectQueryParam,
 } from '@app/client/shared/util-router';
 import { tagsFeature } from '@app/client/tags/state';
 import { FundManagerData } from '@app/rvns-fund-managers';
 import { createSelector } from '@ngrx/store';
+import deparam from 'jquery-deparam';
 
 export const selectManagersTableButtonGroupNavigation = createSelector(
   managersQuery.managersTableParamsOrigin,
@@ -92,18 +95,26 @@ export const selectManagersRows = createSelector(
   },
 );
 
+export const selectTableFilters = createSelector(
+  selectQueryParam('filters'),
+  (filters) => (deparam(filters ?? '') ?? {}) as Record<string, FilterParam>,
+);
+
 export const selectTableModel = createSelector(
   managersQuery.selectManagersTableParams,
   selectManagersRows,
   managersQuery.selectLoadingStates,
   managersQuery.selectTable,
+  selectTableFilters,
   (
     params,
     rows,
     { table: isLoading, loadMoreTable: isLoadMore, reloadTable },
     { total },
+    filters,
   ): TableViewModel<FundManagerData> => ({
     ...params,
+    filters: parseToFilters(filters),
     total,
     isLoading: !!isLoading || !!isLoadMore || !!reloadTable,
     data: rows,
