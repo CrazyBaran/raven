@@ -40,10 +40,16 @@ export class OrganisationProvider {
       domains: ['https://placeholder.com', 'placeholder.com'],
     });
     queryBuilder.andWhere(
-      'organisations.initialDataSource NOT IN (:...investorSource)',
-      {
-        investorSource: ['investors_dwh'],
-      },
+      new Brackets((sourceBr) => {
+        sourceBr
+          .where(
+            'organisations.initialDataSource NOT IN (:...investorSource)',
+            {
+              investorSource: ['investors_dwh'],
+            },
+          )
+          .orWhere('organisations.initialDataSource IS NULL');
+      }),
     );
     if (
       Object.keys(filterOptions).length > 0 ||
