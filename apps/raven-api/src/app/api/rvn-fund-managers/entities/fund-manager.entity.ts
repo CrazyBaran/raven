@@ -65,6 +65,9 @@ export class FundManagerEntity {
   @Column({ default: false })
   public isPortfolio: boolean;
 
+  @Column({ type: 'nvarchar', length: '1000', nullable: true })
+  public logoUrl: string | null;
+
   @ManyToMany(
     () => OrganisationEntity,
     (organisation) => organisation.fundManagers,

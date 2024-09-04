@@ -108,6 +108,7 @@ export class DataWarehouseRegenerator {
       const domain = investors[j].domain;
       const name = investors[j].investorName;
       const isPortfolio = investors[j].isPortfolio;
+      const logoUrl = investors[j].logoUrl;
 
       const currentOrganisation = await this.createInvestorOrganisation({
         domain: domain,
@@ -146,6 +147,7 @@ export class DataWarehouseRegenerator {
       fm.domain = domain;
       fm.isPortfolio =
         isPortfolio === '0' || Number(isPortfolio) === 0 ? false : true;
+      fm.logoUrl = logoUrl;
 
       const fundManager = await this.fundManagersRepository.save(fm);
 

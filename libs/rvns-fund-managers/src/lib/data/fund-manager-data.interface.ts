@@ -32,6 +32,7 @@ export interface FundManagerData {
   readonly industryTags: TagData[];
   readonly relationStrength: FundManagerRelationStrength;
   readonly isPortfolio: boolean;
+  readonly logoUrl: string;
 }
 
 export interface FundManagerContactData {

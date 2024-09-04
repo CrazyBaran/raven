@@ -35,6 +35,8 @@ export class FundManagerRO implements FundManagerData {
   @ApiProperty()
   public isPortfolio: boolean;
   @ApiProperty()
+  public logoUrl: string;
+  @ApiProperty()
   public createdAt: Date;
   @ApiProperty()
   public updatedAt: Date;

@@ -14,8 +14,11 @@ export class InvestorV2DwhEntity {
 
   @Column({ name: 'is_portfolio', type: 'smallint' })
   public isPortfolio: string;
+
+  @Column({ name: 'logo_url', type: 'nvarchar', length: 1000 })
+  public logoUrl: string;
 }
 
 export const DWH_V2_INVESTORS_SELECT_COLUMNS: Partial<
   keyof InvestorV2DwhEntity
->[] = ['domain', 'investorName', 'isPortfolio'];
+>[] = ['domain', 'investorName', 'isPortfolio', 'logoUrl'];
