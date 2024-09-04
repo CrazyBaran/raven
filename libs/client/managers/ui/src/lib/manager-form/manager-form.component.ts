@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CurrencyData, GeographyData } from '@app/client/managers/data-access';
+import { GeographyData } from '@app/client/managers/data-access';
 import { OnErrorDirective } from '@app/client/shared/ui-directives';
 import { TagData } from '@app/rvns-tags';
 import {
@@ -14,7 +14,7 @@ import {
   TextAreaModule,
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
-import { Currency } from 'rvns-shared';
+import { Currency, CurrencyData } from 'rvns-shared';
 
 export type ManagerForm = FormGroup<{
   description: FormControl<string | null>;

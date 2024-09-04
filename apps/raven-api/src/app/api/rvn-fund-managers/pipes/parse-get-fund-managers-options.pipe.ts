@@ -1,12 +1,16 @@
 import { ArgumentMetadata, ParseUUIDPipe, PipeTransform } from '@nestjs/common';
 
 import deparam from 'jquery-deparam';
-import { FundManagerRelationStrength } from 'rvns-shared';
 import {
-  defaultGetFundManagersOptions,
+  Currency,
+  CurrencyData,
+  FundManagerRelationStrength,
+} from 'rvns-shared';
+import {
   Direction,
   GetFundManagersOptions,
   SortableField,
+  defaultGetFundManagersOptions,
   sortableFields,
 } from '../interfaces/get-fund-managers.options';
 
@@ -82,7 +86,7 @@ export class ParseGetFundManagersOptionsPipe
   }
 
   private getFilters(values: Record<string, string>): {
-    avgCheckSize?: { min?: number; max?: number };
+    avgCheckSize?: { min?: number; max?: number; currency?: string };
   } {
     if (!values) {
       return {};
@@ -92,7 +96,7 @@ export class ParseGetFundManagersOptionsPipe
     }
 
     const filters: {
-      avgCheckSize?: { min?: number; max?: number };
+      avgCheckSize?: { min?: number; max?: number; currency?: string };
       industryTags?: Array<string>;
       geography?: Array<string>;
     } = {};
@@ -112,14 +116,25 @@ export class ParseGetFundManagersOptionsPipe
   private handleMinMaxNumber(filterValue: string[]): {
     min?: number;
     max?: number;
+    currency?: string;
   } {
-    const result = { min: undefined, max: undefined };
+    const result = { min: undefined, max: undefined, currency: undefined };
     if (filterValue) {
-      if (filterValue[0] !== 'any') {
-        result.min = +filterValue[0];
+      const currencyFilter = filterValue.filter((x) =>
+        CurrencyData.includes(x as Currency),
+      );
+      const minMaxFilter = filterValue.filter(
+        (x) => !CurrencyData.includes(x as Currency),
+      );
+
+      if (minMaxFilter[0] !== 'any') {
+        result.min = +minMaxFilter[0];
       }
-      if (filterValue[1] !== 'any') {
-        result.max = +filterValue[1];
+      if (minMaxFilter[1] !== 'any') {
+        result.max = +minMaxFilter[1];
+      }
+      if (currencyFilter[0]) {
+        result.currency = currencyFilter[0] as Currency;
       }
     }
 

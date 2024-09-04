@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  CurrencySymbol,
-  GeographyData,
-} from '@app/client/managers/data-access';
+import { GeographyData } from '@app/client/managers/data-access';
 import { parseToFilterObject } from '@app/client/organisations/ui';
 import { KendoUrlSortingDirective } from '@app/client/shared/ui';
 import {
@@ -21,6 +18,7 @@ import { MultiCheckFilterComponent } from '../../../../../organisations/ui/src/l
 import { NumberRangeFilterComponent } from '../../../../../organisations/ui/src/lib/number-range-filter/number-range-filter.component';
 
 import { Tag, TagsService } from '@app/client/tags/data-access';
+import { CurrencySymbol } from 'rvns-shared';
 import { Observable, map, of } from 'rxjs';
 import { RelationshipStrengthComponent } from '../relationship-strength/relationship-strength.component';
 

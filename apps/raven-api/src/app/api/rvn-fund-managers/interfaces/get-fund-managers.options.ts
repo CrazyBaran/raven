@@ -19,6 +19,7 @@ export class GetFundManagersOptions {
     avgCheckSize?: {
       min?: number;
       max?: number;
+      currency?: string;
     };
     industryTags?: Array<string>;
     geography?: Array<string>;

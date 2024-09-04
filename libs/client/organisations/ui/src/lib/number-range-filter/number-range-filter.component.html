@@ -6,7 +6,6 @@
       [(ngModel)]="start"
       [max]="max!"
       [autoCorrect]="true"
-      [format]="formatOptions"
     />
   </label>
   <label class="k-form-field">
@@ -16,7 +15,18 @@
       [(ngModel)]="end"
       [min]="min!"
       [autoCorrect]="true"
-      [format]="formatOptions"
     />
   </label>
+  @if (showCurrency()) {
+    <label class="k-form-field">
+      <span>Currency</span>
+      <kendo-dropdownlist
+        [(ngModel)]="currency"
+        [data]="currencyData"
+        fillMode="none"
+        class="border-black/10"
+        (valueChange)="onCurrencyChange($event)"
+      />
+    </label>
+  }
 </div>

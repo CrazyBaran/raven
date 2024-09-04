@@ -90,20 +90,29 @@ export class FundManagersService {
     }
 
     if (options.filters?.avgCheckSize) {
-      if (options.filters?.avgCheckSize.min) {
+      if (options.filters.avgCheckSize.min) {
         queryBuilder.andWhere(
           'fund_managers.avgCheckSize >= :minAvgCheckSize',
           {
-            minAvgCheckSize: options.filters?.avgCheckSize.min,
+            minAvgCheckSize: options.filters.avgCheckSize.min,
           },
         );
       }
 
-      if (options.filters?.avgCheckSize.max) {
+      if (options.filters.avgCheckSize.max) {
         queryBuilder.andWhere(
           'fund_managers.avgCheckSize <= :maxAvgCheckSize',
           {
-            maxAvgCheckSize: options.filters?.avgCheckSize.max,
+            maxAvgCheckSize: options.filters.avgCheckSize.max,
+          },
+        );
+      }
+
+      if (options.filters.avgCheckSize.currency) {
+        queryBuilder.andWhere(
+          'fund_managers.avgCheckSizeCurrency = :avgCheckSizeCurrency',
+          {
+            avgCheckSizeCurrency: options.filters.avgCheckSize.currency,
           },
         );
       }

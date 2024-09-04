@@ -5,11 +5,11 @@ import {
   input,
   output,
 } from '@angular/core';
-import { CurrencySymbol } from '@app/client/managers/data-access';
 import { ThousandSuffixesPipe } from '@app/client/shared/ui-pipes';
 import { FundManagerData } from '@app/rvns-fund-managers';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
+import { CurrencySymbol } from 'rvns-shared';
 
 @Component({
   selector: 'app-manager-profile',
