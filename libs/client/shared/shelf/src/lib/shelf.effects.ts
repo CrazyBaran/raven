@@ -102,6 +102,18 @@ export const dynamicDialogsConfig: Record<
     import('@app/client/managers/feature/dialogs').then(
       (m) => m.UpdateManagerDialogModule,
     ),
+  [DialogUtil.queryParams.createManagerContact]: () =>
+    import('@app/client/managers/feature/dialogs').then(
+      (m) => m.CreateContactDialogModule,
+    ),
+  [DialogUtil.queryParams.updateManagerContact]: () =>
+    import('@app/client/managers/feature/dialogs').then(
+      (m) => m.UpdateContactDialogModule,
+    ),
+  [DialogUtil.queryParams.removeManagerContact]: () =>
+    import('@app/client/managers/feature/dialogs').then(
+      (m) => m.RemoveContactDialogModule,
+    ),
 };
 
 @Injectable()

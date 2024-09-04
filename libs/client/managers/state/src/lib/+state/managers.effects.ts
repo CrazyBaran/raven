@@ -73,7 +73,7 @@ export const getManager$ = createEffect(
             of(
               ManagersActions.getManagerFailure({
                 error,
-                message: 'Get Reminder Failed.',
+                message: 'Get Manager Failed.',
               }),
             ),
           ),
@@ -119,6 +119,113 @@ export const getManagerIfNotLoaded$ = createEffect(
       concatLatestFrom(() => store.select(managersQuery.selectEntities)),
       filter(([{ id }, entities]) => !entities[id]),
       map(([{ id }]) => ManagersActions.getManager({ id })),
+    );
+  },
+  { functional: true },
+);
+
+export const getManagerContact$ = createEffect(
+  (actions$ = inject(Actions), managersService = inject(ManagersService)) => {
+    return actions$.pipe(
+      ofType(ManagersActions.getManagerContact),
+      switchMap(({ id }) =>
+        managersService.getContact(id).pipe(
+          map((response) =>
+            ManagersActions.getManagerContactSuccess({
+              data: response.data!,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              ManagersActions.getManagerContactFailure({
+                error,
+                message: 'Get Manager Contact Failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const createManagerContact$ = createEffect(
+  (actions$ = inject(Actions), managersService = inject(ManagersService)) => {
+    return actions$.pipe(
+      ofType(ManagersActions.createManagerContact),
+      switchMap(({ id, data }) =>
+        managersService.createContact(id, data).pipe(
+          map((response) =>
+            ManagersActions.createManagerContactSuccess({
+              data: response.data!,
+              message: 'Manager Contact Created.',
+            }),
+          ),
+          catchError((error) =>
+            of(
+              ManagersActions.createManagerContactFailure({
+                error,
+                message: 'Create Manager Contact Failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const updateManagerContact$ = createEffect(
+  (actions$ = inject(Actions), managersService = inject(ManagersService)) => {
+    return actions$.pipe(
+      ofType(ManagersActions.updateManagerContact),
+      switchMap(({ id, changes }) =>
+        managersService.updateContact(id, changes).pipe(
+          map((response) =>
+            ManagersActions.updateManagerContactSuccess({
+              data: response.data!,
+              message: 'Manager Contact Updated.',
+            }),
+          ),
+          catchError((error) =>
+            of(
+              ManagersActions.updateManagerContactFailure({
+                error,
+                message: 'Update Manager Contact Failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const removeManagerContact$ = createEffect(
+  (actions$ = inject(Actions), managersService = inject(ManagersService)) => {
+    return actions$.pipe(
+      ofType(ManagersActions.removeManagerContact),
+      switchMap(({ id }) =>
+        managersService.removeContact(id).pipe(
+          map((response) =>
+            ManagersActions.removeManagerContactSuccess({
+              data: response.data!,
+              message: 'Manager Contact Removed.',
+            }),
+          ),
+          catchError((error) =>
+            of(
+              ManagersActions.removeManagerContactFailure({
+                error,
+                message: 'Remove Manager Contact Failed.',
+              }),
+            ),
+          ),
+        ),
+      ),
     );
   },
   { functional: true },

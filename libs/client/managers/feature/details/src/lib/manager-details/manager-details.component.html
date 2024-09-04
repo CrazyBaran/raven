@@ -39,21 +39,37 @@
     <kendo-tabstrip class="manager-layout-tabstrip">
       <kendo-tabstrip-tab title="Manager Profile" [selected]="true">
         <ng-template kendoTabContent>
-          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <app-manager-profile
-              [isLoading]="vm().isLoading"
-              [manager]="vm().manager"
-              (editDetails)="openEditDetailsDialog()"
-            />
+          <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+            <div
+              class="border-component-border bg-component-bg border px-4 py-3"
+            >
+              <app-manager-profile
+                [isLoading]="vm().isLoading"
+                [manager]="vm().manager"
+                (editDetails)="openEditDetailsDialog()"
+              />
+            </div>
 
-            <app-manager-relationships
-              [isLoading]="vm().isUpdating"
-              [manager]="vm().manager"
-              [peopleData]="vm().peopleData"
-              [peopleDataIsLoading]="vm().peopleDataIsLoading"
-              (updateKeyRelationship)="updateKeyRelationships($event)"
-              (updateRelationshipStrength)="updateRelationshipStrength($event)"
-            />
+            <div class="border-component-border bg-component-bg border">
+              <div class="border-component-border border-b px-4 py-3">
+                Key Relationships
+              </div>
+
+              <div class="flex flex-col gap-4 px-4 py-3">
+                <app-manager-relationships
+                  [isLoading]="vm().isUpdating"
+                  [manager]="vm().manager"
+                  [peopleData]="vm().peopleData"
+                  [peopleDataIsLoading]="vm().peopleDataIsLoading"
+                  (updateKeyRelationship)="updateKeyRelationships($event)"
+                  (updateRelationshipStrength)="
+                    updateRelationshipStrength($event)
+                  "
+                />
+
+                <app-manager-contacts-table />
+              </div>
+            </div>
           </div>
         </ng-template>
       </kendo-tabstrip-tab>

@@ -30,6 +30,10 @@ export class DialogUtil {
     editFinancial: 'edit-financial-kpi' as const,
 
     updateManager: 'update-manager' as const,
+
+    createManagerContact: 'create-manager-contact' as const,
+    updateManagerContact: 'update-manager-contact' as const,
+    removeManagerContact: 'remove-manager-contact' as const,
   };
 }
 

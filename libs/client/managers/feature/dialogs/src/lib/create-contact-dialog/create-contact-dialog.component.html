@@ -1,0 +1,23 @@
+<kendo-dialog-titlebar (close)="onDialogClose()">
+  <span class="k-window-title">Add New Contact</span>
+</kendo-dialog-titlebar>
+
+<div class="p-10">
+  <app-contact-form [form]="createForm" />
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="onDialogClose()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="submit()"
+    [disabled]="
+      !createForm || (createForm | controlInvalid$ | push) || !!vm().isCreating
+    "
+    themeColor="primary"
+  >
+    @if (vm().isCreating) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Add New Contact
+  </kendo-button>
+</kendo-dialog-actions>

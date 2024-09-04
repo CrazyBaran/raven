@@ -1,0 +1,105 @@
+<kendo-label text="Manager Contacts" class="mb-1 block" />
+
+<section #table>
+  <kendo-grid
+    (scrollBottom)="managerContactsStore.scrollBottom()"
+    (sortChange)="managerContactsStore.sortChange($event)"
+    [data]="managerContactsStore.filteredData()"
+    [loading]="managerContactsStore.isLoading()"
+    [rowClass]="rowCallback"
+    [scrollable]="managerContactsStore.canLoadMore() ? 'none' : 'scrollable'"
+    class="grid-borderless !border-b-0"
+    [style.max-height.px]="managerContactsStore.tableHeight() || null"
+  >
+    <kendo-grid-column [width]="50" title="">
+      <ng-template kendoGridCellTemplate>
+        <i class="fa-solid fa-circle-user"></i>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="name" headerClass="!font-bold" title="Name">
+      <ng-template kendoGridCellTemplate let-contact>
+        {{ contact.name }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      field="position"
+      headerClass="!font-bold"
+      title="Position"
+    >
+      <ng-template kendoGridCellTemplate let-contact>
+        {{ contact.position }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      field="relationStrength"
+      headerClass="!font-bold"
+      title="Relationship Strength"
+    >
+      <ng-template kendoGridCellTemplate let-contact>
+        {{ contact.relationStrength }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column [width]="100" title="">
+      <ng-template kendoGridCellTemplate let-contact>
+        <div class="flex items-center justify-end gap-2">
+          @if (contact?.linkedin) {
+            <a
+              [href]="contact.linkedin"
+              target="_blank"
+              aria-label="Contact linkedin"
+              class="contact-mailto"
+            >
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+          }
+
+          @if (contact?.email) {
+            <a
+              [href]="getMailto(contact.email)"
+              aria-label="Contact person"
+              class="contact-mailto"
+            >
+              <i class="fa-solid fa-envelope"></i>
+            </a>
+          }
+
+          <app-dropdownbutton-navigation [model]="getActionData(contact)" />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+
+  @if (managerContactsStore.canLoadMore()) {
+    <div class="mt-2 flex justify-center">
+      <button
+        (click)="loadMore(table.offsetHeight)"
+        kendoButton
+        fillMode="flat"
+        themeColor="primary"
+      >
+        Show
+        {{ managerContactsStore.loadMoreAmount() }}
+        more
+      </button>
+    </div>
+  }
+</section>
+
+<div class="flex justify-center p-2">
+  <button
+    [routerLink]="['./']"
+    [queryParams]="addNewQueryParams"
+    queryParamsHandling="merge"
+    [skipLocationChange]="true"
+    kendoButton
+    iconClass="fa-solid fa-plus"
+    themeColor="dark"
+    fillMode="flat"
+  >
+    Add New
+  </button>
+</div>

@@ -30,6 +30,7 @@ import {
   TabStripModule,
 } from '@progress/kendo-angular-layout';
 import { FundManagerRelationStrength } from 'rvns-shared';
+import { ManagerContactsComponent } from '../manager-contacts/manager-contacts.component';
 import { selectManagerDetailsViewModel } from './manager-details.selectors';
 
 @Component({
@@ -46,6 +47,7 @@ import { selectManagerDetailsViewModel } from './manager-details.selectors';
     ManagerProfileComponent,
     ManagerRelationShipsComponent,
     ManagerPortfolioOrganisationsComponent,
+    ManagerContactsComponent,
   ],
   templateUrl: './manager-details.component.html',
   styleUrl: './manager-details.component.scss',

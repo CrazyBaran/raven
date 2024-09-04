@@ -1,0 +1,21 @@
+<kendo-dialog-titlebar (close)="closeDialog()">
+  <span class="k-window-title">Remove Contact</span>
+</kendo-dialog-titlebar>
+
+<div class="flex flex-col gap-6 p-10">
+  <p>Are you sure you want to remove this contact?</p>
+</div>
+
+<kendo-dialog-actions>
+  <kendo-button (click)="closeDialog()" class="w-40">Cancel</kendo-button>
+  <kendo-button
+    (click)="remove()"
+    [disabled]="vm().isRemoving"
+    themeColor="primary"
+  >
+    @if (vm().isRemoving) {
+      <kendo-loader class="!text-secondary-100 mr-1" size="small" />
+    }
+    Remove
+  </kendo-button>
+</kendo-dialog-actions>

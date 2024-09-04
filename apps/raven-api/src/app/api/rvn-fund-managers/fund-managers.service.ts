@@ -4,6 +4,9 @@ import { Currency, FundManagerRelationStrength, PagedData } from 'rvns-shared';
 import { Brackets, Repository } from 'typeorm';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
+import { CreateContactDto } from './dto/create-contact.dto';
+import { UpdateContactDto } from './dto/update-contact.dto';
+import { FundManagerContactEntity } from './entities/fund-manager-contact.entity';
 import { FundManagerIndustryEntity } from './entities/fund-manager-industry.entity';
 import { FundManagerKeyRelationshipEntity } from './entities/fund-manager-key-relationship.entity';
 import { FundManagerEntity } from './entities/fund-manager.entity';
@@ -32,6 +35,8 @@ export class FundManagersService {
     private readonly fundManagerKeyRelationshipRepository: Repository<FundManagerKeyRelationshipEntity>,
     @InjectRepository(FundManagerIndustryEntity)
     private readonly fundManagerIndustryRepository: Repository<FundManagerIndustryEntity>,
+    @InjectRepository(FundManagerContactEntity)
+    private readonly fundManagerContactsRepository: Repository<FundManagerContactEntity>,
   ) {}
 
   public async findAll(
@@ -280,5 +285,69 @@ export class FundManagersService {
     // delete fundManagerEntity.keyRelationships;
 
     return this.fundManagersRepository.save(fundManagerEntity);
+  }
+
+  public async findAllContacts(
+    id: string,
+    skip: number,
+    take: number,
+  ): Promise<PagedData<FundManagerContactEntity>> {
+    const queryBuilder =
+      this.fundManagerContactsRepository.createQueryBuilder('contacts');
+    queryBuilder.skip(skip || 0);
+    queryBuilder.take(take || 10);
+    queryBuilder.where('contacts.fundManagerId = :id', { id });
+
+    const [contacts, count] = await queryBuilder.getManyAndCount();
+
+    return {
+      items: contacts,
+      total: count,
+    } as PagedData<FundManagerContactEntity>;
+  }
+
+  public createContact(
+    fundManager: FundManagerEntity,
+    dto: CreateContactDto,
+  ): Promise<FundManagerContactEntity> {
+    const fmc = new FundManagerContactEntity();
+    fmc.name = dto.name;
+    fmc.position = dto.position;
+    fmc.relationStrength = dto.relationStrength;
+    fmc.email = dto.email;
+    fmc.linkedin = dto.linkedin;
+    fmc.fundManager = fundManager;
+    return this.fundManagerContactsRepository.save(fmc);
+  }
+
+  public findOneContact(id: string): Promise<FundManagerContactEntity> {
+    return this.fundManagerContactsRepository.findOneOrFail({ where: { id } });
+  }
+
+  public updateContact(
+    contact: FundManagerContactEntity,
+    dto: UpdateContactDto,
+  ): Promise<FundManagerContactEntity> {
+    if (dto.name !== undefined) {
+      contact.name = dto.name;
+    }
+    if (dto.position !== undefined) {
+      contact.position = dto.position;
+    }
+    if (dto.relationStrength !== undefined) {
+      contact.relationStrength = dto.relationStrength;
+    }
+    if (dto.email !== undefined) {
+      contact.email = dto.email;
+    }
+    if (dto.linkedin !== undefined) {
+      contact.linkedin = dto.linkedin;
+    }
+    return this.fundManagerContactsRepository.save(contact);
+  }
+
+  public async removeOneContact(id: string): Promise<boolean> {
+    await this.fundManagerContactsRepository.delete(id);
+    return true;
   }
 }

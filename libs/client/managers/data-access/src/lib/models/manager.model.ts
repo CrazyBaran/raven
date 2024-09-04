@@ -64,3 +64,5 @@ export const CurrencySymbol: Record<string, string> = {
   [Currency.EUR]: '€',
   [Currency.AED]: 'AED',
 };
+
+export const ContactStrengthData = ['$', '$$', '$$$'];

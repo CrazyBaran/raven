@@ -1,6 +1,11 @@
 import { OrganisationData } from '@app/rvns-opportunities';
 import { TagData } from '@app/rvns-tags';
-import { Currency, FundManagerRelationStrength, PagedData } from 'rvns-shared';
+import {
+  Currency,
+  FundManagerContactStrength,
+  FundManagerRelationStrength,
+  PagedData,
+} from 'rvns-shared';
 
 export interface PagedFundManagerData extends PagedData<FundManagerData> {}
 
@@ -27,4 +32,13 @@ export interface FundManagerData {
   readonly industryTags: TagData[];
   readonly relationStrength: FundManagerRelationStrength;
   readonly isPortfolio: boolean;
+}
+
+export interface FundManagerContactData {
+  readonly id: string;
+  readonly name: string;
+  readonly position: string;
+  readonly relationStrength: FundManagerContactStrength;
+  readonly email: string;
+  readonly linkedin: string;
 }

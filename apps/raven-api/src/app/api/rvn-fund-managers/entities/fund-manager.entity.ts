@@ -8,12 +8,15 @@ import {
   Index,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { OrganisationEntity } from '../../rvn-opportunities/entities/organisation.entity';
 import { TagEntity } from '../../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../../rvn-users/entities/user.entity';
+import { FundManagerContactEntity } from './fund-manager-contact.entity';
+
 @Entity('fund_manager')
 @Index(['id'], { unique: true })
 export class FundManagerEntity {
@@ -127,6 +130,12 @@ export class FundManagerEntity {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   public updatedAt: Date;
+
+  @OneToMany(
+    (type) => FundManagerContactEntity,
+    (contact) => contact.fundManager,
+  )
+  public contacts: FundManagerContactEntity[];
 
   @AfterInsert()
   @AfterLoad()

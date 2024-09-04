@@ -2,7 +2,10 @@ import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeature, createReducer, on } from '@ngrx/store';
 
 import { LoadingState } from '@app/client/shared/util';
-import { FundManagerData } from '@app/rvns-fund-managers';
+import {
+  FundManagerContactData,
+  FundManagerData,
+} from '@app/rvns-fund-managers';
 import { ManagersActions } from './managers.actions';
 
 export type ManagersLoadingStates = LoadingState<
@@ -14,6 +17,10 @@ export type ManagersLoadingStates = LoadingState<
   | 'table'
   | 'loadMoreTable'
   | 'reloadTable'
+  | 'getContact'
+  | 'updateContact'
+  | 'createContact'
+  | 'deleteContact'
 >;
 
 export interface ManagersState extends EntityState<FundManagerData> {
@@ -22,6 +29,7 @@ export interface ManagersState extends EntityState<FundManagerData> {
     total: number;
   };
   loadingStates: ManagersLoadingStates;
+  currentContact: FundManagerContactData | undefined;
 }
 
 export const managersAdapter: EntityAdapter<FundManagerData> =
@@ -34,6 +42,7 @@ export const initialManagersState: ManagersState =
       ids: [],
       total: 0,
     },
+    currentContact: undefined,
   });
 
 export const managersFeature = createFeature({
@@ -130,6 +139,61 @@ export const managersFeature = createFeature({
     on(ManagersActions.updateManagerFailure, (state) => ({
       ...state,
       loadingStates: { ...state.loadingStates, update: false },
+    })),
+
+    on(ManagersActions.getManagerContact, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, getContact: true },
+    })),
+    on(ManagersActions.getManagerContactSuccess, (state, { data }) => ({
+      ...state,
+      currentContact: data,
+      loadingStates: { ...state.loadingStates, getContact: false },
+    })),
+    on(ManagersActions.getManagerFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, getContact: false },
+    })),
+
+    on(ManagersActions.createManagerContact, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, createContact: true },
+    })),
+    on(ManagersActions.createManagerContactSuccess, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, createContact: false },
+    })),
+    on(ManagersActions.createManagerContactFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, createContact: false },
+    })),
+
+    on(ManagersActions.updateManagerContact, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, updateContact: true },
+    })),
+    on(ManagersActions.updateManagerContactSuccess, (state, { data }) => ({
+      ...state,
+      currentContact: data,
+      loadingStates: { ...state.loadingStates, updateContact: false },
+    })),
+    on(ManagersActions.updateManagerContactFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, updateContact: false },
+    })),
+
+    on(ManagersActions.removeManagerContact, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, deleteContact: true },
+    })),
+    on(ManagersActions.removeManagerContactSuccess, (state) => ({
+      ...state,
+      currentContact: undefined,
+      loadingStates: { ...state.loadingStates, deleteContact: false },
+    })),
+    on(ManagersActions.removeManagerContactFailure, (state) => ({
+      ...state,
+      loadingStates: { ...state.loadingStates, deleteContact: false },
     })),
   ),
   extraSelectors: ({ selectManagersState }) => ({
