@@ -35,16 +35,16 @@ export class DataWarehouseProcessor extends AbstractSimpleQueueProcessor<DataWar
     switch (job.name) {
       case DWH_QUEUE.JOBS.REGENERATE: {
         await this.dataWarehouseService.regenerateCache(job);
-        await this.dataWarehouseRegenerator.regenerateInvestors();
-        await this.dataWarehouseRegenerator.regenerateIndustries();
-        await this.dataWarehouseRegenerator.regenerateFundManagers();
+        await this.dataWarehouseRegenerator.regenerateInvestors(job);
+        await this.dataWarehouseRegenerator.regenerateIndustries(job);
+        await this.dataWarehouseRegenerator.regenerateFundManagers(job);
         this.eventEmitter.emit('data-warehouse.regeneration.finished');
         return true;
       }
       case DWH_QUEUE.JOBS.REGENERATE_STATIC: {
-        await this.dataWarehouseRegenerator.regenerateInvestors();
-        await this.dataWarehouseRegenerator.regenerateIndustries();
-        await this.dataWarehouseRegenerator.regenerateFundManagers();
+        await this.dataWarehouseRegenerator.regenerateInvestors(job);
+        await this.dataWarehouseRegenerator.regenerateIndustries(job);
+        await this.dataWarehouseRegenerator.regenerateFundManagers(job);
         return true;
       }
       case DWH_QUEUE.JOBS.REGENERATE_PROXY: {

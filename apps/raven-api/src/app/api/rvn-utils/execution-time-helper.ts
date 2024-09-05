@@ -1,23 +1,29 @@
 /* eslint-disable no-empty */
 export class ExecutionTimeHelper {
   public static logJobs = {};
-  public static startTime(jobName: string, subjob = ''): void {
+  public static startTime(
+    jobName: string,
+    subjob = '',
+    override = false,
+  ): void {
     try {
       if (!subjob) {
         ExecutionTimeHelper.logJobs[jobName] = {
           startTime: process.uptime(),
           endTime: process.uptime(),
-          executionTime:
-            ExecutionTimeHelper.logJobs[jobName]?.executionTime || 0,
+          executionTime: override
+            ? 0
+            : ExecutionTimeHelper.logJobs[jobName]?.executionTime || 0,
           subJobs: {},
         };
       } else {
         ExecutionTimeHelper.logJobs[jobName].subJobs[subjob] = {
           startTime: process.uptime(),
           endTime: process.uptime(),
-          executionTime:
-            ExecutionTimeHelper.logJobs[jobName].subJobs[subjob]
-              ?.executionTime || 0,
+          executionTime: override
+            ? 0
+            : ExecutionTimeHelper.logJobs[jobName].subJobs[subjob]
+                ?.executionTime || 0,
         };
       }
     } catch (err) {}
