@@ -7,11 +7,13 @@ import { BadRequestException, Injectable, Optional } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { TagTypeEnum } from '@app/rvns-tags';
 import { InteractionsDto } from '@app/shared/affinity';
 import {
   CompanyDto,
   ContactDto,
   FundingRoundDto,
+  FundingRoundInvestor,
   NewsDto,
   NumberOfEmployeesSnapshotDto,
 } from '@app/shared/data-warehouse';
@@ -30,7 +32,10 @@ import { DataWarehouseService } from '../rvn-data-warehouse/data-warehouse.servi
 import { OrganisationProvider } from '../rvn-data-warehouse/proxy/organisation.provider';
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { PipelineUtilityService } from '../rvn-pipeline/pipeline-utility.service';
-import { TagEntity } from '../rvn-tags/entities/tag.entity';
+import {
+  OrganisationTagEntity,
+  TagEntity,
+} from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { DomainResolver } from '../rvn-utils/domain.resolver';
 import { ExecutionTimeHelper } from '../rvn-utils/execution-time-helper';
@@ -704,11 +709,50 @@ export class OrganisationService {
       })
     )?.domains;
 
-    return await this.dataWarehouseService.getFundingRounds(
+    const fundingRounds = await this.dataWarehouseService.getFundingRounds(
       domains,
       skip,
       take,
     );
+    const allInvestors = fundingRounds.items
+      .map((round) => round.investors)
+      .flat();
+
+    const qb = this.tagRepository.createQueryBuilder('tag');
+    qb.leftJoinAndSelect('tag.organisation', 'organisation');
+
+    qb.where('tag.name IN (:...names)', {
+      names: allInvestors,
+    });
+    qb.andWhere('tag.type = :tagType', { tagType: TagTypeEnum.Investor });
+
+    qb.skip(0);
+    qb.take(allInvestors.length || 1);
+
+    const tags = await qb.getMany();
+
+    for (const round of fundingRounds.items) {
+      if (!round.investors?.length) {
+        continue;
+      }
+      for (let i = 0; i < round.investors.length; i++) {
+        const foundInvestorTag = tags.find(
+          (v) => v.name === round.investors[i],
+        ) as OrganisationTagEntity;
+        round.investors[i] = foundInvestorTag
+          ? {
+              id: foundInvestorTag.id,
+              name: foundInvestorTag.name,
+              organisation: foundInvestorTag.organisation,
+              organisationId: foundInvestorTag.organisationId,
+            }
+          : ({
+              name: round.investors[i],
+            } as FundingRoundInvestor);
+      }
+    }
+
+    return fundingRounds;
   }
 
   public async findEmployees(
