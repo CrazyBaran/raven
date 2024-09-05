@@ -15,7 +15,7 @@
 
 <ng-template #itemTemplate let-tag>
   <ui-tag
-    [icon]="tag.icon"
+    [icon]="tag.icon || icon"
     [label]="tag.name"
     [size]="tag.size"
     [style]="tag.style"
@@ -43,7 +43,7 @@
       <ui-tag
         [label]="tag.name"
         [wrap]="false"
-        [icon]="tag.icon"
+        [icon]="tag.icon || icon"
         [size]="tag.size"
         [style]="tag.style ?? { color: 'black' }"
         [link]="tag.link"

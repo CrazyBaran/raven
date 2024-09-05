@@ -1,45 +1,69 @@
 <form [formGroup]="form()" class="flex flex-col gap-4">
-  <kendo-label [for]="name" text="Name" labelCssClass="!mb-1 block">
+  <kendo-formfield>
+    <kendo-label [for]="name" text="Name" labelCssClass="!mb-1 block" />
+
     <kendo-textbox
       #name
       [formControl]="(form()?.controls)!.name"
       [maxlength]="maxNameLength"
     />
-  </kendo-label>
+  </kendo-formfield>
 
-  <kendo-label [for]="position" text="Position" labelCssClass="!mb-1 block">
+  <kendo-formfield>
+    <kendo-label [for]="position" text="Position" labelCssClass="!mb-1 block" />
     <kendo-textbox
       #position
       [formControl]="(form()?.controls)!.position"
       [maxlength]="maxNameLength"
     />
-  </kendo-label>
+  </kendo-formfield>
 
-  <kendo-label
-    [for]="relationStrength"
-    text="Relationship Strength"
-    labelCssClass="!mb-1 block"
-  >
+  <kendo-formfield>
+    <kendo-label
+      [for]="relationStrength"
+      text="Relationship Strength"
+      labelCssClass="!mb-1 block"
+    />
     <kendo-dropdownlist
       #relationStrength
       [formControl]="(form()?.controls)!.relationStrength"
       [data]="contactStrengthData"
     />
-  </kendo-label>
+  </kendo-formfield>
 
-  <kendo-label [for]="email" text="Email Address" labelCssClass="!mb-1 block">
+  <kendo-formfield>
+    <kendo-label
+      [for]="email"
+      text="Email Address"
+      labelCssClass="!mb-1 block"
+    />
+
     <kendo-textbox
       #email
       [formControl]="(form()?.controls)!.email"
       [maxlength]="maxNameLength"
     />
-  </kendo-label>
 
-  <kendo-label [for]="linkedin" text="Linkedin URL" labelCssClass="!mb-1 block">
+    <kendo-formerror *uiOnError="'email'; let error">
+      This is not valid email address
+    </kendo-formerror>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label
+      [for]="linkedin"
+      text="Linkedin URL"
+      labelCssClass="!mb-1 block"
+    />
+
     <kendo-textbox
       #linkedin
       [formControl]="(form()?.controls)!.linkedin"
       [maxlength]="maxNameLength"
     />
-  </kendo-label>
+
+    <kendo-formerror *uiOnError="'pattern'; let error">
+      Must be valid URL and start with https://
+    </kendo-formerror>
+  </kendo-formfield>
 </form>

@@ -85,6 +85,7 @@
       #geography
       [formControl]="(form()?.controls)!.geography"
       [checkboxes]="true"
+      [autoClose]="false"
       [data]="geographyData"
       placeholder="Choose from list"
       class="k-picker-solid"
@@ -98,6 +99,7 @@
       [formControl]="(form()?.controls)!.industryTags"
       [data]="industries()"
       [checkboxes]="true"
+      [autoClose]="false"
       placeholder="Choose from list"
       textField="name"
       valueField="id"

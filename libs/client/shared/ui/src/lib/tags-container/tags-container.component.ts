@@ -50,6 +50,8 @@ export class TagsContainerComponent implements OnInit {
 
   @Input() public delimeter = '';
 
+  @Input() public icon: string;
+
   public containerWidth = signal(0);
 
   public get tagsWidth(): number[] {

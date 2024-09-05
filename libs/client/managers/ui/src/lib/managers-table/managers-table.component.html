@@ -108,15 +108,11 @@
       title="Theme Focus"
     >
       <ng-template kendoGridCellTemplate let-manager>
-        <p>
-          {{ manager.industryTags[0]?.name || '-' }}
-
-          @if (manager.industryTags.length > 1) {
-            <span class="text-disabledText">
-              +{{ manager.industryTags.length - 1 }}
-            </span>
-          }
-        </p>
+        <ui-tags-container
+          [rows]="1"
+          [tags]="manager.industryTags"
+          icon="fa-solid fa-tag"
+        />
       </ng-template>
 
       <ng-template
@@ -146,15 +142,11 @@
 
     <kendo-grid-column headerClass="!font-bold" title="Key Relationship">
       <ng-template kendoGridCellTemplate let-manager>
-        <p>
-          {{ manager.keyRelationships[0]?.name }}
-
-          @if (manager.keyRelationships.length > 1) {
-            <span class="text-disabledText">
-              +{{ manager.keyRelationships.length - 1 }}
-            </span>
-          }
-        </p>
+        <ui-tags-container
+          [rows]="1"
+          [tags]="manager.keyRelationships"
+          icon="fa-solid fa-user"
+        />
       </ng-template>
     </kendo-grid-column>
 

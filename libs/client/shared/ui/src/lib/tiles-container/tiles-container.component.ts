@@ -41,14 +41,16 @@ export class TilesContainerComponent {
   @ViewChild('placeholder', { read: ElementRef, static: true })
   placeholder!: ElementRef;
 
-  maxIndexSignal = computed(() =>
-    maxVisibleIndex(
+  maxIndexSignal = computed(() => {
+    const visibleIndex = maxVisibleIndex(
       this.staticContainerWidth(),
       this.staticTilesWidth(),
       this.staticTooltipWidth(),
       this.rows(),
-    ),
-  );
+    );
+
+    return visibleIndex > 0 ? visibleIndex : 0;
+  });
 
   hiddenTilesLengthSignal = computed(
     () => this.tiles().length - this.maxIndexSignal()! - 1,

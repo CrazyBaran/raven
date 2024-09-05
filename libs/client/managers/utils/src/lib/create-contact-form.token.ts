@@ -12,6 +12,9 @@ export const CREATE_CONTACT_FORM_FN = new InjectionToken(
       const formBuilder = inject(FormBuilder);
 
       return (value): ContactForm => {
+        const urlRegex =
+          '^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?';
+
         return formBuilder.group({
           name: [
             value?.name || '',
@@ -27,11 +30,14 @@ export const CREATE_CONTACT_FORM_FN = new InjectionToken(
           relationStrength: [value?.relationStrength || null],
           email: [
             value?.email || '',
-            [Validators.maxLength(MAX_CONTACT_NAME_LENGTH)],
+            [Validators.maxLength(MAX_CONTACT_NAME_LENGTH), Validators.email],
           ],
           linkedin: [
             value?.linkedin || '',
-            [Validators.maxLength(MAX_CONTACT_NAME_LENGTH)],
+            [
+              Validators.maxLength(MAX_CONTACT_NAME_LENGTH),
+              Validators.pattern(urlRegex),
+            ],
           ],
         });
       };

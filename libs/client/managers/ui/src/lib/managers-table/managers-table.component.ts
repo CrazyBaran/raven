@@ -2,7 +2,10 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GeographyData } from '@app/client/managers/data-access';
 import { parseToFilterObject } from '@app/client/organisations/ui';
-import { KendoUrlSortingDirective } from '@app/client/shared/ui';
+import {
+  KendoUrlSortingDirective,
+  TagsContainerComponent,
+} from '@app/client/shared/ui';
 import {
   InfinityTableViewBaseComponent,
   ShowTooltipIfClampedDirective,
@@ -35,6 +38,7 @@ import { RelationshipStrengthComponent } from '../relationship-strength/relation
     ThousandSuffixesPipe,
     NumberRangeFilterComponent,
     MultiCheckFilterComponent,
+    TagsContainerComponent,
   ],
   templateUrl: './managers-table.component.html',
   styleUrl: './managers-table.component.scss',
