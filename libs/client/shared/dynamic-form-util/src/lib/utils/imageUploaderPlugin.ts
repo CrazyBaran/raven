@@ -6,6 +6,8 @@ import { Fragment, Node, Slice } from 'prosemirror-model';
 import 'prosemirror-replaceattrs'; /// register it
 import { Plugin } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { environment } from '../../../../../../../apps/raven-client/src/environments/environment';
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
@@ -126,6 +128,15 @@ export class ImageUploaderPlugin {
   }
 
   public transformPasted(slice: Slice) {
+    if (
+      slice.content?.firstChild?.attrs?.['src']?.includes(environment.apiUrl) ||
+      slice.content?.firstChild?.content?.firstChild?.attrs?.['src']?.includes(
+        environment.apiUrl,
+      )
+    ) {
+      return slice;
+    }
+
     const imageNodes: Array<{ url: string; id: string }> = [];
 
     const children: Node[] = [];
