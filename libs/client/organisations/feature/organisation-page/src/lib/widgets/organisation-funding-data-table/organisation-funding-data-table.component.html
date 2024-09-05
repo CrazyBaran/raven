@@ -69,16 +69,29 @@
           <ng-template kendoGridCellTemplate let-fundingData>
             <div class="flex flex-wrap">
               @for (investor of fundingData.investors || []; track $index) {
-                <button
-                  (click)="getInvestorTag(investor)"
-                  class="hover:text-primary pr-1 text-left"
-                >
-                  {{
-                    $index !== fundingData.investors?.length - 1
-                      ? investor + ';'
-                      : investor
-                  }}
-                </button>
+                @if (investor.organisation?.fundManagerId) {
+                  <a
+                    [routerLink]="[
+                      '/managers',
+                      investor.organisation.fundManagerId.toLowerCase()
+                    ]"
+                    class="hover:text-primary pr-1"
+                  >
+                    {{
+                      $index !== fundingData.investors.length - 1
+                        ? investor.name + ';'
+                        : investor.name
+                    }}
+                  </a>
+                } @else {
+                  <span class="pr-1">
+                    {{
+                      $index !== fundingData.investors.length - 1
+                        ? investor.name + ';'
+                        : investor.name
+                    }}
+                  </span>
+                }
               } @empty {
                 -
               }
@@ -159,7 +172,3 @@
     </aside>
   </main>
 </ui-tilelayout-item>
-
-@if (isFetchingInvestorTag()) {
-  <ui-loader [fixed]="true" [disableInfo]="true" />
-}

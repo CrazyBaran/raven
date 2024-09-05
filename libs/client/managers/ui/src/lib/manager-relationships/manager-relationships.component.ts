@@ -50,21 +50,19 @@ export class ManagerRelationShipsComponent {
   public keyRelationship = new FormControl<Array<DropdownOption>>([]);
 
   private synchronizeFormControlsEffect = effect(() => {
-    if (this.manager()?.relationStrength) {
-      if (this.manager()?.isPortfolio) {
-        this.relationshipStrength.setValue(
-          this.relationshipStrengthData.find(
-            (el) => el.id === FundManagerRelationStrength.PORTFOLIO,
-          ),
-        );
-        this.relationshipStrength.disable();
-      } else {
-        this.relationshipStrength.setValue(
-          this.relationshipStrengthData.find(
-            (el) => el.id === this.manager()!.relationStrength,
-          ),
-        );
-      }
+    if (this.manager()?.isPortfolio) {
+      this.relationshipStrength.setValue(
+        this.relationshipStrengthData.find(
+          (el) => el.id === FundManagerRelationStrength.PORTFOLIO,
+        ),
+      );
+      this.relationshipStrength.disable();
+    } else if (this.manager()?.relationStrength) {
+      this.relationshipStrength.setValue(
+        this.relationshipStrengthData.find(
+          (el) => el.id === this.manager()!.relationStrength,
+        ),
+      );
     }
 
     if (this.manager()?.keyRelationships.length) {
