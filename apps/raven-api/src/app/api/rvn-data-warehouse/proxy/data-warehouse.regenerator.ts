@@ -14,7 +14,6 @@ import { PrimaryDataSource } from '../../rvn-opportunities/interfaces/get-organi
 import { OrganisationTagEntity } from '../../rvn-tags/entities/tag.entity';
 import { TagEntityFactory } from '../../rvn-tags/tag-entity.factory';
 import { DomainResolver } from '../../rvn-utils/domain.resolver';
-import { ExecutionTimeHelper } from '../../rvn-utils/execution-time-helper';
 import { DataWarehouseCacheService } from '../cache/data-warehouse-cache.service';
 import { DataWarehouseAccessBase } from '../interfaces/data-warehouse.access.base';
 import { DataWarehouseCompaniesIndustryV1Entity } from './entities/data-warehouse-company-industries.v1.entity';
@@ -108,54 +107,20 @@ export class DataWarehouseRegenerator {
 
   public async regenerateFundManagers(job?: JobPro): Promise<void> {
     await job?.log('Starting regenerateFundManagers');
-    ExecutionTimeHelper.startTime('DWHRegenerator.regenerateFundManagers');
-    ExecutionTimeHelper.startTime(
-      'DWHRegenerator.regenerateFundManagers',
-      'getFundManagers',
-    );
+
     const investors = await this.dataWarehouseAccessService.getFundManagers();
-    ExecutionTimeHelper.endTime(
-      'DWHRegenerator.regenerateFundManagers',
-      'getFundManagers',
-    );
-    await job?.log(
-      `getFundManagers took ${ExecutionTimeHelper.logJobs['DWHRegenerator.regenerateFundManagers'].subJobs['getFundManagers'].executionTime}`,
-    );
 
     for (let j = 0; j < investors.length; j++) {
-      ExecutionTimeHelper.startTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'singleInvestor',
-        true,
-      );
-
       const domain = investors[j].domain;
       const name = investors[j].investorName;
       const isPortfolio = investors[j].isPortfolio;
       const logoUrl = investors[j].logoUrl;
-
-      ExecutionTimeHelper.startTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'createOrganisation',
-        true,
-      );
 
       const currentOrganisation = await this.createInvestorOrganisation({
         domain: domain,
         name: name,
         initialDataSource: 'investors_dwh',
       });
-
-      ExecutionTimeHelper.endTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'createOrganisation',
-      );
-
-      ExecutionTimeHelper.startTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'handleTags',
-        true,
-      );
 
       const invTags = await this.tagsRepository.find({
         where: {
@@ -177,16 +142,6 @@ export class DataWarehouseRegenerator {
 
         await this.tagsRepository.save(newTag);
       }
-      ExecutionTimeHelper.endTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'handleTags',
-      );
-
-      ExecutionTimeHelper.startTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'handleFundCreation',
-        true,
-      );
 
       let fm = new FundManagerEntity();
       if (currentOrganisation.fundManagerId) {
@@ -207,29 +162,8 @@ export class DataWarehouseRegenerator {
 
       const fundManager = await this.fundManagersRepository.save(fm);
 
-      ExecutionTimeHelper.endTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'handleFundCreation',
-      );
-
-      ExecutionTimeHelper.startTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'getFundManagerInvestments',
-        true,
-      );
-
       const [investments, _count] =
         await this.dataWarehouseAccessService.getFundManagerInvestments(domain);
-
-      ExecutionTimeHelper.endTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'getFundManagerInvestments',
-      );
-      ExecutionTimeHelper.startTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'parseOrganisations',
-        true,
-      );
 
       const parsedOrgs = await this.organisationRepository.find({
         relations: ['organisationDomains'],
@@ -255,30 +189,9 @@ export class DataWarehouseRegenerator {
         id: currentOrganisation.id,
         fundManagerId: fm.id,
       });
-      ExecutionTimeHelper.endTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'parseOrganisations',
-      );
 
-      ExecutionTimeHelper.endTime(
-        'DWHRegenerator.regenerateFundManagers',
-        'singleInvestor',
-      );
-
-      // For debugging, can be removed later (keep progress)
-      if (j % 50 === 0) {
-        await job?.updateProgress(Math.floor((j / investors.length) * 100));
-        await job?.log(
-          `(i = ${j}/${investors.length}), Parsing single fundManager took ${ExecutionTimeHelper.logJobs['DWHRegenerator.regenerateFundManagers']?.subJobs['singleInvestor']?.executionTime}, Investment companies: ${ExecutionTimeHelper.logJobs['DWHRegenerator.regenerateFundManagers']?.subJobs['getFundManagerInvestments']?.executionTime}`,
-        );
-      }
-      if (j % 500 === 0) {
-        ExecutionTimeHelper.printFullLog(false);
-      }
+      await job?.updateProgress(Math.floor((j / investors.length) * 100));
     }
-
-    ExecutionTimeHelper.endTime('DWHRegenerator.regenerateFundManagers');
-    ExecutionTimeHelper.printFullLog();
   }
 
   public async regenerateInvestors(job?: JobPro): Promise<void> {

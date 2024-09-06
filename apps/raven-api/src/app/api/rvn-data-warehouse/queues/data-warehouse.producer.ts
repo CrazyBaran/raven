@@ -45,6 +45,22 @@ export class DataWarehouseProducer {
   }
 
   public async enqueueRegenerateStatic(): Promise<void> {
+    const existingJob = await this.queue.getJob(
+      DWH_QUEUE.JOBS.REGENERATE_STATIC,
+    );
+
+    const state = existingJob ? await existingJob.getState() : null;
+    if (state && state !== 'completed' && state !== 'failed') {
+      this.logger.warn(
+        'Cache regeneration job is still active when queueing another one',
+      );
+      return;
+    }
+
+    if (existingJob) {
+      await existingJob.remove();
+    }
+
     await this.queue.add(
       DWH_QUEUE.JOBS.REGENERATE_STATIC,
       {},

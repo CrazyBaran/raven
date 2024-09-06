@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataWarehouseModule } from '../rvn-data-warehouse/data-warehouse.module';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { UsersModule } from '../rvn-users/users.module';
 import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
@@ -12,6 +13,7 @@ import { FundManagersService } from './fund-managers.service';
 
 @Module({
   imports: [
+    DataWarehouseModule.forRootAsync(),
     TypeOrmModule.forFeature([
       FundManagerEntity,
       OrganisationEntity,

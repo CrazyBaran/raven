@@ -1,7 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { OrganisationDataWithOpportunities } from '@app/rvns-opportunities';
+import { Injectable, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Currency, FundManagerRelationStrength, PagedData } from 'rvns-shared';
 import { Brackets, Repository } from 'typeorm';
+import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -37,6 +39,7 @@ export class FundManagersService {
     private readonly fundManagerIndustryRepository: Repository<FundManagerIndustryEntity>,
     @InjectRepository(FundManagerContactEntity)
     private readonly fundManagerContactsRepository: Repository<FundManagerContactEntity>,
+    @Optional() private readonly dataWarehouseEnricher: DataWarehouseEnricher,
   ) {}
 
   public async findAll(
@@ -190,6 +193,33 @@ export class FundManagersService {
     const fundManager = await queryBuilder.getOne();
     if (!fundManager) {
       throw new NotFoundException();
+    }
+
+    for (let i = 0; i < fundManager.organisations?.length; i++) {
+      if (
+        !fundManager.organisations?.[i].dataV1 &&
+        this.dataWarehouseEnricher
+      ) {
+        const enriched = await this.dataWarehouseEnricher.enrichOrganisation(
+          fundManager.organisations[
+            i
+          ] as unknown as OrganisationDataWithOpportunities,
+        );
+        const organisation = fundManager.organisations[i];
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        fundManager.organisations[i].dataV1 = {
+          organisationId: organisation.id,
+          fundingLastFundingRound: enriched?.data?.funding.lastFundingRound,
+          fundingLastFundingDate: enriched?.data?.funding.lastFundingDate,
+          fundingLastFundingAmount: enriched?.data?.funding.lastFundingAmount,
+          fundingTotalFundingAmount: enriched?.data?.funding.totalFundingAmount,
+          investors: enriched?.data?.actors?.investors?.map((inv) => ({
+            name: inv,
+            investorId: undefined,
+          })),
+        } as any;
+        /* eslint-enable @typescript-eslint/no-explicit-any */
+      }
     }
 
     return fundManager;
