@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { environment } from '../../../../environments/environment';
 import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { DataWarehouseService } from '../data-warehouse.service';
@@ -15,7 +15,7 @@ export class DataWarehouseScheduler {
     this.logger.setContext(DataWarehouseScheduler.name);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_5AM, {
+  @Cron('45 03 * * *', {
     name: 'dataWarehouseRegeneration',
     disabled: !environment.features.dataWareHouse,
   })
