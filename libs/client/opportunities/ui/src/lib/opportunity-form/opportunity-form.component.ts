@@ -1,3 +1,4 @@
+import { KeyValuePipe } from '@angular/common';
 import { Component, computed, effect, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ErrorMessagePipe } from '@app/client/shared/dynamic-form-util';
@@ -10,7 +11,10 @@ import {
   MultiSelectModule,
 } from '@progress/kendo-angular-dropdowns';
 import { FilterMenuModule } from '@progress/kendo-angular-grid';
-import { FormFieldModule } from '@progress/kendo-angular-inputs';
+import {
+  FormFieldModule,
+  TextAreaModule,
+} from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { RxPush } from '@rx-angular/template/push';
 import { Observable, of } from 'rxjs';
@@ -56,6 +60,8 @@ export const OPPORTUNITY_NAME_MAX_LENGTH = 50;
     ErrorMessagePipe,
     RxPush,
     OrderByPipe,
+    TextAreaModule,
+    KeyValuePipe,
   ],
   templateUrl: './opportunity-form.component.html',
   styleUrl: './opportunity-form.component.scss',

@@ -37,6 +37,10 @@ export const TagsActions = createActionGroup({
       tagTypes: TagEntity['type'][];
     }>(),
 
+    'Set Tags Loading': props<{
+      tagTypes: TagEntity['type'][];
+    }>(),
+
     'Create Tag': props<{ data: CreateTagData }>(),
     'Create Tag Success': props<{ data: CreateTagResponse }>(),
     'Create Tag Failure': props<{ error: string }>(),

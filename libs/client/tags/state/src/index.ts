@@ -11,6 +11,7 @@ import { tagsFeature } from './lib/+state/tags.reducer';
 
 export * from './lib/+state/tags-store-facade.service';
 export * from './lib/+state/tags.actions';
+export * from './lib/+state/tags.model';
 export * from './lib/+state/tags.reducer';
 export * from './lib/+state/tags.selectors';
 

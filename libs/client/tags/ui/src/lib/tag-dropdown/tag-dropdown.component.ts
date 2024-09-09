@@ -12,6 +12,7 @@ import {
   Input,
   Output,
   signal,
+  viewChild,
   ViewEncapsulation,
   WritableSignal,
 } from '@angular/core';
@@ -31,7 +32,10 @@ import { ACTIVE_OPPORTUNITY_SOURCE } from '@app/client/shared/util';
 import { TagData } from '@app/rvns-tags';
 import { Store } from '@ngrx/store';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
-import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import {
+  DropDownsModule,
+  DropDownTreeComponent,
+} from '@progress/kendo-angular-dropdowns';
 import { TextBoxModule } from '@progress/kendo-angular-inputs';
 import { FilterExpandSettings } from '@progress/kendo-angular-treeview';
 import * as _ from 'lodash';
@@ -139,10 +143,12 @@ export class TagDropdownComponent extends ControlValueAccessor<
 
   @Output() public tagClicked = new EventEmitter<DropdownTag>();
 
-  public companySourceFn$ =
-    input.required<(filter: string) => Observable<TagData[]>>();
+  public tagSourceFn$ =
+    input.required<
+      (filter: string, type: DropdownTag['type']) => Observable<TagData[]>
+    >();
 
-  @Input() public loading = false;
+  public loading = input(false);
 
   @Input() public set tags(value: DropdownTag[]) {
     this.tagsSignal.set(value);
@@ -178,20 +184,20 @@ export class TagDropdownComponent extends ControlValueAccessor<
   protected versionTags$ = toObservable(this.versionTags);
 
   protected filter$ = toObservable(this.filterValue);
-  protected companyTags$ = this.filter$.pipe(
+  protected fitleredTags$ = combineLatest([
+    this.filter$.pipe(startWith('')),
+    this.tagTypeControl.valueChanges.pipe(
+      startWith('company' as DropdownTag['type']),
+    ),
+  ]).pipe(
     debounceTime(250),
     distinctUntilChanged(),
-    switchMap((filter) => this.companySourceFn$()(filter)),
-    map(
-      (tags): DropdownTag[] =>
-        tags.map((item) => ({
-          ...item,
-          type: 'company',
-        })) ?? [],
-    ),
+    switchMap(([filter, type]) => this.tagSourceFn$()(filter, type)),
   );
 
-  protected companyTags = toSignal(this.companyTags$);
+  protected dropdownTree = viewChild(DropDownTreeComponent);
+
+  protected fitleredTags = toSignal(this.fitleredTags$);
   protected hasChildren = (dataItem: object): boolean =>
     'type' in dataItem && dataItem.type === 'company_root';
 
@@ -277,21 +283,24 @@ export class TagDropdownComponent extends ControlValueAccessor<
   protected currentTypeTags = computed(() => {
     const type = this.type();
 
-    if (type === 'company') {
-      return (this.companyTags() ?? []).map((item) => ({
-        ...item,
-        name: `${item?.name} (${item?.domain})`,
-        type: 'company_root',
-      }));
-    }
-
-    return this.tagsSignal().filter((item) => {
-      return (
-        item.type === type &&
-        item.name.toLowerCase().includes(this.filterValue().toLowerCase()) &&
-        !this.value().includes(item.id)
-      );
-    });
+    return this.tagsSignal()
+      .filter((item) => {
+        return (
+          item.type === type &&
+          item.name.toLowerCase().includes(this.filterValue().toLowerCase()) &&
+          !this.value().includes(item.id)
+        );
+      })
+      .map((item) => {
+        if (type === 'company') {
+          return {
+            ...item,
+            name: `${item?.name} (${item?.domain})`,
+            type: 'company_root',
+          };
+        }
+        return item;
+      });
   });
 
   protected filterExpandSettings: FilterExpandSettings = {

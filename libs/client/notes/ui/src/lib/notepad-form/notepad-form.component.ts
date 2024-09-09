@@ -55,6 +55,7 @@ import { EditorView } from '@progress/kendo-angular-editor';
 import { ProvideProseMirrorSettingsDirective } from '@app/client/shared/dynamic-form-util';
 import { TagComponent, TagTypeColorPipe } from '@app/client/shared/ui';
 
+import { DropdownTag } from '@app/client/tags/ui';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { firstValueFrom, map, Observable, startWith, tap } from 'rxjs';
@@ -154,8 +155,24 @@ export class NotepadFormComponent
   protected noteTemplates = this.templateFacade.notesTemplates;
   protected defaultTemplate = this.templateFacade.defaultTemplate;
   protected templateLoaded = this.templateFacade.loaded;
-  protected tagLoading = this.store.selectSignal(
+  protected opportunityTagLoading = this.store.selectSignal(
     tagsQuery.selectIsLoadingTags('opportunity'),
+  );
+
+  protected investorTagLoading = this.store.selectSignal(
+    tagsQuery.selectIsLoadingTags('investor'),
+  );
+
+  protected industryTagLoading = this.store.selectSignal(
+    tagsQuery.selectIsLoadingTags('industry'),
+  );
+
+  protected companyTagLoading = this.store.selectSignal(
+    tagsQuery.selectIsLoadingTags('company'),
+  );
+
+  protected businessTagLoading = this.store.selectSignal(
+    tagsQuery.selectIsLoadingTags('business-model'),
   );
 
   protected peopleTagLoading = this.store.selectSignal(
@@ -171,18 +188,26 @@ export class NotepadFormComponent
     );
   });
 
-  protected companySourceFn$ = (filter: string): Observable<TagData[]> =>
-    this.tagService.getTags({ type: 'company', query: filter, take: 50 }).pipe(
+  protected tagSourceFn$ = (
+    filter: string,
+    type: DropdownTag['type'],
+  ): Observable<TagData[]> => {
+    this.store.dispatch(
+      TagsActions.setTagsLoading({ tagTypes: [type as any] }),
+    );
+
+    return this.tagService.getTags({ type, query: filter, take: 50 }).pipe(
       map((response) => response.data!),
-      tap((tags) => {
+      tap((tags) =>
         this.store.dispatch(
           TagsActions.getTagsByTypesSuccess({
             data: tags,
-            tagTypes: ['company'],
+            tagTypes: [type as any],
           }),
-        );
-      }),
+        ),
+      ),
     );
+  };
 
   //todo move it to standlone component
   protected standaloneTemplateForm =

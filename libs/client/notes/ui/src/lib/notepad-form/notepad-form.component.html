@@ -15,9 +15,15 @@
     <!--        TAGS       -->
     <app-tag-dropdown
       (openTagDialog)="openTagDialog($event)"
-      [loading]="tagLoading()!"
+      [loading]="
+        opportunityTagLoading()! ||
+        investorTagLoading()! ||
+        industryTagLoading()! ||
+        companyTagLoading()! ||
+        businessTagLoading()!
+      "
       [tags]="$any(tags())"
-      [companySourceFn$]="companySourceFn$"
+      [tagSourceFn$]="tagSourceFn$"
       formControlName="tags"
     ></app-tag-dropdown>
 

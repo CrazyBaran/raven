@@ -60,6 +60,16 @@ export const tagsFeature = createFeature({
           .value(),
       },
     })),
+    on(TagsActions.setTagsLoading, (state, { tagTypes }) => ({
+      ...state,
+      loadingTags: {
+        ...state.loadingTags,
+        ..._.chain(tagTypes)
+          .keyBy((x) => x)
+          .mapValues(() => true)
+          .value(),
+      },
+    })),
     on(TagsActions.getTagsByTypesSuccess, (state, { data, tagTypes }) =>
       tagAdapter.upsertMany([...data], {
         ...state,
