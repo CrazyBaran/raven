@@ -7,6 +7,7 @@ import { organisationsFeature } from '@app/client/organisations/state';
 import { pipelinesQuery } from '@app/client/pipelines/state';
 import { routerQuery, selectUrl } from '@app/client/shared/util-router';
 import { createSelector } from '@ngrx/store';
+import { sortBy } from 'lodash';
 import { OpportunityData } from '../../../../../../../rvns-opportunities/src';
 import { getOpportunityName } from '../../../../../../shared/util/src';
 
@@ -34,6 +35,7 @@ export const selectDynamicOpportunityTabs = createSelector(
         label: tab.name,
         link: 'related-notes',
         queryParams: { tab: tab.name },
+        order: tab.order,
       }),
     ),
 );
@@ -77,12 +79,14 @@ export const selectOpportunityPageNavigation = createSelector(
   routerQuery.selectActiveTab,
   selectDynamicOpportunityTabs,
   (url, activeType, dynamicTabs) => {
-    return [...OPPORTUNITY_DETAILS_ROUTES, ...dynamicTabs].map((nav) => ({
-      ...nav,
-      active:
-        url.includes(nav.link) &&
-        (!activeType || nav.queryParams?.tab === activeType),
-    }));
+    return [...OPPORTUNITY_DETAILS_ROUTES, ...sortBy(dynamicTabs, 'order')].map(
+      (nav) => ({
+        ...nav,
+        active:
+          url.includes(nav.link) &&
+          (!activeType || nav.queryParams?.tab === activeType),
+      }),
+    );
   },
 );
 export const selectOpportunityDetails = createSelector(
