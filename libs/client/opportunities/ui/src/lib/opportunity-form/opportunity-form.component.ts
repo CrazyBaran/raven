@@ -14,6 +14,7 @@ import { FilterMenuModule } from '@progress/kendo-angular-grid';
 import {
   FormFieldModule,
   TextAreaModule,
+  TextBoxModule,
 } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { RxPush } from '@rx-angular/template/push';
@@ -62,6 +63,7 @@ export const OPPORTUNITY_NAME_MAX_LENGTH = 50;
     OrderByPipe,
     TextAreaModule,
     KeyValuePipe,
+    TextBoxModule,
   ],
   templateUrl: './opportunity-form.component.html',
   styleUrl: './opportunity-form.component.scss',
