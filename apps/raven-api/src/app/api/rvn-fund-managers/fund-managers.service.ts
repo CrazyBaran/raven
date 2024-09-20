@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Currency, FundManagerRelationStrength, PagedData } from 'rvns-shared';
 import { Brackets, Repository } from 'typeorm';
 import { DataWarehouseEnricher } from '../rvn-data-warehouse/cache/data-warehouse.enricher';
+import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { TagEntity } from '../rvn-tags/entities/tag.entity';
 import { UserEntity } from '../rvn-users/entities/user.entity';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -11,6 +12,7 @@ import { UpdateContactDto } from './dto/update-contact.dto';
 import { FundManagerContactEntity } from './entities/fund-manager-contact.entity';
 import { FundManagerIndustryEntity } from './entities/fund-manager-industry.entity';
 import { FundManagerKeyRelationshipEntity } from './entities/fund-manager-key-relationship.entity';
+import { FundManagerOrganisationEntity } from './entities/fund-manager-organisation.entity';
 import { FundManagerEntity } from './entities/fund-manager.entity';
 import { GetFundManagersOptions } from './interfaces/get-fund-managers.options';
 
@@ -39,6 +41,8 @@ export class FundManagersService {
     private readonly fundManagerIndustryRepository: Repository<FundManagerIndustryEntity>,
     @InjectRepository(FundManagerContactEntity)
     private readonly fundManagerContactsRepository: Repository<FundManagerContactEntity>,
+    @InjectRepository(FundManagerOrganisationEntity)
+    private readonly fundManagerOrganisationEntity: Repository<FundManagerOrganisationEntity>,
     @Optional() private readonly dataWarehouseEnricher: DataWarehouseEnricher,
   ) {}
 
@@ -171,23 +175,7 @@ export class FundManagersService {
       this.fundManagersRepository.createQueryBuilder('fund_managers');
     queryBuilder
       .leftJoinAndSelect('fund_managers.industryTags', 'indstryTags')
-      .leftJoinAndSelect('fund_managers.keyRelationships', 'keyRelationships')
-      .leftJoinAndSelect('fund_managers.organisations', 'organisations')
-      .leftJoin('organisations.organisationDomains', 'domains')
-      .addSelect('domains.domain')
-      .leftJoin('organisations.dataV1', 'data')
-      .addSelect([
-        'data.fundingLastFundingRound',
-        'data.fundingLastFundingDate',
-        'data.fundingLastFundingAmount',
-        'data.fundingTotalFundingAmount',
-      ])
-      .leftJoin('organisations.shortlists', 'shortlists')
-      .addSelect(['shortlists.id', 'shortlists.name'])
-      .leftJoin('data.investors', 'investors')
-      .addSelect(['investors.name'])
-      .orderBy('organisations.name', 'ASC');
-
+      .leftJoinAndSelect('fund_managers.keyRelationships', 'keyRelationships');
     queryBuilder.where({ id });
 
     const fundManager = await queryBuilder.getOne();
@@ -215,7 +203,6 @@ export class FundManagersService {
           fundingTotalFundingAmount: enriched?.data?.funding.totalFundingAmount,
           investors: enriched?.data?.actors?.investors?.map((inv) => ({
             name: inv,
-            investorId: undefined,
           })),
         } as any;
         /* eslint-enable @typescript-eslint/no-explicit-any */
@@ -325,6 +312,42 @@ export class FundManagersService {
     // delete fundManagerEntity.keyRelationships;
 
     return this.fundManagersRepository.save(fundManagerEntity);
+  }
+
+  public async findAllPortfolioCompanies(
+    id: string,
+    skip: number,
+    take: number,
+  ): Promise<PagedData<OrganisationEntity>> {
+    const queryBuilder =
+      this.fundManagerOrganisationEntity.createQueryBuilder('portfolio');
+    queryBuilder.where('portfolio.fundManagerId = :id', { id });
+    queryBuilder
+      .leftJoinAndSelect('portfolio.organisations', 'organisations')
+      .leftJoinAndSelect('organisations.organisationDomains', 'domains');
+    queryBuilder
+      .leftJoinAndSelect('organisations.shortlists', 'shortlists')
+      .leftJoin('organisations.dataV1', 'data')
+      .addSelect([
+        'data.organisationId',
+        'data.fundingLastFundingRound',
+        'data.fundingLastFundingDate',
+        'data.fundingLastFundingAmount',
+        'data.fundingTotalFundingAmount',
+      ])
+      .leftJoinAndSelect('data.investors', 'investors');
+
+    queryBuilder.skip(skip || 0);
+    queryBuilder.take(take || 10);
+
+    const [companies, count] = await queryBuilder.getManyAndCount();
+
+    return {
+      items: companies.map((c) => {
+        return c.organisations as unknown as OrganisationEntity;
+      }),
+      total: count,
+    } as PagedData<OrganisationEntity>;
   }
 
   public async findAllContacts(

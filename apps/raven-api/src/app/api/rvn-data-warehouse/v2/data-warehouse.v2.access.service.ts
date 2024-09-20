@@ -139,11 +139,15 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
 
   public async getFundManagerInvestments(
     fundDomain: string,
+    skip: number,
+    take: number,
   ): Promise<[InvestmentV2DwhEntity[], number]> {
     return await this.investmentRepository.findAndCount({
       where: {
         fundManagerDomain: fundDomain,
       },
+      skip: skip || 0,
+      take: take || 500,
     });
   }
   public async getInvestors(

@@ -26,6 +26,7 @@ import { Store } from '@ngrx/store';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { SkeletonModule } from '@progress/kendo-angular-indicators';
 import {
+  SelectEvent,
   TabStripComponent,
   TabStripModule,
 } from '@progress/kendo-angular-layout';
@@ -66,6 +67,8 @@ export class ManagerDetailsComponent implements OnInit {
   );
 
   protected tabstrip = viewChild(TabStripComponent);
+
+  protected selectedTabIndex = 0;
 
   public ngOnInit(): void {
     this.route.params
@@ -116,5 +119,21 @@ export class ManagerDetailsComponent implements OnInit {
         },
       }),
     );
+  }
+
+  public onSelectTab(event: SelectEvent) {
+    this.selectedTabIndex = event?.index;
+  }
+
+  public getPageClass(): {
+    [klass: string]: boolean;
+  } {
+    return this.selectedTabIndex > 0
+      ? {
+          'overflow-hidden': true,
+        }
+      : {
+          'overflow-y-scroll': true,
+        };
   }
 }

@@ -8,6 +8,7 @@ import {
 } from '@app/rvns-fund-managers';
 import { PagedData } from 'rvns-shared';
 import { Observable } from 'rxjs';
+import { OrganisationData } from '../../../../../rvns-opportunities/src';
 import { CreateContactDto } from './models/create-contact.model';
 import { GetManagersDto } from './models/manager.model';
 import { UpdateManagerDto } from './models/update-manager.model';
@@ -70,6 +71,20 @@ export class ManagersService {
   ): Observable<GenericResponse<FundManagerContactData>> {
     return this.http.get<GenericResponse<FundManagerContactData>>(
       `${this.url}/contacts/${id}`,
+    );
+  }
+
+  public getManagerPortfolio(
+    id: string,
+    params?: Record<string, string | number | boolean | string[] | number[]>,
+  ): Observable<GenericResponse<PagedData<OrganisationData>>> {
+    return this.http.get<GenericResponse<PagedData<OrganisationData>>>(
+      `${this.url}/${id}/portfolio`,
+      {
+        params: {
+          ...(params ?? {}),
+        },
+      },
     );
   }
 

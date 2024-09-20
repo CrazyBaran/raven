@@ -15,7 +15,7 @@ export class InvestmentV2DwhEntity {
   @PrimaryColumn({ name: 'company_name', type: 'nvarchar', length: 200 })
   public companyName: string;
 
-  @Column({ name: 'company_domain', type: 'nvarchar', length: 200 })
+  @PrimaryColumn({ name: 'company_domain', type: 'nvarchar', length: 200 })
   public companyDomain: string;
 
   @Column({ name: 'is_direct_investment', type: 'smallint' })

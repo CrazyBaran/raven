@@ -7,7 +7,7 @@ import {
 } from '@app/rvns-fund-managers';
 import { TagData } from '@app/rvns-tags';
 import { ApiProperty } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
+import { Exclude, plainToInstance } from 'class-transformer';
 import { Currency, FundManagerRelationStrength, PagedData } from 'rvns-shared';
 import { FundManagerEntity } from './entities/fund-manager.entity';
 
@@ -42,7 +42,7 @@ export class FundManagerRO implements FundManagerData {
   public updatedAt: Date;
   @ApiProperty()
   public keyRelationships: KeyRelationship[];
-  @ApiProperty()
+  @Exclude()
   public organisations: OrganisationData[];
   @ApiProperty()
   public industryTags: TagData[];

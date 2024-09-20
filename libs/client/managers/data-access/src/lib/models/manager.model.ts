@@ -8,6 +8,15 @@ export interface GetManagersDto {
   dir?: string;
 }
 
+export interface GetManagerPortfolioDto {
+  id: string;
+  query?: string;
+  skip?: string | number;
+  take?: string | number;
+  sort?: string;
+  dir?: string;
+}
+
 export const RelationStrengthName: Record<string, string> = {
   [FundManagerRelationStrength.PORTFOLIO]: 'Tier I - Portfolio',
   [FundManagerRelationStrength.CLOSE_PARTNER]: 'Tier I - Close Partner',

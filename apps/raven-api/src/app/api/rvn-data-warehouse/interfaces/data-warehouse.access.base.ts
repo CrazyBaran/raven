@@ -38,6 +38,8 @@ export abstract class DataWarehouseAccessBase {
 
   public abstract getFundManagerInvestments(
     fundDomain: string,
+    skip: number,
+    take: number,
   ): Promise<[InvestmentV2DwhEntity[], number]>;
 
   public abstract findAndMapContacts(

@@ -83,6 +83,6 @@ export class DataWarehouseCompanyV1Entity {
   @AfterInsert()
   @AfterLoad()
   public lifecycleUuidLowerCase(): void {
-    this.organisationId = this.organisationId.toLowerCase();
+    this.organisationId = this.organisationId?.toLowerCase();
   }
 }

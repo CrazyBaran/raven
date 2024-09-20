@@ -34,9 +34,13 @@
 
   <div
     page-content
-    class="manager-details bg-base-background relative flex h-full flex-col overflow-y-scroll"
+    class="manager-details bg-base-background relative flex h-full flex-col"
+    [ngClass]="getPageClass()"
   >
-    <kendo-tabstrip class="manager-layout-tabstrip">
+    <kendo-tabstrip
+      class="manager-layout-tabstrip"
+      (tabSelect)="onSelectTab($event)"
+    >
       <kendo-tabstrip-tab title="Manager Profile" [selected]="true">
         <ng-template kendoTabContent>
           <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
@@ -76,11 +80,7 @@
 
       <kendo-tabstrip-tab title="Portfolio">
         <ng-template kendoTabContent>
-          <app-manager-portfolio-organisations
-            [isLoading]="vm().isLoading"
-            [manager]="vm().manager"
-            [organisations]="vm().manager?.organisations || []"
-          />
+          <app-manager-portfolio-organisations />
         </ng-template>
       </kendo-tabstrip-tab>
     </kendo-tabstrip>

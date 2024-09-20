@@ -7,6 +7,7 @@ import { WebSocketsModule } from '../rvn-web-sockets/web-sockets.module';
 import { FundManagerContactEntity } from './entities/fund-manager-contact.entity';
 import { FundManagerIndustryEntity } from './entities/fund-manager-industry.entity';
 import { FundManagerKeyRelationshipEntity } from './entities/fund-manager-key-relationship.entity';
+import { FundManagerOrganisationEntity } from './entities/fund-manager-organisation.entity';
 import { FundManagerEntity } from './entities/fund-manager.entity';
 import { FundManagersController } from './fund-managers.controller';
 import { FundManagersService } from './fund-managers.service';
@@ -20,6 +21,7 @@ import { FundManagersService } from './fund-managers.service';
       FundManagerKeyRelationshipEntity,
       FundManagerIndustryEntity,
       FundManagerContactEntity,
+      FundManagerOrganisationEntity,
     ]),
     WebSocketsModule,
     UsersModule,

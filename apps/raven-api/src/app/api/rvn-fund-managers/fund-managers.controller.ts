@@ -1,4 +1,5 @@
 import { FundManagerContactData } from '@app/rvns-fund-managers';
+import { OrganisationData } from '@app/rvns-opportunities';
 import { RoleEnum } from '@app/rvns-roles';
 import { Roles } from '@app/rvns-roles-api';
 import {
@@ -113,6 +114,22 @@ export class FundManagersController {
         userEntity,
       ),
     );
+  }
+
+  @Get(':id/portfolio')
+  @ApiOperation({ summary: 'Get all fund manager portfolio companes' })
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'skip', type: Number, required: false })
+  @ApiQuery({ name: 'take', type: Number, required: false })
+  @ApiResponse({ status: 200, description: 'The fund manager contacts' })
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async findAllPortfolioCompanies(
+    @Param('id') id: string,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ): Promise<PagedData<Partial<OrganisationData>>> {
+    return this.fundManagersService.findAllPortfolioCompanies(id, skip, take);
   }
 
   @Get(':id/contacts')

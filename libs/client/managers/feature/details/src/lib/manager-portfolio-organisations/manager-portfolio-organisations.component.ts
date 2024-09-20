@@ -3,10 +3,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  input,
   signal,
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import {
   LoaderComponent,
   TilelayoutItemComponent,
@@ -14,11 +13,12 @@ import {
 import { NotificationsActions } from '@app/client/shared/util-notifications';
 import { TagsService } from '@app/client/tags/data-access';
 import { FundManagerData } from '@app/rvns-fund-managers';
-import { OrganisationData } from '@app/rvns-opportunities';
 import { TagTypeEnum } from '@app/rvns-tags';
 import { Store } from '@ngrx/store';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { finalize } from 'rxjs';
+import { InfinityTableViewBaseComponent } from '../../../../../../shared/ui-directives/src';
+import { managerPortfolioStore } from './manager-portfolio-organisations.store';
 
 @Component({
   selector: 'app-manager-portfolio-organisations',
@@ -31,20 +31,18 @@ import { finalize } from 'rxjs';
     DatePipe,
     LoaderComponent,
   ],
+  providers: [managerPortfolioStore],
   templateUrl: './manager-portfolio-organisations.component.html',
   styleUrls: ['./manager-portfolio-organisations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ManagerPortfolioOrganisationsComponent {
+export class ManagerPortfolioOrganisationsComponent extends InfinityTableViewBaseComponent<FundManagerData> {
   public readonly tagsService = inject(TagsService);
-  public readonly router = inject(Router);
   public readonly store = inject(Store);
 
-  public isLoading = input(false);
-  public manager = input<FundManagerData>();
-  public organisations = input<Array<OrganisationData>>([]);
-
   public isFetchingInvestorTag = signal(false);
+
+  public readonly managerPortfolioStore = inject(managerPortfolioStore);
 
   public getInvestorTag(name: string): void {
     this.isFetchingInvestorTag.set(true);
@@ -64,4 +62,8 @@ export class ManagerPortfolioOrganisationsComponent {
         }
       });
   }
+
+  public rowCallback = (): Record<string, boolean> => {
+    return { '!bg-white': true };
+  };
 }

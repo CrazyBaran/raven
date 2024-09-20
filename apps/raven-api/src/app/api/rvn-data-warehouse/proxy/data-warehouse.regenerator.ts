@@ -109,7 +109,6 @@ export class DataWarehouseRegenerator {
     await job?.log('Starting regenerateFundManagers');
 
     const investors = await this.dataWarehouseAccessService.getFundManagers();
-
     for (let j = 0; j < investors.length; j++) {
       const domain = investors[j].domain;
       const name = investors[j].investorName;
@@ -161,22 +160,44 @@ export class DataWarehouseRegenerator {
       }
 
       const fundManager = await this.fundManagersRepository.save(fm);
+      const parsedOrgs: OrganisationEntity[] = [];
+      const internalChunkSize = 500;
+      let [investments, _count] =
+        await this.dataWarehouseAccessService.getFundManagerInvestments(
+          domain,
+          0,
+          internalChunkSize,
+        );
+      const chunks = Math.ceil(_count / internalChunkSize);
+      for (let chunk = 0; chunk <= chunks; chunk++) {
+        if (!investments.length) {
+          continue;
+        }
 
-      const [investments, _count] =
-        await this.dataWarehouseAccessService.getFundManagerInvestments(domain);
-
-      const parsedOrgs = await this.organisationRepository.find({
-        relations: ['organisationDomains'],
-        where: {
-          organisationDomains: {
-            domain: In(
-              investments.map((i) =>
-                this.domainResolver.cleanDomain(i.companyDomain),
+        if (chunk > 0) {
+          [investments, _count] =
+            await this.dataWarehouseAccessService.getFundManagerInvestments(
+              domain,
+              chunk * internalChunkSize,
+              internalChunkSize,
+            );
+        }
+        const parsedOrgsChunk = await this.organisationRepository.find({
+          relations: ['organisationDomains'],
+          where: {
+            organisationDomains: {
+              domain: In(
+                investments.map((i) =>
+                  this.domainResolver.cleanDomain(i.companyDomain),
+                ),
               ),
-            ),
+            },
           },
-        },
-      });
+        });
+
+        parsedOrgs.push(...parsedOrgsChunk);
+      }
+
       for (const org of parsedOrgs) {
         await this.fundManagerOrganisationRepository.save(
           FundManagerOrganisationEntity.create({
