@@ -11,7 +11,7 @@ import { RavenLogger } from '../../rvn-logger/raven.logger';
 import { OrganisationDomainEntity } from '../../rvn-opportunities/entities/organisation-domain.entity';
 import { OrganisationEntity } from '../../rvn-opportunities/entities/organisation.entity';
 import { PrimaryDataSource } from '../../rvn-opportunities/interfaces/get-organisations.options';
-import { OrganisationTagEntity } from '../../rvn-tags/entities/tag.entity';
+import { OrganisationTagEntity, TagEntity } from '../../rvn-tags/entities/tag.entity';
 import { TagEntityFactory } from '../../rvn-tags/tag-entity.factory';
 import { DomainResolver } from '../../rvn-utils/domain.resolver';
 import { DataWarehouseCacheService } from '../cache/data-warehouse-cache.service';
@@ -107,8 +107,29 @@ export class DataWarehouseRegenerator {
 
   public async regenerateFundManagers(job?: JobPro): Promise<void> {
     await job?.log('Starting regenerateFundManagers');
-
+    let timeStart = process.uptime();
+    let portfolioInBatch = 0;
     const investors = await this.dataWarehouseAccessService.getFundManagers();
+    const internalChunkSize = 500;
+    const loadedTags: { [name: string]: OrganisationTagEntity } = {}
+
+
+    for (let i = 0; i < investors.length; i += internalChunkSize) {
+      const chunk = investors.slice(i, i + internalChunkSize);
+      const namesInChunk = chunk.map(inv => inv.investorName);
+      const tagsFromApi = await this.tagsRepository.find({
+        where: {
+          name: In(namesInChunk),
+          type: In([TagTypeEnum.Investor]),
+        },
+        take: internalChunkSize,
+        skip: 0
+      });
+      for (const tag of tagsFromApi) {
+        loadedTags[tag.name] = tag;
+      }
+    }
+
     for (let j = 0; j < investors.length; j++) {
       const domain = investors[j].domain;
       const name = investors[j].investorName;
@@ -121,17 +142,10 @@ export class DataWarehouseRegenerator {
         initialDataSource: 'investors_dwh',
       });
 
-      const invTags = await this.tagsRepository.find({
-        where: {
-          name: name,
-          type: In([TagTypeEnum.Investor]),
-        },
-      });
-      if (invTags.length) {
-        for (const cT of invTags) {
-          cT.organisationId = currentOrganisation.id;
-          await this.tagsRepository.save(cT);
-        }
+      const invTag = loadedTags[name];
+      if (invTag) {
+        invTag.organisationId = currentOrganisation.id;
+        await this.tagsRepository.save(invTag);
       } else {
         const newTag = TagEntityFactory.createTag({
           name: name,
@@ -160,14 +174,17 @@ export class DataWarehouseRegenerator {
       }
 
       const fundManager = await this.fundManagersRepository.save(fm);
+
       const parsedOrgs: OrganisationEntity[] = [];
       const internalChunkSize = 500;
+
       let [investments, _count] =
         await this.dataWarehouseAccessService.getFundManagerInvestments(
           domain,
           0,
           internalChunkSize,
         );
+
       const chunks = Math.ceil(_count / internalChunkSize);
       for (let chunk = 0; chunk <= chunks; chunk++) {
         if (!investments.length) {
@@ -182,20 +199,26 @@ export class DataWarehouseRegenerator {
               internalChunkSize,
             );
         }
+        const mappedInv = investments.map((i) =>
+          this.domainResolver.cleanDomain(i.companyDomain),
+        );
+
         const parsedOrgsChunk = await this.organisationRepository.find({
           relations: ['organisationDomains'],
           where: {
             organisationDomains: {
               domain: In(
-                investments.map((i) =>
-                  this.domainResolver.cleanDomain(i.companyDomain),
-                ),
+                mappedInv
               ),
             },
           },
         });
 
         parsedOrgs.push(...parsedOrgsChunk);
+
+        if (_count < internalChunkSize) {
+          break;
+        }
       }
 
       for (const org of parsedOrgs) {
@@ -206,14 +229,25 @@ export class DataWarehouseRegenerator {
           }),
         );
       }
+      portfolioInBatch += parsedOrgs.length;
+
       await this.organisationRepository.save({
         id: currentOrganisation.id,
         fundManagerId: fm.id,
       });
 
       await job?.updateProgress(Math.floor((j / investors.length) * 100));
+
+      const batchSize = 100;
+      if (j % batchSize === 0) {
+        const elapsed = process.uptime() - timeStart;
+        await job?.log(`Batch: ${batchSize}, iteration: ${j}, time taken: ${elapsed}, portfolio organisations: ${portfolioInBatch}, estimated total: ${((investors.length / batchSize) * elapsed) / 60 / 60} hours`);
+        timeStart = process.uptime();
+        portfolioInBatch = 0;
+      }
     }
   }
+
 
   public async regenerateInvestors(job?: JobPro): Promise<void> {
     await job?.log('Starting regenerateInvestors');
