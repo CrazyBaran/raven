@@ -16,10 +16,13 @@ import { OpportunityCreatedEventHandler } from './event-handlers/opportunity-cre
 import { OnBehalfOfController } from './on-behalf-of.controller';
 import { PartitionManager } from './partition.manager';
 import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
+import { SharepointMigrationService } from './sharepoint-migration.service';
+import { OpportunityEntity } from '../rvn-opportunities/entities/opportunity.entity';
+import { FileEntity } from '../rvn-files/entities/file.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CcaTokenCacheEntity, OrganisationEntity]),
+    TypeOrmModule.forFeature([CcaTokenCacheEntity, OrganisationEntity, OpportunityEntity, FileEntity]),
     ConfigModule,
     ClsModule.forFeature(),
     CryptoModule.register({
@@ -33,6 +36,7 @@ import { TypeOrmTokenCacheClient } from './type-orm-token-cache.client';
     PartitionManager,
     ConfidentialClientApplicationLogger,
     CustomAuthenticationProvider,
+    SharepointMigrationService,
     {
       provide: ConfidentialClientApplication,
       useFactory: (

@@ -72,7 +72,7 @@ export const toFileRow =
     folderId: file.folderId!,
     tags$: store.select(filesQuery.selectFileTags(file.id!)),
     folderUrl: file.folder
-      ? `https://graph.microsoft.com/v1.0/sites/${environment.sharepointSiteId}/drive/items/${file.id}/children`
+      ? `https://graph.microsoft.com/v1.0/sites/${environment.sharepointSiteId}/drives/${environment.sharepointDriveId}/items/${file.id}/children`
       : '',
     childrenCount: file.folder?.childCount,
   });

@@ -60,7 +60,7 @@ export const relatedFilesStore = signalStore(
           tap(() => patchState(store, { loading: true })),
           switchMap((directoryUrl) =>
             filesService
-              .getFilesRecursive(directoryUrl, environment.sharepointSiteId)
+              .getFilesRecursive(directoryUrl, environment.sharepointSiteId, environment.sharepointDriveId)
               .pipe(
                 tapResponse({
                   next: (files) => {

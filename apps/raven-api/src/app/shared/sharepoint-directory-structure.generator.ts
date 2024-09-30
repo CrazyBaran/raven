@@ -12,7 +12,7 @@ export class SharepointDirectoryStructureGenerator {
     if (!itemId) {
       return '';
     }
-    return `https://graph.microsoft.com/v1.0/sites/${siteId}/drive/items/${itemId}/children`;
+    return `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${environment.sharePoint.driveId}/items/${itemId}/children`;
   }
 
   public static getDirectoryNameForOrganisation(

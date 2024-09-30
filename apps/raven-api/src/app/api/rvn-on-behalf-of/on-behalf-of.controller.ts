@@ -5,11 +5,13 @@ import {
   OnBehalfOfRequest,
 } from '@azure/msal-node';
 import {
+  Body,
   Controller,
   Get,
   Headers,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -33,6 +35,9 @@ import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-d
 import { RavenLogger } from '../rvn-logger/raven.logger';
 import { OrganisationEntity } from '../rvn-opportunities/entities/organisation.entity';
 import { ParseOrganisationPipe } from '../rvn-opportunities/pipes/parse-organisation.pipe';
+import { SharepointMigrationService } from './sharepoint-migration.service';
+import { GenericResponseSchema } from '@app/rvns-api';
+import { MigrateSharepointDto } from './dto/migrate-sharepoint.dto';
 
 @ApiTags('On Behalf Of Management')
 @Controller('on-behalf-of')
@@ -44,6 +49,7 @@ export class OnBehalfOfController {
     private readonly logger: RavenLogger,
     @InjectRepository(OrganisationEntity)
     private readonly organisationRepository: Repository<OrganisationEntity>,
+    private readonly sharepointMigrationService: SharepointMigrationService,
   ) {
     this.logger.setContext(OnBehalfOfController.name);
   }
@@ -130,11 +136,55 @@ export class OnBehalfOfController {
           `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${folderName}`,
         )
         .get();
-      return response.value;
+      return response;
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
+  }
+
+  @Patch('migrate/company-data')
+  @ApiOperation({
+    description: 'Migrate sharepoint organisations and opportunity ID references',
+  })
+  @ApiResponse(GenericResponseSchema())
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
+  public async migrateCompanyData(
+    @Body() dto: MigrateSharepointDto,
+  ): Promise<void> {
+    return await this.sharepointMigrationService.migrateOrganisationsAndOpportunities(dto);
+  }
+
+  @Patch('migrate/files')
+  @ApiOperation({
+    description: 'Migrate sharepoint files ID references',
+  })
+  @ApiResponse(GenericResponseSchema())
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
+  public async migrateFiles(
+    @Body() dto: MigrateSharepointDto,
+  ): Promise<void> {
+    return await this.sharepointMigrationService.migrateFiles(dto);
+  }
+
+  @Patch('migrate/check-permissions')
+  @ApiOperation({
+    description: 'Check if able to gather sharepoint structures.',
+  })
+  @ApiResponse(GenericResponseSchema())
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  @ApiOAuth2(['openid'])
+  public async checkPermissions(
+    @Body() dto: MigrateSharepointDto,
+  ): Promise<{
+    currentStructureAccess: boolean,
+    targetStructureAccess: boolean,
+    currentFilesAccess: boolean,
+    targetFilesAccess: boolean,
+  }> {
+    return await this.sharepointMigrationService.checkPermissions(dto);
   }
 
   @Get('account-info')

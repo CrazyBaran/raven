@@ -95,6 +95,7 @@ export class FilesService {
   public getFilesRecursive(
     directoryUrl: string,
     sharepointSiteId: string,
+    sharepointDriveId: string,
   ): Observable<File[]> {
     return this.getFiles({ directoryUrl }).pipe(
       expand((files) => {
@@ -105,7 +106,7 @@ export class FilesService {
         return this.getFiles({
           directoryUrl: foldersWithChildren.map(
             (x) =>
-              `https://graph.microsoft.com/v1.0/sites/${sharepointSiteId}/drive/items/${x.id}/children`,
+              `https://graph.microsoft.com/v1.0/sites/${sharepointSiteId}/drives/${sharepointDriveId}/items/${x.id}/children`,
           ),
         });
       }),

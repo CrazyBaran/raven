@@ -25,7 +25,7 @@ export const toFileRow =
     createdBy: file.createdBy?.user?.displayName ?? '',
     updatedAt: new Date(file.lastModifiedDateTime ?? ''),
     folderUrl: file.folder
-      ? `https://graph.microsoft.com/v1.0/sites/${environment.sharepointSiteId}/drive/items/${file.id}/children`
+      ? `https://graph.microsoft.com/v1.0/sites/${environment.sharepointSiteId}/drives/${environment.sharepointDriveId}/items/${file.id}/children`
       : '',
     childrenCount: file.folder?.childCount,
   });
