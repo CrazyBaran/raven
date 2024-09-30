@@ -4,6 +4,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import * as Bull from '@taskforcesh/bullmq-pro';
 import { RedisOptions } from 'ioredis/built/redis/RedisOptions';
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
+import { SqlServerConnectionCredentialsAuthenticationOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionCredentialsOptions';
 
 const redisConnectionOptions = {
   host: env.get('REDIS_HOST').required().asString(),
@@ -13,6 +14,33 @@ const redisConnectionOptions = {
   tls: { minVersion: 'TLSv1.2' },
   keepAlive: 1000 * 60 * 5, // 5 minutes
 } as RedisOptions;
+
+const getAppDBAuthOptions = (): SqlServerConnectionCredentialsAuthenticationOptions => {
+  const authType = env
+    .get('TYPEORM_AUTH_TYPE')
+    .default('default')
+    .asString();
+
+  switch (authType) {
+    case 'default':
+      return {
+          type: 'default',
+          options: {
+            userName: env.get('TYPEORM_USERNAME').asString(),
+            password: env.get('TYPEORM_PASSWORD').asString(),
+          }
+        } as SqlServerConnectionCredentialsAuthenticationOptions;
+    case 'azure-active-directory-default':
+      return {
+          type: 'azure-active-directory-default',
+        } as SqlServerConnectionCredentialsAuthenticationOptions;
+    default:
+      return {
+        type: 'default',
+        options: {},
+      };
+  }
+}
 
 export const environment = {
   app: {
@@ -87,8 +115,7 @@ export const environment = {
       host: env.get('TYPEORM_HOST').required().asString(),
       port: env.get('TYPEORM_PORT').default(1433).asPortNumber(),
       database: env.get('TYPEORM_DATABASE').required().asString(),
-      username: env.get('TYPEORM_USERNAME').required().asString(),
-      password: env.get('TYPEORM_PASSWORD').required().asString(),
+      authentication: getAppDBAuthOptions(),
       synchronize: false,
       logging: false,
       debug: false,
