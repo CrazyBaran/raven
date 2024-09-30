@@ -146,6 +146,9 @@ export class DataWarehouseV2AccessService implements DataWarehouseAccessBase {
       where: {
         fundManagerDomain: fundDomain,
       },
+      order: {
+        fundManagerName: 'ASC'
+      },
       skip: skip || 0,
       take: take || 500,
     });

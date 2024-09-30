@@ -130,120 +130,138 @@ export class DataWarehouseRegenerator {
       }
     }
 
-    for (let j = 0; j < investors.length; j++) {
-      const domain = investors[j].domain;
-      const name = investors[j].investorName;
-      const isPortfolio = investors[j].isPortfolio;
-      const logoUrl = investors[j].logoUrl;
+    let retry = 0;
+    const requestRetries = 5;
+    let startingIndex = 0;
+    if (job.data?.lastSuccessIndex) {
+      startingIndex = job.data.lastSuccessIndex;
+      await job?.log(`Found last failure index: ${startingIndex}. Continuing...`);
+    }
+    for (let j = startingIndex; j < investors.length; j++) {
+      try {
+        const domain = investors[j].domain;
+        const name = investors[j].investorName;
+        const isPortfolio = investors[j].isPortfolio;
+        const logoUrl = investors[j].logoUrl;
 
-      const currentOrganisation = await this.createInvestorOrganisation({
-        domain: domain,
-        name: name,
-        initialDataSource: 'investors_dwh',
-      });
-
-      const invTag = loadedTags[name];
-      if (invTag) {
-        invTag.organisationId = currentOrganisation.id;
-        await this.tagsRepository.save(invTag);
-      } else {
-        const newTag = TagEntityFactory.createTag({
+        const currentOrganisation = await this.createInvestorOrganisation({
+          domain: domain,
           name: name,
-          type: TagTypeEnum.Investor,
-          organisationId: currentOrganisation.id,
+          initialDataSource: 'investors_dwh',
         });
 
-        await this.tagsRepository.save(newTag);
-      }
+        const invTag = loadedTags[name];
+        if (invTag) {
+          invTag.organisationId = currentOrganisation.id;
+          await this.tagsRepository.save(invTag);
+        } else {
+          const newTag = TagEntityFactory.createTag({
+            name: name,
+            type: TagTypeEnum.Investor,
+            organisationId: currentOrganisation.id,
+          });
 
-      let fm = new FundManagerEntity();
-      if (currentOrganisation.fundManagerId) {
-        fm = await this.fundManagersRepository.findOne({
-          where: { id: currentOrganisation.fundManagerId },
-        });
-      } else {
-        fm.name = name;
-      }
-      fm.domain = domain;
-      fm.isPortfolio =
-        isPortfolio === '0' || Number(isPortfolio) === 0 ? false : true;
-      fm.logoUrl = logoUrl;
-
-      if (fm.isPortfolio) {
-        fm.relationStrength = FundManagerRelationStrength.PORTFOLIO;
-      }
-
-      const fundManager = await this.fundManagersRepository.save(fm);
-
-      const parsedOrgs: OrganisationEntity[] = [];
-      const internalChunkSize = 500;
-
-      let [investments, _count] =
-        await this.dataWarehouseAccessService.getFundManagerInvestments(
-          domain,
-          0,
-          internalChunkSize,
-        );
-
-      const chunks = Math.ceil(_count / internalChunkSize);
-      for (let chunk = 0; chunk <= chunks; chunk++) {
-        if (!investments.length) {
-          continue;
+          await this.tagsRepository.save(newTag);
         }
 
-        if (chunk > 0) {
-          [investments, _count] =
-            await this.dataWarehouseAccessService.getFundManagerInvestments(
-              domain,
-              chunk * internalChunkSize,
-              internalChunkSize,
-            );
+        let fm = new FundManagerEntity();
+        if (currentOrganisation.fundManagerId) {
+          fm = await this.fundManagersRepository.findOne({
+            where: { id: currentOrganisation.fundManagerId },
+          });
+        } else {
+          fm.name = name;
         }
-        const mappedInv = investments.map((i) =>
-          this.domainResolver.cleanDomain(i.companyDomain),
-        );
+        fm.domain = domain;
+        fm.isPortfolio =
+          isPortfolio === '0' || Number(isPortfolio) === 0 ? false : true;
+        fm.logoUrl = logoUrl;
 
-        const parsedOrgsChunk = await this.organisationRepository.find({
-          relations: ['organisationDomains'],
-          where: {
-            organisationDomains: {
-              domain: In(
-                mappedInv
-              ),
+        if (fm.isPortfolio) {
+          fm.relationStrength = FundManagerRelationStrength.PORTFOLIO;
+        }
+
+        const fundManager = await this.fundManagersRepository.save(fm);
+
+        const parsedOrgs: OrganisationEntity[] = [];
+        const internalChunkSize = 500;
+
+        let [investments, _count] =
+          await this.dataWarehouseAccessService.getFundManagerInvestments(
+            domain,
+            0,
+            internalChunkSize,
+          );
+
+        const chunks = Math.ceil(_count / internalChunkSize);
+        for (let chunk = 0; chunk <= chunks; chunk++) {
+          if (!investments.length) {
+            continue;
+          }
+
+          if (chunk > 0) {
+            [investments, _count] =
+              await this.dataWarehouseAccessService.getFundManagerInvestments(
+                domain,
+                chunk * internalChunkSize,
+                internalChunkSize,
+              );
+          }
+          const mappedInv = investments.map((i) =>
+            this.domainResolver.cleanDomain(i.companyDomain),
+          );
+
+          const parsedOrgsChunk = await this.organisationRepository.find({
+            relations: ['organisationDomains'],
+            where: {
+              organisationDomains: {
+                domain: In(
+                  mappedInv
+                ),
+              },
             },
-          },
+          });
+
+          parsedOrgs.push(...parsedOrgsChunk);
+
+          if (_count < internalChunkSize) {
+            break;
+          }
+        }
+
+        for (const org of parsedOrgs) {
+          await this.fundManagerOrganisationRepository.save(
+            FundManagerOrganisationEntity.create({
+              fundManagerId: fundManager.id,
+              organisationId: org.id,
+            }),
+          );
+        }
+        portfolioInBatch += parsedOrgs.length;
+
+        await this.organisationRepository.save({
+          id: currentOrganisation.id,
+          fundManagerId: fm.id,
         });
 
-        parsedOrgs.push(...parsedOrgsChunk);
+        await job?.updateProgress(Math.floor((j / investors.length) * 100));
 
-        if (_count < internalChunkSize) {
-          break;
+        const batchSize = 100;
+        if (j % batchSize === 0) {
+          const elapsed = process.uptime() - timeStart;
+          await job?.log(`Batch: ${batchSize}, iteration: ${j}, time taken: ${elapsed}, portfolio organisations: ${portfolioInBatch}, estimated total: ${((investors.length / batchSize) * elapsed) / 60 / 60} hours`);
+          timeStart = process.uptime();
+          portfolioInBatch = 0;
         }
-      }
-
-      for (const org of parsedOrgs) {
-        await this.fundManagerOrganisationRepository.save(
-          FundManagerOrganisationEntity.create({
-            fundManagerId: fundManager.id,
-            organisationId: org.id,
-          }),
-        );
-      }
-      portfolioInBatch += parsedOrgs.length;
-
-      await this.organisationRepository.save({
-        id: currentOrganisation.id,
-        fundManagerId: fm.id,
-      });
-
-      await job?.updateProgress(Math.floor((j / investors.length) * 100));
-
-      const batchSize = 100;
-      if (j % batchSize === 0) {
-        const elapsed = process.uptime() - timeStart;
-        await job?.log(`Batch: ${batchSize}, iteration: ${j}, time taken: ${elapsed}, portfolio organisations: ${portfolioInBatch}, estimated total: ${((investors.length / batchSize) * elapsed) / 60 / 60} hours`);
-        timeStart = process.uptime();
-        portfolioInBatch = 0;
+      } catch (e) {
+        await job?.log(`ERROR ${j}: ${e?.message};`);
+        retry++;
+        if (retry < requestRetries) {
+          j--;
+        } else {
+          job.updateData({lastSuccessIndex: j - 1})
+          throw e;
+        }
       }
     }
   }
