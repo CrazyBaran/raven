@@ -28,15 +28,17 @@ Links:
 
 ### Staging
 
-The staging environment is used for testing purposes. It is set up to use a staging database and cache instances. Both can be accessed locally, but bear in mind that the Entra ID is not configured to be used locally, which means that trying to run the staging enviromnent locally will not be fully possible.
+**In September 2024, the staging instance was shut down and two new environments were introduced: Raven_IaC new DEV and Raven_Prod_v2 PROD**
 
-The creation of that environment is done by the Bicep definition to a degree - the configuration of the webapp still had to be done manually.
+~~The staging environment is used for testing purposes. It is set up to use a staging database and cache instances. Both can be accessed locally, but bear in mind that the Entra ID is not configured to be used locally, which means that trying to run the staging enviromnent locally will not be fully possible.~~
 
-The staging environment has its own Entra ID auth app registration, and it's a production organisation in Azure (the same that will be used for production). The Sharepoint instance integration is also located in the same organisation in Azure as Entra ID, so it can access actual user files.
+~~The creation of that environment is done by the Bicep definition to a degree - the configuration of the webapp still had to be done manually.~~
 
-The Affinity instance set for the staging environment is a dev instance and it points to its own list.
+~~The staging environment has its own Entra ID auth app registration, and it's a production organisation in Azure (the same that will be used for production). The Sharepoint instance integration is also located in the same organisation in Azure as Entra ID, so it can access actual user files.~~
 
-The deployment is done manually when it is considered stable - it requires running backend and frontend pipelines.
+~~The Affinity instance set for the staging environment is a dev instance and it points to its own list.~~
+
+~~The deployment is done manually when it is considered stable - it requires running backend and frontend pipelines.~~
 
 Links:
 * [Client](https://raven-staging.mubadalacapital.ae/)
@@ -45,10 +47,43 @@ Links:
 * [Azure Resource Group](https://portal.azure.com/#@mubadalacapital.ae/resource/subscriptions/abe94066-828a-44ca-aceb-ba23fb86495f/resourceGroups/Raven_Staging/overview)
 * [Web App logs](https://portal.azure.com/#view/WebsitesExtension/SCIFrameBlade/id/%2Fsubscriptions%2Fabe94066-828a-44ca-aceb-ba23fb86495f%2FresourceGroups%2Fraven_staging%2Fproviders%2FMicrosoft.Web%2Fsites%2Fapp-raven-prod-uks/categoryId/AvailabilityAndPerformanceLinux/optionalParameters~/%5B%7B%22key%22%3A%22categoryId%22%2C%22value%22%3A%22AvailabilityAndPerformanceLinux%22%7D%2C%7B%22key%22%3A%22detectorId%22%2C%22value%22%3A%22LinuxLogViewer%22%7D%2C%7B%22key%22%3A%22detectorType%22%2C%22value%22%3A%22Detector%22%7D%2C%7B%22key%22%3A%22startTime%22%7D%2C%7B%22key%22%3A%22endTime%22%7D%2C%7B%22key%22%3A%22diagnoseAndSolveWorkflowId%22%2C%22value%22%3A%224669c4ae-9c6b-4e39-8b15-e7b3e7212cd5%22%7D%5D)
 
+### New DEV
+
+New development instance was set up with similar infrastructure setup as in production.
+Data was fully migrated from current development environment.
+
+The deployment is done each time a new commit is pushed to the `dev-iac` branch. 
+
+Links:
+* [Client](https://raven-dev.test.mubadalacapital.ae/)
+* [API](https://raven-dev-api.test.mubadalacapital.ae/swagger)
+* [BullMQ Dashboard](https://raven-dev-api.test.mubadalacapital.ae/bg)
+* [Azure Resource Group](https://portal.azure.com/#@test.mubadalacapital.ae/resource/subscriptions/34fa07c2-8084-4baf-bb39-359547158d5e/resourceGroups/Raven_IaC/overview)
+* [Web App logs](https://portal.azure.com/#@test.mubadalacapital.ae/resource/subscriptions/34fa07c2-8084-4baf-bb39-359547158d5e/resourceGroups/raven_iac/providers/Microsoft.Web/sites/as-use-mc-raven-dev-04/analytics)
+
+#### hosts file requirement
+Connection to new dev enviromnent requires access via Curvestone VPN and modified hosts file:
+`40.120.88.35    raven-dev.test.mubadalacapital.ae`
+`40.120.88.39    raven-dev-api.test.mubadalacapital.ae`
+
+
 ### Production
 
-This environment is not yet set up. It should follow the same Bicep definition as the staging environment, but with different configuration values.
+Production is set up in resource group Raven_Prod_v2. Infrastructure setup similar to new DEV.
 
+Pushes to branch `prod-iac` deploy the enviromnent.
+
+Links:
+* [Client](https://raven.mubadalacapital.ae/)
+* [API](https://raven-api.mubadalacapital.ae/swagger)
+* [BullMQ Dashboard](https://raven-api.mubadalacapital.ae/bg)
+* [Azure Resource Group](https://portal.azure.com/#@mubadalacapital.ae/resource/subscriptions/abe94066-828a-44ca-aceb-ba23fb86495f/resourceGroups/Raven_Prod_v2/overview)
+* [Web App logs](https://portal.azure.com/#@mubadalacapital.ae/resource/subscriptions/abe94066-828a-44ca-aceb-ba23fb86495f/resourceGroups/Raven_Prod_v2/providers/Microsoft.Web/sites/as-use-mc-raven-prod-01/analytics)
+
+#### hosts file requirement
+Connection to production enviromnent requires access via Curvestone VPN and modified hosts file:
+`20.46.145.200   raven.mubadalacapital.ae`
+`20.46.145.205   raven-api.mubadalacapital.ae`
 
 ## Maintenance
 

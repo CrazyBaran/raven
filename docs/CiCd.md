@@ -9,12 +9,22 @@ The CI/CD pipelines for every environment are based on the same set of templates
 
 The pipelines can be accessed in the [Azure DevOps page](https://dev.azure.com/mubadalacapital/Raven/_build).
 
+### New DEV and new PRODUCTION v2
+
+YAML Templates for new dev and production environments are set up on branches:
+- `dev-iac` for new DEV
+- `prod-iac` for PROD v2
+
 ## Setup
 
 The backend pipeline setup requires the creation of the underlying infrastructure & identities in Azure. We need to have the service principal connection that will be used as RESOURCE_MANAGER_CONN variable. We need the app service for the backend and a container registry that will store the images.
 
-For the frontend, on top of the resource manager connection we established already, we need the storage account and a CDN profile.
+For the frontend, on top of the resource manager connection we established already, we need the storage account and a CDN profile*.
 
+'*' - `dev-iac` and `prod-iac` environments do not use CDN anymore - we switched to use Azure Static Web App instead of CDN.
+
+[new DEV pipelines](https://dev.azure.com/mubadalacapital/Raven/_build?definitionScope=%5CDEV%20v2%20(Raven_IaC)%20in%20TestOneMubadala)
+[new PROD pipielines](https://dev.azure.com/mubadalacapital/Raven/_build?definitionScope=%5CPROD%20v2%20(Raven_Prod_v2)%20in%20OneMubadala)
 ## Templates
 
 The templates have a set of steps that make it possible to build, test, and deploy the application. The templates have the ability to skip the deployment for the PR build run purposes by avoiding the deployment from a branch that is not `main`.

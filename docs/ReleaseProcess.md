@@ -21,6 +21,17 @@ We are using Azure DevOps for CI/CD. The deployment process is automated and tri
 
 Please note that we are not having a separate branch for the staging environment. The staging environment is a manual promotion of the development environment once the changes are considered stable.
 
+## New DEV / new PROD deployment
+
+For new dev and production environment, separate branches were created.
+
+DEV - `dev-iac`
+PROD - `prod-iac`
+
+YAML templates for those environments are added on those branches.
+
+**Deployment can be done with code push or creating and merging Pull Request to this branches**
+
 ## Process, step-by-step
 
 The checklist is available on [Notion page](https://www.notion.so/curvestone/Checklist-for-Staging-updates-4ed637add51d4c6cbc3b86dcaa35758c?pvs=4), but let's outline the steps here as well.
@@ -31,23 +42,25 @@ The checklist is available on [Notion page](https://www.notion.so/curvestone/Che
     * Make sure that the client is aware of the release to be conducted and has no objections (any operations that might be impacted by the release, internal meetings, etc.).
 2. Go to the Azure DevOps and check the pipelines
     * Make sure that the pipelines are green and that the latest commit is the one that you want to release.
-3. [Optional] Make configuration changes to the staging environment
+3. [Optional] Make configuration changes to the production environment
     * If there are any configuration changes that need to be made, make them now (unless they require the new backend version to be deployed first).
     * this includes any env variables to be set to the webapp - it is advised to change them after stopping the service.
 4. If the feature flags are used, make sure that they are set correctly
     * Check whether `environment.prod.ts` file for the client has the correct feature flags set.
-5. Run the Staging pipelines
-    * Run the backend pipeline first, then the frontend pipeline.
+5. Prepare Pull Request to `prod-iac` branch from `main` branch. Instead of merging main branch directly, we can also create branch from main and than create PR with that branch.
+    * Review changes
     * Make sure that the pipelines are green.
+    * Merge pull request.
+    * Pipelines should run automatically after merging
     * There is no need for manual migrations as it is a part of the pipeline.
-6. Check the health of staging environment
-    * Make sure that the staging environment is working as expected (access Swagger page, check the frontend, etc.).
+6. Check the health of production environment
+    * Make sure that the production environment is working as expected (access Swagger page, check the frontend, etc.).
 7. [Optional] Make static data migrations for pipelines
    * use `GET /static-data/pipelines` on DEV to gather the tree of pipelines
-   * use `PATCH /static-data/pipelines` on STAGING with the body consisting of the response from the request above to get the list of differences between environments
+   * use `PATCH /static-data/pipelines` on PRODUCTION with the body consisting of the response from the request above to get the list of differences between environments
      * please note that you will likely get at least one difference, and it will be in the `PipelineDefinitionEntity` due to pointing to a different list. **Remember to ignore it while applying changes!**
    * when in doubt, send the list of differences to the QA team to confirm the changes
-   * use `POST /static-data/pipelines` on STAGING with the body consisting of the list of changes acquired above to apply the changes
+   * use `POST /static-data/pipelines` on PRODUCTION with the body consisting of the list of changes acquired above to apply the changes
    * if there are any changes that were applied by that process, please record them as a config change in a `docs/static-data/config-changes` folder and `docs/static-data` folder. See the description of that below.
 8. [Optional] Make static data migrations for templates
   * Do the same as above, just with the `/static-data/templates` endpoint.
@@ -55,7 +68,7 @@ The checklist is available on [Notion page](https://www.notion.so/curvestone/Che
 10. Refresh the cache
     * Use the `GET /dwh/regenerate-cache` endpoint to queue a job that would regenerate the Data Warehouse related cache (Redis and the proxy tables used for filtering purposes).
     * Make sure that the job is queued and completed successfully (use Bull Dashboard for that purpose, `/bg`).
-12. Make the QA team aware that the deployment is done and let them smoke test the environment.
+11. Make the QA team aware that the deployment is done and let them smoke test the environment.
 
 ### Recording changes
 

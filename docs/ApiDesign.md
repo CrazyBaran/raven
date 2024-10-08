@@ -16,9 +16,9 @@ Most of those modules are not externalised into the library, as there was no rea
 Some of the long-running tasks were made into background jobs. They way they are triggered depends on what they do, but usually they are consumed as soon as possible. The jobs are managed by BullMQ Pro, which is a library that allows for easy management of queues and background jobs.
 
 1. `DataWarehouseQueue-Regenerate`
-   * regenerates Redis cache related to DWH and triggers an event that ensures that DWH organisations are synced with Raven. Also, regenerates investors and industries tables in the database (effectively doing the RegenerateStatic stuff)
+   * regenerates Redis cache related to DWH and triggers an event that ensures that DWH organisations are synced with Raven. Also, regenerates investors and industries tables in the database (effectively doing the RegenerateStatic stuff). Fund managers regeneration is also triggered at the end of this job.
 2. `DataWarehouseQueue-RegenerateStatic`
-   * regenerates just the industries and investors in our database based on the data from DWH.
+   * regenerates just the industries,  investors and fund managers in our database based on the data from DWH.
 3. `DataWarehouseQueue-RegenerateProxy`
    * for each of our companies, adds/regenerates a record in the proxy tables so that we can easily sort/query/search by single data source.
 4. `AffinityQueue-Regenerate`
