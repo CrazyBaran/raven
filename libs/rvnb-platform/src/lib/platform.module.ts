@@ -24,11 +24,7 @@ export class PlatformModule {
           provide: Redis,
           useFactory: (): Redis => {
             if (!options.disableRedisTest && options.redisOptions) {
-              return new Redis({
-                ...options.redisOptions,
-                retryStrategy: (times): number =>
-                  times > 3 ? undefined : 5000,
-              });
+              return new Redis(options.redisOptions);
             }
           },
         },

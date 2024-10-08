@@ -3,8 +3,8 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import * as Bull from '@taskforcesh/bullmq-pro';
 import { RedisOptions } from 'ioredis/built/redis/RedisOptions';
-import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
 import { SqlServerConnectionCredentialsAuthenticationOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionCredentialsOptions';
+import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
 
 const redisConnectionOptions = {
   host: env.get('REDIS_HOST').required().asString(),
@@ -13,34 +13,34 @@ const redisConnectionOptions = {
   db: env.get('REDIS_DB_INDEX').default(1).asInt(),
   tls: { minVersion: 'TLSv1.2' },
   keepAlive: 1000 * 60 * 5, // 5 minutes
+  retryStrategy: (times: number): number =>
+    times > 20 ? undefined : times * 2000,
 } as RedisOptions;
 
-const getAppDBAuthOptions = (): SqlServerConnectionCredentialsAuthenticationOptions => {
-  const authType = env
-    .get('TYPEORM_AUTH_TYPE')
-    .default('default')
-    .asString();
+const getAppDBAuthOptions =
+  (): SqlServerConnectionCredentialsAuthenticationOptions => {
+    const authType = env.get('TYPEORM_AUTH_TYPE').default('default').asString();
 
-  switch (authType) {
-    case 'default':
-      return {
+    switch (authType) {
+      case 'default':
+        return {
           type: 'default',
           options: {
             userName: env.get('TYPEORM_USERNAME').asString(),
             password: env.get('TYPEORM_PASSWORD').asString(),
-          }
+          },
         } as SqlServerConnectionCredentialsAuthenticationOptions;
-    case 'azure-active-directory-default':
-      return {
+      case 'azure-active-directory-default':
+        return {
           type: 'azure-active-directory-default',
         } as SqlServerConnectionCredentialsAuthenticationOptions;
-    default:
-      return {
-        type: 'default',
-        options: {},
-      };
-  }
-}
+      default:
+        return {
+          type: 'default',
+          options: {},
+        };
+    }
+  };
 
 export const environment = {
   app: {
