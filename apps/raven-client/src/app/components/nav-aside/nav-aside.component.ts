@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ShelfStoreFacade } from '@app/client/shared/shelf';
 import { ToggleMenuButtonComponent } from '@app/client/shared/ui';
 import { ClickOutsideDirective, DialogUtil } from '@app/client/shared/util';

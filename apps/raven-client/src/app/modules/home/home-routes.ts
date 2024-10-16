@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { Routes } from '@angular/router';
 
 import { provideWebsocketEffects } from '@app/client/core/websockets';

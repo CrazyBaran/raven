@@ -9,6 +9,7 @@ import { Params, RouterOutlet } from '@angular/router';
 import { ENVIRONMENT } from '@app/client/core/environment';
 import { PipelinesActions, pipelinesQuery } from '@app/client/pipelines/state';
 import { RemindersActions, remindersQuery } from '@app/client/reminders/state';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ShelfModule } from '@app/client/shared/shelf';
 import { Store } from '@ngrx/store';
 import { WindowModule } from '@progress/kendo-angular-dialog';
