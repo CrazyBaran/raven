@@ -257,54 +257,75 @@ export class FundManagersService {
       fundManagerEntity.relationStrength = options.relationshipStrength;
     }
 
-    if (options.keyRelationships?.length) {
-      await this.fundManagerKeyRelationshipRepository.manager.transaction(
-        async (tem) => {
-          const currentRelations =
-            await this.fundManagerKeyRelationshipRepository.find({
-              where: {
-                fundManagerId: fundManagerEntity.id,
-              },
-            });
-          const relationsToAdd = [];
-          await tem.remove(currentRelations);
-          for (const user of options.keyRelationships) {
-            relationsToAdd.push(
-              FundManagerKeyRelationshipEntity.create({
-                userId: user,
-                fundManagerId: fundManagerEntity.id,
-              }),
-            );
-          }
+    if (options.keyRelationships !== undefined) {
+      if (options.keyRelationships.length) {
+        await this.fundManagerKeyRelationshipRepository.manager.transaction(
+          async (tem) => {
+            const currentRelations =
+              await this.fundManagerKeyRelationshipRepository.find({
+                where: {
+                  fundManagerId: fundManagerEntity.id,
+                },
+              });
+            const relationsToAdd = [];
+            await tem.remove(currentRelations);
+            for (const user of options.keyRelationships) {
+              relationsToAdd.push(
+                FundManagerKeyRelationshipEntity.create({
+                  userId: user,
+                  fundManagerId: fundManagerEntity.id,
+                }),
+              );
+            }
 
-          await tem.save(relationsToAdd);
-        },
-      );
+            await tem.save(relationsToAdd);
+          },
+        );
+      } else {
+        const currentRelations =
+          await this.fundManagerKeyRelationshipRepository.find({
+            where: {
+              fundManagerId: fundManagerEntity.id,
+            },
+          });
+        await this.fundManagerKeyRelationshipRepository.remove(
+          currentRelations,
+        );
+      }
     }
 
-    if (options.industryTags?.length) {
-      await this.fundManagerIndustryRepository.manager.transaction(
-        async (tem) => {
-          const currentRelations =
-            await this.fundManagerIndustryRepository.find({
-              where: {
-                fundManagerId: fundManagerEntity.id,
-              },
-            });
-          const relationsToAdd = [];
-          await tem.remove(currentRelations);
-          for (const tag of options.industryTags) {
-            relationsToAdd.push(
-              FundManagerIndustryEntity.create({
-                tagId: tag.id,
-                fundManagerId: fundManagerEntity.id,
-              }),
-            );
-          }
+    if (options.industryTags !== undefined) {
+      if (options.industryTags.length) {
+        await this.fundManagerIndustryRepository.manager.transaction(
+          async (tem) => {
+            const currentRelations =
+              await this.fundManagerIndustryRepository.find({
+                where: {
+                  fundManagerId: fundManagerEntity.id,
+                },
+              });
+            const relationsToAdd = [];
+            await tem.remove(currentRelations);
+            for (const tag of options.industryTags) {
+              relationsToAdd.push(
+                FundManagerIndustryEntity.create({
+                  tagId: tag.id,
+                  fundManagerId: fundManagerEntity.id,
+                }),
+              );
+            }
 
-          await tem.save(relationsToAdd);
-        },
-      );
+            await tem.save(relationsToAdd);
+          },
+        );
+      } else {
+        const currentRelations = await this.fundManagerIndustryRepository.find({
+          where: {
+            fundManagerId: fundManagerEntity.id,
+          },
+        });
+        await this.fundManagerIndustryRepository.remove(currentRelations);
+      }
     }
 
     delete fundManagerEntity.organisations;

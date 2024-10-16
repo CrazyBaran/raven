@@ -29,7 +29,7 @@ export const UPDATE_MANAGER_FORM_FN = new InjectionToken(
           avgCheckSizeCurrency: [value.avgCheckSizeCurrency || Currency.USD],
           aum: [value.aum ? Number(value.aum) : 0],
           aumCurrency: [value.aumCurrency || Currency.USD],
-          geography: [value.geography?.split(', ') || []],
+          geography: [value.geography ? value.geography.split(', ') : []],
           industryTags: [value.industryTags || []],
         });
       };
