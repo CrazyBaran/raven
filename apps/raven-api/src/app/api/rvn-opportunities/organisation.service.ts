@@ -422,9 +422,46 @@ export class OrganisationService {
 
   public async ensureAllAffinityOrganisationsAsOrganisations(): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll();
-    const existingOrganisations = await this.organisationRepository.find({
-      relations: ['organisationDomains'],
+
+    // Extract unique domains from affinityData
+    const domains = new Set<string>();
+    affinityData.forEach((affinity) => {
+      affinity.organizationDto.domains.forEach((domain) => {
+        domains.add(domain);
+      });
     });
+
+    // Convert Set to Array
+    const domainArray = Array.from(domains);
+
+    // Fetch organisations in batches
+    const batchSize = 2000;
+    const existingOrganisations = [];
+
+    const fetchBatch = async (
+      batch: Array<string>,
+    ): Promise<Array<OrganisationEntity>> => {
+      return await this.organisationRepository
+        .createQueryBuilder('organisation')
+        .leftJoinAndSelect(
+          'organisation.organisationDomains',
+          'organisationDomain',
+        )
+        .where('organisationDomain.domain IN (:...domains)', { domains: batch })
+        .select(['organisation.id', 'organisationDomain.domain'])
+        .getMany();
+    };
+
+    const batches: Array<Array<string>> = [];
+    for (let i = 0; i < domainArray.length; i += batchSize) {
+      const batch = domainArray.slice(i, i + batchSize);
+      batches.push(batch);
+    }
+
+    for await (const batch of batches.map(fetchBatch)) {
+      existingOrganisations.push(...batch);
+    }
+
     const nonExistentAffinityData = this.getNonExistentAffinityData(
       affinityData,
       existingOrganisations,
@@ -433,9 +470,11 @@ export class OrganisationService {
     this.logger.log(
       `Found ${nonExistentAffinityData.length} non-existent organisations`,
     );
+
     for (const organisation of nonExistentAffinityData) {
       await this.createFromAffinity(organisation);
     }
+
     this.logger.log(`Found non-existent organisations synced`);
   }
 

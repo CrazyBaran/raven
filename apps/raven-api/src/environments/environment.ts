@@ -122,7 +122,7 @@ export const environment = {
   database: {
     orm: {
       type: 'mssql',
-      requestTimeout: 30000,
+      requestTimeout: 60000,
       host: env.get('TYPEORM_HOST').default('localhost').asString(),
       port: env.get('TYPEORM_PORT').default(1433).asPortNumber(),
       database: env.get('TYPEORM_DATABASE').default('test').asString(),
@@ -256,7 +256,7 @@ export const environment = {
     },
     database: {
       type: 'mssql',
-      requestTimeout: 30000,
+      requestTimeout: 60000,
       host: env.get('DWH_HOST').asString(),
       port: env.get('DWH_PORT').default(1433).asPortNumber(),
       database: env.get('DWH_DATABASE').asString(),

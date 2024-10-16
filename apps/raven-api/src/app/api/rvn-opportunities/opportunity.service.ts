@@ -180,6 +180,10 @@ export class OpportunityService {
             mappedFrom: pipelineStage.mappedFrom,
           },
           team: teamsForOpportunities[entity.id],
+          sharePointDirectory:
+            SharepointDirectoryStructureGenerator.getDirectoryForSharepointEnabledEntity(
+              entity,
+            ),
         };
         return data;
       },

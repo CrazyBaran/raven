@@ -29,16 +29,14 @@ export class AffinityCacheService {
         kind: oTel.SpanKind.INTERNAL,
       },
       async (span: oTel.Span) => {
-        await this.store.client.hset(
-          AFFINITY_CACHE,
-          organisations.reduce((obj, organisation) => {
-            return {
-              ...obj,
-              [organisation.organizationDto.domains.join(',')]:
-                JSON.stringify(organisation),
-            };
-          }, {}),
-        );
+        const reducedOrganisations = {};
+        for (const organisation of organisations) {
+          const key = organisation.organizationDto.domains.join(',');
+          reducedOrganisations[key] = JSON.stringify(organisation);
+        }
+
+        await this.store.client.hset(AFFINITY_CACHE, reducedOrganisations);
+
         span.end();
       },
     );

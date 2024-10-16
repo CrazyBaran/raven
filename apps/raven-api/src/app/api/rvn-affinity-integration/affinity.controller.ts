@@ -1,7 +1,17 @@
 import { GenericResponseSchema, Public } from '@app/rvns-api';
-import { Body, Controller, HttpException, Post, Query } from '@nestjs/common';
+import { RoleEnum } from '@app/rvns-roles';
+import { Roles } from '@app/rvns-roles-api';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBody,
+  ApiOAuth2,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -33,5 +43,16 @@ export class AffinityController {
     return this.affinityProducer.enqueueHandleWebhook(
       body as AffinityWebhookPayloadDto,
     );
+  }
+
+  @Get('regenerate-cache')
+  @ApiOperation({
+    summary: 'Regenerate the Affinity cache.',
+  })
+  @ApiTags('DataWarehouse')
+  @ApiOAuth2(['openid'])
+  @Roles(RoleEnum.User, RoleEnum.SuperAdmin)
+  public async regenerate(): Promise<void> {
+    await this.affinityProducer.enqueueRegenerateAffinityData();
   }
 }
