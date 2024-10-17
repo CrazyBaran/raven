@@ -35,14 +35,11 @@ export class FindTagByOgranisationPipe
       (tag) => (tag as VersionTagEntity).opportunityTagId === null,
     );
 
-    if (tag.length > 1) {
-      throw new Error(
-        'More than one tag found for given organisation. Invalid configuration!',
-      );
-    }
-    if (tag.length === 1) {
+    // TODO: we should return array of tags and handle all of them
+    if (tag.length > 0) {
       return tag[0];
     }
+
     return null;
   }
 }
