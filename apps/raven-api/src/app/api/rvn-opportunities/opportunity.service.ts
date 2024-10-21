@@ -8,6 +8,7 @@ import { TagTypeEnum } from '@app/rvns-tags';
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JobPro } from '@taskforcesh/bullmq-pro';
 import { Repository } from 'typeorm';
 import { environment } from '../../../environments/environment';
 import { SharepointDirectoryStructureGenerator } from '../../shared/sharepoint-directory-structure.generator';
@@ -497,13 +498,19 @@ export class OpportunityService {
     };
   }
 
-  public async ensureAllAffinityEntriesAsOpportunities(): Promise<void> {
+  public async ensureAllAffinityEntriesAsOpportunities(
+    job: JobPro,
+  ): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll(
       (data) => data.stage != null && data.stage.text != null,
     );
     const opportunities = await this.opportunityRepository.find({
       relations: ['organisation', 'organisation.organisationDomains'],
     });
+
+    job.log(
+      `ensureAllAffinityEntriesAsOpportunities: ${affinityData.length} entries from affinityData, ${opportunities.length} opportunities`,
+    );
 
     for (const affinityEntry of affinityData) {
       const existingOpportunity = opportunities.find((opportunity) =>

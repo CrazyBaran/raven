@@ -35,7 +35,9 @@ export class OrganisationProcessor extends AbstractSimpleQueueProcessor<Affinity
         await this.organisationService.ensureAllAffinityOrganisationsAsOrganisations(
           job,
         );
-        await this.opportunityService.ensureAllAffinityEntriesAsOpportunities();
+        await this.opportunityService.ensureAllAffinityEntriesAsOpportunities(
+          job,
+        );
         return true;
       }
       case ORGANISATION_QUEUE__ENSURE_ALL_DWH_ENTRIES_AS_ORGANISATIONS: {
