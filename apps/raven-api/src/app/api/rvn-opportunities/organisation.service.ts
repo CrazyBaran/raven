@@ -477,13 +477,8 @@ export class OrganisationService {
       `ensureAllAffinityOrganisationsAsOrganisations: Found ${nonExistentAffinityData.length} non-existent organisations`,
     );
 
-    const i = 0;
-
     for (const organisation of nonExistentAffinityData) {
       await this.createFromAffinity(organisation);
-      job.log(
-        `ensureAllAffinityOrganisationsAsOrganisations: Created ${i} affinity organisation`,
-      );
     }
 
     this.logger.log(`Found non-existent organisations synced`);

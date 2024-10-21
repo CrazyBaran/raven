@@ -523,6 +523,10 @@ export class OpportunityService {
           affinityEntry.organizationDto.domain,
         );
 
+        if (!organisation) {
+          return;
+        }
+
         const pipeline =
           await this.pipelineUtilityService.getDefaultPipelineDefinition();
         const pipelineStage =
