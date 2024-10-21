@@ -513,28 +513,36 @@ export class OpportunityService {
     );
 
     for (const affinityEntry of affinityData) {
-      const existingOpportunity = opportunities.find((opportunity) =>
-        opportunity.organisation.domains.includes(
-          affinityEntry.organizationDto.domain,
-        ),
-      );
-      if (!existingOpportunity) {
-        const organisation = await this.organisationService.findByDomain(
-          affinityEntry.organizationDto.domain,
+      try {
+        const existingOpportunity = opportunities.find((opportunity) =>
+          opportunity.organisation.domains.includes(
+            affinityEntry.organizationDto.domain,
+          ),
         );
-
-        if (!organisation) {
-          return;
-        }
-
-        const pipeline =
-          await this.pipelineUtilityService.getDefaultPipelineDefinition();
-        const pipelineStage =
-          await this.pipelineUtilityService.mapStageForDefaultPipeline(
-            affinityEntry.stage?.text,
+        if (!existingOpportunity) {
+          const organisation = await this.organisationService.findByDomain(
+            affinityEntry.organizationDto.domain,
           );
 
-        await this.createOpportunity(organisation[0], pipeline, pipelineStage);
+          if (!organisation) {
+            return;
+          }
+
+          const pipeline =
+            await this.pipelineUtilityService.getDefaultPipelineDefinition();
+          const pipelineStage =
+            await this.pipelineUtilityService.mapStageForDefaultPipeline(
+              affinityEntry.stage?.text,
+            );
+
+          await this.createOpportunity(
+            organisation[0],
+            pipeline,
+            pipelineStage,
+          );
+        }
+      } catch (err) {
+        this.logger.log(err);
       }
     }
   }
