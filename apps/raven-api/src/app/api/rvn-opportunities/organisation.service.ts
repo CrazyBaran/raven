@@ -420,7 +420,9 @@ export class OrganisationService {
     }
   }
 
-  public async ensureAllAffinityOrganisationsAsOrganisations(): Promise<void> {
+  public async ensureAllAffinityOrganisationsAsOrganisations(
+    job: JobPro,
+  ): Promise<void> {
     const affinityData = await this.affinityCacheService.getAll();
 
     // Extract unique domains from affinityData
@@ -471,11 +473,22 @@ export class OrganisationService {
       `Found ${nonExistentAffinityData.length} non-existent organisations`,
     );
 
+    job.log(
+      `ensureAllAffinityOrganisationsAsOrganisations: Found ${nonExistentAffinityData.length} non-existent organisations`,
+    );
+
+    const i = 0;
+
     for (const organisation of nonExistentAffinityData) {
       await this.createFromAffinity(organisation);
+      job.log(
+        `ensureAllAffinityOrganisationsAsOrganisations: Created ${i} affinity organisation`,
+      );
     }
 
     this.logger.log(`Found non-existent organisations synced`);
+
+    job.log(`ensureAllAffinityOrganisationsAsOrganisations: synced`);
   }
 
   public async ensureAllDataWarehouseOrganisationsAsOrganisations(
