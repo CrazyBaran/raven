@@ -21,6 +21,7 @@ export interface AffinityJobData<EncryptedType = Record<string, string>> {
   group: { concurrency: 3 },
   removeOnComplete: { count: 100 },
   removeOnFail: { count: 100 },
+  lockDuration: 4 * 30000,
 })
 export class AffinityProcessor extends AbstractSimpleQueueProcessor<AffinityJobData> {
   public constructor(
