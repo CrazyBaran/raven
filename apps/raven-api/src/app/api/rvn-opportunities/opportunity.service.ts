@@ -512,39 +512,37 @@ export class OpportunityService {
       `ensureAllAffinityEntriesAsOpportunities: ${affinityData.length} entries from affinityData, ${opportunities.length} opportunities`,
     );
 
+    let i = 0;
     for (const affinityEntry of affinityData) {
-      try {
-        const existingOpportunity = opportunities.find((opportunity) =>
-          opportunity.organisation.domains.includes(
-            affinityEntry.organizationDto.domain,
-          ),
+      const existingOpportunity = opportunities.find((opportunity) =>
+        opportunity.organisation.domains.includes(
+          affinityEntry.organizationDto.domain,
+        ),
+      );
+      if (!existingOpportunity) {
+        const organisation = await this.organisationService.findByDomain(
+          affinityEntry.organizationDto.domain,
         );
-        if (!existingOpportunity) {
-          const organisation = await this.organisationService.findByDomain(
-            affinityEntry.organizationDto.domain,
-          );
 
-          if (!organisation) {
-            return;
-          }
-
-          const pipeline =
-            await this.pipelineUtilityService.getDefaultPipelineDefinition();
-          const pipelineStage =
-            await this.pipelineUtilityService.mapStageForDefaultPipeline(
-              affinityEntry.stage?.text,
-            );
-
-          await this.createOpportunity(
-            organisation[0],
-            pipeline,
-            pipelineStage,
-          );
+        if (!organisation) {
+          return;
         }
-      } catch (err) {
-        this.logger.log(err);
+
+        const pipeline =
+          await this.pipelineUtilityService.getDefaultPipelineDefinition();
+        const pipelineStage =
+          await this.pipelineUtilityService.mapStageForDefaultPipeline(
+            affinityEntry.stage?.text,
+          );
+
+        await this.createOpportunity(organisation[0], pipeline, pipelineStage);
       }
+
+      i++;
+      await job.updateProgress(Math.round(50 + (i / affinityData.length) * 50));
     }
+
+    job.log(`ensureAllAffinityEntriesAsOpportunities: synced`);
   }
 
   public async duplicateAndReopen(

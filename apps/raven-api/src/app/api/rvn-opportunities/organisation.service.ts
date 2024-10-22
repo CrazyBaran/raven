@@ -460,8 +460,8 @@ export class OrganisationService {
       batches.push(batch);
     }
 
-    for await (const batch of batches.map(fetchBatch)) {
-      existingOrganisations.push(...batch);
+    for await (const batch of batches) {
+      existingOrganisations.push(...(await fetchBatch(batch)));
     }
 
     const nonExistentAffinityData = this.getNonExistentAffinityData(
@@ -469,19 +469,20 @@ export class OrganisationService {
       existingOrganisations,
     );
 
-    this.logger.log(
-      `Found ${nonExistentAffinityData.length} non-existent organisations`,
-    );
-
     job.log(
       `ensureAllAffinityOrganisationsAsOrganisations: Found ${nonExistentAffinityData.length} non-existent organisations`,
     );
 
+    let i = 0;
+
     for (const organisation of nonExistentAffinityData) {
       await this.createFromAffinity(organisation);
-    }
 
-    this.logger.log(`Found non-existent organisations synced`);
+      i++;
+      await job.updateProgress(
+        Math.round((i / nonExistentAffinityData.length) * 50),
+      );
+    }
 
     job.log(`ensureAllAffinityOrganisationsAsOrganisations: synced`);
   }
