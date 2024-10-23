@@ -45,6 +45,11 @@ export class TagsService {
         'tag.organisation',
         'organisation',
       ).leftJoinAndSelect('organisation.organisationDomains', 'domains');
+
+      // NOTE filter out those with https://placeholder.com domain
+      qb.andWhere('domains.domain NOT IN (:...placeholderDomains)', {
+        placeholderDomains: ['https://placeholder.com', 'placeholder.com'],
+      });
     }
 
     if (type && type === TagTypeEnum.Investor) {
