@@ -27,6 +27,7 @@ import {
   TagComponent,
   UserTagDirective,
 } from '@app/client/shared/ui';
+import { OpenInNewTabDirective } from '@app/client/shared/ui-directives';
 import { DropdownNavigationComponent } from '@app/client/shared/ui-router';
 import { QuickFiltersTemplateComponent } from '@app/client/shared/ui-templates';
 import {
@@ -51,7 +52,6 @@ import {
 } from '@progress/kendo-angular-treelist';
 import * as _ from 'lodash';
 import { Observable, combineLatest, filter, first, map, startWith } from 'rxjs';
-import { OpenInNewTabDirective } from '../../../../../../shared/ui-directives/src';
 import { PickerContainerComponent } from '../picker-container/picker-container.component';
 
 const opportunityFilesQueryParams = ['tag'] as const;
@@ -103,6 +103,7 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
     opportunitiesQuery.selectIsTeamMemberForCurrentOpportunity,
     selectQueryParam('tag'),
     filesQuery.selectFilteredFilesByTags,
+    opportunitiesQuery.selectOpportunityTemplateTabs,
     (
       files,
       tags,
@@ -113,12 +114,15 @@ export const selectFilesTableViewModelFactory = (environment: Environment) =>
       isTeamMember,
       tag,
       filteredFilesByTags,
+      opportunityTemplateTabs,
     ) => {
       return {
         source: files
           .filter((t) => t.folderId === opportunity?.sharepointDirectoryId)
           .map(toFileRow(environment)),
-        tags,
+        tags: tags.filter((tag) =>
+          opportunityTemplateTabs.some((t) => t.id === tag.tabId),
+        ),
         opportunity,
         isLoading:
           !opportunity || !loadedFolders[opportunity.sharepointDirectoryId!],

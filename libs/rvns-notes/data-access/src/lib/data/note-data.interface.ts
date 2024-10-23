@@ -71,6 +71,7 @@ export interface NoteTabsWithRelatedNotesData
 export interface NoteWithRelationsData<T = NoteTabWithFieldGroupsData>
   extends NoteData {
   noteTabs: T[];
+  templateTabs: Array<{ id: string; name: string }>;
   noteFieldGroups: NoteFieldGroupsWithFieldData[];
 }
 

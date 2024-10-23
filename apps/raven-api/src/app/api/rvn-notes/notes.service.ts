@@ -917,7 +917,11 @@ export class NotesService {
           ),
         };
       }),
-
+      templateTabs:
+        noteEntity.template?.tabs?.map((tab) => ({
+          id: tab.id,
+          name: tab.name,
+        })) ?? [],
       noteFieldGroups: noteEntity.noteFieldGroups
         ?.filter((nfg) => !nfg.noteTabId)
         .map((noteFieldGroup) => {
@@ -1257,6 +1261,7 @@ export class NotesService {
     }
 
     (mappedNote as WorkflowNoteData).missingFields = missingFields;
+
     return mappedNote as WorkflowNoteData;
   }
 

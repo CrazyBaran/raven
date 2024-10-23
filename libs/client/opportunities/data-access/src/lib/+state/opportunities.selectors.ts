@@ -137,6 +137,12 @@ export const selectOpportunityNoteTabs = createSelector(
         [],
     ) ?? [],
 );
+
+export const selectOpportunityTemplateTabs = createSelector(
+  notesQuery.selectOpportunityNotes,
+  (opportunityNotes) => opportunityNotes?.[0]?.templateTabs ?? [],
+);
+
 export const selectNoteFields = createSelector(
   selectOpportunityNoteTabs,
   storageQuery.selectAzureImageDictionary,
@@ -329,6 +335,7 @@ export const opportunitiesQuery = {
   selectOpportunityById,
   selectOpportunitiesGroupedByOrganisation,
   selectOpportunityNoteTabs,
+  selectOpportunityTemplateTabs,
   selectOpportunityDetailsIsLoading,
   selectOpportunityUpdateIsLoading,
   selectHasPermissionForCurrentOpportunity:
