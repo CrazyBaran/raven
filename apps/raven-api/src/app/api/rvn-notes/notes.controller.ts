@@ -118,7 +118,7 @@ export class NotesController {
     @Query('domain')
     domain: string,
     @Query('domain', FindOrganizationByDomainPipe, FindTagByOgranisationPipe)
-    organisationTagFromDomain: string | OrganisationTagEntity | null, // workaround so domain passed to pipe is string
+    organisationTagsFromDomain: string | Array<OrganisationTagEntity> | null, // workaround so domain passed to pipe is string
     @Query('tagIds', ParseTagsPipe)
     tagEntities: string | TagEntity[], // workaround so tagIds passed to pipe is string
     @Query('opportunityId') opportunityId: string,
@@ -134,7 +134,7 @@ export class NotesController {
       FindOrganizationByIdPipe,
       FindTagByOgranisationPipe,
     )
-    organisationTagFromId?: string | OrganisationTagEntity | null,
+    organisationTagsFromId?: string | Array<OrganisationTagEntity> | null,
     @Query('skip') skip?: number,
     @Query('take') take?: number,
     @Query('dir') dir?: 'asc' | 'desc',
@@ -156,17 +156,17 @@ export class NotesController {
       };
     }
     if (
-      (domain && organisationTagFromDomain === null) ||
-      (organisationId && organisationTagFromId === null)
+      (domain && organisationTagsFromDomain === null) ||
+      (organisationId && organisationTagsFromId === null)
     ) {
       return { total: 0, items: [] };
     }
-    const organisation =
-      (organisationTagFromDomain as OrganisationTagEntity) ||
-      (organisationTagFromId as OrganisationTagEntity);
+    const organisationTags =
+      (organisationTagsFromDomain as Array<OrganisationTagEntity>) ||
+      (organisationTagsFromId as Array<OrganisationTagEntity>);
     const { items, total } = await this.notesService.getAllNotes(
       userEntity,
-      organisation as OrganisationTagEntity,
+      organisationTags,
       tagEntities as TagEntity[],
       type,
       skip,

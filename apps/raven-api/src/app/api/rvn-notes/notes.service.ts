@@ -90,7 +90,7 @@ export class NotesService {
 
   public async getAllNotes(
     me: UserEntity,
-    organisationTagEntity?: OrganisationTagEntity,
+    organisationsTags?: Array<OrganisationTagEntity>,
     tagEntities?: TagEntity[],
     type?: TemplateTypeEnum,
     skip?: number,
@@ -103,15 +103,15 @@ export class NotesService {
     assignedTo?: string,
     role?: 'created' | 'tagged',
   ): Promise<{ items: NoteEntity[]; total: number }> {
-    const complexTagsForOrganisation = organisationTagEntity
+    const complexTagsForOrganisation = organisationsTags?.length
       ? await this.complexTagRepository
           .createQueryBuilder('complexTag')
           .innerJoin(
             'complexTag.tags',
             'organisationComplexTag',
-            'organisationComplexTag.id = :organisationComplexTagId',
+            'organisationComplexTag.id IN (:...organisationComplexTagId)',
             {
-              organisationComplexTagId: organisationTagEntity.id,
+              organisationComplexTagId: organisationsTags.map((el) => el.id),
             },
           )
           .getMany()
@@ -121,7 +121,7 @@ export class NotesService {
       .createQueryBuilder('note_with_tag')
       .select('note_with_tag.id')
       .innerJoin('note_with_tag.tags', 'tag')
-      .where('tag.id = :orgTagId');
+      .where('tag.id IN (:...orgTagsId)');
 
     const subQuery = this.noteRepository
       .createQueryBuilder('note_sub')
@@ -171,8 +171,11 @@ export class NotesService {
       if (tagAssignedTo) tagEntities = [...tagEntities, tagAssignedTo];
     }
 
-    if (organisationTagEntity) {
-      queryBuilder.setParameter('orgTagId', organisationTagEntity.id);
+    if (organisationsTags) {
+      queryBuilder.setParameter(
+        'orgTagsId',
+        organisationsTags.map((el) => el.id),
+      );
 
       queryBuilder.andWhere(
         new Brackets((qb) => {

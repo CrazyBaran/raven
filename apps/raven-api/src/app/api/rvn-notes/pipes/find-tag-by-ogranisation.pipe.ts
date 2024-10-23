@@ -13,14 +13,17 @@ import {
 @Injectable()
 export class FindTagByOgranisationPipe
   implements
-    PipeTransform<OrganisationEntity | null, Promise<OrganisationTagEntity>>
+    PipeTransform<
+      OrganisationEntity | null,
+      Promise<Array<OrganisationTagEntity>>
+    >
 {
   @InjectRepository(TagEntity)
   protected readonly tagRepository: Repository<OrganisationTagEntity>;
 
   public async transform(
     organisationEntity: OrganisationEntity | null,
-  ): Promise<OrganisationTagEntity | null> {
+  ): Promise<Array<OrganisationTagEntity> | null> {
     if (!organisationEntity) {
       return null;
     }
@@ -31,13 +34,12 @@ export class FindTagByOgranisationPipe
       },
     });
 
-    const tag = tags.filter(
+    const filteredTags = tags.filter(
       (tag) => (tag as VersionTagEntity).opportunityTagId === null,
     );
 
-    // TODO: we should return array of tags and handle all of them
-    if (tag.length > 0) {
-      return tag[0];
+    if (filteredTags.length > 0) {
+      return filteredTags;
     }
 
     return null;
