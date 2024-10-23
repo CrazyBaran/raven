@@ -427,11 +427,11 @@ export class OrganisationService {
 
     // Extract unique domains from affinityData
     const domains = new Set<string>();
-    affinityData.forEach((affinity) => {
-      affinity.organizationDto.domains.forEach((domain) => {
+    for (const data of affinityData) {
+      for (const domain of data.organizationDto.domains) {
         domains.add(domain);
-      });
-    });
+      }
+    }
 
     // Convert Set to Array
     const domainArray = Array.from(domains);
@@ -553,13 +553,19 @@ export class OrganisationService {
     affinityData: OrganizationStageDto[],
     existingOrganisations: OrganisationEntity[],
   ): OrganizationStageDto[] {
+    const domains = new Set<string>();
+    for (const data of existingOrganisations) {
+      for (const domain of data.domains) {
+        domains.add(domain);
+      }
+    }
+
     return affinityData.filter((affinity) => {
-      return !existingOrganisations.some((organisation) => {
-        return organisation.domains.some((domain) => {
-          if (affinity?.organizationDto?.domains?.length === 0) return true;
-          return affinity.organizationDto.domains.includes(domain);
-        });
-      });
+      const affinityDomains = affinity?.organizationDto?.domains || [];
+
+      if (affinityDomains.length === 0) return false;
+
+      return !affinityDomains.some((domain) => domains.has(domain));
     });
   }
 
