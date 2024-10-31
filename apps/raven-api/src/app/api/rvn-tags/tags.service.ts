@@ -15,6 +15,7 @@ export interface CreateTagOptions {
   type: TagTypeEnum;
   userId?: string;
   organisationId?: string;
+  tabId?: string;
 }
 
 export type UpdateTagOptions = Omit<
@@ -81,7 +82,6 @@ export class TagsService {
 
   public async createTag(options: CreateTagOptions): Promise<TagEntity> {
     const tagEntity = TagEntityFactory.createTag(options);
-
     return this.tagsRepository.save(tagEntity);
   }
 

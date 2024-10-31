@@ -142,7 +142,7 @@ export class VersionTagEntity extends TagEntity {
   @AfterLoad()
   public override lifecycleUuidLowerCase(): void {
     this.id = this.id.toLowerCase();
-    this.organisationId = this.organisationId.toLowerCase();
+    this.organisationId = this.organisationId?.toLowerCase();
     this.opportunityTagId = this.opportunityTagId?.toLowerCase();
   }
 }

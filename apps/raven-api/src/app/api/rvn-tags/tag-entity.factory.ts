@@ -2,6 +2,7 @@ import { TagTypeEnum } from '@app/rvns-tags';
 import {
   OrganisationTagEntity,
   PeopleTagEntity,
+  TabTagEntity,
   TagEntity,
   VersionTagEntity,
 } from './entities/tag.entity';
@@ -23,7 +24,9 @@ export class TagEntityFactory {
         tag.userId = options.userId;
         break;
       case TagTypeEnum.Tab:
-        throw new Error('Tab tags are only created by the system');
+        tag = new TabTagEntity();
+        tag.tabId = options.tabId;
+        break;
       case TagTypeEnum.General:
       case TagTypeEnum.BusinessModel:
       case TagTypeEnum.Industry:

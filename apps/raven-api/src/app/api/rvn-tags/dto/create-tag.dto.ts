@@ -26,4 +26,10 @@ export class CreateTagDto {
   @IsDefined()
   @IsUUID()
   public readonly organisationId?: string;
+
+  @ApiProperty()
+  @ValidateIf((o) => o.type === TagTypeEnum.Tab)
+  @IsDefined()
+  @IsUUID()
+  public readonly tabId?: string;
 }
