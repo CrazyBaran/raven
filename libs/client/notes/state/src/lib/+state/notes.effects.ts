@@ -274,7 +274,7 @@ export class NotesEffects {
         this.notesService
           .getNotes({
             ...params,
-            take: (table?.ids.length + 1 || 0).toString(),
+            take: (table ? table.ids.length + 10 : 0).toString(),
           })
           .pipe(
             map(({ data }) => {
