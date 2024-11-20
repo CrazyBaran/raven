@@ -131,6 +131,7 @@ describe('NotesService', () => {
 
       const note = new NoteEntity();
       note.name = 'Note';
+      note.isNewestVersion = true;
       note.version = 1;
       note.tags = [];
       note.createdBy = userEntity;

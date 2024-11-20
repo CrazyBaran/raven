@@ -123,11 +123,6 @@ export class NotesService {
       .innerJoin('note_with_tag.tags', 'tag')
       .where('tag.id IN (:...orgTagsId)');
 
-    const subQuery = this.noteRepository
-      .createQueryBuilder('note_sub')
-      .select('MAX(note_sub.version)', 'maxVersion')
-      .where('LOWER(note_sub.rootVersionId) = LOWER(note.rootVersionId)');
-
     const queryBuilder = this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndMapOne('note.createdBy', 'note.createdBy', 'createdBy')
@@ -140,7 +135,7 @@ export class NotesService {
         'complexTagsTags',
       )
       .leftJoinAndMapOne('note.template', 'note.template', 'template')
-      .where(`note.version = (${subQuery.getQuery()})`)
+      .where(`note.isNewestVersion = 1`)
       .andWhere('note.deletedAt IS NULL');
 
     if (type) {
@@ -631,6 +626,7 @@ export class NotesService {
 
     const note = new NoteEntity();
     note.name = options.name;
+    note.isNewestVersion = true;
     note.version = 1;
     if (options.rootVersionId) {
       note.rootVersionId = options.rootVersionId;
@@ -674,7 +670,7 @@ export class NotesService {
         'get latest version took: ',
         new Date().getTime() - start,
       );
-
+      latestVersion.isNewestVersion = false;
       if (options.templateEntity) {
         const updatedNote = await this.createNoteFromTemplate(
           options.name,
@@ -695,6 +691,7 @@ export class NotesService {
       const newNoteVersion = new NoteEntity();
       newNoteVersion.name = options.name || noteEntity.name;
       newNoteVersion.rootVersionId = noteEntity.rootVersionId;
+      newNoteVersion.isNewestVersion = true;
       newNoteVersion.version = latestVersion.version + 1;
       newNoteVersion.tags = options.tags;
       newNoteVersion.complexTags = await this.getComplexNoteTags(
@@ -733,7 +730,7 @@ export class NotesService {
             ),
           );
       }
-
+      await tem.save(latestVersion);
       const savedNewNoteVersion = await tem.save(newNoteVersion);
       this.logger.debug(
         'save new note version took: ',

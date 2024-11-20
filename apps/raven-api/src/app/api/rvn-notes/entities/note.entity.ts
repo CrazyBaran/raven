@@ -27,6 +27,8 @@ import { NoteTabEntity } from './note-tab.entity';
 
 @Entity({ name: 'notes' })
 @Index(['id'], { unique: true })
+@Index(['deletedAt', 'isNewestVersion', 'updatedAt'], { where: 'deleted_at is null AND is_newest_version = 1' })
+@Index(['deletedAt', 'isNewestVersion', 'name'],{where: 'deleted_at is null AND is_newest_version = 1' })
 export class NoteEntity implements AuditableEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
@@ -40,6 +42,9 @@ export class NoteEntity implements AuditableEntity {
 
   @Column()
   public version: number;
+
+  @Column({ default: false })
+  public isNewestVersion: boolean;
 
   @OneToOne(() => NoteEntity)
   @JoinColumn({ name: 'previous_version_id' })
