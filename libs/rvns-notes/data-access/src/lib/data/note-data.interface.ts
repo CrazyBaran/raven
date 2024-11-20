@@ -26,6 +26,7 @@ export interface NoteData {
   readonly id: string;
   readonly name: string;
   readonly version: number;
+  readonly isNewestVersion: boolean;
   readonly rootVersionId: string;
   readonly tags: NoteTagData[];
   readonly complexTags?: ComplexTagData[];

@@ -871,6 +871,7 @@ export class NotesService {
       id: noteEntity.id,
       name: noteEntity.name,
       version: noteEntity.version,
+      isNewestVersion: noteEntity.isNewestVersion,
       rootVersionId: noteEntity.rootVersionId,
       templateName: noteEntity.template?.name,
       templateId: noteEntity.templateId,
@@ -1043,6 +1044,7 @@ export class NotesService {
   ): Promise<NoteEntity> {
     const note = new NoteEntity();
     note.name = name;
+    note.isNewestVersion = true;
     note.version = version;
     note.tags = tags;
     note.complexTags = await this.getComplexNoteTags(companyOpportunityTags);
