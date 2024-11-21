@@ -29,11 +29,9 @@ export class AzureAdSsoComponent implements OnInit, OnDestroy {
 
     this.broadcastService.msalSubject$
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((event: EventMessage) => {
-        console.log(event.eventType + ' ' + event.payload);
-        this.authService.instance.getActiveAccount();
-        console.log(this.authService.instance.getAllAccounts());
-      });
+      .subscribe((event: EventMessage) =>
+        this.authService.instance.getActiveAccount(),
+      );
   }
 
   public ngOnDestroy(): void {
