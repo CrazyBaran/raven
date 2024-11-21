@@ -27,7 +27,6 @@ export class CanActivateGuard {
           return of(true);
         }
 
-        console.log(state);
         this.router.navigate(['/login'], {
           queryParams: { redirectUrl: state.url },
         });
